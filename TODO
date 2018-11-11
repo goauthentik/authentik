@@ -1,0 +1,6 @@
+## oauth_client
+
+ - Move provider_type logic to own class, not name-based URL matching
+ - add provider_type field to Provider Model
+ - make Provider inherit core.application
+ - Add template for popular services like github, twitter, facebook, etc
