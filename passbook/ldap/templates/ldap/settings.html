@@ -1,0 +1,33 @@
+{% extends "_admin/module_default.html" %}
+
+{% load i18n %}
+{% load supervisr_utils %}
+
+{% block title %}
+{% title "Settings" %}
+{% endblock %}
+
+{% block module_content %}
+<h2><clr-icon shape="application" size="32"></clr-icon>{% trans 'LDAP connection' %}</h2>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <form role="form" method="POST">
+        <div class="card-block">
+          <h3><clr-icon shape="cog" size="32"></clr-icon>{% trans 'General settings' %}</h3>
+          {% include 'blocks/form.html' with form=general %}
+          <h3><clr-icon shape="connect" size="32"></clr-icon>{% trans 'Connection settings' %}</h3>
+          {% include 'blocks/form.html' with form=connection %}
+          <h3><clr-icon shape="certificate" size="32"></clr-icon>{% trans 'Authentication backend ' %}</h3>
+          {% include 'blocks/form.html' with form=authentication %}
+          <h3><clr-icon shape="users" size="32"></clr-icon>{% trans 'Create users settings' %}</h3>
+          {% include 'blocks/form.html' with form=create_users %}
+        </div>
+        <div class="card-footer">
+          <button type="submit" value="general" class="btn btn-sm btn-primary">{% trans 'Update' %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

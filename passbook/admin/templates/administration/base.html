@@ -1,0 +1,21 @@
+{% extends "overview/base.html" %}
+
+{% load i18n %}
+{% load is_active %}
+
+{% block nav_secondary %}
+<ul class="nav navbar-nav navbar-persistent">
+  <li class="active">
+    <a href="#">{% trans 'Overview' %}</a>
+  </li>
+  <li class="{% is_active 'applications'}">
+    <a href="#">{% trans 'Applications' %}</a>
+  </li>
+  <li>
+    <a href="#">{% trans 'Rules' %}</a>
+  </li>
+  <li>
+    <a href="#">{% trans 'Users' %}</a>
+  </li>
+</ul>
+{% endblock %}

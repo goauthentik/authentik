@@ -1,0 +1,21 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{% trans 'passbook' %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly-additions.min.css' %}">
+  </head>
+  <body {% if is_login %} class="login-pf" {% endif %}>
+    {% block body %}
+    {% endblock %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/patternfly.min.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

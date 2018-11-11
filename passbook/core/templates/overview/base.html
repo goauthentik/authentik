@@ -1,0 +1,87 @@
+{% extends "base/skeleton.html" %}
+
+{% load static %}
+{% load i18n %}
+
+{% block body %}
+{% load static %}
+{% load i18n %}
+
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+      <span class="sr-only">{% trans 'Toggle navigation' %}</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'img/brand.svg' %}" alt="PatternFly Enterprise Application" />
+    </a>
+  </div>
+  <div class="collapse navbar-collapse navbar-collapse-1">
+    <ul class="nav navbar-nav navbar-utility">
+      <li class="dropdown">
+        <button class="btn btn-link nav-item-iconic" id="horizontalDropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="true">
+          <span title="Help" class="fa pficon-help dropdown-title"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="horizontalDropdownMenu1">
+          <li><a href="#0">Help</a></li>
+          <li><a href="#0">About</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+          <span class="pficon pficon-user"></span>
+          <span class="dropdown-title">
+            {{ user.username }} <b class="caret"></b>
+          </span>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="#0">Link</a>
+          </li>
+          <li>
+            <a href="#0">Another link</a>
+          </li>
+          <li>
+            <a href="#0">Something else here</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#0">One more separated link</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-primary persistent-secondary">
+      {# FIXME: Detect active application #}
+      <li class="active">
+        <a href="#0">{% trans 'Overview' %}</a>
+        {% block nav_secondary %}
+        {% endblock %}
+      </li>
+      <li>
+        <a href="#0">{% trans 'Administration' %}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid container-cards-pf">
+  {% block content %}
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    // initialize tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Initialize the vertical navigation
+    $().setupVerticalNavigation(true);
+  });
+</script>
+{% endblock %}

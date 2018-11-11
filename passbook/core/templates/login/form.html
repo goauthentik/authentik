@@ -1,0 +1,33 @@
+{% extends 'login/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block card %}
+<header class="login-pf-header">
+  <h1>{% trans 'Log In to Your Account' %}</h1>
+</header>
+<form method="POST">
+  {% csrf_token %}
+  <div class="form-group">
+    <label class="sr-only" for="uid_field">{% trans 'UID' %}</label>
+    <input type="text" class="form-control input-lg" name="uid_field" placeholder="UID">
+  </div>
+  <div class="form-group">
+    <label class="sr-only" for="password">{% trans 'Password' %}</label>
+    <input type="password" class="form-control input-lg" name="password" placeholder="Password">
+  </div>
+  <div class="form-group login-pf-settings">
+    <label class="checkbox-label">
+      <input name="remember_me" type="checkbox"> {% trans 'Keep me logged in for 30 days' %}
+    </label>
+    {% if config.password_reset.enabled %}
+    <a href="#">{% trans 'Forgot password?' %}</a>
+    {% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary btn-block btn-lg">Log In</button>
+</form>
+{% if config.sign_up.enabled %}
+<p class="login-pf-signup">{% trans 'Need an account?' %}<a href="#">{% trans 'Sign up' %}</a></p>
+{% endif %}
+{% endblock %}

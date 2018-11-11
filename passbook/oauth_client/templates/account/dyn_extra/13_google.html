@@ -1,0 +1,7 @@
+{% load supervisr_oauth_client %}
+{% load static %}
+
+{% provider_exists 'google' as google_enabled %}
+{% if google_enabled %}
+<a href="{% url 'supervisr_mod_auth_oauth_client:oauth-client-login' provider='google' %}" class="btn" style="background-color:white;color:black;margin-top:10px;width:100%;"><img src="{% static 'img/google.svg' %}" style="height:12px"></a>
+{% endif %}

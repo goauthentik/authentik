@@ -1,0 +1,7 @@
+{% load supervisr_oauth_client %}
+{% load static %}
+
+{% provider_exists 'reddit' as reddit_enabled %}
+{% if reddit_enabled %}
+<a href="{% url 'supervisr_mod_auth_oauth_client:oauth-client-login' provider='reddit' %}" class="btn" style="background-color:#ff4500;color:white;margin-top:10px;width:100%;"><img src="{% static 'img/reddit.svg' %}" style="height:20px;margin-top:-5px;"></a>
+{% endif %}
