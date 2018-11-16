@@ -20,5 +20,8 @@
   <li>
     <a href="#">{% trans 'Users' %}</a>
   </li>
+  <li class="{% is_active_app 'admin' %}">
+    <a href="{% url 'admin:index' %}">{% trans 'Django' %}</a>
+  </li>
 </ul>
 {% endblock %}
