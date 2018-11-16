@@ -1,0 +1,47 @@
+{% extends "core/skel.html" %}
+
+{% load supervisr_utils %}
+{% load i18n %}
+
+{% block title %}
+{% title 'SSO - Authorize External Source' %}
+{% endblock %}
+
+{% block body %}
+<div class="login-wrapper">
+  <form class="login" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="ACSUrl" value="{{ acs_url }}">
+    <input type="hidden" name="RelayState" value="{{ relay_state }}" />
+    <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
+    <label class="title">
+      <clr-icon shape="supervisr" class="is-info" size="48"></clr-icon>
+      {% supervisr_setting 'branding' %}
+    </label>
+    <label class="subtitle">
+      {% trans 'SSO - Authorize External Source' %}
+    </label>
+    <div class="login-group">
+      <p class="subtitle">
+        {% blocktrans with remote=remote.name %}
+          You're about to sign into {{ remote }}
+        {% endblocktrans %}
+      </p>
+      <p>
+        {% blocktrans with user=user %}
+          You are logged in as {{ user }}. Not you?
+        {% endblocktrans %}
+        <a href="{% url 'account-logout' %}">{% trans 'Logout' %}</a>
+      </p>
+      <div class="row">
+        <div class="col-md-6">
+          <input class="btn btn-success btn-block" type="submit" value="{% trans "Continue" %}" />
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'common-index' %}" class="btn btn-outline btn-block">{% trans "Cancel" %}</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

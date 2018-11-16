@@ -5,11 +5,14 @@
 
 {% block nav_secondary %}
 <ul class="nav navbar-nav navbar-persistent">
-  <li class="active">
-    <a href="#">{% trans 'Overview' %}</a>
+  <li class="{% is_active 'passbook_admin:overview' %}">
+    <a href="{% url 'passbook_admin:overview' %}">{% trans 'Overview' %}</a>
   </li>
-  <li class="{% is_active 'applications'}">
-    <a href="#">{% trans 'Applications' %}</a>
+  <li class="{% is_active 'passbook_admin:applications' %}">
+    <a href="{% url 'passbook_admin:applications' %}">{% trans 'Applications' %}</a>
+  </li>
+  <li class="{% is_active 'passbook_admin:sources' %}">
+    <a href="{% url 'passbook_admin:sources' %}">{% trans 'Sources' %}</a>
   </li>
   <li>
     <a href="#">{% trans 'Rules' %}</a>

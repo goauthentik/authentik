@@ -1,0 +1,16 @@
+{% extends "administration/base.html" %}
+
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+  {% block above_form %}
+  {% endblock %}
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" />
+  </form>
+</div>
+{% endblock %}

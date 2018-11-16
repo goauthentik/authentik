@@ -1,0 +1,13 @@
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                Destination="{{ ACS_URL }}"
+                ID="{{ RESPONSE_ID }}"
+                {{ IN_RESPONSE_TO|safe }}
+                IssueInstant="{{ ISSUE_INSTANT }}"
+                Version="2.0">
+    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">{{ ISSUER }}</saml:Issuer>
+    {{ ASSERTION_SIGNATURE }}
+    <samlp:Status>
+        <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success" />
+    </samlp:Status>
+    {{ ASSERTION }}
+</samlp:Response>

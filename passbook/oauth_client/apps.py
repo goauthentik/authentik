@@ -1,8 +1,11 @@
 """passbook oauth_client config"""
-from logging import getLogger
-from django.apps import AppConfig
-from passbook.lib.config import CONFIG
 from importlib import import_module
+from logging import getLogger
+
+from django.apps import AppConfig
+
+from passbook.lib.config import CONFIG
+
 LOGGER = getLogger(__name__)
 
 class PassbookOAuthClientConfig(AppConfig):

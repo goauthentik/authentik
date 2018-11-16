@@ -9,8 +9,6 @@ from passbook.oauth_client.clients import get_client
 class OAuthSource(Source):
     """Configuration for OAuth provider."""
 
-    # FIXME: Dynamically load available source_types
-
     provider_type = models.CharField(max_length=255)
     request_token_url = models.CharField(blank=True, max_length=255)
     authorization_url = models.CharField(max_length=255)

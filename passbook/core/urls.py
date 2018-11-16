@@ -8,15 +8,25 @@ from django.views.generic import RedirectView
 from passbook.core.views import authentication, overview
 
 admin.autodiscover()
-admin.site.login = RedirectView.as_view(pattern_name='auth-login')
+admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
 
-urlpatterns = [
+core_urls = [
     path('auth/login/', authentication.LoginView.as_view(), name='auth-login'),
     path('', overview.OverviewView.as_view(), name='overview'),
+]
+
+urlpatterns = [
+    # Core
+    path('', include((core_urls, 'passbook_core'), namespace='passbook_core')),
     # Administration
     path('administration/django/', admin.site.urls),
-    path('administration/', include('passbook.admin.urls')),
-    path('', include('passbook.oauth_client.urls')),
+    path('administration/',
+         include(('passbook.admin.urls', 'passbook_admin'), namespace='passbook_admin')),
+    path('source/oauth/', include(('passbook.oauth_client.urls',
+                                   'passbook_oauth_client'), namespace='passbook_oauth_client')),
+    path('application/oauth', include(('passbook.oauth_provider.urls',
+                                       'passbook_oauth_provider'),
+                                        namespace='passbook_oauth_provider')),
 ]
 
 if settings.DEBUG:

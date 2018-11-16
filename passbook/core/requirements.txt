@@ -2,3 +2,6 @@ django>=2.0
 django-reversion
 PyYAML
 raven
+djangorestframework
+markdown
+django-model-utils

@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from passbook.oauth_client.models import OAuthSource, UserOAuthSourceConnection
 
+
 class AuthorizedServiceBackend(ModelBackend):
     "Authentication backend for users registered with remote OAuth provider."
 

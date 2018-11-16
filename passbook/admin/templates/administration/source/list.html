@@ -1,0 +1,18 @@
+{% extends "generic/list.html" %}
+
+{% load i18n %}
+
+{% block above_table %}
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+    {% trans 'Create...' %}
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+    {% for type, name in types.items %}
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:source-create' %}?type={{ type }}">{{ name }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+<hr>
+{% endblock %}

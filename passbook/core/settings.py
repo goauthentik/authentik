@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+import importlib
 import os
 
-from passbook.lib.config import CONFIG
 from passbook import __version__
+from passbook.lib.config import CONFIG
+
 VERSION = __version__
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -30,7 +32,7 @@ DEBUG = True
 INTERNAL_IPS = ['127.0.0.1']
 ALLOWED_HOSTS = []
 
-LOGIN_URL = 'auth-login'
+LOGIN_URL = 'passbook_core:auth-login'
 
 # Custom user model
 AUTH_USER_MODEL = 'passbook_core.User'
@@ -40,7 +42,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'passbook.oauth_client.backends.AuthorizedServiceBackend'
 ]
-
 
 # Application definition
 
@@ -54,10 +55,20 @@ INSTALLED_APPS = [
     'reversion',
     'passbook.core',
     'passbook.admin',
+    'rest_framework',
     'passbook.lib',
     'passbook.ldap',
     'passbook.oauth_client',
+    'passbook.oauth_provider',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -132,6 +143,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -230,3 +243,18 @@ with CONFIG.cd('log'):
 if DEBUG:
     INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+
+
+# Load subapps's INSTALLED_APPS
+for _app in INSTALLED_APPS:
+    if _app.startswith('passbook') and \
+            not _app.startswith('passbook.core'):
+        if 'apps' in _app:
+            _app = '.'.join(_app.split('.')[:-2])
+        try:
+            app_settings = importlib.import_module("%s.settings" % _app)
+            INSTALLED_APPS.extend(getattr(app_settings, 'INSTALLED_APPS', []))
+            MIDDLEWARE.extend(getattr(app_settings, 'MIDDLEWARE', []))
+            AUTHENTICATION_BACKENDS.extend(getattr(app_settings, 'AUTHENTICATION_BACKENDS', []))
+        except ImportError:
+            pass

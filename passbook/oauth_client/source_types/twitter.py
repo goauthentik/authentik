@@ -7,9 +7,9 @@ from requests.exceptions import RequestException
 
 from passbook.oauth_client.clients import OAuthClient
 from passbook.oauth_client.errors import OAuthClientEmailMissingError
+from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback
-from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 
 LOGGER = getLogger(__name__)
 

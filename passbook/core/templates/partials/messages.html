@@ -1,0 +1,11 @@
+{% if messages %}
+  {% for msg in messages %}
+  <div class="alert alert-{{ msg.level_tag }}">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <span class="pficon pficon-{{ msg.level_tag }}"></span>
+    <strong>{{ msg.message|safe }}</strong>
+  </div>
+  {% endfor %}
+{% endif %}

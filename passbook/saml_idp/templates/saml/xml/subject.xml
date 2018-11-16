@@ -1,0 +1,8 @@
+<saml:Subject>
+    <saml:NameID Format="{{ SUBJECT_FORMAT }}" SPNameQualifier="{{ SP_NAME_QUALIFIER }}">
+    {{ SUBJECT }}
+    </saml:NameID>
+    <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <saml:SubjectConfirmationData {{ IN_RESPONSE_TO|safe }} NotOnOrAfter="{{ NOT_ON_OR_AFTER }}" Recipient="{{ ACS_URL }}" />
+    </saml:SubjectConfirmation>
+</saml:Subject>

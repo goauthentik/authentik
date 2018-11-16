@@ -84,7 +84,7 @@ class LoginView(UserPassesTestMixin, FormView):
         if 'next' in request.GET:
             return redirect(request.GET.get('next'))
         # Otherwise just index
-        return redirect(reverse('overview'))
+        return redirect(reverse('passbook_core:overview'))
 
     @staticmethod
     def invalid_login(request: HttpRequest, disabled_user: User = None) -> HttpResponse:

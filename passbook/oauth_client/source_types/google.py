@@ -1,9 +1,9 @@
 """Google OAuth Views"""
 from django.contrib.auth import get_user_model
 
+from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
-from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 
 
 @MANAGER.source(kind=RequestKind.redirect, name='google')

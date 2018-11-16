@@ -2,11 +2,9 @@
 
 {% load static %}
 {% load i18n %}
+{% load is_active %}
 
 {% block body %}
-{% load static %}
-{% load i18n %}
-
 <nav class="navbar navbar-default navbar-pf" role="navigation">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
@@ -55,20 +53,21 @@
         </ul>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-primary persistent-secondary">
+    <ul class="nav navbar-nav navbar-primary">
       {# FIXME: Detect active application #}
-      <li class="active">
-        <a href="#0">{% trans 'Overview' %}</a>
+      <li class="{% is_active_app 'passbook_core' %}">
+        <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
+      </li>
+      <li class="{% is_active_app 'passbook_admin' %}">
+        <a href="{% url 'passbook_admin:overview' %}">{% trans 'Administration' %}</a>
         {% block nav_secondary %}
         {% endblock %}
-      </li>
-      <li>
-        <a href="#0">{% trans 'Administration' %}</a>
       </li>
     </ul>
   </div>
 </nav>
 <div class="container-fluid container-cards-pf">
+  {% include 'partials/messages.html' %}
   {% block content %}
   {% endblock %}
 </div>

@@ -1,6 +1,7 @@
 """Source type manager"""
-from logging import getLogger
 from enum import Enum
+from logging import getLogger
+
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
 LOGGER = getLogger(__name__)

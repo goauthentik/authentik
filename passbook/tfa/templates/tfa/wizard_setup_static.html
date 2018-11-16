@@ -1,0 +1,20 @@
+{% extends "generic/wizard.html" %}
+
+{% load supervisr_utils %}
+
+{% block title %}
+{% title "Setup" %}
+{% endblock %}
+
+{% block form %}
+<label for="">Keep these tokens somewhere safe. These are to be used if you loose your primary 2FA device.</label>
+{% for field in wizard.form %}
+  {% if field.field.widget|fieldtype == 'SelectMultiple' %}
+    <ul class="list">
+    {% for token in field.field.choices %}
+      <li>{{ token.0 }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endfor %}
+{% endblock %}

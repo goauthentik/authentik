@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="{{ entity_id }}">
+  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>{{ cert_public_key }}</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>{{ cert_public_key }}</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ slo_url }}"/>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:email</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ sso_url }}"/>
+  </md:IDPSSODescriptor>
+{% comment %}
+<!-- #TODO: Add support for optional Organization section -->
+{# if org #}
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">{{ org.name }}</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">{{ org.display_name }}</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">{{ org.url }}</md:OrganizationURL>
+  </md:Organization>
+{# endif #}
+<!-- #TODO: Add support for optional ContactPerson section(s) -->
+{# for contact in contacts #}
+  <md:ContactPerson contactType="{{ contact.type }}">
+    <md:GivenName>{{ contact.given_name }}</md:GivenName>
+    <md:SurName>{{ contact.sur_name }}</md:SurName>
+    <md:EmailAddress>{{ contact.email }}</md:EmailAddress>
+  </md:ContactPerson>
+{# endfor #}
+{% endcomment %}
+</md:EntityDescriptor>
