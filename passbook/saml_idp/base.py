@@ -84,7 +84,8 @@ class Processor:
             'AUTH_INSTANT': get_time_string(),
             'ISSUE_INSTANT': get_time_string(),
             'NOT_BEFORE': get_time_string(-1 * HOURS),  # TODO: Make these settings.
-            'NOT_ON_OR_AFTER': get_time_string(int(CONFIG.y('saml_idp.assertion_valid_for')) * MINUTES),
+            'NOT_ON_OR_AFTER': get_time_string(int(CONFIG.y('saml_idp.assertion_valid_for'))
+                                               * MINUTES),
             'SESSION_INDEX': self._session_index,
             'SESSION_NOT_ON_OR_AFTER': get_time_string(8 * HOURS),
             'SP_NAME_QUALIFIER': self._audience,

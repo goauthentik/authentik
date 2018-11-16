@@ -1,27 +1,30 @@
 """passbook SAML IDP Views"""
 from logging import getLogger
 
-from django.contrib import auth, messages
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseRedirect)
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDictKeyError
-from django.utils.html import escape
-from django.utils.translation import ugettext as _
+# from django.utils.html import escape
+# from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
-from OpenSSL.crypto import FILETYPE_PEM
-from OpenSSL.crypto import Error as CryptoError
-from OpenSSL.crypto import load_certificate
 
+from passbook.lib.config import CONFIG
 # from passbook.core.models import Event, Setting, UserAcquirableRelationship
 from passbook.lib.utils.template import render_to_string
 # from passbook.core.views.common import ErrorResponseView
 # from passbook.core.views.settings import GenericSettingView
 from passbook.saml_idp import exceptions, registry, xml_signing
+
+# from OpenSSL.crypto import FILETYPE_PEM
+# from OpenSSL.crypto import Error as CryptoError
+# from OpenSSL.crypto import load_certificate
+
 
 LOGGER = getLogger(__name__)
 URL_VALIDATOR = URLValidator(schemes=('http', 'https'))
@@ -82,25 +85,25 @@ def login_process(request):
     proc, remote = registry.find_processor(request)
     # Check if user has access
     access = True
-    if remote.productextensionsaml2_set.exists() and \
-            remote.productextensionsaml2_set.first().product_set.exists():
-        # Only check if there is a connection from OAuth2 Application to product
-        product = remote.productextensionsaml2_set.first().product_set.first()
-        relationship = UserAcquirableRelationship.objects.filter(user=request.user, model=product)
-        # Product is invite_only = True and no relation with user exists
-        if product.invite_only and not relationship.exists():
-            access = False
+    # if remote.productextensionsaml2_set.exists() and \
+    #         remote.productextensionsaml2_set.first().product_set.exists():
+    #     # Only check if there is a connection from OAuth2 Application to product
+    #     product = remote.productextensionsaml2_set.first().product_set.first()
+    #     relationship = UserAcquirableRelationship.objects.filter(user=request.user, model=product)
+    #     # Product is invite_only = True and no relation with user exists
+    #     if product.invite_only and not relationship.exists():
+    #         access = False
     # Check if we should just autosubmit
     if remote.skip_authorization and access:
         # full_res = _generate_response(request, proc, remote)
         ctx = proc.generate_response()
         # User accepted request
-        Event.create(
-            user=request.user,
-            message=_('You authenticated %s (via SAML) (skipped Authz)' % remote.name),
-            request=request,
-            current=False,
-            hidden=True)
+        # Event.create(
+        #     user=request.user,
+        #     message=_('You authenticated %s (via SAML) (skipped Authz)' % remote.name),
+        #     request=request,
+        #     current=False,
+        #     hidden=True)
         return redirect_to_sp(
             request=request,
             acs_url=ctx['acs_url'],
@@ -108,12 +111,12 @@ def login_process(request):
             relay_state=ctx['relay_state'])
     if request.method == 'POST' and request.POST.get('ACSUrl', None) and access:
         # User accepted request
-        Event.create(
-            user=request.user,
-            message=_('You authenticated %s (via SAML)' % remote.name),
-            request=request,
-            current=False,
-            hidden=True)
+        # Event.create(
+        #     user=request.user,
+        #     message=_('You authenticated %s (via SAML)' % remote.name),
+        #     request=request,
+        #     current=False,
+        #     hidden=True)
         return redirect_to_sp(
             request=request,
             acs_url=request.POST.get('ACSUrl'),
@@ -121,13 +124,14 @@ def login_process(request):
             relay_state=request.POST.get('RelayState'))
     try:
         full_res = _generate_response(request, proc, remote)
-        if not access:
-            LOGGER.warning("User '%s' has no invitation to '%s'", request.user, product)
-            messages.error(request, "You have no access to '%s'" % product.name)
-            raise Http404
+        # if not access:
+        #     LOGGER.warning("User '%s' has no invitation to '%s'", request.user, product)
+        #     messages.error(request, "You have no access to '%s'" % product.name)
+        #     raise Http404
         return full_res
     except exceptions.CannotHandleAssertion as exc:
-        return ErrorResponseView.as_view()(request, str(exc))
+        LOGGER.debug(exc)
+        # return ErrorResponseView.as_view()(request, str(exc))
 
 
 @csrf_exempt

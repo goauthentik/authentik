@@ -1,4 +1,4 @@
-
+"""passbook admin mixins"""
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 

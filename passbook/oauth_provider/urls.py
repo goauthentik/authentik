@@ -2,7 +2,7 @@
 
 from django.urls import include, path
 
-from passbook.oauth_provider.views import oauth2
+# from passbook.oauth_provider.views import oauth2
 
 urlpatterns = [
     # Custom OAuth 2 Authorize View

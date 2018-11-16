@@ -1,12 +1,12 @@
 """passbook URL Configuration"""
-from django.urls import include, path
+from django.urls import path
 
 from passbook.admin.views import applications, overview, sources
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
     path('applications/', applications.ApplicationListView.as_view(),
-        name='applications'),
+         name='applications'),
     path('applications/create/', applications.ApplicationCreateView.as_view(),
          name='application-create'),
     path('sources/', sources.SourceListView.as_view(),

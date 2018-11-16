@@ -6,7 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from passbook.core.views import common
+from passbook.core.views import overview
 from passbook.tfa.middleware import tfa_force_verify
 
 
@@ -19,7 +19,7 @@ class TestMiddleware(TestCase):
 
     def test_tfa_force_verify_anon(self):
         """Test Anonymous TFA Force"""
-        request = self.factory.get(reverse('common-index'))
+        request = self.factory.get(reverse('passbook_core:overview'))
         request.user = AnonymousUser()
-        response = tfa_force_verify(common.IndexView.as_view())(request)
+        response = tfa_force_verify(overview.OverviewView.as_view())(request)
         self.assertEqual(response.status_code, 302)

@@ -21,3 +21,6 @@ class SAMLApplication(Application):
 
     def __str__(self):
         return "SAMLApplication %s (processor=%s)" % (self.name, self.processor_path)
+
+    def user_is_authorized(self):
+        raise NotImplementedError()

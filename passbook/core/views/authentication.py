@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render, reverse
+from django.shortcuts import redirect, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import FormView
 
@@ -89,14 +89,14 @@ class LoginView(UserPassesTestMixin, FormView):
     @staticmethod
     def invalid_login(request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""
-        if disabled_user:
-            context = {
-                'reason': 'disabled',
-                'user': disabled_user
-            }
-        else:
-            context = {
-                'reason': 'invalid',
-            }
+        # if disabled_user:
+        #     context = {
+        #         'reason': 'disabled',
+        #         'user': disabled_user
+        #     }
+        # else:
+        #     context = {
+        #         'reason': 'invalid',
+        #     }
         raise NotImplementedError()
-        return render(request, 'login/invalid.html', context)
+        # return render(request, 'login/invalid.html', context)

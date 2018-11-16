@@ -1,6 +1,6 @@
 """Shibboleth Processor"""
 
-from supervisr.mod.auth.saml.idp.base import Processor
+from passbook.saml_idp.base import Processor
 
 
 class ShibbolethProcessor(Processor):

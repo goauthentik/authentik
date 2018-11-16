@@ -2,7 +2,7 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView
 
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Source
@@ -10,6 +10,7 @@ from passbook.lib.utils.reflection import path_to_class
 
 
 class SourceListView(AdminRequiredMixin, ListView):
+    """Show list of all sources"""
 
     model = Source
     template_name = 'administration/source/list.html'
@@ -21,6 +22,7 @@ class SourceListView(AdminRequiredMixin, ListView):
 
 
 class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+    """Create new Source"""
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:sources')
@@ -33,6 +35,7 @@ class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
 
 
 class SourceUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+    """Update source"""
 
     model = Source
     template_name = 'generic/update.html'

@@ -1,11 +1,12 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+"""passbook administration overview"""
 from django.views.generic import TemplateView
 
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import Application, Rule, User, Provider
+from passbook.core.models import Application, Provider, Rule, User
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
+    """Overview View"""
 
     template_name = 'administration/overview.html'
 
