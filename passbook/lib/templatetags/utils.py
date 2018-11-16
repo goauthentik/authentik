@@ -76,7 +76,7 @@ def pick(cont, arg, fallback=''):
 @register.simple_tag(takes_context=True)
 def title(context, *title):
     """Return either just branding or title - branding"""
-    branding = Setting.get('branding', default='passbook')
+    branding = CONFIG.y('passbook.branding', 'passbook')
     if not title:
         return branding
     # Include App Title in title

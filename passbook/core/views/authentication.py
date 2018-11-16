@@ -75,7 +75,7 @@ class LoginView(UserPassesTestMixin, FormView):
         login(request, user)
 
         if cleaned_data.get('remember') is True:
-            request.session.set_expiry(CONFIG.get('passbook').get('session').get('remember_age'))
+            request.session.set_expiry(CONFIG.y('passbook.session.remember_age'))
         else:
             request.session.set_expiry(0)  # Expires when browser is closed
         messages.success(request, _("Successfully logged in!"))
@@ -98,4 +98,5 @@ class LoginView(UserPassesTestMixin, FormView):
             context = {
                 'reason': 'invalid',
             }
+        raise NotImplementedError()
         return render(request, 'login/invalid.html', context)

@@ -7,7 +7,7 @@ from passbook.lib.utils.reflection import class_to_path
 from passbook.saml_idp.base import Processor
 
 
-class SAMLRemote(Application):
+class SAMLApplication(Application):
     """Model to save information about a Remote SAML Endpoint"""
 
     acs_url = models.URLField()
@@ -20,4 +20,4 @@ class SAMLRemote(Application):
         self._meta.get_field('processor_path').choices = processors
 
     def __str__(self):
-        return "SAMLRemote %s (processor=%s)" % (self.name, self.processor_path)
+        return "SAMLApplication %s (processor=%s)" % (self.name, self.processor_path)

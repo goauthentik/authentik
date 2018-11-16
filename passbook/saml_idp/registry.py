@@ -3,7 +3,7 @@ from logging import getLogger
 
 from passbook.lib.utils.reflection import path_to_class
 from passbook.saml_idp.exceptions import CannotHandleAssertion
-from passbook.saml_idp.models import SAMLRemote
+from passbook.saml_idp.models import SAMLApplication
 
 LOGGER = getLogger(__name__)
 
@@ -16,7 +16,7 @@ def get_processor(remote):
 
 def find_processor(request):
     """Returns the Processor instance that is willing to handle this request."""
-    for remote in SAMLRemote.objects.all():
+    for remote in SAMLApplication.objects.all():
         proc = get_processor(remote)
         try:
             if proc.can_handle(request):

@@ -16,6 +16,13 @@ class User(AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
+    applications = models.ManyToManyField('Application')
+
+@reversion.register()
+class Provider(models.Model):
+    """Application-independant Provider instance. For example SAML2 Remote, OAuth2 Application"""
+
+    # This class defines no field for easier inheritance
 
 @reversion.register()
 class Application(UUIDModel, CreatedUpdatedModel):
@@ -26,6 +33,7 @@ class Application(UUIDModel, CreatedUpdatedModel):
     name = models.TextField()
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
+    provider = models.ForeignKey('Provider', null=True, default=None, on_delete=models.SET_DEFAULT)
 
     objects = InheritanceManager()
 

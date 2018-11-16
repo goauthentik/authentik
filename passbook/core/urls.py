@@ -24,9 +24,12 @@ urlpatterns = [
          include(('passbook.admin.urls', 'passbook_admin'), namespace='passbook_admin')),
     path('source/oauth/', include(('passbook.oauth_client.urls',
                                    'passbook_oauth_client'), namespace='passbook_oauth_client')),
-    path('application/oauth', include(('passbook.oauth_provider.urls',
-                                       'passbook_oauth_provider'),
-                                        namespace='passbook_oauth_provider')),
+    path('application/oauth/', include(('passbook.oauth_provider.urls',
+                                        'passbook_oauth_provider'),
+                                       namespace='passbook_oauth_provider')),
+    path('application/saml/', include(('passbook.saml_idp.urls',
+                                       'passbook_saml_idp'),
+                                      namespace='passbook_saml_idp')),
 ]
 
 if settings.DEBUG:
