@@ -7,15 +7,15 @@ from defusedxml import ElementTree
 from signxml import XMLSigner
 from signxml.util import strip_pem_header
 
-from passbook.core.models import Setting
-from passbook.lib.utils import render_to_string
+from passbook.lib.config import CONFIG
+from passbook.lib.utils.template import render_to_string
 
 LOGGER = getLogger(__name__)
 
 
 def load_certificate(strip=False):
     """Get Public key from config"""
-    cert = Setting.get('certificate')
+    cert = CONFIG.y('saml_idp.certificate', '')
     if strip:
         return strip_pem_header(cert.replace('\r', '')).replace('\n', '')
     return cert
@@ -23,7 +23,7 @@ def load_certificate(strip=False):
 
 def load_private_key():
     """Get Private Key from config"""
-    return Setting.get('private_key')
+    return CONFIG.y('saml_idp.key', '')
 
 
 def sign_with_signxml(private_key, data, cert, reference_uri=None):

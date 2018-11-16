@@ -1,15 +1,11 @@
-"""
-Salesforce Processor
-"""
+"""Salesforce Processor"""
 
-from supervisr.mod.auth.saml.idp.base import Processor
-from supervisr.mod.auth.saml.idp.xml_render import get_assertion_xml
+from passbook.saml_idp.base import Processor
+from passbook.saml_idp.xml_render import get_assertion_xml
 
 
 class SalesForceProcessor(Processor):
-    """
-    SalesForce.com-specific SAML 2.0 AuthnRequest to Response Handler Processor.
-    """
+    """SalesForce.com-specific SAML 2.0 AuthnRequest to Response Handler Processor."""
 
     def _determine_audience(self):
         self._audience = 'IAMShowcase'

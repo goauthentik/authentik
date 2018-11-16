@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'passbook.ldap',
     'passbook.oauth_client',
     'passbook.oauth_provider',
+    'passbook.saml_idp',
+    'passbook.tfa',
 ]
 
 REST_FRAMEWORK = {

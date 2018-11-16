@@ -1,7 +1,7 @@
 {% extends "_admin/module_default.html" %}
 
 {% load i18n %}
-{% load supervisr_utils %}
+{% load utils %}
 
 {% block title %}
 {% title "Overview" %}
@@ -39,7 +39,7 @@
         </section>
       </div>
       <div class="card-footer">
-        <a href="{% url 'supervisr_mod_auth_saml_idp:metadata_xml' %}" class="btn btn-primary"><clr-icon shape="download"></clr-icon>{% trans 'Download Metadata' %}</a>
+        <a href="{% url 'passbook_saml_idp:metadata_xml' %}" class="btn btn-primary"><clr-icon shape="download"></clr-icon>{% trans 'Download Metadata' %}</a>
       </div>
     </div>
   </div>

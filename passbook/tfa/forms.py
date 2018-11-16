@@ -1,4 +1,4 @@
-"""Supervisr 2FA Forms"""
+"""passbook 2FA Forms"""
 
 from django import forms
 from django.core.validators import RegexValidator

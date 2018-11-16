@@ -1,6 +1,6 @@
 {% extends "core/skel.html" %}
 
-{% load supervisr_utils %}
+{% load utils %}
 {% load i18n %}
 
 {% block title %}
@@ -15,8 +15,8 @@
     <input type="hidden" name="RelayState" value="{{ relay_state }}" />
     <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
     <label class="title">
-      <clr-icon shape="supervisr" class="is-info" size="48"></clr-icon>
-      {% supervisr_setting 'branding' %}
+      <clr-icon shape="passbook" class="is-info" size="48"></clr-icon>
+      {% config 'passbook.branding' %}
     </label>
     <label class="subtitle">
       {% trans 'SSO - Authorize External Source' %}

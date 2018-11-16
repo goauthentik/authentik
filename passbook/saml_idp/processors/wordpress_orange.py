@@ -1,14 +1,10 @@
-"""
-WordpressOrange Processor
-"""
+"""WordpressOrange Processor"""
 
-from supervisr.mod.auth.saml.idp.base import Processor
+from passbook.saml_idp.base import Processor
 
 
 class WordpressOrangeProcessor(Processor):
-    """
-    WordpressOrange Response Handler Processor for testing against django-saml2-sp.
-    """
+    """WordpressOrange Response Handler Processor for testing against django-saml2-sp."""
 
     def _determine_audience(self):
         # Orange expects an audience in this format

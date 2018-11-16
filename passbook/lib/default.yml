@@ -7,7 +7,7 @@ log:
   level:
     console: DEBUG
     file: DEBUG
-  file: /dev/null
+  file: NUL
   syslog:
     host: 127.0.0.1
     port: 514
@@ -48,7 +48,7 @@ passbook:
     # Override URL used for Background on Login page
     bg_url: null
     # Optionally add a subtext, placed below logo on the login page
-    subtext: This is placeholder text, only. Use this area to place any information or introductory message about your application that may be relevant for users.
+    subtext: null
   footer:
     links:
       # Optionally add links to the footer on the login page
@@ -87,7 +87,7 @@ ldap:
   reset_password: true
 oauth_client:
   # List of python packages with sources types to load.
-  source_tyoes:
+  types:
     - passbook.oauth_client.source_types.discord
     - passbook.oauth_client.source_types.facebook
     - passbook.oauth_client.source_types.github
@@ -95,3 +95,16 @@ oauth_client:
     - passbook.oauth_client.source_types.reddit
     - passbook.oauth_client.source_types.supervisr
     - passbook.oauth_client.source_types.twitter
+saml_idp:
+  signing: true
+  autosubmit: false
+  issuer: passbook
+  assertion_valid_for: 86400
+  # List of python packages with provider types to load.
+  types:
+    - passbook.saml_idp.processors.generic
+    - passbook.saml_idp.processors.gitlab
+    - passbook.saml_idp.processors.nextcloud
+    - passbook.saml_idp.processors.salesforce
+    - passbook.saml_idp.processors.shibboleth
+    - passbook.saml_idp.processors.wordpress_orange

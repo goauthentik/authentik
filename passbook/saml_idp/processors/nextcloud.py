@@ -1,13 +1,9 @@
-"""
-NextCloud Processor
-"""
-from supervisr.mod.auth.saml.idp.base import Processor
+"""NextCloud Processor"""
+from passbook.saml_idp.base import Processor
 
 
 class NextCloudProcessor(Processor):
-    """
-    Nextcloud SAML 2.0 AuthnRequest to Response Handler Processor.
-    """
+    """Nextcloud SAML 2.0 AuthnRequest to Response Handler Processor."""
 
     def _determine_audience(self):
         # Nextcloud expects an audience in this format

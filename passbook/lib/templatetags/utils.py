@@ -12,6 +12,7 @@ from django.template.loaders.app_directories import get_app_template_dirs
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
+from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 from passbook.lib.utils.urls import is_url_absolute
 
@@ -75,7 +76,7 @@ def pick(cont, arg, fallback=''):
 @register.simple_tag(takes_context=True)
 def title(context, *title):
     """Return either just branding or title - branding"""
-    branding = Setting.get('branding', default='supervisr')
+    branding = Setting.get('branding', default='passbook')
     if not title:
         return branding
     # Include App Title in title
@@ -97,9 +98,9 @@ def title(context, *title):
 
 
 @register.simple_tag
-def supervisr_setting(key, namespace='supervisr.core', default=''):
+def config(path, default=''):
     """Get a setting from the database. Returns default is setting doesn't exist."""
-    return Setting.get(key=key, namespace=namespace, default=default)
+    return CONFIG.y(path, default)
 
 
 @register.simple_tag()

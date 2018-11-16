@@ -1,4 +1,4 @@
-"""Supervisr Core Reflection templatetags Templatetag"""
+"""passbook Core Reflection templatetags Templatetag"""
 from logging import getLogger
 
 from django import template

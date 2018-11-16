@@ -1,4 +1,6 @@
 pylint
+pylint-django
 isort
 autopep8
 django-debug-toolbar
+-r requirements.txt

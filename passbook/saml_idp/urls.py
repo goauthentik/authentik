@@ -1,4 +1,4 @@
-"""Supervisr SAML IDP URLs"""
+"""passbook SAML IDP URLs"""
 from django.conf.urls import url
 
 from passbook.saml_idp import views

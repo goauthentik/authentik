@@ -1,6 +1,6 @@
 {% extends "user/base.html" %}
 
-{% load supervisr_utils %}
+{% load utils %}
 {% load i18n %}
 
 {% block title %}
@@ -34,9 +34,9 @@
               <td>{{ data.state|yesno:"Connected,Not Connected" }}</td>
               <td>
               {% if data.state == False %}
-                <a href="{% url 'supervisr_mod_auth_oauth_client:oauth-client-login' provider=data.provider.name %}">Connect</a>
+                <a href="{% url 'passbook_oauth_client:oauth-client-login' provider=data.provider.name %}">Connect</a>
               {% else %}
-                <a href="{% url 'supervisr_mod_auth_oauth_client:oauth-client-disconnect' provider=data.provider.name %}">Disconnect</a>
+                <a href="{% url 'passbook_oauth_client:oauth-client-disconnect' provider=data.provider.name %}">Disconnect</a>
               {% endif %}
               </td>
               <td>{{ data.aas.first.identifier }}</td>

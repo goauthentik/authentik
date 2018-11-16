@@ -2,7 +2,7 @@
 
 from logging import getLogger
 
-from passbook.lib.utils import render_to_string
+from passbook.lib.utils.template import render_to_string
 from passbook.saml_idp.xml_signing import (get_signature_xml, load_certificate,
                                            load_private_key, sign_with_signxml)
 

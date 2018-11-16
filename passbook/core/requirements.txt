@@ -5,3 +5,4 @@ raven
 djangorestframework
 markdown
 django-model-utils
+colorlog

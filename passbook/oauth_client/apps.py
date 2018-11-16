@@ -17,7 +17,7 @@ class PassbookOAuthClientConfig(AppConfig):
 
     def ready(self):
         """Load source_types from config file"""
-        source_types_to_load = CONFIG.y('oauth_client.source_tyoes')
+        source_types_to_load = CONFIG.y('oauth_client.types', [])
         for source_type in source_types_to_load:
             try:
                 import_module(source_type)

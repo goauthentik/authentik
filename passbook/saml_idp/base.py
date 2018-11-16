@@ -6,7 +6,7 @@ from logging import getLogger
 
 from bs4 import BeautifulSoup
 
-# from passbook.core.models import Setting
+from passbook.lib.config import CONFIG
 from passbook.saml_idp import codex, exceptions, xml_render
 
 MINUTES = 60
@@ -53,7 +53,7 @@ class Processor:
     _subject = None
     _subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:email'
     _system_params = {
-        'ISSUER': Setting.get('issuer'),
+        'ISSUER': CONFIG.y('saml_idp.issuer'),
     }
 
     @property
@@ -84,7 +84,7 @@ class Processor:
             'AUTH_INSTANT': get_time_string(),
             'ISSUE_INSTANT': get_time_string(),
             'NOT_BEFORE': get_time_string(-1 * HOURS),  # TODO: Make these settings.
-            'NOT_ON_OR_AFTER': get_time_string(int(Setting.get('assertion_valid_for')) * MINUTES),
+            'NOT_ON_OR_AFTER': get_time_string(int(CONFIG.y('saml_idp.assertion_valid_for')) * MINUTES),
             'SESSION_INDEX': self._session_index,
             'SESSION_NOT_ON_OR_AFTER': get_time_string(8 * HOURS),
             'SP_NAME_QUALIFIER': self._audience,
@@ -175,7 +175,7 @@ class Processor:
 
     def _format_response(self):
         """Formats _response_params as _response_xml."""
-        sign_it = Setting.get_bool('signing')
+        sign_it = CONFIG.y('saml_idp.signing', True)
         assertion_id = self._assertion_params['ASSERTION_ID']
         self._response_xml = xml_render.get_response_xml(self._response_params,
                                                          signed=sign_it,
@@ -187,7 +187,7 @@ class Processor:
             'acs_url': self._request_params['ACS_URL'],
             'saml_response': self._saml_response,
             'relay_state': self._relay_state,
-            'autosubmit': Setting.get('autosubmit'),
+            'autosubmit': CONFIG.y('saml_idp.autosubmit', False),
         }
 
     def _parse_request(self):
@@ -228,7 +228,7 @@ class Processor:
         self._subject = sp_config
         self._subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:email'
         self._system_params = {
-            'ISSUER': Setting.get('issuer'),
+            'ISSUER': CONFIG.y('saml_idp.issuer'),
         }
 
     def _validate_request(self):

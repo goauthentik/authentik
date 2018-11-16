@@ -1,6 +1,6 @@
 {% extends "user/base.html" %}
 
-{% load supervisr_utils %}
+{% load utils %}
 {% load i18n %}
 {% load hostname %}
 {% load setting %}
@@ -31,9 +31,9 @@
         </p>
         <p>
           {% if not state %}
-          <a href="{% url 'supervisr_mod_tfa:tfa-enable' %}" class="btn btn-success btn-sm">{% trans "Enable 2FA" %}</a>
+          <a href="{% url 'passbook_tfa:tfa-enable' %}" class="btn btn-success btn-sm">{% trans "Enable 2FA" %}</a>
           {% else %}
-          <a href="{% url 'supervisr_mod_tfa:tfa-disable' %}" class="btn btn-danger btn-sm">{% trans "Disable 2FA" %}</a>
+          <a href="{% url 'passbook_tfa:tfa-disable' %}" class="btn btn-danger btn-sm">{% trans "Disable 2FA" %}</a>
           {% endif %}
         </p>
       </div>

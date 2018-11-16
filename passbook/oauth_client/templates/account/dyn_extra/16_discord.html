@@ -1,7 +1,7 @@
-{% load supervisr_oauth_client %}
+{% load passbook_oauth_client %}
 {% load static %}
 
 {% provider_exists 'discord' as discord_enabled %}
 {% if discord_enabled %}
-<a href="{% url 'supervisr_mod_auth_oauth_client:oauth-client-login' provider='discord' %}" class="btn" style="background-color:#2C2F33;color:white;margin-top:10px;width:100%;"><img src="{% static 'img/discord.svg' %}" style="height:12px"></a>
+<a href="{% url 'passbook_oauth_client:oauth-client-login' provider='discord' %}" class="btn" style="background-color:#2C2F33;color:white;margin-top:10px;width:100%;"><img src="{% static 'img/discord.svg' %}" style="height:12px"></a>
 {% endif %}

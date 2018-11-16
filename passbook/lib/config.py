@@ -1,4 +1,4 @@
-"""supervisr core config loader"""
+"""passbook lib config loader"""
 import os
 from collections import Mapping
 from contextlib import contextmanager
