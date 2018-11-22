@@ -53,8 +53,8 @@
         </ul>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-primary">
-      {# FIXME: Detect active application #}
+    {% is_active_app 'passbook_admin' as is_admin %}
+    <ul class="nav navbar-nav navbar-primary {% if is_admin == 'active' %}persistent-secondary{% endif %}">
       <li class="{% is_active_app 'passbook_core' %}">
         <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
       </li>

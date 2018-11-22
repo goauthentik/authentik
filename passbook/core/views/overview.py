@@ -11,5 +11,5 @@ class OverviewView(LoginRequiredMixin, TemplateView):
     template_name = 'overview/index.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['applications'] = self.request.user.applications.objects.all()
+        kwargs['applications'] = self.request.user.applications.all()
         return super().get_context_data(**kwargs)

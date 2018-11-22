@@ -20,12 +20,24 @@ class User(AbstractUser):
 
 @reversion.register()
 class Provider(models.Model):
-    """Application-independant Provider instance. For example SAML2 Remote, OAuth2 Application"""
+    """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     # This class defines no field for easier inheritance
 
+class RuleModel(UUIDModel, CreatedUpdatedModel):
+    """Base model which can have rules applied to it"""
+
+    rules = models.ManyToManyField('Rule')
+
+    def passes(self, user: User) -> bool:
+        """Return true if user passes, otherwise False or raise Exception"""
+        for rule in self.rules:
+            if not rule.passes(user):
+                return False
+        return True
+
 @reversion.register()
-class Application(UUIDModel, CreatedUpdatedModel):
+class Application(RuleModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -45,7 +57,7 @@ class Application(UUIDModel, CreatedUpdatedModel):
         return self.name
 
 @reversion.register()
-class Source(UUIDModel, CreatedUpdatedModel):
+class Source(RuleModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField()
@@ -82,7 +94,6 @@ class Rule(UUIDModel, CreatedUpdatedModel):
     )
 
     name = models.TextField(blank=True, null=True)
-    application = models.ForeignKey(Application, on_delete=models.CASCADE)
     action = models.CharField(max_length=20, choices=ACTIONS)
     negate = models.BooleanField(default=False)
 
@@ -91,9 +102,9 @@ class Rule(UUIDModel, CreatedUpdatedModel):
     def __str__(self):
         if self.name:
             return self.name
-        return "%s action %s" % (self.application, self.action)
+        return "%s action %s" % (self.name, self.action)
 
-    def user_passes(self, user: User) -> bool:
+    def passes(self, user: User) -> bool:
         """Check if user instance passes this rule"""
         raise NotImplementedError()
 
@@ -120,13 +131,13 @@ class FieldMatcherRule(Rule):
     value = models.TextField()
 
     def __str__(self):
-        description = "app %s, user.%s %s '%s'" % (self.application, self.user_field,
-                                                   self.match_action, self.value)
+        description = "%s, user.%s %s '%s'" % (self.name, self.user_field,
+                                               self.match_action, self.value)
         if self.name:
             description = "%s: %s" % (self.name, description)
         return description
 
-    def user_passes(self, user: User) -> bool:
+    def passes(self, user: User) -> bool:
         """Check if user instance passes this role"""
         if not hasattr(user, self.user_field):
             raise ValueError("Field does not exist")

@@ -26,7 +26,7 @@ urlpatterns = [
 for _passbook_app in get_apps():
     if hasattr(_passbook_app, 'mountpoint'):
         _path = path(_passbook_app.mountpoint, include((_passbook_app.name+'.urls',
-                                                        _passbook_app.name),
+                                                        _passbook_app.label),
                                                        namespace=_passbook_app.label))
         urlpatterns.append(_path)
         LOGGER.debug("Loaded %s's URLs", _passbook_app.name)

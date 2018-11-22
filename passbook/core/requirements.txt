@@ -1,8 +1,9 @@
 django>=2.0
 django-reversion
+django-model-utils
+django-crispy-forms
+djangorestframework
 PyYAML
 raven
-djangorestframework
 markdown
-django-model-utils
 colorlog
