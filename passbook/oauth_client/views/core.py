@@ -1,4 +1,4 @@
-"""Core Oauth Views"""
+"""Core OAauth Views"""
 
 import base64
 import hashlib
@@ -7,14 +7,15 @@ from logging import getLogger
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_text, smart_bytes
 from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
 
+from passbook.lib.utils.reflection import app
 from passbook.oauth_client.clients import get_client
 from passbook.oauth_client.errors import (OAuthClientEmailMissingError,
                                           OAuthClientError)
@@ -193,64 +194,67 @@ class OAuthCallback(OAuthClientMixin, View):
 
     def handle_new_user(self, source, access, info):
         "Create a shell auth.User and redirect."
+        was_authenticated = False
         if self.request.user.is_authenticated:  # pylint: disable=no-else-return
             # there's already a user logged in, just link them up
             user = self.request.user
-            access.user = user
-            access.save()
-            UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
+            was_authenticated = True
+        else:
+            user = self.get_or_create_user(source, access, info)
+        access.user = user
+        access.save()
+        UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
+        if not was_authenticated:
+            user = authenticate(source=access.source,
+                                identifier=access.identifier, request=self.request)
+            login(self.request, user)
+        if app('passbook_audit'):
+            pass
+            # from passbook.audit.models import something
+            # something.event(user=user,)
             # Event.create(
             #     user=user,
             #     message=_("Linked user with OAuth source %s" % self.source.name),
             #     request=self.request,
             #     hidden=True,
             #     current=False)
+        if was_authenticated:
             messages.success(self.request, _("Successfully linked %(source)s!" % {
                 'source': self.source.name
             }))
             return redirect(reverse('user_settings'))
-        else:
-            user = self.get_or_create_user(source, access, info)
-            access.user = user
-            access.save()
-            UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
-            user = authenticate(source=access.source,
-                                identifier=access.identifier, request=self.request)
-            login(self.request, user)
-            # Event.create(
-            #     user=user,
-            #     message=_("Authenticated user with OAuth source %s" % self.source.name),
-            #     request=self.request,
-            #     hidden=True,
-            #     current=False)
-            messages.success(self.request, _("Successfully authenticated with %(source)s!" % {
-                'source': self.source.name
-            }))
-            return redirect(self.get_login_redirect(source, user, access, True))
+        messages.success(self.request, _("Successfully authenticated with %(source)s!" % {
+            'source': self.source.name
+        }))
+        return redirect(self.get_login_redirect(source, user, access, True))
 
 
-@login_required
-def disconnect(request: HttpRequest, source: str) -> HttpResponse:
+class DisconnectView(LoginRequiredMixin, View):
     """Delete connection with source"""
-    source = OAuthSource.objects.filter(name=source)
-    if not source.exists():
-        raise Http404
-    r_source = source.first()
 
-    aas = UserOAuthSourceConnection.objects.filter(source=r_source, user=request.user)
-    if not aas.exists():
-        raise Http404
-    r_aas = aas.first()
+    source = None
+    aas = None
 
-    if request.method == 'POST' and 'confirmdelete' in request.POST:
-        # User confirmed deletion
-        r_aas.delete()
-        messages.success(request, _('Connection successfully deleted'))
-        return redirect(reverse('user_settings'))
+    def dispatch(self, request, source):
+        self.source = get_object_or_404(OAuthSource, name=source)
+        self.aas = get_object_or_404(UserOAuthSourceConnection,
+                                     source=self.source, user=request.user)
+        return super().dispatch(request, source)
 
-    return render(request, 'generic/delete.html', {
-        'object': 'OAuth Connection with %s' % r_source.name,
-        'delete_url': reverse('oauth-client-disconnect', kwargs={
-            'source': r_source.name,
+    def post(self, request, source):
+        """Delete connection object"""
+        if 'confirmdelete' in request.POST:
+            # User confirmed deletion
+            self.aas.delete()
+            messages.success(request, _('Connection successfully deleted'))
+            return redirect(reverse('user_settings'))
+        return self.get(request, source)
+
+    def get(self, request, source):
+        """Show delete form"""
+        return render(request, 'generic/delete.html', {
+            'object': 'OAuth Connection with %s' % self.source.name,
+            'delete_url': reverse('oauth-client-disconnect', kwargs={
+                'source': self.source.name,
+            })
         })
-    })
