@@ -9,11 +9,9 @@ urlpatterns = [
          name='applications'),
     path('applications/create/', applications.ApplicationCreateView.as_view(),
          name='application-create'),
-    path('sources/', sources.SourceListView.as_view(),
-         name='sources'),
-    path('sources/create/', sources.SourceCreateView.as_view(),
-         name='source-create'),
-    path('sources/<uuid:pk>/', sources.SourceUpdateView.as_view(),
-         name='source-update'),
+    path('sources/', sources.SourceListView.as_view(), name='sources'),
+    path('sources/create/', sources.SourceCreateView.as_view(), name='source-create'),
+    path('sources/<uuid:pk>/update/', sources.SourceUpdateView.as_view(), name='source-update'),
+    path('sources/<uuid:pk>/delete/', sources.SourceDeleteView.as_view(), name='source-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]

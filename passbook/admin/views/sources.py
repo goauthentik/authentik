@@ -1,8 +1,9 @@
 """passbook Source administration"""
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Source
@@ -31,6 +32,8 @@ class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     def get_form_class(self):
         source_type = self.request.GET.get('type')
         model = next(x if x.__name__ == source_type else None for x in Source.__subclasses__())
+        if not model:
+            raise Http404
         return path_to_class(model.form)
 
 
@@ -46,6 +49,19 @@ class SourceUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         form_class_path = self.get_object().form
         form_class = path_to_class(form_class_path)
         return form_class
+
+    def get_object(self, queryset=None):
+        obj = Source.objects.get(pk=self.kwargs.get('pk'))
+        return obj.cast()
+
+
+class SourceDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+    """Delete source"""
+
+    model = Source
+
+    success_url = reverse_lazy('passbook_admin:sources')
+    success_message = _('Successfully updated Source')
 
     def get_object(self, queryset=None):
         obj = Source.objects.get(pk=self.kwargs.get('pk'))
