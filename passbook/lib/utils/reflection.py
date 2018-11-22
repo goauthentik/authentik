@@ -23,3 +23,8 @@ def get_apps():
     for _app in apps.get_app_configs():
         if _app.name.startswith('passbook'):
             yield _app
+
+def app(name):
+    """Return true if app with `name` is enabled"""
+    from django.conf import settings
+    return name in settings.INSTALLED_APPS
