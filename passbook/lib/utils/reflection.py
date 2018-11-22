@@ -15,3 +15,11 @@ def path_to_class(path):
     package = '.'.join(parts[:-1])
     _class = getattr(import_module(package), parts[-1])
     return _class
+
+
+def get_apps():
+    """Get list of all passbook apps"""
+    from django.apps.registry import apps
+    for _app in apps.get_app_configs():
+        if _app.name.startswith('passbook'):
+            yield _app

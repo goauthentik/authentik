@@ -8,3 +8,4 @@ class PassbookTFAConfig(AppConfig):
 
     name = 'passbook.tfa'
     label = 'passbook_tfa'
+    mountpoint = 'user/tfa/'

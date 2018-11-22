@@ -14,6 +14,7 @@ class PassbookOAuthClientConfig(AppConfig):
     name = 'passbook.oauth_client'
     label = 'passbook_oauth_client'
     verbose_name = 'passbook OAuth Client'
+    mountpoint = 'source/oauth/'
 
     def ready(self):
         """Load source_types from config file"""

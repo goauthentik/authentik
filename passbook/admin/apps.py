@@ -7,3 +7,4 @@ class PassbookAdminConfig(AppConfig):
 
     name = 'passbook.admin'
     label = 'passbook_admin'
+    mountpoint = 'administration/'

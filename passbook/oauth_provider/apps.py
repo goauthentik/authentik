@@ -8,3 +8,4 @@ class PassbookOAuthProviderConfig(AppConfig):
 
     name = 'passbook.oauth_provider'
     label = 'passbook_oauth_provider'
+    mountpoint = 'application/oauth/'

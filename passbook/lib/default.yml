@@ -7,7 +7,7 @@ log:
   level:
     console: DEBUG
     file: DEBUG
-  file: NUL
+  file: /dev/null
   syslog:
     host: 127.0.0.1
     port: 514

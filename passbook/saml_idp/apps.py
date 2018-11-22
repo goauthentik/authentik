@@ -14,6 +14,7 @@ class PassbookSAMLIDPConfig(AppConfig):
     name = 'passbook.saml_idp'
     label = 'passbook_saml_idp'
     verbose_name = 'passbook SAML IDP'
+    mountpoint = 'application/saml/'
 
     def ready(self):
         """Load source_types from config file"""
