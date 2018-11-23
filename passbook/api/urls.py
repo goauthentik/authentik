@@ -1,0 +1,3 @@
+"""passbook api urls"""
+
+urlpatterns = []

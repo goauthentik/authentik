@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'passbook.core',
     'passbook.admin',
+    'passbook.api',
     'passbook.audit',
     'passbook.lib',
     'passbook.ldap',
