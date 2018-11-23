@@ -3,11 +3,12 @@ from logging import getLogger
 from typing import Dict
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, reverse
 from django.utils.translation import ugettext as _
+from django.views import View
 from django.views.generic import FormView
 
 from passbook.core.forms.authentication import LoginForm
@@ -45,7 +46,7 @@ class LoginView(UserPassesTestMixin, FormView):
         pre_user = self.get_user(form.cleaned_data.get('uid_field'))
         if not pre_user:
             # No user found
-            return LoginView.invalid_login(self.request)
+            return self.invalid_login(self.request)
         user = authenticate(
             email=pre_user.email,
             username=pre_user.username,
@@ -53,12 +54,11 @@ class LoginView(UserPassesTestMixin, FormView):
             request=self.request)
         if user:
             # User authenticated successfully
-            return LoginView.login(self.request, user, form.cleaned_data)
+            return self.login(self.request, user, form.cleaned_data)
         # User was found but couldn't authenticate
-        return LoginView.invalid_login(self.request, disabled_user=pre_user)
+        return self.invalid_login(self.request, disabled_user=pre_user)
 
-    @staticmethod
-    def login(request: HttpRequest, user: User, cleaned_data: Dict) -> HttpResponse:
+    def login(self, request: HttpRequest, user: User, cleaned_data: Dict) -> HttpResponse:
         """Handle actual login
 
         Actually logs user in, sets session expiry and redirects to ?next parameter
@@ -86,17 +86,16 @@ class LoginView(UserPassesTestMixin, FormView):
         # Otherwise just index
         return redirect(reverse('passbook_core:overview'))
 
-    @staticmethod
-    def invalid_login(request: HttpRequest, disabled_user: User = None) -> HttpResponse:
+    def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""
-        # if disabled_user:
-        #     context = {
-        #         'reason': 'disabled',
-        #         'user': disabled_user
-        #     }
-        # else:
-        #     context = {
-        #         'reason': 'invalid',
-        #     }
-        raise NotImplementedError()
-        # return render(request, 'login/invalid.html', context)
+        messages.error(request, _('Failed to authenticate.'))
+        return self.render_to_response(self.get_context_data())
+
+class LogoutView(LoginRequiredMixin, View):
+    """Log current user out"""
+
+    def dispatch(self, request):
+        """Log current user out"""
+        logout(request)
+        messages.success(request, _("You've successfully been logged out."))
+        return redirect(reverse('passbook_core:auth-login'))
