@@ -4,7 +4,15 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span class="pficon pficon-close"></span>
     </button>
-    <span class="pficon pficon-{{ msg.level_tag }}"></span>
+    {% if msg.level_tag == 'danger' %}
+      <span class="pficon pficon-error-circle-o"></span>
+    {% elif msg.level_tag == 'warning' %}
+      <span class="pficon pficon-warning-triangle-o"></span>
+    {% elif msg.level_tag == 'success' %}
+      <span class="pficon pficon-ok"></span>
+    {% elif msg.level_tag == 'info' %}
+      <span class="pficon pficon-info"></span>
+    {% endif %}
     <strong>{{ msg.message|safe }}</strong>
   </div>
   {% endfor %}

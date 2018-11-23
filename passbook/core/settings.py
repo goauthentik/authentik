@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import importlib
 import os
 
+from django.contrib import messages
+
 from passbook import __version__
 from passbook.lib.config import CONFIG
 
@@ -65,6 +67,16 @@ INSTALLED_APPS = [
     'passbook.saml_idp',
     'passbook.tfa',
 ]
+
+# Message Tag fix for bootstrap CSS Classes
+MESSAGE_TAGS = {
+    messages.DEBUG: 'primary',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
