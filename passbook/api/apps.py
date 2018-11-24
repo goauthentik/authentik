@@ -2,6 +2,7 @@
 
 from django.apps import AppConfig
 
+
 class PassbookAPIConfig(AppConfig):
     """passbook API Config"""
 
