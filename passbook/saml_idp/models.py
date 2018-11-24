@@ -12,7 +12,6 @@ class SAMLApplication(Application):
 
     acs_url = models.URLField()
     processor_path = models.CharField(max_length=255, choices=[])
-    skip_authorization = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

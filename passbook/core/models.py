@@ -23,11 +23,15 @@ class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     # This class defines no field for easier inheritance
+    def __str__(self):
+        if hasattr(self, 'name'):
+            return getattr(self, 'name')
+        return super().__str__()
 
 class RuleModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have rules applied to it"""
 
-    rules = models.ManyToManyField('Rule')
+    rules = models.ManyToManyField('Rule', blank=True)
 
     def passes(self, user: User) -> bool:
         """Return true if user passes, otherwise False or raise Exception"""
@@ -46,6 +50,7 @@ class Application(RuleModel):
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
     provider = models.ForeignKey('Provider', null=True, default=None, on_delete=models.SET_DEFAULT)
+    skip_authorization = models.BooleanField(default=False)
 
     objects = InheritanceManager()
 
