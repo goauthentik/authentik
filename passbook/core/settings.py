@@ -32,7 +32,7 @@ SECRET_KEY = '9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.16.16.100']
 
 LOGIN_URL = 'passbook_core:auth-login'
 
@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reversion',
     'rest_framework',
-    'crispy_forms',
     'passbook.core',
     'passbook.admin',
     'passbook.api',
@@ -67,6 +66,9 @@ INSTALLED_APPS = [
     'passbook.oauth_provider',
     'passbook.saml_idp',
     'passbook.tfa',
+    'crispy_forms',
+    'oauth2_provider',
+    'corsheaders',
 ]
 
 # Message Tag fix for bootstrap CSS Classes
@@ -257,11 +259,7 @@ with CONFIG.cd('log'):
         }
     }
 
-if DEBUG:
-    INSTALLED_APPS.append('debug_toolbar')
-    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-
-
+_DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
 # Load subapps's INSTALLED_APPS
 for _app in INSTALLED_APPS:
     if _app.startswith('passbook') and \
@@ -273,5 +271,12 @@ for _app in INSTALLED_APPS:
             INSTALLED_APPS.extend(getattr(app_settings, 'INSTALLED_APPS', []))
             MIDDLEWARE.extend(getattr(app_settings, 'MIDDLEWARE', []))
             AUTHENTICATION_BACKENDS.extend(getattr(app_settings, 'AUTHENTICATION_BACKENDS', []))
+            for _attr in dir(app_settings):
+                if not _attr.startswith('__') and _attr not in _DISALLOWED_ITEMS:
+                    globals()[_attr] = getattr(app_settings, _attr)
         except ImportError:
             pass
+
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
