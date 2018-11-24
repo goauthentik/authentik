@@ -1,0 +1,58 @@
+{% extends "login/base.html" %}
+
+{% load utils %}
+{% load i18n %}
+
+{% block title %}
+{% title 'SSO - Authorize External Source' %}
+{% endblock %}
+
+{% block card %}
+<header class="login-pf-header">
+  <h1>{% trans 'SSO - Authorize External Source' %}</h1>
+</header>
+{% include 'partials/messages.html' %}
+<form method="POST">
+    {% csrf_token %}
+    {% if not error %}
+        {% csrf_token %}
+        {% for field in form %}
+        {% if field.is_hidden %}
+            {{ field }}
+        {% endif %}
+        {% endfor %}
+        <div class="form-group">
+            <p class="subtitle">
+                {% blocktrans with remote=application.name %}
+                You're about to sign into {{ remote }}
+                {% endblocktrans %}
+            </p>
+            <p>{% trans "Application requires following permissions" %}</p>
+            <ul>
+                {% for scope in scopes_descriptions %}
+                <li>{{ scope }}</li>
+                {% endfor %}
+            </ul>
+            {{ form.errors }}
+            {{ form.non_field_errors }}
+            <p>
+                {% blocktrans with user=user %}
+                You are logged in as {{ user }}. Not you?
+                {% endblocktrans %}
+                <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
+            </p>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-lg">{% trans 'Continue' %}</button>
+                <a href="{% back %}" class="btn btn-default btn-lg">{% trans "Cancel" %}</a>
+            </div>
+        </div>
+    {% else %}
+    <div class="login-group">
+        <p class="subtitle">
+            {% blocktrans with err=error.error %}Error: {{ err }}{% endblocktrans %}
+        </p>
+        <p>{{ error.description }}</p>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}

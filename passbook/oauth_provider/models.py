@@ -1,12 +1,12 @@
 """Oauth2 provider product extension"""
 
-from django.db import models
-from oauth2_provider.models import Application
+from oauth2_provider.models import AbstractApplication
 
 from passbook.core.models import Provider
 
 
-class OAuth2Provider(Provider):
+class OAuth2Provider(Provider, AbstractApplication):
     """Associate an OAuth2 Application with a Product"""
 
-    oauth2_app = models.ForeignKey(Application, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
