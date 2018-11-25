@@ -16,7 +16,7 @@ class OpenIDUserInfoView(ScopedResourceMixin, View):
             'name': request.user.get_full_name(),
             'given_name': request.user.first_name,
             'family_name': request.user.last_name,
-            'preferred_username': request.user.username
+            'preferred_username': request.user.username,
+            'email': request.user.email,
         }
-
         return JsonResponse(payload)
