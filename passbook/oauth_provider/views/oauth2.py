@@ -2,61 +2,44 @@
 
 from logging import getLogger
 
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from oauth2_provider.views.base import AuthorizationView
 
-# from passbook.core.models import Event, UserAcquirableRelationship
+from passbook.core.views.access import AccessMixin
+from passbook.oauth_provider.models import OAuth2Provider
 
 LOGGER = getLogger(__name__)
 
 
-class PassbookAuthorizationView(AuthorizationView):
+class PassbookAuthorizationView(AccessMixin, AuthorizationView):
     """Custom OAuth2 Authorization View which checks rules, etc"""
+
+    _application = None
+
+    def dispatch(self, request, *args, **kwargs):
+        """Update OAuth2Provider's skip_authorization state"""
+        # Get client_id to get provider, so we can update skip_authorization field
+        client_id = request.GET.get('client_id')
+        provider = get_object_or_404(OAuth2Provider, client_id=client_id)
+        application = self.provider_to_application(provider)
+        # Update field here so oauth-toolkit does work for us
+        provider.skip_authorization = application.skip_authorization
+        provider.save()
+        self._application = application
+        # Check permissions
+        if not self.user_has_access(self._application, request.user):
+            # TODO: Create a general error class for access denied
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
     def render_to_response(self, context, **kwargs):
         # Always set is_login to true for correct css class
         context['is_login'] = True
         return super().render_to_response(context, **kwargs)
 
-# class PassbookAuthorizationView(AuthorizationView):
-#     """Custom OAuth2 Authorization View which checks for invite_only products"""
-
-#     def get(self, request, *args, **kwargs):
-#         """Check if request.user has a relationship with product"""
-#         full_res = super().get(request, *args, **kwargs)
-#         # If application cannot be found, oauth2_data is {}
-#         if self.oauth2_data == {}:
-#             return full_res
-#         # self.oauth2_data['application'] should be set, if not an error occured
-#         # if 'application' in self.oauth2_data:
-#         #     app = self.oauth2_data['application']
-#         #     if app.productextensionoauth2_set.exists() and \
-#         #             app.productextensionoauth2_set.first().product_set.exists():
-#         #         # Only check if there is a connection from OAuth2 Application to product
-#         #         product = app.productextensionoauth2_set.first().product_set.first()
-#         #         relationship = UserAcquirableRelationship.objects.filter(user=request.user,
-#         #                                                                  model=product)
-#         #         # Product is invite_only = True and no relation with user exists
-#         #         if product.invite_only and not relationship.exists():
-#         #             LOGGER.warning("User '%s' has no invitation to '%s'", request.user, product)
-#         #             messages.error(request, "You have no access to '%s'" % product.name)
-#         #             raise Http404
-#         #     if isinstance(full_res, HttpResponseRedirect):
-#         #         # Application has skip authorization on
-#         #         Event.create(
-#         #             user=request.user,
-#         #             message=_('You authenticated %s (via OAuth) (skipped Authz)' % app.name),
-#         #             request=request,
-#         #             current=False,
-#         #             hidden=True)
-#         return full_res
-
-#     def post(self, request, *args, **kwargs):
-#         """Add event on confirmation"""
-#         app = get_application_model().objects.get(client_id=request.GET["client_id"])
-#         # Event.create(
-#         #     user=request.user,
-#         #     message=_('You authenticated %s (via OAuth)' % app.name),
-#         #     request=request,
-#         #     current=False,
-#         #     hidden=True)
-#         return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        # User has clicked on "Authorize"
+        # TODO: Create Audit log entry
+        LOGGER.debug('user %s authorized %s', self.request.user, self._application)
+        return super().form_valid(form)
