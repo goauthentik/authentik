@@ -22,6 +22,8 @@ class User(AbstractUser):
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
+    objects = InheritanceManager()
+
     # This class defines no field for easier inheritance
     def __str__(self):
         if hasattr(self, 'name'):
@@ -102,6 +104,7 @@ class Rule(UUIDModel, CreatedUpdatedModel):
     name = models.TextField(blank=True, null=True)
     action = models.CharField(max_length=20, choices=ACTIONS)
     negate = models.BooleanField(default=False)
+    order = models.IntegerField(default=0)
 
     objects = InheritanceManager()
 
