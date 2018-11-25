@@ -49,7 +49,8 @@ class Application(RuleModel):
     name = models.TextField()
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
-    provider = models.ForeignKey('Provider', null=True, default=None, on_delete=models.SET_DEFAULT)
+    provider = models.OneToOneField('Provider', null=True,
+                                    default=None, on_delete=models.SET_DEFAULT)
     skip_authorization = models.BooleanField(default=False)
 
     objects = InheritanceManager()
