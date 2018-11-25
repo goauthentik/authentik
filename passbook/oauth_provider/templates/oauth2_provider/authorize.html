@@ -17,9 +17,9 @@
     {% if not error %}
         {% csrf_token %}
         {% for field in form %}
-        {% if field.is_hidden %}
-            {{ field }}
-        {% endif %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% endif %}
         {% endfor %}
         <div class="form-group">
             <p class="subtitle">
@@ -42,7 +42,7 @@
                 <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
             </p>
             <div class="form-group">
-                <button type="submit" class="btn btn-success btn-lg">{% trans 'Continue' %}</button>
+                <input type="submit" class="btn btn-success btn-lg" name="allow" value="{% trans 'Continue' %}">
                 <a href="{% back %}" class="btn btn-default btn-lg">{% trans "Cancel" %}</a>
             </div>
         </div>

@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly-additions.min.css' %}">
   </head>
-  <body {% if is_login or client_id %} class="login-pf" {% endif %}>
+  <body {% if is_login %} class="login-pf" {% endif %}>
     {% block body %}
     {% endblock %}
     <script src="{% static 'js/jquery.min.js' %}"></script>

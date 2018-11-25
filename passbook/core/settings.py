@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reversion',
     'rest_framework',
+    'crispy_forms',
     'passbook.core',
     'passbook.admin',
     'passbook.api',
@@ -66,9 +67,6 @@ INSTALLED_APPS = [
     'passbook.oauth_provider',
     'passbook.saml_idp',
     'passbook.tfa',
-    'crispy_forms',
-    'oauth2_provider',
-    'corsheaders',
 ]
 
 # Message Tag fix for bootstrap CSS Classes
@@ -246,14 +244,9 @@ with CONFIG.cd('log'):
                 'level': 'DEBUG',
                 'propagate': True,
             },
-            'flower': {
+            'oauth2_provider': {
                 'handlers': LOG_HANDLERS,
                 'level': 'DEBUG',
-                'propagate': True,
-            },
-            'celery': {
-                'handlers': LOG_HANDLERS,
-                'level': 'WARNING',
                 'propagate': True,
             },
         }

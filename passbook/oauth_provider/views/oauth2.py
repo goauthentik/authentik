@@ -1,17 +1,21 @@
 """passbook OAuth2 Views"""
 
-# from logging import getLogger
+from logging import getLogger
 
-# from django.contrib import messages
-# from django.http import Http404, HttpResponseRedirect
-# from django.utils.translation import ugettext as _
-# from oauth2_provider.models import get_application_model
-# from oauth2_provider.views.base import AuthorizationView
+from oauth2_provider.views.base import AuthorizationView
 
-# # from passbook.core.models import Event, UserAcquirableRelationship
+# from passbook.core.models import Event, UserAcquirableRelationship
 
-# LOGGER = getLogger(__name__)
+LOGGER = getLogger(__name__)
 
+
+class PassbookAuthorizationView(AuthorizationView):
+    """Custom OAuth2 Authorization View which checks rules, etc"""
+
+    def render_to_response(self, context, **kwargs):
+        # Always set is_login to true for correct css class
+        context['is_login'] = True
+        return super().render_to_response(context, **kwargs)
 
 # class PassbookAuthorizationView(AuthorizationView):
 #     """Custom OAuth2 Authorization View which checks for invite_only products"""
