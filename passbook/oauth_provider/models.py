@@ -1,9 +1,9 @@
 """Oauth2 provider product extension"""
 
+from django.utils.translation import gettext as _
 from oauth2_provider.models import AbstractApplication
 
 from passbook.core.models import Provider
-from django.utils.translation import gettext as _
 
 
 class OAuth2Provider(Provider, AbstractApplication):

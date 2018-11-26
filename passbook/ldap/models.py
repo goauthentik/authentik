@@ -1,11 +1,37 @@
-# """Supervisr mod_ldap Models"""
+"""passbook LDAP Models"""
 
-# from django.contrib.auth.models import Group
-# from django.db import models
+from django.db import models
+from django.utils.translation import gettext as _
 
-# from supervisr.core.fields import JSONField
 # from passbook.core.models import (CreatedUpdatedModel, ProductExtension,
 #                                    UUIDModel)
+from passbook.core.models import Source
+
+
+class LDAPSource(Source):
+    """LDAP Authentication source"""
+
+    TYPE_ACTIVE_DIRECTORY = 'ad'
+    TYPE_GENERIC = 'generic'
+    TYPES = (
+        (TYPE_ACTIVE_DIRECTORY, TYPE_ACTIVE_DIRECTORY),
+        (TYPE_GENERIC, TYPE_GENERIC),
+    )
+
+    server_uri = models.TextField()
+    bind_cn = models.TextField()
+    bind_password = models.TextField()
+    type = models.CharField(max_length=20, choices=TYPES)
+
+    domain = models.TextField()
+    base_dn = models.TextField()
+    create_user = models.BooleanField(default=False)
+    reset_password = models.BooleanField(default=True)
+
+    class Meta:
+
+        verbose_name = _('LDAP Source')
+        verbose_name_plural = _('LDAP Sources')
 
 
 # class LDAPModification(UUIDModel, CreatedUpdatedModel):

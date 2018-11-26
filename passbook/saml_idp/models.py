@@ -1,11 +1,11 @@
 """passbook saml_idp Models"""
 
 from django.db import models
+from django.utils.translation import gettext as _
 
 from passbook.core.models import Provider
 from passbook.lib.utils.reflection import class_to_path
 from passbook.saml_idp.base import Processor
-from django.utils.translation import gettext as _
 
 
 class SAMLProvider(Provider):
