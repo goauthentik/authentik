@@ -61,30 +61,36 @@ passbook:
     remember_age: 2592000 # 60 * 60 * 24 * 30, one month
 # Provider-specific settings
 ldap:
-  # Completely enable or disable LDAP provider
-  enabled: false
-  # AD Domain, used to generate `userPrincipalName`
-  domain: corp.contoso.com
-  # Base DN in which passbook should look for users
-  base_dn: dn=corp,dn=contoso,dn=com
-  # LDAP field which is used to set the django username
-  username_field: sAMAccountName
-  # LDAP server to connect to, can be set to `<domain_name>`
-  server:
-    name: corp.contoso.com
-    use_tls: false
-  # Bind credentials, used for account creation
-  bind:
-    username: Administraotr@corp.contoso.com
-    password: VerySecurePassword!
+  # # Completely enable or disable LDAP provider
+  # enabled: false
+  # # AD Domain, used to generate `userPrincipalName`
+  # domain: corp.contoso.com
+  # # Base DN in which passbook should look for users
+  # base_dn: dn=corp,dn=contoso,dn=com
+  # # LDAP field which is used to set the django username
+  # username_field: sAMAccountName
+  # # LDAP server to connect to, can be set to `<domain_name>`
+  # server:
+  #   name: corp.contoso.com
+  #   use_tls: false
+  # # Bind credentials, used for account creation
+  # bind:
+  #   username: Administraotr@corp.contoso.com
+  #   password: VerySecurePassword!
   # Which field from `uid_fields` maps to which LDAP Attribute
   login_field_map:
     username: sAMAccountName
     email: mail # or userPrincipalName
-  # Create new users in LDAP upon sign-up
-  create_users: true
-  # Reset LDAP password when user reset their password
-  reset_password: true
+  user_attribute_map:
+    active_directory:
+      sAMAccountName: username
+      mail: email
+      given_name: first_name
+      name: last_name
+  # # Create new users in LDAP upon sign-up
+  # create_users: true
+  # # Reset LDAP password when user reset their password
+  # reset_password: true
 oauth_client:
   # List of python packages with sources types to load.
   types:

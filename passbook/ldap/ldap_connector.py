@@ -1,6 +1,4 @@
 """Wrapper for ldap3 to easily manage user"""
-import os
-import sys
 from logging import getLogger
 from time import time
 
@@ -8,6 +6,7 @@ import ldap3
 import ldap3.core.exceptions
 
 from passbook.core.models import User
+from passbook.ldap.models import LDAPSource
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
@@ -17,46 +16,40 @@ LOGIN_FIELD = CONFIG.y('ldap.login_field', 'userPrincipalName')
 
 
 class LDAPConnector:
-    """Wrapper for ldap3 to easily manage user"""
+    """Wrapper for ldap3 to easily manage user authentication and creation"""
 
-    con = None
-    domain = None
-    base_dn = None
-    mock = False
-    create_users_enabled = False
+    _server = None
+    _connection = None
+    _source = None
 
-    def __init__(self, mock=False, con_args=None, server_args=None):
-        super().__init__()
-        self.create_users_enabled = CONFIG.y('ldap.create_users')
+    def __init__(self, source: LDAPSource):
+        self._source = source
 
-        if not LDAPConnector.enabled:
+        if not self._source.enabled:
             LOGGER.debug("LDAP not Enabled")
 
-        if not con_args:
-            con_args = {}
-        if not server_args:
-            server_args = {}
+        # if not con_args:
+        #     con_args = {}
+        # if not server_args:
+        #     server_args = {}
         # Either use mock argument or test is in argv
-        self.domain = CONFIG.y('ldap.domain')
-        self.base_dn = CONFIG.y('ldap.base_dn')
-        if mock or any('test' in arg for arg in sys.argv):
-            self.mock = True
-            self.create_users_enabled = True
-            con_args['client_strategy'] = ldap3.MOCK_SYNC
-            server_args['get_info'] = ldap3.OFFLINE_AD_2012_R2
+        # if mock or any('test' in arg for arg in sys.argv):
+        #     self.mock = True
+        #     self.create_users_enabled = True
+        #     con_args['client_strategy'] = ldap3.MOCK_SYNC
+        #     server_args['get_info'] = ldap3.OFFLINE_AD_2012_R2
+        # if self.mock:
+        #     json_path = os.path.join(os.path.dirname(__file__), 'tests', 'ldap_mock.json')
+        #     self._connection.strategy.entries_from_json(json_path)
 
-        self.server = ldap3.Server(CONFIG.y('ldap.server.name'), **server_args)
-        self.con = ldap3.Connection(self.server, raise_exceptions=True,
-                                    user=CONFIG.y('ldap.bind.username'),
-                                    password=CONFIG.y('ldap.bind.password'), **con_args)
+        self._server = ldap3.Server(source.server_uri) # Implement URI parsing
+        self._connection = ldap3.Connection(self._server, raise_exceptions=True,
+                                            user=source.bind_cn,
+                                            password=source.bind_password)
 
-        if self.mock:
-            json_path = os.path.join(os.path.dirname(__file__), 'tests', 'ldap_mock.json')
-            self.con.strategy.entries_from_json(json_path)
-
-        self.con.bind()
-        if CONFIG.y('ldap.server.use_tls'):
-            self.con.start_tls()
+        self._connection.bind()
+        # if CONFIG.y('ldap.server.use_tls'):
+        #     self._connection.start_tls()
 
     # @staticmethod
     # def cleanup_mock():
@@ -72,9 +65,9 @@ class LDAPConnector:
     #     for obj in to_apply:
     #         try:
     #             if obj.action == LDAPModification.ACTION_ADD:
-    #                 self.con.add(obj.dn, obj.data)
+    #                 self._connection.add(obj.dn, obj.data)
     #             elif obj.action == LDAPModification.ACTION_MODIFY:
-    #                 self.con.modify(obj.dn, obj.data)
+    #                 self._connection.modify(obj.dn, obj.data)
 
     #             # Object has been successfully applied to LDAP
     #             obj.delete()
@@ -90,29 +83,31 @@ class LDAPConnector:
     #         action=action,
     #         data=data)
 
-    @property
-    def enabled(self):
-        """Returns whether LDAP is enabled or not"""
-        return CONFIG.y('ldap.enabled')
+    # @property
+    # def enabled(self):
+    #     """Returns whether LDAP is enabled or not"""
+    #     return CONFIG.y('ldap.enabled')
 
     @staticmethod
     def encode_pass(password):
         """Encodes a plain-text password so it can be used by AD"""
         return '"{}"'.format(password).encode('utf-16-le')
 
-    def lookup(self, generate_only=False, **fields):
-        """Search email in LDAP and return the DN.
-        Returns False if nothing was found."""
+    def generate_filter(self, **fields):
+        """Generate LDAP filter from **fields."""
         filters = []
         for item, value in fields.items():
             filters.append("(%s=%s)" % (item, value))
         ldap_filter = "(&%s)" % "".join(filters)
         LOGGER.debug("Constructed filter: '%s'", ldap_filter)
-        if generate_only:
-            return ldap_filter
+        return ldap_filter
+
+    def lookup(self, ldap_filter: str):
+        """Search email in LDAP and return the DN.
+        Returns False if nothing was found."""
         try:
-            self.con.search(self.base_dn, ldap_filter)
-            results = self.con.response
+            self._connection.search(self._source.search_base, ldap_filter)
+            results = self._connection.response
             if len(results) >= 1:
                 if 'dn' in results[0]:
                     return str(results[0]['dn'])
@@ -167,30 +162,30 @@ class LDAPConnector:
     def auth_user(self, password, **filters):
         """Try to bind as either user_dn or mail with password.
         Returns True on success, otherwise False"""
-        if not LDAPConnector.enabled:
-            return None
         filters.pop('request')
+        if not self._source.enabled:
+            return None
         # FIXME: Adapt user_uid
         # email = filters.pop(CONFIG.get('passport').get('ldap').get, '')
         email = filters.pop('email')
-        user_dn = self.lookup(**{LOGIN_FIELD: email})
+        user_dn = self.lookup(self.generate_filter(**{LOGIN_FIELD: email}))
         if not user_dn:
             return None
         # Try to bind as new user
         LOGGER.debug("Binding as '%s'", user_dn)
         try:
-            t_con = ldap3.Connection(self.server, user=user_dn,
-                                     password=password, raise_exceptions=True)
-            t_con.bind()
-            if self.con.search(
-                    search_base=self.base_dn,
-                    search_filter=self.lookup(generate_only=True, **{LOGIN_FIELD: email}),
+            temp_connection = ldap3.Connection(self._server, user=user_dn,
+                                               password=password, raise_exceptions=True)
+            temp_connection.bind()
+            if self._connection.search(
+                    search_base=self._source.search_base,
+                    search_filter=self.generate_filter(**{LOGIN_FIELD: email}),
                     search_scope=ldap3.SUBTREE,
                     attributes=[ldap3.ALL_ATTRIBUTES, ldap3.ALL_OPERATIONAL_ATTRIBUTES],
                     get_operational_attributes=True,
                     size_limit=1,
             ):
-                response = self.con.response[0]
+                response = self._connection.response[0]
                 # If user has no email set in AD, use UPN
                 if 'mail' not in response.get('attributes'):
                     response['attributes']['mail'] = response['attributes']['userPrincipalName']
@@ -205,14 +200,14 @@ class LDAPConnector:
 
     def is_email_used(self, mail):
         """Checks whether an email address is already registered in LDAP"""
-        if self.create_users_enabled:
-            return self.lookup(mail=mail)
+        if self._source.create_user:
+            return self.lookup(self.generate_filter(mail=mail))
         return False
 
     def create_ldap_user(self, user, raw_password):
         """Creates a new LDAP User from a django user and raw_password.
         Returns True on success, otherwise False"""
-        if not self.create_users_enabled:
+        if self._source.create_user:
             LOGGER.debug("User creation not enabled")
             return False
         # The dn of our new entry/object
@@ -222,7 +217,7 @@ class LDAPConnector:
         username_trunk = username[:20] if len(username) > 20 else username
         # AD doesn't like sAMAccountName's with . at the end
         username_trunk = username_trunk[:-1] if username_trunk[-1] == '.' else username_trunk
-        user_dn = 'cn=' + username + ',' + self.base_dn
+        user_dn = 'cn=' + username + ',' + self._source.search_base
         LOGGER.debug('New DN: %s', user_dn)
         attrs = {
             'distinguishedName': str(user_dn),
@@ -233,11 +228,11 @@ class LDAPConnector:
             'displayName': str(user.username),
             'name': str(user.first_name),
             'mail': str(user.email),
-            'userPrincipalName': str(username + '@' + self.domain),
+            'userPrincipalName': str(username + '@' + self._source.domain),
             'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
         }
         try:
-            self.con.add(user_dn, attributes=attrs)
+            self._connection.add(user_dn, attributes=attrs)
         except ldap3.core.exceptions.LDAPException as exception:
             LOGGER.warning("Failed to create user ('%s'), saved to DB", exception)
             # LDAPConnector.handle_ldap_error(user_dn, LDAPModification.ACTION_ADD, attrs)
@@ -246,50 +241,42 @@ class LDAPConnector:
 
     def _do_modify(self, diff, **fields):
         """Do the LDAP modification itself"""
-        user_dn = self.lookup(**fields)
+        user_dn = self.lookup(self.generate_filter(**fields))
         try:
-            self.con.modify(user_dn, diff)
+            self._connection.modify(user_dn, diff)
         except ldap3.core.exceptions.LDAPException as exception:
             LOGGER.warning("Failed to modify %s ('%s'), saved to DB", user_dn, exception)
             # LDAPConnector.handle_ldap_error(user_dn, LDAPModification.ACTION_MODIFY, diff)
         LOGGER.debug("modified account '%s' [%s]", user_dn, ','.join(diff.keys()))
-        return 'result' in self.con.result and self.con.result['result'] == 0
+        return 'result' in self._connection.result and self._connection.result['result'] == 0
 
     def disable_user(self, **fields):
-        """
-        Disables LDAP user based on mail or user_dn.
-        Returns True on success, otherwise False
-        """
+        """Disables LDAP user based on mail or user_dn.
+        Returns True on success, otherwise False"""
         diff = {
             'userAccountControl': [(ldap3.MODIFY_REPLACE, [str(66050)])],
         }
         return self._do_modify(diff, **fields)
 
     def enable_user(self, **fields):
-        """
-        Enables LDAP user based on mail or user_dn.
-        Returns True on success, otherwise False
-        """
+        """Enables LDAP user based on mail or user_dn.
+        Returns True on success, otherwise False"""
         diff = {
             'userAccountControl': [(ldap3.MODIFY_REPLACE, [str(66048)])],
         }
         return self._do_modify(diff, **fields)
 
     def change_password(self, new_password, **fields):
-        """
-        Changes LDAP user's password based on mail or user_dn.
-        Returns True on success, otherwise False
-        """
+        """Changes LDAP user's password based on mail or user_dn.
+        Returns True on success, otherwise False"""
         diff = {
             'unicodePwd': [(ldap3.MODIFY_REPLACE, [LDAPConnector.encode_pass(new_password)])],
         }
         return self._do_modify(diff, **fields)
 
     def add_to_group(self, group_dn, **fields):
-        """
-        Adds mail or user_dn to group_dn
-        Returns True on success, otherwise False
-        """
+        """Adds mail or user_dn to group_dn
+        Returns True on success, otherwise False"""
         user_dn = self.lookup(**fields)
         diff = {
             'member': [(ldap3.MODIFY_ADD), [user_dn]]
@@ -297,10 +284,8 @@ class LDAPConnector:
         return self._do_modify(diff, user_dn=group_dn)
 
     def remove_from_group(self, group_dn, **fields):
-        """
-        Removes mail or user_dn from group_dn
-        Returns True on success, otherwise False
-        """
+        """Removes mail or user_dn from group_dn
+        Returns True on success, otherwise False"""
         user_dn = self.lookup(**fields)
         diff = {
             'member': [(ldap3.MODIFY_DELETE), [user_dn]]

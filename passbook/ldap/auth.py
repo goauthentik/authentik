@@ -4,6 +4,7 @@ from logging import getLogger
 from django.contrib.auth.backends import ModelBackend
 
 from passbook.ldap.ldap_connector import LDAPConnector
+from passbook.ldap.models import LDAPSource
 
 LOGGER = getLogger(__name__)
 
@@ -15,7 +16,9 @@ class LDAPBackend(ModelBackend):
         """Try to authenticate a user via ldap"""
         if 'password' not in kwargs:
             return None
-        if not LDAPConnector.enabled:
-            return None
-        _ldap = LDAPConnector()
-        return _ldap.auth_user(**kwargs)
+        for source in LDAPSource.objects.filter(enabled=True):
+            _ldap = LDAPConnector(source)
+            user = _ldap.auth_user(**kwargs)
+            if user:
+                return user
+        return None
