@@ -1,6 +1,12 @@
-pylint
-pylint-django
-isort
-autopep8
-django-debug-toolbar
 -r requirements.txt
+coverage
+isort
+astroid==2.0.4
+pylint==2.1.1
+pylint-django==2.0.2
+prospector
+django-debug-toolbar
+pycodestyle<2.4.0,>=2.0.0
+bumpversion
+unittest-xml-reporting
+autopep8
