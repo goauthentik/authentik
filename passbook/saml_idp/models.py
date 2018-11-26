@@ -2,14 +2,16 @@
 
 from django.db import models
 
-from passbook.core.models import Application
+from passbook.core.models import Provider
 from passbook.lib.utils.reflection import class_to_path
 from passbook.saml_idp.base import Processor
+from django.utils.translation import gettext as _
 
 
-class SAMLApplication(Application):
+class SAMLProvider(Provider):
     """Model to save information about a Remote SAML Endpoint"""
 
+    name = models.TextField()
     acs_url = models.URLField()
     processor_path = models.CharField(max_length=255, choices=[])
 
@@ -19,7 +21,9 @@ class SAMLApplication(Application):
         self._meta.get_field('processor_path').choices = processors
 
     def __str__(self):
-        return "SAMLApplication %s (processor=%s)" % (self.name, self.processor_path)
+        return "SAMLProvider %s (processor=%s)" % (self.name, self.processor_path)
 
-    def user_is_authorized(self):
-        raise NotImplementedError()
+    class Meta:
+
+        verbose_name = _('SAML Provider')
+        verbose_name_plural = _('SAML Providers')

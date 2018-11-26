@@ -7,3 +7,4 @@ class PassbookCoreConfig(AppConfig):
 
     name = 'passbook.core'
     label = 'passbook_core'
+    verbose_name = 'passbook Core'

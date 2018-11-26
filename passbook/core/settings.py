@@ -32,7 +32,7 @@ SECRET_KEY = '9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = ['172.16.16.100']
+ALLOWED_HOSTS = []
 
 LOGIN_URL = 'passbook_core:auth-login'
 
