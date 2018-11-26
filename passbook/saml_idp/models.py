@@ -15,6 +15,8 @@ class SAMLProvider(Provider):
     acs_url = models.URLField()
     processor_path = models.CharField(max_length=255, choices=[])
 
+    form = 'passbook.saml_idp.forms.SAMLProviderForm'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         processors = [(class_to_path(x), x.__name__) for x in Processor.__subclasses__()]

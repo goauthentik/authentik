@@ -1,7 +1,8 @@
 """passbook URL Configuration"""
 from django.urls import path
 
-from passbook.admin.views import applications, overview, rules, sources
+from passbook.admin.views import (applications, overview, providers, rules,
+                                  sources)
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
@@ -24,5 +25,13 @@ urlpatterns = [
     path('rules/create/', rules.RuleCreateView.as_view(), name='rule-create'),
     path('rules/<uuid:pk>/update/', rules.RuleUpdateView.as_view(), name='rule-update'),
     path('rules/<uuid:pk>/delete/', rules.RuleDeleteView.as_view(), name='rule-delete'),
+    # Providers
+    path('providers/', providers.ProviderListView.as_view(), name='providers'),
+    path('providers/create/',
+         providers.ProviderCreateView.as_view(), name='provider-create'),
+    path('providers/<uuid:pk>/update/',
+         providers.ProviderUpdateView.as_view(), name='provider-update'),
+    path('providers/<uuid:pk>/delete/',
+         providers.ProviderDeleteView.as_view(), name='provider-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]

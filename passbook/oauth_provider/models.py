@@ -9,6 +9,8 @@ from passbook.core.models import Provider
 class OAuth2Provider(Provider, AbstractApplication):
     """Associate an OAuth2 Application with a Product"""
 
+    form = 'passbook.oauth_provider.forms.OAuth2ProviderForm'
+
     def __str__(self):
         return self.name
 
