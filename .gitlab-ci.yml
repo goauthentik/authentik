@@ -1,0 +1,103 @@
+# Global Variables
+before_script:
+  - "python3 -m pip install -U virtualenv"
+  - "virtualenv env"
+  - "source env/bin/activate"
+  - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
+stages:
+  - test
+  - build
+  - docs
+image: python:3.5
+
+isort:
+  script:
+    - isort -c -sg env
+  stage: test
+migrations:
+  script:
+    - python manage.py migrate
+  stage: test
+prospector:
+  script:
+    - prospector
+  stage: test
+pylint:
+  script:
+    - pylint passbook
+  stage: test
+coverage:
+  script:
+    - coverage run manage.py test
+    - coverage report
+  stage: test
+
+# package-3.5:
+#   before_script:
+#     - apt update
+#     - apt install -y build-essential debhelper devscripts equivs python3 python3-pip
+#     - cp debian/control-3.5 debian/control
+#     - mk-build-deps debian/control
+#     - apt install ./*build-deps*deb -f -y
+#     - "python3 -m pip install -U virtualenv"
+#     - "virtualenv env"
+#     - "source env/bin/activate"
+#     - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
+#   image: debian
+#   script:
+#     - debuild -us -uc
+#     - cp ../passbook*.deb .
+#     - python manage.py nexus_upload
+#   artifacts:
+#     paths:
+#     - passbook-python3.5*deb
+#     expire_in: 2 days
+#   stage: build
+#   only:
+#   - tags
+#   - /^debian/.*$/
+# package-3.6:
+#   before_script:
+#     - apt update
+#     - apt install -y build-essential debhelper devscripts equivs python3 python3-pip
+#     - cp debian/control-3.6 debian/control
+#     - mk-build-deps debian/control
+#     - apt install ./*build-deps*deb -f -y
+#     - "python3 -m pip install -U virtualenv"
+#     - "virtualenv env"
+#     - "source env/bin/activate"
+#     - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
+#   image: debian:buster
+#   script:
+#     - debuild -us -uc
+#     - cp ../passbook*.deb .
+#     - python manage.py nexus_upload
+#   artifacts:
+#     paths:
+#     - passbook-python3.6*deb
+#     expire_in: 2 days
+#   stage: build
+#   only:
+#     - tags
+#     - /^debian/.*$r
+
+# docs:
+#   stage: docs
+#   only:
+#   - master
+#   - tags
+#   - /^debian/.*$/
+#   environment:
+#     name: docs
+#     url: "https://passbook.beryju.org/docs/"
+#   script:
+#     - apt update
+#     - apt install -y rsync
+#     - "mkdir ~/.ssh"
+#     - "cp .gitlab/known_hosts ~/.ssh/"
+#     - "pip3 install -U -r requirements-docs.txt"
+#     - "eval $(ssh-agent -s)"
+#     - "echo \"${CI_SSH_PRIVATE}\" | ssh-add -"
+#     - mkdocs build
+#     - 'rsync -avh --delete web/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/"'
+#     - 'rsync -avh --delete site/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/docs/"'
