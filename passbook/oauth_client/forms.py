@@ -2,6 +2,7 @@
 
 from django import forms
 
+from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.oauth_client.models import OAuthSource
 
 
@@ -11,5 +12,6 @@ class OAuthSourceForm(forms.ModelForm):
     class Meta:
 
         model = OAuthSource
-        # pylint: disable=modelform-uses-exclude
-        exclude = []
+        fields = SOURCE_FORM_FIELDS + ['provider_type', 'request_token_url', 'authorization_url',
+                                       'access_token_url', 'profile_url', 'consumer_key',
+                                       'consumer_secret']

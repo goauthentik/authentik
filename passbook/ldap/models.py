@@ -3,8 +3,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-# from passbook.core.models import (CreatedUpdatedModel, ProductExtension,
-#                                    UUIDModel)
 from passbook.core.models import Source
 
 
@@ -27,6 +25,8 @@ class LDAPSource(Source):
     base_dn = models.TextField()
     create_user = models.BooleanField(default=False)
     reset_password = models.BooleanField(default=True)
+
+    form = 'passbook.ldap.forms.LDAPSourceForm'
 
     class Meta:
 

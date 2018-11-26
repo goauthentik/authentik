@@ -1,10 +1,19 @@
-# """Supervisr Mod LDAP Forms"""
+"""passbook LDAP Forms"""
 
-# from django import forms
-# from django.utils.translation import ugettext_lazy as _
+from django import forms
 
-# from supervisr.core.forms.settings import SettingsForm
+from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.ldap.models import LDAPSource
 
+
+class LDAPSourceForm(forms.ModelForm):
+    """LDAPSource Form"""
+
+    class Meta:
+
+        model = LDAPSource
+        fields = SOURCE_FORM_FIELDS + ['server_uri', 'bind_cn', 'bind_password',
+                                       'type', 'domain', 'base_dn', 'create_user', 'reset_password']
 
 # class GeneralSettingsForm(SettingsForm):
 #     """general settings form"""
