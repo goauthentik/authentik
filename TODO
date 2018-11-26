@@ -4,3 +4,11 @@
  - add provider_type field to Provider Model
  - make Provider inherit core.application
  - Add template for popular services like github, twitter, facebook, etc
+
+## saml_idp
+
+ - move certificates to Provider so each provider can have different certificates
+
+## admin
+
+ - add testing page where user can supply input and let rules run against it to debug/test
