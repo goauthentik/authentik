@@ -157,3 +157,8 @@ def related_models(context, model_path):
 def unslug(_input):
     """Convert slugs back into normal strings"""
     return _input.replace('-', ' ').replace('_', ' ')
+
+
+@register.filter(name='css_class')
+def css_class(field, css):
+   return field.as_widget(attrs={"class": css})

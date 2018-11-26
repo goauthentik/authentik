@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'reversion',
     'rest_framework',
-    'crispy_forms',
     'passbook.core',
     'passbook.admin',
     'passbook.api',

@@ -1,0 +1,59 @@
+{% load utils %}
+
+{% csrf_token %}
+{% for field in form %}
+{% if field.help_text %}
+<span>
+  {{ field.help_text }}
+</span>
+{% endif %}
+<div class="form-group">
+  {% if field.field.widget|fieldtype == 'RadioSelect' %}
+    <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
+      {{ field.label }}
+    </label>
+    {% for c in field %}
+    <div class="radio col-sm-10">
+      <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}" name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}" {% if c.data.selected %} checked {% endif %}>
+      <label class="col-sm-2 control-label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
+    </div>
+    {% endfor %}
+  {% elif field.field.widget|fieldtype == 'Select' %}
+  <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
+    {{ field.label }}
+  </label>
+  <div class="select col-sm-10">
+    {{ field }}
+  </div>
+  {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
+  <div class="col-sm-offset-2 col-sm-10">
+    <div class="checkbox">
+      <label>
+        {{ field }} {{ field.label }}
+      </label>
+    </div>
+  </div>
+  {% else %}
+  <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
+    {{ field.label }}
+  </label>
+  <div class="col-sm-10">
+    {{ field|css_class:'form-control' }}
+  </div>
+  {% endif %}
+  {% for error in field.errors %}
+  <div class="alert alert-danger">
+    <div class="alert-items">
+      <div class="alert-item">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+        </div>
+        <span class="alert-text">
+          {{ error }}
+        </span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
