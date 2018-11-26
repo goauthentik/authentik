@@ -5,6 +5,7 @@ from logging import getLogger
 import reversion
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
@@ -128,16 +129,18 @@ class FieldMatcherRule(Rule):
     MATCH_REGEXP = 'regexp'
     MATCH_EXACT = 'exact'
     MATCHES = (
-        (MATCH_STARTSWITH, MATCH_STARTSWITH),
-        (MATCH_ENDSWITH, MATCH_ENDSWITH),
-        (MATCH_ENDSWITH, MATCH_CONTAINS),
-        (MATCH_REGEXP, MATCH_REGEXP),
-        (MATCH_EXACT, MATCH_EXACT),
+        (MATCH_STARTSWITH, _('Starts with')),
+        (MATCH_ENDSWITH, _('Ends with')),
+        (MATCH_ENDSWITH, _('Contains')),
+        (MATCH_REGEXP, _('Regexp')),
+        (MATCH_EXACT, _('Exact')),
     )
 
     user_field = models.TextField()
     match_action = models.CharField(max_length=50, choices=MATCHES)
     value = models.TextField()
+
+    form = 'passbook.core.forms.rules.FieldMatcherRuleForm'
 
     def __str__(self):
         description = "%s, user.%s %s '%s'" % (self.name, self.user_field,
@@ -167,3 +170,8 @@ class FieldMatcherRule(Rule):
             passes = not passes
         LOGGER.debug("User got '%r'", passes)
         return passes
+
+    class Meta:
+
+        verbose_name = _('Field matcher Rule')
+        verbose_name_plural = _('Field matcher Rules')

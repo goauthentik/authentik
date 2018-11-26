@@ -18,5 +18,10 @@ urlpatterns = [
     path('sources/create/', sources.SourceCreateView.as_view(), name='source-create'),
     path('sources/<uuid:pk>/update/', sources.SourceUpdateView.as_view(), name='source-update'),
     path('sources/<uuid:pk>/delete/', sources.SourceDeleteView.as_view(), name='source-delete'),
+    # Rules
+    path('rules/', rules.RuleListView.as_view(), name='rules'),
+    path('rules/create/', rules.RuleCreateView.as_view(), name='rule-create'),
+    path('rules/<uuid:pk>/update/', rules.RuleUpdateView.as_view(), name='rule-update'),
+    path('rules/<uuid:pk>/delete/', rules.RuleDeleteView.as_view(), name='rule-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]
