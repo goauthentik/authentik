@@ -31,7 +31,7 @@ class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
 
     def get_form_class(self):
         source_type = self.request.GET.get('type')
-        model = next(x if x.__name__ == source_type else None for x in Source.__subclasses__())
+        model = next(x for x in Source.__subclasses__() if x.__name__ == source_type)
         if not model:
             raise Http404
         return path_to_class(model.form)
