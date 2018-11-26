@@ -12,8 +12,8 @@ class LDAPSource(Source):
     TYPE_ACTIVE_DIRECTORY = 'ad'
     TYPE_GENERIC = 'generic'
     TYPES = (
-        (TYPE_ACTIVE_DIRECTORY, TYPE_ACTIVE_DIRECTORY),
-        (TYPE_GENERIC, TYPE_GENERIC),
+        (TYPE_ACTIVE_DIRECTORY, _('Active Directory')),
+        (TYPE_GENERIC, _('Generic')),
     )
 
     server_uri = models.TextField()

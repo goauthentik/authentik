@@ -8,14 +8,14 @@
   <li class="{% is_active 'passbook_admin:overview' %}">
     <a href="{% url 'passbook_admin:overview' %}">{% trans 'Overview' %}</a>
   </li>
-  <li class="{% is_active 'passbook_admin:applications' %}">
+  <li class="{% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
     <a href="{% url 'passbook_admin:applications' %}">{% trans 'Applications' %}</a>
   </li>
-  <li class="{% is_active 'passbook_admin:sources' %}">
+  <li class="{% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
     <a href="{% url 'passbook_admin:sources' %}">{% trans 'Sources' %}</a>
   </li>
-  <li>
-    <a href="#">{% trans 'Rules' %}</a>
+  <li class="{% is_active 'passbook_admin:rules' 'passbook_admin:rule-create' 'passbook_admin:rule-update' 'passbook_admin:rule-delete' %}">
+    <a href="{% url 'passbook_admin:rules' %}">{% trans 'Rules' %}</a>
   </li>
   <li>
     <a href="#">{% trans 'Users' %}</a>

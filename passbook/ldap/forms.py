@@ -14,6 +14,14 @@ class LDAPSourceForm(forms.ModelForm):
         model = LDAPSource
         fields = SOURCE_FORM_FIELDS + ['server_uri', 'bind_cn', 'bind_password',
                                        'type', 'domain', 'base_dn', 'create_user', 'reset_password']
+        widgets = {
+            'name': forms.TextInput(),
+            'server_uri': forms.TextInput(),
+            'bind_cn': forms.TextInput(),
+            'bind_password': forms.TextInput(),
+            'domain': forms.TextInput(),
+            'base_dn': forms.TextInput(),
+        }
 
 # class GeneralSettingsForm(SettingsForm):
 #     """general settings form"""

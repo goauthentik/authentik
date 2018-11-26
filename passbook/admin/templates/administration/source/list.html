@@ -1,18 +1,41 @@
-{% extends "generic/list.html" %}
+{% extends "administration/base.html" %}
 
 {% load i18n %}
+{% load utils %}
 
-{% block above_table %}
-<div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-    {% trans 'Create...' %}
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-    {% for type, name in types.items %}
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:source-create' %}?type={{ type }}">{{ name }}</a></li>
-    {% endfor %}
-  </ul>
+{% block content %}
+<div class="container">
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+      {% trans 'Create...' %}
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+      {% for type, name in types.items %}
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:source-create' %}?type={{ type }}">{{ name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <hr>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Class' %}</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for source in object_list %}
+        <tr>
+          <td>{{ source.name }}</td>
+          <td>{{ source.cast|fieldtype }}</td>
+          <td><a href="{% url 'passbook_admin:source-update' pk=source.uuid %}">{% trans 'Edit' %}</a></td>
+          <td><a href="{% url 'passbook_admin:source-delete' pk=source.uuid %}">{% trans 'Delete' %}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
-<hr>
 {% endblock %}

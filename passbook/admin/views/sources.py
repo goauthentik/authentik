@@ -21,11 +21,14 @@ class SourceListView(AdminRequiredMixin, ListView):
             x.__name__: x._meta.verbose_name for x in Source.__subclasses__()}
         return super().get_context_data(**kwargs)
 
+    def get_queryset(self):
+        return super().get_queryset().select_subclasses()
+
 
 class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Source"""
 
-    template_name = 'generic/create.html'
+    template_name = 'administration/source/create.html'
     success_url = reverse_lazy('passbook_admin:sources')
     success_message = _('Successfully created Source')
 
