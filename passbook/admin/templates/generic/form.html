@@ -7,10 +7,11 @@
 <div class="container">
   {% block above_form %}
   {% endblock %}
-  <form action="" method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" class="btn btn-primary" value="{% trans 'Update' %}" />
-  </form>
+  <div class="">
+    <form action="" method="post" class="form-horizontal">
+      {% include 'blocks/form.html' with form=form %}
+      <input type="submit" class="btn btn-primary" value="{% trans 'Create' %}" />
+    </form>
+  </div>
 </div>
 {% endblock %}
