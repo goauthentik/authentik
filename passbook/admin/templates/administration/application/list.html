@@ -9,6 +9,7 @@
 
 {% block content %}
 <div class="container">
+  <h1>{% trans "Applications" %}</h1>
   <a href="{% url 'passbook_admin:application-create' %}" class="btn btn-primary">
     {% trans 'Create...' %}
   </a>
@@ -27,8 +28,8 @@
         <tr>
           <td>{{ application.name }}</td>
           <td>{{ application.provider }}</td>
-          <td><a href="{% url 'passbook_admin:application-update' pk=application.uuid %}">{% trans 'Edit' %}</a></td>
-          <td><a href="{% url 'passbook_admin:application-delete' pk=application.uuid %}">{% trans 'Delete' %}</a></td>
+          <td><a href="{% url 'passbook_admin:application-update' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
+          <td><a href="{% url 'passbook_admin:application-delete' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a></td>
         </tr>
       {% endfor %}
     </tbody>

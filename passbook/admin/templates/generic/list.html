@@ -20,7 +20,7 @@
         <tr>
           <td>{{ source.name }}</td>
           <td>{{ source.cast|fieldtype }}</td>
-          <td><a href="{% url 'passbook_admin:source-update' pk=source.pk %}">{% trans 'Edit' %}</a></td>
+          <td><a href="{% url 'passbook_admin:source-update' pk=source.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
         </tr>
       {% endfor %}
     </tbody>

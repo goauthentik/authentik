@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="container">
+  <h1>{% trans "Sources" %}</h1>
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
       {% trans 'Create...' %}
@@ -31,8 +32,8 @@
         <tr>
           <td>{{ source.name }}</td>
           <td>{{ source.cast|fieldtype }}</td>
-          <td><a href="{% url 'passbook_admin:source-update' pk=source.uuid %}">{% trans 'Edit' %}</a></td>
-          <td><a href="{% url 'passbook_admin:source-delete' pk=source.uuid %}">{% trans 'Delete' %}</a></td>
+          <td><a href="{% url 'passbook_admin:source-update' pk=source.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
+          <td><a href="{% url 'passbook_admin:source-delete' pk=source.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a></td>
         </tr>
       {% endfor %}
     </tbody>

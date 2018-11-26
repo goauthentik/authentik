@@ -9,6 +9,7 @@
 
 {% block content %}
 <div class="container">
+  <h1>{% trans "Rules" %}</h1>
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
       {% trans 'Create...' %}
@@ -35,8 +36,8 @@
         <tr>
           <td>{{ rule.name }}</td>
           <td>{{ rule|fieldtype }}</td>
-          <td><a href="{% url 'passbook_admin:rule-update' pk=rule.uuid %}">{% trans 'Edit' %}</a></td>
-          <td><a href="{% url 'passbook_admin:rule-delete' pk=rule.uuid %}">{% trans 'Delete' %}</a></td>
+          <td><a href="{% url 'passbook_admin:rule-update' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
+          <td><a href="{% url 'passbook_admin:rule-delete' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a></td>
         </tr>
       {% endfor %}
     </tbody>
