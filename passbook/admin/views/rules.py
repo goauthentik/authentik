@@ -28,7 +28,7 @@ class RuleListView(AdminRequiredMixin, ListView):
 class RuleCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Rule"""
 
-    template_name = 'administration/rule/create.html'
+    template_name = 'generic/create_inheritance.html'
     success_url = reverse_lazy('passbook_admin:rules')
     success_message = _('Successfully created Rule')
 
@@ -55,18 +55,16 @@ class RuleUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         return form_class
 
     def get_object(self, queryset=None):
-        obj = Rule.objects.get(pk=self.kwargs.get('pk'))
-        return obj.cast()
+        return Rule.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
 class RuleDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete rule"""
 
     model = Rule
-
+    template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:rules')
     success_message = _('Successfully updated Rule')
 
     def get_object(self, queryset=None):
-        obj = Rule.objects.get(pk=self.kwargs.get('pk'))
-        return obj.cast()
+        return Rule.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
