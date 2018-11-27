@@ -8,3 +8,4 @@ markdown
 colorlog
 celery
 redis<3.0
+pymysql
