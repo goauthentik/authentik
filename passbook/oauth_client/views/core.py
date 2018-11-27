@@ -195,7 +195,7 @@ class OAuthCallback(OAuthClientMixin, View):
     def handle_new_user(self, source, access, info):
         "Create a shell auth.User and redirect."
         was_authenticated = False
-        if self.request.user.is_authenticated:  # pylint: disable=no-else-return
+        if self.request.user.is_authenticated:
             # there's already a user logged in, just link them up
             user = self.request.user
             was_authenticated = True

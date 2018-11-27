@@ -2,10 +2,6 @@
 from logging import getLogger
 
 from django import template
-from django.apps import AppConfig
-from django.core.cache import cache
-from django.urls import reverse
-from django.urls.exceptions import NoReverseMatch
 
 register = template.Library()
 LOGGER = getLogger(__name__)

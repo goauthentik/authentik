@@ -145,10 +145,10 @@ def related_models(context, model_path):
     user = request.user
 
     model = path_to_class(model_path)
-    if not issubclass(model, UserAcquirable):
-        # model_path is not actually a module
-        # so we can't assume that it's usable
-        return []
+    # if not issubclass(model, UserAcquirable):
+    #     # model_path is not actually a module
+    #     # so we can't assume that it's usable
+    #     return []
 
     return model.objects.filter(users__in=[user])
 
@@ -161,4 +161,5 @@ def unslug(_input):
 
 @register.filter(name='css_class')
 def css_class(field, css):
-   return field.as_widget(attrs={"class": css})
+    """Add css class to form field"""
+    return field.as_widget(attrs={"class": css})
