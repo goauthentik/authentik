@@ -21,7 +21,6 @@ LOGGER = logging.getLogger(__name__)
 class Celery(celery.Celery):
     """Custom Celery class with Raven configured"""
 
-    # pylint: disable=method-hidden
     # def on_configure(self):
     #     """Update raven client"""
     #     try:
