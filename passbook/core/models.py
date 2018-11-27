@@ -8,6 +8,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 
+from passbook.core.celery import CELERY_APP
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
 LOGGER = getLogger(__name__)
@@ -30,6 +31,13 @@ class Provider(models.Model):
         if hasattr(self, 'name'):
             return getattr(self, 'name')
         return super().__str__()
+
+class TaskModel(CELERY_APP.Task, models.Model):
+    """Django model which is also a celery task"""
+
+    class Meta:
+
+        abstract = True
 
 class RuleModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have rules applied to it"""
@@ -91,7 +99,7 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (('user', 'source'),)
 
 @reversion.register()
-class Rule(UUIDModel, CreatedUpdatedModel):
+class Rule(TaskModel, UUIDModel, CreatedUpdatedModel):
     """Rules which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
@@ -113,6 +121,10 @@ class Rule(UUIDModel, CreatedUpdatedModel):
         if self.name:
             return self.name
         return "%s action %s" % (self.name, self.action)
+
+    def run(self, user_id: int) -> bool:
+        """Celery wrapper for passes"""
+        return self.passes(User.objects.get(pk=user_id))
 
     def passes(self, user: User) -> bool:
         """Check if user instance passes this rule"""
@@ -140,6 +152,7 @@ class FieldMatcherRule(Rule):
     match_action = models.CharField(max_length=50, choices=MATCHES)
     value = models.TextField()
 
+    name = 'passbook_core.FieldMatcherRule'
     form = 'passbook.core.forms.rules.FieldMatcherRuleForm'
 
     def __str__(self):
@@ -175,6 +188,7 @@ class FieldMatcherRule(Rule):
 
         verbose_name = _('Field matcher Rule')
         verbose_name_plural = _('Field matcher Rules')
+
 @reversion.register()
 class WebhookRule(Rule):
     """Rule that asks webhook"""
@@ -212,3 +226,6 @@ class WebhookRule(Rule):
         verbose_name = _('Webhook Rule')
         verbose_name_plural = _('Webhook Rules')
 
+# Register tasks
+for task_model in Rule.__subclasses__():
+    CELERY_APP.tasks.register(task_model)

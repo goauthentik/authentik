@@ -160,7 +160,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'oauth2_provider.Application'
+
+# Celery settings
+# Add a 10 minute timeout to all Celery tasks.
+CELERY_TASK_SOFT_TIME_LIMIT = 600
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {}
+CELERY_CREATE_MISSING_QUEUES = True
+CELERY_TASK_DEFAULT_QUEUE = 'passbook'
+CELERY_BROKER_URL = 'redis://%s' % CONFIG.get('redis')
+CELERY_RESULT_BACKEND = 'redis://%s' % CONFIG.get('redis')
 
 
 # Static files (CSS, JavaScript, Images)
