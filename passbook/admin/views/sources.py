@@ -54,8 +54,7 @@ class SourceUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         return form_class
 
     def get_object(self, queryset=None):
-        obj = Source.objects.get(pk=self.kwargs.get('pk'))
-        return obj.cast()
+        return Source.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
 class SourceDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
@@ -67,5 +66,4 @@ class SourceDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     success_message = _('Successfully updated Source')
 
     def get_object(self, queryset=None):
-        obj = Source.objects.get(pk=self.kwargs.get('pk'))
-        return obj.cast()
+        return Source.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
