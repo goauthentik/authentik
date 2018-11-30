@@ -165,7 +165,7 @@ class FieldMatcherRule(Rule):
             passes = self.value in user_field_value
         if self.match_action == FieldMatcherRule.MATCH_REGEXP:
             pattern = re.compile(self.value)
-            passes = pattern.match(user_field_value)
+            passes = bool(pattern.match(user_field_value))
         if self.negate:
             passes = not passes
         LOGGER.debug("User got '%r'", passes)
