@@ -1,10 +1,14 @@
 """passbook Rule administration"""
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (CreateView, DeleteView, FormView, ListView,
+                                  UpdateView)
+from django.views.generic.detail import DetailView
 
+from passbook.admin.forms.rule import RuleTestForm
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Rule
 from passbook.lib.utils.reflection import path_to_class
@@ -68,3 +72,33 @@ class RuleDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None):
         return Rule.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
+
+
+class RuleTestView(AdminRequiredMixin, DetailView, FormView):
+    """View to test rule(s)"""
+
+    model = Rule
+    form_class = RuleTestForm
+    template_name = 'administration/rule/test.html'
+    object = None
+
+    def get_object(self, queryset=None):
+        return Rule.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
+
+    def get_context_data(self, **kwargs):
+        kwargs['rule'] = self.get_object()
+        return super().get_context_data(**kwargs)
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(*args, **kwargs)
+
+    def form_valid(self, form):
+        rule = self.get_object()
+        user = form.cleaned_data.get('user')
+        result = rule.passes(user)
+        if result:
+            messages.success(self.request, _('User successfully passed rule.'))
+        else:
+            messages.error(self.request, _("User didn't pass rule."))
+        return self.render_to_response(self.get_context_data(form=form, result=result))

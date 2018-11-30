@@ -25,6 +25,7 @@ urlpatterns = [
     path('rules/create/', rules.RuleCreateView.as_view(), name='rule-create'),
     path('rules/<uuid:pk>/update/', rules.RuleUpdateView.as_view(), name='rule-update'),
     path('rules/<uuid:pk>/delete/', rules.RuleDeleteView.as_view(), name='rule-delete'),
+    path('rules/<uuid:pk>/test/', rules.RuleTestView.as_view(), name='rule-test'),
     # Providers
     path('providers/', providers.ProviderListView.as_view(), name='providers'),
     path('providers/create/',
