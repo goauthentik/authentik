@@ -28,7 +28,6 @@
         <th>{% trans 'Name' %}</th>
         <th>{% trans 'Class' %}</th>
         <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -36,8 +35,10 @@
         <tr>
           <td>{{ provider.name }}</td>
           <td>{{ provider|fieldtype }}</td>
-          <td><a href="{% url 'passbook_admin:provider-update' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
-          <td><a href="{% url 'passbook_admin:provider-delete' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a></td>
+          <td>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-update' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-delete' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>

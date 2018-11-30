@@ -28,7 +28,6 @@
         <th>{% trans 'Name' %}</th>
         <th>{% trans 'Class' %}</th>
         <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -36,8 +35,11 @@
         <tr>
           <td>{{ rule.name }}</td>
           <td>{{ rule|fieldtype }}</td>
-          <td><a href="{% url 'passbook_admin:rule-update' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a></td>
-          <td><a href="{% url 'passbook_admin:rule-delete' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a></td>
+          <td>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-update' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-test' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-delete' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
