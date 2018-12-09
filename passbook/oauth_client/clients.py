@@ -19,7 +19,7 @@ class BaseOAuthClient:
 
     _session = None
 
-    def __init__(self, source, token=''):
+    def __init__(self, source, token=''): # nosec
         self.source = source
         self.token = token
         self._session = Session()
@@ -238,7 +238,7 @@ class OAuth2Client(BaseOAuthClient):
         return 'oauth-client-{0}-request-state'.format(self.source.name)
 
 
-def get_client(source, token=''):
+def get_client(source, token=''): # nosec
     "Return the API client for the given source."
     cls = OAuth2Client
     if source.request_token_url:

@@ -152,18 +152,7 @@ class OAuthCallback(OAuthClientMixin, View):
     # pylint: disable=unused-argument
     def get_or_create_user(self, source, access, info):
         "Create a shell auth.User."
-        digest = hashlib.sha1(smart_bytes(access)).digest()
-        # Base 64 encode to get below 30 characters
-        # Removed padding characters
-        username = force_text(base64.urlsafe_b64encode(digest)).replace('=', '')
-        # pylint: disable=invalid-name
-        User = get_user_model() # noqa
-        kwargs = {
-            User.USERNAME_FIELD: username,
-            'email': '',
-            'password': None
-        }
-        return User.objects.create_user(**kwargs)
+        raise NotImplementedError()
 
     # pylint: disable=unused-argument
     def get_user_id(self, source, info):

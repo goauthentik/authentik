@@ -31,6 +31,10 @@ coverage:
     - coverage run manage.py test
     - coverage report
   stage: test
+bandit:
+  script:
+    - bandit -r passbook
+  stage: test
 
 # package-3.5:
 #   before_script:

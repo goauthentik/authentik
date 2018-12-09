@@ -10,3 +10,4 @@ pycodestyle<2.4.0,>=2.0.0
 bumpversion
 unittest-xml-reporting
 autopep8
+bandit
