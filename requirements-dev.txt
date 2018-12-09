@@ -1,4 +1,5 @@
 -r requirements.txt
+-r allauth/requirements.txt
 coverage
 isort
 astroid==2.0.4
