@@ -39,6 +39,9 @@ LOGIN_URL = 'passbook_core:auth-login'
 # Custom user model
 AUTH_USER_MODEL = 'passbook_core.User'
 
+CSRF_COOKIE_NAME = 'passbook_csrf'
+SESSION_COOKIE_NAME = 'passbook_session'
+LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
