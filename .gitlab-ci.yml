@@ -3,7 +3,7 @@ before_script:
   - "python3 -m pip install -U virtualenv"
   - "virtualenv env"
   - "source env/bin/activate"
-  - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
+  - "pip3 install -U -r requirements-dev.txt"
 stages:
   - test
   - build

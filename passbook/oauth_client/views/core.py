@@ -146,7 +146,6 @@ class OAuthCallback(OAuthClientMixin, View):
         "Return url to redirect authenticated users."
         return 'overview'
 
-    # pylint: disable=unused-argument
     def get_or_create_user(self, source, access, info):
         "Create a shell auth.User."
         raise NotImplementedError()
