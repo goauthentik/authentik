@@ -19,8 +19,6 @@ class AuthorizedServiceBackend(ModelBackend):
                 source_q, identifier=identifier
             ).select_related('user')[0]
         except IndexError:
-            print('hmm')
             return None
         else:
-            print('a')
             return access.user

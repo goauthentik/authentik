@@ -64,7 +64,8 @@ class Application(RuleModel):
 
     def user_is_authorized(self, user: User) -> bool:
         """Check if user is authorized to use this application"""
-        raise NotImplementedError()
+        from passbook.core.rules import RuleEngine
+        return RuleEngine(self).for_user(user).result
 
     def __str__(self):
         return self.name

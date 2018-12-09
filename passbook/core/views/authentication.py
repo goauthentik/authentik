@@ -26,7 +26,17 @@ class LoginView(UserPassesTestMixin, FormView):
 
     # Allow only not authenticated users to login
     def test_func(self):
-        return not self.request.user.is_authenticated
+        return self.request.user.is_authenticated is False
+
+    def handle_no_permission(self):
+        return self.logged_in_redirect()
+
+    def logged_in_redirect(self):
+        """User failed check so user is authenticated already.
+        Either redirect to ?next param or home."""
+        if 'next' in self.request.GET:
+            return redirect(self.request.GET.get('next'))
+        return redirect(reverse('passbook_core:overview'))
 
     def get_context_data(self, **kwargs):
         kwargs['config'] = CONFIG.get('passbook')
@@ -80,11 +90,7 @@ class LoginView(UserPassesTestMixin, FormView):
             request.session.set_expiry(0)  # Expires when browser is closed
         messages.success(request, _("Successfully logged in!"))
         LOGGER.debug("Successfully logged in %s", user.username)
-        # Check if there is a next GET parameter and redirect to that
-        if 'next' in request.GET:
-            return redirect(request.GET.get('next'))
-        # Otherwise just index
-        return redirect(reverse('passbook_core:overview'))
+        return self.logged_in_redirect()
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""

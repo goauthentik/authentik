@@ -1,17 +1,14 @@
 """Core OAauth Views"""
 
-import base64
-import hashlib
 from logging import getLogger
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.encoding import force_text, smart_bytes
 from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
 
