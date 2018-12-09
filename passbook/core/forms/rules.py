@@ -2,8 +2,9 @@
 
 from django import forms
 
-from passbook.core.models import FieldMatcherRule, WebhookRule
+from passbook.core.models import DebugRule, FieldMatcherRule, WebhookRule
 
+GENERAL_FIELDS = ['name', 'action', 'negate', 'order', ]
 
 class FieldMatcherRuleForm(forms.ModelForm):
     """FieldMatcherRule Form"""
@@ -11,8 +12,7 @@ class FieldMatcherRuleForm(forms.ModelForm):
     class Meta:
 
         model = FieldMatcherRule
-        fields = ['name', 'action', 'negate', 'order',
-                  'user_field', 'match_action', 'value', ]
+        fields = GENERAL_FIELDS + ['user_field', 'match_action', 'value', ]
         widgets = {
             'name': forms.TextInput(),
             'user_field': forms.TextInput(),
@@ -26,11 +26,24 @@ class WebhookRuleForm(forms.ModelForm):
     class Meta:
 
         model = WebhookRule
-        fields = ['url', 'method', 'json_body', 'json_headers',
-                  'result_jsonpath', 'result_json_value', ]
+        fields = GENERAL_FIELDS + ['url', 'method', 'json_body', 'json_headers',
+                                   'result_jsonpath', 'result_json_value', ]
         widgets = {
+            'name': forms.TextInput(),
             'json_body': forms.TextInput(),
             'json_headers': forms.TextInput(),
             'result_jsonpath': forms.TextInput(),
             'result_json_value': forms.TextInput(),
+        }
+
+
+class DebugRuleForm(forms.ModelForm):
+    """DebugRuleForm Form"""
+
+    class Meta:
+
+        model = DebugRule
+        fields = GENERAL_FIELDS + ['result', 'wait_min', 'wait_max']
+        widgets = {
+            'name': forms.TextInput(),
         }

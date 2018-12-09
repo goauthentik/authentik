@@ -1,6 +1,8 @@
 """passbook core models"""
 import re
 from logging import getLogger
+from random import randrange
+from time import sleep
 from uuid import uuid4
 
 import reversion
@@ -213,3 +215,26 @@ class WebhookRule(Rule):
 
         verbose_name = _('Webhook Rule')
         verbose_name_plural = _('Webhook Rules')
+
+@reversion.register()
+class DebugRule(Rule):
+    """Rule used for debugging the RuleEngine. Returns a fixed result,
+    but takes a random time to process."""
+
+    result = models.BooleanField(default=False)
+    wait_min = models.IntegerField(default=5)
+    wait_max = models.IntegerField(default=30)
+
+    form = 'passbook.core.forms.rules.DebugRuleForm'
+
+    def passes(self, user: User):
+        """Wait random time then return result"""
+        wait = randrange(self.wait_min, self.wait_max)
+        LOGGER.debug("Rule '%s' waiting for %ds", self.name, wait)
+        sleep(wait)
+        return self.result
+
+    class Meta:
+
+        verbose_name = _('Debug Rule')
+        verbose_name_plural = _('Debug Rules')
