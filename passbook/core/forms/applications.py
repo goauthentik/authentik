@@ -1,11 +1,13 @@
 """passbook Core Application forms"""
 from django import forms
 
-from passbook.core.models import Application
+from passbook.core.models import Application, Provider
 
 
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
+
+    provider = forms.ModelChoiceField(queryset=Provider.objects.all().select_subclasses())
 
     class Meta:
 
