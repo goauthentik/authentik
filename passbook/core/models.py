@@ -1,7 +1,7 @@
 """passbook core models"""
 import re
 from logging import getLogger
-from random import randrange
+from random import SystemRandom
 from time import sleep
 from uuid import uuid4
 
@@ -230,7 +230,7 @@ class DebugRule(Rule):
 
     def passes(self, user: User):
         """Wait random time then return result"""
-        wait = randrange(self.wait_min, self.wait_max)
+        wait = SystemRandom().randrange(self.wait_min, self.wait_max)
         LOGGER.debug("Rule '%s' waiting for %ds", self.name, wait)
         sleep(wait)
         return self.result
