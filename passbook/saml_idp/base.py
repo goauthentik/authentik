@@ -188,7 +188,7 @@ class Processor:
             'acs_url': self._request_params['ACS_URL'],
             'saml_response': self._saml_response,
             'relay_state': self._relay_state,
-            'autosubmit': CONFIG.y('saml_idp.autosubmit', False),
+            'autosubmit': False, # TODO: use autosubmit from application
         }
 
     def _parse_request(self):
