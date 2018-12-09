@@ -36,8 +36,8 @@
           <td>{{ provider.name }}</td>
           <td>{{ provider|fieldtype }}</td>
           <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-update' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-delete' pk=provider.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
           </td>
         </tr>
       {% endfor %}

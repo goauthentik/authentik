@@ -30,9 +30,9 @@ urlpatterns = [
     path('providers/', providers.ProviderListView.as_view(), name='providers'),
     path('providers/create/',
          providers.ProviderCreateView.as_view(), name='provider-create'),
-    path('providers/<uuid:pk>/update/',
+    path('providers/<int:pk>/update/',
          providers.ProviderUpdateView.as_view(), name='provider-update'),
-    path('providers/<uuid:pk>/delete/',
+    path('providers/<int:pk>/delete/',
          providers.ProviderDeleteView.as_view(), name='provider-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]
