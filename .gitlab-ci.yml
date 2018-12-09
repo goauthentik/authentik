@@ -10,6 +10,9 @@ stages:
   - docs
 image: python:3.5
 
+include:
+  - /allauth/.gitlab-ci.yml
+
 isort:
   script:
     - isort -c -sg env
