@@ -42,8 +42,11 @@
                 <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
             </p>
             <div class="form-group">
-                <input type="submit" class="btn btn-success btn-lg" name="allow" value="{% trans 'Continue' %}">
+                <input type="submit" class="btn btn-success btn-disabled btn-lg click-spinner" name="allow" value="{% trans 'Continue' %}">
                 <a href="{% back %}" class="btn btn-default btn-lg">{% trans "Cancel" %}</a>
+            </div>
+            <div class="form-group spinner-hidden hidden">
+                <div class="spinner"></div>
             </div>
         </div>
     {% else %}
@@ -55,4 +58,13 @@
     </div>
     {% endif %}
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('.click-spinner').on('click', function (e) {
+        $('.spinner-hidden').removeClass('hidden');
+        $(e.target).addClass('disabled');
+    })
+</script>
 {% endblock %}
