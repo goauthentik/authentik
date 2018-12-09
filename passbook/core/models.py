@@ -1,6 +1,7 @@
 """passbook core models"""
 import re
 from logging import getLogger
+from uuid import uuid4
 
 import reversion
 from django.contrib.auth.models import AbstractUser
@@ -16,6 +17,7 @@ LOGGER = getLogger(__name__)
 class User(AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
+    uuid = models.UUIDField(default=uuid4, editable=False)
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     applications = models.ManyToManyField('Application')
 

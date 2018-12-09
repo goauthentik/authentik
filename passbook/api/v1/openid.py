@@ -12,7 +12,7 @@ class OpenIDUserInfoView(ScopedResourceMixin, View):
     def get(self, request, *args, **kwargs):
         """Passbook v1 OpenID API"""
         payload = {
-            'sub': request.user.pk,
+            'sub': request.user.uuid.int,
             'name': request.user.get_full_name(),
             'given_name': request.user.first_name,
             'family_name': request.user.last_name,
