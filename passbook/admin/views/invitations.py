@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DeleteView, ListView
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.forms.invitations import InvitationForm
 from passbook.core.models import Invitation
+from passbook.core.signals import invitation_created
 
 
 class InvitationListView(AdminRequiredMixin, ListView):
@@ -29,6 +30,10 @@ class InvitationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj.created_by = self.request.user
         obj.save()
+        invitation_created.send(
+            sender=self,
+            request=self.request,
+            invitation=obj)
         return HttpResponseRedirect(self.success_url)
 
 class InvitationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
