@@ -23,7 +23,7 @@ class AuditEntry(UUIDModel):
     ACTION_AUTHORIZE_APPLICATION = 'authorize_application'
     ACTION_SUSPICIOUS_REQUEST = 'suspicious_request'
     ACTION_SIGN_UP = 'sign_up'
-    ACTION_PASSWORD_RESET = 'password_reset'
+    ACTION_PASSWORD_RESET = 'password_reset' # noqa
     ACTION_INVITE_CREATED = 'invitation_created'
     ACTION_INVITE_USED = 'invitation_used'
     ACTIONS = (
@@ -60,8 +60,8 @@ class AuditEntry(UUIDModel):
         entry = AuditEntry.objects.create(
             action=action,
             user=request.user,
-            # User 0.0.0.0 as fallback if IP cannot be determined
-            request_ip=client_ip or '0.0.0.0',
+            # User 255.255.255.255 as fallback if IP cannot be determined
+            request_ip=client_ip or '255.255.255.255',
             _context=dumps(kwargs))
         LOGGER.debug("Logged %s from %s (%s)", action, request.user, client_ip)
         return entry

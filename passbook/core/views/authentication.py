@@ -176,7 +176,7 @@ class SignUpView(UserPassesTestMixin, FormView):
         """Create user from data
 
         Args:
-            data: Dictionary as returned by SignupForm's cleaned_data
+            data: Dictionary as returned by SignUpForm's cleaned_data
             request: Optional current request.
 
         Returns:
@@ -201,17 +201,17 @@ class SignUpView(UserPassesTestMixin, FormView):
             user=new_user,
             request=request)
         # try:
-            # TODO: Create signal for signup
-            # on_user_sign_up.send(
-            #     sender=None,
-            #     user=new_user,
-            #     request=request,
-            #     password=data.get('password'),
-            #     needs_confirmation=needs_confirmation)
-            # TODO: Implement Verification, via email or others
-            # if needs_confirmation:
-                # Create Account Confirmation UUID
-                # AccountConfirmation.objects.create(user=new_user)
+        #     TODO: Create signal for signup
+        #     on_user_sign_up.send(
+        #         sender=None,
+        #         user=new_user,
+        #         request=request,
+        #         password=data.get('password'),
+        #         needs_confirmation=needs_confirmation)
+        #     TODO: Implement Verification, via email or others
+        #     if needs_confirmation:
+        #         Create Account Confirmation UUID
+        #         AccountConfirmation.objects.create(user=new_user)
         # except SignalException as exception:
         #     LOGGER.warning("Failed to sign up user %s", exception, exc_info=exception)
         #     new_user.delete()
