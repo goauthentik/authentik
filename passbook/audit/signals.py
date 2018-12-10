@@ -4,7 +4,8 @@ from django.contrib.auth.signals import (user_logged_in, user_logged_out,
 from django.dispatch import receiver
 
 from passbook.audit.models import AuditEntry
-from passbook.core.signals import invite_created, invite_used, user_signed_up
+from passbook.core.signals import (invitation_created, invitation_used,
+                                   user_signed_up)
 
 
 @receiver(user_logged_in)
@@ -22,15 +23,15 @@ def on_user_signed_up(sender, request, user, **kwargs):
     """Log successfully signed up"""
     AuditEntry.create(AuditEntry.ACTION_SIGN_UP, request)
 
-@receiver(invite_created)
-def on_invite_created(sender, request, invite, **kwargs):
+@receiver(invitation_created)
+def on_invitation_created(sender, request, invitation, **kwargs):
     """Log Invite creation"""
-    AuditEntry.create(AuditEntry.ACTION_INVITE_CREATED, request, invite_uuid=invite.uuid)
+    AuditEntry.create(AuditEntry.ACTION_INVITE_CREATED, request, invitation_uuid=invitation.uuid)
 
-@receiver(invite_used)
-def on_invite_used(sender, request, invite, **kwargs):
+@receiver(invitation_used)
+def on_invitation_used(sender, request, invitation, **kwargs):
     """Log Invite usage"""
-    AuditEntry.create(AuditEntry.ACTION_INVITE_USED, request, invite_uuid=invite.uuid)
+    AuditEntry.create(AuditEntry.ACTION_INVITE_USED, request, invitation_uuid=invitation.uuid)
 
 @receiver(user_login_failed)
 def on_user_login_failed(sender, request, user, **kwargs):

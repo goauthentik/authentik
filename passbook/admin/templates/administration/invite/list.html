@@ -9,8 +9,8 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Invites" %}</h1>
-  <a href="{% url 'passbook_admin:invite-create' %}" class="btn btn-primary">
+  <h1>{% trans "Invitations" %}</h1>
+  <a href="{% url 'passbook_admin:invitation-create' %}" class="btn btn-primary">
     {% trans 'Create...' %}
   </a>
   <hr>
@@ -23,13 +23,13 @@
       </tr>
     </thead>
     <tbody>
-      {% for invite in object_list %}
+      {% for invitation in object_list %}
         <tr>
-          <td>{{ invite.name }}</td>
-          <td>{{ invite.provider }}</td>
+          <td>{{ invitation.name }}</td>
+          <td>{{ invitation.provider }}</td>
           <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invite-update' pk=invite.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invite-delete' pk=invite.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invitation-update' pk=invitation.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invitation-delete' pk=invitation.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
           </td>
         </tr>
       {% endfor %}

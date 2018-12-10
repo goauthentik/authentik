@@ -13,7 +13,7 @@ from django.views.generic import FormView
 
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invite, User
-from passbook.core.signals import invite_used, user_signed_up
+from passbook.core.signals import invitation_used, user_signed_up
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
@@ -113,13 +113,13 @@ class LogoutView(LoginRequiredMixin, View):
 
 
 class SignUpView(UserPassesTestMixin, FormView):
-    """Sign up new user, optionally consume one-use invite link."""
+    """Sign up new user, optionally consume one-use invitation link."""
 
     template_name = 'login/form.html'
     form_class = SignUpForm
     success_url = '.'
-    # Invite insatnce, if invite link was used
-    _invite = None
+    # Invite insatnce, if invitation link was used
+    _invitation = None
     # Instance of newly created user
     _user = None
 
@@ -131,13 +131,13 @@ class SignUpView(UserPassesTestMixin, FormView):
         return redirect(reverse('passbook_core:overview'))
 
     def dispatch(self, request, *args, **kwargs):
-        """Check if sign-up is enabled or invite link given"""
+        """Check if sign-up is enabled or invitation link given"""
         allowed = False
-        if 'invite' in request.GET:
-            invites = Invite.objects.filter(uuid=request.GET.get('invite'))
-            allowed = invites.exists()
+        if 'invitation' in request.GET:
+            invitations = Invite.objects.filter(uuid=request.GET.get('invitation'))
+            allowed = invitations.exists()
             if allowed:
-                self._invite = invites.first()
+                self._invitation = invitations.first()
         if CONFIG.y('passbook.sign_up.enabled'):
             allowed = True
         if not allowed:
@@ -155,21 +155,21 @@ class SignUpView(UserPassesTestMixin, FormView):
     def form_valid(self, form: SignUpForm) -> HttpResponse:
         """Create user"""
         self._user = SignUpView.create_user(form.cleaned_data, self.request)
-        self.consume_invite()
+        self.consume_invitation()
         messages.success(self.request, _("Successfully signed up!"))
         LOGGER.debug("Successfully signed up %s",
                      form.cleaned_data.get('email'))
         return redirect(reverse('passbook_core:auth-login'))
 
-    def consume_invite(self):
-        """Consume invite if an invite was used"""
-        if self._invite:
-            invite_used.send(
+    def consume_invitation(self):
+        """Consume invitation if an invitation was used"""
+        if self._invitation:
+            invitation_used.send(
                 sender=self,
                 request=self.request,
-                invite=self._invite,
+                invitation=self._invitation,
                 user=self._user)
-            self._invite.delete()
+            self._invitation.delete()
 
     @staticmethod
     def create_user(data: Dict, request: HttpRequest = None) -> User:

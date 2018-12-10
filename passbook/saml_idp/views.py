@@ -90,8 +90,8 @@ def login_process(request):
     #     # Only check if there is a connection from OAuth2 Application to product
     #     product = remote.productextensionsaml2_set.first().product_set.first()
     #     relationship = UserAcquirableRelationship.objects.filter(user=request.user, model=product)
-    #     # Product is invite_only = True and no relation with user exists
-    #     if product.invite_only and not relationship.exists():
+    #     # Product is invitation_only = True and no relation with user exists
+    #     if product.invitation_only and not relationship.exists():
     #         access = False
     # Check if we should just autosubmit
     if remote.skip_authorization and access:

@@ -1,8 +1,8 @@
 """passbook URL Configuration"""
 from django.urls import path
 
-from passbook.admin.views import (applications, invites, overview, providers,
-                                  rules, sources)
+from passbook.admin.views import (applications, invitations, overview,
+                                  providers, rules, sources)
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
@@ -34,10 +34,12 @@ urlpatterns = [
          providers.ProviderUpdateView.as_view(), name='provider-update'),
     path('providers/<int:pk>/delete/',
          providers.ProviderDeleteView.as_view(), name='provider-delete'),
-    # Invites
-    path('invites/', invites.InviteListView.as_view(), name='invites'),
-    path('invites/create/', invites.InviteCreateView.as_view(), name='invite-create'),
-    path('invites/<uuid:pk>/update/', invites.InviteUpdateView.as_view(), name='invite-update'),
-    path('invites/<uuid:pk>/delete/', invites.InviteDeleteView.as_view(), name='invite-delete'),
+    # Invitations
+    path('invitations/', invitations.InviteListView.as_view(), name='invitations'),
+    path('invitations/create/', invitations.InviteCreateView.as_view(), name='invitation-create'),
+    path('invitations/<uuid:pk>/update/',
+         invitations.InviteUpdateView.as_view(), name='invitation-update'),
+    path('invitations/<uuid:pk>/delete/',
+         invitations.InviteDeleteView.as_view(), name='invitation-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]

@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'verbose_name': 'Invite',
-                'verbose_name_plural': 'Invites',
+                'verbose_name_plural': 'Invitations',
             },
         ),
     ]

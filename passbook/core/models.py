@@ -251,7 +251,7 @@ class DebugRule(Rule):
         verbose_name_plural = _('Debug Rules')
 
 class Invite(UUIDModel):
-    """Single-use invite link"""
+    """Single-use invitation link"""
 
     created_by = models.ForeignKey('User', on_delete=models.CASCADE)
     expires = models.DateTimeField(default=None, blank=True, null=True)
@@ -264,4 +264,4 @@ class Invite(UUIDModel):
     class Meta:
 
         verbose_name = _('Invite')
-        verbose_name_plural = _('Invites')
+        verbose_name_plural = _('Invitations')

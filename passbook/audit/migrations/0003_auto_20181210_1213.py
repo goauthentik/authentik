@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='auditentry',
             name='action',
-            field=models.TextField(choices=[('login', 'login'), ('login_failed', 'login_failed'), ('logout', 'logout'), ('authorize_application', 'authorize_application'), ('suspicious_request', 'suspicious_request'), ('sign_up', 'sign_up'), ('password_reset', 'password_reset'), ('invite_used', 'invite_used')]),
+            field=models.TextField(choices=[('login', 'login'), ('login_failed', 'login_failed'), ('logout', 'logout'), ('authorize_application', 'authorize_application'), ('suspicious_request', 'suspicious_request'), ('sign_up', 'sign_up'), ('password_reset', 'password_reset'), ('invitation_used', 'invitation_used')]),
         ),
     ]

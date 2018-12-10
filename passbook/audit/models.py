@@ -24,8 +24,8 @@ class AuditEntry(UUIDModel):
     ACTION_SUSPICIOUS_REQUEST = 'suspicious_request'
     ACTION_SIGN_UP = 'sign_up'
     ACTION_PASSWORD_RESET = 'password_reset'
-    ACTION_INVITE_CREATED = 'invite_created'
-    ACTION_INVITE_USED = 'invite_used'
+    ACTION_INVITE_CREATED = 'invitation_created'
+    ACTION_INVITE_USED = 'invitation_used'
     ACTIONS = (
         (ACTION_LOGIN, ACTION_LOGIN),
         (ACTION_LOGIN_FAILED, ACTION_LOGIN_FAILED),

@@ -1,4 +1,4 @@
-"""passbook core invite form"""
+"""passbook core invitation form"""
 
 from django import forms
 

@@ -8,5 +8,5 @@ from django.core.signals import Signal
 
 user_signed_up = Signal(providing_args=['request', 'user'])
 # TODO: Send this signal in admin interface
-invite_created = Signal(providing_args=['request', 'invite'])
-invite_used = Signal(providing_args=['request', 'invite', 'user'])
+invitation_created = Signal(providing_args=['request', 'invitation'])
+invitation_used = Signal(providing_args=['request', 'invitation', 'user'])
