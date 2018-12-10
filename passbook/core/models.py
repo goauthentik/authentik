@@ -141,7 +141,17 @@ class FieldMatcherRule(Rule):
         (MATCH_EXACT, _('Exact')),
     )
 
-    user_field = models.TextField()
+    USER_FIELDS = (
+        ('username', 'username',),
+        ('first_name', 'first_name',),
+        ('last_name', 'last_name',),
+        ('email', 'email',),
+        ('is_staff', 'is_staff',),
+        ('is_active', 'is_active',),
+        ('data_joined', 'data_joined',),
+    )
+
+    user_field = models.TextField(choices=USER_FIELDS)
     match_action = models.CharField(max_length=50, choices=MATCHES)
     value = models.TextField()
 

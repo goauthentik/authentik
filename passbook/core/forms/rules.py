@@ -15,7 +15,6 @@ class FieldMatcherRuleForm(forms.ModelForm):
         fields = GENERAL_FIELDS + ['user_field', 'match_action', 'value', ]
         widgets = {
             'name': forms.TextInput(),
-            'user_field': forms.TextInput(),
             'value': forms.TextInput(),
         }
 
