@@ -12,7 +12,7 @@ from django.views import View
 from django.views.generic import FormView
 
 from passbook.core.forms.authentication import LoginForm, SignUpForm
-from passbook.core.models import Invite, User
+from passbook.core.models import Invitation, User
 from passbook.core.signals import invitation_used, user_signed_up
 from passbook.lib.config import CONFIG
 
@@ -118,7 +118,7 @@ class SignUpView(UserPassesTestMixin, FormView):
     template_name = 'login/form.html'
     form_class = SignUpForm
     success_url = '.'
-    # Invite insatnce, if invitation link was used
+    # Invitation insatnce, if invitation link was used
     _invitation = None
     # Instance of newly created user
     _user = None
@@ -134,7 +134,7 @@ class SignUpView(UserPassesTestMixin, FormView):
         """Check if sign-up is enabled or invitation link given"""
         allowed = False
         if 'invitation' in request.GET:
-            invitations = Invite.objects.filter(uuid=request.GET.get('invitation'))
+            invitations = Invitation.objects.filter(uuid=request.GET.get('invitation'))
             allowed = invitations.exists()
             if allowed:
                 self._invitation = invitations.first()
@@ -144,6 +144,16 @@ class SignUpView(UserPassesTestMixin, FormView):
             messages.error(request, _('Sign-ups are currently disabled.'))
             return redirect(reverse('passbook_core:auth-login'))
         return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        if self._invitation:
+            initial = {}
+            if self._invitation.fixed_username:
+                initial['username'] = self._invitation.fixed_username
+            if self._invitation.fixed_email:
+                initial['e-mail'] = self._invitation.fixed_email
+            return initial
+        return super().get_initial()
 
     def get_context_data(self, **kwargs):
         kwargs['config'] = CONFIG.get('passbook')

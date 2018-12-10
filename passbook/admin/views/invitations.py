@@ -1,38 +1,40 @@
-"""passbook Invite administration"""
+"""passbook Invitation administration"""
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView
 
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.forms.invitations import InviteForm
-from passbook.core.models import Invite
+from passbook.core.forms.invitations import InvitationForm
+from passbook.core.models import Invitation
 
 
-class InviteListView(AdminRequiredMixin, ListView):
+class InvitationListView(AdminRequiredMixin, ListView):
     """Show list of all invitations"""
 
-    model = Invite
+    model = Invitation
     template_name = 'administration/invitation/list.html'
 
 
-class InviteCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
-    """Create new Invite"""
+class InvitationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+    """Create new Invitation"""
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:invitations')
-    success_message = _('Successfully created Invite')
-    form_class = InviteForm
+    success_message = _('Successfully created Invitation')
+    form_class = InvitationForm
 
-    def get_initial(self):
-        return {
-            'created_by': self.request.user
-        }
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        obj.save()
+        return HttpResponseRedirect(self.success_url)
 
-class InviteDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class InvitationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete invitation"""
 
-    model = Invite
+    model = Invitation
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:invitations')
-    success_message = _('Successfully updated Invite')
+    success_message = _('Successfully updated Invitation')

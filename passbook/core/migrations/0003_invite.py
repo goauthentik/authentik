@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Invite',
+            name='Invitation',
             fields=[
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('expires', models.DateTimeField(blank=True, default=None, null=True)),
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'verbose_name': 'Invite',
+                'verbose_name': 'Invitation',
                 'verbose_name_plural': 'Invitations',
             },
         ),

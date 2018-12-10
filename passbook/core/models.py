@@ -8,6 +8,7 @@ from uuid import uuid4
 import reversion
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 
@@ -250,7 +251,7 @@ class DebugRule(Rule):
         verbose_name = _('Debug Rule')
         verbose_name_plural = _('Debug Rules')
 
-class Invite(UUIDModel):
+class Invitation(UUIDModel):
     """Single-use invitation link"""
 
     created_by = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -258,10 +259,15 @@ class Invite(UUIDModel):
     fixed_username = models.TextField(blank=True, default=None)
     fixed_email = models.TextField(blank=True, default=None)
 
+    @property
+    def link(self):
+        """Get link to use invitation"""
+        return reverse_lazy('passbook_core:auth-sign-up') + '?invitation=%s' % self.uuid
+
     def __str__(self):
-        return "Invite %s created by %s" % (self.uuid, self.created_by)
+        return "Invitation %s created by %s" % (self.uuid, self.created_by)
 
     class Meta:
 
-        verbose_name = _('Invite')
+        verbose_name = _('Invitation')
         verbose_name_plural = _('Invitations')

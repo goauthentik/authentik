@@ -35,9 +35,10 @@ urlpatterns = [
     path('providers/<int:pk>/delete/',
          providers.ProviderDeleteView.as_view(), name='provider-delete'),
     # Invitations
-    path('invitations/', invitations.InviteListView.as_view(), name='invitations'),
-    path('invitations/create/', invitations.InviteCreateView.as_view(), name='invitation-create'),
+    path('invitations/', invitations.InvitationListView.as_view(), name='invitations'),
+    path('invitations/create/',
+         invitations.InvitationCreateView.as_view(), name='invitation-create'),
     path('invitations/<uuid:pk>/delete/',
-         invitations.InviteDeleteView.as_view(), name='invitation-delete'),
+         invitations.InvitationDeleteView.as_view(), name='invitation-delete'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]

@@ -25,12 +25,12 @@ def on_user_signed_up(sender, request, user, **kwargs):
 
 @receiver(invitation_created)
 def on_invitation_created(sender, request, invitation, **kwargs):
-    """Log Invite creation"""
+    """Log Invitation creation"""
     AuditEntry.create(AuditEntry.ACTION_INVITE_CREATED, request, invitation_uuid=invitation.uuid)
 
 @receiver(invitation_used)
 def on_invitation_used(sender, request, invitation, **kwargs):
-    """Log Invite usage"""
+    """Log Invitation usage"""
     AuditEntry.create(AuditEntry.ACTION_INVITE_USED, request, invitation_uuid=invitation.uuid)
 
 @receiver(user_login_failed)
