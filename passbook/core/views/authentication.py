@@ -151,7 +151,7 @@ class SignUpView(UserPassesTestMixin, FormView):
             if self._invitation.fixed_username:
                 initial['username'] = self._invitation.fixed_username
             if self._invitation.fixed_email:
-                initial['e-mail'] = self._invitation.fixed_email
+                initial['email'] = self._invitation.fixed_email
             return initial
         return super().get_initial()
 
@@ -205,6 +205,7 @@ class SignUpView(UserPassesTestMixin, FormView):
         new_user.is_active = True
         new_user.set_password(data.get('password'))
         new_user.save()
+        request.user = new_user
         # Send signal for other auth sources
         user_signed_up.send(
             sender=SignUpView,
