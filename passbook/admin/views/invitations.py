@@ -24,15 +24,10 @@ class InviteCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     success_message = _('Successfully created Invite')
     form_class = InviteForm
 
-
-class InviteUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
-    """Update invitation"""
-
-    model = Invite
-    template_name = 'generic/update.html'
-    success_url = reverse_lazy('passbook_admin:invitations')
-    success_message = _('Successfully updated Invite')
-    form_class = InviteForm
+    def get_initial(self):
+        return {
+            'created_by': self.request.user
+        }
 
 class InviteDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete invitation"""

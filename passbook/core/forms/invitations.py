@@ -11,4 +11,13 @@ class InviteForm(forms.ModelForm):
     class Meta:
 
         model = Invite
-        fields = '__all__'
+        fields = ['created_by', 'expires', 'fixed_username', 'fixed_email']
+        labels = {
+            'fixed_username': "Force user's username (optional)",
+            'fixed_email': "Force user's email (optional)",
+        }
+        widgets = {
+            'created_by': forms.Select(attrs={'disabled': 'disabled'}),
+            'fixed_username': forms.TextInput(),
+            'fixed_email': forms.TextInput(),
+        }
