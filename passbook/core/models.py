@@ -249,3 +249,19 @@ class DebugRule(Rule):
 
         verbose_name = _('Debug Rule')
         verbose_name_plural = _('Debug Rules')
+
+class Invite(UUIDModel):
+    """Single-use invite link"""
+
+    created_by = models.ForeignKey('User', on_delete=models.CASCADE)
+    expires = models.DateTimeField(default=None, blank=True, null=True)
+    fixed_username = models.TextField(blank=True, default=None)
+    fixed_email = models.TextField(blank=True, default=None)
+
+    def __str__(self):
+        return "Invite %s created by %s" % (self.uuid, self.created_by)
+
+    class Meta:
+
+        verbose_name = _('Invite')
+        verbose_name_plural = _('Invites')
