@@ -13,6 +13,7 @@ from django.views.generic import FormView
 
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invite, User
+from passbook.core.signals import invite_used, user_signed_up
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
@@ -117,7 +118,10 @@ class SignUpView(UserPassesTestMixin, FormView):
     template_name = 'login/form.html'
     form_class = SignUpForm
     success_url = '.'
+    # Invite insatnce, if invite link was used
     _invite = None
+    # Instance of newly created user
+    _user = None
 
     # Allow only not authenticated users to login
     def test_func(self):
@@ -150,13 +154,22 @@ class SignUpView(UserPassesTestMixin, FormView):
 
     def form_valid(self, form: SignUpForm) -> HttpResponse:
         """Create user"""
-        SignUpView.create_user(form.cleaned_data, self.request)
-        if self._invite:
-            self._invite.delete()
+        self._user = SignUpView.create_user(form.cleaned_data, self.request)
+        self.consume_invite()
         messages.success(self.request, _("Successfully signed up!"))
         LOGGER.debug("Successfully signed up %s",
                      form.cleaned_data.get('email'))
         return redirect(reverse('passbook_core:auth-login'))
+
+    def consume_invite(self):
+        """Consume invite if an invite was used"""
+        if self._invite:
+            invite_used.send(
+                sender=self,
+                request=self.request,
+                invite=self._invite,
+                user=self._user)
+            self._invite.delete()
 
     @staticmethod
     def create_user(data: Dict, request: HttpRequest = None) -> User:
@@ -183,6 +196,10 @@ class SignUpView(UserPassesTestMixin, FormView):
         new_user.set_password(data.get('password'))
         new_user.save()
         # Send signal for other auth sources
+        user_signed_up.send(
+            sender=SignUpView,
+            user=new_user,
+            request=request)
         # try:
             # TODO: Create signal for signup
             # on_user_sign_up.send(
