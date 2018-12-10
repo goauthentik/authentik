@@ -39,22 +39,14 @@
       {{ field.help_text }}
     </span>
     {% endif %}
+    {% for error in field.errors %}
+    <hr>
+    <div class="alert alert-danger">
+      <span class="pficon pficon-error-circle-o"></span>
+      <strong>{{ error }}</strong>
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
-  {% for error in field.errors %}
-  {{error }}
-  <div class="alert alert-danger">
-    <div class="alert-items">
-      <div class="alert-item">
-        <div class="alert-icon-wrapper">
-          <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-        </div>
-        <span class="alert-text">
-          {{ error }}
-        </span>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
 </div>
 {% endfor %}
