@@ -52,7 +52,7 @@ class SignUpForm(forms.Form):
         super().__init__(*args, **kwargs)
         # All fields which have initial data supplied are set to read only
         if 'initial' in kwargs:
-            for field, _ in kwargs.get('initial').items():
+            for field in kwargs.get('initial').keys():
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
         # TODO: Dynamically add captcha here
         # if not Setting.get_bool('recaptcha:enabled'):
