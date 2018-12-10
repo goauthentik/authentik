@@ -3,6 +3,23 @@
 {% load static %}
 {% load i18n %}
 
+{% block head %}
+<style>
+  .login-pf-page .login-pf-page-footer-links {
+    padding: 15px;
+    background-color: #fff;
+  }
+
+  .login-pf-page .login-pf-page-footer-link {
+    color: #72767b;
+  }
+
+  .login-pf-page .login-pf-page-footer-links li:not(:last-of-type):after {
+    color: #72767b;
+  }
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="login-pf-page">
   <div class="container-fluid">
