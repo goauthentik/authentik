@@ -1,6 +1,6 @@
 """passbook audit models"""
-from logging import getLogger
 from json import dumps, loads
+from logging import getLogger
 
 from django.conf import settings
 from django.core.exceptions import ValidationError

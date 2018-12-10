@@ -4,3 +4,4 @@
 -r passbook/saml_idp/requirements.txt
 -r passbook/tfa/requirements.txt
 -r passbook/oauth_provider/requirements.txt
+-r passbook/audit/requirements.txt

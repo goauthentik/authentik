@@ -16,6 +16,7 @@ admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
 core_urls = [
     path('auth/login/', authentication.LoginView.as_view(), name='auth-login'),
     path('auth/logout/', authentication.LogoutView.as_view(), name='auth-logout'),
+    path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
     path('', overview.OverviewView.as_view(), name='overview'),
 ]
 
