@@ -26,7 +26,7 @@
       {% for invitation in object_list %}
         <tr>
           <td>{{ invitation.expires|default:"Never" }}</td>
-          <td><pre>test</pre></td>
+          <td><pre>{{ invitation.link }}</pre></td>
           <td>
             <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invitation-delete' pk=invitation.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
           </td>

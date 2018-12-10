@@ -3,6 +3,7 @@ from json import dumps, loads
 from logging import getLogger
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext as _
@@ -57,9 +58,12 @@ class AuditEntry(UUIDModel):
     def create(action, request, **kwargs):
         """Create AuditEntry from arguments"""
         client_ip, _ = get_client_ip(request)
+        user = request.user
+        if isinstance(user, AnonymousUser):
+            user = kwargs.get('user', None)
         entry = AuditEntry.objects.create(
             action=action,
-            user=request.user,
+            user=user,
             # User 255.255.255.255 as fallback if IP cannot be determined
             request_ip=client_ip or '255.255.255.255',
             _context=dumps(kwargs))
