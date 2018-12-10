@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
-from passbook.core.views import authentication, overview
+from passbook.core.views import authentication, overview, user
 from passbook.lib.utils.reflection import get_apps
 
 LOGGER = getLogger(__name__)
@@ -14,9 +14,14 @@ admin.autodiscover()
 admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
 
 core_urls = [
+    # Authentication views
     path('auth/login/', authentication.LoginView.as_view(), name='auth-login'),
     path('auth/logout/', authentication.LogoutView.as_view(), name='auth-logout'),
     path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
+    # User views
+    path('user/', user.UserSettingsView.as_view(), name='user-settings'),
+    path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
+    # Overview
     path('', overview.OverviewView.as_view(), name='overview'),
 ]
 

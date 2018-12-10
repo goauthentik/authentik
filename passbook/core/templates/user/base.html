@@ -1,0 +1,24 @@
+{% extends "overview/base.html" %}
+
+{% load i18n %}
+{% load is_active %}
+
+{% block content %}
+<div class="container">
+    <div class="col-md-3 ">
+        <div class="nav-category">
+            <h2>{% trans 'User Profile'%}</h2>
+            <ul class="nav nav-pills nav-stacked">
+                <li class="{% is_active 'passbook_core:user-settings' %}"><a href="{% url 'passbook_core:user-settings' %}"><i class="fa fa-desktop"></i>{% trans 'Details' %}</a></li>
+                <li><a href="#"><i class="fa fa-cog"></i>System Services</a></li>
+                <li><a href="#"><i class="fa fa-file-text-o"></i>Journal</a></li>
+                <li><a href="#"><i class="fa fa-cloud"></i>Storage</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block page %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

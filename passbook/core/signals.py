@@ -7,6 +7,5 @@ from django.core.signals import Signal
 # from passbook.core.models import Invitation, User
 
 user_signed_up = Signal(providing_args=['request', 'user'])
-# TODO: Send this signal in admin interface
 invitation_created = Signal(providing_args=['request', 'invitation'])
 invitation_used = Signal(providing_args=['request', 'invitation', 'user'])

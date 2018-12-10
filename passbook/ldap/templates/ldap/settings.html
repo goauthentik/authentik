@@ -15,13 +15,13 @@
       <form role="form" method="POST">
         <div class="card-block">
           <h3><clr-icon shape="cog" size="32"></clr-icon>{% trans 'General settings' %}</h3>
-          {% include 'blocks/form.html' with form=general %}
+          {% include 'partials/form.html' with form=general %}
           <h3><clr-icon shape="connect" size="32"></clr-icon>{% trans 'Connection settings' %}</h3>
-          {% include 'blocks/form.html' with form=connection %}
+          {% include 'partials/form.html' with form=connection %}
           <h3><clr-icon shape="certificate" size="32"></clr-icon>{% trans 'Authentication backend ' %}</h3>
-          {% include 'blocks/form.html' with form=authentication %}
+          {% include 'partials/form.html' with form=authentication %}
           <h3><clr-icon shape="users" size="32"></clr-icon>{% trans 'Create users settings' %}</h3>
-          {% include 'blocks/form.html' with form=create_users %}
+          {% include 'partials/form.html' with form=create_users %}
         </div>
         <div class="card-footer">
           <button type="submit" value="general" class="btn btn-sm btn-primary">{% trans 'Update' %}</button>
