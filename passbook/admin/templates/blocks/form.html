@@ -2,11 +2,6 @@
 
 {% csrf_token %}
 {% for field in form %}
-{% if field.help_text %}
-<span>
-  {{ field.help_text }}
-</span>
-{% endif %}
 <div class="form-group">
   {% if field.field.widget|fieldtype == 'RadioSelect' %}
     <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
@@ -39,9 +34,15 @@
   </label>
   <div class="col-sm-10">
     {{ field|css_class:'form-control' }}
+    {% if field.help_text %}
+    <span>
+      {{ field.help_text }}
+    </span>
+    {% endif %}
   </div>
   {% endif %}
   {% for error in field.errors %}
+  {{error }}
   <div class="alert alert-danger">
     <div class="alert-items">
       <div class="alert-item">

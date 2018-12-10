@@ -1,63 +1,33 @@
 {% extends "overview/base.html" %}
 
+{% load i18n %}
+
 {% block content %}
 <div class="container">
   <div class="row row-cards-pf">
+    {% for app in applications %}
     <!-- Important:  if you need to nest additional .row within a .row.row-cards-pf, do *not* use .row-cards-pf on the nested .row  -->
     <div class="col-xs-12 col-sm-6 col-md-3">
       <div class="card-pf card-pf-accented card-pf-aggregate-status">
         <h2 class="card-pf-title">
-          <span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count">0</span> Ipsum
+          <span class="fa fa-shield"></span> {{ app.name }}
         </h2>
         <div class="card-pf-body">
           <p class="card-pf-aggregate-status-notifications">
-            <span class="card-pf-aggregate-status-notification"><a href="#" class="add" data-toggle="tooltip"
-                data-placement="top" title="Add Ipsum"><span class="pficon pficon-add-circle-o"></span></a></span>
-          </p>
-        </div>
-      </div>
-
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-3">
-      <div class="card-pf card-pf-accented card-pf-aggregate-status">
-        <h2 class="card-pf-title">
-          <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count">20</span> Amet</a>
-        </h2>
-        <div class="card-pf-body">
-          <p class="card-pf-aggregate-status-notifications">
-            <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-error-circle-o"></span>4</a></span>
-            <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-warning-triangle-o"></span>1</a></span>
-          </p>
-        </div>
-      </div>
-
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-3">
-      <div class="card-pf card-pf-accented card-pf-aggregate-status">
-        <h2 class="card-pf-title">
-          <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count">9</span>
-            Adipiscing</a>
-        </h2>
-        <div class="card-pf-body">
-          <p class="card-pf-aggregate-status-notifications">
-            <span class="card-pf-aggregate-status-notification"><span class="pficon pficon-ok"></span></span>
-          </p>
-        </div>
-      </div>
-
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-3">
-      <div class="card-pf card-pf-accented card-pf-aggregate-status">
-        <h2 class="card-pf-title">
-          <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count">12</span> Lorem</a>
-        </h2>
-        <div class="card-pf-body">
-          <p class="card-pf-aggregate-status-notifications">
-            <a href="#"><span class="card-pf-aggregate-status-notification"><span class="pficon pficon-error-circle-o"></span>1</span></a>
+            <span class="card-pf-aggregate-status-notification">
+              <a href="{{ app.launch_url }}" class="add" data-toggle="tooltip" data-placement="top" title="{% trans 'Open App...' %}">
+                {% if not app.icon_url %}
+                <span class="pficon pficon-arrow"></span>
+                {% else %}
+                <img src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
+                {% endif %}
+              </a>
+            </span>
           </p>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div><!-- /row -->
 </div>
 {% endblock %}
