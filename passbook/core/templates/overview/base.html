@@ -49,7 +49,7 @@
     </ul>
     {% is_active_app 'passbook_admin' as is_admin %}
     <ul class="nav navbar-nav navbar-primary {% if is_admin == 'active' %}persistent-secondary{% endif %}">
-      <li class="{% is_active 'passbook_core:overview' %}">
+      <li class="{% is_active_url 'passbook_core:overview' %}">
         <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
       </li>
       <li class="{% is_active_app 'passbook_admin' %}">
