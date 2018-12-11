@@ -20,3 +20,14 @@ class LoadingView(TemplateView):
         kwargs['title'] = self.title
         kwargs['target_url'] = self.get_url()
         return super().get_context_data(**kwargs)
+
+class PermissionDeniedView(TemplateView):
+    """Generic Permission denied view"""
+
+    template_name = 'login/denied.html'
+    title = _('Permission denied.')
+
+    def get_context_data(self, **kwargs):
+        kwargs['is_login'] = True
+        kwargs['title'] = self.title
+        return super().get_context_data(**kwargs)

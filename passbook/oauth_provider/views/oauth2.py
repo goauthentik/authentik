@@ -2,13 +2,12 @@
 from logging import getLogger
 from urllib.parse import urlencode
 
-from django.http import Http404
-from django.shortcuts import get_object_or_404, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
 
 from passbook.core.views.access import AccessMixin
-from passbook.core.views.utils import LoadingView
+from passbook.core.views.utils import LoadingView, PermissionDeniedView
 from passbook.oauth_provider.models import OAuth2Provider
 
 LOGGER = getLogger(__name__)
@@ -22,6 +21,11 @@ class PassbookAuthorizationLoadingView(LoadingView):
     def get_url(self):
         querystring = urlencode(self.request.GET)
         return reverse('passbook_oauth_provider:oauth2-ok-authorize')+'?'+querystring
+
+
+class OAuthPermissionDenied(PermissionDeniedView):
+    """Show permission denied view"""
+
 
 class PassbookAuthorizationView(AccessMixin, AuthorizationView):
     """Custom OAuth2 Authorization View which checks rules, etc"""
@@ -40,8 +44,7 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         self._application = application
         # Check permissions
         if not self.user_has_access(self._application, request.user):
-            # TODO: Create a general error class for access denied
-            raise Http404
+            return redirect(reverse('passbook_oauth_provider:oauth2-permission-denied'))
         actual_response = super().dispatch(request, *args, **kwargs)
         if actual_response.status_code == 400:
             LOGGER.debug(request.GET.get('redirect_uri'))
