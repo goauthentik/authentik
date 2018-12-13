@@ -46,6 +46,7 @@ class AuditEntry(UUIDModel):
     _context = models.TextField()
     _context_cache = None
     request_ip = models.GenericIPAddressField()
+    created = models.DateTimeField(auto_now_add=True)
 
     @property
     def context(self):
