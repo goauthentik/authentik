@@ -3,7 +3,7 @@ from logging import getLogger
 from typing import Dict
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, reverse
@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import FormView
 
+from passbook.core.auth.mfa import MultiFactorAuthenticator
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, User
 from passbook.core.signals import invitation_used, user_signed_up
@@ -30,11 +31,6 @@ class LoginView(UserPassesTestMixin, FormView):
         return self.request.user.is_authenticated is False
 
     def handle_no_permission(self):
-        return self.logged_in_redirect()
-
-    def logged_in_redirect(self):
-        """User failed check so user is authenticated already.
-        Either redirect to ?next param or home."""
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
         return redirect(reverse('passbook_core:overview'))
@@ -62,40 +58,10 @@ class LoginView(UserPassesTestMixin, FormView):
         if not pre_user:
             # No user found
             return self.invalid_login(self.request)
-        user = authenticate(
-            email=pre_user.email,
-            username=pre_user.username,
-            password=form.cleaned_data.get('password'),
-            request=self.request)
-        if user:
-            # User authenticated successfully
-            return self.login(self.request, user, form.cleaned_data)
-        # User was found but couldn't authenticate
-        return self.invalid_login(self.request, disabled_user=pre_user)
-
-    def login(self, request: HttpRequest, user: User, cleaned_data: Dict) -> HttpResponse:
-        """Handle actual login
-
-        Actually logs user in, sets session expiry and redirects to ?next parameter
-
-        Args:
-            request: The current request
-            user: The user to be logged in.
-
-        Returns:
-            Either redirect to ?next or if not present to overview
-        """
-        if user is None:
-            raise ValueError("User cannot be None")
-        login(request, user)
-
-        if cleaned_data.get('remember') is True:
-            request.session.set_expiry(CONFIG.y('passbook.session.remember_age'))
-        else:
-            request.session.set_expiry(0)  # Expires when browser is closed
-        messages.success(request, _("Successfully logged in!"))
-        LOGGER.debug("Successfully logged in %s", user.username)
-        return self.logged_in_redirect()
+        if MultiFactorAuthenticator.SESSION_FACTOR in self.request.session:
+            del self.request.session[MultiFactorAuthenticator.SESSION_FACTOR]
+        self.request.session[MultiFactorAuthenticator.SESSION_PENDING_USER] = pre_user.pk
+        return redirect(reverse('passbook_core:mfa'))
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""

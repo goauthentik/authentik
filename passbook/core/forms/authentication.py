@@ -16,7 +16,6 @@ class LoginForm(forms.Form):
 
     title = _('Log in to your account')
     uid_field = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _('UID')}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password')}))
     remember_me = forms.BooleanField(required=False)
 
     def clean_uid_field(self):
@@ -24,6 +23,11 @@ class LoginForm(forms.Form):
         if CONFIG.y('passbook.uid_fields') == ['email']:
             validate_email(self.cleaned_data.get('uid_field'))
         return self.cleaned_data.get('uid_field')
+
+class AuthenticationBackendFactorForm(forms.Form):
+    """Password authentication form"""
+
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password')}))
 
 class SignUpForm(forms.Form):
     """SignUp Form"""

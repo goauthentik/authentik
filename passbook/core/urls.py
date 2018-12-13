@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from passbook.core.auth import mfa
 from passbook.core.views import authentication, overview, user
 from passbook.lib.utils.reflection import get_apps
 
@@ -18,6 +19,7 @@ core_urls = [
     path('auth/login/', authentication.LoginView.as_view(), name='auth-login'),
     path('auth/logout/', authentication.LogoutView.as_view(), name='auth-logout'),
     path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
+    path('auth/mfa/', mfa.MultiFactorAuthenticator.as_view(), name='mfa'),
     # User views
     path('user/', user.UserSettingsView.as_view(), name='user-settings'),
     path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
