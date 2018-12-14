@@ -1,4 +1,4 @@
-"""passbook 2FA Settings"""
+"""passbook TOTP Settings"""
 
 OTP_LOGIN_URL = 'passbook_tfa:tfa-verify'
 OTP_TOTP_ISSUER = 'passbook'

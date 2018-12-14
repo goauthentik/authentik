@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     'passbook.oauth_client',
     'passbook.oauth_provider',
     'passbook.saml_idp',
-    'passbook.tfa',
+    'passbook.totp',
 ]
 
 # Message Tag fix for bootstrap CSS Classes

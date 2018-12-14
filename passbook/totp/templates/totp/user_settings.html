@@ -31,9 +31,9 @@
         </p>
         <p>
           {% if not state %}
-          <a href="{% url 'passbook_tfa:tfa-enable' %}" class="btn btn-success btn-sm">{% trans "Enable 2FA" %}</a>
+          <a href="{% url 'passbook_tfa:tfa-enable' %}" class="btn btn-success btn-sm">{% trans "Enable TOTP" %}</a>
           {% else %}
-          <a href="{% url 'passbook_tfa:tfa-disable' %}" class="btn btn-danger btn-sm">{% trans "Disable 2FA" %}</a>
+          <a href="{% url 'passbook_tfa:tfa-disable' %}" class="btn btn-danger btn-sm">{% trans "Disable TOTP" %}</a>
           {% endif %}
         </p>
       </div>

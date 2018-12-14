@@ -1,4 +1,4 @@
-"""passbook 2FA Views"""
+"""passbook TOTP Views"""
 # from base64 import b32encode
 # from binascii import unhexlify
 
@@ -19,8 +19,8 @@ from qrcode.image.svg import SvgPathImage
 from passbook.lib.decorators import reauth_required
 # from passbook.core.models import Event
 # from passbook.core.views.wizards import BaseWizardView
-from passbook.tfa.forms import TFAVerifyForm
-from passbook.tfa.utils import otpauth_url
+from passbook.totp.forms import TOTPVerifyForm
+from passbook.totp.utils import otpauth_url
 
 TFA_SESSION_KEY = 'passbook_2fa_key'
 
@@ -30,22 +30,22 @@ TFA_SESSION_KEY = 'passbook_2fa_key'
 def index(request: HttpRequest) -> HttpResponse:
     """Show empty index page"""
     return render(request, 'core/generic.html', {
-        'text': 'Test 2FA passed'
+        'text': 'Test TOTP passed'
     })
 
 
 @login_required
 def verify(request: HttpRequest) -> HttpResponse:
-    """Verify 2FA Token"""
+    """Verify TOTP Token"""
     if not user_has_device(request.user):
         messages.error(request, _("You don't have 2-Factor Authentication set up."))
     if request.method == 'POST':
-        form = TFAVerifyForm(request.POST)
+        form = TOTPVerifyForm(request.POST)
         if form.is_valid():
             device = match_token(request.user, form.cleaned_data.get('code'))
             if device:
                 login(request, device)
-                messages.success(request, _('Successfully validated 2FA Token.'))
+                messages.success(request, _('Successfully validated TOTP Token.'))
                 # Check if there is a next GET parameter and redirect to that
                 if 'next' in request.GET:
                     return redirect(request.GET.get('next'))
@@ -53,7 +53,7 @@ def verify(request: HttpRequest) -> HttpResponse:
                 return redirect(reverse('common-index'))
             messages.error(request, _('Invalid 2-Factor Token.'))
     else:
-        form = TFAVerifyForm()
+        form = TOTPVerifyForm()
 
     return render(request, 'generic/form_login.html', {
         'form': form,
@@ -67,13 +67,13 @@ def verify(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def user_settings(request: HttpRequest) -> HttpResponse:
-    """View for user settings to control 2FA"""
+    """View for user settings to control TOTP"""
     static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
     static_tokens = StaticToken.objects.filter(device=static).order_by('token')
     finished_totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=True)
     finished_static_devices = StaticDevice.objects.filter(user=request.user, confirmed=True)
     state = finished_totp_devices.exists() and finished_static_devices.exists()
-    return render(request, 'tfa/user_settings.html', {
+    return render(request, 'totp/user_settings.html', {
         'static_tokens': static_tokens,
         'state': state,
     })
@@ -83,7 +83,7 @@ def user_settings(request: HttpRequest) -> HttpResponse:
 @reauth_required
 @otp_required
 def disable(request: HttpRequest) -> HttpResponse:
-    """Disable 2FA for user"""
+    """Disable TOTP for user"""
     # Delete all the devices for user
     static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
     static_tokens = StaticToken.objects.filter(device=static).order_by('token')
@@ -92,11 +92,11 @@ def disable(request: HttpRequest) -> HttpResponse:
     totp.delete()
     for token in static_tokens:
         token.delete()
-    messages.success(request, 'Successfully disabled 2FA')
+    messages.success(request, 'Successfully disabled TOTP')
     # Create event with email notification
     # Event.create(
     #     user=request.user,
-    #     message=_('You disabled 2FA.'),
+    #     message=_('You disabled TOTP.'),
     #     current=True,
     #     request=request,
     #     send_notification=True)
@@ -108,7 +108,7 @@ def disable(request: HttpRequest) -> HttpResponse:
 # class TFASetupView(BaseWizardView):
 #     """Wizard to create a Mail Account"""
 
-#     title = _('Set up 2FA')
+#     title = _('Set up TOTP')
 #     form_list = [TFASetupInitForm, TFASetupStaticForm]
 
 #     totp_device = None
@@ -117,15 +117,15 @@ def disable(request: HttpRequest) -> HttpResponse:
 
 #     def get_template_names(self):
 #         if self.steps.current == '1':
-#             return 'tfa/wizard_setup_static.html'
+#             return 'totp/wizard_setup_static.html'
 #         return self.template_name
 
 #     def handle_request(self, request: HttpRequest):
-#         # Check if user has 2FA setup already
+#         # Check if user has TOTP setup already
 #         finished_totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=True)
 #         finished_static_devices = StaticDevice.objects.filter(user=request.user, confirmed=True)
 #         if finished_totp_devices.exists() or finished_static_devices.exists():
-#             messages.error(request, _('You already have 2FA enabled!'))
+#             messages.error(request, _('You already have TOTP enabled!'))
 #             return redirect(reverse('common-index'))
 #         # Check if there's an unconfirmed device left to set up
 #         totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=False)
@@ -182,7 +182,7 @@ def disable(request: HttpRequest) -> HttpResponse:
 #         # Create event with email notification
 #         Event.create(
 #             user=self.request.user,
-#             message=_('You activated 2FA.'),
+#             message=_('You activated TOTP.'),
 #             current=True,
 #             request=self.request,
 #             send_notification=True)

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block form %}
-<label for="">Keep these tokens somewhere safe. These are to be used if you loose your primary 2FA device.</label>
+<label for="">Keep these tokens somewhere safe. These are to be used if you loose your primary TOTP device.</label>
 {% for field in wizard.form %}
   {% if field.field.widget|fieldtype == 'SelectMultiple' %}
     <ul class="list">
