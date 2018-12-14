@@ -1,7 +1,7 @@
 """passbook URL Configuration"""
 from django.urls import path
 
-from passbook.admin.views import (applications, invitations, overview,
+from passbook.admin.views import (applications, audit, invitations, overview,
                                   providers, rules, sources)
 
 urlpatterns = [
@@ -40,5 +40,7 @@ urlpatterns = [
          invitations.InvitationCreateView.as_view(), name='invitation-create'),
     path('invitations/<uuid:pk>/delete/',
          invitations.InvitationDeleteView.as_view(), name='invitation-delete'),
+    # Audit Log
+    path('audit/', audit.AuditEntryListView.as_view(), name='audit-log'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
 ]

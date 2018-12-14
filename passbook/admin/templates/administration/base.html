@@ -26,6 +26,9 @@
   <li>
     <a href="#">{% trans 'Users' %}</a>
   </li>
+  <li class="{% is_active 'passbook_admin:audit-log' %}">
+    <a href="{% url 'passbook_admin:audit-log' %}">{% trans 'Audit Log' %}</a>
+  </li>
   <li class="{% is_active_app 'admin' %}">
     <a href="{% url 'admin:index' %}">{% trans 'Django' %}</a>
   </li>

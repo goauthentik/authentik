@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="btn-group">
+  {% with param=get_param|default:'page' %}
+  {% if page_obj.has_previous %}
+    <a class="btn btn-default" href="?{{ param }}={{ page_obj.previous_page_number }}"><span class="fa fa-angle-left"></span></a>
+  {% else %}
+    <a class="btn btn-default disabled" href=""><span class="fa fa-angle-left"></span></a>
+  {% endif %}
+  <span class="btn btn-default">
+    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+    Page {{ current }} of {{ total }}
+    {% endblocktrans %}
+  </span>
+  {% if page_obj.has_next %}
+    <a class="btn btn-default" href="?{{ param }}={{ page_obj.next_page_number }}"><span class="fa fa-angle-right"></span></a>
+  {% else %}
+    <a class="btn btn-default disabled" href=""><span class="fa fa-angle-right"></span></a>
+  {% endif %}
+  {% endwith %}
+</div>
+<hr>
