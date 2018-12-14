@@ -52,6 +52,7 @@ AUTHENTICATION_BACKENDS = [
 AUTHENTICATION_FACTORS = [
     'passbook.core.auth.backend_factor.AuthenticationBackendFactor',
     'passbook.core.auth.dummy.DummyFactor',
+    'passbook.captcha_factor.factor.CaptchaFactor',
 ]
 
 # Application definition
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
     'passbook.oauth_provider',
     'passbook.saml_idp',
     'passbook.totp',
+    'passbook.captcha_factor',
 ]
 
 # Message Tag fix for bootstrap CSS Classes
