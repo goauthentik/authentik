@@ -2,6 +2,15 @@
 
 {% load i18n %}
 
+{% block head %}
+{{ block.super }}
+<style>
+  img.app-icon {
+    max-height: 72px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
   <div class="row row-cards-pf">
@@ -19,7 +28,7 @@
                 {% if not app.icon_url %}
                 <span class="pficon pficon-arrow"></span>
                 {% else %}
-                <img src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
+                <img class="app-icon" src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
                 {% endif %}
               </a>
             </span>

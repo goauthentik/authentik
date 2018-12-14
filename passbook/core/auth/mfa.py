@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import View
 
 from passbook.core.models import User
+from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 
 LOGGER = getLogger(__name__)
@@ -81,7 +82,7 @@ class MultiFactorAuthenticator(View):
     def user_invalid(self):
         """Show error message, user could not be authenticated"""
         LOGGER.debug("User invalid")
-        # TODO: Redirect to error view
+        return redirect(reverse('passbook_core:mfa-denied'))
 
     def _user_passed(self):
         """User Successfully passed all factors"""
@@ -90,3 +91,6 @@ class MultiFactorAuthenticator(View):
         login(self.request, self.pending_user, backend=backend)
         LOGGER.debug("Logged in user %s", self.pending_user)
         return redirect(reverse('passbook_core:overview'))
+
+class MFAPermissionDeniedView(PermissionDeniedView):
+    """User could not be authenticated"""

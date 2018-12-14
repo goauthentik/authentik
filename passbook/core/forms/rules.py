@@ -1,6 +1,7 @@
 """passbook rule forms"""
 
 from django import forms
+from django.utils.translation import gettext as _
 
 from passbook.core.models import DebugRule, FieldMatcherRule, WebhookRule
 
@@ -45,4 +46,7 @@ class DebugRuleForm(forms.ModelForm):
         fields = GENERAL_FIELDS + ['result', 'wait_min', 'wait_max']
         widgets = {
             'name': forms.TextInput(),
+        }
+        labels = {
+            'result': _('Allow user')
         }
