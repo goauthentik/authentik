@@ -16,6 +16,7 @@ class AuthenticationBackendFactor(FormView, AuthenticationFactor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
     form_class = AuthenticationBackendFactorForm
+    template_name = 'login/factors/backend.html'
 
     def form_valid(self, form):
         """Authenticate against django's authentication backend"""

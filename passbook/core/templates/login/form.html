@@ -10,6 +10,8 @@
 {% include 'partials/messages.html' %}
 <form method="POST">
   {% csrf_token %}
+  {% block above_form %}
+  {% endblock %}
   {% include 'partials/form_login.html' %}
   <button type="submit" class="btn btn-primary btn-block btn-lg">{% trans primary_action %}</button>
 </form>
