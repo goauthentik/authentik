@@ -3,7 +3,6 @@
 from logging import getLogger
 
 from passbook.lib.utils.template import render_to_string
-from passbook.saml_idp.models import SAMLProvider
 from passbook.saml_idp.xml_signing import get_signature_xml, sign_with_signxml
 
 LOGGER = getLogger(__name__)
@@ -64,7 +63,7 @@ def get_assertion_xml(template, parameters, signed=False):
     return render_to_string(template, params)
 
 
-def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=''):
+def get_response_xml(parameters, saml_provider: 'SAMLProvider', assertion_id=''):
     """Returns XML for response, with signatures, if signed is True."""
     # Reset signatures.
     params = {}
