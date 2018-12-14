@@ -36,6 +36,7 @@ INTERNAL_IPS = ['127.0.0.1']
 ALLOWED_HOSTS = []
 
 LOGIN_URL = 'passbook_core:auth-login'
+# CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
 
 # Custom user model
 AUTH_USER_MODEL = 'passbook_core.User'
@@ -47,6 +48,10 @@ LANGUAGE_COOKIE_NAME = 'passbook_language'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'passbook.oauth_client.backends.AuthorizedServiceBackend'
+]
+AUTHENTICATION_FACTORS = [
+    'passbook.core.auth.backend_factor.AuthenticationBackendFactor',
+    'passbook.core.auth.dummy.DummyFactor',
 ]
 
 # Application definition
