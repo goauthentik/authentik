@@ -23,8 +23,8 @@
   <li class="{% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
     <a href="{% url 'passbook_admin:invitations' %}">{% trans 'Invitations' %}</a>
   </li>
-  <li>
-    <a href="#">{% trans 'Users' %}</a>
+  <li class="{% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
+    <a href="{% url 'passbook_admin:users' %}">{% trans 'Users' %}</a>
   </li>
   <li class="{% is_active 'passbook_admin:audit-log' %}">
     <a href="{% url 'passbook_admin:audit-log' %}">{% trans 'Audit Log' %}</a>

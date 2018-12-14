@@ -2,7 +2,7 @@
 from django.urls import path
 
 from passbook.admin.views import (applications, audit, invitations, overview,
-                                  providers, rules, sources)
+                                  providers, rules, sources, users)
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
@@ -40,6 +40,13 @@ urlpatterns = [
          invitations.InvitationCreateView.as_view(), name='invitation-create'),
     path('invitations/<uuid:pk>/delete/',
          invitations.InvitationDeleteView.as_view(), name='invitation-delete'),
+    # Users
+    path('users/', users.UserListView.as_view(),
+         name='users'),
+    path('users/<int:pk>/update/',
+         users.UserUpdateView.as_view(), name='user-update'),
+    path('users/<int:pk>/delete/',
+         users.UserDeleteView.as_view(), name='user-delete'),
     # Audit Log
     path('audit/', audit.AuditEntryListView.as_view(), name='audit-log'),
     # path('api/v1/', include('passbook.admin.api.v1.urls'))
