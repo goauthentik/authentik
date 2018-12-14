@@ -1,9 +1,8 @@
 """passbook User administration"""
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView, TemplateView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
 
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.forms.user import UserDetailForm
@@ -35,4 +34,3 @@ class UserDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
 
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully updated User')
-
