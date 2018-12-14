@@ -5,25 +5,10 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from defusedxml import ElementTree
 from signxml import XMLSigner
-from signxml.util import strip_pem_header
 
-from passbook.lib.config import CONFIG
 from passbook.lib.utils.template import render_to_string
 
 LOGGER = getLogger(__name__)
-
-
-def load_certificate(strip=False):
-    """Get Public key from config"""
-    cert = CONFIG.y('saml_idp.certificate', '')
-    if strip:
-        return strip_pem_header(cert.replace('\r', '')).replace('\n', '')
-    return cert
-
-
-def load_private_key():
-    """Get Private Key from config"""
-    return CONFIG.y('saml_idp.key', '')
 
 
 def sign_with_signxml(private_key, data, cert, reference_uri=None):

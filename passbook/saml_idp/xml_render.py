@@ -3,8 +3,8 @@
 from logging import getLogger
 
 from passbook.lib.utils.template import render_to_string
-from passbook.saml_idp.xml_signing import (get_signature_xml, load_certificate,
-                                           load_private_key, sign_with_signxml)
+from passbook.saml_idp.models import SAMLProvider
+from passbook.saml_idp.xml_signing import get_signature_xml, sign_with_signxml
 
 LOGGER = getLogger(__name__)
 
@@ -64,7 +64,7 @@ def get_assertion_xml(template, parameters, signed=False):
     return render_to_string(template, params)
 
 
-def get_response_xml(parameters, signed=False, assertion_id=''):
+def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=''):
     """Returns XML for response, with signatures, if signed is True."""
     # Reset signatures.
     params = {}
@@ -72,22 +72,17 @@ def get_response_xml(parameters, signed=False, assertion_id=''):
     params['RESPONSE_SIGNATURE'] = ''
     _get_in_response_to(params)
 
-    unsigned = render_to_string('saml/xml/response.xml', params)
+    raw_response = render_to_string('saml/xml/response.xml', params)
 
     # LOGGER.debug('Unsigned: %s', unsigned)
-    if not signed:
-        return unsigned
+    if not saml_provider.signing:
+        return raw_response
 
-    raw_response = render_to_string('saml/xml/response.xml', params)
-    # Sign it.
-    if signed:
-        signature_xml = get_signature_xml()
-        params['RESPONSE_SIGNATURE'] = signature_xml
-        # LOGGER.debug("Raw response: %s", raw_response)
+    signature_xml = get_signature_xml()
+    params['RESPONSE_SIGNATURE'] = signature_xml
+    # LOGGER.debug("Raw response: %s", raw_response)
 
-        signed = sign_with_signxml(
-            load_private_key(), raw_response, [load_certificate(True)],
-            reference_uri=assertion_id) \
-            .decode("utf-8")
-        return signed
-    return raw_response
+    signed = sign_with_signxml(
+        saml_provider.signing_key, raw_response, [saml_provider.signing_cert],
+        reference_uri=assertion_id).decode("utf-8")
+    return signed

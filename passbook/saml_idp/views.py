@@ -19,7 +19,7 @@ from passbook.lib.config import CONFIG
 from passbook.lib.utils.template import render_to_string
 # from passbook.core.views.common import ErrorResponseView
 # from passbook.core.views.settings import GenericSettingView
-from passbook.saml_idp import exceptions, registry, xml_signing
+from passbook.saml_idp import exceptions, registry
 
 # from OpenSSL.crypto import FILETYPE_PEM
 # from OpenSSL.crypto import Error as CryptoError
@@ -174,7 +174,7 @@ def descriptor(request):
     entity_id = CONFIG.y('saml_idp.issuer')
     slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_logout'))
     sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_login_begin'))
-    pubkey = xml_signing.load_certificate(strip=True)
+    pubkey = '' # TODO: Extract application/provider for pubkey
     ctx = {
         'entity_id': entity_id,
         'cert_public_key': pubkey,

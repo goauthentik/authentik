@@ -176,10 +176,10 @@ class Processor:
 
     def _format_response(self):
         """Formats _response_params as _response_xml."""
-        sign_it = CONFIG.y('saml_idp.signing', True)
         assertion_id = self._assertion_params['ASSERTION_ID']
+        # TODO: Get application/provider instance
         self._response_xml = xml_render.get_response_xml(self._response_params,
-                                                         signed=sign_it,
+                                                         saml_provider=None,
                                                          assertion_id=assertion_id)
 
     def _get_django_response_params(self):
