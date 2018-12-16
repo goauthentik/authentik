@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
 
+from passbook.audit.models import AuditEntry
 from passbook.core.views.access import AccessMixin
 from passbook.core.views.utils import LoadingView, PermissionDeniedView
 from passbook.oauth_provider.models import OAuth2Provider
@@ -57,6 +58,9 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
 
     def form_valid(self, form):
         # User has clicked on "Authorize"
-        # TODO: Create Audit log entry
+        AuditEntry.create(
+            action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+            request=self.request,
+            app=str(self._application))
         LOGGER.debug('user %s authorized %s', self.request.user, self._application)
         return super().form_valid(form)
