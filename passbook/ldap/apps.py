@@ -8,4 +8,4 @@ class PassbookLdapConfig(AppConfig):
 
     name = 'passbook.ldap'
     label = 'passbook_ldap'
-    verbose_name = 'Passbook LDAP'
+    verbose_name = 'passbook LDAP'

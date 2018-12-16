@@ -7,3 +7,4 @@ class PassbookCaptchaFactorConfig(AppConfig):
 
     name = 'passbook.captcha_factor'
     label = 'passbook_captcha_factor'
+    verbose_name = 'passbook Captcha'

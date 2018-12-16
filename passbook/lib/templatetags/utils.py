@@ -2,6 +2,7 @@
 import glob
 import os
 import socket
+from importlib import import_module
 from urllib.parse import urljoin
 
 from django import template
@@ -163,3 +164,17 @@ def unslug(_input):
 def css_class(field, css):
     """Add css class to form field"""
     return field.as_widget(attrs={"class": css})
+
+
+@register.simple_tag
+def app_versions():
+    """Return dictionary of app_name: version"""
+    app_versions = {}
+    for app in apps.get_app_configs():
+        ver_module = import_module(app.name)
+        ver = getattr(ver_module, '__version__', None)
+        if ver:
+            if not isinstance(ver, str):
+                ver = '.'.join([str(x) for x in ver])
+            app_versions[app.verbose_name] = ver
+    return app_versions

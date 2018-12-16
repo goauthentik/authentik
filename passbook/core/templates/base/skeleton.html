@@ -12,6 +12,7 @@
       {% endblock %}
     </title>
     <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.png' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly-additions.min.css' %}">
     {% block head %}
@@ -25,5 +26,8 @@
     <script src="{% static 'js/patternfly.min.js' %}"></script>
     {% block scripts %}
     {% endblock %}
+    <div class="modals">
+      {% include 'partials/about_modal.html' %}
+    </div>
   </body>
 </html>

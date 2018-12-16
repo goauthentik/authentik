@@ -9,6 +9,7 @@ class PassbookAuditConfig(AppConfig):
 
     name = 'passbook.audit'
     label = 'passbook_audit'
+    verbose_name = 'passbook Audit'
     mountpoint = 'audit/'
 
     def ready(self):

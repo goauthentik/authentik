@@ -1,0 +1,36 @@
+{% load static %}
+{% load i18n %}
+{% load cache %}
+
+{% load utils %}
+
+<div class="modal fade" id="about-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content about-modal-pf">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <span class="pficon pficon-close"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h1>{% trans 'passbook' %}</h1>
+                <div class="product-versions-pf">
+                    <ul class="list-unstyled">
+                        {% app_versions as vers %}
+                        {% cache 600 versions %}
+                        {% for app, ver in vers.items %}
+                        <li><strong>{{ app }}</strong> {{ ver }}</li>
+                        {% endfor %}
+                        {% endcache %}
+                    </ul>
+                </div>
+                <div class="trademark-pf">
+                    Trademark and Copyright Information
+                </div>
+            </div>
+            <div class="modal-footer">
+                <img style="max-height:64px;" src="{% static 'img/logo.png' %}" alt=" Symbol">
+            </div>
+        </div>
+    </div>
+</div>
