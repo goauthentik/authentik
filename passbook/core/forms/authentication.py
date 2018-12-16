@@ -47,10 +47,6 @@ class SignUpForm(forms.Form):
                                       widget=forms.PasswordInput(attrs={
                                           'placeholder': _('Repeat Password')
                                           }))
-    # captcha = ReCaptchaField(
-    #     required=(not settings.DEBUG and not settings.TEST),
-    #     private_key=Setting.get('recaptcha:private'),
-    #     public_key=Setting.get('recaptcha:public'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,9 +54,6 @@ class SignUpForm(forms.Form):
         if 'initial' in kwargs:
             for field in kwargs.get('initial').keys():
                 self.fields[field].widget.attrs['readonly'] = 'readonly'
-        # TODO: Dynamically add captcha here
-        # if not Setting.get_bool('recaptcha:enabled'):
-        #     self.fields.pop('captcha')
 
     def clean_username(self):
         """Check if username is used already"""
