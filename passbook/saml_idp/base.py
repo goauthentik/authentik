@@ -177,9 +177,8 @@ class Processor:
     def _format_response(self):
         """Formats _response_params as _response_xml."""
         assertion_id = self._assertion_params['ASSERTION_ID']
-        # TODO: Get application/provider instance
         self._response_xml = xml_render.get_response_xml(self._response_params,
-                                                         saml_provider=None,
+                                                         saml_provider=self._remote,
                                                          assertion_id=assertion_id)
 
     def _get_django_response_params(self):
@@ -188,7 +187,7 @@ class Processor:
             'acs_url': self._request_params['ACS_URL'],
             'saml_response': self._saml_response,
             'relay_state': self._relay_state,
-            'autosubmit': False, # TODO: use autosubmit from application
+            'autosubmit': self._remote.application,
         }
 
     def _parse_request(self):
