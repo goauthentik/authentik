@@ -36,7 +36,7 @@ def on_invitation_used(sender, request, invitation, **kwargs):
                       invitation_uuid=invitation.uuid.hex)
 
 @receiver(user_login_failed)
-def on_user_login_failed(sender, request, user, **kwargs):
+def on_user_login_failed(sender, request, **kwargs):
     """Log failed login attempt"""
     # TODO: Implement sumarizing of signals here for brute-force attempts
     # AuditEntry.create(AuditEntry.ACTION_LOGOUT, request)
