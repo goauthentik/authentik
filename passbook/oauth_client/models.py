@@ -1,6 +1,7 @@
 """OAuth Client models"""
 
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Source, UserSourceConnection
@@ -19,6 +20,15 @@ class OAuthSource(Source):
     consumer_secret = models.TextField()
 
     form = 'passbook.oauth_client.forms.GitHubOAuthSourceForm'
+
+    @property
+    def is_link(self):
+        return True
+
+    @property
+    def get_url(self):
+        return reverse_lazy('passbook_oauth_client:oauth-client-login',
+                            kwargs={'source_slug': self.slug})
 
     class Meta:
 

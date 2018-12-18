@@ -28,6 +28,10 @@ class LDAPSource(Source):
 
     form = 'passbook.ldap.forms.LDAPSourceForm'
 
+    @property
+    def get_url(self):
+        raise NotImplementedError()
+
     class Meta:
 
         verbose_name = _('LDAP Source')

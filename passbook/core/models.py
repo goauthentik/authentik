@@ -82,6 +82,16 @@ class Source(RuleModel):
 
     objects = InheritanceManager()
 
+    @property
+    def is_link(self):
+        """Return true if Source should get a link on the login page"""
+        return False
+
+    @property
+    def get_url(self):
+        """Return URL used for logging in"""
+        raise NotImplementedError
+
     def __str__(self):
         return self.name
 
