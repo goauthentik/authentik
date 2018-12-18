@@ -3,7 +3,7 @@ from django.contrib.auth.signals import (user_logged_in, user_logged_out,
                                          user_login_failed)
 from django.dispatch import receiver
 
-from passbook.audit.models import AuditEntry
+from passbook.audit.models import AuditEntry, LoginAttempt
 from passbook.core.signals import (invitation_created, invitation_used,
                                    user_signed_up)
 
@@ -36,8 +36,6 @@ def on_invitation_used(sender, request, invitation, **kwargs):
                       invitation_uuid=invitation.uuid.hex)
 
 @receiver(user_login_failed)
-def on_user_login_failed(sender, request, **kwargs):
+def on_user_login_failed(sender, request, credentials, **kwargs):
     """Log failed login attempt"""
-    # TODO: Implement sumarizing of signals here for brute-force attempts
-    # AuditEntry.create(AuditEntry.ACTION_LOGOUT, request)
-    pass
+    LoginAttempt.attempt(target_uid=credentials.get('username'), request=request)
