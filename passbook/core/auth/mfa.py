@@ -3,7 +3,7 @@ from logging import getLogger
 
 from django.conf import settings
 from django.contrib.auth import login
-from django.http import Http404
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import View
 
@@ -13,7 +13,8 @@ from passbook.lib.utils.reflection import class_to_path, path_to_class
 
 LOGGER = getLogger(__name__)
 
-class MultiFactorAuthenticator(View):
+
+class MultiFactorAuthenticator(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
 
     SESSION_FACTOR = 'passbook_factor'
@@ -28,13 +29,23 @@ class MultiFactorAuthenticator(View):
 
     _current_factor = None
 
+    # Allow only not authenticated users to login
+    def test_func(self):
+        return self.request.user.is_authenticated is False
+
+    def handle_no_permission(self):
+        if 'next' in self.request.GET:
+            return redirect(self.request.GET.get('next'))
+        return redirect(reverse('passbook_core:overview'))
+
     def dispatch(self, request, *args, **kwargs):
         # Extract pending user from session (only remember uid)
         if MultiFactorAuthenticator.SESSION_PENDING_USER in request.session:
             self.pending_user = get_object_or_404(
                 User, id=self.request.session[MultiFactorAuthenticator.SESSION_PENDING_USER])
         else:
-            raise Http404
+            # No Pending user, redirect to login screen
+            return redirect(reverse('passbook_core:auth-login'))
         # Write pending factors to session
         if MultiFactorAuthenticator.SESSION_PENDING_FACTORS in request.session:
             self.pending_factors = request.session[MultiFactorAuthenticator.SESSION_PENDING_FACTORS]
@@ -80,7 +91,8 @@ class MultiFactorAuthenticator(View):
         return self._user_passed()
 
     def user_invalid(self):
-        """Show error message, user could not be authenticated"""
+        """Show error message, user cannot login.
+        This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
         return redirect(reverse('passbook_core:mfa-denied'))
 
@@ -90,7 +102,18 @@ class MultiFactorAuthenticator(View):
         backend = self.request.session[MultiFactorAuthenticator.SESSION_USER_BACKEND]
         login(self.request, self.pending_user, backend=backend)
         LOGGER.debug("Logged in user %s", self.pending_user)
+        # Cleanup
+        self._cleanup()
         return redirect(reverse('passbook_core:overview'))
+
+    def _cleanup(self):
+        """Remove temporary data from session"""
+        session_keys = ['SESSION_FACTOR', 'SESSION_PENDING_FACTORS',
+                        'SESSION_PENDING_USER', 'SESSION_USER_BACKEND', ]
+        for key in session_keys:
+            if key in self.request.session:
+                del self.request.session[key]
+        LOGGER.debug("Cleaned up sessions")
 
 class MFAPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
