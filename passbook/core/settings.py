@@ -131,13 +131,19 @@ WSGI_APPLICATION = 'passbook.core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+DATABASES = {}
+for db_alias, db_config in CONFIG.get('databases').items():
+    if 'mysql' in db_config.get('engine'):
+        import pymysql
+        pymysql.install_as_MySQLdb()
+    DATABASES[db_alias] = {
+        'ENGINE': db_config.get('engine'),
+        'HOST': db_config.get('host'),
+        'NAME': db_config.get('name'),
+        'USER': db_config.get('user'),
+        'PASSWORD': db_config.get('password'),
+        'OPTIONS': db_config.get('options', {}),
     }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
