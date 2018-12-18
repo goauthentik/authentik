@@ -2,7 +2,6 @@
 
 from django.contrib.auth import get_user_model
 
-from passbook.oauth_client.errors import OAuthClientEmailMissingError
 from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback
@@ -13,10 +12,7 @@ class GitHubOAuth2Callback(OAuthCallback):
     """GitHub OAuth2 Callback"""
 
     def get_or_create_user(self, source, access, info):
-        if 'email' not in info or info['email'] == '':
-            raise OAuthClientEmailMissingError()
         user = get_user_model()
-        print(info)
         user_data = {
             user.USERNAME_FIELD: info.get('login'),
             'email': info.get('email', ''),

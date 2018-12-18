@@ -14,14 +14,12 @@ from django.views.generic import RedirectView, View
 
 from passbook.lib.utils.reflection import app
 from passbook.oauth_client.clients import get_client
-from passbook.oauth_client.errors import (OAuthClientEmailMissingError,
-                                          OAuthClientError)
 from passbook.oauth_client.models import OAuthSource, UserOAuthSourceConnection
 
 LOGGER = getLogger(__name__)
 
 
-# pylint: disable=too-few-public-methods, too-many-locals
+# pylint: disable=too-few-public-methods
 class OAuthClientMixin:
     "Mixin for getting OAuth client for a source."
 
@@ -48,7 +46,8 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
 
     def get_callback_url(self, source):
         "Return the callback url for this source."
-        return reverse('oauth-client-callback', kwargs={'source_slug': source.slug})
+        return reverse('passbook_oauth_client:oauth-client-callback',
+                       kwargs={'source_slug': source.slug})
 
     def get_redirect_url(self, **kwargs):
         "Build redirect url for a given source."
@@ -72,7 +71,6 @@ class OAuthCallback(OAuthClientMixin, View):
     source_id = None
     source = None
 
-    # pylint: disable=too-many-return-statements
     def get(self, request, *args, **kwargs):
         """View Get handler"""
         slug = kwargs.get('source_slug', '')
@@ -115,20 +113,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 )
             user = authenticate(source=self.source, identifier=identifier, request=request)
             if user is None:
-                try:
-                    return self.handle_new_user(self.source, connection, info)
-                except OAuthClientEmailMissingError as exc:
-                    return render(request, 'common/error.html', {
-                        'code': 500,
-                        'exc_message': _("source %(name)s didn't provide an E-Mail address." % {
-                            'name': self.source.name
-                        }),
-                    })
-                except OAuthClientError as exc:
-                    return render(request, 'common/error.html', {
-                        'code': 500,
-                        'exc_message': str(exc),
-                    })
+                return self.handle_new_user(self.source, connection, info)
             return self.handle_existing_user(self.source, user, connection, info)
 
     # pylint: disable=unused-argument
@@ -144,7 +129,7 @@ class OAuthCallback(OAuthClientMixin, View):
     # pylint: disable=unused-argument
     def get_login_redirect(self, source, user, access, new=False):
         "Return url to redirect authenticated users."
-        return 'overview'
+        return 'passbook_core:overview'
 
     def get_or_create_user(self, source, access, info):
         "Create a shell auth.User."

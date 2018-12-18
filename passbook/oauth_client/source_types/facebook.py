@@ -2,7 +2,6 @@
 
 from django.contrib.auth import get_user_model
 
-from passbook.oauth_client.errors import OAuthClientEmailMissingError
 from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
@@ -23,8 +22,6 @@ class FacebookOAuth2Callback(OAuthCallback):
     """Facebook OAuth2 Callback"""
 
     def get_or_create_user(self, source, access, info):
-        if 'email' not in info:
-            raise OAuthClientEmailMissingError()
         user = get_user_model()
         user_data = {
             user.USERNAME_FIELD: info.get('name'),

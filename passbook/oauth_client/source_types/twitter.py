@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from requests.exceptions import RequestException
 
 from passbook.oauth_client.clients import OAuthClient
-from passbook.oauth_client.errors import OAuthClientEmailMissingError
 from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback
@@ -37,8 +36,6 @@ class TwitterOAuthCallback(OAuthCallback):
     client_class = TwitterOAuthClient
 
     def get_or_create_user(self, source, access, info):
-        if 'email' not in info:
-            raise OAuthClientEmailMissingError()
         user = get_user_model()
         user_data = {
             user.USERNAME_FIELD: info.get('screen_name'),
