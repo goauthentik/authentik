@@ -40,17 +40,10 @@
   {% endif %}
   {% endif %}
   {% for error in field.errors %}
-  <div class="alert alert-danger">
-    <div class="alert-items">
-      <div class="alert-item">
-        <div class="alert-icon-wrapper">
-          <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-        </div>
-        <span class="alert-text">
-          {{ error }}
-        </span>
-      </div>
-    </div>
+  <hr>
+  <div class="alert alert-danger alert-block">
+    <span class="pficon pficon-error-circle-o"></span>
+    <strong>{{ error }}</strong>
   </div>
   {% endfor %}
 </div>
