@@ -1,0 +1,51 @@
+{% extends 'login/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block row %}
+{% include 'partials/messages.html' %}
+<div class="col-md-6">
+    <div class="card-pf">
+        <header class="login-pf-header">
+            <h1>{% trans title %}</h1>
+        </header>
+        <form method="POST">
+            {% csrf_token %}
+            {% block above_form %}
+            {% endblock %}
+            {% include 'partials/form_login.html' %}
+            <button type="submit" class="btn btn-primary btn-block btn-lg">{% trans primary_action %}</button>
+        </form>
+        {% if show_sign_up_notice %}
+        <p class="login-pf-signup">
+            {% trans 'Need an account?' %}
+            <a href="{% url 'passbook_core:auth-sign-up' %}">{% trans 'Sign up' %}</a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="card-pf">
+        <header class="login-pf-header">
+            <h1>{% trans title %}</h1>
+            <ul>
+                {% for source in sources %}
+                <li>
+                    <a class="btn btn-block btn-primary" href="{{ source.get_url }}">{{ source }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </header>
+    </div>
+</div>
+<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+    <footer class="login-pf-page-footer">
+        <ul class="login-pf-page-footer-links list-unstyled">
+            <li><a class="login-pf-page-footer-link" href="#">Terms of Use</a></li>
+            <li><a class="login-pf-page-footer-link" href="#">Help</a></li>
+            <li><a class="login-pf-page-footer-link" href="#">Privacy Policy</a></li>
+        </ul>
+    </footer>
+</div>
+{% endblock %}

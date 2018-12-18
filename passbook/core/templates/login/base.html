@@ -26,7 +26,7 @@
 <div class="login-pf-page">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+      <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
         <header class="login-pf-page-header">
           <img class="login-pf-brand" style="max-height: 10rem;" src="{% static 'img/logo.svg' %}" alt="PatternFly logo" />
           {% if config.login.subtext %}
@@ -34,6 +34,7 @@
           {% endif %}
         </header>
         <div class="row">
+          {% block row %}
           <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
             <div class="card-pf">
               {% block card %}
@@ -47,6 +48,7 @@
               </ul>
             </footer>
           </div><!-- col -->
+          {% endblock %}
         </div><!-- row -->
       </div><!-- col -->
     </div><!-- row -->
