@@ -10,6 +10,11 @@ from passbook.core.models import Source
 from passbook.lib.utils.reflection import path_to_class
 
 
+def all_subclasses(cls):
+    """Recursively return all subclassess of cls"""
+    return set(cls.__subclasses__()).union(
+        [s for c in cls.__subclasses__() for s in all_subclasses(c)])
+
 class SourceListView(AdminRequiredMixin, ListView):
     """Show list of all sources"""
 
@@ -18,7 +23,7 @@ class SourceListView(AdminRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['types'] = {
-            x.__name__: x._meta.verbose_name for x in Source.__subclasses__()}
+            x.__name__: x._meta.verbose_name for x in all_subclasses(Source)}
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
@@ -34,7 +39,7 @@ class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
 
     def get_form_class(self):
         source_type = self.request.GET.get('type')
-        model = next(x for x in Source.__subclasses__() if x.__name__ == source_type)
+        model = next(x for x in all_subclasses(Source) if x.__name__ == source_type)
         if not model:
             raise Http404
         return path_to_class(model.form)

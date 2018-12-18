@@ -1,6 +1,7 @@
 """OAuth Client models"""
 
 from django.db import models
+from django.utils.translation import gettext as _
 
 from passbook.core.models import Source, UserSourceConnection
 from passbook.oauth_client.clients import get_client
@@ -17,13 +18,72 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
-    form = 'passbook.oauth_client.forms.OAuthSourceForm'
+    form = 'passbook.oauth_client.forms.GitHubOAuthSourceForm'
 
     class Meta:
 
-        verbose_name = 'OAuth Source'
-        verbose_name_plural = 'OAuth Sources'
+        verbose_name = _('Generic OAuth Source')
+        verbose_name_plural = _('Generic OAuth Sources')
 
+
+class GitHubOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify GitHub Form"""
+
+    form = 'passbook.oauth_client.forms.GitHubOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('GitHub OAuth Source')
+        verbose_name_plural = _('GitHub OAuth Sources')
+
+
+class TwitterOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify Twitter Form"""
+
+    form = 'passbook.oauth_client.forms.TwitterOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('Twitter OAuth Source')
+        verbose_name_plural = _('Twitter OAuth Sources')
+
+
+class FacebookOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify Facebook Form"""
+
+    form = 'passbook.oauth_client.forms.FacebookOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('Facebook OAuth Source')
+        verbose_name_plural = _('Facebook OAuth Sources')
+
+
+class DiscordOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify Discord Form"""
+
+    form = 'passbook.oauth_client.forms.DiscordOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('Discord OAuth Source')
+        verbose_name_plural = _('Discord OAuth Sources')
+
+
+class GoogleOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify Google Form"""
+
+    form = 'passbook.oauth_client.forms.GoogleOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('Google OAuth Source')
+        verbose_name_plural = _('Google OAuth Sources')
 
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
@@ -42,5 +102,5 @@ class UserOAuthSourceConnection(UserSourceConnection):
 
     class Meta:
 
-        verbose_name = 'User OAuth Source Connection'
-        verbose_name_plural = 'User OAuth Source Connections'
+        verbose_name = _('User OAuth Source Connection')
+        verbose_name_plural = _('User OAuth Source Connections')
