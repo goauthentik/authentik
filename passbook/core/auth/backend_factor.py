@@ -2,6 +2,9 @@
 from logging import getLogger
 
 from django.contrib.auth import authenticate
+from django.core.exceptions import PermissionDenied
+from django.forms.utils import ErrorList
+from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
 from passbook.core.auth.factor import AuthenticationFactor
@@ -26,10 +29,21 @@ class AuthenticationBackendFactor(FormView, AuthenticationFactor):
         }
         for uid_field in uid_fields:
             kwargs[uid_field] = getattr(self.authenticator.pending_user, uid_field)
-        user = authenticate(self.request, **kwargs)
-        if user:
-            # User instance returned from authenticate() has .backend property set
-            self.authenticator.pending_user = user
-            self.request.session[MultiFactorAuthenticator.SESSION_USER_BACKEND] = user.backend
-            return self.authenticator.user_ok()
-        return self.authenticator.user_invalid()
+        try:
+            user = authenticate(self.request, **kwargs)
+            if user:
+                # User instance returned from authenticate() has .backend property set
+                self.authenticator.pending_user = user
+                self.request.session[MultiFactorAuthenticator.SESSION_USER_BACKEND] = user.backend
+                return self.authenticator.user_ok()
+            # No user was found -> invalid credentials
+            LOGGER.debug("Invalid credentials")
+            # Manually inject error into form
+            # pylint: disable=protected-access
+            errors = form._errors.setdefault("password", ErrorList())
+            errors.append(_("Invalid password"))
+            return self.form_invalid(form)
+        except PermissionDenied:
+            # User was found, but permission was denied (i.e. user is not active)
+            LOGGER.debug("Denied access to %s", kwargs)
+            return self.authenticator.user_invalid()
