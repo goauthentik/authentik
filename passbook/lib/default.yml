@@ -58,6 +58,7 @@ passbook:
   # Specify which fields can be used to authenticate. Can be any combination of `username` and `email`
   uid_fields:
     - username
+    - email
   session:
     remember_age: 2592000 # 60 * 60 * 24 * 30, one month
 # Provider-specific settings
