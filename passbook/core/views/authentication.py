@@ -52,6 +52,7 @@ class LoginView(UserPassesTestMixin, FormView):
         for search_field in CONFIG.y('passbook.uid_fields'):
             users = User.objects.filter(**{search_field: uid_value})
             if users.exists():
+                LOGGER.debug("Found user %s with uid_field %s", users.first(), search_field)
                 return users.first()
         return None
 
