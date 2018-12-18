@@ -20,7 +20,7 @@ core_urls = [
     path('auth/logout/', authentication.LogoutView.as_view(), name='auth-logout'),
     path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
     path('auth/mfa/', mfa.MultiFactorAuthenticator.as_view(), name='mfa'),
-    path('auth/mfa/denied/', mfa.MFAPermissionDeniedView.as_view(), 'mfa-denied'),
+    path('auth/mfa/denied/', mfa.MFAPermissionDeniedView.as_view(), name='mfa-denied'),
     # User views
     path('user/', user.UserSettingsView.as_view(), name='user-settings'),
     path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
