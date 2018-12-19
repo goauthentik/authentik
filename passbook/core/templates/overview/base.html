@@ -25,7 +25,7 @@
           <span title="Help" class="fa pficon-help dropdown-title"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="horizontalDropdownMenu1">
-          <li><a href="#0">Help</a></li>
+          {% comment %} <li><a href="#0">Help</a></li> {% endcomment %}
           <li><a data-toggle="modal" data-target="#about-modal" href="#0">{% trans 'About' %}</a></li>
         </ul>
       </li>
@@ -52,11 +52,13 @@
       <li class="{% is_active_url 'passbook_core:overview' %}">
         <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
       </li>
+      {% if user.is_superuser %}
       <li class="{% is_active_app 'passbook_admin' %}">
         <a href="{% url 'passbook_admin:overview' %}">{% trans 'Administration' %}</a>
         {% block nav_secondary %}
         {% endblock %}
       </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
