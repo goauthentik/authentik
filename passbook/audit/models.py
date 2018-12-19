@@ -1,4 +1,5 @@
 """passbook audit models"""
+from datetime import timedelta
 from json import dumps, loads
 from logging import getLogger
 
@@ -6,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from ipware import get_client_ip
 from reversion import register
@@ -95,10 +97,11 @@ class LoginAttempt(CreatedUpdatedModel):
         client_ip, _ = get_client_ip(request)
         # Since we can only use 254 chars for target_uid, truncate target_uid.
         target_uid = target_uid[:254]
+        time_threshold = timezone.now() - timedelta(minutes=10)
         existing_attempts = LoginAttempt.objects.filter(
             target_uid=target_uid,
-            request_ip=client_ip).order_by('created')
-        # TODO: Add logic to group attempts by timeframe, i.e. within 10 minutes
+            request_ip=client_ip,
+            last_updated__gt=time_threshold).order_by('created')
         if existing_attempts.exists():
             attempt = existing_attempts.first()
             attempt.attempts += 1
