@@ -15,7 +15,6 @@
 <div class="container">
   <div class="row row-cards-pf">
     {% for app in applications %}
-    <!-- Important:  if you need to nest additional .row within a .row.row-cards-pf, do *not* use .row-cards-pf on the nested .row  -->
     <div class="col-xs-12 col-sm-6 col-md-3">
       <div class="card-pf card-pf-accented card-pf-aggregate-status">
         <h2 class="card-pf-title">
@@ -36,6 +35,8 @@
         </div>
       </div>
     </div>
+    {% empty %}
+    <h1>{% trans 'No Applications available.' %}</h1>
     {% endfor %}
   </div><!-- /row -->
 </div>
