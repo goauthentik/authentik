@@ -1,1 +1,3 @@
 django-crispy-forms
+django-rest-framework
+django-rest-swagger

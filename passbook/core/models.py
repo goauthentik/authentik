@@ -16,13 +16,28 @@ from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
 LOGGER = getLogger(__name__)
 
-@reversion.register()
+class Group(UUIDModel):
+    """Custom Group model which supports a basic hierarchy"""
+
+    name = models.CharField(_('name'), max_length=80)
+    parent = models.ForeignKey('Group', blank=True, null=True,
+                               on_delete=models.SET_NULL, related_name='children')
+    extra_data = models.TextField(blank=True)
+
+    def __str__(self):
+        return "Group %s" % self.name
+
+    class Meta:
+
+        unique_together = (('name', 'parent',),)
+
 class User(AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     applications = models.ManyToManyField('Application')
+    groups = models.ManyToManyField('Group')
 
 @reversion.register()
 class Provider(models.Model):
