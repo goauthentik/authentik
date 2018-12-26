@@ -1,2 +1,2 @@
 """passbook admin"""
-default_app_config = 'passbook.admin.apps.PassbookAdminConfig'
+__version__ = '0.0.1-alpha'

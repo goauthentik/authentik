@@ -178,7 +178,7 @@ class SLOLogout(CSRFExemptMixin, LoginRequiredMixin, View):
         return render(request, 'saml/idp/logged_out.html')
 
 
-class DescriptorView(View):
+class DescriptorDownloadView(View):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     def get(self, request, application_id):

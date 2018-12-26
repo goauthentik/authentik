@@ -1,0 +1,35 @@
+[run]
+source = passbook
+omit =
+    env/
+    */wsgi.py
+    manage.py
+    */migrations/*
+    */apps.py
+    passbook/management/commands/nexus_upload.py
+    passbook/management/commands/web.py
+    passbook/management/commands/worker.py
+    docs/
+
+[report]
+sort = Cover
+skip_covered = True
+precision = 2
+exclude_lines =
+  pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __unicode__
+    def __str__
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+show_missing = True

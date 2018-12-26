@@ -1,2 +1,2 @@
 """passbook core"""
-default_app_config = 'passbook.core.apps.PassbookCoreConfig'
+__version__ = '0.0.1-alpha'

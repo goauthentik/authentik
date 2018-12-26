@@ -1,2 +1,2 @@
 """passbook lib"""
-default_app_config = 'passbook.lib.apps.PassbookLibConfig'
+__version__ = '0.0.1-alpha'
