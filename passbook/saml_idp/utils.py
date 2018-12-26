@@ -44,6 +44,7 @@ class CertificateBuilder:
         self.__certificate = None
 
     def build(self):
+        """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)
         self.__private_key = rsa.generate_private_key(
             public_exponent=65537,

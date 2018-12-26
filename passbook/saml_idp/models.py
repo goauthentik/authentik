@@ -30,6 +30,7 @@ class SAMLProvider(Provider):
 
     @property
     def processor(self):
+        """Return selected processor as instance"""
         if not self._processor:
             self._processor = path_to_class(self.processor_path)(self)
         return self._processor
