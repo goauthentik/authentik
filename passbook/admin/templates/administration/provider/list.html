@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load utils %}
+{% load admin_reflection %}
 
 {% block title %}
 {% title %}
@@ -38,6 +39,10 @@
           <td>
             <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
             <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+            {% get_links provider as links %}
+            {% for name, href in links.items %}
+              <a class="btn btn-default btn-sm" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+            {% endfor %}
           </td>
         </tr>
       {% endfor %}
