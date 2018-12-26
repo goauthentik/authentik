@@ -5,14 +5,14 @@
     <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">{{ ISSUER }}</saml:Issuer>
     {% include 'saml/xml/signature.xml' %}
     {{ SUBJECT_STATEMENT }}
-    <saml:Conditions NotBefore="2014-07-17T01:01:18Z" NotOnOrAfter="2024-01-18T06:21:48Z">
+    <saml:Conditions NotBefore="{{ NOT_BEFORE }}" NotOnOrAfter="{{ NOT_ON_OR_AFTER }}">
       <saml:AudienceRestriction>
         <saml:Audience>{{ AUDIENCE }}</saml:Audience>
       </saml:AudienceRestriction>
     </saml:Conditions>
-    <saml:AuthnStatement AuthnInstant="2014-07-17T01:01:48Z" SessionNotOnOrAfter="2024-07-17T09:01:48Z" SessionIndex="_be9967abd904ddcae3c0eb4189adbe3f71e327cf93">
+    <saml:AuthnStatement AuthnInstant="{{ NOT_BEFORE }}" SessionIndex="{{ ASSERTION_ID }}">
       <saml:AuthnContext>
-        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</saml:AuthnContextClassRef>
+        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
       </saml:AuthnContext>
     </saml:AuthnStatement>
     {{ ATTRIBUTE_STATEMENT }}

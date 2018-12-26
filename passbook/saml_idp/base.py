@@ -51,7 +51,7 @@ class Processor:
     _saml_response = None
     _session_index = None
     _subject = None
-    _subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:email'
+    _subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
     _system_params = {
         'ISSUER': CONFIG.y('saml_idp.issuer'),
     }
@@ -84,8 +84,7 @@ class Processor:
             'AUTH_INSTANT': get_time_string(),
             'ISSUE_INSTANT': get_time_string(),
             'NOT_BEFORE': get_time_string(-1 * HOURS),  # TODO: Make these settings.
-            'NOT_ON_OR_AFTER': get_time_string(int(CONFIG.y('saml_idp.assertion_valid_for'))
-                                               * MINUTES),
+            'NOT_ON_OR_AFTER': get_time_string(86400 * MINUTES),
             'SESSION_INDEX': self._session_index,
             'SESSION_NOT_ON_OR_AFTER': get_time_string(8 * HOURS),
             'SP_NAME_QUALIFIER': self._audience,
@@ -226,7 +225,7 @@ class Processor:
         self._saml_response = sp_config
         self._session_index = sp_config
         self._subject = sp_config
-        self._subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:email'
+        self._subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         self._system_params = {
             'ISSUER': CONFIG.y('saml_idp.issuer'),
         }

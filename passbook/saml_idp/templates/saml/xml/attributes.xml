@@ -1,7 +1,7 @@
 <saml:AttributeStatement>
     {% for attr in attributes %}
-        <saml:Attribute FriendlyName="{{ attr.FriendlyName }}" Name="{{ attr.Name }}" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
-           <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">{{ attr.Value }}</saml:AttributeValue>
+        <saml:Attribute {% if attr.FriendlyName %}FriendlyName="{{ attr.FriendlyName }}" {% endif %}Name="{{ attr.Name }}">
+           <saml:AttributeValue>{{ attr.Value }}</saml:AttributeValue>
         </saml:Attribute>
     {% endfor %}
 </saml:AttributeStatement>

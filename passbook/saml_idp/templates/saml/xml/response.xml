@@ -1,4 +1,5 @@
 <samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
                 Destination="{{ ACS_URL }}"
                 ID="{{ RESPONSE_ID }}"
                 {{ IN_RESPONSE_TO|safe }}

@@ -1,7 +1,6 @@
 """passbook SAML IDP Views"""
 from logging import getLogger
 
-from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
@@ -10,14 +9,6 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from saml2 import BINDING_HTTP_POST
-from saml2.authn_context import PASSWORD, AuthnBroker, authn_context_class_ref
-from saml2.config import IdPConfig
-from saml2.ident import NameID
-from saml2.metadata import entity_descriptor
-from saml2.s_utils import UnknownPrincipal, UnsupportedBinding
-from saml2.saml import NAMEID_FORMAT_EMAILADDRESS, NAMEID_FORMAT_UNSPECIFIED
-from saml2.server import Server
 from signxml.util import strip_pem_header
 
 from passbook.core.models import Application
@@ -50,11 +41,13 @@ def render_xml(request, template, ctx):
 
 
 class ProviderMixin:
+    """Mixin class for Views using a provider instance"""
 
     _provider = None
 
     @property
     def provider(self):
+        """Get provider instance"""
         if not self._provider:
             application = get_object_or_404(Application, slug=self.kwargs['application'])
             self._provider = get_object_or_404(SAMLProvider, pk=application.provider_id)
@@ -123,7 +116,7 @@ class LoginProcessView(ProviderMixin, View):
                 saml_response=request.POST.get('SAMLResponse'),
                 relay_state=request.POST.get('RelayState'))
         try:
-            full_res = _generate_response(request, provider)
+            full_res = _generate_response(request, self.provider)
             return full_res
         except exceptions.CannotHandleAssertion as exc:
             LOGGER.debug(exc)
@@ -166,33 +159,17 @@ class SLOLogout(CSRFExemptMixin, LoginRequiredMixin, View):
         logout(request)
         return render(request, 'saml/idp/logged_out.html')
 
-class IdPMixin(ProviderMixin):
-
-    provider = None
-
-    def dispatch(self, request, application):
-
-    def get_identity(self, provider, user):
-        """ Create Identity dict (using SP-specific mapping)
-        """
-        sp_mapping = {'username': 'username'}
-        # return provider.processor.create_identity(user, sp_mapping)
-        return {
-            out_attr: getattr(user, user_attr)
-            for user_attr, out_attr in sp_mapping.items()
-            if hasattr(user, user_attr)
-        }
-
 
 class DescriptorDownloadView(ProviderMixin, View):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     def get(self, request, application):
         """Replies with the XML Metadata IDSSODescriptor."""
-        super().dispatch(request, application)
         entity_id = CONFIG.y('saml_idp.issuer')
         slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_logout'))
-        sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_login_begin'))
+        sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_login_begin', kwargs={
+            'application': application
+        }))
         pubkey = strip_pem_header(self.provider.signing_cert.replace('\r', '')).replace('\n', '')
         ctx = {
             'entity_id': entity_id,
@@ -207,19 +184,11 @@ class DescriptorDownloadView(ProviderMixin, View):
         return response
 
 
-class LoginInitView(IdPMixin, LoginRequiredMixin, View):
+class InitiateLoginView(ProviderMixin, LoginRequiredMixin, View):
+    """IdP-initiated Login"""
 
     def dispatch(self, request, application):
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
         super().dispatch(request, application)
-
-        # # linkdict = dict(metadata.get_links(sp_config))
-        # # pattern = linkdict[resource]
-        # # is_simple_link = ('/' not in resource)
-        # # if is_simple_link:
-        # #     simple_target = kwargs['target']
-        # #     url = pattern % simple_target
-        # # else:
-        # #     url = pattern % kwargs
-        # provider.processor.init_deep_link(request, 'deep url')
-        # return _generate_response(request, provider)
+        self.provider.processor.init_deep_link(request, '')
+        return _generate_response(request, self.provider)
