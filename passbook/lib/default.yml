@@ -104,13 +104,11 @@ oauth_client:
     - passbook.oauth_client.source_types.supervisr
     - passbook.oauth_client.source_types.twitter
 saml_idp:
-  signing: true
-  autosubmit: false
   issuer: passbook
-  assertion_valid_for: 86400
   # List of python packages with provider types to load.
   types:
     - passbook.saml_idp.processors.generic
+    - passbook.saml_idp.processors.aws
     - passbook.saml_idp.processors.gitlab
     - passbook.saml_idp.processors.nextcloud
     - passbook.saml_idp.processors.salesforce
