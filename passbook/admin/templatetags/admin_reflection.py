@@ -18,9 +18,14 @@ def get_links(model_instance):
         LOGGER.warning("Model %s is not instance of Model", model_instance)
         return links
 
-    for name, method in inspect.getmembers(model_instance, predicate=inspect.ismethod):
-        if name.startswith(prefix):
-            human_name = name.replace(prefix, '').replace('_', ' ').capitalize()
-            links[human_name] = method()
+    try:
+        for name, method in inspect.getmembers(model_instance, predicate=inspect.ismethod):
+            if name.startswith(prefix):
+                human_name = name.replace(prefix, '').replace('_', ' ').capitalize()
+                link = method()
+                if link:
+                    links[human_name] = link
+    except NotImplementedError:
+        pass
 
     return links
