@@ -7,7 +7,7 @@ from logging import getLogger
 from bs4 import BeautifulSoup
 
 from passbook.lib.config import CONFIG
-from passbook.saml_idp import codex, exceptions, xml_render
+from passbook.saml_idp import exceptions, utils, xml_render
 
 MINUTES = 60
 HOURS = 60 * MINUTES
@@ -110,7 +110,7 @@ class Processor:
     def _decode_request(self):
         """Decodes _request_xml from _saml_request."""
 
-        self._request_xml = codex.decode_base64_and_inflate(self._saml_request).decode('utf-8')
+        self._request_xml = utils.decode_base64_and_inflate(self._saml_request).decode('utf-8')
 
         self._logger.debug('SAML request decoded')
 
@@ -140,7 +140,7 @@ class Processor:
 
     def _encode_response(self):
         """Encodes _response_xml to _encoded_xml."""
-        self._saml_response = codex.nice64(str.encode(self._response_xml))
+        self._saml_response = utils.nice64(str.encode(self._response_xml))
 
     def _extract_saml_request(self):
         """Retrieves the _saml_request AuthnRequest from the _django_request."""
@@ -187,7 +187,7 @@ class Processor:
             'acs_url': self._request_params['ACS_URL'],
             'saml_response': self._saml_response,
             'relay_state': self._relay_state,
-            'autosubmit': self._remote.application,
+            'autosubmit': self._remote.application.skip_authorization,
         }
 
     def _parse_request(self):
@@ -295,11 +295,11 @@ class Processor:
         # Return proper template params.
         return self._get_django_response_params()
 
-    def init_deep_link(self, request, sp_config, url):
+    def init_deep_link(self, request, url):
         """Initialize this Processor to make an IdP-initiated call to the SP's
         deep-linked URL."""
-        self._reset(request, sp_config)
-        acs_url = self._remote['acs_url']
+        self._reset(request)
+        acs_url = self._remote.acs_url
         # NOTE: The following request params are made up. Some are blank,
         # because they comes over in the AuthnRequest, but we don't have an
         # AuthnRequest in this case:

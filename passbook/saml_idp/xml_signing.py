@@ -4,6 +4,7 @@ from logging import getLogger
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from defusedxml import ElementTree
+from lxml import etree
 from signxml import XMLSigner
 
 from passbook.lib.utils.template import render_to_string
@@ -16,9 +17,11 @@ def sign_with_signxml(private_key, data, cert, reference_uri=None):
     key = serialization.load_pem_private_key(
         str.encode('\n'.join([x.strip() for x in private_key.split('\n')])),
         password=None, backend=default_backend())
-    root = ElementTree.fromstring(data)
+    root = etree.fromstring(data)
+    # root = ElementTree.fromstring(data, forbid_entities=False)
     signer = XMLSigner(c14n_algorithm='http://www.w3.org/2001/10/xml-exc-c14n#')
-    return ElementTree.tostring(signer.sign(root, key=key, cert=cert, reference_uri=reference_uri))
+    signed = signer.sign(root, key=key, cert=cert, reference_uri=reference_uri)
+    return ElementTree.tostring(signed)
 
 
 def get_signature_xml():

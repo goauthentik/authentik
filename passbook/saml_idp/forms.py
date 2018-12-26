@@ -3,12 +3,20 @@
 from django import forms
 
 from passbook.saml_idp.models import SAMLProvider, get_provider_choices
+from passbook.saml_idp.utils import CertificateBuilder
 
 
 class SAMLProviderForm(forms.ModelForm):
     """SAML Provider form"""
 
     processor_path = forms.ChoiceField(choices=get_provider_choices(), label='Processor')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        builder = CertificateBuilder()
+        builder.build()
+        self.fields['signing_cert'].initial = builder.certificate
+        self.fields['signing_key'].initial = builder.private_key
 
     class Meta:
 

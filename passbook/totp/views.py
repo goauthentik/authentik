@@ -50,7 +50,7 @@ def verify(request: HttpRequest) -> HttpResponse:
                 if 'next' in request.GET:
                     return redirect(request.GET.get('next'))
                 # Otherwise just index
-                return redirect(reverse('common-index'))
+                return redirect(reverse('passbook_core:overview'))
             messages.error(request, _('Invalid 2-Factor Token.'))
     else:
         form = TOTPVerifyForm()
@@ -60,7 +60,7 @@ def verify(request: HttpRequest) -> HttpResponse:
         'title': _("SSO - Two-factor verification"),
         'primary_action': _("Verify"),
         'extra_links': {
-            'account-logout': 'Logout',
+            'passbook_core:auth-logout': 'Logout',
         }
     })
 
@@ -100,7 +100,7 @@ def disable(request: HttpRequest) -> HttpResponse:
     #     current=True,
     #     request=request,
     #     send_notification=True)
-    return redirect(reverse('common-index'))
+    return redirect(reverse('passbook_core:overview'))
 
 
 # # pylint: disable=too-many-ancestors
@@ -126,7 +126,7 @@ def disable(request: HttpRequest) -> HttpResponse:
 #         finished_static_devices = StaticDevice.objects.filter(user=request.user, confirmed=True)
 #         if finished_totp_devices.exists() or finished_static_devices.exists():
 #             messages.error(request, _('You already have TOTP enabled!'))
-#             return redirect(reverse('common-index'))
+#             return redirect(reverse('passbook_core:overview'))
 #         # Check if there's an unconfirmed device left to set up
 #         totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=False)
 #         if not totp_devices.exists():

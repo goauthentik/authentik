@@ -1,10 +1,11 @@
 """passbook saml_idp Models"""
 
 from django.db import models
+from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Provider
-from passbook.lib.utils.reflection import class_to_path
+from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.saml_idp.base import Processor
 
 
@@ -21,13 +22,25 @@ class SAMLProvider(Provider):
     signing_key = models.TextField()
 
     form = 'passbook.saml_idp.forms.SAMLProviderForm'
+    _processor = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._meta.get_field('processor_path').choices = get_provider_choices()
 
+    @property
+    def processor(self):
+        if not self._processor:
+            self._processor = path_to_class(self.processor_path)(self)
+        return self._processor
+
     def __str__(self):
         return "SAMLProvider %s (processor=%s)" % (self.name, self.processor_path)
+
+    def link_download_metadata(self):
+        """Get link to download XML metadata for admin interface"""
+        return reverse('passbook_saml_idp:metadata_xml',
+                       kwargs={'provider_id': self.pk})
 
     class Meta:
 

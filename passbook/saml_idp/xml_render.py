@@ -82,6 +82,6 @@ def get_response_xml(parameters, saml_provider: 'SAMLProvider', assertion_id='')
     # LOGGER.debug("Raw response: %s", raw_response)
 
     signed = sign_with_signxml(
-        saml_provider.signing_key, raw_response, [saml_provider.signing_cert],
+        saml_provider.signing_key, raw_response, saml_provider.signing_cert,
         reference_uri=assertion_id).decode("utf-8")
     return signed

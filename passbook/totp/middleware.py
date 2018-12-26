@@ -17,7 +17,7 @@ def totp_force_verify(get_response):
                 user_has_device(request.user) and \
                 not request.user.is_verified() and \
                 request.path != reverse('passbook_totp:totp-verify') and \
-                request.path != reverse('account-logout') and \
+                request.path != reverse('passbook_core:auth-logout') and \
                 not request.META.get('HTTP_AUTHORIZATION', '').startswith('Bearer'):
             # User has TOTP set up but is not verified
 
