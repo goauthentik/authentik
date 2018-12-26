@@ -55,6 +55,7 @@ class Application(RuleModel):
     add custom fields and other properties"""
 
     name = models.TextField()
+    slug = models.SlugField()
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
     provider = models.OneToOneField('Provider', null=True,
