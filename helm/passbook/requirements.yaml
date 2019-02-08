@@ -1,0 +1,7 @@
+dependencies:
+- name: redis
+  version: 5.1.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: postgresql
+  version: 3.10.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
