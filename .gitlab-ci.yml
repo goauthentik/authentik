@@ -46,7 +46,7 @@ package-docker:
   before_script:
     - echo "{\"auths\":{\"https://docker.$NEXUS_URL/\":{\"username\":\"$NEXUS_USER\",\"password\":\"$NEXUS_PASS\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.0.2-alpha
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.0.3-alpha
   stage: build
   only:
     - tags
