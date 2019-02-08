@@ -44,7 +44,7 @@ class LoginView(UserPassesTestMixin, FormView):
         kwargs['show_password_forget_notice'] = CONFIG.y('passbook.password_reset.enabled')
         kwargs['sources'] = Source.objects.filter(enabled=True).select_subclasses()
         if any(source.is_link for source in kwargs['sources']):
-            self.template_name = 'login/with_sources.html'
+            self.template_name = 'login/test.html'
         return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value) -> User:

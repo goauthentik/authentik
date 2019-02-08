@@ -10,3 +10,4 @@ celery
 redis<3.0
 pymysql
 idna<2.8,>=2.5
+cherrypy

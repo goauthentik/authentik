@@ -31,9 +31,9 @@ STATIC_ROOT = BASE_DIR + '/static'
 SECRET_KEY = CONFIG.get('secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = CONFIG.get('debug')
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = CONFIG.get('domains')
 
 LOGIN_URL = 'passbook_core:auth-login'
 # CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
@@ -189,6 +189,16 @@ CELERY_TASK_DEFAULT_QUEUE = 'passbook'
 CELERY_BROKER_URL = 'redis://%s' % CONFIG.get('redis')
 CELERY_RESULT_BACKEND = 'redis://%s' % CONFIG.get('redis')
 
+# CherryPY settings
+with CONFIG.cd('web'):
+    CHERRYPY_SERVER = {
+        'server.socket_host': CONFIG.get('listen', '0.0.0.0'),  # nosec
+        'server.socket_port': CONFIG.get('port', 8000),
+        'server.thread_pool': CONFIG.get('threads', 30),
+        'log.screen': False,
+        'log.access_file': '',
+        'log.error_file': '',
+    }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

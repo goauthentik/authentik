@@ -5,3 +5,4 @@ NOCAPTCHA = True
 INSTALLED_APPS = [
     'captcha'
 ]
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
