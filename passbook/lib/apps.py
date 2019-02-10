@@ -7,3 +7,4 @@ class PassbookLibConfig(AppConfig):
 
     name = 'passbook.lib'
     label = 'passbook_lib'
+    verbose_name = 'passbook lib'

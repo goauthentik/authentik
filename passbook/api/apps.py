@@ -9,3 +9,4 @@ class PassbookAPIConfig(AppConfig):
     name = 'passbook.api'
     label = 'passbook_api'
     mountpoint = 'api/'
+    verbose_name = 'passbook API'
