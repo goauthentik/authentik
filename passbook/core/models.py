@@ -82,7 +82,7 @@ class Application(RuleModel):
     def user_is_authorized(self, user: User) -> bool:
         """Check if user is authorized to use this application"""
         from passbook.core.rules import RuleEngine
-        return RuleEngine(self).for_user(user).result
+        return RuleEngine(self.rules.all()).for_user(user).result
 
     def __str__(self):
         return self.name
@@ -160,6 +160,7 @@ class FieldMatcherRule(Rule):
     MATCH_CONTAINS = 'contains'
     MATCH_REGEXP = 'regexp'
     MATCH_EXACT = 'exact'
+
     MATCHES = (
         (MATCH_STARTSWITH, _('Starts with')),
         (MATCH_ENDSWITH, _('Ends with')),
@@ -169,13 +170,13 @@ class FieldMatcherRule(Rule):
     )
 
     USER_FIELDS = (
-        ('username', 'username',),
-        ('first_name', 'first_name',),
-        ('last_name', 'last_name',),
-        ('email', 'email',),
-        ('is_staff', 'is_staff',),
-        ('is_active', 'is_active',),
-        ('data_joined', 'data_joined',),
+        ('username', _('Username'),),
+        ('first_name', _('First Name'),),
+        ('last_name', _('Last Name'),),
+        ('email', _('E-Mail'),),
+        ('is_staff', _('Is staff'),),
+        ('is_active', _('Is active'),),
+        ('data_joined', _('Date joined'),),
     )
 
     user_field = models.TextField(choices=USER_FIELDS)
@@ -217,6 +218,41 @@ class FieldMatcherRule(Rule):
 
         verbose_name = _('Field matcher Rule')
         verbose_name_plural = _('Field matcher Rules')
+
+@reversion.register()
+class PasswordPolicyRule(Rule):
+    """Rule to make sure passwords have certain properties"""
+
+    amount_uppercase = models.IntegerField(default=0)
+    amount_lowercase = models.IntegerField(default=0)
+    amount_symbols = models.IntegerField(default=0)
+    length_min = models.IntegerField(default=0)
+    symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
+
+    form = 'passbook.core.forms.rules.PasswordPolicyRuleForm'
+
+    def passes(self, user: User) -> bool:
+        # Only check if password is being set
+        if not hasattr(user, '__password__'):
+            return True
+        password = getattr(user, '__password__')
+
+        filter_regex = r''
+        if self.amount_lowercase > 0:
+            filter_regex += r'[a-z]{%d,}' % self.amount_lowercase
+        if self.amount_uppercase > 0:
+            filter_regex += r'[A-Z]{%d,}' % self.amount_uppercase
+        if self.amount_symbols > 0:
+            filter_regex += r'[%s]{%d,}' % (self.symbol_charset, self.amount_symbols)
+        result = bool(re.compile(filter_regex).match(password))
+        LOGGER.debug("User got %r", result)
+        return result
+
+    class Meta:
+
+        verbose_name = _('Password Policy Rule')
+        verbose_name_plural = _('Password Policy Rules')
+
 
 @reversion.register()
 class WebhookRule(Rule):
