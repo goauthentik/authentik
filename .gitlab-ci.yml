@@ -55,6 +55,7 @@ package-helm:
   stage: build
   script:
     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+    - helm init --client-only
     - helm package helm/passbook
     - ./manage.py nexus_upload --method put --url $NEXUS_URL --user $NEXUS_USER --password $NEXUS_PASS --repo helm *.tgz
   only:
