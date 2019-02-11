@@ -1,0 +1,3 @@
+django-rest-framework
+drf_yasg
+django-filters

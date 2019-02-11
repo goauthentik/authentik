@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import importlib
 import os
+import sys
 
 from django.contrib import messages
 
@@ -33,7 +34,7 @@ SECRET_KEY = CONFIG.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CONFIG.get('debug')
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = CONFIG.get('domains')
+ALLOWED_HOSTS = CONFIG.get('domains', [])
 
 LOGIN_URL = 'passbook_core:auth-login'
 # CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
@@ -287,6 +288,16 @@ with CONFIG.cd('log'):
             },
         }
     }
+
+TEST = False
+TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
+TEST_OUTPUT_VERBOSE = 2
+
+TEST_OUTPUT_FILE_NAME = 'unittest.xml'
+
+if any('test' in arg for arg in sys.argv):
+    LOGGING = None
+    TEST = True
 
 _DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
 # Load subapps's INSTALLED_APPS
