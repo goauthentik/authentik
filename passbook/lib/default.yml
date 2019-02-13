@@ -23,7 +23,7 @@ web:
   listen: 0.0.0.0
   port: 8000
   threads: 30
-debug: true
+debug: false
 secure_proxy_header:
   HTTP_X_FORWARDED_PROTO: https
 redis: localhost
