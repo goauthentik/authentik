@@ -16,7 +16,7 @@ FROM python:3.6-slim-stretch
 COPY ./passbook/ /app/passbook
 COPY ./manage.py /app/
 COPY ./requirements.txt /app/
-COPY --from=build /app/static/* /app/static/
+COPY --from=build /app/static /app/static/
 
 WORKDIR /app/
 
