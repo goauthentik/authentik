@@ -13,7 +13,7 @@ class ApplicationForm(forms.ModelForm):
 
         model = Application
         fields = ['name', 'slug', 'launch_url', 'icon_url',
-                  'rules', 'provider', 'skip_authorization']
+                  'policies', 'provider', 'skip_authorization']
         widgets = {
             'name': forms.TextInput(),
             'launch_url': forms.TextInput(),

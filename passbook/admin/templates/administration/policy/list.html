@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Rules" %}</h1>
+  <h1>{% trans "Policies" %}</h1>
   <div class="dropdown">
     <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
       {% trans 'Create...' %}
@@ -17,7 +17,7 @@
     </button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
       {% for type, name in types.items %}
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:rule-create' %}?type={{ type }}">{{ name }}</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:policy-create' %}?type={{ type }}">{{ name }}</a></li>
       {% endfor %}
     </ul>
   </div>
@@ -31,14 +31,14 @@
       </tr>
     </thead>
     <tbody>
-      {% for rule in object_list %}
+      {% for policy in object_list %}
         <tr>
-          <td>{{ rule.name }}</td>
-          <td>{{ rule|fieldtype }}</td>
+          <td>{{ policy.name }}</td>
+          <td>{{ policy|fieldtype }}</td>
           <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-update' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-test' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:rule-delete' pk=rule.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-update' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-test' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
+            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-delete' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
           </td>
         </tr>
       {% endfor %}

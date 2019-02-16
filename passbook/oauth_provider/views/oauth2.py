@@ -29,7 +29,7 @@ class OAuthPermissionDenied(PermissionDeniedView):
 
 
 class PassbookAuthorizationView(AccessMixin, AuthorizationView):
-    """Custom OAuth2 Authorization View which checks rules, etc"""
+    """Custom OAuth2 Authorization View which checks policies, etc"""
 
     _application = None
 

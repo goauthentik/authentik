@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework_swagger.views import get_swagger_view
 
 from passbook.admin.views import (applications, audit, factors, groups,
-                                  invitations, overview, providers, rules,
+                                  invitations, overview, policy, providers,
                                   sources, users)
 
 schema_view = get_swagger_view(title='passbook Admin Internal API')
@@ -25,12 +25,12 @@ urlpatterns = [
     path('sources/create/', sources.SourceCreateView.as_view(), name='source-create'),
     path('sources/<uuid:pk>/update/', sources.SourceUpdateView.as_view(), name='source-update'),
     path('sources/<uuid:pk>/delete/', sources.SourceDeleteView.as_view(), name='source-delete'),
-    # Rules
-    path('rules/', rules.RuleListView.as_view(), name='rules'),
-    path('rules/create/', rules.RuleCreateView.as_view(), name='rule-create'),
-    path('rules/<uuid:pk>/update/', rules.RuleUpdateView.as_view(), name='rule-update'),
-    path('rules/<uuid:pk>/delete/', rules.RuleDeleteView.as_view(), name='rule-delete'),
-    path('rules/<uuid:pk>/test/', rules.RuleTestView.as_view(), name='rule-test'),
+    # Policies
+    path('policies/', policy.PolicyListView.as_view(), name='policies'),
+    path('policies/create/', policy.PolicyCreateView.as_view(), name='policy-create'),
+    path('policies/<uuid:pk>/update/', policy.PolicyUpdateView.as_view(), name='policy-update'),
+    path('policies/<uuid:pk>/delete/', policy.PolicyDeleteView.as_view(), name='policy-delete'),
+    path('policies/<uuid:pk>/test/', policy.PolicyTestView.as_view(), name='policy-test'),
     # Providers
     path('providers/', providers.ProviderListView.as_view(), name='providers'),
     path('providers/create/',

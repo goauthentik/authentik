@@ -49,7 +49,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             self.pending_factors = request.session[AuthenticationView.SESSION_PENDING_FACTORS]
         else:
             # Get an initial list of factors which are currently enabled
-            # and apply to the current user. We check rules here and block the request
+            # and apply to the current user. We check policies here and block the request
             _all_factors = Factor.objects.filter(enabled=True)
             self.pending_factors = []
             for factor in _all_factors:

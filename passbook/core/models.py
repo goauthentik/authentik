@@ -49,19 +49,19 @@ class Provider(models.Model):
             return getattr(self, 'name')
         return super().__str__()
 
-class RuleModel(UUIDModel, CreatedUpdatedModel):
-    """Base model which can have rules applied to it"""
+class PolicyModel(UUIDModel, CreatedUpdatedModel):
+    """Base model which can have policies applied to it"""
 
-    rules = models.ManyToManyField('Rule', blank=True)
+    policies = models.ManyToManyField('Policy', blank=True)
 
     def passes(self, user: User) -> bool:
         """Return true if user passes, otherwise False or raise Exception"""
-        for rule in self.rules:
-            if not rule.passes(user):
+        for policy in self.policies:
+            if not policy.passes(user):
                 return False
         return True
 
-class Factor(RuleModel):
+class Factor(PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
     name = models.TextField()
@@ -73,7 +73,7 @@ class Factor(RuleModel):
     def __str__(self):
         return "Factor %s" % self.slug
 
-class Application(RuleModel):
+class Application(PolicyModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -90,13 +90,13 @@ class Application(RuleModel):
 
     def user_is_authorized(self, user: User) -> bool:
         """Check if user is authorized to use this application"""
-        from passbook.core.rules import RuleEngine
-        return RuleEngine(self.rules.all()).for_user(user).result
+        from passbook.core.policies import PolicyEngine
+        return PolicyEngine(self.policies.all()).for_user(user).result
 
     def __str__(self):
         return self.name
 
-class Source(RuleModel):
+class Source(PolicyModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField()
@@ -129,8 +129,8 @@ class UserSourceConnection(CreatedUpdatedModel):
 
         unique_together = (('user', 'source'),)
 
-class Rule(UUIDModel, CreatedUpdatedModel):
-    """Rules which specify if a user is authorized to use an Application. Can be overridden by
+class Policy(UUIDModel, CreatedUpdatedModel):
+    """Policys which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
     ACTION_ALLOW = 'allow'
@@ -153,11 +153,11 @@ class Rule(UUIDModel, CreatedUpdatedModel):
         return "%s action %s" % (self.name, self.action)
 
     def passes(self, user: User) -> bool:
-        """Check if user instance passes this rule"""
+        """Check if user instance passes this policy"""
         raise NotImplementedError()
 
-class FieldMatcherRule(Rule):
-    """Rule which checks if a field of the User model matches/doesn't match a
+class FieldMatcherPolicy(Policy):
+    """Policy which checks if a field of the User model matches/doesn't match a
     certain pattern"""
 
     MATCH_STARTSWITH = 'startswith'
@@ -188,7 +188,7 @@ class FieldMatcherRule(Rule):
     match_action = models.CharField(max_length=50, choices=MATCHES)
     value = models.TextField()
 
-    form = 'passbook.core.forms.rules.FieldMatcherRuleForm'
+    form = 'passbook.core.forms.policies.FieldMatcherPolicyForm'
 
     def __str__(self):
         description = "%s, user.%s %s '%s'" % (self.name, self.user_field,
@@ -205,13 +205,13 @@ class FieldMatcherRule(Rule):
         LOGGER.debug("Checked '%s' %s with '%s'...",
                      user_field_value, self.match_action, self.value)
         passes = False
-        if self.match_action == FieldMatcherRule.MATCH_STARTSWITH:
+        if self.match_action == FieldMatcherPolicy.MATCH_STARTSWITH:
             passes = user_field_value.startswith(self.value)
-        if self.match_action == FieldMatcherRule.MATCH_ENDSWITH:
+        if self.match_action == FieldMatcherPolicy.MATCH_ENDSWITH:
             passes = user_field_value.endswith(self.value)
-        if self.match_action == FieldMatcherRule.MATCH_CONTAINS:
+        if self.match_action == FieldMatcherPolicy.MATCH_CONTAINS:
             passes = self.value in user_field_value
-        if self.match_action == FieldMatcherRule.MATCH_REGEXP:
+        if self.match_action == FieldMatcherPolicy.MATCH_REGEXP:
             pattern = re.compile(self.value)
             passes = bool(pattern.match(user_field_value))
         if self.negate:
@@ -221,11 +221,11 @@ class FieldMatcherRule(Rule):
 
     class Meta:
 
-        verbose_name = _('Field matcher Rule')
-        verbose_name_plural = _('Field matcher Rules')
+        verbose_name = _('Field matcher Policy')
+        verbose_name_plural = _('Field matcher Policys')
 
-class PasswordPolicyRule(Rule):
-    """Rule to make sure passwords have certain properties"""
+class PasswordPolicyPolicy(Policy):
+    """Policy to make sure passwords have certain properties"""
 
     amount_uppercase = models.IntegerField(default=0)
     amount_lowercase = models.IntegerField(default=0)
@@ -233,7 +233,7 @@ class PasswordPolicyRule(Rule):
     length_min = models.IntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
 
-    form = 'passbook.core.forms.rules.PasswordPolicyRuleForm'
+    form = 'passbook.core.forms.policies.PasswordPolicyPolicyForm'
 
     def passes(self, user: User) -> bool:
         # Only check if password is being set
@@ -254,12 +254,12 @@ class PasswordPolicyRule(Rule):
 
     class Meta:
 
-        verbose_name = _('Password Policy Rule')
-        verbose_name_plural = _('Password Policy Rules')
+        verbose_name = _('Password Policy Policy')
+        verbose_name_plural = _('Password Policy Policys')
 
 
-class WebhookRule(Rule):
-    """Rule that asks webhook"""
+class WebhookPolicy(Policy):
+    """Policy that asks webhook"""
 
     METHOD_GET = 'GET'
     METHOD_POST = 'POST'
@@ -282,7 +282,7 @@ class WebhookRule(Rule):
     result_jsonpath = models.TextField()
     result_json_value = models.TextField()
 
-    form = 'passbook.core.forms.rules.WebhookRuleForm'
+    form = 'passbook.core.forms.policies.WebhookPolicyForm'
 
     def passes(self, user: User):
         """Call webhook asynchronously and report back"""
@@ -290,30 +290,30 @@ class WebhookRule(Rule):
 
     class Meta:
 
-        verbose_name = _('Webhook Rule')
-        verbose_name_plural = _('Webhook Rules')
+        verbose_name = _('Webhook Policy')
+        verbose_name_plural = _('Webhook Policys')
 
-class DebugRule(Rule):
-    """Rule used for debugging the RuleEngine. Returns a fixed result,
+class DebugPolicy(Policy):
+    """Policy used for debugging the PolicyEngine. Returns a fixed result,
     but takes a random time to process."""
 
     result = models.BooleanField(default=False)
     wait_min = models.IntegerField(default=5)
     wait_max = models.IntegerField(default=30)
 
-    form = 'passbook.core.forms.rules.DebugRuleForm'
+    form = 'passbook.core.forms.policies.DebugPolicyForm'
 
     def passes(self, user: User):
         """Wait random time then return result"""
         wait = SystemRandom().randrange(self.wait_min, self.wait_max)
-        LOGGER.debug("Rule '%s' waiting for %ds", self.name, wait)
+        LOGGER.debug("Policy '%s' waiting for %ds", self.name, wait)
         sleep(wait)
         return self.result
 
     class Meta:
 
-        verbose_name = _('Debug Rule')
-        verbose_name_plural = _('Debug Rules')
+        verbose_name = _('Debug Policy')
+        verbose_name_plural = _('Debug Policys')
 
 class Invitation(UUIDModel):
     """Single-use invitation link"""

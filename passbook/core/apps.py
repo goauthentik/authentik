@@ -16,7 +16,7 @@ class PassbookCoreConfig(AppConfig):
     verbose_name = 'passbook Core'
 
     def ready(self):
-        import_module('passbook.core.rules')
+        import_module('passbook.core.policies')
         factors_to_load = CONFIG.y('passbook.factors', [])
         for factors_to_load in factors_to_load:
             try:
