@@ -21,7 +21,7 @@ core_urls = [
     path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
     path('auth/process/', view.AuthenticationView.as_view(), name='auth-process'),
     path('auth/process/<slug:factor>/', view.AuthenticationView.as_view(), name='auth-process'),
-    path('auth/process/denied/', view.MFAPermissionDeniedView.as_view(), name='auth-denied'),
+    path('auth/process/denied/', view.FactorPermissionDeniedView.as_view(), name='auth-denied'),
     # User views
     path('user/', user.UserSettingsView.as_view(), name='user-settings'),
     path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),

@@ -65,7 +65,7 @@ class LoginView(UserPassesTestMixin, FormView):
         if AuthenticationView.SESSION_FACTOR in self.request.session:
             del self.request.session[AuthenticationView.SESSION_FACTOR]
         self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
-        return redirect(reverse('passbook_core:mfa'))
+        return redirect(reverse('passbook_core:auth-process'))
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""

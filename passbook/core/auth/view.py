@@ -121,5 +121,5 @@ class AuthenticationView(UserPassesTestMixin, View):
                 del self.request.session[key]
         LOGGER.debug("Cleaned up sessions")
 
-class MFAPermissionDeniedView(PermissionDeniedView):
+class FactorPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
