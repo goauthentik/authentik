@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import DeleteView, ListView, UpdateView
 
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.forms.user import UserDetailForm
+from passbook.core.forms.users import UserDetailForm
 from passbook.core.models import User
 
 

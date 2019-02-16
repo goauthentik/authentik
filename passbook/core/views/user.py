@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import DeleteView, UpdateView
 
-from passbook.core.forms.user import UserDetailForm
+from passbook.core.forms.users import UserDetailForm
 
 
 class UserSettingsView(UpdateView):
