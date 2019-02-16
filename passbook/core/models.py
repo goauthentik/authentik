@@ -56,7 +56,7 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
 
     def passes(self, user: User) -> bool:
         """Return true if user passes, otherwise False or raise Exception"""
-        for policy in self.policies:
+        for policy in self.policies.all():
             if not policy.passes(user):
                 return False
         return True
@@ -130,7 +130,7 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (('user', 'source'),)
 
 class Policy(UUIDModel, CreatedUpdatedModel):
-    """Policys which specify if a user is authorized to use an Application. Can be overridden by
+    """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
     ACTION_ALLOW = 'allow'
@@ -222,9 +222,9 @@ class FieldMatcherPolicy(Policy):
     class Meta:
 
         verbose_name = _('Field matcher Policy')
-        verbose_name_plural = _('Field matcher Policys')
+        verbose_name_plural = _('Field matcher Policies')
 
-class PasswordPolicyPolicy(Policy):
+class PasswordPolicy(Policy):
     """Policy to make sure passwords have certain properties"""
 
     amount_uppercase = models.IntegerField(default=0)
@@ -233,7 +233,7 @@ class PasswordPolicyPolicy(Policy):
     length_min = models.IntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
 
-    form = 'passbook.core.forms.policies.PasswordPolicyPolicyForm'
+    form = 'passbook.core.forms.policies.PasswordPolicyForm'
 
     def passes(self, user: User) -> bool:
         # Only check if password is being set
@@ -254,8 +254,8 @@ class PasswordPolicyPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _('Password Policy Policy')
-        verbose_name_plural = _('Password Policy Policys')
+        verbose_name = _('Password Policy')
+        verbose_name_plural = _('Password Policies')
 
 
 class WebhookPolicy(Policy):
@@ -291,7 +291,7 @@ class WebhookPolicy(Policy):
     class Meta:
 
         verbose_name = _('Webhook Policy')
-        verbose_name_plural = _('Webhook Policys')
+        verbose_name_plural = _('Webhook Policies')
 
 class DebugPolicy(Policy):
     """Policy used for debugging the PolicyEngine. Returns a fixed result,
@@ -313,7 +313,7 @@ class DebugPolicy(Policy):
     class Meta:
 
         verbose_name = _('Debug Policy')
-        verbose_name_plural = _('Debug Policys')
+        verbose_name_plural = _('Debug Policies')
 
 class Invitation(UUIDModel):
     """Single-use invitation link"""

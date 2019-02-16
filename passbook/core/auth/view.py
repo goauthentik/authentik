@@ -54,11 +54,13 @@ class AuthenticationView(UserPassesTestMixin, View):
             self.pending_factors = []
             for factor in _all_factors:
                 if factor.passes(self.pending_user):
-                    self.pending_factors.append(_all_factors)
-            # self.pending_factors = Factor
+                    self.pending_factors.append(factor.type)
         # Read and instantiate factor from session
         factor_class = None
         if AuthenticationView.SESSION_FACTOR not in request.session:
+            # Case when no factors apply to user, return error denied
+            if not self.pending_factors:
+                return self.user_invalid()
             factor_class = self.pending_factors[0]
         else:
             factor_class = request.session[AuthenticationView.SESSION_FACTOR]
@@ -110,6 +112,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         LOGGER.debug("Logged in user %s", self.pending_user)
         # Cleanup
         self._cleanup()
+        # TODO: ?next=...
         return redirect(reverse('passbook_core:overview'))
 
     def _cleanup(self):

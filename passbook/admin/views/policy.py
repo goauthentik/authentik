@@ -15,7 +15,7 @@ from passbook.lib.utils.reflection import path_to_class
 
 
 class PolicyListView(AdminRequiredMixin, ListView):
-    """Show list of all policys"""
+    """Show list of all policies"""
 
     model = Policy
     template_name = 'administration/policy/list.html'
@@ -33,7 +33,7 @@ class PolicyCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Policy"""
 
     template_name = 'generic/create_inheritance.html'
-    success_url = reverse_lazy('passbook_admin:policys')
+    success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully created Policy')
 
     def get_form_class(self):
@@ -50,7 +50,7 @@ class PolicyUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
 
     model = Policy
     template_name = 'generic/update.html'
-    success_url = reverse_lazy('passbook_admin:policys')
+    success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully updated Policy')
 
     def get_form_class(self):
@@ -67,7 +67,7 @@ class PolicyDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
 
     model = Policy
     template_name = 'generic/delete.html'
-    success_url = reverse_lazy('passbook_admin:policys')
+    success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully updated Policy')
 
     def get_object(self, queryset=None):
