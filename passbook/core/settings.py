@@ -50,11 +50,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'passbook.oauth_client.backends.AuthorizedServiceBackend'
 ]
-AUTHENTICATION_FACTORS = [
-    'passbook.core.auth.backend_factor.AuthenticationBackendFactor',
-    'passbook.core.auth.dummy.DummyFactor',
-    'passbook.captcha_factor.factor.CaptchaFactor',
-]
 
 # Application definition
 

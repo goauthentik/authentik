@@ -11,7 +11,7 @@ from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import FormView
 
-from passbook.core.auth.mfa import MultiFactorAuthenticator
+from passbook.core.auth.view import AuthenticationView
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
@@ -62,9 +62,9 @@ class LoginView(UserPassesTestMixin, FormView):
         if not pre_user:
             # No user found
             return self.invalid_login(self.request)
-        if MultiFactorAuthenticator.SESSION_FACTOR in self.request.session:
-            del self.request.session[MultiFactorAuthenticator.SESSION_FACTOR]
-        self.request.session[MultiFactorAuthenticator.SESSION_PENDING_USER] = pre_user.pk
+        if AuthenticationView.SESSION_FACTOR in self.request.session:
+            del self.request.session[AuthenticationView.SESSION_FACTOR]
+        self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
         return redirect(reverse('passbook_core:mfa'))
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:

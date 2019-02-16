@@ -8,13 +8,15 @@ from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
 from passbook.core.auth.factor import AuthenticationFactor
-from passbook.core.auth.mfa import MultiFactorAuthenticator
+from passbook.core.auth.factor_manager import MANAGER
+from passbook.core.auth.view import AuthenticationView
 from passbook.core.forms.authentication import AuthenticationBackendFactorForm
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
 
 
+@MANAGER.factor()
 class AuthenticationBackendFactor(FormView, AuthenticationFactor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
@@ -34,7 +36,7 @@ class AuthenticationBackendFactor(FormView, AuthenticationFactor):
             if user:
                 # User instance returned from authenticate() has .backend property set
                 self.authenticator.pending_user = user
-                self.request.session[MultiFactorAuthenticator.SESSION_USER_BACKEND] = user.backend
+                self.request.session[AuthenticationView.SESSION_USER_BACKEND] = user.backend
                 return self.authenticator.user_ok()
             # No user was found -> invalid credentials
             LOGGER.debug("Invalid credentials")

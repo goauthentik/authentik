@@ -4,8 +4,10 @@ from django.views.generic import FormView
 
 from passbook.captcha_factor.forms import CaptchaForm
 from passbook.core.auth.factor import AuthenticationFactor
+from passbook.core.auth.factor_manager import MANAGER
 
 
+@MANAGER.factor()
 class CaptchaFactor(FormView, AuthenticationFactor):
     """Simple captcha checker, logic is handeled in django-captcha module"""
 

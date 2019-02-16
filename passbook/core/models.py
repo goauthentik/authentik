@@ -64,6 +64,18 @@ class RuleModel(UUIDModel, CreatedUpdatedModel):
         return True
 
 @reversion.register()
+class Factor(RuleModel):
+    """Authentication factor, multiple instances of the same Factor can be used"""
+
+    name = models.TextField()
+    slug = models.SlugField(unique=True)
+    order = models.IntegerField()
+    type = models.TextField(unique=True)
+    enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "Factor %s" % self.slug
+
 class Application(RuleModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
@@ -73,7 +85,7 @@ class Application(RuleModel):
     slug = models.SlugField()
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
-    provider = models.OneToOneField('Provider', null=True,
+    provider = models.OneToOneField('Provider', null=True, blank=True,
                                     default=None, on_delete=models.SET_DEFAULT)
     skip_authorization = models.BooleanField(default=False)
 

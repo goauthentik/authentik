@@ -17,6 +17,9 @@
   <li class="{% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
     <a href="{% url 'passbook_admin:providers' %}">{% trans 'Providers' %}</a>
   </li>
+  <li class="{% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
+    <a href="{% url 'passbook_admin:factors' %}">{% trans 'Factors' %}</a>
+  </li>
   <li class="{% is_active 'passbook_admin:rules' 'passbook_admin:rule-create' 'passbook_admin:rule-update' 'passbook_admin:rule-delete' 'passbook_admin:rule-test' %}">
     <a href="{% url 'passbook_admin:rules' %}">{% trans 'Rules' %}</a>
   </li>

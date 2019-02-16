@@ -1,20 +1,19 @@
 """passbook multi-factor authentication engine"""
 from logging import getLogger
 
-from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.generic import View
 
-from passbook.core.models import User
+from passbook.core.models import Factor, User
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 
 LOGGER = getLogger(__name__)
 
 
-class MultiFactorAuthenticator(UserPassesTestMixin, View):
+class AuthenticationView(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
 
     SESSION_FACTOR = 'passbook_factor'
@@ -25,8 +24,6 @@ class MultiFactorAuthenticator(UserPassesTestMixin, View):
     pending_user = None
     pending_factors = []
 
-    factors = settings.AUTHENTICATION_FACTORS.copy()
-
     _current_factor = None
 
     # Allow only not authenticated users to login
@@ -34,29 +31,38 @@ class MultiFactorAuthenticator(UserPassesTestMixin, View):
         return self.request.user.is_authenticated is False
 
     def handle_no_permission(self):
+        # Function from UserPassesTestMixin
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
         return redirect(reverse('passbook_core:overview'))
 
     def dispatch(self, request, *args, **kwargs):
         # Extract pending user from session (only remember uid)
-        if MultiFactorAuthenticator.SESSION_PENDING_USER in request.session:
+        if AuthenticationView.SESSION_PENDING_USER in request.session:
             self.pending_user = get_object_or_404(
-                User, id=self.request.session[MultiFactorAuthenticator.SESSION_PENDING_USER])
+                User, id=self.request.session[AuthenticationView.SESSION_PENDING_USER])
         else:
             # No Pending user, redirect to login screen
             return redirect(reverse('passbook_core:auth-login'))
         # Write pending factors to session
-        if MultiFactorAuthenticator.SESSION_PENDING_FACTORS in request.session:
-            self.pending_factors = request.session[MultiFactorAuthenticator.SESSION_PENDING_FACTORS]
+        if AuthenticationView.SESSION_PENDING_FACTORS in request.session:
+            self.pending_factors = request.session[AuthenticationView.SESSION_PENDING_FACTORS]
         else:
-            self.pending_factors = self.factors.copy()
+            # Get an initial list of factors which are currently enabled
+            # and apply to the current user. We check rules here and block the request
+            _all_factors = Factor.objects.filter(enabled=True)
+            self.pending_factors = []
+            for factor in _all_factors:
+                if factor.passes(self.pending_user):
+                    self.pending_factors.append(_all_factors)
+            # self.pending_factors = Factor
         # Read and instantiate factor from session
         factor_class = None
-        if MultiFactorAuthenticator.SESSION_FACTOR not in request.session:
+        if AuthenticationView.SESSION_FACTOR not in request.session:
             factor_class = self.pending_factors[0]
         else:
-            factor_class = request.session[MultiFactorAuthenticator.SESSION_FACTOR]
+            factor_class = request.session[AuthenticationView.SESSION_FACTOR]
+        # Instantiate Next Factor and pass request
         factor = path_to_class(factor_class)
         self._current_factor = factor(self)
         self._current_factor.request = request
@@ -81,11 +87,11 @@ class MultiFactorAuthenticator(UserPassesTestMixin, View):
         next_factor = None
         if self.pending_factors:
             next_factor = self.pending_factors.pop()
-            self.request.session[MultiFactorAuthenticator.SESSION_PENDING_FACTORS] = \
+            self.request.session[AuthenticationView.SESSION_PENDING_FACTORS] = \
                 self.pending_factors
-            self.request.session[MultiFactorAuthenticator.SESSION_FACTOR] = next_factor
+            self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
             LOGGER.debug("Rendering Factor is %s", next_factor)
-            return redirect(reverse('passbook_core:mfa'))
+            return redirect(reverse('passbook_core:auth-process', kwargs={'factor': next_factor}))
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in")
         return self._user_passed()
@@ -94,12 +100,12 @@ class MultiFactorAuthenticator(UserPassesTestMixin, View):
         """Show error message, user cannot login.
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
-        return redirect(reverse('passbook_core:mfa-denied'))
+        return redirect(reverse('passbook_core:auth-denied'))
 
     def _user_passed(self):
         """User Successfully passed all factors"""
         # user = authenticate(request=self.request, )
-        backend = self.request.session[MultiFactorAuthenticator.SESSION_USER_BACKEND]
+        backend = self.request.session[AuthenticationView.SESSION_USER_BACKEND]
         login(self.request, self.pending_user, backend=backend)
         LOGGER.debug("Logged in user %s", self.pending_user)
         # Cleanup

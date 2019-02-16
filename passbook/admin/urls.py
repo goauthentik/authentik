@@ -2,8 +2,9 @@
 from django.urls import include, path
 from rest_framework_swagger.views import get_swagger_view
 
-from passbook.admin.views import (applications, audit, groups, invitations,
-                                  overview, providers, rules, sources, users)
+from passbook.admin.views import (applications, audit, factors, groups,
+                                  invitations, overview, providers, rules,
+                                  sources, users)
 
 schema_view = get_swagger_view(title='passbook Admin Internal API')
 
@@ -38,6 +39,14 @@ urlpatterns = [
          providers.ProviderUpdateView.as_view(), name='provider-update'),
     path('providers/<int:pk>/delete/',
          providers.ProviderDeleteView.as_view(), name='provider-delete'),
+    # Factors
+    path('factors/', factors.FactorListView.as_view(), name='factors'),
+    path('factors/create/',
+         factors.FactorCreateView.as_view(), name='factor-create'),
+    path('factors/<uuid:pk>/update/',
+         factors.FactorUpdateView.as_view(), name='factor-update'),
+    path('factors/<uuid:pk>/delete/',
+         factors.FactorDeleteView.as_view(), name='factor-delete'),
     # Invitations
     path('invitations/', invitations.InvitationListView.as_view(), name='invitations'),
     path('invitations/create/',
