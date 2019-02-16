@@ -11,6 +11,8 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Factors" %}</h1>
+  <span>{% trans "Factors required for a user to successfully authenticate." %}</span>
+  <hr>
    <a href="{% url 'passbook_admin:factor-create' %}" class="btn btn-primary">
        {% trans 'Create...' %}
    </a>

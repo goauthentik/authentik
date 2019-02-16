@@ -10,6 +10,8 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Applications" %}</h1>
+  <span>{% trans "External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML." %}</span>
+  <hr>
   <a href="{% url 'passbook_admin:application-create' %}" class="btn btn-primary">
     {% trans 'Create...' %}
   </a>

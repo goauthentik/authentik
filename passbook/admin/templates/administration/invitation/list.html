@@ -10,6 +10,8 @@
 {% block content %}
 <div class="container">
   <h1>{% trans "Invitations" %}</h1>
+  <span>{% trans "Create Invitation Links which optionally force a username or expire on a set date." %}</span>
+  <hr>
   <a href="{% url 'passbook_admin:invitation-create' %}" class="btn btn-primary">
     {% trans 'Create...' %}
   </a>
