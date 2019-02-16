@@ -10,13 +10,11 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from ipware import get_client_ip
-from reversion import register
 
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
 LOGGER = getLogger(__name__)
 
-@register()
 class AuditEntry(UUIDModel):
     """An individual audit log entry"""
 

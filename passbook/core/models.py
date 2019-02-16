@@ -5,7 +5,6 @@ from random import SystemRandom
 from time import sleep
 from uuid import uuid4
 
-import reversion
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse_lazy
@@ -39,7 +38,6 @@ class User(AbstractUser):
     applications = models.ManyToManyField('Application')
     groups = models.ManyToManyField('Group')
 
-@reversion.register()
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
@@ -63,7 +61,6 @@ class RuleModel(UUIDModel, CreatedUpdatedModel):
                 return False
         return True
 
-@reversion.register()
 class Factor(RuleModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
@@ -99,7 +96,6 @@ class Application(RuleModel):
     def __str__(self):
         return self.name
 
-@reversion.register()
 class Source(RuleModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -123,7 +119,6 @@ class Source(RuleModel):
     def __str__(self):
         return self.name
 
-@reversion.register()
 class UserSourceConnection(CreatedUpdatedModel):
     """Connection between User and Source."""
 
@@ -134,7 +129,6 @@ class UserSourceConnection(CreatedUpdatedModel):
 
         unique_together = (('user', 'source'),)
 
-@reversion.register()
 class Rule(UUIDModel, CreatedUpdatedModel):
     """Rules which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
@@ -162,7 +156,6 @@ class Rule(UUIDModel, CreatedUpdatedModel):
         """Check if user instance passes this rule"""
         raise NotImplementedError()
 
-@reversion.register()
 class FieldMatcherRule(Rule):
     """Rule which checks if a field of the User model matches/doesn't match a
     certain pattern"""
@@ -231,7 +224,6 @@ class FieldMatcherRule(Rule):
         verbose_name = _('Field matcher Rule')
         verbose_name_plural = _('Field matcher Rules')
 
-@reversion.register()
 class PasswordPolicyRule(Rule):
     """Rule to make sure passwords have certain properties"""
 
@@ -266,7 +258,6 @@ class PasswordPolicyRule(Rule):
         verbose_name_plural = _('Password Policy Rules')
 
 
-@reversion.register()
 class WebhookRule(Rule):
     """Rule that asks webhook"""
 
@@ -302,7 +293,6 @@ class WebhookRule(Rule):
         verbose_name = _('Webhook Rule')
         verbose_name_plural = _('Webhook Rules')
 
-@reversion.register()
 class DebugRule(Rule):
     """Rule used for debugging the RuleEngine. Returns a fixed result,
     but takes a random time to process."""
