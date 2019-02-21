@@ -1,0 +1,12 @@
+strictness: medium
+test-warnings: true
+doc-warnings: false
+
+ignore-paths:
+  - env
+  - migrations
+  - docs
+  - node_modules
+
+uses:
+ - django
