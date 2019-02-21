@@ -171,7 +171,7 @@ class FieldMatcherPolicy(Policy):
     MATCHES = (
         (MATCH_STARTSWITH, _('Starts with')),
         (MATCH_ENDSWITH, _('Ends with')),
-        (MATCH_ENDSWITH, _('Contains')),
+        (MATCH_CONTAINS, _('Contains')),
         (MATCH_REGEXP, _('Regexp')),
         (MATCH_EXACT, _('Exact')),
     )
