@@ -32,7 +32,7 @@ class PolicyEngine:
         """Check policies for user"""
         signatures = []
         kwargs = {
-            '__password__': getattr(user, '__password__')
+            '__password__': getattr(user, '__password__', None)
         }
         for policy in self.policies:
             signatures.append(_policy_engine_task.s(user.pk, policy.pk.hex, **kwargs))

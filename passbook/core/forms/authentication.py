@@ -18,6 +18,11 @@ class LoginForm(forms.Form):
     uid_field = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _('UID')}))
     remember_me = forms.BooleanField(required=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if CONFIG.y('passbook.uid_fields') == ['email']:
+            self.fields['uid_field'] = forms.EmailField()
+
     def clean_uid_field(self):
         """Validate uid_field after EmailValidator if 'email' is the only selected uid_fields"""
         if CONFIG.y('passbook.uid_fields') == ['email']:

@@ -2,8 +2,9 @@
 import glob
 import os
 import socket
+from hashlib import md5
 from importlib import import_module
-from urllib.parse import urljoin
+from urllib.parse import urlencode, urljoin
 
 from django import template
 from django.apps import apps
@@ -11,6 +12,7 @@ from django.conf import settings
 from django.db.models import Model
 from django.template.loaders.app_directories import get_app_template_dirs
 from django.urls import reverse
+from django.utils.html import escape
 from django.utils.translation import ugettext as _
 
 from passbook.lib.config import CONFIG
@@ -178,3 +180,30 @@ def app_versions():
                 ver = '.'.join([str(x) for x in ver])
             app_versions[app.verbose_name] = ver
     return app_versions
+
+@register.simple_tag
+def gravatar(email, size=None, rating=None):
+    """
+    Generates a Gravatar URL for the given email address.
+
+    Syntax::
+
+        {% gravatar <email> [size] [rating] %}
+
+    Example::
+
+        {% gravatar someone@example.com 48 pg %}
+    """
+    # gravatar uses md5 for their URLs, so md5 can't be avoided
+    gravatar_url = "%savatar/%s" % ('https://secure.gravatar.com/',
+                                    md5(email.encode('utf-8')).hexdigest())  # nosec
+
+    parameters = [p for p in (
+        ('s', size or '158'),
+        ('r', rating or 'g'),
+    ) if p[1]]
+
+    if parameters:
+        gravatar_url += '?' + urlencode(parameters, doseq=True)
+
+    return escape(gravatar_url)

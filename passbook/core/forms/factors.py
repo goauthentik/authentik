@@ -17,7 +17,7 @@ class FactorForm(forms.ModelForm):
     class Meta:
 
         model = Factor
-        fields = ['name', 'slug', 'order', 'policies', 'type', 'enabled']
+        fields = ['name', 'slug', 'order', 'policies', 'type', 'enabled', 'arguments']
         widgets = {
             'type': forms.Select(choices=get_factors()),
             'name': forms.TextInput(),

@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
   <h1>{% trans "Audit Log" %}</h1>
   <div id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
     {% for entry in object_list %}
@@ -23,27 +22,31 @@
               {{ entry.action }}
             </div>
             <div class="list-group-item-text">
+              {{ entry.context }}
             </div>
           </div>
           <div class="list-view-pf-additional-info">
             <div class="list-view-pf-additional-info-item">
-              <span class="pficon pficon-user"></span>
-              <strong>{{ entry.user }}</strong>
+                <span class="pficon pficon-user"></span>
+                <strong>{{ entry.user }}</strong>
             </div>
             <div class="list-view-pf-additional-info-item">
-              <span class="pficon pficon-screen"></span>
-              <strong>{{ entry.request_ip }}</strong>
+                <span class="pficon pficon-cluster"></span>
+                <strong>{{ entry.app|default:'-' }}</strong>
             </div>
             <div class="list-view-pf-additional-info-item">
-              <span class="pficon pficon-cluster"></span>
-              <strong>{{ entry.app|default:'-' }}</strong>
+                <span class="fa fa-clock-o"></span>
+                <strong>{{ entry.created }}</strong>
+            </div>
+            <div class="list-view-pf-additional-info-item">
+                <span class="pficon pficon-screen"></span>
+                <strong>{{ entry.request_ip }}</strong>
             </div>
           </div>
         </div>
       </div>
     </div>
     {% endfor %}
-  </div>
   <script>
     $(document).ready(function () {
       // Row Checkbox Selection

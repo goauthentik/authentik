@@ -1,10 +1,10 @@
 """passbook audit models"""
 from datetime import timedelta
-from json import dumps, loads
 from logging import getLogger
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -43,17 +43,9 @@ class AuditEntry(UUIDModel):
     action = models.TextField(choices=ACTIONS)
     date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
-    _context = models.TextField()
-    _context_cache = None
+    context = JSONField(default=dict, blank=True)
     request_ip = models.GenericIPAddressField()
     created = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def context(self):
-        """Load context data and load json"""
-        if not self._context_cache:
-            self._context_cache = loads(self._context)
-        return self._context_cache
 
     @staticmethod
     def create(action, request, **kwargs):
@@ -67,7 +59,7 @@ class AuditEntry(UUIDModel):
             user=user,
             # User 255.255.255.255 as fallback if IP cannot be determined
             request_ip=client_ip or '255.255.255.255',
-            _context=dumps(kwargs))
+            context=kwargs)
         LOGGER.debug("Logged %s from %s (%s)", action, request.user, client_ip)
         return entry
 

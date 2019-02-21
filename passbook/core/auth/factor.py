@@ -15,8 +15,9 @@ class AuthenticationFactor(TemplateView):
     form = None
     required = True
     authenticator = None
+    pending_user = None
     request = None
-    template_name = 'login/form.html'
+    template_name = 'login/factors/base.html'
 
     def __init__(self, authenticator):
         self.authenticator = authenticator
@@ -26,4 +27,5 @@ class AuthenticationFactor(TemplateView):
         kwargs['is_login'] = True
         kwargs['title'] = _('Log in to your account')
         kwargs['primary_action'] = _('Log in')
+        kwargs['pending_user'] = self.pending_user
         return super().get_context_data(**kwargs)

@@ -67,6 +67,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         # Instantiate Next Factor and pass request
         factor = path_to_class(factor_class)
         self._current_factor = factor(self)
+        self._current_factor.pending_user = self.pending_user
         self._current_factor.request = request
         return super().dispatch(request, *args, **kwargs)
 
@@ -93,7 +94,8 @@ class AuthenticationView(UserPassesTestMixin, View):
                 self.pending_factors
             self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
             LOGGER.debug("Rendering Factor is %s", next_factor)
-            return redirect(reverse('passbook_core:auth-process', kwargs={'factor': next_factor}))
+            # return redirect(reverse('passbook_core:auth-process', kwargs={'factor': next_factor}))
+            return redirect(reverse('passbook_core:auth-process'))
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in")
         return self._user_passed()
@@ -102,6 +104,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         """Show error message, user cannot login.
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
+        self._cleanup()
         return redirect(reverse('passbook_core:auth-denied'))
 
     def _user_passed(self):

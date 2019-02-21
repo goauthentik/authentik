@@ -19,7 +19,7 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
-    form = 'passbook.oauth_client.forms.GitHubOAuthSourceForm'
+    form = 'passbook.oauth_client.forms.OAuthSourceForm'
 
     @property
     def is_link(self):

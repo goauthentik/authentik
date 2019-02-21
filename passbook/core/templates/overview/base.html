@@ -14,7 +14,7 @@
       <span class="icon-bar"></span>
     </button>
     <a class="navbar-brand" href="/">
-      <img src="{% static 'img/brand.svg' %}" alt="PatternFly Enterprise Application" />
+      <img src="{% static 'img/brand.svg' %}" alt="passbook" />
     </a>
   </div>
   <div class="collapse navbar-collapse navbar-collapse-1">
@@ -63,7 +63,9 @@
   </div>
 </nav>
 <div class="container-fluid container-cards-pf">
-  {% include 'partials/messages.html' %}
+  <div class="container">
+    {% include 'partials/messages.html' %}
+  </div>
   {% block content %}
   {% endblock %}
 </div>

@@ -2,7 +2,8 @@
 from django.views.generic import TemplateView
 
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import Application, Policy, Provider, User
+from passbook.core.models import (Application, Factor, Invitation, Policy,
+                                  Provider, Source, User)
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
@@ -15,4 +16,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs['policy_count'] = len(Policy.objects.all())
         kwargs['user_count'] = len(User.objects.all())
         kwargs['provider_count'] = len(Provider.objects.all())
+        kwargs['source_count'] = len(Source.objects.all())
+        kwargs['factor_count'] = len(Factor.objects.all())
+        kwargs['invitation_count'] = len(Invitation.objects.all())
         return super().get_context_data(**kwargs)

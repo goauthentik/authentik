@@ -4,53 +4,89 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-xs-6 col-sm-2 col-md-2">
-    <div class="card-pf card-pf-accented card-pf-aggregate-status">
-      <h2 class="card-pf-title">
-        <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Applications' %}</a>
-      </h2>
-      <div class="card-pf-body">
-        <p class="card-pf-aggregate-status-notifications">
-          <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ application_count }}</a></span>
-        </p>
-      </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Applications' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ application_count }}</a></span>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-xs-6 col-sm-2 col-md-2">
-    <div class="card-pf card-pf-accented card-pf-aggregate-status">
-      <h2 class="card-pf-title">
-        <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Providers' %}</a>
-      </h2>
-      <div class="card-pf-body">
-        <p class="card-pf-aggregate-status-notifications">
-          <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ provider_count }}</a></span>
-        </p>
-      </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Sources' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ source_count }}</a></span>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-xs-6 col-sm-2 col-md-2">
-    <div class="card-pf card-pf-accented card-pf-aggregate-status">
-      <h2 class="card-pf-title">
-        <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Policies' %}</a>
-      </h2>
-      <div class="card-pf-body">
-        <p class="card-pf-aggregate-status-notifications">
-          <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ policy_count }}</a></span>
-        </p>
-      </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Providers' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ provider_count }}</a></span>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-xs-6 col-sm-2 col-md-2">
-    <div class="card-pf card-pf-accented card-pf-aggregate-status">
-      <h2 class="card-pf-title">
-        <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Users' %}</a>
-      </h2>
-      <div class="card-pf-body">
-        <p class="card-pf-aggregate-status-notifications">
-          <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ user_count }}</a></span>
-        </p>
-      </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Factors' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ factor_count }}</a></span>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Invitation' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ invitation_count }}</a></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Policies' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ policy_count }}</a></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#"><span class="fa fa-shield"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Users' %}</a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ user_count }}</a></span>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

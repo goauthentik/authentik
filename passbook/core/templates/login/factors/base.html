@@ -1,0 +1,31 @@
+{% extends 'login/form.html' %}
+
+{% load i18n %}
+{% load utils %}
+
+{% block head %}
+{{ block.super }}
+<style>
+.login-pf-settings img {
+    max-height: 32px;
+    border-radius: 100%;
+    border-width: 1px;
+    border-color: #000;
+}
+.login-pf-settings a {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    line-height: 32px;
+}
+</style>
+{% endblock %}
+
+{% block above_form %}
+<div class="form-group login-pf-settings">
+    <p class="form-control-static">
+        <img src="{% gravatar pending_user.email %}" alt="">
+        {{ pending_user.username }}
+    </p>
+    <a href="{% url 'passbook_core:auth-login' %}">{% trans 'Not you?' %}</a>
+</div>
+{% endblock %}
