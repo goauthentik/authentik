@@ -7,6 +7,6 @@ markdown
 colorlog
 celery
 redis<3.0
-pymysql
+psycopg2
 idna<2.8,>=2.5
 cherrypy

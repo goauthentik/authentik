@@ -4,13 +4,10 @@ import logging
 import os
 
 import celery
-# import pymysql
 from django.conf import settings
 
 # from raven import Client
 # from raven.contrib.celery import register_logger_signal, register_signal
-
-# pymysql.install_as_MySQLdb()
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.core.settings")

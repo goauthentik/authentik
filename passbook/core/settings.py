@@ -129,9 +129,6 @@ WSGI_APPLICATION = 'passbook.core.wsgi.application'
 
 DATABASES = {}
 for db_alias, db_config in CONFIG.get('databases').items():
-    if 'mysql' in db_config.get('engine'):
-        import pymysql
-        pymysql.install_as_MySQLdb()
     DATABASES[db_alias] = {
         'ENGINE': db_config.get('engine'),
         'HOST': db_config.get('host'),
