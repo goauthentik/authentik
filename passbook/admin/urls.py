@@ -1,13 +1,9 @@
 """passbook URL Configuration"""
 from django.urls import include, path
-from rest_framework_swagger.views import get_swagger_view
 
 from passbook.admin.views import (applications, audit, factors, groups,
                                   invitations, overview, policy, providers,
                                   sources, users)
-
-schema_view = get_swagger_view(title='passbook Admin Internal API')
-
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
@@ -65,6 +61,5 @@ urlpatterns = [
     # Groups
     path('groups/', groups.GroupListView.as_view(), name='groups'),
     # API
-    path('api/', schema_view),
-    path('api/v1/', include('passbook.admin.api.v1.urls'))
+    path('api/', include('passbook.admin.api.urls'))
 ]

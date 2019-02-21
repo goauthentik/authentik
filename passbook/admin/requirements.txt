@@ -1,2 +1,2 @@
 django-rest-framework
-django-rest-swagger
+drf_yasg
