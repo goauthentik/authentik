@@ -1,8 +1,11 @@
 # This is the default configuration file
 databases:
   default:
-    engine: 'django.db.backends.sqlite3'
-    name: 'db.sqlite3'
+    engine: 'django.db.backends.postgresql'
+    name: passbook
+    user: passbook
+    password: 'EK-5jnKfjrGRm<77'
+    host: postgres
 log:
   level:
     console: DEBUG

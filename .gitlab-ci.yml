@@ -8,7 +8,15 @@ stages:
   - test
   - build
   - docs
-image: python:3.5
+image: python:3.6
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: passbook
+  POSTGRES_USER: passbook
+  POSTGRES_PASSWORD: 'EK-5jnKfjrGRm<77'
+  SUPERVISR_ENV: ci
 
 include:
   - /allauth/.gitlab-ci.yml
