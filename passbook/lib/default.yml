@@ -5,7 +5,7 @@ databases:
     name: passbook
     user: passbook
     password: 'EK-5jnKfjrGRm<77'
-    host: postgres
+    host: localhost
 log:
   level:
     console: DEBUG
