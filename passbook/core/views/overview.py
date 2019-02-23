@@ -13,7 +13,6 @@ class OverviewView(LoginRequiredMixin, TemplateView):
     template_name = 'overview/index.html'
 
     def get_context_data(self, **kwargs):
-        print(self.request.session.keys())
         kwargs['applications'] = self.request.user.applications.all()
         if self.request.user.is_superuser:
             kwargs['applications'] = Application.objects.all()

@@ -1,11 +1,12 @@
 """passbook core user views"""
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.urls import reverse
+from django.contrib.auth import logout, update_session_auth_hash
+from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext as _
-from django.views.generic import DeleteView, UpdateView
+from django.views.generic import DeleteView, FormView, UpdateView
 
-from passbook.core.forms.users import UserDetailForm
+from passbook.core.forms.users import PasswordChangeForm, UserDetailForm
+from passbook.lib.config import CONFIG
 
 
 class UserSettingsView(UpdateView):
@@ -28,3 +29,23 @@ class UserDeleteView(DeleteView):
         messages.success(self.request, _('Successfully deleted user.'))
         logout(self.request)
         return reverse('passbook_core:auth-login')
+
+class UserChangePasswordView(FormView):
+    """View for users to update their password"""
+
+    form_class = PasswordChangeForm
+    template_name = 'login/form_with_user.html'
+
+    def form_valid(self, form: PasswordChangeForm):
+        self.request.user.set_password(form.cleaned_data.get('password'))
+        self.request.user.save()
+        update_session_auth_hash(self.request, self.request.user)
+        messages.success(self.request, _('Successfully changed password'))
+        return redirect('passbook_core:overview')
+
+    def get_context_data(self, **kwargs):
+        kwargs['config'] = CONFIG.get('passbook')
+        kwargs['is_login'] = True
+        kwargs['title'] = _('Change Password')
+        kwargs['primary_action'] = _('Change')
+        return super().get_context_data(**kwargs)

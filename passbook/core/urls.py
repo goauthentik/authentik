@@ -25,6 +25,8 @@ core_urls = [
     # User views
     path('user/', user.UserSettingsView.as_view(), name='user-settings'),
     path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
+    path('user/change_password/', user.UserChangePasswordView.as_view(),
+         name='user-change-password'),
     # Overview
     path('', overview.OverviewView.as_view(), name='overview'),
 ]
