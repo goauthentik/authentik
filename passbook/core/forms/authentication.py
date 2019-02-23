@@ -79,6 +79,10 @@ class SignUpForm(forms.Form):
 
     def clean_password_repeat(self):
         """Check if Password adheres to filter and if passwords matche"""
+        password = self.cleaned_data.get('password')
+        password_repeat = self.cleaned_data.get('password_repeat')
+        if password != password_repeat:
+            raise ValidationError(_("Passwords don't match"))
         # TODO: Password policy? Via Plugin? via Policy?
         # return check_password(self)
         return self.cleaned_data.get('password_repeat')

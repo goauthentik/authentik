@@ -23,8 +23,8 @@
 {% block above_form %}
 <div class="form-group login-pf-settings">
     <p class="form-control-static">
-        <img src="{% gravatar pending_user.email %}" alt="">
-        {{ pending_user.username }}
+        <img src="{% gravatar user.email %}" alt="">
+        {{ user.username }}
     </p>
     <a href="{% url 'passbook_core:auth-login' %}">{% trans 'Not you?' %}</a>
 </div>
