@@ -6,7 +6,7 @@ from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name='google')
+@MANAGER.source(kind=RequestKind.redirect, name='Google')
 class GoogleOAuthRedirect(OAuthRedirect):
     """Google OAuth2 Redirect"""
 
@@ -16,7 +16,7 @@ class GoogleOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.callback, name='google')
+@MANAGER.source(kind=RequestKind.callback, name='Google')
 class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 

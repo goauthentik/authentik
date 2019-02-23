@@ -7,7 +7,7 @@ from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
 
-@MANAGER.source(kind=RequestKind.redirect, name='facebook')
+@MANAGER.source(kind=RequestKind.redirect, name='Facebook')
 class FacebookOAuthRedirect(OAuthRedirect):
     """Facebook OAuth2 Redirect"""
 
@@ -17,7 +17,7 @@ class FacebookOAuthRedirect(OAuthRedirect):
         }
 
 
-@MANAGER.source(kind=RequestKind.callback, name='facebook')
+@MANAGER.source(kind=RequestKind.callback, name='Facebook')
 class FacebookOAuth2Callback(OAuthCallback):
     """Facebook OAuth2 Callback"""
 

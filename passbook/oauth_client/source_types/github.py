@@ -7,7 +7,7 @@ from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback
 
 
-@MANAGER.source(kind=RequestKind.callback, name='github')
+@MANAGER.source(kind=RequestKind.callback, name='GitHub')
 class GitHubOAuth2Callback(OAuthCallback):
     """GitHub OAuth2 Callback"""
 

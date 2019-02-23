@@ -29,7 +29,7 @@ class TwitterOAuthClient(OAuthClient):
             return response.json() or response.text
 
 
-@MANAGER.source(kind=RequestKind.callback, name='twitter')
+@MANAGER.source(kind=RequestKind.callback, name='Twitter')
 class TwitterOAuthCallback(OAuthCallback):
     """Twitter OAuth2 Callback"""
 

@@ -13,7 +13,7 @@ from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 LOGGER = getLogger(__name__)
 
 
-@MANAGER.source(kind=RequestKind.redirect, name='discord')
+@MANAGER.source(kind=RequestKind.redirect, name='Discord')
 class DiscordOAuthRedirect(OAuthRedirect):
     """Discord OAuth2 Redirect"""
 
@@ -43,7 +43,7 @@ class DiscordOAuth2Client(OAuth2Client):
             return response.json() or response.text
 
 
-@MANAGER.source(kind=RequestKind.callback, name='discord')
+@MANAGER.source(kind=RequestKind.callback, name='Discord')
 class DiscordOAuth2Callback(OAuthCallback):
     """Discord OAuth2 Callback"""
 
