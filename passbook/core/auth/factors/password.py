@@ -8,19 +8,17 @@ from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
 from passbook.core.auth.factor import AuthenticationFactor
-from passbook.core.auth.factor_manager import MANAGER
 from passbook.core.auth.view import AuthenticationView
-from passbook.core.forms.authentication import AuthenticationBackendFactorForm
+from passbook.core.forms.authentication import PasswordFactorForm
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
 
 
-@MANAGER.factor()
-class AuthenticationBackendFactor(FormView, AuthenticationFactor):
+class PasswordFactor(FormView, AuthenticationFactor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
-    form_class = AuthenticationBackendFactorForm
+    form_class = PasswordFactorForm
     template_name = 'login/factors/backend.html'
 
     def form_valid(self, form):

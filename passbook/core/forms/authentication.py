@@ -29,10 +29,6 @@ class LoginForm(forms.Form):
             validate_email(self.cleaned_data.get('uid_field'))
         return self.cleaned_data.get('uid_field')
 
-class AuthenticationBackendFactorForm(forms.Form):
-    """Password authentication form"""
-
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password')}))
 
 class SignUpForm(forms.Form):
     """SignUp Form"""
@@ -86,3 +82,9 @@ class SignUpForm(forms.Form):
         # TODO: Password policy? Via Plugin? via Policy?
         # return check_password(self)
         return self.cleaned_data.get('password_repeat')
+
+
+class PasswordFactorForm(forms.Form):
+    """Password authentication form"""
+
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password')}))

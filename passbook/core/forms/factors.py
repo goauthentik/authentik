@@ -1,25 +1,30 @@
 """passbook administration forms"""
 from django import forms
 
-from passbook.core.auth.factor_manager import MANAGER
-from passbook.core.models import Factor
-from passbook.lib.utils.reflection import class_to_path
+from passbook.core.models import DummyFactor, PasswordFactor
 
+GENERAL_FIELDS = ['name', 'slug', 'order', 'policies', 'enabled']
 
-def get_factors():
-    """Return list of factors for Select Widget"""
-    for factor in MANAGER.all:
-        yield (class_to_path(factor), factor.__name__)
-
-class FactorForm(forms.ModelForm):
-    """Form to create/edit Factors"""
+class PasswordFactorForm(forms.ModelForm):
+    """Form to create/edit Password Factors"""
 
     class Meta:
 
-        model = Factor
-        fields = ['name', 'slug', 'order', 'policies', 'type', 'enabled', 'arguments']
+        model = PasswordFactor
+        fields = GENERAL_FIELDS + ['backends']
         widgets = {
-            'type': forms.Select(choices=get_factors()),
+            'name': forms.TextInput(),
+            'order': forms.NumberInput(),
+        }
+
+class DummyFactorForm(forms.ModelForm):
+    """Form to create/edit Dummy Factor"""
+
+    class Meta:
+
+        model = DummyFactor
+        fields = GENERAL_FIELDS
+        widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
         }

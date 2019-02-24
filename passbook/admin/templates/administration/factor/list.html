@@ -10,41 +10,52 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Factors" %}</h1>
-  <span>{% trans "Factors required for a user to successfully authenticate." %}</span>
-  <hr>
-   <a href="{% url 'passbook_admin:factor-create' %}" class="btn btn-primary">
-       {% trans 'Create...' %}
-   </a>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Type' %}</th>
-        <th>{% trans 'Order' %}</th>
-        <th>{% trans 'Enabled?' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for factor in object_list %}
-        <tr>
-          <td>{{ factor.name }} ({{ factor.slug }})</td>
-          <td>{{ factor.type }}</td>
-          <td>{{ factor.order }}</td>
-          <td>{{ factor.enabled }}</td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:factor-update' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:factor-delete' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-            {% get_links factor as links %}
-            {% for name, href in links.items %}
-              <a class="btn btn-default btn-sm" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+    <h1>{% trans "Factors" %}</h1>
+    <span>{% trans "Factors required for a user to successfully authenticate." %}</span>
+    <hr>
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+            {% trans 'Create...' %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+            {% for type, name in types.items %}
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:factor-create' %}?type={{ type }}">{{ name }}</a></li>
             {% endfor %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </ul>
+    </div>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Order' %}</th>
+                <th>{% trans 'Enabled?' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for factor in object_list %}
+            <tr>
+                <td>{{ factor.name }} ({{ factor.slug }})</td>
+                <td>{{ factor.type }}</td>
+                <td>{{ factor.order }}</td>
+                <td>{{ factor.enabled }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:factor-update' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:factor-delete' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    {% get_links factor as links %}
+                    {% for name, href in links.items %}
+                    <a class="btn btn-default btn-sm"
+                        href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

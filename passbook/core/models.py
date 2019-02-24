@@ -6,7 +6,7 @@ from time import sleep
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
@@ -68,12 +68,44 @@ class Factor(PolicyModel):
     name = models.TextField()
     slug = models.SlugField(unique=True)
     order = models.IntegerField()
-    type = models.TextField(unique=True)
     enabled = models.BooleanField(default=True)
-    arguments = JSONField(default=dict, blank=True)
+
+    objects = InheritanceManager()
+    type = ''
+    form = ''
 
     def __str__(self):
         return "Factor %s" % self.slug
+
+class PasswordFactor(Factor):
+    """Password-based Django-backend Authentication Factor"""
+
+    backends = ArrayField(models.TextField())
+
+    type = 'passbook.core.auth.factors.password.PasswordFactor'
+    form = 'passbook.core.forms.factors.PasswordFactorForm'
+
+    def __str__(self):
+        return "Password Factor %s" % self.slug
+
+    class Meta:
+
+        verbose_name = _('Password Factor')
+        verbose_name_plural = _('Password Factors')
+
+class DummyFactor(Factor):
+    """Dummy factor, mostly used to debug"""
+
+    type = 'passbook.core.auth.factors.dummy.DummyFactor'
+    form = 'passbook.core.forms.factors.DummyFactorForm'
+
+    def __str__(self):
+        return "Dummy Factor %s" % self.slug
+
+    class Meta:
+
+        verbose_name = _('Dummy Factor')
+        verbose_name_plural = _('Dummy Factors')
 
 class Application(PolicyModel):
     """Every Application which uses passbook for authentication/identification/authorization
