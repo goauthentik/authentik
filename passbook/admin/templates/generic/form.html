@@ -11,7 +11,7 @@
     <form action="" method="post" class="form-horizontal">
       {% include 'partials/form.html' with form=form %}
       <a class="btn btn-default" href="{% back %}">{% trans "Cancel" %}</a>
-      <input type="submit" class="btn btn-primary" value="{% trans 'Create' %}" />
+      <input type="submit" class="btn btn-primary" value="{% block action %}{% endblock %}" />
     </form>
   </div>
 </div>
