@@ -5,83 +5,83 @@
 {% load is_active %}
 
 {% block body %}
+<div class="toast-notifications-list-pf">
+    {% include 'partials/messages.html' %}
+</div>
 <nav class="navbar navbar-default navbar-pf" role="navigation">
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
-      <span class="sr-only">{% trans 'Toggle navigation' %}</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="/">
-      <img src="{% static 'img/brand.svg' %}" alt="passbook" />
-    </a>
-  </div>
-  <div class="collapse navbar-collapse navbar-collapse-1">
-    <ul class="nav navbar-nav navbar-utility">
-      <li class="dropdown">
-        <button class="btn btn-link nav-item-iconic" id="horizontalDropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="true">
-          <span title="Help" class="fa pficon-help dropdown-title"></span>
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+            <span class="sr-only">{% trans 'Toggle navigation' %}</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
         </button>
-        <ul class="dropdown-menu" aria-labelledby="horizontalDropdownMenu1">
-          {% comment %} <li><a href="#0">Help</a></li> {% endcomment %}
-          <li><a data-toggle="modal" data-target="#about-modal" href="#0">{% trans 'About' %}</a></li>
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'img/brand.svg' %}" alt="passbook" />
+        </a>
+    </div>
+    <div class="collapse navbar-collapse navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-utility">
+            <li class="dropdown">
+                <button class="btn btn-link nav-item-iconic" id="horizontalDropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                    <span title="Help" class="fa pficon-help dropdown-title"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="horizontalDropdownMenu1">
+                    {% comment %} <li><a href="#0">Help</a></li> {% endcomment %}
+                    <li><a data-toggle="modal" data-target="#about-modal" href="#0">{% trans 'About' %}</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                    <span class="pficon pficon-user"></span>
+                    <span class="dropdown-title">
+                        {{ user.username }} <b class="caret"></b>
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{% url 'passbook_core:user-settings' %}">{% trans 'User Settings' %}</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'passbook_core:user-change-password' %}">{% trans 'Change Password' %}</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
-      </li>
-      <li class="dropdown">
-        <button class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-          <span class="pficon pficon-user"></span>
-          <span class="dropdown-title">
-            {{ user.username }} <b class="caret"></b>
-          </span>
-        </button>
-        <ul class="dropdown-menu">
-          <li>
-            <a href="{% url 'passbook_core:user-settings' %}">{% trans 'User Settings' %}</a>
-          </li>
-          <li>
-            <a href="{% url 'passbook_core:user-change-password' %}">{% trans 'Change Password' %}</a>
-          </li>
-          <li class="divider"></li>
-          <li>
-            <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
-          </li>
+        {% is_active_app 'passbook_admin' as is_admin %}
+        <ul class="nav navbar-nav navbar-primary {% if is_admin == 'active' %}persistent-secondary{% endif %}">
+            <li class="{% is_active_url 'passbook_core:overview' %}">
+                <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
+            </li>
+            {% if user.is_superuser %}
+            <li class="{% is_active_app 'passbook_admin' %}">
+                <a href="{% url 'passbook_admin:overview' %}">{% trans 'Administration' %}</a>
+                {% block nav_secondary %}
+                {% endblock %}
+            </li>
+            {% endif %}
         </ul>
-      </li>
-    </ul>
-    {% is_active_app 'passbook_admin' as is_admin %}
-    <ul class="nav navbar-nav navbar-primary {% if is_admin == 'active' %}persistent-secondary{% endif %}">
-      <li class="{% is_active_url 'passbook_core:overview' %}">
-        <a href="{% url 'passbook_core:overview' %}">{% trans 'Overview' %}</a>
-      </li>
-      {% if user.is_superuser %}
-      <li class="{% is_active_app 'passbook_admin' %}">
-        <a href="{% url 'passbook_admin:overview' %}">{% trans 'Administration' %}</a>
-        {% block nav_secondary %}
-        {% endblock %}
-      </li>
-      {% endif %}
-    </ul>
-  </div>
+    </div>
 </nav>
 <div class="container-fluid container-cards-pf">
-  <div class="container">
-    {% include 'partials/messages.html' %}
-  </div>
-  {% block content %}
-  {% endblock %}
+    {% block content %}
+    {% endblock %}
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-  $(document).ready(function () {
-    // initialize tooltips
-    $('[data-toggle="tooltip"]').tooltip();
+    $(document).ready(function () {
+        // initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
 
-    // Initialize the vertical navigation
-    $().setupVerticalNavigation(true);
-  });
+        // Initialize the vertical navigation
+        $().setupVerticalNavigation(true);
+    });
 </script>
 {% endblock %}

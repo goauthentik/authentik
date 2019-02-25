@@ -1,19 +1,19 @@
 {% if messages %}
-  {% for msg in messages %}
-  <div class="{% if toast %}toast-pf{% endif %} alert alert-{{ msg.level_tag }}">
+{% for msg in messages %}
+<div class="toast-pf alert alert-dismissable alert-{{ msg.level_tag }}">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span class="pficon pficon-close"></span>
+        <span class="pficon pficon-close"></span>
     </button>
     {% if msg.level_tag == 'danger' %}
-      <span class="pficon pficon-error-circle-o"></span>
+    <span class="pficon pficon-error-circle-o"></span>
     {% elif msg.level_tag == 'warning' %}
-      <span class="pficon pficon-warning-triangle-o"></span>
+    <span class="pficon pficon-warning-triangle-o"></span>
     {% elif msg.level_tag == 'success' %}
-      <span class="pficon pficon-ok"></span>
+    <span class="pficon pficon-ok"></span>
     {% elif msg.level_tag == 'info' %}
-      <span class="pficon pficon-info"></span>
+    <span class="pficon pficon-info"></span>
     {% endif %}
-    <strong>{{ msg.message|safe }}</strong>
-  </div>
-  {% endfor %}
+    {{ msg.message|safe }}
+</div>
+{% endfor %}
 {% endif %}
