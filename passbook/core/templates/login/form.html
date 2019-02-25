@@ -11,6 +11,8 @@
   {% block above_form %}
   {% endblock %}
   {% include 'partials/form_login.html' %}
+  {% block beneath_form %}
+  {% endblock %}
   <button type="submit" class="btn btn-primary btn-block btn-lg">{% trans primary_action %}</button>
 </form>
 {% if show_sign_up_notice %}

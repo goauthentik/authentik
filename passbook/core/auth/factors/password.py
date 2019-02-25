@@ -1,9 +1,11 @@
 """passbook multi-factor authentication engine"""
 from logging import getLogger
 
+from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.core.exceptions import PermissionDenied
 from django.forms.utils import ErrorList
+from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 
@@ -20,6 +22,19 @@ class PasswordFactor(FormView, AuthenticationFactor):
 
     form_class = PasswordFactorForm
     template_name = 'login/factors/backend.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['show_password_forget_notice'] = CONFIG.y('passbook.password_reset.enabled')
+        return super().get_context_data(**kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if 'password-forgotten' in request.GET:
+            # TODO: Save nonce key in database for password reset
+            # TODO: Send email to user
+            self.authenticator.cleanup()
+            messages.success(request, _('Check your E-Mails for a password reset link.'))
+            return redirect('passbook_core:auth-login')
+        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         """Authenticate against django's authentication backend"""

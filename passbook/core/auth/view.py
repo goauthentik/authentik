@@ -111,7 +111,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         """Show error message, user cannot login.
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
-        self._cleanup()
+        self.cleanup()
         return redirect(reverse('passbook_core:auth-denied'))
 
     def _user_passed(self):
@@ -121,13 +121,13 @@ class AuthenticationView(UserPassesTestMixin, View):
         login(self.request, self.pending_user, backend=backend)
         LOGGER.debug("Logged in user %s", self.pending_user)
         # Cleanup
-        self._cleanup()
+        self.cleanup()
         next_param = self.request.GET.get('next', None)
         if next_param and is_url_absolute(next_param):
             return redirect(next_param)
         return redirect(reverse('passbook_core:overview'))
 
-    def _cleanup(self):
+    def cleanup(self):
         """Remove temporary data from session"""
         session_keys = [self.SESSION_FACTOR, self.SESSION_PENDING_FACTORS,
                         self.SESSION_PENDING_USER, self.SESSION_USER_BACKEND, ]

@@ -2,3 +2,8 @@
 
 {% load i18n %}
 
+{% block beneath_form %}
+{% if show_password_forget_notice %}
+<a href="{% url 'passbook_core:auth-process' %}?password-forgotten">{% trans 'Forgot password?' %}</a>
+{% endif %}
+{% endblock %}

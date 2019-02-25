@@ -25,9 +25,6 @@
     <label class="checkbox-label">
       {{ field }} {{ field.label }}
     </label>
-    {% if show_password_forget_notice %}
-    <a href="#">{% trans 'Forgot password?' %}</a>
-    {% endif %}
   {% else %}
   <label class="col-sm-2 sr-only" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
     {{ field.label }}

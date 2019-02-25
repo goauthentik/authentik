@@ -41,7 +41,6 @@ class LoginView(UserPassesTestMixin, FormView):
         kwargs['title'] = _('Log in to your account')
         kwargs['primary_action'] = _('Log in')
         kwargs['show_sign_up_notice'] = CONFIG.y('passbook.sign_up.enabled')
-        kwargs['show_password_forget_notice'] = CONFIG.y('passbook.password_reset.enabled')
         kwargs['sources'] = []
         sources = Source.objects.filter(enabled=True).select_subclasses()
         if any(source.is_link for source in sources):
