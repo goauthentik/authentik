@@ -1,5 +1,6 @@
 """passbook core models"""
 import re
+from datetime import timedelta
 from logging import getLogger
 from random import SystemRandom
 from time import sleep
@@ -17,6 +18,11 @@ from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
 LOGGER = getLogger(__name__)
+
+
+def default_nonce_duration():
+    """Default duration a Nonce is valid"""
+    return now() + timedelta(hours=4)
 
 class Group(UUIDModel):
     """Custom Group model which supports a basic hierarchy"""
@@ -399,3 +405,17 @@ class Invitation(UUIDModel):
 
         verbose_name = _('Invitation')
         verbose_name_plural = _('Invitations')
+
+class Nonce(UUIDModel):
+    """One-time link for password resets/signup-confirmations"""
+
+    expires = models.DateTimeField(default=default_nonce_duration)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Nonce %s (expires=%s)" % (self.uuid.hex, self.expires)
+
+    class Meta:
+
+        verbose_name = _('Nonce')
+        verbose_name_plural = _('Nonces')

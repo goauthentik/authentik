@@ -3,17 +3,17 @@ from logging import getLogger
 from typing import Dict
 
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import FormView
 
 from passbook.core.auth.view import AuthenticationView
 from passbook.core.forms.authentication import LoginForm, SignUpForm
-from passbook.core.models import Invitation, Source, User
+from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
 from passbook.lib.config import CONFIG
 
@@ -190,3 +190,18 @@ class SignUpView(UserPassesTestMixin, FormView):
         #     Create Account Confirmation UUID
         #     AccountConfirmation.objects.create(user=new_user)
         return new_user
+
+class PasswordResetView(View):
+    """Temporarily authenticate User and allow them to reset their password"""
+
+    def get(self, request, nonce):
+        """Authenticate user with nonce and redirect to password change view"""
+        # 3. (Optional) Trap user in password change view
+        nonce = get_object_or_404(Nonce, uuid=nonce)
+        # Workaround: hardcoded reference to ModelBackend, needs testing
+        nonce.user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, nonce.user)
+        nonce.delete()
+        messages.success(request, _(('Temporarily authenticated with Nonce, '
+                                     'please change your password')))
+        return redirect('passbook_core:user-change-password')

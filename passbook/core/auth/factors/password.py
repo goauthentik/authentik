@@ -12,6 +12,7 @@ from django.views.generic import FormView
 from passbook.core.auth.factor import AuthenticationFactor
 from passbook.core.auth.view import AuthenticationView
 from passbook.core.forms.authentication import PasswordFactorForm
+from passbook.core.models import Nonce
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
@@ -29,7 +30,8 @@ class PasswordFactor(FormView, AuthenticationFactor):
 
     def get(self, request, *args, **kwargs):
         if 'password-forgotten' in request.GET:
-            # TODO: Save nonce key in database for password reset
+            nonce = Nonce.objects.create(user=self.pending_user)
+            LOGGER.debug("DEBUG %s", str(nonce.uuid))
             # TODO: Send email to user
             self.authenticator.cleanup()
             messages.success(request, _('Check your E-Mails for a password reset link.'))

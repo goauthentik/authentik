@@ -19,7 +19,10 @@ core_urls = [
     path('auth/login/', authentication.LoginView.as_view(), name='auth-login'),
     path('auth/logout/', authentication.LogoutView.as_view(), name='auth-logout'),
     path('auth/sign_up/', authentication.SignUpView.as_view(), name='auth-sign-up'),
+    # path('auth/sign_up/<uuid:nonce>/confirm/', , name='auth-sign-up-confirm'),
     path('auth/process/denied/', view.FactorPermissionDeniedView.as_view(), name='auth-denied'),
+    path('auth/password/reset/<uuid:nonce>/', authentication.PasswordResetView.as_view(),
+         name='auth-password-reset'),
     path('auth/process/', view.AuthenticationView.as_view(), name='auth-process'),
     path('auth/process/<slug:factor>/', view.AuthenticationView.as_view(), name='auth-process'),
     # User views
