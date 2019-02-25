@@ -5,34 +5,36 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Users" %}</h1>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Username' %}</th>
-        <th>{% trans 'First Name' %}</th>
-        <th>{% trans 'Last Name' %}</th>
-        <th>{% trans 'Active' %}</th>
-        <th>{% trans 'Last Login' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in object_list %}
-        <tr>
-          <td>{{ user.username }}</td>
-          <td>{{ user.first_name|default:'-' }}</td>
-          <td>{{ user.last_name|default:'-' }}</td>
-          <td>{{ user.is_active }}</td>
-          <td>{{ user.last_login }}</td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:user-update' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:user-delete' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h1><span class="pficon-users"></span> {% trans "Users" %}</h1>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Username' %}</th>
+                <th>{% trans 'First Name' %}</th>
+                <th>{% trans 'Last Name' %}</th>
+                <th>{% trans 'Active' %}</th>
+                <th>{% trans 'Last Login' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in object_list %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.first_name|default:'-' }}</td>
+                <td>{{ user.last_name|default:'-' }}</td>
+                <td>{{ user.is_active }}</td>
+                <td>{{ user.last_login }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:user-update' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:user-delete' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

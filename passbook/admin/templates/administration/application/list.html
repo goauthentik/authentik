@@ -9,33 +9,35 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Applications" %}</h1>
-  <span>{% trans "External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML." %}</span>
-  <hr>
-  <a href="{% url 'passbook_admin:application-create' %}" class="btn btn-primary">
-    {% trans 'Create...' %}
-  </a>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Provider' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for application in object_list %}
-        <tr>
-          <td>{{ application.name }}</td>
-          <td>{{ application.provider }}</td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:application-update' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:application-delete' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h1><span class="pficon-applications"></span> {% trans "Applications" %}</h1>
+    <span>{% trans "External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML." %}</span>
+    <hr>
+    <a href="{% url 'passbook_admin:application-create' %}" class="btn btn-primary">
+        {% trans 'Create...' %}
+    </a>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Provider' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in object_list %}
+            <tr>
+                <td>{{ application.name }}</td>
+                <td>{{ application.provider }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:application-update' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:application-delete' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

@@ -10,45 +10,49 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Providers" %}</h1>
-  <span>{% trans "Authentication Protocol Provider, used as Protocol behind an Application." %}</span>
-  <hr>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-      {% trans 'Create...' %}
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-      {% for type, name in types.items %}
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}">{{ name }}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Class' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for provider in object_list %}
-        <tr>
-          <td>{{ provider.name }}</td>
-          <td>{{ provider|fieldtype }}</td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-            {% get_links provider as links %}
-            {% for name, href in links.items %}
-              <a class="btn btn-default btn-sm" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+    <h1><span class="pficon-integration"></span> {% trans "Providers" %}</h1>
+    <span>{% trans "Authentication Protocol Provider, used as Protocol behind an Application." %}</span>
+    <hr>
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+            {% trans 'Create...' %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+            {% for type, name in types.items %}
+            <li role="presentation"><a role="menuitem" tabindex="-1"
+                    href="{% url 'passbook_admin:provider-create' %}?type={{ type }}">{{ name }}</a></li>
             {% endfor %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </ul>
+    </div>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Class' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for provider in object_list %}
+            <tr>
+                <td>{{ provider.name }}</td>
+                <td>{{ provider|fieldtype }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    {% get_links provider as links %}
+                    {% for name, href in links.items %}
+                    <a class="btn btn-default btn-sm"
+                        href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

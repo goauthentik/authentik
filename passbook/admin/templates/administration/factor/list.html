@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% trans "Factors" %}</h1>
+    <h1><span class="pficon-plugged"></span> {% trans "Factors" %}</h1>
     <span>{% trans "Factors required for a user to successfully authenticate." %}</span>
     <hr>
     <div class="dropdown">
@@ -20,7 +20,8 @@
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
             {% for type, name in types.items %}
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:factor-create' %}?type={{ type }}">{{ name }}</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1"
+                    href="{% url 'passbook_admin:factor-create' %}?type={{ type }}">{{ name }}</a></li>
             {% endfor %}
         </ul>
     </div>

@@ -9,32 +9,35 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Invitations" %}</h1>
-  <span>{% trans "Create Invitation Links which optionally force a username or expire on a set date." %}</span>
-  <hr>
-  <a href="{% url 'passbook_admin:invitation-create' %}" class="btn btn-primary">
-    {% trans 'Create...' %}
-  </a>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Expiry' %}</th>
-        <th>{% trans 'Link' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for invitation in object_list %}
-        <tr>
-          <td>{{ invitation.expires|default:"Never" }}</td>
-          <td><pre>{{ invitation.link }}</pre></td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:invitation-delete' pk=invitation.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h1><span class="pficon-migration"></span> {% trans "Invitations" %}</h1>
+    <span>{% trans "Create Invitation Links which optionally force a username or expire on a set date." %}</span>
+    <hr>
+    <a href="{% url 'passbook_admin:invitation-create' %}" class="btn btn-primary">
+        {% trans 'Create...' %}
+    </a>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Expiry' %}</th>
+                <th>{% trans 'Link' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invitation in object_list %}
+            <tr>
+                <td>{{ invitation.expires|default:"Never" }}</td>
+                <td>
+                    <pre>{{ invitation.link }}</pre>
+                </td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:invitation-delete' pk=invitation.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

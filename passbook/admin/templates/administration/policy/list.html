@@ -9,42 +9,46 @@
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Policies" %}</h1>
-  <span>{% trans "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Factors." %}</span>
-  <hr>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-      {% trans 'Create...' %}
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-      {% for type, name in types.items %}
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'passbook_admin:policy-create' %}?type={{ type }}">{{ name }}</a></li>
-      {% endfor %}
-    </ul>
-  </div>
-  <hr>
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th>{% trans 'Name' %}</th>
-        <th>{% trans 'Class' %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for policy in object_list %}
-        <tr>
-          <td>{{ policy.name }}</td>
-          <td>{{ policy|fieldtype }}</td>
-          <td>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-update' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-test' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
-            <a class="btn btn-default btn-sm" href="{% url 'passbook_admin:policy-delete' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h1><span class="pficon-infrastructure"></span> {% trans "Policies" %}</h1>
+    <span>{% trans "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Factors." %}</span>
+    <hr>
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+            {% trans 'Create...' %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+            {% for type, name in types.items %}
+            <li role="presentation"><a role="menuitem" tabindex="-1"
+                    href="{% url 'passbook_admin:policy-create' %}?type={{ type }}">{{ name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Class' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for policy in object_list %}
+            <tr>
+                <td>{{ policy.name }}</td>
+                <td>{{ policy|fieldtype }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:policy-update' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:policy-test' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:policy-delete' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
