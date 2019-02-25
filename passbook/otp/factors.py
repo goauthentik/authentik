@@ -1,0 +1,49 @@
+"""OTP Factor logic"""
+from logging import getLogger
+
+from django.contrib import messages
+from django.utils.translation import gettext as _
+from django.views.generic import FormView
+from django_otp import match_token, user_has_device
+
+from passbook.core.auth.factor import AuthenticationFactor
+from passbook.otp.forms import OTPVerifyForm
+from passbook.otp.views import OTP_SETTING_UP_KEY, EnableView
+
+LOGGER = getLogger(__name__)
+
+class OTPFactor(FormView, AuthenticationFactor):
+    """OTP Factor View"""
+
+    template_name = 'login/form_with_user.html'
+    form_class = OTPVerifyForm
+
+    def get(self, request, *args, **kwargs):
+        """Check if User has OTP enabled and if OTP is enforced"""
+        if not user_has_device(self.pending_user):
+            LOGGER.debug("User doesn't have OTP Setup.")
+            if self.authenticator.current_factor.enforced:
+                # Redirect to setup view
+                LOGGER.debug("OTP is enforced, redirecting to setup")
+                request.user = self.pending_user
+                LOGGER.debug("Passing GET to EnableView")
+                return EnableView().dispatch(request)
+            LOGGER.debug("OTP is not enforced, skipping form")
+            return self.authenticator.user_ok()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        """Check if setup is in progress and redirect to EnableView"""
+        if OTP_SETTING_UP_KEY in request.session:
+            LOGGER.debug("Passing POST to EnableView")
+            request.user = self.pending_user
+            return EnableView().dispatch(request)
+        return super().post(self, request, *args, **kwargs)
+
+    def form_valid(self, form: OTPVerifyForm):
+        """Verify OTP Token"""
+        device = match_token(self.pending_user, form.cleaned_data.get('code'))
+        if device:
+            return self.authenticator.user_ok()
+        messages.error(self.request, _('Invalid OTP.'))
+        return self.form_invalid(form)

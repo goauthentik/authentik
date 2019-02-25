@@ -5,6 +5,7 @@ from django.utils.translation import gettext as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.oauth_client.models import OAuthSource
+from passbook.oauth_client.source_types.manager import MANAGER
 
 
 class OAuthSourceForm(forms.ModelForm):
@@ -27,6 +28,7 @@ class OAuthSourceForm(forms.ModelForm):
             'name': forms.TextInput(),
             'consumer_key': forms.TextInput(),
             'consumer_secret': forms.TextInput(),
+            'provider_type': forms.Select(choices=MANAGER.get_name_tuple()),
         }
         labels = {
             'request_token_url': _('Request Token URL'),

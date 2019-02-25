@@ -24,7 +24,9 @@ class AuthenticationView(UserPassesTestMixin, View):
     pending_user = None
     pending_factors = []
 
-    _current_factor = None
+    _current_factor_class = None
+
+    current_factor = None
 
     # Allow only not authenticated users to login
     def test_func(self):
@@ -37,6 +39,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         return redirect(reverse('passbook_core:overview'))
 
     def dispatch(self, request, *args, **kwargs):
+        print(request.session.keys())
         # Extract pending user from session (only remember uid)
         if AuthenticationView.SESSION_PENDING_USER in request.session:
             self.pending_user = get_object_or_404(
@@ -50,43 +53,47 @@ class AuthenticationView(UserPassesTestMixin, View):
         else:
             # Get an initial list of factors which are currently enabled
             # and apply to the current user. We check policies here and block the request
-            _all_factors = Factor.objects.filter(enabled=True)
+            _all_factors = Factor.objects.filter(enabled=True).order_by('order').select_subclasses()
             self.pending_factors = []
             for factor in _all_factors:
                 if factor.passes(self.pending_user):
-                    self.pending_factors.append(factor.type)
+                    self.pending_factors.append((factor.uuid.hex, factor.type))
         # Read and instantiate factor from session
-        factor_class = None
+        factor_uuid, factor_class = None, None
         if AuthenticationView.SESSION_FACTOR not in request.session:
             # Case when no factors apply to user, return error denied
             if not self.pending_factors:
                 return self.user_invalid()
-            factor_class = self.pending_factors[0]
+            factor_uuid, factor_class = self.pending_factors[0]
         else:
-            factor_class = request.session[AuthenticationView.SESSION_FACTOR]
+            factor_uuid, factor_class = request.session[AuthenticationView.SESSION_FACTOR]
+        # Lookup current factor object
+        self.current_factor = Factor.objects.filter(uuid=factor_uuid).select_subclasses().first()
         # Instantiate Next Factor and pass request
         factor = path_to_class(factor_class)
-        self._current_factor = factor(self)
-        self._current_factor.pending_user = self.pending_user
-        self._current_factor.request = request
+        self._current_factor_class = factor(self)
+        self._current_factor_class.pending_user = self.pending_user
+        self._current_factor_class.request = request
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         """pass get request to current factor"""
-        LOGGER.debug("Passing GET to %s", class_to_path(self._current_factor.__class__))
-        return self._current_factor.get(request, *args, **kwargs)
+        LOGGER.debug("Passing GET to %s", class_to_path(self._current_factor_class.__class__))
+        return self._current_factor_class.get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         """pass post request to current factor"""
-        LOGGER.debug("Passing POST to %s", class_to_path(self._current_factor.__class__))
-        return self._current_factor.post(request, *args, **kwargs)
+        LOGGER.debug("Passing POST to %s", class_to_path(self._current_factor_class.__class__))
+        return self._current_factor_class.post(request, *args, **kwargs)
 
     def user_ok(self):
         """Redirect to next Factor"""
-        LOGGER.debug("Factor %s passed", class_to_path(self._current_factor.__class__))
+        LOGGER.debug("Factor %s passed", class_to_path(self._current_factor_class.__class__))
         # Remove passed factor from pending factors
-        if class_to_path(self._current_factor.__class__) in self.pending_factors:
-            self.pending_factors.remove(class_to_path(self._current_factor.__class__))
+        current_factor_tuple = (self.current_factor.uuid.hex,
+                                class_to_path(self._current_factor_class.__class__))
+        if current_factor_tuple in self.pending_factors:
+            self.pending_factors.remove(current_factor_tuple)
         next_factor = None
         if self.pending_factors:
             next_factor = self.pending_factors.pop()
@@ -120,11 +127,12 @@ class AuthenticationView(UserPassesTestMixin, View):
 
     def _cleanup(self):
         """Remove temporary data from session"""
-        session_keys = ['SESSION_FACTOR', 'SESSION_PENDING_FACTORS',
-                        'SESSION_PENDING_USER', 'SESSION_USER_BACKEND', ]
+        session_keys = [self.SESSION_FACTOR, self.SESSION_PENDING_FACTORS,
+                        self.SESSION_PENDING_USER, self.SESSION_USER_BACKEND, ]
         for key in session_keys:
             if key in self.request.session:
                 del self.request.session[key]
+        print(self.request.session.keys())
         LOGGER.debug("Cleaned up sessions")
 
 class FactorPermissionDeniedView(PermissionDeniedView):

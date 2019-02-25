@@ -1,4 +1,4 @@
-"""passbook Mod TOTP Utils"""
+"""passbook OTP Utils"""
 
 from django.conf import settings
 from django.utils.http import urlencode

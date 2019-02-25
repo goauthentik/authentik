@@ -1,12 +1,8 @@
 """passbook multi-factor authentication engine"""
-from logging import getLogger
-
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from passbook.lib.config import CONFIG
-
-LOGGER = getLogger(__name__)
 
 
 class AuthenticationFactor(TemplateView):
