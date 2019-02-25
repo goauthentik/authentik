@@ -137,5 +137,43 @@
             </div>
         </div>
     </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#">
+                    <span class="pficon-bundle"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Version' %}
+                </a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="#">
+                            {{ version }}
+                        </a>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <a href="#">
+                    <span class="pficon-server"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Worker(s)' %}
+                </a>
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="#">
+                            <span class="pficon pficon-ok"></span>{{ worker_count }}
+                        </a>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

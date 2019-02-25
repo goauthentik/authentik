@@ -2,6 +2,8 @@
 from django.views.generic import TemplateView
 
 from passbook.admin.mixins import AdminRequiredMixin
+from passbook.core import __version__
+from passbook.core.celery import CELERY_APP
 from passbook.core.models import (Application, Factor, Invitation, Policy,
                                   Provider, Source, User)
 
@@ -19,4 +21,6 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs['source_count'] = len(Source.objects.all())
         kwargs['factor_count'] = len(Factor.objects.all())
         kwargs['invitation_count'] = len(Invitation.objects.all())
+        kwargs['version'] = __version__
+        kwargs['worker_count'] = len(CELERY_APP.control.ping(timeout=0.5))
         return super().get_context_data(**kwargs)
