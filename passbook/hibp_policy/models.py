@@ -25,7 +25,7 @@ class HaveIBeenPwendPolicy(Policy):
         if not hasattr(user, '__password__'):
             return True
         password = getattr(user, '__password__')
-        pw_hash = sha1(password.encode('utf-8')).hexdigest()
+        pw_hash = sha1(password.encode('utf-8')).hexdigest() # nosec
         url = 'https://api.pwnedpasswords.com/range/%s' % pw_hash[:5]
         result = get(url).text
         final_count = 0
