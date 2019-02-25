@@ -62,8 +62,7 @@ class LoginView(UserPassesTestMixin, FormView):
         if not pre_user:
             # No user found
             return self.invalid_login(self.request)
-        if AuthenticationView.SESSION_FACTOR in self.request.session:
-            del self.request.session[AuthenticationView.SESSION_FACTOR]
+        self.request.session.flush()
         self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
         return redirect(reverse('passbook_core:auth-process'))
 

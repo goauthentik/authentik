@@ -15,8 +15,13 @@ LOGGER = getLogger(__name__)
 class OTPFactor(FormView, AuthenticationFactor):
     """OTP Factor View"""
 
-    template_name = 'login/form_with_user.html'
+    template_name = 'otp/factor.html'
     form_class = OTPVerifyForm
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        kwargs['title'] = _('Enter Verification Code')
+        return kwargs
 
     def get(self, request, *args, **kwargs):
         """Check if User has OTP enabled and if OTP is enforced"""
@@ -27,7 +32,8 @@ class OTPFactor(FormView, AuthenticationFactor):
                 LOGGER.debug("OTP is enforced, redirecting to setup")
                 request.user = self.pending_user
                 LOGGER.debug("Passing GET to EnableView")
-                return EnableView().dispatch(request)
+                messages.info(request, _('OTP is enforced. Please setup OTP.'))
+                return EnableView.as_view()(request)
             LOGGER.debug("OTP is not enforced, skipping form")
             return self.authenticator.user_ok()
         return super().get(request, *args, **kwargs)
@@ -37,7 +43,7 @@ class OTPFactor(FormView, AuthenticationFactor):
         if OTP_SETTING_UP_KEY in request.session:
             LOGGER.debug("Passing POST to EnableView")
             request.user = self.pending_user
-            return EnableView().dispatch(request)
+            return EnableView.as_view()(request)
         return super().post(self, request, *args, **kwargs)
 
     def form_valid(self, form: OTPVerifyForm):

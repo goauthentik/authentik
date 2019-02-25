@@ -9,6 +9,7 @@ from django.views.generic import View
 from passbook.core.models import Factor, User
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.utils.reflection import class_to_path, path_to_class
+from passbook.lib.utils.urls import is_url_absolute
 
 LOGGER = getLogger(__name__)
 
@@ -39,7 +40,6 @@ class AuthenticationView(UserPassesTestMixin, View):
         return redirect(reverse('passbook_core:overview'))
 
     def dispatch(self, request, *args, **kwargs):
-        print(request.session.keys())
         # Extract pending user from session (only remember uid)
         if AuthenticationView.SESSION_PENDING_USER in request.session:
             self.pending_user = get_object_or_404(
@@ -122,7 +122,9 @@ class AuthenticationView(UserPassesTestMixin, View):
         LOGGER.debug("Logged in user %s", self.pending_user)
         # Cleanup
         self._cleanup()
-        # TODO: ?next=...
+        next_param = self.request.GET.get('next', None)
+        if next_param and is_url_absolute(next_param):
+            return redirect(next_param)
         return redirect(reverse('passbook_core:overview'))
 
     def _cleanup(self):
@@ -132,7 +134,6 @@ class AuthenticationView(UserPassesTestMixin, View):
         for key in session_keys:
             if key in self.request.session:
                 del self.request.session[key]
-        print(self.request.session.keys())
         LOGGER.debug("Cleaned up sessions")
 
 class FactorPermissionDeniedView(PermissionDeniedView):

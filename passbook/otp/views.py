@@ -107,8 +107,8 @@ class EnableView(LoginRequiredMixin, FormView):
             self.static_device = StaticDevice(user=request.user, confirmed=False)
             self.static_device.save()
             # Create 9 tokens and save them
-            # pylint: disable=unused-variable
-            for counter in range(0, 9):
+            # TODO: Send static tokens via E-Mail
+            for _counter in range(0, 9):
                 token = StaticToken(device=self.static_device, token=StaticToken.random_token())
                 token.save()
         else:

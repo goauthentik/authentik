@@ -5,53 +5,57 @@
 
 {% block head %}
 <style>
-  .login-pf-page .login-pf-page-footer-links {
-    padding: 15px;
-    background-color: #fff;
-    border-top: 2px solid transparent;
-    box-shadow: 0 1px 1px rgba(3,3,3,.175);
-  }
+    .login-pf-page .login-pf-page-footer-links {
+        padding: 15px;
+        background-color: #fff;
+        border-top: 2px solid transparent;
+        box-shadow: 0 1px 1px rgba(3, 3, 3, .175);
+    }
 
-  .login-pf-page .login-pf-page-footer-link {
-    color: #72767b;
-  }
+    .login-pf-page .login-pf-page-footer-link {
+        color: #72767b;
+    }
 
-  .login-pf-page .login-pf-page-footer-links li:not(:last-of-type):after {
-    color: #72767b;
-  }
+    .login-pf-page .login-pf-page-footer-links li:not(:last-of-type):after {
+        color: #72767b;
+    }
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="login-pf-page">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-        <header class="login-pf-page-header">
-          <img class="login-pf-brand" style="max-height: 10rem;" src="{% static 'img/logo.svg' %}" alt="PatternFly logo" />
-          {% if config.login.subtext %}
-          <p>{{ config.login.subtext }}</p>
-          {% endif %}
-        </header>
+    <div class="container-fluid">
         <div class="row">
-          {% block row %}
-          <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
-            <div class="card-pf">
-              {% block card %}
-              {% endblock %}
-            </div><!-- card -->
-            <footer class="login-pf-page-footer">
-              <ul class="login-pf-page-footer-links list-unstyled">
-                <li><a class="login-pf-page-footer-link" href="#">Terms of Use</a></li>
-                <li><a class="login-pf-page-footer-link" href="#">Help</a></li>
-                <li><a class="login-pf-page-footer-link" href="#">Privacy Policy</a></li>
-              </ul>
-            </footer>
-          </div><!-- col -->
-          {% endblock %}
+            <div class="col-md-6 col-md-offset-3">
+                {% include 'partials/messages.html' %}
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+                <header class="login-pf-page-header">
+                    <img class="login-pf-brand" style="max-height: 10rem;" src="{% static 'img/logo.svg' %}"
+                        alt="PatternFly logo" />
+                    {% if config.login.subtext %}
+                    <p>{{ config.login.subtext }}</p>
+                    {% endif %}
+                </header>
+                <div class="row">
+                    {% block row %}
+                    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+                        <div class="card-pf">
+                            {% block card %}
+                            {% endblock %}
+                        </div><!-- card -->
+                        <footer class="login-pf-page-footer">
+                            <ul class="login-pf-page-footer-links list-unstyled">
+                                <li><a class="login-pf-page-footer-link" href="#">Terms of Use</a></li>
+                                <li><a class="login-pf-page-footer-link" href="#">Help</a></li>
+                                <li><a class="login-pf-page-footer-link" href="#">Privacy Policy</a></li>
+                            </ul>
+                        </footer>
+                    </div><!-- col -->
+                    {% endblock %}
+                </div><!-- row -->
+            </div><!-- col -->
         </div><!-- row -->
-      </div><!-- col -->
-    </div><!-- row -->
-  </div><!-- container -->
+    </div><!-- container -->
 </div><!-- login-pf-page -->
 {% endblock %}
