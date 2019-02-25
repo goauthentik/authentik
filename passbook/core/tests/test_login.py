@@ -7,4 +7,4 @@ class LoginTest(TestCase):
     """Test login"""
 
     def test(self):
-        self.assertTrue(True)
+        """Stub test"""
