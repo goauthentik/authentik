@@ -7,11 +7,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-applications"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Applications' %}</a>
+                <a href="{% url 'passbook_admin:applications' %}">
+                    <span class="pficon-applications"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Applications' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ application_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:applications' %}">
+                            <span class="pficon pficon-ok"></span>{{ application_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -19,11 +26,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-resource-pool"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Sources' %}</a>
+                <a href="{% url 'passbook_admin:sources' %}">
+                    <span class="pficon-resource-pool"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Sources' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ source_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:sources' %}">
+                            <span class="pficon pficon-ok"></span>{{ source_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -31,11 +45,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-integration"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Providers' %}</a>
+                <a href="{% url 'passbook_admin:providers' %}">
+                    <span class="pficon-integration"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Providers' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ provider_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:providers' %}">
+                            <span class="pficon pficon-ok"></span>{{ provider_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -43,11 +64,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-plugged"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Factors' %}</a>
+                <a href="{% url 'passbook_admin:factors' %}">
+                    <span class="pficon-plugged"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Factors' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ factor_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:factors' %}">
+                            <span class="pficon pficon-ok"></span>{{ factor_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -55,11 +83,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-migration"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Invitation' %}</a>
+                <a href="{% url 'passbook_admin:policies' %}">
+                    <span class="pficon-infrastructure"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Policies' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ invitation_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:policies' %}">
+                            <span class="pficon pficon-ok"></span>{{ policy_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -67,11 +102,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-infrastructure"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Policies' %}</a>
+                <a href="{% url 'passbook_admin:invitations' %}">
+                    <span class="pficon-migration"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Invitation' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ policy_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:invitations' %}">
+                            <span class="pficon pficon-ok"></span>{{ invitation_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
@@ -79,11 +121,18 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#"><span class="pficon-users"></span><span class="card-pf-aggregate-status-count"></span> {% trans 'Users' %}</a>
+                <a href="{% url 'passbook_admin:users' %}">
+                    <span class="pficon-users"></span>
+                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Users' %}
+                </a>
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification"><a href="#"><span class="pficon pficon-ok"></span>{{ user_count }}</a></span>
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="{% url 'passbook_admin:users' %}">
+                            <span class="pficon pficon-ok"></span>{{ user_count }}
+                        </a>
+                    </span>
                 </p>
             </div>
         </div>
