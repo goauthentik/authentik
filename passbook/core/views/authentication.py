@@ -139,6 +139,15 @@ class SignUpView(UserPassesTestMixin, FormView):
     def form_valid(self, form: SignUpForm) -> HttpResponse:
         """Create user"""
         self._user = SignUpView.create_user(form.cleaned_data, self.request)
+        needs_confirmation = True
+        if self._invitation and not self._invitation.needs_confirmation:
+            needs_confirmation = False
+        if needs_confirmation:
+            nonce = Nonce.objects.create(user=self._user)
+            LOGGER.debug(str(nonce.uuid))
+            # TODO: Send E-Mail to user
+            self._user.is_active = False
+            self._user.save()
         self.consume_invitation()
         messages.success(self.request, _("Successfully signed up!"))
         LOGGER.debug("Successfully signed up %s",
@@ -185,11 +194,23 @@ class SignUpView(UserPassesTestMixin, FormView):
             sender=SignUpView,
             user=new_user,
             request=request)
-        # TODO: Implement Verification, via email or others
-        # if needs_confirmation:
-        #     Create Account Confirmation UUID
-        #     AccountConfirmation.objects.create(user=new_user)
         return new_user
+
+class SignUpConfirmView(View):
+    """Confirm registration from Nonce"""
+
+    def get(self, request, nonce):
+        """Verify UUID and activate user"""
+        nonce = get_object_or_404(Nonce, uuid=nonce)
+        nonce.user.is_active = True
+        nonce.user.save()
+        # Workaround: hardcoded reference to ModelBackend, needs testing
+        nonce.user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, nonce.user)
+        nonce.delete()
+        messages.success(request, _('Successfully confirmed registration.'))
+        return redirect('passbook_core:overview')
+
 
 class PasswordResetView(View):
     """Temporarily authenticate User and allow them to reset their password"""

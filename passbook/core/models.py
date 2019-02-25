@@ -392,6 +392,7 @@ class Invitation(UUIDModel):
     expires = models.DateTimeField(default=None, blank=True, null=True)
     fixed_username = models.TextField(blank=True, default=None)
     fixed_email = models.TextField(blank=True, default=None)
+    needs_confirmation = models.BooleanField(default=True)
 
     @property
     def link(self):

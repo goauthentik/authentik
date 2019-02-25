@@ -27,7 +27,7 @@ class InvitationForm(forms.ModelForm):
     class Meta:
 
         model = Invitation
-        fields = ['expires', 'fixed_username', 'fixed_email']
+        fields = ['expires', 'fixed_username', 'fixed_email', 'needs_confirmation']
         labels = {
             'fixed_username': "Force user's username (optional)",
             'fixed_email': "Force user's email (optional)",
