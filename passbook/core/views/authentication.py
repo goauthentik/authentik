@@ -42,9 +42,12 @@ class LoginView(UserPassesTestMixin, FormView):
         kwargs['primary_action'] = _('Log in')
         kwargs['show_sign_up_notice'] = CONFIG.y('passbook.sign_up.enabled')
         kwargs['show_password_forget_notice'] = CONFIG.y('passbook.password_reset.enabled')
-        kwargs['sources'] = Source.objects.filter(enabled=True).select_subclasses()
-        if any(source.is_link for source in kwargs['sources']):
-            self.template_name = 'login/test.html'
+        kwargs['sources'] = []
+        sources = Source.objects.filter(enabled=True).select_subclasses()
+        if any(source.is_link for source in sources):
+            for source in sources:
+                kwargs['sources'].append(source.get_login_button)
+            self.template_name = 'login/with_sources.html'
         return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value) -> User:

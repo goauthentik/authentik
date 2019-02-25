@@ -26,9 +26,17 @@ class OAuthSource(Source):
         return True
 
     @property
-    def get_url(self):
-        return reverse_lazy('passbook_oauth_client:oauth-client-login',
-                            kwargs={'source_slug': self.slug})
+    def get_login_button(self):
+        url = reverse_lazy('passbook_oauth_client:oauth-client-login',
+                           kwargs={'source_slug': self.slug})
+        if self.provider_type == 'github':
+            return url, 'github-logo', _('GitHub')
+        return url, 'generic', _('Generic')
+
+    @property
+    def additional_info(self):
+        return "Callback URL: '%s'" % reverse_lazy('passbook_oauth_client:oauth-client-callback',
+                                                   kwargs={'source_slug': self.slug})
 
     class Meta:
 

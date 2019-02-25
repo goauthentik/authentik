@@ -155,9 +155,14 @@ class Source(PolicyModel):
         return False
 
     @property
-    def get_url(self):
-        """Return URL used for logging in"""
+    def get_login_button(self):
+        """Return a tuple of URL, Icon name and Name"""
         raise NotImplementedError
+
+    @property
+    def additional_info(self):
+        """Return additional Info, such as a callback URL. Show in the administration interface."""
+        return None
 
     def __str__(self):
         return self.name

@@ -8,7 +8,6 @@
   <h1>{% trans title %}</h1>
 </header>
 <form method="POST">
-  {% csrf_token %}
   {% block above_form %}
   {% endblock %}
   {% include 'partials/form_login.html' %}
