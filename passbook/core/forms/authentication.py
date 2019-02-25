@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import User
 from passbook.lib.config import CONFIG
+from passbook.lib.utils.ui import human_list
 
 LOGGER = getLogger(__name__)
 
@@ -15,13 +16,16 @@ class LoginForm(forms.Form):
     """Allow users to login"""
 
     title = _('Log in to your account')
-    uid_field = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _('UID')}))
+    uid_field = forms.CharField()
     remember_me = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if CONFIG.y('passbook.uid_fields') == ['email']:
+        if CONFIG.y('passbook.uid_fields') == ['e-mail']:
             self.fields['uid_field'] = forms.EmailField()
+        self.fields['uid_field'].widget.attrs = {
+            'placeholder': _(human_list([x.title() for x in CONFIG.y('passbook.uid_fields')]))
+        }
 
     def clean_uid_field(self):
         """Validate uid_field after EmailValidator if 'email' is the only selected uid_fields"""

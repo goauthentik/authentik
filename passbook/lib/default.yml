@@ -61,7 +61,7 @@ passbook:
   # Specify which fields can be used to authenticate. Can be any combination of `username` and `email`
   uid_fields:
     - username
-    - email
+    - e-mail
   # Factors to load
   factors:
    - passbook.core.auth.factors.backend

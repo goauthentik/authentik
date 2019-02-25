@@ -52,6 +52,9 @@ class LoginView(UserPassesTestMixin, FormView):
     def get_user(self, uid_value) -> User:
         """Find user instance. Returns None if no user was found."""
         for search_field in CONFIG.y('passbook.uid_fields'):
+            # Workaround for E-Mail -> email
+            if search_field == 'e-mail':
+                search_field = 'email'
             users = User.objects.filter(**{search_field: uid_value})
             if users.exists():
                 LOGGER.debug("Found user %s with uid_field %s", users.first(), search_field)
