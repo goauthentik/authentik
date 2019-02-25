@@ -74,6 +74,12 @@ class Factor(PolicyModel):
     type = ''
     form = ''
 
+    def has_user_settings(self):
+        """Entrypoint to integrate with User settings. Can either return False if no
+        user settings are available, or a tuple or string, string, string where the first string
+        is the name the item has, the second string is the icon and the third is the view-name."""
+        return False
+
     def __str__(self):
         return "Factor %s" % self.slug
 
@@ -84,6 +90,9 @@ class PasswordFactor(Factor):
 
     type = 'passbook.core.auth.factors.password.PasswordFactor'
     form = 'passbook.core.forms.factors.PasswordFactorForm'
+
+    def has_user_settings(self):
+        return _('Change Password'), 'pficon-key', 'passbook_core:user-change-password'
 
     def __str__(self):
         return "Password Factor %s" % self.slug

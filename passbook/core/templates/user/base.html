@@ -2,25 +2,28 @@
 
 {% load i18n %}
 {% load is_active %}
+{% load passbook_user_settings %}
 
 {% block content %}
 <div class="container">
     <div class="col-md-3 ">
         <div class="nav-category">
-            <h2>{% trans 'User Profile'%}</h2>
+            <h2>{% trans 'User Settings'%}</h2>
             <ul class="nav nav-pills nav-stacked">
                 <li class="{% is_active 'passbook_core:user-settings' %}">
                     <a href="{% url 'passbook_core:user-settings' %}">
-                        <i class="fa fa-desktop"></i> {% trans 'Details' %}
+                        <i class="fa pficon-edit"></i> {% trans 'Details' %}
                     </a>
                 </li>
-                <li class="{% is_active 'passbook_core:user-change-password' %}">
-                    <a href="{% url 'passbook_core:user-change-password' %}">
-                        <i class="pficon pficon-locked"></i> {% trans 'Change Password' %}
+                <li class="nav-divider"></li>
+                {% user_factors as uf %}
+                {% for name, icon, link in uf %}
+                <li class="{% is_active link %}">
+                     <a href="{% url link %}">
+                         <i class="{{ icon }}"></i> {{ name }}
                     </a>
                 </li>
-                <li><a href="#"><i class="fa fa-file-text-o"></i> Journal</a></li>
-                <li><a href="#"><i class="fa fa-cloud"></i> Storage</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>
