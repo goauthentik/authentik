@@ -84,6 +84,8 @@ class LoginAttempt(CreatedUpdatedModel):
     @staticmethod
     def attempt(target_uid, request):
         """Helper function to create attempt or count up existing one"""
+        if not target_uid:
+            return
         client_ip, _ = get_client_ip(request)
         # Since we can only use 254 chars for target_uid, truncate target_uid.
         target_uid = target_uid[:254]
