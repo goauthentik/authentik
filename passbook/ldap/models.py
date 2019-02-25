@@ -29,7 +29,7 @@ class LDAPSource(Source):
     form = 'passbook.ldap.forms.LDAPSourceForm'
 
     @property
-    def get_url(self):
+    def get_login_button(self):
         raise NotImplementedError()
 
     class Meta:

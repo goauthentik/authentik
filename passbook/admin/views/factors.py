@@ -39,18 +39,17 @@ class FactorCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        source_type = self.request.GET.get('type')
-        model = next(x for x in all_subclasses(Factor) if x.__name__ == source_type)
+        factor_type = self.request.GET.get('type')
+        model = next(x for x in all_subclasses(Factor) if x.__name__ == factor_type)
         kwargs['type'] = model._meta.verbose_name
         return kwargs
 
     def get_form_class(self):
-        source_type = self.request.GET.get('type')
-        model = next(x for x in all_subclasses(Factor) if x.__name__ == source_type)
+        factor_type = self.request.GET.get('type')
+        model = next(x for x in all_subclasses(Factor) if x.__name__ == factor_type)
         if not model:
             raise Http404
         return path_to_class(model.form)
-
 
 class FactorUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     """Update factor"""
@@ -61,11 +60,12 @@ class FactorUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     success_message = _('Successfully updated Factor')
 
     def get_form_class(self):
-        source_type = self.request.GET.get('type')
-        model = next(x for x in all_subclasses(Factor) if x.__name__ == source_type)
-        if not model:
-            raise Http404
-        return path_to_class(model.form)
+        form_class_path = self.get_object().form
+        form_class = path_to_class(form_class_path)
+        return form_class
+
+    def get_object(self, queryset=None):
+        return Factor.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 class FactorDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete factor"""

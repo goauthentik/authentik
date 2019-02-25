@@ -11,7 +11,7 @@ class PasswordFactorForm(forms.ModelForm):
     class Meta:
 
         model = PasswordFactor
-        fields = GENERAL_FIELDS + ['backends']
+        fields = GENERAL_FIELDS + ['backends', 'password_policies']
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),

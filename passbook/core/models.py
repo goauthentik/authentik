@@ -9,9 +9,11 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse_lazy
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 
+from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
 LOGGER = getLogger(__name__)
@@ -38,6 +40,12 @@ class User(AbstractUser):
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     applications = models.ManyToManyField('Application')
     groups = models.ManyToManyField('Group')
+    password_change_date = models.DateTimeField(auto_now_add=True)
+
+    def set_password(self, password):
+        password_changed.send(sender=self, user=self, password=password)
+        self.password_change_date = now()
+        return super().set_password(password)
 
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
@@ -87,12 +95,20 @@ class PasswordFactor(Factor):
     """Password-based Django-backend Authentication Factor"""
 
     backends = ArrayField(models.TextField())
+    password_policies = models.ManyToManyField('Policy', blank=True)
 
     type = 'passbook.core.auth.factors.password.PasswordFactor'
     form = 'passbook.core.forms.factors.PasswordFactorForm'
 
     def has_user_settings(self):
         return _('Change Password'), 'pficon-key', 'passbook_core:user-change-password'
+
+    def password_passes(self, user: User) -> bool:
+        """Return true if user's password passes, otherwise False or raise Exception"""
+        for policy in self.policies.all():
+            if not policy.passes(user):
+                return False
+        return True
 
     def __str__(self):
         return "Password Factor %s" % self.slug
