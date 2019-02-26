@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
 
 from passbook.audit.models import AuditEntry
+from passbook.core.models import Application
 from passbook.core.views.access import AccessMixin
 from passbook.core.views.utils import LoadingView, PermissionDeniedView
 from passbook.oauth_provider.models import OAuth2Provider
@@ -38,14 +39,17 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         # Get client_id to get provider, so we can update skip_authorization field
         client_id = request.GET.get('client_id')
         provider = get_object_or_404(OAuth2Provider, client_id=client_id)
-        application = self.provider_to_application(provider)
+        try:
+            application = self.provider_to_application(provider)
+        except Application.DoesNotExist:
+            return redirect('passbook_oauth_provider:oauth2-permission-denied')
         # Update field here so oauth-toolkit does work for us
         provider.skip_authorization = application.skip_authorization
         provider.save()
         self._application = application
         # Check permissions
         if not self.user_has_access(self._application, request.user):
-            return redirect(reverse('passbook_oauth_provider:oauth2-permission-denied'))
+            return redirect('passbook_oauth_provider:oauth2-permission-denied')
         actual_response = super().dispatch(request, *args, **kwargs)
         if actual_response.status_code == 400:
             LOGGER.debug(request.GET.get('redirect_uri'))

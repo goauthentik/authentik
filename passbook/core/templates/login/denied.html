@@ -18,7 +18,6 @@
 <header class="login-pf-header">
   <h1>{% trans title %}</h1>
 </header>
-{% include 'partials/messages.html' %}
 <form method="POST">
   {% csrf_token %}
   {% include 'partials/form_login.html' %}

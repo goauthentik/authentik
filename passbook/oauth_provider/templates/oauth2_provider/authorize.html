@@ -11,7 +11,6 @@
 <header class="login-pf-header">
   <h1>{% trans 'Authorize Application' %}</h1>
 </header>
-{% include 'partials/messages.html' %}
 <form method="POST">
     {% csrf_token %}
     {% if not error %}
