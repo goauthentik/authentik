@@ -3,45 +3,48 @@
 
 {% csrf_token %}
 {% for field in form %}
-<div class="form-group login-pf-settings">
-  {% if field.field.widget|fieldtype == 'RadioSelect' %}
-    <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
-      {{ field.label }}
+<div class="form-group login-pf-settings {% if field.errors %} has-error {% endif %}">
+    {% if field.field.widget|fieldtype == 'RadioSelect' %}
+    <label class="col-sm-2 control-label" {% if field.field.required %}class="required" {% endif %}
+        for="{{ field.name }}-{{ forloop.counter0 }}">
+        {{ field.label }}
     </label>
     {% for c in field %}
     <div class="radio col-sm-10">
-      <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}" name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}" {% if c.data.selected %} checked {% endif %}>
-      <label class="col-sm-2 control-label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
+        <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
+            name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}"
+            {% if c.data.selected %} checked {% endif %}>
+        <label class="col-sm-2 control-label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
     </div>
     {% endfor %}
-  {% elif field.field.widget|fieldtype == 'Select' %}
-    <label class="col-sm-2 control-label" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
-      {{ field.label }}
+    {% elif field.field.widget|fieldtype == 'Select' %}
+    <label class="col-sm-2 control-label" {% if field.field.required %}class="required" {% endif %}
+        for="{{ field.name }}-{{ forloop.counter0 }}">
+        {{ field.label }}
     </label>
     <div class="select col-sm-10">
-      {{ field }}
+        {{ field }}
     </div>
-  {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
+    {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
     <label class="checkbox-label">
-      {{ field }} {{ field.label }}
+        {{ field }} {{ field.label }}
     </label>
-  {% else %}
-  <label class="col-sm-2 sr-only" {% if field.field.required %}class="required"{% endif %} for="{{ field.name }}-{{ forloop.counter0 }}">
-    {{ field.label }}
-  </label>
-  {{ field|css_class:'form-control input-lg' }}
-  {% if field.help_text %}
-  <span>
-    {{ field.help_text }}
-  </span>
-  {% endif %}
-  {% endif %}
-  {% for error in field.errors %}
-  <hr>
-  <div class="alert alert-danger alert-block">
-    <span class="pficon pficon-error-circle-o"></span>
-    <strong>{{ error }}</strong>
-  </div>
-  {% endfor %}
+    {% else %}
+    <label class="col-sm-2 sr-only" {% if field.field.required %}class="required" {% endif %}
+        for="{{ field.name }}-{{ forloop.counter0 }}">
+        {{ field.label }}
+    </label>
+    {{ field|css_class:'form-control input-lg' }}
+    {% if field.help_text %}
+    <span>
+        {{ field.help_text }}
+    </span>
+    {% endif %}
+    {% endif %}
+    {% for error in field.errors %}
+    <span class="help-block">
+        {{ error }}
+    </span>
+    {% endfor %}
 </div>
 {% endfor %}

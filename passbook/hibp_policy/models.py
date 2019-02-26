@@ -1,6 +1,6 @@
 """passbook HIBP Models"""
-
 from hashlib import sha1
+from logging import getLogger
 
 from django.db import models
 from django.utils.translation import gettext as _
@@ -8,6 +8,7 @@ from requests import get
 
 from passbook.core.models import Policy, User
 
+LOGGER = getLogger(__name__)
 
 class HaveIBeenPwendPolicy(Policy):
     """Check if password is on HaveIBeenPwned's list by upload the first
@@ -33,8 +34,9 @@ class HaveIBeenPwendPolicy(Policy):
             full_hash, count = line.split(':')
             if pw_hash[5:] == full_hash.lower():
                 final_count = int(count)
+        LOGGER.debug("Got count %d for hash %s", final_count, pw_hash[:5])
         if final_count > self.allowed_count:
-            return False
+            return False, _("Password exists on %(count)d online lists." % {'count': final_count})
         return True
 
     class Meta:

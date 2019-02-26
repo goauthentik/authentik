@@ -4,6 +4,7 @@ from datetime import timedelta
 from logging import getLogger
 from random import SystemRandom
 from time import sleep
+from typing import Tuple, Union
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
@@ -49,7 +50,8 @@ class User(AbstractUser):
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     def set_password(self, password):
-        password_changed.send(sender=self, user=self, password=password)
+        if self.pk:
+            password_changed.send(sender=self, user=self, password=password)
         self.password_change_date = now()
         return super().set_password(password)
 
@@ -69,8 +71,9 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
 
     policies = models.ManyToManyField('Policy', blank=True)
 
-    def passes(self, user: User) -> bool:
-        """Return true if user passes, otherwise False or raise Exception"""
+    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
+        """Return False, str if a user fails where str is a
+        reasons shown to the user. Return True if user succeeds."""
         for policy in self.policies.all():
             if not policy.passes(user):
                 return False
@@ -222,7 +225,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
             return self.name
         return "%s action %s" % (self.name, self.action)
 
-    def passes(self, user: User) -> bool:
+    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
         """Check if user instance passes this policy"""
         raise NotImplementedError()
 
@@ -267,7 +270,7 @@ class FieldMatcherPolicy(Policy):
             description = "%s: %s" % (self.name, description)
         return description
 
-    def passes(self, user: User) -> bool:
+    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
         """Check if user instance passes this role"""
         if not hasattr(user, self.user_field):
             raise ValueError("Field does not exist")
@@ -302,10 +305,11 @@ class PasswordPolicy(Policy):
     amount_symbols = models.IntegerField(default=0)
     length_min = models.IntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
+    error_message = models.TextField()
 
     form = 'passbook.core.forms.policies.PasswordPolicyForm'
 
-    def passes(self, user: User) -> bool:
+    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
         # Only check if password is being set
         if not hasattr(user, '__password__'):
             return True
@@ -320,6 +324,8 @@ class PasswordPolicy(Policy):
             filter_regex += r'[%s]{%d,}' % (self.symbol_charset, self.amount_symbols)
         result = bool(re.compile(filter_regex).match(password))
         LOGGER.debug("User got %r", result)
+        if not result:
+            return result, self.error_message
         return result
 
     class Meta:
@@ -378,7 +384,7 @@ class DebugPolicy(Policy):
         wait = SystemRandom().randrange(self.wait_min, self.wait_max)
         LOGGER.debug("Policy '%s' waiting for %ds", self.name, wait)
         sleep(wait)
-        return self.result
+        return self.result, 'Debugging'
 
     class Meta:
 

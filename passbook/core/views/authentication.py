@@ -1,10 +1,11 @@
-"""Core views"""
+"""passbook core authentication views"""
 from logging import getLogger
 from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.forms.utils import ErrorList
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
@@ -12,6 +13,7 @@ from django.views import View
 from django.views.generic import FormView
 
 from passbook.core.auth.view import AuthenticationView
+from passbook.core.exceptions import PasswordPolicyInvalid
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
@@ -141,7 +143,15 @@ class SignUpView(UserPassesTestMixin, FormView):
 
     def form_valid(self, form: SignUpForm) -> HttpResponse:
         """Create user"""
-        self._user = SignUpView.create_user(form.cleaned_data, self.request)
+        try:
+            self._user = SignUpView.create_user(form.cleaned_data, self.request)
+        except PasswordPolicyInvalid as exc:
+            # Manually inject error into form
+            # pylint: disable=protected-access
+            errors = form._errors.setdefault("password", ErrorList())
+            for error in exc.messages:
+                errors.append(error)
+            return self.form_invalid(form)
         needs_confirmation = True
         if self._invitation and not self._invitation.needs_confirmation:
             needs_confirmation = False
@@ -187,25 +197,30 @@ class SignUpView(UserPassesTestMixin, FormView):
             The user created
 
         Raises:
-            SignalException: if any signals raise an exception. This also deletes the created user.
+            PasswordPolicyInvalid: if any policy are not fulfilled.
+                                   This also deletes the created user.
         """
         # Create user
-        new_user = User.objects.create_user(
+        new_user = User.objects.create(
             username=data.get('username'),
             email=data.get('email'),
             first_name=data.get('first_name'),
             last_name=data.get('last_name'),
         )
         new_user.is_active = True
-        new_user.set_password(data.get('password'))
-        new_user.save()
-        request.user = new_user
-        # Send signal for other auth sources
-        user_signed_up.send(
-            sender=SignUpView,
-            user=new_user,
-            request=request)
-        return new_user
+        try:
+            new_user.set_password(data.get('password'))
+            new_user.save()
+            request.user = new_user
+            # Send signal for other auth sources
+            user_signed_up.send(
+                sender=SignUpView,
+                user=new_user,
+                request=request)
+            return new_user
+        except PasswordPolicyInvalid as exc:
+            new_user.delete()
+            raise exc
 
 
 class SignUpConfirmView(View):

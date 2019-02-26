@@ -42,7 +42,11 @@ class PolicyEngine:
     @property
     def result(self):
         """Get policy-checking result"""
+        messages = []
         for policy_result in self._group.get():
+            if isinstance(policy_result, (tuple, list)):
+                policy_result, policy_message = policy_result
+                messages.append(policy_message)
             if policy_result is False:
-                return False
-        return True
+                return False, messages
+        return True, messages
