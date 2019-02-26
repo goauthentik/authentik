@@ -27,9 +27,9 @@ core_urls = [
     path('auth/process/', view.AuthenticationView.as_view(), name='auth-process'),
     path('auth/process/<slug:factor>/', view.AuthenticationView.as_view(), name='auth-process'),
     # User views
-    path('user/', user.UserSettingsView.as_view(), name='user-settings'),
-    path('user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
-    path('user/change_password/', user.UserChangePasswordView.as_view(),
+    path('_/user/', user.UserSettingsView.as_view(), name='user-settings'),
+    path('_/user/delete/', user.UserDeleteView.as_view(), name='user-delete'),
+    path('_/user/change_password/', user.UserChangePasswordView.as_view(),
          name='user-change-password'),
     # Overview
     path('', overview.OverviewView.as_view(), name='overview'),
