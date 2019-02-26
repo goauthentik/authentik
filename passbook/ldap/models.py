@@ -57,7 +57,7 @@ class LDAPSource(Source):
 
 
 # class LDAPGroupMapping(UUIDModel, CreatedUpdatedModel):
-#     """Model to map an LDAP Group to a supervisr group"""
+#     """Model to map an LDAP Group to a passbook group"""
 
 #     ldap_dn = models.TextField()
 #     group = models.ForeignKey(Group, on_delete=models.CASCADE)

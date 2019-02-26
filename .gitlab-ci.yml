@@ -16,7 +16,6 @@ variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: 'EK-5jnKfjrGRm<77'
-  SUPERVISR_ENV: ci
 
 include:
   - /allauth/.gitlab-ci.yml

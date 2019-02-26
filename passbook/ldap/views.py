@@ -1,4 +1,4 @@
-# """Supervisr Mod LDAP Views"""
+# """passbook LDAP Views"""
 
 
 # from django.contrib import messages
@@ -8,7 +8,7 @@
 # from django.urls import reverse
 # from django.utils.translation import ugettext as _
 
-# from supervisr.mod.auth.ldap.forms import (AuthenticationBackendSettings,
+# from passbook.ldap.forms import (AuthenticationBackendSettings,
 #                                            ConnectionSettings,
 #                                            CreateUsersSettings,
 #                                            GeneralSettingsForm)
@@ -34,5 +34,5 @@
 #             if form.is_valid():
 #                 update_count += form.save()
 #         messages.success(request, _('Successfully updated %d settings.' % update_count))
-#         return redirect(reverse('supervisr_mod_auth_ldap:admin_settings'))
+#         return redirect(reverse('passbook_ldap:admin_settings'))
 #     return render(request, 'ldap/settings.html', render_data)

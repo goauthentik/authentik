@@ -39,7 +39,7 @@ class LDAPSourceForm(forms.ModelForm):
 #         (MODE_CREATE_USERS, _('Create Users'))
 #     )
 
-#     namespace = 'supervisr.mod.auth.ldap'
+#     namespace = 'passbook.ldap'
 #     settings = ['enabled', 'mode']
 
 #     widgets = {
@@ -51,7 +51,7 @@ class LDAPSourceForm(forms.ModelForm):
 # class ConnectionSettings(SettingsForm):
 #     """Connection settings form"""
 
-#     namespace = 'supervisr.mod.auth.ldap'
+#     namespace = 'passbook.ldap'
 #     settings = ['server', 'server:tls', 'bind:user', 'bind:password', 'domain']
 
 #     attrs_map = {
@@ -68,7 +68,7 @@ class LDAPSourceForm(forms.ModelForm):
 # class AuthenticationBackendSettings(SettingsForm):
 #     """Authentication backend settings"""
 
-#     namespace = 'supervisr.mod.auth.ldap'
+#     namespace = 'passbook.ldap'
 #     settings = ['base']
 
 #     attrs_map = {
@@ -79,7 +79,7 @@ class LDAPSourceForm(forms.ModelForm):
 # class CreateUsersSettings(SettingsForm):
 #     """Create users settings"""
 
-#     namespace = 'supervisr.mod.auth.ldap'
+#     namespace = 'passbook.ldap'
 #     settings = ['create_base']
 
 #     attrs_map = {

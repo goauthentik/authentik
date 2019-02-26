@@ -15,9 +15,11 @@ from passbook.core.auth.view import AuthenticationView
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
+from passbook.core.tasks import send_email
 from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
+
 
 class LoginView(UserPassesTestMixin, FormView):
     """Allow users to sign in"""
@@ -75,6 +77,7 @@ class LoginView(UserPassesTestMixin, FormView):
         """Handle login for disabled users/invalid login attempts"""
         messages.error(request, _('Failed to authenticate.'))
         return self.render_to_response(self.get_context_data())
+
 
 class LogoutView(LoginRequiredMixin, View):
     """Log current user out"""
@@ -145,7 +148,15 @@ class SignUpView(UserPassesTestMixin, FormView):
         if needs_confirmation:
             nonce = Nonce.objects.create(user=self._user)
             LOGGER.debug(str(nonce.uuid))
-            # TODO: Send E-Mail to user
+            # Send email to user
+            send_email.delay(self._user.email, _('Confirm your account.'),
+                             'email/account_confirm.html', {
+                                 'url': self.request.build_absolute_uri(
+                                     reverse('passbook_core:auth-sign-up-confirm', kwargs={
+                                         'nonce': nonce.uuid
+                                     })
+                                 )
+                             })
             self._user.is_active = False
             self._user.save()
         self.consume_invitation()
@@ -195,6 +206,7 @@ class SignUpView(UserPassesTestMixin, FormView):
             user=new_user,
             request=request)
         return new_user
+
 
 class SignUpConfirmView(View):
     """Confirm registration from Nonce"""
