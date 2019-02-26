@@ -6,11 +6,11 @@ from logging import getLogger
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views import View
-from django.views.generic import FormView, TemplateView, DeleteView
+from django.views.generic import FormView, TemplateView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from qrcode import make
