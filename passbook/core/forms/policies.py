@@ -3,7 +3,8 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from passbook.core.models import DebugPolicy, FieldMatcherPolicy, WebhookPolicy
+from passbook.core.models import (DebugPolicy, FieldMatcherPolicy,
+                                  PasswordPolicy, WebhookPolicy)
 
 GENERAL_FIELDS = ['name', 'action', 'negate', 'order', ]
 
@@ -49,4 +50,26 @@ class DebugPolicyForm(forms.ModelForm):
         }
         labels = {
             'result': _('Allow user')
+        }
+
+
+class PasswordPolicyForm(forms.ModelForm):
+    """PasswordPolicy Form"""
+
+    class Meta:
+
+        model = PasswordPolicy
+        fields = GENERAL_FIELDS + ['amount_uppercase', 'amount_lowercase',
+                                   'amount_symbols', 'length_min', 'symbol_charset',
+                                   'error_message']
+        widgets = {
+            'name': forms.TextInput(),
+            'symbol_charset': forms.TextInput(),
+            'error_message': forms.TextInput(),
+        }
+        labels = {
+            'amount_uppercase': _('Minimum amount of Uppercase Characters'),
+            'amount_lowercase': _('Minimum amount of Lowercase Characters'),
+            'amount_symbols': _('Minimum amount of Symbols Characters'),
+            'length_min': _('Minimum Length'),
         }
