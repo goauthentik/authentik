@@ -6,11 +6,11 @@ from logging import getLogger
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views import View
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, DeleteView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from qrcode import make
@@ -41,28 +41,27 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         kwargs['state'] = totp_devices.exists() and static.exists()
         return kwargs
 
-class DisableView(LoginRequiredMixin, TemplateView):
+class DisableView(LoginRequiredMixin, View):
     """Disable TOTP for user"""
-    # TODO: Use Django DeleteView with custom delete?
-    # def
-    # # Delete all the devices for user
-    # static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
-    # static_tokens = StaticToken.objects.filter(device=static).order_by('token')
-    # totp = TOTPDevice.objects.filter(user=request.user, confirmed=True)
-    # static.delete()
-    # totp.delete()
-    # for token in static_tokens:
-    #     token.delete()
-    # messages.success(request, 'Successfully disabled TOTP')
-    # # Create event with email notification
-    # # Event.create(
-    # #     user=request.user,
-    # #     message=_('You disabled TOTP.'),
-    # #     current=True,
-    # #     request=request,
-    # #     send_notification=True)
-    # return redirect(reverse('passbook_core:overview'))
 
+    def get(self, request, *args, **kwargs):
+        """Delete all the devices for user"""
+        static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
+        static_tokens = StaticToken.objects.filter(device=static).order_by('token')
+        totp = TOTPDevice.objects.filter(user=request.user, confirmed=True)
+        static.delete()
+        totp.delete()
+        for token in static_tokens:
+            token.delete()
+        messages.success(request, 'Successfully disabled OTP')
+        # Create event with email notification
+        # Event.create(
+        #     user=request.user,
+        #     message=_('You disabled TOTP.'),
+        #     current=True,
+        #     request=request,
+        #     send_notification=True)
+        return redirect(reverse('passbook_otp:otp-user-settings'))
 
 class EnableView(LoginRequiredMixin, FormView):
     """View to set up OTP"""
