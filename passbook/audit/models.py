@@ -51,7 +51,10 @@ class AuditEntry(UUIDModel):
     def create(action, request, **kwargs):
         """Create AuditEntry from arguments"""
         client_ip, _ = get_client_ip(request)
-        user = request.user
+        if not hasattr(request, 'user'):
+            user = None
+        else:
+            user = request.user
         if isinstance(user, AnonymousUser):
             user = kwargs.get('user', None)
         entry = AuditEntry.objects.create(
@@ -60,7 +63,7 @@ class AuditEntry(UUIDModel):
             # User 255.255.255.255 as fallback if IP cannot be determined
             request_ip=client_ip or '255.255.255.255',
             context=kwargs)
-        LOGGER.debug("Logged %s from %s (%s)", action, request.user, client_ip)
+        LOGGER.debug("Logged %s from %s (%s)", action, user, client_ip)
         return entry
 
     def save(self, *args, **kwargs):

@@ -11,6 +11,7 @@ from passbook.lib.config import CONFIG
 
 class UserSettingsView(UpdateView):
     """Update User settings"""
+
     template_name = 'user/settings.html'
     form_class = UserDetailForm
 
