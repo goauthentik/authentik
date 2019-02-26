@@ -52,7 +52,7 @@ package-docker:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   before_script:
-    - echo "{\"auths\":{\"https://docker.$NEXUS_URL/\":{\"username\":\"$NEXUS_USER\",\"password\":\"$NEXUS_PASS\"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.0.8-alpha
   stage: build
@@ -65,7 +65,7 @@ package-helm:
     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
     - helm init --client-only
     - helm package helm/passbook
-    - ./manage.py nexus_upload --method put --url $NEXUS_URL --user $NEXUS_USER --password $NEXUS_PASS --repo helm *.tgz
+    - ./manage.py nexus_upload --method put --url $NEXUS_URL --auth $NEXUS_AUTH --repo helm *.tgz
   only:
     - tags
     - /^version/.*$/

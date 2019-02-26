@@ -1,5 +1,5 @@
 """passbook nexus_upload management command"""
-from getpass import getpass
+from base64 import b64decode
 
 import requests
 from django.core.management.base import BaseCommand
@@ -24,9 +24,9 @@ class Command(BaseCommand):
             help='Nexus root URL',
             required=True)
         parser.add_argument(
-            '--user',
+            '--auth',
             action='store',
-            help='Username to use for Nexus upload',
+            help='base64-encoded string of username:password',
             required=True)
         parser.add_argument(
             '--method',
@@ -37,29 +37,21 @@ class Command(BaseCommand):
             help=('Method used for uploading files to nexus. '
                   'Apt repositories use post, Helm uses put.'),
             required=True)
-        parser.add_argument(
-            '--password',
-            action='store',
-            help=("Password to use for Nexus upload. "
-                  "If parameter not given, we'll interactively ask"))
         # Positional arguments
         parser.add_argument('file', nargs='+', type=str)
 
     def handle(self, *args, **options):
         """Upload debian package to nexus repository"""
-        if options.get('password') is None:
-            options['password'] = getpass()
+        auth = tuple(b64decode(options.get('auth')).decode('utf-8').split(':', 1))
         responses = {}
-        url = 'https://%(url)s/repository/%(repo)s//' % options
+        url = 'https://%(url)s/repository/%(repo)s/' % options
         method = options.get('method')
         exit_code = 0
         for file in options.get('file'):
             if method == 'post':
-                responses[file] = requests.post(url, data=open(file, mode='rb'),
-                                                auth=(options.get('user'), options.get('password')))
+                responses[file] = requests.post(url, data=open(file, mode='rb'), auth=auth)
             else:
-                responses[file] = requests.put(url+file, data=open(file, mode='rb'),
-                                               auth=(options.get('user'), options.get('password')))
+                responses[file] = requests.put(url+file, data=open(file, mode='rb'), auth=auth)
         self.stdout.write('Upload results:\n')
         sep = '-' * 60
         self.stdout.write('%s\n' % sep)
