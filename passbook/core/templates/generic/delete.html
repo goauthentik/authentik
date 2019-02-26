@@ -5,16 +5,20 @@
 
 {% block content %}
 <div class="container">
-  {% block above_form %}
-    <h1>{% trans 'Delete' %}</h1>
-  {% endblock %}
-  <div class="">
-    <form method="post" class="form-horizontal">
-      {% csrf_token %}
-      <p>Are you sure you want to delete "{{ object }}"?</p>
-      <a href="{% back %}" class="btn btn-default">{% trans 'Back' %}</a>
-      <input type="submit" class="btn btn-danger" value="{% trans 'Delete' %}" />
-    </form>
-  </div>
+    {% block above_form %}
+    <h1>{% blocktrans with object_type=object|fieldtype|title %}Delete {{ object_type }}{% endblocktrans %}</h1>
+    {% endblock %}
+    <div class="">
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            <p>
+                {% blocktrans with object_type=object|fieldtype|title name=object %}
+                Are you sure you want to delete {{ object_type }} "{{ object }}"?
+                {% endblocktrans %}
+            </p>
+            <a href="{% back %}" class="btn btn-default">{% trans 'Back' %}</a>
+            <input type="submit" class="btn btn-danger" value="{% trans 'Delete' %}" />
+        </form>
+    </div>
 </div>
 {% endblock %}

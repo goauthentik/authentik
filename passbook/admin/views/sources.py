@@ -1,4 +1,5 @@
 """passbook Source administration"""
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
@@ -66,9 +67,13 @@ class SourceDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete source"""
 
     model = Source
-
+    template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:sources')
-    success_message = _('Successfully updated Source')
+    success_message = _('Successfully deleted Source')
 
     def get_object(self, queryset=None):
         return Source.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)

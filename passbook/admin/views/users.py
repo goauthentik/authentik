@@ -34,9 +34,13 @@ class UserDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     """Delete user"""
 
     model = User
-
+    template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:users')
-    success_message = _('Successfully updated User')
+    success_message = _('Successfully deleted User')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
 
 
 class UserPasswordResetView(AdminRequiredMixin, View):

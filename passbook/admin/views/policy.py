@@ -68,10 +68,14 @@ class PolicyDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     model = Policy
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:policies')
-    success_message = _('Successfully updated Policy')
+    success_message = _('Successfully deleted Policy')
 
     def get_object(self, queryset=None):
         return Policy.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
 
 
 class PolicyTestView(AdminRequiredMixin, DetailView, FormView):

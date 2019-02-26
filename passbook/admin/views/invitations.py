@@ -1,4 +1,5 @@
 """passbook Invitation administration"""
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -42,4 +43,8 @@ class InvitationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     model = Invitation
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:invitations')
-    success_message = _('Successfully updated Invitation')
+    success_message = _('Successfully deleted Invitation')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)

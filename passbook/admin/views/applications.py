@@ -1,4 +1,5 @@
 """passbook Application administration"""
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
@@ -45,5 +46,10 @@ class ApplicationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView)
 
     model = Application
 
+    template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:applications')
-    success_message = _('Successfully updated Application')
+    success_message = _('Successfully deleted Application')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)

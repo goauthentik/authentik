@@ -1,4 +1,5 @@
 """passbook Provider administration"""
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
@@ -64,7 +65,11 @@ class ProviderDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
     model = Provider
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:providers')
-    success_message = _('Successfully updated Provider')
+    success_message = _('Successfully deleted Provider')
 
     def get_object(self, queryset=None):
         return Provider.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
