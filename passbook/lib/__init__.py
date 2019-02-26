@@ -1,2 +1,2 @@
 """passbook lib"""
-__version__ = '0.0.10-alpha'
+__version__ = '0.0.11-alpha'
