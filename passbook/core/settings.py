@@ -291,6 +291,7 @@ TEST_OUTPUT_FILE_NAME = 'unittest.xml'
 if any('test' in arg for arg in sys.argv):
     LOGGING = None
     TEST = True
+    CELERY_TASK_ALWAYS_EAGER = True
 
 _DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
 # Load subapps's INSTALLED_APPS
