@@ -22,6 +22,8 @@ OAUTH2_PROVIDER = {
     'SCOPES': {
         'openid:userinfo': 'Access OpenID Userinfo',
         # 'write': 'Write scope',
-        # 'groups': 'Access to your groups'
+        # 'groups': 'Access to your groups',
+        'user:email': 'GitHub Compatibility: User E-Mail',
+        'read:org': 'GitHub Compatibility: User Groups',
     }
 }

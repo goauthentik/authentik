@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'passbook.otp.apps.PassbookOTPConfig',
     'passbook.captcha_factor.apps.PassbookCaptchaFactorConfig',
     'passbook.hibp_policy.apps.PassbookHIBPConfig',
+    'passbook.pretend.apps.PassbookPretendConfig',
 ]
 
 # Message Tag fix for bootstrap CSS Classes
