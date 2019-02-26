@@ -1,4 +1,7 @@
 """passbook user view tests"""
+import string
+from random import SystemRandom
+
 from django.shortcuts import reverse
 from django.test import TestCase
 
@@ -14,7 +17,8 @@ class TestUserViews(TestCase):
         self.user = User.objects.create_superuser(
             username='unittest user',
             email='unittest@example.com',
-            password='test123')
+            password=''.join(SystemRandom().choice(
+                string.ascii_uppercase + string.digits) for _ in range(8)))
         self.client.force_login(self.user)
 
     def test_user_settings(self):

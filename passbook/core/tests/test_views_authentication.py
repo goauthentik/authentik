@@ -1,4 +1,6 @@
 """passbook Core Account Test"""
+import string
+from random import SystemRandom
 
 from django.test import TestCase
 from django.urls import reverse
@@ -26,7 +28,9 @@ class TestAuthenticationViews(TestCase):
         self.user = User.objects.create_superuser(
             username='unittest user',
             email='unittest@example.com',
-            password='test123')
+            password=''.join(SystemRandom().choice(
+                string.ascii_uppercase + string.digits) for _ in range(8)))
+
 
     def test_sign_up_view(self):
         """Test account.sign_up view (Anonymous)"""
