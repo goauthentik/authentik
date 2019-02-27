@@ -36,7 +36,7 @@ data:
     debug: false
     secure_proxy_header:
       HTTP_X_FORWARDED_PROTO: https
-    redis: {{ .Release.Name }}-redis
+    redis: ":{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master"
     # Error reporting, sends stacktrace to sentry.services.beryju.org
     error_report_enabled: {{ .Values.config.error_reporting }}
 
