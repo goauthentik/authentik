@@ -12,7 +12,7 @@ from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import FormView
 
-from passbook.core.auth.view import AuthenticationView
+from passbook.core.auth.view import AuthenticationView, _redirect_with_qs
 from passbook.core.exceptions import PasswordPolicyInvalid
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
@@ -73,7 +73,7 @@ class LoginView(UserPassesTestMixin, FormView):
             return self.invalid_login(self.request)
         self.request.session.flush()
         self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
-        return redirect(reverse('passbook_core:auth-process'))
+        return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""

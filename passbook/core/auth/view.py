@@ -4,6 +4,7 @@ from logging import getLogger
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.utils.http import urlencode
 from django.views.generic import View
 
 from passbook.core.models import Factor, User
@@ -13,6 +14,12 @@ from passbook.lib.utils.urls import is_url_absolute
 
 LOGGER = getLogger(__name__)
 
+def _redirect_with_qs(view, get_query_set=None):
+    """Wrapper to redirect whilst keeping GET Parameters"""
+    target = reverse(view)
+    if get_query_set:
+        target += '?' + urlencode({key: value for key, value in get_query_set.items()})
+    return redirect(target)
 
 class AuthenticationView(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
@@ -37,7 +44,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         # Function from UserPassesTestMixin
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
-        return redirect(reverse('passbook_core:overview'))
+        return _redirect_with_qs('passbook_core:overview', self.request.GET)
 
     def dispatch(self, request, *args, **kwargs):
         # Extract pending user from session (only remember uid)
@@ -46,7 +53,7 @@ class AuthenticationView(UserPassesTestMixin, View):
                 User, id=self.request.session[AuthenticationView.SESSION_PENDING_USER])
         else:
             # No Pending user, redirect to login screen
-            return redirect(reverse('passbook_core:auth-login'))
+            return _redirect_with_qs('passbook_core:auth-login', request.GET)
         # Write pending factors to session
         if AuthenticationView.SESSION_PENDING_FACTORS in request.session:
             self.pending_factors = request.session[AuthenticationView.SESSION_PENDING_FACTORS]
@@ -101,8 +108,8 @@ class AuthenticationView(UserPassesTestMixin, View):
                 self.pending_factors
             self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
             LOGGER.debug("Rendering Factor is %s", next_factor)
-            # return redirect(reverse('passbook_core:auth-process', kwargs={'factor': next_factor}))
-            return redirect(reverse('passbook_core:auth-process'))
+            # return _redirect_with_qs('passbook_core:auth-process', kwargs={'factor': next_factor})
+            return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in")
         return self._user_passed()
@@ -112,7 +119,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
         self.cleanup()
-        return redirect(reverse('passbook_core:auth-denied'))
+        return _redirect_with_qs('passbook_core:auth-denied', self.request.GET)
 
     def _user_passed(self):
         """User Successfully passed all factors"""
@@ -123,9 +130,9 @@ class AuthenticationView(UserPassesTestMixin, View):
         # Cleanup
         self.cleanup()
         next_param = self.request.GET.get('next', None)
-        if next_param and is_url_absolute(next_param):
+        if next_param and not is_url_absolute(next_param):
             return redirect(next_param)
-        return redirect(reverse('passbook_core:overview'))
+        return _redirect_with_qs('passbook_core:overview')
 
     def cleanup(self):
         """Remove temporary data from session"""
