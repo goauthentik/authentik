@@ -8,6 +8,7 @@ from django.utils.http import urlencode
 from django.views.generic import View
 
 from passbook.core.models import Factor, User
+from passbook.core.policies import PolicyEngine
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
@@ -63,7 +64,9 @@ class AuthenticationView(UserPassesTestMixin, View):
             _all_factors = Factor.objects.filter(enabled=True).order_by('order').select_subclasses()
             self.pending_factors = []
             for factor in _all_factors:
-                if factor.passes(self.pending_user):
+                policy_engine = PolicyEngine(factor.policies.all())
+                policy_engine.for_user(self.pending_user)
+                if policy_engine.result[0]:
                     self.pending_factors.append((factor.uuid.hex, factor.type))
         # Read and instantiate factor from session
         factor_uuid, factor_class = None, None

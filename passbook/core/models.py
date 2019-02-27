@@ -73,14 +73,6 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
 
     policies = models.ManyToManyField('Policy', blank=True)
 
-    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
-        """Return False, str if a user fails where str is a
-        reasons shown to the user. Return True if user succeeds."""
-        for policy in self.policies.all():
-            if not policy.passes(user):
-                return False
-        return True
-
 class Factor(PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 

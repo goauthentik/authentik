@@ -3,6 +3,7 @@
 from django import template
 
 from passbook.core.models import Factor
+from passbook.core.policies import PolicyEngine
 
 register = template.Library()
 
@@ -14,6 +15,8 @@ def user_factors(context):
     matching_factors = []
     for factor in _all_factors:
         _link = factor.has_user_settings()
-        if factor.passes(user) and _link:
+        policy_engine = PolicyEngine(factor.policies.all())
+        policy_engine.for_user(user)
+        if policy_engine.result[0] and _link:
             matching_factors.append(_link)
     return matching_factors
