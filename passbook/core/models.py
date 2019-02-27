@@ -44,6 +44,8 @@ class User(AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
+    name = models.TextField()
+
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     applications = models.ManyToManyField('Application')
     groups = models.ManyToManyField('Group')
@@ -253,8 +255,7 @@ class FieldMatcherPolicy(Policy):
 
     USER_FIELDS = (
         ('username', _('Username'),),
-        ('first_name', _('First Name'),),
-        ('last_name', _('Last Name'),),
+        ('name', _('Name'),),
         ('email', _('E-Mail'),),
         ('is_staff', _('Is staff'),),
         ('is_active', _('Is active'),),

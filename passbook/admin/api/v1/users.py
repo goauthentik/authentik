@@ -11,7 +11,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['is_superuser', 'username', 'first_name', 'last_name', 'email', 'date_joined',
+        fields = ['is_superuser', 'username', 'name', 'email', 'date_joined',
                   'uuid']
 
 

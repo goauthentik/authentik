@@ -15,8 +15,7 @@ class TestAuthenticationViews(TestCase):
     def setUp(self):
         super().setUp()
         self.sign_up_data = {
-            'first_name': 'Test',
-            'last_name': 'User',
+            'name': 'Test',
             'username': 'beryjuorg',
             'email': 'unittest@passbook.beryju.org',
             'password': 'B3ryju0rg!',

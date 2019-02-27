@@ -38,7 +38,7 @@ class TwitterOAuthCallback(OAuthCallback):
         user_data = {
             'username': info.get('screen_name'),
             'email': info.get('email', ''),
-            'first_name': info.get('name'),
+            'name': info.get('name'),
             'password': None,
         }
         tw_user = user_get_or_create(**user_data)

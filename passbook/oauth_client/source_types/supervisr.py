@@ -46,7 +46,7 @@ class SupervisrOAuthCallback(OAuthCallback):
         user_data = {
             'username': info.get('username'),
             'email': info.get('email', ''),
-            'first_name': info.get('first_name'),
+            'name': info.get('first_name'),
             'password': None,
         }
         sv_user = user_get_or_create(**user_data)

@@ -105,10 +105,9 @@ data:
         email: mail # or userPrincipalName
       user_attribute_map:
         active_directory:
-          sAMAccountName: username
-          mail: email
-          given_name: first_name
-          name: last_name
+          username: "%(sAMAccountName)s"
+          email: "%(mail)s"
+          name: "%(displayName)"
       # # Create new users in LDAP upon sign-up
       # create_users: true
       # # Reset LDAP password when user reset their password

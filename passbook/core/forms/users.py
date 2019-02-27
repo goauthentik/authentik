@@ -13,7 +13,10 @@ class UserDetailForm(forms.ModelForm):
     class Meta:
 
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'name', 'email']
+        widgets = {
+            'name': forms.TextInput
+        }
 
 class PasswordChangeForm(forms.Form):
     """Form to update password"""

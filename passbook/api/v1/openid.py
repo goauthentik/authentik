@@ -14,8 +14,8 @@ class OpenIDUserInfoView(ScopedResourceMixin, View):
         payload = {
             'sub': request.user.uuid.int,
             'name': request.user.get_full_name(),
-            'given_name': request.user.first_name,
-            'family_name': request.user.last_name,
+            'given_name': request.user.name,
+            'family_name': '',
             'preferred_username': request.user.username,
             'email': request.user.email,
         }

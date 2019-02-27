@@ -129,7 +129,7 @@ class LDAPConnector:
         # Create the user data.
         field_map = {
             'username': '%(' + USERNAME_FIELD + ')s',
-            'first_name': '%(givenName)s %(sn)s',
+            'name': '%(givenName)s %(sn)s',
             'email': '%(mail)s',
         }
         user_fields = {}
@@ -224,9 +224,9 @@ class LDAPConnector:
             'cn': str(username),
             'description': str('t=' + time()),
             'sAMAccountName': str(username_trunk),
-            'givenName': str(user.first_name),
+            'givenName': str(user.name),
             'displayName': str(user.username),
-            'name': str(user.first_name),
+            'name': str(user.name),
             'mail': str(user.email),
             'userPrincipalName': str(username + '@' + self._source.domain),
             'objectClass': ['top', 'person', 'organizationalPerson', 'user'],

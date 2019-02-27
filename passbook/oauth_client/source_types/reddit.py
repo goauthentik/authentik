@@ -61,7 +61,7 @@ class RedditOAuth2Callback(OAuthCallback):
         user_data = {
             'username': info.get('name'),
             'email': None,
-            'first_name': info.get('name'),
+            'name': info.get('name'),
             'password': None,
         }
         reddit_user = user_get_or_create(**user_data)

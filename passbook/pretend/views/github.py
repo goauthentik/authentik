@@ -27,7 +27,7 @@ class GitHubUserView(View):
             "received_events_url": "",
             "type": "User",
             "site_admin": False,
-            "name": "%s %s" % (request.user.first_name, request.user.last_name),
+            "name": request.user.name,
             "company": "",
             "blog": "",
             "location": "",

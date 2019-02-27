@@ -157,7 +157,7 @@ class Processor:
             {
                 'FriendlyName': 'cn',
                 'Name': 'urn:oid:2.5.4.3',
-                'Value': self._django_request.user.first_name,
+                'Value': self._django_request.user.name,
             },
             {
                 'FriendlyName': 'mail',

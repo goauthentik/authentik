@@ -13,7 +13,7 @@ class GitHubOAuth2Callback(OAuthCallback):
         user_data = {
             'username': info.get('login'),
             'email': info.get('email', ''),
-            'first_name': info.get('name'),
+            'name': info.get('name'),
             'password': None,
         }
         gh_user = user_get_or_create(**user_data)

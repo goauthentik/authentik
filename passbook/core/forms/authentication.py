@@ -38,10 +38,8 @@ class SignUpForm(forms.Form):
     """SignUp Form"""
 
     title = _('Sign Up')
-    first_name = forms.CharField(label=_('First Name'),
-                                 widget=forms.TextInput(attrs={'placeholder': _('First Name')}))
-    last_name = forms.CharField(label=_('Last Name'),
-                                widget=forms.TextInput(attrs={'placeholder': _('Last Name')}))
+    name = forms.CharField(label=_('Name'),
+                           widget=forms.TextInput(attrs={'placeholder': _('Name')}))
     username = forms.CharField(label=_('Username'),
                                widget=forms.TextInput(attrs={'placeholder': _('Username')}))
     email = forms.EmailField(label=_('E-Mail'),

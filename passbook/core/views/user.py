@@ -1,8 +1,10 @@
 """passbook core user views"""
 from django.contrib import messages
 from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.utils import ErrorList
 from django.shortcuts import redirect, reverse
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import DeleteView, FormView, UpdateView
 
@@ -11,11 +13,14 @@ from passbook.core.forms.users import PasswordChangeForm, UserDetailForm
 from passbook.lib.config import CONFIG
 
 
-class UserSettingsView(UpdateView):
+class UserSettingsView(SuccessMessageMixin, UpdateView):
     """Update User settings"""
 
     template_name = 'user/settings.html'
     form_class = UserDetailForm
+
+    success_message = _('Successfully updated user.')
+    success_url = reverse_lazy('passbook_core:user-settings')
 
     def get_object(self):
         return self.request.user

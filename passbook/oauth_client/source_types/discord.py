@@ -52,7 +52,7 @@ class DiscordOAuth2Callback(OAuthCallback):
         user_data = {
             'username': info.get('username'),
             'email': info.get('email', 'None'),
-            'first_name': info.get('username'),
+            'name': info.get('username'),
             'password': None,
         }
         discord_user = user_get_or_create(**user_data)

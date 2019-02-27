@@ -77,10 +77,9 @@ ldap:
     email: mail # or userPrincipalName
   user_attribute_map:
     active_directory:
-      sAMAccountName: username
-      mail: email
-      given_name: first_name
-      name: last_name
+      username: "%(sAMAccountName)s"
+      email: "%(mail)s"
+      name: "%(displayName)"
 oauth_client:
   # List of python packages with sources types to load.
   types:

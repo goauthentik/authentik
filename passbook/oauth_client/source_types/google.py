@@ -22,7 +22,7 @@ class GoogleOAuth2Callback(OAuthCallback):
         user_data = {
             'username': info.get('email'),
             'email': info.get('email', ''),
-            'first_name': info.get('name'),
+            'name': info.get('name'),
             'password': None,
         }
         google_user = user_get_or_create(**user_data)

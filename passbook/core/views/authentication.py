@@ -204,8 +204,7 @@ class SignUpView(UserPassesTestMixin, FormView):
         new_user = User.objects.create(
             username=data.get('username'),
             email=data.get('email'),
-            first_name=data.get('first_name'),
-            last_name=data.get('last_name'),
+            name=data.get('name'),
         )
         new_user.is_active = True
         try:
