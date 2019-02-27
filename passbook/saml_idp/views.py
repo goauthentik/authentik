@@ -5,6 +5,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
@@ -54,10 +56,11 @@ class ProviderMixin:
         return self._provider
 
 
-class LoginBeginView(CSRFExemptMixin, View):
+class LoginBeginView(View):
     """Receives a SAML 2.0 AuthnRequest from a Service Provider and
     stores it in the session prior to enforcing login."""
 
+    @method_decorator(csrf_exempt)
     def dispatch(self, request, application):
         if request.method == 'POST':
             source = request.POST
@@ -71,9 +74,9 @@ class LoginBeginView(CSRFExemptMixin, View):
             return HttpResponseBadRequest('the SAML request payload is missing')
 
         request.session['RelayState'] = source.get('RelayState', '')
-        return redirect(reverse('passbook_saml_idp:saml_login_process'), kwargs={
+        return redirect(reverse('passbook_saml_idp:saml_login_process', kwargs={
             'application': application
-        })
+        }))
 
 
 class RedirectToSPView(View):
@@ -99,7 +102,7 @@ class LoginProcessView(ProviderMixin, View):
         # Check if user has access
         access = True
         # TODO: Check access here
-        if self.provider.skip_authorization and access:
+        if self.provider.application.skip_authorization and access:
             ctx = self.provider.processor.generate_response()
             # TODO: AuditLog Skipped Authz
             return RedirectToSPView.as_view()(
