@@ -54,7 +54,11 @@
                 <p class="card-pf-aggregate-status-notifications">
                     <span class="card-pf-aggregate-status-notification">
                         <a href="{% url 'passbook_admin:providers' %}">
-                            <span class="pficon pficon-ok"></span>{{ provider_count }}
+                            {% if providers_without_application.exists %}
+                            <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right" title="{% trans 'Warning: At least one Provider has no application assigned.' %}"></span> {{ provider_count }}
+                            {% else %}
+                            <span class="pficon pficon-ok"></span> {{ provider_count }}
+                            {% endif %}
                         </a>
                     </span>
                 </p>
@@ -168,7 +172,12 @@
                 <p class="card-pf-aggregate-status-notifications">
                     <span class="card-pf-aggregate-status-notification">
                         <a href="#">
+                            {% if worker_count < 1%}
+                            <span class="pficon-error-circle-o" data-toggle="tooltip" data-placement="right"
+                                title="{% trans 'No workers connected. Policies may not work.' %}"></span> {{ worker_count }}
+                            {% else %}
                             <span class="pficon pficon-ok"></span>{{ worker_count }}
+                            {% endif %}
                         </a>
                     </span>
                 </p>

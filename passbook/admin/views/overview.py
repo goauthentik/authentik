@@ -23,4 +23,5 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs['invitation_count'] = len(Invitation.objects.all())
         kwargs['version'] = __version__
         kwargs['worker_count'] = len(CELERY_APP.control.ping(timeout=0.5))
+        kwargs['providers_without_application'] = Provider.objects.filter(application=None)
         return super().get_context_data(**kwargs)
