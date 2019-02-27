@@ -5,12 +5,12 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
 
 from passbook.core.models import Application
@@ -28,6 +28,7 @@ def _generate_response(request, provider: SAMLProvider):
     """Generate a SAML response using processor_instance and return it in the proper Django
     response."""
     try:
+        provider.processor.init_deep_link(request, '')
         ctx = provider.processor.generate_response()
         ctx['remote'] = provider
         ctx['is_login'] = True
@@ -56,7 +57,7 @@ class ProviderMixin:
         return self._provider
 
 
-class LoginBeginView(View):
+class LoginBeginView(LoginRequiredMixin, View):
     """Receives a SAML 2.0 AuthnRequest from a Service Provider and
     stores it in the session prior to enforcing login."""
 
@@ -79,7 +80,7 @@ class LoginBeginView(View):
         }))
 
 
-class RedirectToSPView(View):
+class RedirectToSPView(LoginRequiredMixin, View):
     """Return autosubmit form"""
 
     def get(self, request, acs_url, saml_response, relay_state):
@@ -93,11 +94,12 @@ class RedirectToSPView(View):
         })
 
 
-class LoginProcessView(ProviderMixin, View):
+class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
     """Processor-based login continuation.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
 
-    def dispatch(self, request, application):
+    def get(self, request, application):
+        """Handle get request, i.e. render form"""
         LOGGER.debug("Request: %s", request)
         # Check if user has access
         access = True
@@ -110,7 +112,19 @@ class LoginProcessView(ProviderMixin, View):
                 acs_url=ctx['acs_url'],
                 saml_response=ctx['saml_response'],
                 relay_state=ctx['relay_state'])
-        if request.method == 'POST' and request.POST.get('ACSUrl', None) and access:
+        try:
+            full_res = _generate_response(request, self.provider)
+            return full_res
+        except exceptions.CannotHandleAssertion as exc:
+            LOGGER.debug(exc)
+
+    def post(self, request, application):
+        """Handle post request, return back to ACS"""
+        LOGGER.debug("Request: %s", request)
+        # Check if user has access
+        access = True
+        # TODO: Check access here
+        if request.POST.get('ACSUrl', None) and access:
             # User accepted request
             # TODO: AuditLog accepted
             return RedirectToSPView.as_view()(
@@ -125,7 +139,7 @@ class LoginProcessView(ProviderMixin, View):
             LOGGER.debug(exc)
 
 
-class LogoutView(CSRFExemptMixin, View):
+class LogoutView(CSRFExemptMixin, LoginRequiredMixin, View):
     """Allows a non-SAML 2.0 URL to log out the user and
     returns a standard logged-out page. (SalesForce and others use this method,
     though it's technically not SAML 2.0)."""
