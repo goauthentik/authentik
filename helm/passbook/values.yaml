@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  tag: 0.0.13-alpha
+  tag: 0.1.0-alpha
 
 nameOverride: ""
 
