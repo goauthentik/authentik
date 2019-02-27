@@ -1,6 +1,4 @@
 """Google OAuth Views"""
-from django.contrib.auth import get_user_model
-
 from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
@@ -21,12 +19,11 @@ class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 
     def get_or_create_user(self, source, access, info):
-        user = get_user_model()
         user_data = {
-            user.USERNAME_FIELD: info.get('email'),
+            'username': info.get('email'),
             'email': info.get('email', ''),
             'first_name': info.get('name'),
             'password': None,
         }
-        google_user = user_get_or_create(user_model=user, **user_data)
+        google_user = user_get_or_create(**user_data)
         return google_user

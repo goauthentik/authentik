@@ -113,7 +113,9 @@ class OAuthCallback(OAuthClientMixin, View):
                 )
             user = authenticate(source=self.source, identifier=identifier, request=request)
             if user is None:
+                LOGGER.debug("Handling new user")
                 return self.handle_new_user(self.source, connection, info)
+            LOGGER.debug("Handling existing user")
             return self.handle_existing_user(self.source, user, connection, info)
 
     # pylint: disable=unused-argument

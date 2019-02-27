@@ -1,16 +1,17 @@
 """OAuth Client User Creation Utils"""
 
-from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 
+from passbook.core.models import User
 
-def user_get_or_create(user_model=None, **kwargs):
+
+def user_get_or_create(**kwargs):
     """Create user or return existing user"""
-    if user_model is None:
-        user_model = get_user_model()
     try:
-        new_user = user_model.objects.create_user(**kwargs)
+        new_user = User.objects.create_user(**kwargs)
     except IntegrityError:
-        # TODO: Fix potential username change vuln
-        new_user = user_model.objects.get(username=kwargs['username'])
+        # At this point we've already checked that there is no existing connection
+        # to any user. Hence if we can't create the user,
+        kwargs['username'] = '%s_1' % kwargs['username']
+        new_user = User.objects.create_user(**kwargs)
     return new_user

@@ -3,7 +3,6 @@
 import json
 from logging import getLogger
 
-from django.contrib.auth import get_user_model
 from requests.exceptions import RequestException
 
 from passbook.oauth_client.clients import OAuth2Client
@@ -44,12 +43,11 @@ class SupervisrOAuthCallback(OAuthCallback):
         return info['pk']
 
     def get_or_create_user(self, source, access, info):
-        user = get_user_model()
         user_data = {
-            user.USERNAME_FIELD: info.get('username'),
+            'username': info.get('username'),
             'email': info.get('email', ''),
             'first_name': info.get('first_name'),
             'password': None,
         }
-        sv_user = user_get_or_create(user_model=user, **user_data)
+        sv_user = user_get_or_create(**user_data)
         return sv_user

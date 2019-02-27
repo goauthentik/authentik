@@ -2,7 +2,6 @@
 
 from logging import getLogger
 
-from django.contrib.auth import get_user_model
 from requests.exceptions import RequestException
 
 from passbook.oauth_client.clients import OAuthClient
@@ -36,12 +35,11 @@ class TwitterOAuthCallback(OAuthCallback):
     client_class = TwitterOAuthClient
 
     def get_or_create_user(self, source, access, info):
-        user = get_user_model()
         user_data = {
-            user.USERNAME_FIELD: info.get('screen_name'),
+            'username': info.get('screen_name'),
             'email': info.get('email', ''),
             'first_name': info.get('name'),
             'password': None,
         }
-        tw_user = user_get_or_create(user_model=user, **user_data)
+        tw_user = user_get_or_create(**user_data)
         return tw_user

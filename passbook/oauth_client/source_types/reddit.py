@@ -2,7 +2,6 @@
 import json
 from logging import getLogger
 
-from django.contrib.auth import get_user_model
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import RequestException
 
@@ -59,12 +58,11 @@ class RedditOAuth2Callback(OAuthCallback):
     client_class = RedditOAuth2Client
 
     def get_or_create_user(self, source, access, info):
-        user = get_user_model()
         user_data = {
-            user.USERNAME_FIELD: info.get('name'),
+            'username': info.get('name'),
             'email': None,
             'first_name': info.get('name'),
             'password': None,
         }
-        reddit_user = user_get_or_create(user_model=user, **user_data)
+        reddit_user = user_get_or_create(**user_data)
         return reddit_user
