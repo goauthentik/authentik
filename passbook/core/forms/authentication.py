@@ -91,4 +91,7 @@ class SignUpForm(forms.Form):
 class PasswordFactorForm(forms.Form):
     """Password authentication form"""
 
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': _('Password')}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'placeholder': _('Password'),
+        'autofocus': 'autofocus'
+        }))
