@@ -29,7 +29,7 @@ class ProviderListView(AdminRequiredMixin, ListView):
 class ProviderCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Provider"""
 
-    template_name = 'generic/create_inheritance.html'
+    template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:providers')
     success_message = _('Successfully created Provider')
 

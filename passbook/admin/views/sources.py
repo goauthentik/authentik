@@ -34,7 +34,7 @@ class SourceListView(AdminRequiredMixin, ListView):
 class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Source"""
 
-    template_name = 'generic/create_inheritance.html'
+    template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:sources')
     success_message = _('Successfully created Source')
 

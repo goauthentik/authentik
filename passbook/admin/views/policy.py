@@ -32,7 +32,7 @@ class PolicyListView(AdminRequiredMixin, ListView):
 class PolicyCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Policy"""
 
-    template_name = 'generic/create_inheritance.html'
+    template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully created Policy')
 

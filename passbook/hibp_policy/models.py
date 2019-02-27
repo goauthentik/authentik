@@ -41,5 +41,5 @@ class HaveIBeenPwendPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _('have i been pwned Policy')
-        verbose_name_plural = _('have i been pwned Policies')
+        verbose_name = _('Have I Been Pwned Policy')
+        verbose_name_plural = _('Have I Been Pwned Policies')

@@ -34,7 +34,7 @@ class FactorListView(AdminRequiredMixin, ListView):
 class FactorCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     """Create new Factor"""
 
-    template_name = 'generic/create_inheritance.html'
+    template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:factors')
     success_message = _('Successfully created Factor')
 
