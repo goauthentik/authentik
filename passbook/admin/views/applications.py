@@ -30,6 +30,10 @@ class ApplicationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView)
     success_url = reverse_lazy('passbook_admin:applications')
     success_message = _('Successfully created Application')
 
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'Application'
+        return super().get_context_data(**kwargs)
+
 
 class ApplicationUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     """Update application"""

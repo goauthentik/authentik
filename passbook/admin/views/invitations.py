@@ -27,6 +27,10 @@ class InvitationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
     success_message = _('Successfully created Invitation')
     form_class = InvitationForm
 
+    def get_context_data(self, **kwargs):
+        kwargs['type'] = 'Invitation'
+        return super().get_context_data(**kwargs)
+
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.created_by = self.request.user

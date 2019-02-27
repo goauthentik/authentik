@@ -12,7 +12,7 @@
     <h1><span class="pficon-migration"></span> {% trans "Invitations" %}</h1>
     <span>{% trans "Create Invitation Links which optionally force a username or expire on a set date." %}</span>
     <hr>
-    <a href="{% url 'passbook_admin:invitation-create' %}" class="btn btn-primary">
+    <a href="{% url 'passbook_admin:invitation-create' %}?back={{ request.get_full_path }}" class="btn btn-primary">
         {% trans 'Create...' %}
     </a>
     <hr>

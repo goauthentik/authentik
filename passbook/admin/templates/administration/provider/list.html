@@ -21,7 +21,7 @@
         <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
             {% for type, name in types.items %}
             <li role="presentation"><a role="menuitem" tabindex="-1"
-                    href="{% url 'passbook_admin:provider-create' %}?type={{ type }}">{{ name }}</a></li>
+                    href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a></li>
             {% endfor %}
         </ul>
     </div>

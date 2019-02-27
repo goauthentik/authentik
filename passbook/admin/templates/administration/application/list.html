@@ -12,7 +12,7 @@
     <h1><span class="pficon-applications"></span> {% trans "Applications" %}</h1>
     <span>{% trans "External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML." %}</span>
     <hr>
-    <a href="{% url 'passbook_admin:application-create' %}" class="btn btn-primary">
+    <a href="{% url 'passbook_admin:application-create' %}?back={{ request.get_full_path }}" class="btn btn-primary">
         {% trans 'Create...' %}
     </a>
     <hr>
