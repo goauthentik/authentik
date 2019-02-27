@@ -29,7 +29,7 @@
         <thead>
             <tr>
                 <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Class' %}</th>
+                <th>{% trans 'Type' %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -37,7 +37,7 @@
             {% for policy in object_list %}
             <tr>
                 <td>{{ policy.name }}</td>
-                <td>{{ policy|fieldtype }}</td>
+                <td>{{ policy|verbose_name }}</td>
                 <td>
                     <a class="btn btn-default btn-sm"
                         href="{% url 'passbook_admin:policy-update' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>

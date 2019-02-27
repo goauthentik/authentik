@@ -161,6 +161,10 @@ class Application(PolicyModel):
         from passbook.core.policies import PolicyEngine
         return PolicyEngine(self.policies.all()).for_user(user).result
 
+    def get_provider(self):
+        """Get casted provider instance"""
+        return Provider.objects.get_subclass(pk=self.provider.pk)
+
     def __str__(self):
         return self.name
 

@@ -40,12 +40,12 @@ class SAMLProvider(Provider):
 
     def link_download_metadata(self):
         """Get link to download XML metadata for admin interface"""
-        # pylint: disable=no-member
-        if self.application:
+        try:
             # pylint: disable=no-member
             return reverse('passbook_saml_idp:metadata_xml',
                            kwargs={'application': self.application.slug})
-        return None
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
 
     class Meta:
 

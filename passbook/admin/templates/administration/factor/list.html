@@ -40,7 +40,7 @@
             {% for factor in object_list %}
             <tr>
                 <td>{{ factor.name }} ({{ factor.slug }})</td>
-                <td>{{ factor.type }}</td>
+                <td>{{ factor|verbose_name }}</td>
                 <td>{{ factor.order }}</td>
                 <td>{{ factor.enabled }}</td>
                 <td>

@@ -14,6 +14,7 @@ class ApplicationListView(AdminRequiredMixin, ListView):
     """Show list of all applications"""
 
     model = Application
+    ordering = 'name'
     template_name = 'administration/application/list.html'
 
     def get_queryset(self):

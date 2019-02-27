@@ -29,16 +29,24 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
+                <th></th>
                 <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Class' %}</th>
+                <th>{% trans 'Type' %}</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% for provider in object_list %}
-            <tr>
+            <tr {% if not provider.application %} class="warning" {% endif %}>
+                <th>
+                    {% if not provider.application %}
+                    <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right" title="{% trans 'Warning: Provider has no application assigned.' %}"></span>
+                    {% else %}
+                    <span class="pficon-ok" data-toggle="tooltip" data-placement="right" title="{% blocktrans with app=provider.application %}Assigned to Application {{ app }}{% endblocktrans %}"></span>
+                    {% endif %}
+                </th>
                 <td>{{ provider.name }}</td>
-                <td>{{ provider|fieldtype }}</td>
+                <td>{{ provider|verbose_name }}</td>
                 <td>
                     <a class="btn btn-default btn-sm"
                         href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>

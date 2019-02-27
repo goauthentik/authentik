@@ -21,6 +21,7 @@
             <tr>
                 <th>{% trans 'Name' %}</th>
                 <th>{% trans 'Provider' %}</th>
+                <th>{% trans 'Provider Type' %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,7 +29,8 @@
             {% for application in object_list %}
             <tr>
                 <td>{{ application.name }}</td>
-                <td>{{ application.provider }}</td>
+                <td>{{ application.get_provider }}</td>
+                <td>{{ application.get_provider|verbose_name }}</td>
                 <td>
                     <a class="btn btn-default btn-sm"
                         href="{% url 'passbook_admin:application-update' pk=application.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>

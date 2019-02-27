@@ -207,3 +207,8 @@ def gravatar(email, size=None, rating=None):
         gravatar_url += '?' + urlencode(parameters, doseq=True)
 
     return escape(gravatar_url)
+
+@register.filter
+def verbose_name(obj):
+    """Return Object's Verbose Name"""
+    return obj._meta.verbose_name
