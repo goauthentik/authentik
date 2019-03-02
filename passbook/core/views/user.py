@@ -46,6 +46,7 @@ class UserChangePasswordView(FormView):
 
     def form_valid(self, form: PasswordChangeForm):
         try:
+            # user.set_password checks against Policies so we don't need to manually do it here
             self.request.user.set_password(form.cleaned_data.get('password'))
             self.request.user.save()
             update_session_auth_hash(self.request, self.request.user)

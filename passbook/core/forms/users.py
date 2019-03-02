@@ -22,10 +22,14 @@ class PasswordChangeForm(forms.Form):
     """Form to update password"""
 
     password = forms.CharField(label=_('Password'),
-                               widget=forms.PasswordInput(attrs={'placeholder': _('New Password')}))
+                               widget=forms.PasswordInput(attrs={
+                                   'placeholder': _('New Password'),
+                                   'autocomplete': 'new-password'
+                                   }))
     password_repeat = forms.CharField(label=_('Repeat Password'),
                                       widget=forms.PasswordInput(attrs={
-                                          'placeholder': _('Repeat Password')
+                                          'placeholder': _('Repeat Password'),
+                                          'autocomplete': 'new-password'
                                       }))
 
     def clean_password_repeat(self):
@@ -34,5 +38,4 @@ class PasswordChangeForm(forms.Form):
         password_repeat = self.cleaned_data.get('password_repeat')
         if password != password_repeat:
             raise ValidationError(_("Passwords don't match"))
-        # TODO: Password policy check
         return self.cleaned_data.get('password_repeat')

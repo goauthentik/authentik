@@ -81,8 +81,6 @@ class SignUpForm(forms.Form):
         password_repeat = self.cleaned_data.get('password_repeat')
         if password != password_repeat:
             raise ValidationError(_("Passwords don't match"))
-        # TODO: Password policy? Via Plugin? via Policy?
-        # return check_password(self)
         return self.cleaned_data.get('password_repeat')
 
 
@@ -91,5 +89,6 @@ class PasswordFactorForm(forms.Form):
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'placeholder': _('Password'),
-        'autofocus': 'autofocus'
+        'autofocus': 'autofocus',
+        'autocomplete': 'current-password'
         }))
