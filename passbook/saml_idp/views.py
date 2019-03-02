@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
 
 from passbook.core.models import Application
+from passbook.core.policies import PolicyEngine
 from passbook.lib.config import CONFIG
 from passbook.lib.mixins import CSRFExemptMixin
 from passbook.lib.utils.template import render_to_string
@@ -75,7 +76,7 @@ class LoginBeginView(LoginRequiredMixin, View):
             return HttpResponseBadRequest('the SAML request payload is missing')
 
         request.session['RelayState'] = source.get('RelayState', '')
-        return redirect(reverse('passbook_saml_idp:saml_login_process', kwargs={
+        return redirect(reverse('passbook_saml_idp:saml-login-process', kwargs={
             'application': application
         }))
 
@@ -94,17 +95,22 @@ class RedirectToSPView(LoginRequiredMixin, View):
         })
 
 
+
 class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
     """Processor-based login continuation.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
+
+    def _has_access(self):
+        """Check if user has access to application"""
+        policy_engine = PolicyEngine(self.provider.application.policies.all())
+        policy_engine.for_user(self.request.user)
+        return policy_engine.result
 
     def get(self, request, application):
         """Handle get request, i.e. render form"""
         LOGGER.debug("Request: %s", request)
         # Check if user has access
-        access = True
-        # TODO: Check access here
-        if self.provider.application.skip_authorization and access:
+        if self.provider.application.skip_authorization and self._has_access():
             ctx = self.provider.processor.generate_response()
             # TODO: AuditLog Skipped Authz
             return RedirectToSPView.as_view()(
@@ -122,9 +128,7 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
         """Handle post request, return back to ACS"""
         LOGGER.debug("Request: %s", request)
         # Check if user has access
-        access = True
-        # TODO: Check access here
-        if request.POST.get('ACSUrl', None) and access:
+        if request.POST.get('ACSUrl', None) and self._has_access():
             # User accepted request
             # TODO: AuditLog accepted
             return RedirectToSPView.as_view()(
@@ -144,7 +148,7 @@ class LogoutView(CSRFExemptMixin, LoginRequiredMixin, View):
     returns a standard logged-out page. (SalesForce and others use this method,
     though it's technically not SAML 2.0)."""
 
-    def get(self, request):
+    def get(self, request, application):
         """Perform logout"""
         logout(request)
 
@@ -164,11 +168,10 @@ class SLOLogout(CSRFExemptMixin, LoginRequiredMixin, View):
     """Receives a SAML 2.0 LogoutRequest from a Service Provider,
     logs out the user and returns a standard logged-out page."""
 
-    def post(self, request):
+    def post(self, request, application):
         """Perform logout"""
         request.session['SAMLRequest'] = request.POST['SAMLRequest']
         # TODO: Parse SAML LogoutRequest from POST data, similar to login_process().
-        # TODO: Add a URL dispatch for this view.
         # TODO: Modify the base processor to handle logouts?
         # TODO: Combine this with login_process(), since they are so very similar?
         # TODO: Format a LogoutResponse and return it to the browser.
@@ -183,8 +186,8 @@ class DescriptorDownloadView(ProviderMixin, View):
     def get(self, request, application):
         """Replies with the XML Metadata IDSSODescriptor."""
         entity_id = CONFIG.y('saml_idp.issuer')
-        slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_logout'))
-        sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml_login_begin', kwargs={
+        slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml-logout'))
+        sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml-login', kwargs={
             'application': application
         }))
         pubkey = strip_pem_header(self.provider.signing_cert.replace('\r', '')).replace('\n', '')
