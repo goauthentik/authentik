@@ -7,8 +7,8 @@ from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import DeleteView, ListView, UpdateView
 
+from passbook.admin.forms.users import UserForm
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.forms.users import UserDetailForm
 from passbook.core.models import Nonce, User
 
 
@@ -23,7 +23,7 @@ class UserUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     """Update user"""
 
     model = User
-    form_class = UserDetailForm
+    form_class = UserForm
 
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:users')
