@@ -76,9 +76,13 @@
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
                     <span class="card-pf-aggregate-status-notification">
-                        <a href="{% url 'passbook_admin:factors' %}">
-                            <span class="pficon pficon-ok"></span>{{ factor_count }}
-                        </a>
+                        {% if factor_count < 1 %}
+                        <span class="pficon-error-circle-o" data-toggle="tooltip" data-placement="right"
+                            title="{% trans 'No Factors configured. No Users will be able to login.' %}"></span>
+                        {{ factor_count }}
+                        {% else %}
+                        <span class="pficon pficon-ok"></span>{{ worker_count }}
+                        {% endif %}
                     </span>
                 </p>
             </div>
