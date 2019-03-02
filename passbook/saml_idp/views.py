@@ -13,6 +13,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
 
+from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
 from passbook.lib.config import CONFIG
@@ -112,7 +113,12 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
         # Check if user has access
         if self.provider.application.skip_authorization and self._has_access():
             ctx = self.provider.processor.generate_response()
-            # TODO: AuditLog Skipped Authz
+            # Log Application Authorization
+            AuditEntry.create(
+                action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+                request=request,
+                app=self.provider.application.name,
+                skipped_authorization=True)
             return RedirectToSPView.as_view()(
                 request=request,
                 acs_url=ctx['acs_url'],
@@ -130,7 +136,11 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
         # Check if user has access
         if request.POST.get('ACSUrl', None) and self._has_access():
             # User accepted request
-            # TODO: AuditLog accepted
+            AuditEntry.create(
+                action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+                request=request,
+                app=self.provider.application.name,
+                skipped_authorization=False)
             return RedirectToSPView.as_view()(
                 request=request,
                 acs_url=request.POST.get('ACSUrl'),
