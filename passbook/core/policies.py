@@ -25,6 +25,7 @@ def _policy_engine_task(user_pk, policy_pk, **kwargs):
     # Invert result if policy.negate is set
     if policy_obj.negate:
         policy_result = not policy_result
+    LOGGER.debug("Policy %r#%s got %s", policy_obj.name, policy_obj.pk.hex, policy_result)
     return policy_obj.action, policy_result, message
 
 class PolicyEngine:
