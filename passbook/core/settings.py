@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
+    'raven.contrib.django.raven_compat',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
@@ -104,6 +105,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
 ]
 
 ROOT_URLCONF = 'passbook.core.urls'
@@ -183,6 +185,14 @@ CELERY_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = 'passbook'
 CELERY_BROKER_URL = 'redis://%s' % CONFIG.get('redis')
 CELERY_RESULT_BACKEND = 'redis://%s' % CONFIG.get('redis')
+
+# Raven settings
+RAVEN_CONFIG = {
+    'dsn': ('https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745'
+            '0d83be640d834e5458@sentry.services.beryju.org/8'),
+    'release': VERSION,
+    'environment': 'dev' if DEBUG else 'production',
+}
 
 # CherryPY settings
 with CONFIG.cd('web'):
