@@ -1,9 +1,8 @@
 """passbook core policy engine"""
 from logging import getLogger
 
-from ipware import get_client_ip
 from celery import group
-from django.http import HttpRequest
+from ipware import get_client_ip
 
 from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
@@ -62,7 +61,7 @@ class PolicyEngine:
         if self._request:
             kwargs['remote_ip'], _ = get_client_ip(self._request)
             if not kwargs['remote_ip']:
-                kwargs['remote_ip'] = '255.255.255.255',
+                kwargs['remote_ip'] = '255.255.255.255'
         for policy in self.policies:
             signatures.append(_policy_engine_task.s(self._user.pk, policy.pk.hex, **kwargs))
         self._group = group(signatures)()
