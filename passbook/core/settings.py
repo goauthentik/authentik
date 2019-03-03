@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'passbook.hibp_policy.apps.PassbookHIBPConfig',
     'passbook.pretend.apps.PassbookPretendConfig',
     'passbook.password_expiry_policy.apps.PassbookPasswordExpiryPolicyConfig',
+    'passbook.suspicious_policy.apps.PassbookSuspiciousPolicyConfig',
 ]
 
 # Message Tag fix for bootstrap CSS Classes

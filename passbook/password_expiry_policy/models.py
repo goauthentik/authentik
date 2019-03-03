@@ -24,7 +24,7 @@ class PasswordExpiryPolicy(Policy):
         """If password change date is more than x days in the past, call set_unusable_password
         and show a notice"""
         actual_days = (now() - user.password_change_date).days
-        days_since_expiry = now() - (user.password_change_date + timedelta(days=self.days)).days
+        days_since_expiry = (now() - (user.password_change_date + timedelta(days=self.days))).days
         if actual_days >= self.days:
             if not self.deny_only:
                 user.set_unusable_password()

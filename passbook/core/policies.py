@@ -2,6 +2,7 @@
 from logging import getLogger
 
 from celery import group
+from ipware import get_client_ip
 
 from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
@@ -33,18 +34,36 @@ class PolicyEngine:
 
     policies = None
     _group = None
+    _request = None
+    _user = None
 
     def __init__(self, policies):
         self.policies = policies
+        self._request = None
+        self._user = None
 
     def for_user(self, user):
         """Check policies for user"""
+        self._user = user
+        return self
+
+    def with_request(self, request):
+        """Set request"""
+        self._request = request
+        return self
+
+    def build(self):
+        """Build task group"""
         signatures = []
         kwargs = {
-            '__password__': getattr(user, '__password__', None)
+            '__password__': getattr(self._user, '__password__', None),
         }
+        if self._request:
+            kwargs['remote_ip'], _ = get_client_ip(self._request)
+            if not kwargs['remote_ip']:
+                kwargs['remote_ip'] = '255.255.255.255'
         for policy in self.policies:
-            signatures.append(_policy_engine_task.s(user.pk, policy.pk.hex, **kwargs))
+            signatures.append(_policy_engine_task.s(self._user.pk, policy.pk.hex, **kwargs))
         self._group = group(signatures)()
         return self
 

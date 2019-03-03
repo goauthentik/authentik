@@ -104,7 +104,7 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
     def _has_access(self):
         """Check if user has access to application"""
         policy_engine = PolicyEngine(self.provider.application.policies.all())
-        policy_engine.for_user(self.request.user)
+        policy_engine.for_user(self.request.user).with_request(self.request).build()
         return policy_engine.result
 
     def get(self, request, application):

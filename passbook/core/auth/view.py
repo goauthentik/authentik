@@ -65,7 +65,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             self.pending_factors = []
             for factor in _all_factors:
                 policy_engine = PolicyEngine(factor.policies.all())
-                policy_engine.for_user(self.pending_user)
+                policy_engine.for_user(self.pending_user).with_request(request).build()
                 if policy_engine.result[0]:
                     self.pending_factors.append((factor.uuid.hex, factor.type))
         # Read and instantiate factor from session
