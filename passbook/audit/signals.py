@@ -1,9 +1,8 @@
 """passbook audit signal listener"""
-from django.contrib.auth.signals import (user_logged_in, user_logged_out,
-                                         user_login_failed)
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 
-from passbook.audit.models import AuditEntry, LoginAttempt
+from passbook.audit.models import AuditEntry
 from passbook.core.signals import (invitation_created, invitation_used,
                                    user_signed_up)
 
@@ -34,8 +33,3 @@ def on_invitation_used(sender, request, invitation, **kwargs):
     """Log Invitation usage"""
     AuditEntry.create(AuditEntry.ACTION_INVITE_USED, request,
                       invitation_uuid=invitation.uuid.hex)
-
-@receiver(user_login_failed)
-def on_user_login_failed(sender, request, credentials, **kwargs):
-    """Log failed login attempt"""
-    LoginAttempt.attempt(target_uid=credentials.get('username'), request=request)
