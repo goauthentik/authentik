@@ -1,17 +1,15 @@
 """passbook audit models"""
-from datetime import timedelta
 from logging import getLogger
 
+from ipware import get_client_ip
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import gettext as _
-from ipware import get_client_ip
 
-from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.lib.models import UUIDModel
 
 LOGGER = getLogger(__name__)
 

@@ -20,7 +20,7 @@ def password_policy_checker(sender, password, **kwargs):
     _all_factors = PasswordFactor.objects.filter(enabled=True).order_by('order')
     for factor in _all_factors:
         policy_engine = PolicyEngine(factor.password_policies.all().select_subclasses())
-        policy_engine.for_user(sender)
+        policy_engine.for_user(sender).build()
         passing, messages = policy_engine.result
         if not passing:
             raise PasswordPolicyInvalid(*messages)
