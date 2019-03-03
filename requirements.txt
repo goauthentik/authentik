@@ -4,7 +4,6 @@
 -r passbook/saml_idp/requirements.txt
 -r passbook/otp/requirements.txt
 -r passbook/oauth_provider/requirements.txt
--r passbook/suspicious_policy/requirements.txt
 -r passbook/captcha_factor/requirements.txt
 -r passbook/admin/requirements.txt
 -r passbook/api/requirements.txt

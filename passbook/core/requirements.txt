@@ -1,5 +1,6 @@
 django>=2.0
 django-model-utils
+django-ipware
 djangorestframework
 PyYAML
 raven

@@ -13,7 +13,9 @@ LOGGER = getLogger(__name__)
 
 def update_score(request, username, amount):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request)
+    remote_ip, _ = get_client_ip(request)
+    if not remote_ip:
+        remote_ip = '255.255.255.255'
     ip_score, _ = IPScore.objects.update_or_create(ip=remote_ip)
     ip_score.score += amount
     ip_score.save()

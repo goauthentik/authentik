@@ -1,6 +1,7 @@
 """passbook core policy engine"""
 from logging import getLogger
 
+from ipware import get_client_ip
 from celery import group
 from django.http import HttpRequest
 
@@ -8,15 +9,6 @@ from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
 
 LOGGER = getLogger(__name__)
-
-
-def get_remote_ip(request: HttpRequest) -> str:
-    """Return the remote's IP"""
-    if not request:
-        return '0.0.0.0'  # nosec
-    if request.META.get('HTTP_X_FORWARDED_FOR'):
-        return request.META.get('HTTP_X_FORWARDED_FOR')
-    return request.META.get('REMOTE_ADDR')
 
 @CELERY_APP.task()
 def _policy_engine_task(user_pk, policy_pk, **kwargs):
@@ -66,8 +58,11 @@ class PolicyEngine:
         signatures = []
         kwargs = {
             '__password__': getattr(self._user, '__password__', None),
-            'remote_ip': get_remote_ip(self._request)
         }
+        if self._request:
+            kwargs['remote_ip'], _ = get_client_ip(self._request)
+            if not kwargs['remote_ip']:
+                kwargs['remote_ip'] = '255.255.255.255',
         for policy in self.policies:
             signatures.append(_policy_engine_task.s(self._user.pk, policy.pk.hex, **kwargs))
         self._group = group(signatures)()
