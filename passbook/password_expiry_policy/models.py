@@ -29,10 +29,12 @@ class PasswordExpiryPolicy(Policy):
             if not self.deny_only:
                 user.set_unusable_password()
                 user.save()
-                return False, _('Password expired %(days)d days ago. Please update your password.' % {
-                    'days': days_since_expiry
-                })
+                return False, _(('Password expired %(days)d days ago. '
+                                 'Please update your password.') % {
+                                     'days': days_since_expiry
+                                 })
             return False, _('Password has expired.')
+        return True
 
     class Meta:
 
