@@ -17,7 +17,15 @@ def _policy_engine_task(user_pk, policy_pk, **kwargs):
         setattr(user_obj, key, value)
     LOGGER.debug("Running policy `%s`#%s for user %s...", policy_obj.name,
                  policy_obj.pk.hex, user_obj)
-    return policy_obj.passes(user_obj)
+    policy_result = policy_obj.passes(user_obj)
+    # Handle policy result correctly if result, message or just result
+    message = None
+    if isinstance(policy_result, (tuple, list)):
+        policy_result, message = policy_result
+    # Invert result if policy.negate is set
+    if policy_obj.negate:
+        policy_result = not policy_result
+    return policy_obj.action, policy_result, message
 
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
@@ -43,10 +51,11 @@ class PolicyEngine:
     def result(self):
         """Get policy-checking result"""
         messages = []
-        for policy_result in self._group.get():
-            if isinstance(policy_result, (tuple, list)):
-                policy_result, policy_message = policy_result
+        for policy_action, policy_result, policy_message in self._group.get():
+            passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
+                      (policy_action == Policy.ACTION_DENY and not policy_result)
+            if policy_message:
                 messages.append(policy_message)
-            if policy_result is False:
+            if not passing:
                 return False, messages
         return True, messages
