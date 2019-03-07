@@ -157,6 +157,8 @@ class Application(PolicyModel):
 
     def get_provider(self):
         """Get casted provider instance"""
+        if not self.provider:
+            return None
         return Provider.objects.get_subclass(pk=self.provider.pk)
 
     def __str__(self):

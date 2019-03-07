@@ -212,10 +212,14 @@ def gravatar(email, size=None, rating=None):
 @register.filter
 def verbose_name(obj):
     """Return Object's Verbose Name"""
+    if not obj:
+        return ''
     return obj._meta.verbose_name
 
 
 @register.filter
 def form_verbose_name(obj):
     """Return ModelForm's Object's Verbose Name"""
+    if not obj:
+        return ''
     return obj._meta.model._meta.verbose_name
