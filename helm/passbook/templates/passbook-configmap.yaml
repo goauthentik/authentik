@@ -130,6 +130,7 @@ data:
       # List of python packages with provider types to load.
       types:
         - passbook.saml_idp.processors.generic
+        - passbook.saml_idp.processors.aws
         - passbook.saml_idp.processors.gitlab
         - passbook.saml_idp.processors.nextcloud
         - passbook.saml_idp.processors.salesforce
