@@ -1,0 +1,44 @@
+debug: false
+http:
+    host: 0.0.0.0
+    port: 8000
+secret_key_file: /etc/passbook/secret_key
+log:
+    level:
+        console: INFO
+        file: DEBUG
+    file: /var/log/passbook/passbook.log
+# Error reporting, disabled by default
+# error_report_enabled: true
+
+# Set this to the server's external address.
+# This is used to generate external URLs
+external_url: http://image.example.com
+
+# This dictates how the Path is generated
+# can be either of:
+# - view_sha512_short
+# - view_md5
+# - view_sha256
+# - view_sha512
+default_return_view: view_sha256
+
+# Set this to true if you only want to use external authentication
+external_auth_only: false
+
+# If this is true, images are automatically claimed if the windows user exists
+# in django
+auto_claim_enabled: true
+
+# LDAP Authentication
+# ldap:
+#     enabled: false
+#     server:
+#         uri: 'ldap://dc1.example.com'
+#         tls: false
+#     bind:
+#         dn: ''
+#         password: ''
+#     search_base: ''
+#     filter: '(sAMAccountName=%(user)s)'
+#     require_group: ''

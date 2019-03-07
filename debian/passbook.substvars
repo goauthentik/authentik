@@ -1,0 +1,3 @@
+misc:Depends=debconf (>= 0.5) | debconf-2.0
+shlibs:Depends=libc6 (>= 2.4), passbook
+misc:Pre-Depends=
