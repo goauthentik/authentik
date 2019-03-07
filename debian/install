@@ -1,0 +1,8 @@
+passbook		/usr/share/passbook/
+static			/usr/share/passbook/
+manage.py		/usr/share/passbook/
+passbook.sh		/usr/share/passbook/
+vendor			/usr/share/passbook/
+
+debian/etc/passbook								/etc/
+debian/templates/database.yml					/usr/share/passbook/

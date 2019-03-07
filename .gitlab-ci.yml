@@ -68,54 +68,30 @@ package-helm:
   only:
     - tags
     - /^version/.*$/
-# package-3.5:
-#   before_script:
-#     - apt update
-#     - apt install -y build-essential debhelper devscripts equivs python3 python3-pip
-#     - cp debian/control-3.5 debian/control
-#     - mk-build-deps debian/control
-#     - apt install ./*build-deps*deb -f -y
-#     - "python3 -m pip install -U virtualenv"
-#     - "virtualenv env"
-#     - "source env/bin/activate"
-#     - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
-#   image: debian
-#   script:
-#     - debuild -us -uc
-#     - cp ../passbook*.deb .
-#     - python manage.py nexus_upload
-#   artifacts:
-#     paths:
-#     - passbook-python3.5*deb
-#     expire_in: 2 days
-#   stage: build
-#   only:
-#   - tags
-#   - /^debian/.*$/
-# package-3.6:
-#   before_script:
-#     - apt update
-#     - apt install -y build-essential debhelper devscripts equivs python3 python3-pip
-#     - cp debian/control-3.6 debian/control
-#     - mk-build-deps debian/control
-#     - apt install ./*build-deps*deb -f -y
-#     - "python3 -m pip install -U virtualenv"
-#     - "virtualenv env"
-#     - "source env/bin/activate"
-#     - "pip3 install -U -r requirements.txt -r requirements-dev.txt"
-#   image: debian:buster
-#   script:
-#     - debuild -us -uc
-#     - cp ../passbook*.deb .
-#     - python manage.py nexus_upload
-#   artifacts:
-#     paths:
-#     - passbook-python3.6*deb
-#     expire_in: 2 days
-#   stage: build
-#   only:
-#     - tags
-#     - /^debian/.*$r
+package-debian:
+  before_script:
+    - apt update
+    - apt install -y --no-install-recommends build-essential debhelper devscripts equivs python3 python3-dev python3-pip libsasl2-dev libldap2-dev
+    - mk-build-deps debian/control
+    - apt install ./*build-deps*deb -f -y
+    - python3 -m pip install -U virtualenv pip
+    - python3 -m venv env
+    - source env/bin/activate
+    - pip install -U -r requirements-dev.txt
+    - pip install --no-binary psycopg2 psycopg2
+  image: ubuntu:18.04
+  script:
+    - debuild -us -uc
+    - cp ../passbook*.deb .
+    - ./manage.py nexus_upload --method post --url $NEXUS_URL --auth $NEXUS_AUTH --repo apt passbook*deb
+  artifacts:
+    paths:
+    - passbook*deb
+    expire_in: 2 days
+  stage: build
+  only:
+  - tags
+  - /^version/.*$/
 
 # docs:
 #   stage: docs

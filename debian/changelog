@@ -1,0 +1,5 @@
+passbook (0.1.3) stable; urgency=medium
+
+  * initial debian package release
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 06 Mar 2019 18:22:41 +0000
