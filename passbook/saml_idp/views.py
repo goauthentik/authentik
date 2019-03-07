@@ -219,6 +219,5 @@ class InitiateLoginView(ProviderMixin, LoginRequiredMixin, View):
 
     def dispatch(self, request, application):
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
-        super().dispatch(request, application)
         self.provider.processor.init_deep_link(request, '')
         return _generate_response(request, self.provider)
