@@ -7,6 +7,7 @@
 	dh $@ --with=systemd
 
 build-arch:
+	python3 -m pip install setuptools
 	python3 -m pip install --target=vendor/ -r requirements.txt
 
 override_dh_strip:

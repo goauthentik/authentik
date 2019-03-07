@@ -1,6 +1,0 @@
-# Automatically added by dh_installdebconf/11.1.6ubuntu2
-if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
-	. /usr/share/debconf/confmodule
-	db_purge
-fi
-# End automatically added section
