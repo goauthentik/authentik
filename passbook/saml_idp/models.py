@@ -36,7 +36,7 @@ class SAMLProvider(Provider):
         return self._processor
 
     def __str__(self):
-        return "SAMLProvider %s (processor=%s)" % (self.name, self.processor_path)
+        return "SAML Provider %s" % self.name
 
     def link_download_metadata(self):
         """Get link to download XML metadata for admin interface"""

@@ -12,7 +12,7 @@ class OAuth2Provider(Provider, AbstractApplication):
     form = 'passbook.oauth_provider.forms.OAuth2ProviderForm'
 
     def __str__(self):
-        return self.name
+        return "OAuth2 Provider %s" % self.name
 
     class Meta:
 
