@@ -50,6 +50,7 @@ data:
         {{- range .Values.ingress.hosts }}
         - {{ . | quote }}
         {{- end }}
+        - kubernetes-healthcheck-host
 
     passbook:
       sign_up:
