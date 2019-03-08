@@ -288,6 +288,8 @@ class FieldMatcherPolicy(Policy):
         if self.match_action == FieldMatcherPolicy.MATCH_REGEXP:
             pattern = re.compile(self.value)
             passes = bool(pattern.match(user_field_value))
+        if self.match_action == FieldMatcherPolicy.MATCH_EXACT:
+            passes = user_field_value == self.value
 
         LOGGER.debug("User got '%r'", passes)
         return passes
