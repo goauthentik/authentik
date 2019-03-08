@@ -37,7 +37,8 @@ class Command(BaseCommand):
                         User.objects.create(
                             username=user.get('username'),
                             email=user.get('email'),
-                            name=user.get('name'))
+                            name=user.get('name'),
+                            password=user.get('password'))
                         LOGGER.debug('Created User %s', user.get('username'))
                     except ValidationError as exc:
                         LOGGER.warning('User %s caused %r, skipping', user.get('username'), exc)
