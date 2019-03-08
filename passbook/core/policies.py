@@ -79,3 +79,8 @@ class PolicyEngine:
             if not passing:
                 return False, messages
         return True, messages
+
+    @property
+    def passing(self):
+        """Only get true/false if user passes"""
+        return self.result[0]
