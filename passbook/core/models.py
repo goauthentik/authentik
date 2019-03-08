@@ -8,7 +8,7 @@ from typing import Tuple, Union
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.timezone import now
@@ -31,7 +31,7 @@ class Group(UUIDModel):
     name = models.CharField(_('name'), max_length=80)
     parent = models.ForeignKey('Group', blank=True, null=True,
                                on_delete=models.SET_NULL, related_name='children')
-    extra_data = models.TextField(blank=True)
+    tags = HStoreField(default=dict)
 
     def __str__(self):
         return "Group %s" % self.name
