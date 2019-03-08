@@ -2,7 +2,8 @@
 
 from django import forms
 
-from passbook.saml_idp.models import SAMLProvider, get_provider_choices
+from passbook.saml_idp.models import (SAMLPropertyMapping, SAMLProvider,
+                                      get_provider_choices)
 from passbook.saml_idp.utils import CertificateBuilder
 
 
@@ -21,7 +22,7 @@ class SAMLProviderForm(forms.ModelForm):
     class Meta:
 
         model = SAMLProvider
-        fields = ['name', 'acs_url', 'processor_path', 'issuer',
+        fields = ['name', 'property_mappings', 'acs_url', 'processor_path', 'issuer',
                   'assertion_valid_for', 'signing', 'signing_cert', 'signing_key', ]
         labels = {
             'acs_url': 'ACS URL',
@@ -30,4 +31,18 @@ class SAMLProviderForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'issuer': forms.TextInput(),
+        }
+
+
+class SAMLPropertyMappingForm(forms.ModelForm):
+    """SAML Property Mapping form"""
+
+    class Meta:
+
+        model = SAMLPropertyMapping
+        fields = ['name', 'saml_name', 'friendly_name', 'values']
+        widgets = {
+            'name': forms.TextInput(),
+            'saml_name': forms.TextInput(),
+            'friendly_name': forms.TextInput(),
         }

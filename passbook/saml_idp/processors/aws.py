@@ -11,16 +11,12 @@ class AWSProcessor(Processor):
 
     def _format_assertion(self):
         """Formats _assertion_params as _assertion_xml."""
-        self._assertion_params['ATTRIBUTES'] = [
+        super()._format_assertion()
+        self._assertion_params['ATTRIBUTES'].append(
             {
                 'Name': 'https://aws.amazon.com/SAML/Attributes/RoleSessionName',
                 'Value': self._django_request.user.username,
-            },
-            {
-                'Name': 'https://aws.amazon.com/SAML/Attributes/Role',
-                # 'Value': 'arn:aws:iam::471432361072:saml-provider/passbook_dev,
-                # arn:aws:iam::471432361072:role/saml_role'
             }
-        ]
+        )
         self._assertion_xml = xml_render.get_assertion_xml(
             'saml/xml/assertions/generic.xml', self._assertion_params, signed=True)
