@@ -78,6 +78,7 @@ package-debian:
     - virtualenv env
     - source env/bin/activate
     - pip3 install -U -r requirements.txt -r requirements-dev.txt
+    - ./manage.py collectstatic --no-input
   image: ubuntu:18.04
   script:
     - debuild -us -uc
