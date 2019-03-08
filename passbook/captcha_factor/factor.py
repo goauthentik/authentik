@@ -13,3 +13,10 @@ class CaptchaFactor(FormView, AuthenticationFactor):
 
     def form_valid(self, form):
         return self.authenticator.user_ok()
+
+    def get_form(self, form_class=None):
+        form = CaptchaForm(**self.get_form_kwargs())
+        form.fields['captcha'].public_key = '6Lfi1w8TAAAAAELH-YiWp0OFItmMzvjGmw2xkvUN'
+        form.fields['captcha'].private_key = '6Lfi1w8TAAAAAMQI3f86tGMvd1QkcqqVQyBWI23D'
+        form.fields['captcha'].widget.attrs["data-sitekey"] = form.fields['captcha'].public_key
+        return form
