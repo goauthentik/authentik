@@ -172,10 +172,14 @@ class Processor:
             if isinstance(mapping, SAMLPropertyMapping):
                 mapping_payload = {
                     'Name': mapping.saml_name,
-                    'ValueArray': mapping.values
+                    'ValueArray': [],
+                    'FriendlyName': mapping.friendly_name
                 }
-                if mapping.friendly_name:
-                    mapping_payload['FriendlyName'] = mapping.friendly_name
+                for value in mapping.values:
+                    mapping_payload['ValueArray'].append(value.format(
+                        user=self._django_request.user,
+                        request=self._django_request
+                    ))
                 self._assertion_params['ATTRIBUTES'].append(mapping_payload)
         self._assertion_xml = xml_render.get_assertion_xml(
             'saml/xml/assertions/generic.xml', self._assertion_params, signed=True)
