@@ -2,6 +2,7 @@
 from django import forms
 
 from passbook.core.models import DummyFactor, PasswordFactor
+from passbook.lib.fields import DynamicArrayField
 
 GENERAL_FIELDS = ['name', 'slug', 'order', 'policies', 'enabled']
 
@@ -15,6 +16,9 @@ class PasswordFactorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
+        }
+        field_classes = {
+            'backends': DynamicArrayField
         }
 
 class DummyFactorForm(forms.ModelForm):

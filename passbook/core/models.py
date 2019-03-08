@@ -60,6 +60,8 @@ class User(AbstractUser):
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
+    property_mappings = models.ManyToManyField('PropertyMapping', default=None, blank=True)
+
     objects = InheritanceManager()
 
     # This class defines no field for easier inheritance
@@ -412,7 +414,7 @@ class Invitation(UUIDModel):
         verbose_name_plural = _('Invitations')
 
 class Nonce(UUIDModel):
-    """One-time link for password resets/signup-confirmations"""
+    """One-time link for password resets/sign-up-confirmations"""
 
     expires = models.DateTimeField(default=default_nonce_duration)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -424,3 +426,19 @@ class Nonce(UUIDModel):
 
         verbose_name = _('Nonce')
         verbose_name_plural = _('Nonces')
+
+class PropertyMapping(UUIDModel):
+    """User-defined key -> x mapping which can be used by providers to expose extra data."""
+
+    name = models.TextField()
+
+    form = ''
+    objects = InheritanceManager()
+
+    def __str__(self):
+        return "Property Mapping %s" % self.name
+
+    class Meta:
+
+        verbose_name = _('Property Mapping')
+        verbose_name_plural = _('Property Mappings')

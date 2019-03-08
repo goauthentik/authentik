@@ -37,7 +37,7 @@ class PasswordFactor(FormView, AuthenticationFactor):
             send_email.delay(self.pending_user.email, _('Forgotten password'),
                              'email/account_password_reset.html', {
                                  'url': self.request.build_absolute_uri(
-                                     reverse('passbook_core:passbook_core:auth-password-reset',
+                                     reverse('passbook_core:auth-password-reset',
                                              kwargs={
                                                  'nonce': nonce.uuid
                                              })

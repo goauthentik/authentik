@@ -6,7 +6,6 @@ from logging import getLogger
 
 from bs4 import BeautifulSoup
 
-from passbook.lib.config import CONFIG
 from passbook.saml_idp import exceptions, utils, xml_render
 
 MINUTES = 60
@@ -52,9 +51,7 @@ class Processor:
     _session_index = None
     _subject = None
     _subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-    _system_params = {
-        'ISSUER': CONFIG.y('saml_idp.issuer'),
-    }
+    _system_params = {}
 
     @property
     def dotted_path(self):
@@ -67,7 +64,7 @@ class Processor:
         self.name = remote.name
         self._remote = remote
         self._logger = getLogger(__name__)
-
+        self._system_params['ISSUER'] = self._remote.issuer
         self._logger.info('processor configured')
 
     def _build_assertion(self):
@@ -170,6 +167,20 @@ class Processor:
                 'Value': self._django_request.user.username,
             },
         ]
+        from passbook.saml_idp.models import SAMLPropertyMapping
+        for mapping in self._remote.property_mappings.all().select_subclasses():
+            if isinstance(mapping, SAMLPropertyMapping):
+                mapping_payload = {
+                    'Name': mapping.saml_name,
+                    'ValueArray': [],
+                    'FriendlyName': mapping.friendly_name
+                }
+                for value in mapping.values:
+                    mapping_payload['ValueArray'].append(value.format(
+                        user=self._django_request.user,
+                        request=self._django_request
+                    ))
+                self._assertion_params['ATTRIBUTES'].append(mapping_payload)
         self._assertion_xml = xml_render.get_assertion_xml(
             'saml/xml/assertions/generic.xml', self._assertion_params, signed=True)
 
@@ -227,7 +238,7 @@ class Processor:
         self._subject = sp_config
         self._subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         self._system_params = {
-            'ISSUER': CONFIG.y('saml_idp.issuer'),
+            'ISSUER': self._remote.issuer
         }
 
     def _validate_request(self):

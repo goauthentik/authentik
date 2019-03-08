@@ -1,0 +1,52 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load utils %}
+
+{% block title %}
+{% title %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1><span class="fa fa-table"></span> {% trans "Property Mappings" %}</h1>
+    <span>{% trans "Property Mappings allow you expose provider-specific attributes." %}</span>
+    <hr>
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
+            {% trans 'Create...' %}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
+            {% for type, name in types.items %}
+            <li role="presentation"><a role="menuitem" tabindex="-1"
+                    href="{% url 'passbook_admin:property-mapping-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <hr>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for property_mapping in object_list %}
+            <tr>
+                <td>{{ property_mapping.name }} ({{ property_mapping.slug }})</td>
+                <td>{{ property_mapping|verbose_name }}</td>
+                <td>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:property-mapping-update' pk=property_mapping.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                    <a class="btn btn-default btn-sm"
+                        href="{% url 'passbook_admin:property-mapping-delete' pk=property_mapping.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
