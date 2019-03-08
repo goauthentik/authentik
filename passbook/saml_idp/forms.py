@@ -2,6 +2,7 @@
 
 from django import forms
 
+from passbook.lib.fields import DynamicArrayField
 from passbook.saml_idp.models import (SAMLPropertyMapping, SAMLProvider,
                                       get_provider_choices)
 from passbook.saml_idp.utils import CertificateBuilder
@@ -45,4 +46,7 @@ class SAMLPropertyMappingForm(forms.ModelForm):
             'name': forms.TextInput(),
             'saml_name': forms.TextInput(),
             'friendly_name': forms.TextInput(),
+        }
+        field_classes = {
+            'values': DynamicArrayField
         }

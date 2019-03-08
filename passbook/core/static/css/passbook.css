@@ -1,0 +1,23 @@
+.dynamic-array-widget .array-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.dynamic-array-widget .remove_sign {
+  width: 10px;
+  height: 2px;
+  background: #a41515;
+  border-radius: 1px;
+}
+
+.dynamic-array-widget .remove {
+  height: 15px;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.dynamic-array-widget .remove:hover {
+  cursor: pointer;
+}

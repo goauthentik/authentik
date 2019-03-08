@@ -1,0 +1,17 @@
+{% load utils %}
+
+{% spaceless %}
+<div class="dynamic-array-widget">
+    {% for widget in widget.subwidgets %}
+    <div class="array-item input-group">
+        {% include widget.template_name %}
+        <div class="input-group-btn">
+            <button class="array-remove btn btn-danger" type="button">
+                <span class="pficon-delete"></span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+    <div><button type="button" class="add-array-item btn btn-default">Add another</button></div>
+</div>
+{% endspaceless %}
