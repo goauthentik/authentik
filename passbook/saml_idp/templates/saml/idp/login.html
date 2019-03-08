@@ -18,7 +18,7 @@
     <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
     <div class="login-group">
         <h3>
-            {% blocktrans with remote=remote.name %}
+            {% blocktrans with remote=remote.application.name %}
             You're about to sign into {{ remote }}
             {% endblocktrans %}
         </h3>

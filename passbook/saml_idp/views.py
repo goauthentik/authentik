@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
+from django.utils.translation import gettext as _
 
 from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
@@ -110,8 +111,12 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
     def get(self, request, application):
         """Handle get request, i.e. render form"""
         LOGGER.debug("Request: %s", request)
+        if not self._has_access():
+            return render(request, 'login/denied.html', {
+                'title': _("You don't have access to this application")
+            })
         # Check if user has access
-        if self.provider.application.skip_authorization and self._has_access():
+        if self.provider.application.skip_authorization:
             ctx = self.provider.processor.generate_response()
             # Log Application Authorization
             AuditEntry.create(
@@ -133,8 +138,12 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
     def post(self, request, application):
         """Handle post request, return back to ACS"""
         LOGGER.debug("Request: %s", request)
+        if not self._has_access():
+            return render(request, 'login/denied.html', {
+                'title': _("You don't have access to this application")
+            })
         # Check if user has access
-        if request.POST.get('ACSUrl', None) and self._has_access():
+        if request.POST.get('ACSUrl', None):
             # User accepted request
             AuditEntry.create(
                 action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
