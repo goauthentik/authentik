@@ -9,10 +9,10 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
-from django.utils.translation import gettext as _
 
 from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
