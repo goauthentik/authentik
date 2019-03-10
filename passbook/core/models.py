@@ -393,6 +393,21 @@ class DebugPolicy(Policy):
         verbose_name = _('Debug Policy')
         verbose_name_plural = _('Debug Policies')
 
+class GroupMembershipPolicy(Policy):
+    """Policy to check if the user is member in a certain group"""
+
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
+
+    form = 'passbook.core.forms.policies.GroupMembershipPolicyForm'
+
+    def passes(self, user: User) -> Union[bool, Tuple[bool, str]]:
+        return self.group.user_set.filter(pk=user.pk).exists()
+
+    class Meta:
+
+        verbose_name = _('Group Membership Policy')
+        verbose_name_plural = _('Group Membership Policies')
+
 class Invitation(UUIDModel):
     """Single-use invitation link"""
 
