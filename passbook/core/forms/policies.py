@@ -4,7 +4,8 @@ from django import forms
 from django.utils.translation import gettext as _
 
 from passbook.core.models import (DebugPolicy, FieldMatcherPolicy,
-                                  PasswordPolicy, WebhookPolicy)
+                                  GroupMembershipPolicy, PasswordPolicy,
+                                  WebhookPolicy)
 
 GENERAL_FIELDS = ['name', 'action', 'negate', 'order', ]
 
@@ -52,6 +53,17 @@ class DebugPolicyForm(forms.ModelForm):
             'result': _('Allow user')
         }
 
+
+class GroupMembershipPolicyForm(forms.ModelForm):
+    """GroupMembershipPolicy Form"""
+
+    class Meta:
+
+        model = GroupMembershipPolicy
+        fields = GENERAL_FIELDS + ['group', ]
+        widgets = {
+            'name': forms.TextInput(),
+        }
 
 class PasswordPolicyForm(forms.ModelForm):
     """PasswordPolicy Form"""

@@ -67,6 +67,11 @@ urlpatterns = [
          users.UserDeleteView.as_view(), name='user-delete'),
     path('users/<int:pk>/reset/',
          users.UserPasswordResetView.as_view(), name='user-password-reset'),
+    # Groups
+    path('group/', groups.GroupListView.as_view(), name='group'),
+    path('group/create/', groups.GroupCreateView.as_view(), name='group-create'),
+    path('group/<uuid:pk>/update/', groups.GroupUpdateView.as_view(), name='group-update'),
+    path('group/<uuid:pk>/delete/', groups.GroupDeleteView.as_view(), name='group-delete'),
     # Audit Log
     path('audit/', audit.AuditEntryListView.as_view(), name='audit-log'),
     # Groups

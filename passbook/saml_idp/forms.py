@@ -1,6 +1,8 @@
 """passbook SAML IDP Forms"""
 
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import gettext as _
 
 from passbook.lib.fields import DynamicArrayField
 from passbook.saml_idp.models import (SAMLPropertyMapping, SAMLProvider,
@@ -32,6 +34,7 @@ class SAMLProviderForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'issuer': forms.TextInput(),
+            'property_mappings': FilteredSelectMultiple(_('Property Mappings'), False)
         }
 
 

@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Source
+from passbook.core.models import Policy, Source, User
 
 
 class LDAPSource(Source):
@@ -37,30 +37,19 @@ class LDAPSource(Source):
         verbose_name = _('LDAP Source')
         verbose_name_plural = _('LDAP Sources')
 
+class LDAPGroupMembershipPolicy(Policy):
+    """Policy to check if a user is in a certain LDAP Group"""
 
-# class LDAPModification(UUIDModel, CreatedUpdatedModel):
-#     """Store LDAP Data in DB if LDAP Server is unavailable"""
-#     ACTION_ADD = 'ADD'
-#     ACTION_MODIFY = 'MODIFY'
+    dn = models.TextField()
+    source = models.ForeignKey('LDAPSource', on_delete=models.CASCADE)
 
-#     ACTIONS = (
-#         (ACTION_ADD, 'ADD'),
-#         (ACTION_MODIFY, 'MODIFY'),
-#     )
+    form = 'passbook.ldap.forms.LDAPGroupMembershipPolicyForm'
 
-#     dn = models.CharField(max_length=255)
-#     action = models.CharField(max_length=17, choices=ACTIONS, default=ACTION_MODIFY)
-#     data = JSONField()
+    def passes(self, user: User):
+        """Check if user instance passes this policy"""
+        raise NotImplementedError()
 
-#     def __str__(self):
-#         return "LDAPModification %d from %s" % (self.pk, self.created)
+    class Meta:
 
-
-# class LDAPGroupMapping(UUIDModel, CreatedUpdatedModel):
-#     """Model to map an LDAP Group to a passbook group"""
-
-#     ldap_dn = models.TextField()
-#     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return "LDAPGroupMapping %s -> %s" % (self.ldap_dn, self.group.name)
+        verbose_name = _('LDAP Group Membership Policy')
+        verbose_name_plural = _('LDAP Group Membership Policys')

@@ -1,5 +1,7 @@
 """passbook administration forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import gettext as _
 
 from passbook.core.models import DummyFactor, PasswordFactor
 from passbook.lib.fields import DynamicArrayField
@@ -16,6 +18,7 @@ class PasswordFactorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False)
         }
         field_classes = {
             'backends': DynamicArrayField
@@ -31,4 +34,5 @@ class DummyFactorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False)
         }

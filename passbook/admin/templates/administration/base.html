@@ -39,6 +39,9 @@
     <li class="{% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
         <a href="{% url 'passbook_admin:users' %}">{% trans 'Users' %}</a>
     </li>
+    <li class="{% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
+        <a href="{% url 'passbook_admin:groups' %}">{% trans 'Groups' %}</a>
+    </li>
     <li class="{% is_active 'passbook_admin:audit-log' %}">
         <a href="{% url 'passbook_admin:audit-log' %}">{% trans 'Audit Log' %}</a>
     </li>

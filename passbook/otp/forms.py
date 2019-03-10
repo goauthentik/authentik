@@ -1,6 +1,7 @@
 """passbook OTP Forms"""
 
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -63,4 +64,5 @@ class OTPFactorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False)
         }

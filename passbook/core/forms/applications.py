@@ -1,5 +1,6 @@
 """passbook Core Application forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Application, Provider
@@ -20,6 +21,7 @@ class ApplicationForm(forms.ModelForm):
             'name': forms.TextInput(),
             'launch_url': forms.TextInput(),
             'icon_url': forms.TextInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False)
         }
         labels = {
             'launch_url': _('Launch URL'),
