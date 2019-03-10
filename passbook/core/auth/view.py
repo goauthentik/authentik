@@ -39,35 +39,41 @@ class AuthenticationView(UserPassesTestMixin, View):
 
     # Allow only not authenticated users to login
     def test_func(self):
-        return self.request.user.is_authenticated is False
+        return AuthenticationView.SESSION_PENDING_USER in self.request.session
 
     def handle_no_permission(self):
         # Function from UserPassesTestMixin
         if 'next' in self.request.GET:
             return redirect(self.request.GET.get('next'))
-        return _redirect_with_qs('passbook_core:overview', self.request.GET)
+        if self.request.user.is_authenticated:
+            return _redirect_with_qs('passbook_core:overview', self.request.GET)
+        return _redirect_with_qs('passbook_core:auth-login', self.request.GET)
+
+    def get_pending_factors(self):
+        """Loading pending factors from Database or load from session variable"""
+        # Write pending factors to session
+        if AuthenticationView.SESSION_PENDING_FACTORS in self.request.session:
+            return self.request.session[AuthenticationView.SESSION_PENDING_FACTORS]
+        # Get an initial list of factors which are currently enabled
+        # and apply to the current user. We check policies here and block the request
+        _all_factors = Factor.objects.filter(enabled=True).order_by('order').select_subclasses()
+        pending_factors = []
+        for factor in _all_factors:
+            policy_engine = PolicyEngine(factor.policies.all())
+            policy_engine.for_user(self.pending_user).with_request(self.request).build()
+            if policy_engine.passing:
+                pending_factors.append((factor.uuid.hex, factor.type))
+        return pending_factors
 
     def dispatch(self, request, *args, **kwargs):
+        # Check if user passes test (i.e. SESSION_PENDING_USER is set)
+        user_test_result = self.get_test_func()()
+        if not user_test_result:
+            return self.handle_no_permission()
         # Extract pending user from session (only remember uid)
-        if AuthenticationView.SESSION_PENDING_USER in request.session:
-            self.pending_user = get_object_or_404(
-                User, id=self.request.session[AuthenticationView.SESSION_PENDING_USER])
-        else:
-            # No Pending user, redirect to login screen
-            return _redirect_with_qs('passbook_core:auth-login', request.GET)
-        # Write pending factors to session
-        if AuthenticationView.SESSION_PENDING_FACTORS in request.session:
-            self.pending_factors = request.session[AuthenticationView.SESSION_PENDING_FACTORS]
-        else:
-            # Get an initial list of factors which are currently enabled
-            # and apply to the current user. We check policies here and block the request
-            _all_factors = Factor.objects.filter(enabled=True).order_by('order').select_subclasses()
-            self.pending_factors = []
-            for factor in _all_factors:
-                policy_engine = PolicyEngine(factor.policies.all())
-                policy_engine.for_user(self.pending_user).with_request(request).build()
-                if policy_engine.passing:
-                    self.pending_factors.append((factor.uuid.hex, factor.type))
+        self.pending_user = get_object_or_404(
+            User, id=self.request.session[AuthenticationView.SESSION_PENDING_USER])
+        self.pending_factors = self.get_pending_factors()
         # Read and instantiate factor from session
         factor_uuid, factor_class = None, None
         if AuthenticationView.SESSION_FACTOR not in request.session:
@@ -107,11 +113,11 @@ class AuthenticationView(UserPassesTestMixin, View):
         next_factor = None
         if self.pending_factors:
             next_factor = self.pending_factors.pop()
+            # Save updated pening_factor list to session
             self.request.session[AuthenticationView.SESSION_PENDING_FACTORS] = \
                 self.pending_factors
             self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
             LOGGER.debug("Rendering Factor is %s", next_factor)
-            # return _redirect_with_qs('passbook_core:auth-process', kwargs={'factor': next_factor})
             return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in")
@@ -126,7 +132,6 @@ class AuthenticationView(UserPassesTestMixin, View):
 
     def _user_passed(self):
         """User Successfully passed all factors"""
-        # user = authenticate(request=self.request, )
         backend = self.request.session[AuthenticationView.SESSION_USER_BACKEND]
         login(self.request, self.pending_user, backend=backend)
         LOGGER.debug("Logged in user %s", self.pending_user)
