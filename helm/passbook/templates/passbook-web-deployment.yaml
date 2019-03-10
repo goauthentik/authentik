@@ -7,7 +7,6 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    passbook.io/component: web
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -19,6 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        passbook.io/component: web
     spec:
       volumes:
         - name: config-volume
