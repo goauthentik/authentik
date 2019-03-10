@@ -9,40 +9,26 @@
 
 {% block card %}
 <header class="login-pf-header">
-  <h1>{% trans 'Authorize Application' %}</h1>
+    <h1>{% trans 'Authorize Application' %}</h1>
 </header>
-<form method="POST" action="{{ acs_url }}">>
-  {% csrf_token %}
-  <input type="hidden" name="ACSUrl" value="{{ acs_url }}">
-  <input type="hidden" name="RelayState" value="{{ relay_state }}" />
-  <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
-  <label class="title">
-    <clr-icon shape="passbook" class="is-info" size="48"></clr-icon>
-    {% config 'passbook.branding' %}
-  </label>
-  <label class="subtitle">
-    {% trans 'SSO - Authorize External Source' %}
-  </label>
-  <div class="login-group">
-    <p class="subtitle">
-      {% blocktrans with remote=remote.name %}
-        You're about to sign into {{ remote }}
-      {% endblocktrans %}
-    </p>
-    <p>
-      {% blocktrans with user=user %}
-        You are logged in as {{ user }}. Not you?
-      {% endblocktrans %}
-      <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
-    </p>
-    <div class="row">
-      <div class="col-md-6">
-        <input class="btn btn-success btn-block" type="submit" value="{% trans "Continue" %}" />
-      </div>
-      <div class="col-md-6">
-        <a href="{% url 'passbook_core:overview' %}" class="btn btn-outline btn-block">{% trans "Cancel" %}</a>
-      </div>
+<form method="POST" action="{{ acs_url }}">
+    {% csrf_token %}
+    <input type="hidden" name="ACSUrl" value="{{ acs_url }}">
+    <input type="hidden" name="RelayState" value="{{ relay_state }}" />
+    <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
+    <div class="login-group">
+        <h3>
+            {% blocktrans with remote=remote.application.name %}
+            You're about to sign into {{ remote }}
+            {% endblocktrans %}
+        </h3>
+        <p>
+            {% blocktrans with user=user %}
+            You are logged in as {{ user }}.
+            {% endblocktrans %}
+            <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Not you?' %}</a>
+        </p>
+        <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
     </div>
-  </div>
 </form>
 {% endblock %}

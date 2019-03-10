@@ -1,10 +1,11 @@
 """passbook saml_idp Models"""
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Provider
+from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.saml_idp.base import Processor
 
@@ -52,6 +53,23 @@ class SAMLProvider(Provider):
         verbose_name = _('SAML Provider')
         verbose_name_plural = _('SAML Providers')
 
+
+class SAMLPropertyMapping(PropertyMapping):
+    """SAML Property mapping, allowing Name/FriendlyName mapping to a list of strings"""
+
+    saml_name = models.TextField()
+    friendly_name = models.TextField(default=None, blank=True, null=True)
+    values = ArrayField(models.TextField())
+
+    form = 'passbook.saml_idp.forms.SAMLPropertyMappingForm'
+
+    def __str__(self):
+        return "SAML Property Mapping %s" % self.saml_name
+
+    class Meta:
+
+        verbose_name = _('SAML Property Mapping')
+        verbose_name_plural = _('SAML Property Mappings')
 
 def get_provider_choices():
     """Return tuple of class_path, class name of all providers."""

@@ -2,8 +2,8 @@
 from django.urls import include, path
 
 from passbook.admin.views import (applications, audit, factors, groups,
-                                  invitations, overview, policy, providers,
-                                  sources, users)
+                                  invitations, overview, policy,
+                                  property_mapping, providers, sources, users)
 
 urlpatterns = [
     path('', overview.AdministrationOverviewView.as_view(), name='overview'),
@@ -43,6 +43,15 @@ urlpatterns = [
          factors.FactorUpdateView.as_view(), name='factor-update'),
     path('factors/<uuid:pk>/delete/',
          factors.FactorDeleteView.as_view(), name='factor-delete'),
+    # Factors
+    path('property-mappings/', property_mapping.PropertyMappingListView.as_view(),
+         name='property-mappings'),
+    path('property-mappings/create/',
+         property_mapping.PropertyMappingCreateView.as_view(), name='property-mapping-create'),
+    path('property-mappings/<uuid:pk>/update/',
+         property_mapping.PropertyMappingUpdateView.as_view(), name='property-mapping-update'),
+    path('property-mappings/<uuid:pk>/delete/',
+         property_mapping.PropertyMappingDeleteView.as_view(), name='property-mapping-delete'),
     # Invitations
     path('invitations/', invitations.InvitationListView.as_view(), name='invitations'),
     path('invitations/create/',

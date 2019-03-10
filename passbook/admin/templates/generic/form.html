@@ -3,6 +3,11 @@
 {% load i18n %}
 {% load utils %}
 
+{% block head %}
+{{ block.super }}
+{{ form.media.css }}
+{% endblock %}
+
 {% block content %}
 <div class="container">
   {% block above_form %}
@@ -14,5 +19,12 @@
       <input type="submit" class="btn btn-primary" value="{% block action %}{% endblock %}" />
     </form>
   </div>
+  {% block beneath_form %}
+  {% endblock %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}

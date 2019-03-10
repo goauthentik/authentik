@@ -2,13 +2,14 @@
 from logging import getLogger
 
 from django.contrib.auth import logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
@@ -45,7 +46,7 @@ def render_xml(request, template, ctx):
     return render(request, template, context=ctx, content_type="application/xml")
 
 
-class ProviderMixin:
+class AccessRequiredView(AccessMixin, View):
     """Mixin class for Views using a provider instance"""
 
     _provider = None
@@ -58,8 +59,24 @@ class ProviderMixin:
             self._provider = get_object_or_404(SAMLProvider, pk=application.provider_id)
         return self._provider
 
+    def _has_access(self):
+        """Check if user has access to application"""
+        policy_engine = PolicyEngine(self.provider.application.policies.all())
+        policy_engine.for_user(self.request.user).with_request(self.request).build()
+        return policy_engine.passing
 
-class LoginBeginView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        if not self._has_access():
+            return render(request, 'login/denied.html', {
+                'title': _("You don't have access to this application"),
+                'is_login': True
+            })
+        return super().dispatch(request, *args, **kwargs)
+
+
+class LoginBeginView(AccessRequiredView):
     """Receives a SAML 2.0 AuthnRequest from a Service Provider and
     stores it in the session prior to enforcing login."""
 
@@ -82,7 +99,7 @@ class LoginBeginView(LoginRequiredMixin, View):
         }))
 
 
-class RedirectToSPView(LoginRequiredMixin, View):
+class RedirectToSPView(AccessRequiredView):
     """Return autosubmit form"""
 
     def get(self, request, acs_url, saml_response, relay_state):
@@ -96,22 +113,15 @@ class RedirectToSPView(LoginRequiredMixin, View):
         })
 
 
-
-class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
+class LoginProcessView(AccessRequiredView):
     """Processor-based login continuation.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
-
-    def _has_access(self):
-        """Check if user has access to application"""
-        policy_engine = PolicyEngine(self.provider.application.policies.all())
-        policy_engine.for_user(self.request.user).with_request(self.request).build()
-        return policy_engine.result
 
     def get(self, request, application):
         """Handle get request, i.e. render form"""
         LOGGER.debug("Request: %s", request)
         # Check if user has access
-        if self.provider.application.skip_authorization and self._has_access():
+        if self.provider.application.skip_authorization:
             ctx = self.provider.processor.generate_response()
             # Log Application Authorization
             AuditEntry.create(
@@ -134,7 +144,7 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
         """Handle post request, return back to ACS"""
         LOGGER.debug("Request: %s", request)
         # Check if user has access
-        if request.POST.get('ACSUrl', None) and self._has_access():
+        if request.POST.get('ACSUrl', None):
             # User accepted request
             AuditEntry.create(
                 action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
@@ -153,7 +163,7 @@ class LoginProcessView(ProviderMixin, LoginRequiredMixin, View):
             LOGGER.debug(exc)
 
 
-class LogoutView(CSRFExemptMixin, LoginRequiredMixin, View):
+class LogoutView(CSRFExemptMixin, AccessRequiredView):
     """Allows a non-SAML 2.0 URL to log out the user and
     returns a standard logged-out page. (SalesForce and others use this method,
     though it's technically not SAML 2.0)."""
@@ -174,7 +184,7 @@ class LogoutView(CSRFExemptMixin, LoginRequiredMixin, View):
         return render(request, 'saml/idp/logged_out.html')
 
 
-class SLOLogout(CSRFExemptMixin, LoginRequiredMixin, View):
+class SLOLogout(CSRFExemptMixin, AccessRequiredView):
     """Receives a SAML 2.0 LogoutRequest from a Service Provider,
     logs out the user and returns a standard logged-out page."""
 
@@ -190,7 +200,7 @@ class SLOLogout(CSRFExemptMixin, LoginRequiredMixin, View):
         return render(request, 'saml/idp/logged_out.html')
 
 
-class DescriptorDownloadView(ProviderMixin, View):
+class DescriptorDownloadView(AccessRequiredView):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     def get(self, request, application):
@@ -214,10 +224,10 @@ class DescriptorDownloadView(ProviderMixin, View):
         return response
 
 
-class InitiateLoginView(ProviderMixin, LoginRequiredMixin, View):
+class InitiateLoginView(AccessRequiredView):
     """IdP-initiated Login"""
 
-    def dispatch(self, request, application):
+    def get(self, request, application):
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
         self.provider.processor.init_deep_link(request, '')
         return _generate_response(request, self.provider)

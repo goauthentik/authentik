@@ -17,6 +17,6 @@ def user_factors(context):
         _link = factor.has_user_settings()
         policy_engine = PolicyEngine(factor.policies.all())
         policy_engine.for_user(user).with_request(context.get('request')).build()
-        if policy_engine.result[0] and _link:
+        if policy_engine.passing and _link:
             matching_factors.append(_link)
     return matching_factors

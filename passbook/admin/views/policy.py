@@ -11,6 +11,7 @@ from django.views.generic.detail import DetailView
 from passbook.admin.forms.policies import PolicyTestForm
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Policy
+from passbook.core.policies import PolicyEngine
 from passbook.lib.utils.reflection import path_to_class
 
 
@@ -100,7 +101,9 @@ class PolicyTestView(AdminRequiredMixin, DetailView, FormView):
     def form_valid(self, form):
         policy = self.get_object()
         user = form.cleaned_data.get('user')
-        result = policy.passes(user)
+        policy_engine = PolicyEngine([policy])
+        policy_engine.for_user(user).with_request(self.request).build()
+        result = policy_engine.passing
         if result:
             messages.success(self.request, _('User successfully passed policy.'))
         else:

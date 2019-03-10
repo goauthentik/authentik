@@ -21,6 +21,10 @@
         <a href="{% url 'passbook_admin:providers' %}">{% trans 'Providers' %}</a>
     </li>
     <li
+        class="{% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
+        <a href="{% url 'passbook_admin:property-mappings' %}">{% trans 'Property Mappings' %}</a>
+    </li>
+    <li
         class="{% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
         <a href="{% url 'passbook_admin:factors' %}">{% trans 'Factors' %}</a>
     </li>

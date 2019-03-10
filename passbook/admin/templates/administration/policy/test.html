@@ -5,3 +5,22 @@
 {% block above_form %}
 <h1>{% blocktrans with policy=policy %}Test policy {{ policy }}{% endblocktrans %}</h1>
 {% endblock %}
+
+{% block action %}
+{% trans 'Test' %}
+{% endblock %}
+
+{% block beneath_form %}
+<p class="loading" style="display: none;">
+  <span class="spinner spinner-xs spinner-inline"></span> {% trans 'Processing, please wait...' %}
+</p>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+  $('form').on('submit', function () {
+    $('p.loading').show();
+  })
+</script>
+{% endblock %}

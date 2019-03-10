@@ -8,6 +8,7 @@ stages:
   - test
   - build
   - docs
+  - deploy
 image: python:3.6
 services:
   - postgres:latest
@@ -53,7 +54,7 @@ package-docker:
   before_script:
     - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.4-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.10-beta
   stage: build
   only:
     - tags
@@ -78,6 +79,7 @@ package-debian:
     - virtualenv env
     - source env/bin/activate
     - pip3 install -U -r requirements.txt -r requirements-dev.txt
+    - ./manage.py collectstatic --no-input
   image: ubuntu:18.04
   script:
     - debuild -us -uc
@@ -112,3 +114,18 @@ package-debian:
 #     - mkdocs build
 #     - 'rsync -avh --delete web/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/"'
 #     - 'rsync -avh --delete site/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/docs/"'
+
+deploy:
+  environment:
+    name: production
+    url: https://passbook-prod.default.k8s.beryju.org/
+  stage: deploy
+  only:
+  - tags
+  - /^version/.*$/
+  script:
+    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+    - helm init --client-only
+    - helm repo add beryju.org https://pkg.beryju.org/repository/helm/
+    - helm repo update
+    - helm upgrade passbook-prod beryju.org/passbook --devel
