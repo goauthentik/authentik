@@ -1,2 +1,2 @@
 """passbook saml_idp Header"""
-__version__ = '0.1.10-beta'
+__version__ = '0.1.11-beta'
