@@ -54,6 +54,8 @@ class PolicyEngine:
 
     def build(self):
         """Build task group"""
+        if not self._user:
+            raise ValueError("User not set.")
         signatures = []
         kwargs = {
             '__password__': getattr(self._user, '__password__', None),
@@ -74,6 +76,7 @@ class PolicyEngine:
         for policy_action, policy_result, policy_message in self._group.get():
             passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
                       (policy_action == Policy.ACTION_DENY and not policy_result)
+            LOGGER.debug('Action=%s, Result=%r => %r', policy_action, policy_result, passing)
             if policy_message:
                 messages.append(policy_message)
             if not passing:
