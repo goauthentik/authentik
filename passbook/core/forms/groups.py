@@ -1,8 +1,8 @@
 """passbook Core Group forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from passbook.core.models import Group, User
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 class GroupForm(forms.ModelForm):
