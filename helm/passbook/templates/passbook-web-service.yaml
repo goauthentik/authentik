@@ -17,3 +17,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "passbook.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
+    passbook.io/component: web

@@ -7,6 +7,7 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    passbook.io/component: worker
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
