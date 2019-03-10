@@ -1,3 +1,16 @@
+passbook (0.1.11) stable; urgency=medium
+
+  * add group administration
+  * bump version: 0.1.9-beta -> 0.1.10-beta
+  * fix helm labels being on deployments and not pods
+  * automatically deploy after release
+  * use Django's Admin FilteredSelectMultiple for Group Membership
+  * always use FilteredSelectMultiple for many-to-many fields
+  * Add Group Member policy
+  * add LDAP Group Membership Policy
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Sun, 10 Mar 2019 18:55:31 +0000
+
 passbook (0.1.10) stable; urgency=high
 
   * bump version: 0.1.7-beta -> 0.1.8-beta
