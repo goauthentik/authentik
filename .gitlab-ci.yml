@@ -125,7 +125,5 @@ deploy:
   - /^version/.*$/
   script:
     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
-    - helm init --client-only
-    - helm repo add beryju.org https://pkg.beryju.org/repository/helm/
-    - helm repo update
-    - helm upgrade passbook-prod beryju.org/passbook --devel
+    - helm init
+    - helm upgrade passbook-prod helm/passbook --devel
