@@ -2,12 +2,14 @@
 from django import forms
 
 from passbook.core.models import Group, User
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 class GroupForm(forms.ModelForm):
     """Group Form"""
 
-    members = forms.ModelMultipleChoiceField(User.objects.all(), required=False)
+    members = forms.ModelMultipleChoiceField(
+        User.objects.all(), required=False, widget=FilteredSelectMultiple('users', False))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,7 +20,7 @@ class GroupForm(forms.ModelForm):
         instance = super().save(*args, **kwargs)
         if instance.pk:
             instance.user_set.clear()
-            instance.user_set.add(*self.cleaned_data['users'])
+            instance.user_set.add(*self.cleaned_data['members'])
         return instance
 
     class Meta:
