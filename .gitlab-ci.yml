@@ -8,6 +8,7 @@ stages:
   - test
   - build
   - docs
+  - deploy
 image: python:3.6
 services:
   - postgres:latest
@@ -113,3 +114,18 @@ package-debian:
 #     - mkdocs build
 #     - 'rsync -avh --delete web/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/"'
 #     - 'rsync -avh --delete site/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/docs/"'
+
+deploy:
+  environment:
+    name: production
+    url: https://passbook-prod.default.k8s.beryju.org/
+  stage: deploy
+  only:
+  - tags
+  - /^version/.*$/
+  script:
+    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+    - helm init --client-only
+    - helm repo add beryju.org https://pkg.beryju.org/repository/helm/
+    - helm repo update
+    - helm upgrade passbook-prod beryju.org/passbook --devel
