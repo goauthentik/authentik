@@ -11,7 +11,7 @@ def create_initial_factor(apps, schema_editor):
             name='password',
             slug='password',
             order=0,
-            backends=[]
+            backends=['django.contrib.auth.backends.ModelBackend']
         )
 
 class Migration(migrations.Migration):

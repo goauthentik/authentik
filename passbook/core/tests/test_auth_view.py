@@ -18,9 +18,12 @@ class TestFactorAuthentication(TestCase):
         super().setUp()
         self.password = ''.join(SystemRandom().choice(
             string.ascii_uppercase + string.digits) for _ in range(8))
-        self.factor, _ = PasswordFactor.objects.get_or_create(name='password',
-                                                              slug='password',
-                                                              backends=[])
+        self.factor, _ = PasswordFactor.objects.get_or_create(slug='password', defaults={
+            'name': 'password',
+            'slug': 'password',
+            'order': 0,
+            'backends': ['django.contrib.auth.backends.ModelBackend']
+        })
         self.user = User.objects.create_user(username='test',
                                              email='test@test.test',
                                              password=self.password)

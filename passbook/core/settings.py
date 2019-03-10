@@ -47,8 +47,7 @@ SESSION_COOKIE_NAME = 'passbook_session'
 LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'passbook.oauth_client.backends.AuthorizedServiceBackend'
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 # Application definition
