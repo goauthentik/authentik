@@ -2,6 +2,7 @@
 from logging import getLogger
 from urllib.parse import urlencode
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
@@ -15,7 +16,7 @@ from passbook.oauth_provider.models import OAuth2Provider
 LOGGER = getLogger(__name__)
 
 
-class PassbookAuthorizationLoadingView(LoadingView):
+class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):
     """Show loading view for permission checks"""
 
     title = _('Checking permissions...')
