@@ -1,4 +1,4 @@
-passbook (0.1.13) stable; urgency=medium
+passbook (0.1.14) stable; urgency=medium
 
   * bump version: 0.1.11-beta -> 0.1.12-beta
   * Fix DoesNotExist error when running PolicyEngine against None user
