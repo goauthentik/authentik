@@ -18,8 +18,12 @@ config:
     host: localhost
 
 postgresql:
-    postgresqlDatabase: passbook
-    postgresqlPassword: foo
+  postgresqlDatabase: passbook
+  postgresqlPassword: foo
+
+rabbitmq:
+  rabbitmq:
+    password: foo
 
 service:
   type: ClusterIP
@@ -33,7 +37,6 @@ ingress:
   path: /
   hosts:
     - passbook.k8s.local
-    - kubernetes-healthcheck-host
   defaultHost: passbook.k8s.local
   tls: []
   #  - secretName: chart-example-tls

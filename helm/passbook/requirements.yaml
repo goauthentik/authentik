@@ -1,6 +1,6 @@
 dependencies:
-- name: redis
-  version: 5.1.0
+- name: rabbitmq
+  version: 4.3.2
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: postgresql
   version: 3.10.1

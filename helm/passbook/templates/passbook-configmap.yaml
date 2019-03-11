@@ -36,7 +36,7 @@ data:
     debug: false
     secure_proxy_header:
       HTTP_X_FORWARDED_PROTO: https
-    redis: ":{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master"
+    rabbitmq: "user:{{ .Values.rabbitmq.rabbitmq.password }}@{{ .Release.Name }}-rabbitmq-master"
     # Error reporting, sends stacktrace to sentry.services.beryju.org
     error_report_enabled: {{ .Values.config.error_reporting }}
 

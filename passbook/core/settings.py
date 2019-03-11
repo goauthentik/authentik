@@ -184,8 +184,9 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {}
 CELERY_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = 'passbook'
-CELERY_BROKER_URL = 'redis://%s' % CONFIG.get('redis')
-CELERY_RESULT_BACKEND = 'redis://%s' % CONFIG.get('redis')
+CELERY_BROKER_URL = 'amqp://%s' % CONFIG.get('rabbitmq')
+CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_ACKS_LATE = True
 
 # Raven settings
 RAVEN_CONFIG = {
