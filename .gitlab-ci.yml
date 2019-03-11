@@ -115,15 +115,15 @@ package-debian:
 #     - 'rsync -avh --delete web/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/"'
 #     - 'rsync -avh --delete site/* "beryjuorg@ory1-web-prod-1.ory1.beryju.org:passbook.beryju.org/docs/"'
 
-deploy:
-  environment:
-    name: production
-    url: https://passbook-prod.default.k8s.beryju.org/
-  stage: deploy
-  only:
-  - tags
-  - /^version/.*$/
-  script:
-    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
-    - helm init
-    - helm upgrade passbook-prod helm/passbook --devel
+# deploy:
+#   environment:
+#     name: production
+#     url: https://passbook-prod.default.k8s.beryju.org/
+#   stage: deploy
+#   only:
+#   - tags
+#   - /^version/.*$/
+#   script:
+#     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+#     - helm init
+#     - helm upgrade passbook-prod helm/passbook --devel
