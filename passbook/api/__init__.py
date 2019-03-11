@@ -1,2 +1,2 @@
 """passbook api"""
-__version__ = '0.1.15-beta'
+__version__ = '0.1.16-beta'
