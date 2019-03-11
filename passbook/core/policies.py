@@ -12,6 +12,8 @@ LOGGER = getLogger(__name__)
 @CELERY_APP.task()
 def _policy_engine_task(user_pk, policy_pk, **kwargs):
     """Task wrapper to run policy checking"""
+    if not user_pk:
+        raise ValueError()
     policy_obj = Policy.objects.filter(pk=policy_pk).select_subclasses().first()
     user_obj = User.objects.get(pk=user_pk)
     for key, value in kwargs.items():
@@ -73,7 +75,12 @@ class PolicyEngine:
     def result(self):
         """Get policy-checking result"""
         messages = []
-        for policy_action, policy_result, policy_message in self._group.get():
+        try:
+            # ValueError can be thrown from _policy_engine_task when user is None
+            group_result = self._group.get()
+        except ValueError as exc:
+            return False, str(exc)
+        for policy_action, policy_result, policy_message in group_result:
             passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
                       (policy_action == Policy.ACTION_DENY and not policy_result)
             LOGGER.debug('Action=%s, Result=%r => %r', policy_action, policy_result, passing)
