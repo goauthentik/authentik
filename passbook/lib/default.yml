@@ -62,11 +62,6 @@ passbook:
   uid_fields:
     - username
     - email
-  # Factors to load
-  factors:
-   - passbook.core.auth.factors.backend
-   - passbook.core.auth.factors.dummy
-   - passbook.captcha_factor.factor
   session:
     remember_age: 2592000 # 60 * 60 * 24 * 30, one month
 # Provider-specific settings

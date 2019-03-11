@@ -1,3 +1,12 @@
+passbook (0.1.16) stable; urgency=medium
+
+  * Replace redis with RabbitMQ
+  * updated debian package to suggest RabbitMQ
+  * update helm chart to require RabbitMQ
+  * fix invalid default config in debian package
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Mon, 11 Mar 2019 10:28:36 +0000
+
 passbook (0.1.14) stable; urgency=medium
 
   * bump version: 0.1.11-beta -> 0.1.12-beta

@@ -1,4 +1,3 @@
-debug: false
 http:
     host: 0.0.0.0
     port: 8000
@@ -8,37 +7,71 @@ log:
         console: INFO
         file: DEBUG
     file: /var/log/passbook/passbook.log
-# Error reporting, disabled by default
-# error_report_enabled: true
+debug: false
+secure_proxy_header:
+  HTTP_X_FORWARDED_PROTO: https
+rabbitmq: guest:guest@localhost/passbook
+# Error reporting, sends stacktrace to sentry.services.beryju.org
+error_report_enabled: true
 
-# Set this to the server's external address.
-# This is used to generate external URLs
-external_url: http://image.example.com
-
-# This dictates how the Path is generated
-# can be either of:
-# - view_sha512_short
-# - view_md5
-# - view_sha256
-# - view_sha512
-default_return_view: view_sha256
-
-# Set this to true if you only want to use external authentication
-external_auth_only: false
-
-# If this is true, images are automatically claimed if the windows user exists
-# in django
-auto_claim_enabled: true
-
-# LDAP Authentication
-# ldap:
-#     enabled: false
-#     server:
-#         uri: 'ldap://dc1.example.com'
-#         tls: false
-#     bind:
-#         dn: ''
-#         password: ''
-#     search_base: ''
-#     filter: '(sAMAccountName=%(user)s)'
-#     require_group: ''
+passbook:
+  sign_up:
+    # Enables signup, created users are stored in internal Database and created in LDAP if ldap.create_users is true
+    enabled: true
+  password_reset:
+    # Enable password reset, passwords are reset in internal Database and in LDAP if ldap.reset_password is true
+    enabled: true
+    # Verification the user has to provide in order to be able to reset passwords. Can be any combination of `email`, `2fa`, `security_questions`
+    verification:
+      - email
+  # Text used in title, on login page and multiple other places
+  branding: passbook
+  login:
+    # Override URL used for logo
+    logo_url: null
+    # Override URL used for Background on Login page
+    bg_url: null
+    # Optionally add a subtext, placed below logo on the login page
+    subtext: null
+  footer:
+    links:
+      # Optionally add links to the footer on the login page
+      #  - name: test
+      #    href: https://test
+  # Specify which fields can be used to authenticate. Can be any combination of `username` and `email`
+  uid_fields:
+    - username
+    - email
+  session:
+    remember_age: 2592000 # 60 * 60 * 24 * 30, one month
+# Provider-specific settings
+ldap:
+  # Which field from `uid_fields` maps to which LDAP Attribute
+  login_field_map:
+    username: sAMAccountName
+    email: mail # or userPrincipalName
+  user_attribute_map:
+    active_directory:
+      username: "%(sAMAccountName)s"
+      email: "%(mail)s"
+      name: "%(displayName)"
+oauth_client:
+  # List of python packages with sources types to load.
+  types:
+    - passbook.oauth_client.source_types.discord
+    - passbook.oauth_client.source_types.facebook
+    - passbook.oauth_client.source_types.github
+    - passbook.oauth_client.source_types.google
+    - passbook.oauth_client.source_types.reddit
+    - passbook.oauth_client.source_types.supervisr
+    - passbook.oauth_client.source_types.twitter
+saml_idp:
+  # List of python packages with provider types to load.
+  types:
+    - passbook.saml_idp.processors.generic
+    - passbook.saml_idp.processors.aws
+    - passbook.saml_idp.processors.gitlab
+    - passbook.saml_idp.processors.nextcloud
+    - passbook.saml_idp.processors.salesforce
+    - passbook.saml_idp.processors.shibboleth
+    - passbook.saml_idp.processors.wordpress_orange
