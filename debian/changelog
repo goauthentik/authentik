@@ -1,3 +1,12 @@
+passbook (0.1.13) stable; urgency=medium
+
+  * bump version: 0.1.11-beta -> 0.1.12-beta
+  * Fix DoesNotExist error when running PolicyEngine against None user
+  * allow custom email server for helm installs
+  * fix UserChangePasswordView not requiring Login
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Mon, 11 Mar 2019 10:28:36 +0000
+
 passbook (0.1.12) stable; urgency=medium
 
   * bump version: 0.1.10-beta -> 0.1.11-beta
