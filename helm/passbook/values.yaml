@@ -14,6 +14,8 @@ config:
   # secret_key: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
   # Enable error reporting
   error_reporting: true
+  email:
+    host: localhost
 
 postgresql:
     postgresqlDatabase: passbook

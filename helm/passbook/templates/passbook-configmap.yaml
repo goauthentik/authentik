@@ -22,7 +22,7 @@ data:
         host: 127.0.0.1
         port: 514
     email:
-      host: localhost
+      host: {{ .Values.config.email.host }}
       port: 25
       user: ''
       password: ''
