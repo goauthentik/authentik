@@ -1,6 +1,7 @@
 """passbook core user views"""
 from django.contrib import messages
 from django.contrib.auth import logout, update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.forms.utils import ErrorList
 from django.shortcuts import redirect, reverse
@@ -13,7 +14,7 @@ from passbook.core.forms.users import PasswordChangeForm, UserDetailForm
 from passbook.lib.config import CONFIG
 
 
-class UserSettingsView(SuccessMessageMixin, UpdateView):
+class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     """Update User settings"""
 
     template_name = 'user/settings.html'
@@ -25,7 +26,8 @@ class UserSettingsView(SuccessMessageMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-class UserDeleteView(DeleteView):
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
     """Delete user account"""
 
     template_name = 'generic/delete.html'
@@ -38,7 +40,8 @@ class UserDeleteView(DeleteView):
         logout(self.request)
         return reverse('passbook_core:auth-login')
 
-class UserChangePasswordView(FormView):
+
+class UserChangePasswordView(LoginRequiredMixin, FormView):
     """View for users to update their password"""
 
     form_class = PasswordChangeForm

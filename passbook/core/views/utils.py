@@ -1,5 +1,5 @@
 """passbook core utils view"""
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
@@ -21,7 +21,7 @@ class LoadingView(TemplateView):
         kwargs['target_url'] = self.get_url()
         return super().get_context_data(**kwargs)
 
-class PermissionDeniedView(TemplateView):
+class PermissionDeniedView(LoginRequiredMixin, TemplateView):
     """Generic Permission denied view"""
 
     template_name = 'login/denied.html'
