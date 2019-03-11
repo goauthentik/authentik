@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  tag: 0.1.12-beta
+  tag: 0.1.13-beta
 
 nameOverride: ""
 
