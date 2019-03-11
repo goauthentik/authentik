@@ -1,3 +1,13 @@
+passbook (0.1.12) stable; urgency=medium
+
+  * bump version: 0.1.10-beta -> 0.1.11-beta
+  * rewrite PasswordFactor to use backends setting instead of trying all backends
+  * install updated helm release from local folder
+  * disable automatic k8s deployment for now
+  * fix OAuth Authorization View not requiring authentication
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Mon, 11 Mar 2019 08:50:29 +0000
+
 passbook (0.1.11) stable; urgency=medium
 
   * add group administration
