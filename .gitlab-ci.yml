@@ -19,7 +19,7 @@ variables:
   POSTGRES_PASSWORD: 'EK-5jnKfjrGRm<77'
 
 include:
-  - /allauth/.gitlab-ci.yml
+  - /client-packages/allauth/.gitlab-ci.yml
 
 isort:
   script:
