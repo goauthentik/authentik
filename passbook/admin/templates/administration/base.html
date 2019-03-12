@@ -4,49 +4,4 @@
 {% load is_active %}
 
 {% block nav_secondary %}
-<ul class="nav navbar-nav navbar-persistent">
-    <li class="{% is_active 'passbook_admin:overview' %}">
-        <a href="{% url 'passbook_admin:overview' %}">{% trans 'Overview' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
-        <a href="{% url 'passbook_admin:applications' %}">{% trans 'Applications' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
-        <a href="{% url 'passbook_admin:sources' %}">{% trans 'Sources' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
-        <a href="{% url 'passbook_admin:providers' %}">{% trans 'Providers' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
-        <a href="{% url 'passbook_admin:property-mappings' %}">{% trans 'Property Mappings' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
-        <a href="{% url 'passbook_admin:factors' %}">{% trans 'Factors' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
-        <a href="{% url 'passbook_admin:policies' %}">{% trans 'Policies' %}</a>
-    </li>
-    <li
-        class="{% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
-        <a href="{% url 'passbook_admin:invitations' %}">{% trans 'Invitations' %}</a>
-    </li>
-    <li class="{% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
-        <a href="{% url 'passbook_admin:users' %}">{% trans 'Users' %}</a>
-    </li>
-    <li class="{% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
-        <a href="{% url 'passbook_admin:groups' %}">{% trans 'Groups' %}</a>
-    </li>
-    <li class="{% is_active 'passbook_admin:audit-log' %}">
-        <a href="{% url 'passbook_admin:audit-log' %}">{% trans 'Audit Log' %}</a>
-    </li>
-    <li class="{% is_active_app 'admin' %}">
-        <a href="{% url 'admin:index' %}">{% trans 'Django' %}</a>
-    </li>
-</ul>
 {% endblock %}
