@@ -187,6 +187,7 @@ CELERY_TASK_DEFAULT_QUEUE = 'passbook'
 CELERY_BROKER_URL = 'amqp://%s' % CONFIG.get('rabbitmq')
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_ACKS_LATE = True
+CELERY_BROKER_HEARTBEAT = 0
 
 # Raven settings
 RAVEN_CONFIG = {
