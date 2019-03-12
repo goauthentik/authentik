@@ -1,3 +1,12 @@
+passbook (0.1.17) stable; urgency=medium
+
+  * bump version: 0.1.15-beta -> 0.1.16-beta
+  * remove Application.user_is_authorized
+  * don't use celery heartbeat, use TCP keepalive instead
+  * switch to vertical navigation
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Tue, 12 Mar 2019 14:54:27 +0000
+
 passbook (0.1.16) stable; urgency=medium
 
   * Replace redis with RabbitMQ
