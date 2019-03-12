@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Application
+from passbook.core.policies import PolicyEngine
 
 LOGGER = getLogger(__name__)
 
@@ -28,4 +29,6 @@ class AccessMixin:
     def user_has_access(self, application, user):
         """Check if user has access to application."""
         LOGGER.debug("Checking permissions of %s on application %s...", user, application)
-        return application.user_is_authorized(user)
+        policy_engine = PolicyEngine(application.policies.all())
+        policy_engine.for_user(user).with_request(self.request).build()
+        return policy_engine.result

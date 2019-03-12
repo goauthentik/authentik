@@ -2,6 +2,7 @@
 from logging import getLogger
 from urllib.parse import urlencode
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
@@ -49,7 +50,10 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         provider.save()
         self._application = application
         # Check permissions
-        if not self.user_has_access(self._application, request.user):
+        passing, policy_meaages = self.user_has_access(self._application, request.user)
+        if not passing:
+            for policy_meaage in policy_meaages:
+                messages.error(request, policy_meaage)
             return redirect('passbook_oauth_provider:oauth2-permission-denied')
         actual_response = super().dispatch(request, *args, **kwargs)
         if actual_response.status_code == 400:

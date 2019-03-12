@@ -152,11 +152,6 @@ class Application(PolicyModel):
 
     objects = InheritanceManager()
 
-    def user_is_authorized(self, user: User) -> bool:
-        """Check if user is authorized to use this application"""
-        from passbook.core.policies import PolicyEngine
-        return PolicyEngine(self.policies.all()).for_user(user).build().result
-
     def get_provider(self):
         """Get casted provider instance"""
         if not self.provider:
