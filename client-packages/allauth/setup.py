@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='django-allauth-passbook',
-    version='1.0.0',
+    version='0.1.17-beta',
     description='passbook support for django-allauth',
     # long_description='\n'.join(read_simple('docs/index.md')[2:]),
     long_description_content_type='text/markdown',

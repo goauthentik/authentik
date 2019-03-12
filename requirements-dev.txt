@@ -13,3 +13,4 @@ unittest-xml-reporting
 autopep8
 bandit
 bumpversion
+twine

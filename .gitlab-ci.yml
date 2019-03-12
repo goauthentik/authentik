@@ -1,98 +1,124 @@
 # Global Variables
 before_script:
-  - "python3 -m pip install -U virtualenv"
-  - "virtualenv env"
-  - "source env/bin/activate"
-  - "pip3 install -U -r requirements-dev.txt"
+    - "python3 -m pip install -U virtualenv"
+    - "virtualenv env"
+    - "source env/bin/activate"
+    - "pip3 install -U -r requirements-dev.txt"
 stages:
-  - test
-  - build
-  - docs
-  - deploy
+    - test
+    - build
+    - docs
+    - deploy
 image: python:3.6
 services:
-  - postgres:latest
+    - postgres:latest
 
 variables:
-  POSTGRES_DB: passbook
-  POSTGRES_USER: passbook
-  POSTGRES_PASSWORD: 'EK-5jnKfjrGRm<77'
+    POSTGRES_DB: passbook
+    POSTGRES_USER: passbook
+    POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 include:
-  - /client-packages/allauth/.gitlab-ci.yml
+    - /client-packages/allauth/.gitlab-ci.yml
 
 isort:
-  script:
-    - isort -c -sg env
-  stage: test
+    script:
+        - isort -c -sg env
+    stage: test
 migrations:
-  script:
-    - python manage.py migrate
-  stage: test
+    script:
+        - python manage.py migrate
+    stage: test
 prospector:
-  script:
-    - prospector
-  stage: test
+    script:
+        - prospector
+    stage: test
 pylint:
-  script:
-    - pylint passbook
-  stage: test
+    script:
+        - pylint passbook
+    stage: test
 coverage:
-  script:
-    - coverage run manage.py test
-    - coverage report
-  stage: test
+    script:
+        - coverage run manage.py test
+        - coverage report
+    stage: test
 bandit:
-  script:
-    - bandit -r passbook
-  stage: test
+    script:
+        - bandit -r passbook
+    stage: test
 
 package-docker:
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  before_script:
-    - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
-  script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.17-beta
-  stage: build
-  only:
-    - tags
-    - /^version/.*$/
+    image:
+        name: gcr.io/kaniko-project/executor:debug
+        entrypoint: [""]
+    before_script:
+        - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
+    script:
+        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.17-beta
+    stage: build
+    only:
+        - tags
+        - /^version/.*$/
 package-helm:
-  stage: build
-  script:
-    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
-    - helm init --client-only
-    - helm package helm/passbook
-    - ./manage.py nexus_upload --method put --url $NEXUS_URL --auth $NEXUS_AUTH --repo helm *.tgz
-  only:
-    - tags
-    - /^version/.*$/
+    stage: build
+    script:
+        - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+        - helm init --client-only
+        - helm package helm/passbook
+        - ./manage.py nexus_upload --method put --url $NEXUS_URL --auth $NEXUS_AUTH --repo helm *.tgz
+    only:
+        - tags
+        - /^version/.*$/
 package-debian:
-  before_script:
-    - apt update
-    - apt install -y --no-install-recommends build-essential debhelper devscripts equivs python3 python3-dev python3-pip libsasl2-dev libldap2-dev
-    - mk-build-deps debian/control
-    - apt install ./*build-deps*deb -f -y
-    - python3 -m pip install -U virtualenv pip
-    - virtualenv env
-    - source env/bin/activate
-    - pip3 install -U -r requirements.txt -r requirements-dev.txt
-    - ./manage.py collectstatic --no-input
-  image: ubuntu:18.04
-  script:
-    - debuild -us -uc
-    - cp ../passbook*.deb .
-    - ./manage.py nexus_upload --method post --url $NEXUS_URL --auth $NEXUS_AUTH --repo apt passbook*deb
-  artifacts:
-    paths:
-    - passbook*deb
-    expire_in: 2 days
-  stage: build
-  only:
-  - tags
-  - /^version/.*$/
+    before_script:
+        - apt update
+        - apt install -y --no-install-recommends build-essential debhelper devscripts equivs python3 python3-dev python3-pip libsasl2-dev libldap2-dev
+        - mk-build-deps debian/control
+        - apt install ./*build-deps*deb -f -y
+        - python3 -m pip install -U virtualenv pip
+        - virtualenv env
+        - source env/bin/activate
+        - pip3 install -U -r requirements.txt -r requirements-dev.txt
+        - ./manage.py collectstatic --no-input
+    image: ubuntu:18.04
+    script:
+        - debuild -us -uc
+        - cp ../passbook*.deb .
+        - ./manage.py nexus_upload --method post --url $NEXUS_URL --auth $NEXUS_AUTH --repo apt passbook*deb
+    artifacts:
+        paths:
+            - passbook*deb
+        expire_in: 2 days
+    stage: build
+    only:
+        - tags
+        - /^version/.*$/
+
+package-client-package-allauth:
+    script:
+        - cd client-packages/allauth
+        - python setup.py sdist
+        - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
+    stage: build
+    only:
+        refs:
+            - tags
+            - /^version/.*$/
+        changes:
+            - client-packages/allauth/**
+
+package-client-package-sentry:
+    script:
+        - cd client-packages/sentry-auth-passbook
+        - python setup.py sdist
+        - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
+    stage: build
+    only:
+        refs:
+            - tags
+            - /^version/.*$/
+        changes:
+            - client-packages/sentry-auth-passbook/**
 
 # docs:
 #   stage: docs
