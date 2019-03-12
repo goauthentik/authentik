@@ -1,0 +1,3 @@
+include setup.py package.json webpack.config.js README.rst MANIFEST.in LICENSE AUTHORS
+recursive-include sentry_auth_supervisr/templates *
+global-exclude *~
