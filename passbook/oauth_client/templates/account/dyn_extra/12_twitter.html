@@ -1,6 +1,0 @@
-{% load passbook_oauth_client %}
-
-{% provider_exists 'twitter' as twitter_enabled %}
-{% if twitter_enabled %}
-<a href="{% url 'passbook_oauth_client:oauth-client-login' provider='twitter' %}" class="btn" style="background-color:#55ACEE;color:white;margin-top:10px;width:100%;"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-{% endif %}

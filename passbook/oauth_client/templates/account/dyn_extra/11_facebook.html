@@ -1,6 +1,0 @@
-{% load passbook_oauth_client %}
-
-{% provider_exists 'facebook' as facebook_enabled %}
-{% if facebook_enabled %}
-<a href="{% url 'passbook_oauth_client:oauth-client-login' provider='facebook' %}" class="btn" style="background-color:#4267b2;color:white;margin-top:10px;width:100%;"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
-{% endif %}

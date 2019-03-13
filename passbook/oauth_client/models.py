@@ -1,7 +1,7 @@
 """OAuth Client models"""
 
 from django.db import models
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Source, UserSourceConnection
@@ -37,6 +37,16 @@ class OAuthSource(Source):
     def additional_info(self):
         return "Callback URL: '%s'" % reverse_lazy('passbook_oauth_client:oauth-client-callback',
                                                    kwargs={'source_slug': self.slug})
+
+    def has_user_settings(self):
+        """Entrypoint to integrate with User settings. Can either return False if no
+        user settings are available, or a tuple or string, string, string where the first string
+        is the name the item has, the second string is the icon and the third is the view-name."""
+        icon = 'img/%s.svg' % self.get_login_button[1]
+        view_name = 'passbook_oauth_client:oauth-client-user'
+        return self.name, icon, reverse((view_name), kwargs={
+            'source_slug': self.slug
+        })
 
     class Meta:
 

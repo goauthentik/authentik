@@ -2,7 +2,7 @@
 
 from django import template
 
-from passbook.core.models import Factor
+from passbook.core.models import Factor, Source
 from passbook.core.policies import PolicyEngine
 
 register = template.Library()
@@ -20,3 +20,17 @@ def user_factors(context):
         if policy_engine.passing and _link:
             matching_factors.append(_link)
     return matching_factors
+
+@register.simple_tag(takes_context=True)
+def user_sources(context):
+    """Return a list of all sources which are enabled for the user"""
+    user = context.get('request').user
+    _all_sources = Source.objects.filter(enabled=True).select_subclasses()
+    matching_sources = []
+    for factor in _all_sources:
+        _link = factor.has_user_settings()
+        policy_engine = PolicyEngine(factor.policies.all())
+        policy_engine.for_user(user).with_request(context.get('request')).build()
+        if policy_engine.passing and _link:
+            matching_sources.append(_link)
+    return matching_sources

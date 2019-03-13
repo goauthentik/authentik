@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load is_active %}
+{% load static %}
 {% load passbook_user_settings %}
 
 {% block content %}
@@ -21,6 +22,15 @@
                 <li class="{% is_active link %}">
                      <a href="{% url link %}">
                          <i class="{{ icon }}"></i> {{ name }}
+                    </a>
+                </li>
+                {% endfor %}
+                <li class="nav-divider"></li>
+                {% user_sources as us %}
+                {% for name, icon, link in us %}
+                <li class="{% if link == request.get_full_path %} active {% endif %}">
+                    <a href="{{ link }}">
+                        <img src="{% static icon %}" alt=""> {{ name }}
                     </a>
                 </li>
                 {% endfor %}
