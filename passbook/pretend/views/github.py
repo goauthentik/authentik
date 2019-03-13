@@ -10,7 +10,7 @@ class GitHubUserView(View):
 
     def verify_access_token(self):
         """Verify access token manually since github uses /user?access_token=..."""
-        token = get_object_or_404(AccessToken, token=self.request.get('access_token', ''))
+        token = get_object_or_404(AccessToken, token=self.request.GET.get('access_token', ''))
         return token.user
 
     def get(self, request):
