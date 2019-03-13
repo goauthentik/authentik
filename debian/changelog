@@ -1,3 +1,16 @@
+passbook (0.1.18) stable; urgency=medium
+
+  * bump version: 0.1.16-beta -> 0.1.17-beta
+  * fix Server Error when downloading metadata
+  * add sentry client
+  * fix included yaml file
+  * adjust versions for client packages, auto build client-packages
+  * bump version: 0.1.17-beta -> 0.1.18-beta
+  * fix API Call for sentry-client, add missing template
+  * fix GitHub Pretend throwing a 500 error
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 13 Mar 2019 14:14:10 +0000
+
 passbook (0.1.17) stable; urgency=medium
 
   * bump version: 0.1.15-beta -> 0.1.16-beta
