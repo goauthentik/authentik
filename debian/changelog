@@ -1,3 +1,11 @@
+passbook (0.1.20) stable; urgency=medium
+
+  * bump version: 0.1.18-beta -> 0.1.19-beta
+  * fix GitHub Pretend again
+  * add user settings for Sources
+
+  -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 13 Mar 2019 15:49:44 +0000
+
 passbook (0.1.18) stable; urgency=medium
 
   * bump version: 0.1.16-beta -> 0.1.17-beta
