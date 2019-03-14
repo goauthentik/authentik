@@ -30,7 +30,7 @@
                 {% for name, icon, link in us %}
                 <li class="{% if link == request.get_full_path %} active {% endif %}">
                     <a href="{{ link }}">
-                        <img src="{% static icon %}" alt=""> {{ name }}
+                        <i class="{{ icon }}"></i> {{ name }}
                     </a>
                 </li>
                 {% endfor %}

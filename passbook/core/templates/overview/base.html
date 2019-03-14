@@ -185,13 +185,14 @@
         {% endif %}
     </ul>
 </div>
-<div class="container-fluid container-cards-pf">
+<div class="container-fluid container-cards-pf container-pf-nav-pf-vertical hide-nav-pf">
     {% block content %}
     {% endblock %}
 </div>
 {% endblock %}
 
 {% block scripts %}
+{{ block.super }}
 <script>
     $(document).ready(function () {
         // initialize tooltips

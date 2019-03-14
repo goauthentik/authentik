@@ -29,9 +29,9 @@ class OAuthSource(Source):
     def get_login_button(self):
         url = reverse_lazy('passbook_oauth_client:oauth-client-login',
                            kwargs={'source_slug': self.slug})
-        if self.provider_type == 'github':
-            return url, 'github-logo', _('GitHub')
-        return url, 'generic', _('Generic')
+        # if self.provider_type == 'github':
+        #     return url, 'github-logo', _('GitHub')
+        return url, self.provider_type, self.name
 
     @property
     def additional_info(self):
@@ -42,9 +42,12 @@ class OAuthSource(Source):
         """Entrypoint to integrate with User settings. Can either return False if no
         user settings are available, or a tuple or string, string, string where the first string
         is the name the item has, the second string is the icon and the third is the view-name."""
-        icon = 'img/%s.svg' % self.get_login_button[1]
+        icon_type = self.provider_type
+        if icon_type == 'azure ad':
+            icon_type = 'windows'
+        icon_class = 'fa fa-%s' % icon_type
         view_name = 'passbook_oauth_client:oauth-client-user'
-        return self.name, icon, reverse((view_name), kwargs={
+        return self.name, icon_class, reverse((view_name), kwargs={
             'source_slug': self.slug
         })
 
@@ -112,6 +115,19 @@ class GoogleOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _('Google OAuth Source')
         verbose_name_plural = _('Google OAuth Sources')
+
+
+class AzureADOAuthSource(OAuthSource):
+    """Abstract subclass of OAuthSource to specify AzureAD Form"""
+
+    form = 'passbook.oauth_client.forms.AzureADOAuthSourceForm'
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _('Azure AD OAuth Source')
+        verbose_name_plural = _('Azure AD OAuth Sources')
+
 
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
