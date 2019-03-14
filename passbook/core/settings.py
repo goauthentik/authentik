@@ -35,6 +35,7 @@ SECRET_KEY = CONFIG.get('secret_key')
 DEBUG = CONFIG.get('debug')
 INTERNAL_IPS = ['127.0.0.1']
 ALLOWED_HOSTS = CONFIG.get('domains', [])
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = 'passbook_core:auth-login'
 # CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
