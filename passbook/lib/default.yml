@@ -85,6 +85,7 @@ oauth_client:
     - passbook.oauth_client.source_types.reddit
     - passbook.oauth_client.source_types.supervisr
     - passbook.oauth_client.source_types.twitter
+    - passbook.oauth_client.source_types.azure_ad
 saml_idp:
   # List of python packages with provider types to load.
   types:

@@ -123,6 +123,7 @@ data:
         - passbook.oauth_client.source_types.reddit
         - passbook.oauth_client.source_types.supervisr
         - passbook.oauth_client.source_types.twitter
+        - passbook.oauth_client.source_types.azure_ad
     saml_idp:
       signing: true
       autosubmit: false

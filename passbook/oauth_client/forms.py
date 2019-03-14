@@ -108,3 +108,17 @@ class GoogleOAuthSourceForm(OAuthSourceForm):
             'access_token_url': 'https://accounts.google.com/o/oauth2/token',
             'profile_url': ' https://www.googleapis.com/oauth2/v1/userinfo',
         }
+
+
+class AzureADOAuthSourceForm(OAuthSourceForm):
+    """OAuth Source form with pre-determined URL for AzureAD"""
+
+    class Meta(OAuthSourceForm.Meta):
+
+        overrides = {
+            'provider_type': 'azure_ad',
+            'request_token_url': '',
+            'authorization_url': 'https://login.microsoftonline.com/common/oauth2/authorize',
+            'access_token_url': 'https://login.microsoftonline.com/common/oauth2/token',
+            'profile_url': ' https://login.microsoftonline.com/common/openid/userinfo',
+        }
