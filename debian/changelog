@@ -1,10 +1,23 @@
+passbook (0.1.22) stable; urgency=medium
+
+  * bump version: 0.1.20-beta -> 0.1.21-beta
+  * fix missing debug template
+  * move icons to single folder, cleanup
+  * fix layout when on mobile viewport and scrolling
+  * fix delete form not working
+  * point to correct icons
+  * add Azure AD Source
+  * Fix OAuth Client's disconnect view having invalid URL names
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 14 Mar 2019 20:19:27 +0000
+
 passbook (0.1.21) stable; urgency=medium
 
   * bump version: 0.1.19-beta -> 0.1.20-beta
   * add request debug view
   * detect HTTPS from reverse proxy
 
-  -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 14 Mar 2019 17:01:49 +0000
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 14 Mar 2019 17:01:49 +0000
 
 passbook (0.1.20) stable; urgency=medium
 
@@ -12,7 +25,7 @@ passbook (0.1.20) stable; urgency=medium
   * fix GitHub Pretend again
   * add user settings for Sources
 
-  -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 13 Mar 2019 15:49:44 +0000
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 13 Mar 2019 15:49:44 +0000
 
 passbook (0.1.18) stable; urgency=medium
 
