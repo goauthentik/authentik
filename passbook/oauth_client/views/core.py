@@ -194,7 +194,9 @@ class OAuthCallback(OAuthClientMixin, View):
             messages.success(self.request, _("Successfully linked %(source)s!" % {
                 'source': self.source.name
             }))
-            return redirect(reverse('user_settings'))
+            return redirect(reverse('passbook_oauth_client:oauth-client-user', kwargs={
+                'source_slug': self.source.slug
+            }))
         messages.success(self.request, _("Successfully authenticated with %(source)s!" % {
             'source': self.source.name
         }))
@@ -207,26 +209,28 @@ class DisconnectView(LoginRequiredMixin, View):
     source = None
     aas = None
 
-    def dispatch(self, request, source):
-        self.source = get_object_or_404(OAuthSource, name=source)
+    def dispatch(self, request, source_slug):
+        self.source = get_object_or_404(OAuthSource, slug=source_slug)
         self.aas = get_object_or_404(UserOAuthSourceConnection,
                                      source=self.source, user=request.user)
-        return super().dispatch(request, source)
+        return super().dispatch(request, source_slug)
 
-    def post(self, request, source):
+    def post(self, request, source_slug):
         """Delete connection object"""
         if 'confirmdelete' in request.POST:
             # User confirmed deletion
             self.aas.delete()
             messages.success(request, _('Connection successfully deleted'))
-            return redirect(reverse('user_settings'))
-        return self.get(request, source)
+            return redirect(reverse('passbook_oauth_client:oauth-client-user', kwargs={
+                'source_slug': self.source.slug
+            }))
+        return self.get(request, source_slug)
 
     def get(self, request, source):
         """Show delete form"""
         return render(request, 'generic/delete.html', {
-            'object': 'OAuth Connection with %s' % self.source.name,
-            'delete_url': reverse('oauth-client-disconnect', kwargs={
-                'source': self.source.name,
+            'object': self.source,
+            'delete_url': reverse('passbook_oauth_client:oauth-client-disconnect', kwargs={
+                'source_slug': self.source.slug,
             })
         })
