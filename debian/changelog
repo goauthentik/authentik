@@ -1,3 +1,11 @@
+passbook (0.1.21) stable; urgency=medium
+
+  * bump version: 0.1.19-beta -> 0.1.20-beta
+  * add request debug view
+  * detect HTTPS from reverse proxy
+
+  -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 14 Mar 2019 17:01:49 +0000
+
 passbook (0.1.20) stable; urgency=medium
 
   * bump version: 0.1.18-beta -> 0.1.19-beta
