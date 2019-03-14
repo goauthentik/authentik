@@ -172,6 +172,13 @@
                             </span>
                         </a>
                     </li>
+                    <li class="list-group-item {% is_active 'passbook_admin:debug-request' %}">
+                        <a href="{% url 'passbook_admin:debug-request' %}">
+                            <span class="list-group-item-value">
+                                {% trans 'Debug' %}
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </li>

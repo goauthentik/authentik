@@ -1,7 +1,7 @@
 """passbook URL Configuration"""
 from django.urls import include, path
 
-from passbook.admin.views import (applications, audit, factors, groups,
+from passbook.admin.views import (applications, audit, debug, factors, groups,
                                   invitations, overview, policy,
                                   property_mapping, providers, sources, users)
 
@@ -77,5 +77,7 @@ urlpatterns = [
     # Groups
     path('groups/', groups.GroupListView.as_view(), name='groups'),
     # API
-    path('api/', include('passbook.admin.api.urls'))
+    path('api/', include('passbook.admin.api.urls')),
+    # Debug
+    path('debug/request/', debug.DebugRequestView.as_view(), name='debug-request'),
 ]
