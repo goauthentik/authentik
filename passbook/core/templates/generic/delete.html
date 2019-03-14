@@ -16,6 +16,7 @@
                 Are you sure you want to delete {{ object_type }} "{{ object }}"?
                 {% endblocktrans %}
             </p>
+            <input type="hidden" name="confirmdelete" value="yes">
             <a href="{% back %}" class="btn btn-default">{% trans 'Back' %}</a>
             <input type="submit" class="btn btn-danger" value="{% trans 'Delete' %}" />
         </form>
