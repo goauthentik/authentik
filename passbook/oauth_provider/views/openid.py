@@ -11,7 +11,7 @@ class OpenIDConfigurationView(View):
     def get(self, request: HttpRequest):
         """Get Response conform to https://openid.net/specs/openid-connect-discovery-1_0.html"""
         return JsonResponse({
-            'issuer': request.build_absolute_uri(),
+            'issuer': request.build_absolute_uri(reverse('passbook_core:overview')),
             'authorization_endpoint': request.build_absolute_uri(
                 reverse('passbook_oauth_provider:oauth2-authorize')),
             'token_endpoint': request.build_absolute_uri(reverse('passbook_oauth_provider:token')),
