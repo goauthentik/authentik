@@ -120,5 +120,5 @@ class AzureADOAuthSourceForm(OAuthSourceForm):
             'request_token_url': '',
             'authorization_url': 'https://login.microsoftonline.com/common/oauth2/authorize',
             'access_token_url': 'https://login.microsoftonline.com/common/oauth2/token',
-            'profile_url': ' https://login.microsoftonline.com/common/openid/userinfo',
+            'profile_url': ' https://graph.windows.net/myorganization/me?api-version=1.6',
         }
