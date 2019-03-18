@@ -1,3 +1,9 @@
+passbook (0.1.23) stable; urgency=medium
+
+  * add support for OpenID-Connect Discovery
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 18 Mar 2019 20:19:27 +0000
+
 passbook (0.1.22) stable; urgency=medium
 
   * bump version: 0.1.20-beta -> 0.1.21-beta
