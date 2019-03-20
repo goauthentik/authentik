@@ -1,5 +1,6 @@
 """Oauth2 provider product extension"""
 
+from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from oauth2_provider.models import AbstractApplication
 
@@ -13,6 +14,20 @@ class OAuth2Provider(Provider, AbstractApplication):
 
     def __str__(self):
         return "OAuth2 Provider %s" % self.name
+
+    def html_setup_urls(self, request):
+        """return template and context modal with URLs for authorize, token, openid-config, etc"""
+        return "oauth2_provider/setup_url_modal.html", {
+            'provider': self,
+            'authorize_url': request.build_absolute_uri(
+                reverse('passbook_oauth_provider:oauth2-authorize')),
+            'token_url': request.build_absolute_uri(
+                reverse('passbook_oauth_provider:token')),
+            'userinfo_url': request.build_absolute_uri(
+                reverse('passbook_api:openid')),
+            'openid_url': request.build_absolute_uri(
+                reverse('passbook_oauth_provider:openid-discovery'))
+        }
 
     class Meta:
 

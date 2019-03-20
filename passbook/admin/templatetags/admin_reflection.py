@@ -5,6 +5,8 @@ from logging import getLogger
 from django import template
 from django.db.models import Model
 
+from passbook.lib.utils.template import render_to_string
+
 register = template.Library()
 LOGGER = getLogger(__name__)
 
@@ -29,3 +31,24 @@ def get_links(model_instance):
         pass
 
     return links
+
+
+@register.simple_tag(takes_context=True)
+def get_htmls(context, model_instance):
+    """Find all html_ methods on an object instance, run them and return as dict"""
+    prefix = 'html_'
+    htmls = []
+
+    if not isinstance(model_instance, Model):
+        LOGGER.warning("Model %s is not instance of Model", model_instance)
+        return htmls
+
+    try:
+        for name, method in inspect.getmembers(model_instance, predicate=inspect.ismethod):
+            if name.startswith(prefix):
+                template, _context = method(context.get('request'))
+                htmls.append(render_to_string(template, _context))
+    except NotImplementedError:
+        pass
+
+    return htmls
