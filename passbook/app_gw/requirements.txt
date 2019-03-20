@@ -1,0 +1,2 @@
+django-revproxy
+urllib3[secure]

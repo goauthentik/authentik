@@ -14,6 +14,8 @@ rabbitmq: guest:guest@localhost/passbook
 # Error reporting, sends stacktrace to sentry.services.beryju.org
 error_report_enabled: true
 
+primary_domain: passbook.local
+
 passbook:
   sign_up:
     # Enables signup, created users are stored in internal Database and created in LDAP if ldap.create_users is true

@@ -7,3 +7,4 @@
 -r passbook/captcha_factor/requirements.txt
 -r passbook/admin/requirements.txt
 -r passbook/api/requirements.txt
+-r passbook/app_gw/requirements.txt

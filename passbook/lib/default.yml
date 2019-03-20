@@ -34,6 +34,8 @@ rabbitmq: guest:guest@localhost/passbook
 error_report_enabled: true
 secret_key: 9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s
 
+primary_domain: 'localhost'
+
 passbook:
   sign_up:
     # Enables signup, created users are stored in internal Database and created in LDAP if ldap.create_users is true
