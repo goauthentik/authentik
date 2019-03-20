@@ -57,6 +57,10 @@
                     <a class="btn btn-default btn-sm"
                         href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
                     {% endfor %}
+                    {% get_htmls provider as htmls %}
+                    {% for html in htmls %}
+                    {{ html|safe }}
+                    {% endfor %}
                 </td>
             </tr>
             {% endfor %}
