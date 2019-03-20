@@ -34,7 +34,7 @@ SECRET_KEY = CONFIG.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CONFIG.get('debug')
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = CONFIG.get('domains', []) + CONFIG.get('primary_domain')
+ALLOWED_HOSTS = CONFIG.get('domains', []) + [CONFIG.get('primary_domain')]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = 'passbook_core:auth-login'
