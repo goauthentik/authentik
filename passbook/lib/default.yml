@@ -30,7 +30,7 @@ debug: false
 secure_proxy_header:
   HTTP_X_FORWARDED_PROTO: https
 rabbitmq: guest:guest@localhost/passbook
-redis: localhost
+redis: localhost/0
 # Error reporting, sends stacktrace to sentry.services.beryju.org
 error_report_enabled: true
 secret_key: 9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s
