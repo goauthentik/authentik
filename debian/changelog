@@ -1,3 +1,28 @@
+passbook (0.1.25) stable; urgency=medium
+
+  * initial implementation of reverse proxy, using django-revproxy from within a middleware
+  * fix TypeError: can only concatenate list (not "str") to list
+  * bump version: 0.1.23-beta -> 0.1.24-beta
+  * add redis dependency back in for caching
+  * utilise cache in PolicyEngine
+  * explicitly use redis db
+  * invalidate cache when policy is saved
+  * add redis as service in CI for unittests
+  * add timeout field to policy to prevent stuck policies
+  * Don't use LoginRequired for PermissionDenied View
+  * Check for policies in app_gw
+  * Better handle policy timeouts
+  * cleanup post-migration mess
+  * prevent ZeroDivisionError
+  * Redirect to login on reverse proxy
+  * cleanup property_mapping list
+  * add compiled regex to RewriteRule
+  * implement actual Rewriting logic
+  * Invalidate cache when ApplicationGateway instance is saved
+  * validate server_name in form
+
+ -- Jens Langhammer <jens.langhammer@beryju.org> Thu, 21 Mar 2019 15:47:58 +0000
+
 passbook (0.1.24) stable; urgency=medium
 
   * bump version: 0.1.22-beta -> 0.1.23-beta
