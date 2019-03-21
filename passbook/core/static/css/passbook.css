@@ -195,3 +195,7 @@ form .form-row p.datetime {
 .selector-remove {
     background: url(../admin/img/selector-icons.svg) 0 -64px no-repeat;
 }
+
+input[data-is-monospace] {
+    font-family: monospace;
+}

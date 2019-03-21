@@ -7,15 +7,14 @@ import certifi
 import urllib3
 from django.core.cache import cache
 from django.utils.http import urlencode
-from django.views.generic import RedirectView
 from revproxy.exceptions import InvalidUpstream
 from revproxy.response import get_django_response
 from revproxy.utils import encode_items, normalize_request_headers
 
 from passbook.app_gw.models import ApplicationGatewayProvider
+from passbook.app_gw.rewrite import Rewriter
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
-from passbook.lib.config import CONFIG
 
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'
 LOGGER = getLogger(__name__)
@@ -100,15 +99,12 @@ class ApplicationGatewayMiddleware:
 
         return upstream
 
-    # def _format_path_to_redirect(self, request):
-    #     full_path = request.get_full_path()
-    #     LOGGER.debug("Dispatch full path: %s", full_path)
-    #     for from_re, to_pattern in []:
-    #         if from_re.match(full_path):
-    #             redirect_to = from_re.sub(to_pattern, full_path)
-    #             LOGGER.debug("Redirect to: %s", redirect_to)
-    #             return redirect_to
-    #     return None
+    def _format_path_to_redirect(self, request):
+        LOGGER.debug("Path before: %s", request.get_full_path())
+        rewriter = Rewriter(self.app_gw, request)
+        after = rewriter.build()
+        LOGGER.debug("Path after: %s", after)
+        return after
 
     def get_proxy_request_headers(self, request):
         """Get normalized headers for the upstream
@@ -152,12 +148,11 @@ class ApplicationGatewayMiddleware:
         get_data = encode_items(self.request.GET.lists())
         return urlencode(get_data)
 
-    def _created_proxy_response(self, request):
+    def _created_proxy_response(self, request, path):
         request_payload = request.body
 
         LOGGER.debug("Request headers: %s", self._request_headers)
 
-        path = request.get_full_path()
         request_url = self.get_upstream() + path
         LOGGER.debug("Request URL: %s", request_url)
 
@@ -215,17 +210,14 @@ class ApplicationGatewayMiddleware:
 
     def dispatch(self, request):
         """Build proxied request and pass to upstream"""
-        if not self.check_permission():
-            to_url = 'https://%s/?next=%s' % (CONFIG.get('domains')[0], request.get_full())
-            return RedirectView.as_view(url=to_url)(request)
+        # if not self.check_permission():
+        #     to_url = 'https://%s/?next=%s' % (CONFIG.get('domains')[0], request.get_full_path())
+        #     return RedirectView.as_view(url=to_url)(request)
 
         self._request_headers = self.get_request_headers()
 
-        # redirect_to = self._format_path_to_redirect(request)
-        # if redirect_to:
-        #     return redirect(redirect_to)
-
-        proxy_response = self._created_proxy_response(request)
+        path = self._format_path_to_redirect(request)
+        proxy_response = self._created_proxy_response(request, path)
 
         self._replace_host_on_redirect_location(request, proxy_response)
         self._set_content_type(request, proxy_response)
