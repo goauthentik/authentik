@@ -3,11 +3,8 @@ from logging import getLogger
 
 from amqp.exceptions import UnexpectedFrame
 from celery import group
-<<<<<<< HEAD
 from celery.exceptions import TimeoutError as CeleryTimeoutError
-=======
 from django.core.cache import cache
->>>>>>> master
 from ipware import get_client_ip
 
 from passbook.core.celery import CELERY_APP
@@ -90,7 +87,7 @@ class PolicyEngine:
             else:
                 LOGGER.debug("Evaluating policy %s", policy.pk.hex)
                 signatures.append(_policy_engine_task.signature(
-                    args=(self._user.pk, policy.pk.hex),
+                    args=(self.__user.pk, policy.pk.hex),
                     kwargs=kwargs,
                     time_limit=policy.timeout))
                 self.__get_timeout += policy.timeout
@@ -111,7 +108,7 @@ class PolicyEngine:
         try:
             if self.__group:
                 # ValueError can be thrown from _policy_engine_task when user is None
-                result += self.__group.get(timeout=self._get_timeout)
+                result += self.__group.get(timeout=self.__get_timeout)
             result += self.__cached
         except ValueError as exc:
             # ValueError can be thrown from _policy_engine_task when user is None
