@@ -2,6 +2,7 @@
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.forms import ValidationError
 from django.utils.translation import gettext as _
 
 from passbook.app_gw.models import ApplicationGatewayProvider, RewriteRule
@@ -10,6 +11,16 @@ from passbook.lib.fields import DynamicArrayField
 
 class ApplicationGatewayProviderForm(forms.ModelForm):
     """Security Gateway Provider form"""
+
+    def clean_server_name(self):
+        """Check if server_name is in DB already, since
+        Postgres ArrayField doesn't suppport keys."""
+        current = self.cleaned_data.get('server_name')
+        if ApplicationGatewayProvider.objects \
+                .filter(server_name__overlap=current) \
+                .exclude(pk=self.instance.pk).exists():
+            raise ValidationError("Server Name already in use.")
+        return current
 
     class Meta:
 
