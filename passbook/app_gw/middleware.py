@@ -13,6 +13,8 @@ from revproxy.utils import encode_items, normalize_request_headers
 
 from passbook.app_gw.models import ApplicationGatewayProvider
 from passbook.core.models import Application
+from passbook.core.policies import PolicyEngine
+from passbook.core.views.utils import PermissionDeniedView
 
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'
 LOGGER = getLogger(__name__)
@@ -127,16 +129,22 @@ class ApplicationGatewayMiddleware:
         .. versionadded:: 0.9.8
         """
         request_headers = self.get_proxy_request_headers(self.request)
-
-        if hasattr(self.request, 'user') and self.request.user.is_active:
-            request_headers[self.app_gw.authentication_header] = self.request.user.get_username()
-            LOGGER.info("REMOTE_USER set")
+        request_headers[self.app_gw.authentication_header] = self.request.user.get_username()
+        LOGGER.info("%s set", self.app_gw.authentication_header)
 
         return request_headers
 
-    # def get_quoted_path(self, path):
-    #     """Return quoted path to be used in proxied request"""
-    #     return quote_plus(path.encode('utf8'), QUOTE_SAFE)
+    def check_permission(self):
+        """Check if user is authenticated and has permission to access app"""
+        if not hasattr(self.request, 'user'):
+            return False
+        if not self.request.user.is_authenticated:
+            return False
+        policy_engine = PolicyEngine(self.app_gw.application.policies.all())
+        policy_engine.for_user(self.request.user).with_request(self.request).build()
+        passing, _messages = policy_engine.result
+
+        return passing
 
     def get_encoded_query_params(self):
         """Return encoded query params to be used in proxied request"""
@@ -206,6 +214,9 @@ class ApplicationGatewayMiddleware:
 
     def dispatch(self, request):
         """Build proxied request and pass to upstream"""
+        if not self.check_permission():
+            return PermissionDeniedView.as_view()(request)
+
         self._request_headers = self.get_request_headers()
 
         # redirect_to = self._format_path_to_redirect(request)
