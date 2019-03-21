@@ -47,6 +47,7 @@ data:
     secret_key: {{ randAlphaNum 50 }}
     {{- end }}
 
+    primary_domain: {{ .Values.primary_domain }}
     domains:
         {{- range .Values.ingress.hosts }}
         - {{ . | quote }}

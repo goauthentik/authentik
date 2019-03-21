@@ -220,6 +220,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     action = models.CharField(max_length=20, choices=ACTIONS)
     negate = models.BooleanField(default=False)
     order = models.IntegerField(default=0)
+    timeout = models.IntegerField(default=30)
 
     objects = InheritanceManager()
 

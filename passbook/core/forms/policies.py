@@ -7,7 +7,7 @@ from passbook.core.models import (DebugPolicy, FieldMatcherPolicy,
                                   GroupMembershipPolicy, PasswordPolicy,
                                   WebhookPolicy)
 
-GENERAL_FIELDS = ['name', 'action', 'negate', 'order', ]
+GENERAL_FIELDS = ['name', 'action', 'negate', 'order', 'timeout']
 
 class FieldMatcherPolicyForm(forms.ModelForm):
     """FieldMatcherPolicy Form"""

@@ -34,7 +34,7 @@ SECRET_KEY = CONFIG.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CONFIG.get('debug')
 INTERNAL_IPS = ['127.0.0.1']
-ALLOWED_HOSTS = CONFIG.get('domains', [])
+ALLOWED_HOSTS = CONFIG.get('domains', []) + [CONFIG.get('primary_domain')]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = 'passbook_core:auth-login'
@@ -45,6 +45,7 @@ AUTH_USER_MODEL = 'passbook_core.User'
 
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
+SESSION_COOKIE_DOMAIN = CONFIG.get('primary_domain')
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
@@ -81,6 +82,7 @@ INSTALLED_APPS = [
     'passbook.pretend.apps.PassbookPretendConfig',
     'passbook.password_expiry_policy.apps.PassbookPasswordExpiryPolicyConfig',
     'passbook.suspicious_policy.apps.PassbookSuspiciousPolicyConfig',
+    'passbook.app_gw.apps.PassbookApplicationApplicationGatewayConfig',
 ]
 
 # Message Tag fix for bootstrap CSS Classes
@@ -112,11 +114,12 @@ CACHES = {
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'passbook.app_gw.middleware.ApplicationGatewayMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
