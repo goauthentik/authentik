@@ -1,9 +1,14 @@
 """passbook core signals"""
+from logging import getLogger
 
+from django.core.cache import cache
 from django.core.signals import Signal
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from passbook.core.exceptions import PasswordPolicyInvalid
+
+LOGGER = getLogger(__name__)
 
 user_signed_up = Signal(providing_args=['request', 'user'])
 invitation_created = Signal(providing_args=['request', 'invitation'])
@@ -24,3 +29,14 @@ def password_policy_checker(sender, password, **kwargs):
         passing, messages = policy_engine.result
         if not passing:
             raise PasswordPolicyInvalid(*messages)
+
+@receiver(post_save)
+# pylint: disable=unused-argument
+def invalidate_policy_cache(sender, instance, **kwargs):
+    """Invalidate Policy cache when policy is updated"""
+    from passbook.core.models import Policy
+    if isinstance(instance, Policy):
+        LOGGER.debug("Invalidating cache for %s", instance.pk)
+        keys = cache.keys("%s#*" % instance.pk)
+        cache.delete_many(keys)
+        LOGGER.debug("Deleted %d keys", len(keys))

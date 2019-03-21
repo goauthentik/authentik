@@ -8,7 +8,7 @@ Standards-Version: 3.9.6
 
 Package: passbook
 Architecture: all
-Recommends: mysql-server, rabbitmq-server
+Recommends: mysql-server, rabbitmq-server, redis-server
 Pre-Depends: adduser, libldap2-dev, libsasl2-dev
 Depends: python3 (>= 3.5) | python3.6 | python3.7, python3-pip, dbconfig-pgsql | dbconfig-no-thanks, ${misc:Depends}
 Description: Authentication Provider/Proxy supporting protocols like SAML, OAuth, LDAP and more.
