@@ -12,6 +12,7 @@ stages:
 image: python:3.6
 services:
     - postgres:latest
+    - redis:latest
 
 variables:
     POSTGRES_DB: passbook
