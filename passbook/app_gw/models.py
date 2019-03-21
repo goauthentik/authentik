@@ -1,4 +1,6 @@
 """passbook app_gw models"""
+import re
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext as _
@@ -48,9 +50,20 @@ class RewriteRule(PropertyMapping):
 
     match = models.TextField()
     halt = models.BooleanField(default=False)
-    conditions = models.ManyToManyField(Policy)
+    conditions = models.ManyToManyField(Policy, blank=True)
     replacement = models.TextField() # python formatted strings, use {match.1}
     redirect = models.CharField(max_length=50, choices=REDIRECTS)
+
+    form = 'passbook.app_gw.forms.RewriteRuleForm'
+
+    _matcher = None
+
+    @property
+    def compiled_matcher(self):
+        """Cache the compiled regex in memory"""
+        if not self._matcher:
+            self._matcher = re.compile(self.match)
+        return self._matcher
 
     def __str__(self):
         return "Rewrite Rule %s" % self.name
