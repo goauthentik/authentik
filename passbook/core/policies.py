@@ -3,13 +3,20 @@ from logging import getLogger
 
 from amqp.exceptions import UnexpectedFrame
 from celery import group
+<<<<<<< HEAD
 from celery.exceptions import TimeoutError as CeleryTimeoutError
+=======
+from django.core.cache import cache
+>>>>>>> master
 from ipware import get_client_ip
 
 from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
 
 LOGGER = getLogger(__name__)
+
+def _cache_key(policy, user):
+    return "%s#%s" % (policy.uuid, user.pk)
 
 @CELERY_APP.task()
 def _policy_engine_task(user_pk, policy_pk, **kwargs):
@@ -31,62 +38,81 @@ def _policy_engine_task(user_pk, policy_pk, **kwargs):
     if policy_obj.negate:
         policy_result = not policy_result
     LOGGER.debug("Policy %r#%s got %s", policy_obj.name, policy_obj.pk.hex, policy_result)
+    cache_key = _cache_key(policy_obj, user_obj)
+    cache.set(cache_key, (policy_obj.action, policy_result, message))
+    LOGGER.debug("Cached entry as %s", cache_key)
     return policy_obj.action, policy_result, message
 
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
 
+    __group = None
+    __cached = None
+
     policies = None
-    _group = None
-    _request = None
-    _user = None
-    _get_timeout = 0
+    __get_timeout = 0
+    __request = None
+    __user = None
 
     def __init__(self, policies):
         self.policies = policies
-        self._request = None
-        self._user = None
+        self.__request = None
+        self.__user = None
 
     def for_user(self, user):
         """Check policies for user"""
-        self._user = user
+        self.__user = user
         return self
 
     def with_request(self, request):
         """Set request"""
-        self._request = request
+        self.__request = request
         return self
 
     def build(self):
         """Build task group"""
-        if not self._user:
+        if not self.__user:
             raise ValueError("User not set.")
         signatures = []
+        cached_policies = []
         kwargs = {
-            '__password__': getattr(self._user, '__password__', None),
+            '__password__': getattr(self.__user, '__password__', None),
         }
-        if self._request:
-            kwargs['remote_ip'], _ = get_client_ip(self._request)
+        if self.__request:
+            kwargs['remote_ip'], _ = get_client_ip(self.__request)
             if not kwargs['remote_ip']:
                 kwargs['remote_ip'] = '255.255.255.255'
         for policy in self.policies:
-            signatures.append(_policy_engine_task.signature(
-                args=(self._user.pk, policy.pk.hex),
-                kwargs=kwargs,
-                time_limit=policy.timeout))
-            self._get_timeout += policy.timeout
-        self._get_timeout += 3
-        self._get_timeout = (self._get_timeout / len(self.policies)) * 1.5
-        LOGGER.debug("Set total policy timeout to %r", self._get_timeout)
-        self._group = group(signatures)()
+            cached_policy = cache.get(_cache_key(policy, self.__user), None)
+            if cached_policy:
+                LOGGER.debug("Taking result from cache for %s", policy.pk.hex)
+                cached_policies.append(cached_policy)
+            else:
+                LOGGER.debug("Evaluating policy %s", policy.pk.hex)
+                signatures.append(_policy_engine_task.signature(
+                    args=(self._user.pk, policy.pk.hex),
+                    kwargs=kwargs,
+                    time_limit=policy.timeout))
+                self.__get_timeout += policy.timeout
+        self.__get_timeout += 3
+        self.__get_timeout = (self.__get_timeout / len(self.policies)) * 1.5
+        LOGGER.debug("Set total policy timeout to %r", self.__get_timeout)
+        # If all policies are cached, we have an empty list here.
+        if signatures:
+            self.__group = group(signatures)()
+        self.__cached = cached_policies
         return self
 
     @property
     def result(self):
         """Get policy-checking result"""
         messages = []
+        result = []
         try:
-            group_result = self._group.get(timeout=self._get_timeout)
+            if self.__group:
+                # ValueError can be thrown from _policy_engine_task when user is None
+                result += self.__group.get(timeout=self._get_timeout)
+            result += self.__cached
         except ValueError as exc:
             # ValueError can be thrown from _policy_engine_task when user is None
             return False, [str(exc)]
@@ -94,7 +120,7 @@ class PolicyEngine:
             return False, [str(exc)]
         except CeleryTimeoutError as exc:
             return False, [str(exc)]
-        for policy_action, policy_result, policy_message in group_result:
+        for policy_action, policy_result, policy_message in result:
             passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
                       (policy_action == Policy.ACTION_DENY and not policy_result)
             LOGGER.debug('Action=%s, Result=%r => %r', policy_action, policy_result, passing)

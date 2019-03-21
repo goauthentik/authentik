@@ -46,6 +46,8 @@ AUTH_USER_MODEL = 'passbook_core.User'
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
 SESSION_COOKIE_DOMAIN = CONFIG.get('primary_domain')
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [
@@ -99,6 +101,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://%s" % CONFIG.get('redis'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }
 
 MIDDLEWARE = [

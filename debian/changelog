@@ -1,3 +1,11 @@
+passbook (0.1.24) stable; urgency=medium
+
+  * bump version: 0.1.22-beta -> 0.1.23-beta
+  * add modal for OAuth Providers showing the URLs
+  * remove user field from form. Closes #32
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 20 Mar 2019 21:59:21 +0000
+
 passbook (0.1.23) stable; urgency=medium
 
   * add support for OpenID-Connect Discovery

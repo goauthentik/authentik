@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{ provider.pk }}">{% trans 'View Setup URLs' %}</button>
+<div class="modal fade" id="{{ provider.pk }}" tabindex="-1" role="dialog" aria-labelledby="{{ provider.pk }}Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" id="{{ provider.pk }}Label">{% trans 'Setup URLs' %}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{% trans 'Authroize URL' %}</label>
+            <div class="col-sm-9">
+              <input type="text"class="form-control" readonly value="{{ authorize_url }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{% trans 'Token URL' %}</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" readonly value="{{ token_url }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{% trans 'Userinfo Endpoint' %}</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" readonly value="{{ userinfo_url }}">
+            </div>
+          </div>
+        </form>
+        <hr>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{% trans 'OpenID Configuration URL' %}</label>
+            <div class="col-sm-9">
+              <input type="text"class="form-control" readonly value="{{ openid_url }}">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

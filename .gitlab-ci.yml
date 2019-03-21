@@ -12,6 +12,7 @@ stages:
 image: python:3.6
 services:
     - postgres:latest
+    - redis:latest
 
 variables:
     POSTGRES_DB: passbook
@@ -54,7 +55,7 @@ package-docker:
     before_script:
         - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
     script:
-        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.23-beta
+        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.24-beta
     stage: build
     only:
         - tags
