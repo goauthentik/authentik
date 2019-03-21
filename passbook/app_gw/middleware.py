@@ -7,6 +7,7 @@ import certifi
 import urllib3
 from django.core.cache import cache
 from django.utils.http import urlencode
+from django.views.generic import RedirectView
 from revproxy.exceptions import InvalidUpstream
 from revproxy.response import get_django_response
 from revproxy.utils import encode_items, normalize_request_headers
@@ -14,7 +15,7 @@ from revproxy.utils import encode_items, normalize_request_headers
 from passbook.app_gw.models import ApplicationGatewayProvider
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
-from passbook.core.views.utils import PermissionDeniedView
+from passbook.lib.config import CONFIG
 
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'
 LOGGER = getLogger(__name__)
@@ -215,7 +216,8 @@ class ApplicationGatewayMiddleware:
     def dispatch(self, request):
         """Build proxied request and pass to upstream"""
         if not self.check_permission():
-            return PermissionDeniedView.as_view()(request)
+            to_url = 'https://%s/?next=%s' % (CONFIG.get('domains')[0], request.get_full())
+            return RedirectView.as_view(url=to_url)(request)
 
         self._request_headers = self.get_request_headers()
 
