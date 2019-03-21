@@ -91,12 +91,12 @@ class PolicyEngine:
                     kwargs=kwargs,
                     time_limit=policy.timeout))
                 self.__get_timeout += policy.timeout
-        self.__get_timeout += 3
-        self.__get_timeout = (self.__get_timeout / len(self.policies)) * 1.5
         LOGGER.debug("Set total policy timeout to %r", self.__get_timeout)
         # If all policies are cached, we have an empty list here.
         if signatures:
             self.__group = group(signatures)()
+            self.__get_timeout += 3
+            self.__get_timeout = (self.__get_timeout / len(self.policies)) * 1.5
         self.__cached = cached_policies
         return self
 
