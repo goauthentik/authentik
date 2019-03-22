@@ -1,3 +1,10 @@
+passbook (0.1.27) stable; urgency=medium
+
+  * bump version: 0.1.25-beta -> 0.1.26-beta
+  * fix broken app_gw
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Fri, 22 Mar 2019 13:50:31 +0000
+
 passbook (0.1.26) stable; urgency=medium
 
   * bump version: 0.1.24-beta -> 0.1.25-beta
