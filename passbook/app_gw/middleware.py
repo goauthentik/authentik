@@ -90,8 +90,7 @@ class ApplicationGatewayMiddleware:
         # TODO: How to choose upstream?
         upstream = self.app_gw.upstream[0]
 
-        if not getattr(self, '_parsed_url', None):
-            self._parsed_url = urlparse(upstream)
+        self._parsed_url = urlparse(upstream)
 
         if self._parsed_url.scheme not in ('http', 'https'):
             raise InvalidUpstream(ERRORS_MESSAGES['upstream-no-scheme'] %
