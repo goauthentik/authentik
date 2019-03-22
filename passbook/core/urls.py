@@ -7,12 +7,17 @@ from django.urls import include, path
 from django.views.generic import RedirectView
 
 from passbook.core.auth import view
-from passbook.core.views import authentication, overview, user
+from passbook.core.views import authentication, error, overview, user
 from passbook.lib.utils.reflection import get_apps
 
 LOGGER = getLogger(__name__)
 admin.autodiscover()
 admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
+
+handler400 = error.BadRequestView.as_view()
+handler403 = error.ForbiddenView.as_view()
+handler404 = error.NotFoundView.as_view()
+handler500 = error.BadRequestView.as_view()
 
 core_urls = [
     # Authentication views
