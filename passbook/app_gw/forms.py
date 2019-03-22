@@ -1,4 +1,5 @@
 """passbook Application Security Gateway Forms"""
+from urllib.parse import urlparse
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -19,8 +20,17 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
         if ApplicationGatewayProvider.objects \
                 .filter(server_name__overlap=current) \
                 .exclude(pk=self.instance.pk).exists():
-            raise ValidationError("Server Name already in use.")
+            raise ValidationError(_("Server Name already in use."))
         return current
+
+    def clean_upstream(self):
+        """Check that upstream begins with http(s)"""
+        for upstream in self.cleaned_data.get('upstream'):
+            _parsed_url = urlparse(upstream)
+
+            if _parsed_url.scheme not in ('http', 'https'):
+                raise ValidationError(_("URL Scheme must be either http or https"))
+        return self.cleaned_data.get('upstream')
 
     class Meta:
 
