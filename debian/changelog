@@ -1,3 +1,12 @@
+passbook (0.1.26) stable; urgency=medium
+
+  * bump version: 0.1.24-beta -> 0.1.25-beta
+  * always parse url instead of once
+  * validate upstream in form
+  * add custom template views
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Fri, 22 Mar 2019 11:47:08 +0000
+
 passbook (0.1.25) stable; urgency=medium
 
   * initial implementation of reverse proxy, using django-revproxy from within a middleware
@@ -21,7 +30,7 @@ passbook (0.1.25) stable; urgency=medium
   * Invalidate cache when ApplicationGateway instance is saved
   * validate server_name in form
 
- -- Jens Langhammer <jens.langhammer@beryju.org> Thu, 21 Mar 2019 15:47:58 +0000
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 21 Mar 2019 15:47:58 +0000
 
 passbook (0.1.24) stable; urgency=medium
 
