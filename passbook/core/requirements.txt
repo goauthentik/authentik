@@ -10,4 +10,4 @@ idna<2.8,>=2.5
 markdown
 psycopg2
 PyYAML
-raven
+sentry-sdk

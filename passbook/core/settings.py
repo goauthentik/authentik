@@ -14,7 +14,11 @@ import importlib
 import os
 import sys
 
+from celery.schedules import crontab
 from django.contrib import messages
+from sentry_sdk import init as sentry_init
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
@@ -66,7 +70,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'drf_yasg',
-    'raven.contrib.django.raven_compat',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
@@ -122,7 +125,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
 ]
 
 ROOT_URLCONF = 'passbook.core.urls'
@@ -204,14 +206,23 @@ CELERY_BROKER_URL = 'amqp://%s' % CONFIG.get('rabbitmq')
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_ACKS_LATE = True
 CELERY_BROKER_HEARTBEAT = 0
-
-# Raven settings
-RAVEN_CONFIG = {
-    'dsn': ('https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745'
-            '0d83be640d834e5458@sentry.services.beryju.org/8'),
-    'release': VERSION,
-    'environment': 'dev' if DEBUG else 'production',
+CELERY_BEAT_SCHEDULE = {
+    'cleanup-expired-nonces': {
+        'task': 'passbook.core.tasks.clean_nonces',
+        'schedule': crontab(hour=1, minute=1)
+    }
 }
+
+sentry_init(
+    dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
+         "0d83be640d834e5458@sentry.services.beryju.org/8"),
+    integrations=[
+        DjangoIntegration(),
+        CeleryIntegration(),
+    ],
+    send_default_pii=True
+)
+
 
 # CherryPY settings
 with CONFIG.cd('web'):
