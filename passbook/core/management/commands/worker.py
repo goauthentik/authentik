@@ -14,4 +14,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """celery worker"""
-        CELERY_APP.worker_main(['worker', '--autoscale=10,3', '-E'])
+        CELERY_APP.worker_main(['worker', '--autoscale=10,3', '-E', '-B'])

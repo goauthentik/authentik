@@ -437,6 +437,7 @@ class Nonce(UUIDModel):
 
     expires = models.DateTimeField(default=default_nonce_duration)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    expiring = models.BooleanField(default=True)
 
     def __str__(self):
         return "Nonce %s (expires=%s)" % (self.uuid.hex, self.expires)
