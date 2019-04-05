@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import importlib
+import logging
 import os
 import sys
 
@@ -19,6 +20,7 @@ from django.contrib import messages
 from sentry_sdk import init as sentry_init
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
@@ -220,6 +222,10 @@ sentry_init(
     integrations=[
         DjangoIntegration(),
         CeleryIntegration(),
+        LoggingIntegration(
+            level=logging.INFO,
+            event_level=logging.ERROR
+        )
     ],
     send_default_pii=True
 )
@@ -241,7 +247,7 @@ with CONFIG.cd('web'):
 
 STATIC_URL = '/static/'
 
-LOG_HANDLERS = ['console', 'syslog', 'file', 'sentry']
+LOG_HANDLERS = ['console', 'syslog', 'file']
 
 with CONFIG.cd('log'):
     LOGGING = {
@@ -271,10 +277,6 @@ with CONFIG.cd('log'):
                 'level': CONFIG.get('level').get('console'),
                 'class': 'logging.StreamHandler',
                 'formatter': 'color',
-            },
-            'sentry': {
-                'level': 'ERROR',
-                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
             },
             'syslog': {
                 'level': CONFIG.get('level').get('file'),

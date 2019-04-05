@@ -6,8 +6,6 @@ import os
 from celery import Celery, signals
 from django.conf import settings
 
-# from raven import Client
-
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.core.settings")
 
