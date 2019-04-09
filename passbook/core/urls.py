@@ -17,7 +17,7 @@ admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
 handler400 = error.BadRequestView.as_view()
 handler403 = error.ForbiddenView.as_view()
 handler404 = error.NotFoundView.as_view()
-handler500 = error.BadRequestView.as_view()
+handler500 = error.ServerErrorView.as_view()
 
 core_urls = [
     # Authentication views

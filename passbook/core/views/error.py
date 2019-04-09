@@ -58,3 +58,8 @@ class ServerErrorView(TemplateView):
     extra_context = {
         'is_login': True
     }
+
+    # pylint: disable=useless-super-delegation
+    def dispatch(self, *args, **kwargs):
+        """Little wrapper so django accepts this function"""
+        return super().dispatch(*args, **kwargs)
