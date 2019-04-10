@@ -3,3 +3,5 @@ urllib3[secure]
 channels
 service_identity
 websocket-client
+daphne<2.3.0
+asgiref~=2.3
