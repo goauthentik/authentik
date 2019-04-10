@@ -1,6 +1,7 @@
 celery
 cherrypy
 colorlog
+django-guardian
 django-ipware
 django-model-utils
 django-redis

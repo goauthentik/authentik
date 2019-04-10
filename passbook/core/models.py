@@ -47,7 +47,6 @@ class User(AbstractUser):
     name = models.TextField()
 
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
-    applications = models.ManyToManyField('Application')
     groups = models.ManyToManyField('Group')
     password_change_date = models.DateTimeField(auto_now_add=True)
 

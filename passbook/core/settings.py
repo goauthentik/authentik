@@ -58,7 +58,8 @@ SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 # Application definition
@@ -73,6 +74,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'drf_yasg',
+    'guardian',
+    'raven.contrib.django.raven_compat',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',

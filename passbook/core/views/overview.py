@@ -2,6 +2,7 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
+from guardian.shortcuts import get_objects_for_user
 
 from passbook.core.models import Application
 
@@ -13,7 +14,6 @@ class OverviewView(LoginRequiredMixin, TemplateView):
     template_name = 'overview/index.html'
 
     def get_context_data(self, **kwargs):
-        kwargs['applications'] = self.request.user.applications.all()
-        if self.request.user.is_superuser:
-            kwargs['applications'] = Application.objects.all()
+        kwargs['applications'] = get_objects_for_user(self.request.user,
+                                                      'passbook_core.view_application')
         return super().get_context_data(**kwargs)
