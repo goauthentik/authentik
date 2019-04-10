@@ -1,6 +1,7 @@
 """passbook app_gw middleware"""
 import mimetypes
 from logging import getLogger
+from random import SystemRandom
 from urllib.parse import urlparse
 
 import certifi
@@ -18,6 +19,7 @@ from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
 from passbook.lib.config import CONFIG
 
+SESSION_UPSTREAM_KEY = 'passbook_app_gw_upstream'
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'
 LOGGER = getLogger(__name__)
 QUOTE_SAFE = r'<.;>\(}*+|~=-$/_:^@)[{]&\'!,"`'
@@ -68,11 +70,11 @@ class ApplicationGatewayMiddleware:
             return True, None
         # At this point we're certain there's a matching ApplicationGateway
         if len(matches) > 1:
-            # TODO This should never happen
+            # This should never happen
             raise ValueError
         app_gw = matches.first()
         try:
-            # Check if ApplicationGateway is associcaited with application
+            # Check if ApplicationGateway is associated with application
             getattr(app_gw, 'application')
             return False, app_gw
         except Application.DoesNotExist:
@@ -87,10 +89,18 @@ class ApplicationGatewayMiddleware:
         self.request = request
         return self.dispatch(request)
 
+    def _get_upstream(self):
+        """Choose random upstream and save in session"""
+        if SESSION_UPSTREAM_KEY not in self.request.session:
+            self.request.session[SESSION_UPSTREAM_KEY] = {}
+        if self.app_gw.pk not in self.request.session[SESSION_UPSTREAM_KEY]:
+            upstream_index = SystemRandom().randrange(len(self.app_gw.upstream))
+            self.request.session[SESSION_UPSTREAM_KEY][self.app_gw.pk] = upstream_index
+        return self.app_gw.upstream[self.request.session[SESSION_UPSTREAM_KEY][self.app_gw.pk]]
+
     def get_upstream(self):
         """Get upstream as parsed url"""
-        # TODO: How to choose upstream?
-        upstream = self.app_gw.upstream[0]
+        upstream = self._get_upstream()
 
         self._parsed_url = urlparse(upstream)
 
