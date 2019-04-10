@@ -1,2 +1,5 @@
 django-revproxy
 urllib3[secure]
+channels
+service_identity
+websocket-client
