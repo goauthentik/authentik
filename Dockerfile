@@ -6,7 +6,7 @@ COPY ./requirements.txt /app/
 
 WORKDIR /app/
 
-RUN apt-get update && apt-get install build-essential libssl-dev libffi-dev -y && \
+RUN apt-get update && apt-get install build-essential libssl-dev libffi-dev libpq-dev -y && \
     mkdir /app/static/ && \
     pip install -r requirements.txt && \
     pip install psycopg2 && \
@@ -23,7 +23,7 @@ COPY --from=build /app/static /app/static/
 
 WORKDIR /app/
 
-RUN apt-get update && apt-get install build-essential libssl-dev libffi-dev -y && \
+RUN apt-get update && apt-get install build-essential libssl-dev libffi-dev libpq-dev -y && \
     pip install -r requirements.txt && \
     pip install psycopg2 && \
     adduser --system --home /app/ passbook && \

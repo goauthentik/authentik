@@ -10,10 +10,10 @@ from django.core.cache import cache
 from django.utils.http import urlencode
 from django.views.generic import RedirectView
 from revproxy.exceptions import InvalidUpstream
-from revproxy.response import get_django_response
-from revproxy.utils import encode_items, normalize_request_headers
 
 from passbook.app_gw.models import ApplicationGatewayProvider
+from passbook.app_gw.proxy.response import get_django_response
+from passbook.app_gw.proxy.utils import encode_items, normalize_request_headers
 from passbook.app_gw.rewrite import Rewriter
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
