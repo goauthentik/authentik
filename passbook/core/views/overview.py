@@ -4,8 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from guardian.shortcuts import get_objects_for_user
 
-from passbook.core.models import Application
-
 
 class OverviewView(LoginRequiredMixin, TemplateView):
     """Overview for logged in user, incase user opens passbook directly
