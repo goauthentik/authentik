@@ -1,5 +1,4 @@
 celery
-cherrypy
 colorlog
 django-ipware
 django-model-utils

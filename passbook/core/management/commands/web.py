@@ -2,11 +2,11 @@
 
 from logging import getLogger
 
-import cherrypy
-from django.conf import settings
+from daphne.cli import CommandLineInterface
 from django.core.management.base import BaseCommand
+from django.utils import autoreload
 
-from passbook.core.wsgi import application
+from passbook.lib.config import CONFIG
 
 LOGGER = getLogger(__name__)
 
@@ -16,19 +16,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """passbook cherrypy server"""
-        config = settings.CHERRYPY_SERVER
-        config.update(**options)
-        cherrypy.config.update(config)
-        cherrypy.tree.graft(application, '/')
-        # Mount NullObject to serve static files
-        cherrypy.tree.mount(None, '/static', config={
-            '/': {
-                'tools.staticdir.on': True,
-                'tools.staticdir.dir': settings.STATIC_ROOT,
-                'tools.expires.on': True,
-                'tools.expires.secs': 86400,
-                'tools.gzip.on': True,
-            }
-        })
-        cherrypy.engine.start()
-        cherrypy.engine.block()
+        autoreload.run_with_reloader(self.daphne_server)
+
+    def daphne_server(self):
+        """Run daphne server within autoreload"""
+        autoreload.raise_last_exception()
+        with CONFIG.cd('web'):
+            CommandLineInterface().run([
+                '-p', str(CONFIG.get('port', 8000)),
+                '-b', CONFIG.get('listen', '0.0.0.0'),  # nosec
+                '--access-log', '/dev/null',
+                'passbook.core.asgi:application'
+            ])

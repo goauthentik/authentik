@@ -29,7 +29,7 @@ spec:
           image: "docker.pkg.beryju.org/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh","-c"]
-          args: ["./manage.py migrate && daphne -p 8000 passbook.core.asgi:application"]
+          args: ["./manage.py migrate && ./manage.py web"]
           ports:
             - name: http
               containerPort: 8000

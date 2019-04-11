@@ -231,18 +231,6 @@ sentry_init(
     send_default_pii=True
 )
 
-
-# CherryPY settings
-with CONFIG.cd('web'):
-    CHERRYPY_SERVER = {
-        'server.socket_host': CONFIG.get('listen', '0.0.0.0'),  # nosec
-        'server.socket_port': CONFIG.get('port', 8000),
-        'server.thread_pool': CONFIG.get('threads', 30),
-        'log.screen': False,
-        'log.access_file': '',
-        'log.error_file': '',
-    }
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -325,6 +313,11 @@ with CONFIG.cd('log'):
                 'level': 'DEBUG',
                 'propagate': True,
             },
+            'daphne': {
+                'handlers': LOG_HANDLERS,
+                'level': 'DEBUG',
+                'propagate': True,
+            }
         }
     }
 
