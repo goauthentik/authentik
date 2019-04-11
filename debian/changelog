@@ -1,3 +1,20 @@
+passbook (0.1.28) stable; urgency=medium
+
+  * bump version: 0.1.26-beta -> 0.1.27-beta
+  * fix allauth client's formatting
+  * switch from raven to sentry_sdk
+  * add ability to have non-expiring nonces, clean up expired nonces
+  * fully remove raven and switch WSGI and logging to sentry_sdk
+  * fix failing CI
+  * trigger autoreload from config files
+  * Choose upstream more cleverly
+  * Move code from django-revproxy to app_gw to fix cookie bug
+  * Implement websocket proxy
+  * switch kubernetes deployment to daphne server
+  * set default log level to warn, fix clean_nonces not working
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 11 Apr 2019 08:46:44 +0000
+
 passbook (0.1.27) stable; urgency=medium
 
   * bump version: 0.1.25-beta -> 0.1.26-beta
