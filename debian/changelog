@@ -1,3 +1,10 @@
+passbook (0.1.30) stable; urgency=medium
+
+  * bump version: 0.1.28-beta -> 0.1.29-beta
+  * don't use context manager in web command
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 11 Apr 2019 12:21:58 +0000
+
 passbook (0.1.29) stable; urgency=medium
 
   * bump version: 0.1.27-beta -> 0.1.28-beta

@@ -21,10 +21,9 @@ class Command(BaseCommand):
     def daphne_server(self):
         """Run daphne server within autoreload"""
         autoreload.raise_last_exception()
-        with CONFIG.cd('web'):
-            CommandLineInterface().run([
-                '-p', str(CONFIG.get('port', 8000)),
-                '-b', CONFIG.get('listen', '0.0.0.0'),  # nosec
-                '--access-log', '/dev/null',
-                'passbook.core.asgi:application'
-            ])
+        CommandLineInterface().run([
+            '-p', str(CONFIG.y('web.port', 8000)),
+            '-b', CONFIG.y('web.listen', '0.0.0.0'),  # nosec
+            '--access-log', '/dev/null',
+            'passbook.core.asgi:application'
+        ])
