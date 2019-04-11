@@ -77,10 +77,10 @@ class ApplicationGatewayMiddleware:
         try:
             # Check if ApplicationGateway is associated with application
             getattr(app_gw, 'application')
-            return False, app_gw
+            if app_gw:
+                return False, app_gw
         except Application.DoesNotExist:
             LOGGER.debug("ApplicationGateway not associated with Application")
-            return True, None
         return True, None
 
     def __call__(self, request):
