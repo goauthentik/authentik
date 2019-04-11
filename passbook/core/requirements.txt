@@ -12,3 +12,4 @@ psycopg2
 PyYAML
 sentry-sdk
 pip
+whitenoise
