@@ -1,3 +1,13 @@
+passbook (0.1.29) stable; urgency=medium
+
+  * bump version: 0.1.27-beta -> 0.1.28-beta
+  * Add libpq-dev dependency so psycopg2 build works
+  * switch to whitenoise for static files
+  * replace cherrypy with daphne
+  * Run collectstatic before coverage, use autoreload on celery worker
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 11 Apr 2019 12:00:27 +0000
+
 passbook (0.1.28) stable; urgency=medium
 
   * bump version: 0.1.26-beta -> 0.1.27-beta
