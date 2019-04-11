@@ -217,19 +217,21 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-sentry_init(
-    dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
-         "0d83be640d834e5458@sentry.services.beryju.org/8"),
-    integrations=[
-        DjangoIntegration(),
-        CeleryIntegration(),
-        LoggingIntegration(
-            level=logging.INFO,
-            event_level=logging.ERROR
-        )
-    ],
-    send_default_pii=True
-)
+
+if not DEBUG:
+    sentry_init(
+        dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
+             "0d83be640d834e5458@sentry.services.beryju.org/8"),
+        integrations=[
+            DjangoIntegration(),
+            CeleryIntegration(),
+            LoggingIntegration(
+                level=logging.INFO,
+                event_level=logging.ERROR
+            )
+        ],
+        send_default_pii=True,
+    )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -315,7 +317,7 @@ with CONFIG.cd('log'):
             },
             'daphne': {
                 'handlers': LOG_HANDLERS,
-                'level': 'DEBUG',
+                'level': 'INFO',
                 'propagate': True,
             }
         }
