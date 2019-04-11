@@ -27,6 +27,11 @@ ERRORS_MESSAGES = {
     'upstream-no-scheme': ("Upstream URL scheme must be either "
                            "'http' or 'https' (%s).")
 }
+HTTP_NO_VERIFY = urllib3.PoolManager()
+HTTP = urllib3.PoolManager(
+    cert_reqs='CERT_REQUIRED',
+    ca_certs=certifi.where())
+
 
 # pylint: disable=too-many-instance-attributes
 class ApplicationGatewayMiddleware:
@@ -45,10 +50,6 @@ class ApplicationGatewayMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.ignored_hosts = cache.get(IGNORED_HOSTNAMES_KEY, [])
-        self.http_no_verify = urllib3.PoolManager()
-        self.http = urllib3.PoolManager(
-            cert_reqs='CERT_REQUIRED',
-            ca_certs=certifi.where())
 
     def precheck(self, request):
         """Check if a request should be proxied or forwarded to passbook"""
@@ -137,6 +138,8 @@ class ApplicationGatewayMiddleware:
         .. versionadded:: 0.9.8
         """
         request_headers = self.get_proxy_request_headers(self.request)
+        if not self.app_gw.authentication_header:
+            return request_headers
         request_headers[self.app_gw.authentication_header] = self.request.user.get_username()
         LOGGER.info("%s set", self.app_gw.authentication_header)
 
@@ -171,9 +174,9 @@ class ApplicationGatewayMiddleware:
             request_url += '?' + self.get_encoded_query_params()
             LOGGER.debug("Request URL: %s", request_url)
 
-        http = self.http
+        http = HTTP
         if not self.app_gw.upstream_ssl_verification:
-            http = self.http_no_verify
+            http = HTTP_NO_VERIFY
 
         try:
             proxy_response = http.urlopen(request.method,
