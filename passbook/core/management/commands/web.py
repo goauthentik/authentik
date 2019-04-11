@@ -15,7 +15,7 @@ class Command(BaseCommand):
     """Run CherryPy webserver"""
 
     def handle(self, *args, **options):
-        """passbook cherrypy server"""
+        """passbook daphne server"""
         autoreload.run_with_reloader(self.daphne_server)
 
     def daphne_server(self):

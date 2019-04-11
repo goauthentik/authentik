@@ -40,6 +40,7 @@ pylint:
     stage: test
 coverage:
     script:
+        - python manage.py collectstatic --no-input
         - coverage run manage.py test
         - coverage report
     stage: test
