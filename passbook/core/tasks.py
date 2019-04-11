@@ -24,5 +24,5 @@ def send_email(to_address, subject, template, context):
 @CELERY_APP.task()
 def clean_nonces():
     """Remove expired nonces"""
-    amount = Nonce.objects.filter(expires__lt=datetime.now(), expiring=True).delete()
+    amount, _ = Nonce.objects.filter(expires__lt=datetime.now(), expiring=True).delete()
     LOGGER.debug("Deleted expired %d nonces", amount)
