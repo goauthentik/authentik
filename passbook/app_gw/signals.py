@@ -6,8 +6,8 @@ from django.core.cache import cache
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from passbook.app_gw.middleware import IGNORED_HOSTNAMES_KEY
 from passbook.app_gw.models import ApplicationGatewayProvider
+from passbook.app_gw.proxy.handler import IGNORED_HOSTNAMES_KEY
 
 LOGGER = getLogger(__name__)
 

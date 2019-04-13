@@ -1,4 +1,5 @@
 """passbook core policy engine"""
+import cProfile
 from logging import getLogger
 
 from amqp.exceptions import UnexpectedFrame
@@ -9,6 +10,18 @@ from ipware import get_client_ip
 
 from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
+
+
+def profileit(func):
+    def wrapper(*args, **kwargs):
+        datafn = func.__name__ + ".profile"  # Name the data file sensibly
+        prof = cProfile.Profile()
+        retval = prof.runcall(func, *args, **kwargs)
+        prof.dump_stats(datafn)
+        return retval
+
+    return wrapper
+
 
 LOGGER = getLogger(__name__)
 
@@ -66,6 +79,7 @@ class PolicyEngine:
         self.__request = request
         return self
 
+    @profileit
     def build(self):
         """Build task group"""
         if not self.__user:
@@ -82,16 +96,16 @@ class PolicyEngine:
         for policy in self.policies:
             cached_policy = cache.get(_cache_key(policy, self.__user), None)
             if cached_policy:
-                LOGGER.debug("Taking result from cache for %s", policy.pk.hex)
+                LOGGER.warning("Taking result from cache for %s", policy.pk.hex)
                 cached_policies.append(cached_policy)
             else:
-                LOGGER.debug("Evaluating policy %s", policy.pk.hex)
+                LOGGER.warning("Evaluating policy %s", policy.pk.hex)
                 signatures.append(_policy_engine_task.signature(
                     args=(self.__user.pk, policy.pk.hex),
                     kwargs=kwargs,
                     time_limit=policy.timeout))
                 self.__get_timeout += policy.timeout
-        LOGGER.debug("Set total policy timeout to %r", self.__get_timeout)
+        LOGGER.warning("Set total policy timeout to %r", self.__get_timeout)
         # If all policies are cached, we have an empty list here.
         if signatures:
             self.__group = group(signatures)()
