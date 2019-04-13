@@ -239,8 +239,6 @@ if not DEBUG:
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-LOG_HANDLERS = ['console', 'syslog', 'file']
-
 with CONFIG.cd('log'):
     LOGGING = {
         'version': 1,
@@ -283,41 +281,50 @@ with CONFIG.cd('log'):
                 'formatter': 'verbose',
                 'filename': CONFIG.get('file'),
             },
+            'queue': {
+                'level': CONFIG.get('level').get('console'),
+                'class': 'passbook.lib.log.QueueListenerHandler',
+                'handlers': [
+                    'cfg://handlers.console',
+                    # 'cfg://handlers.syslog',
+                    'cfg://handlers.file',
+                ],
+            }
         },
         'loggers': {
             'passbook': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'django': {
-                'handlers': LOG_HANDLERS,
-                'level': 'INFO',
+                'handlers': ['queue'],
+                'level': 'DEBUG',
                 'propagate': True,
             },
             'tasks': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'cherrypy': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'oauthlib': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'oauth2_provider': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'daphne': {
-                'handlers': LOG_HANDLERS,
-                'level': 'INFO',
+                'handlers': ['queue'],
+                'level': 'DEBUG',
                 'propagate': True,
             }
         }
