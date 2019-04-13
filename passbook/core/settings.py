@@ -75,7 +75,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'guardian',
-    'raven.contrib.django.raven_compat',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
