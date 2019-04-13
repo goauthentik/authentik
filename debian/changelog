@@ -1,3 +1,16 @@
+passbook (0.1.31) stable; urgency=medium
+
+  * bump version: 0.1.29-beta -> 0.1.30-beta
+  * allow setting authentication_header to empty string (disabling the header)
+  * use global urllib Pools
+  * try to fix app_gw being null
+  * only enable sentry when not DEBUG
+  * move logging to separate thread
+  * move actual proxying logic to separate class
+  * remove logging to increase speed, add more caching to policy and rewriter
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Sat, 13 Apr 2019 15:56:55 +0000
+
 passbook (0.1.30) stable; urgency=medium
 
   * bump version: 0.1.28-beta -> 0.1.29-beta
