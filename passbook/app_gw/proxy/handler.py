@@ -12,8 +12,8 @@ from django.utils.http import urlencode
 from passbook.app_gw.models import ApplicationGatewayProvider
 from passbook.app_gw.proxy.exceptions import InvalidUpstream
 from passbook.app_gw.proxy.response import get_django_response
+from passbook.app_gw.proxy.rewrite import Rewriter
 from passbook.app_gw.proxy.utils import encode_items, normalize_request_headers
-from passbook.app_gw.rewrite import Rewriter
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
 
@@ -30,7 +30,7 @@ HTTP = urllib3.PoolManager(
     cert_reqs='CERT_REQUIRED',
     ca_certs=certifi.where())
 IGNORED_HOSTS = cache.get(IGNORED_HOSTNAMES_KEY, [])
-
+POLICY_CACHE = {}
 
 class RequestHandler:
     """Forward requests"""
@@ -41,6 +41,8 @@ class RequestHandler:
     def __init__(self, app_gw, request):
         self.app_gw = app_gw
         self.request = request
+        if self.app_gw.pk not in POLICY_CACHE:
+            POLICY_CACHE[self.app_gw.pk] = self.app_gw.application.policies.all()
 
     @staticmethod
     def find_app_gw_for_request(request):
@@ -49,7 +51,7 @@ class RequestHandler:
         # This saves us having to query the database on each request
         host_header = request.META.get('HTTP_HOST')
         if host_header in IGNORED_HOSTS:
-            LOGGER.debug("%s is ignored", host_header)
+            # LOGGER.debug("%s is ignored", host_header)
             return False
         # Look through all ApplicationGatewayProviders and check hostnames
         matches = ApplicationGatewayProvider.objects.filter(
@@ -59,7 +61,7 @@ class RequestHandler:
             # Mo matching Providers found, add host header to ignored list
             IGNORED_HOSTS.append(host_header)
             cache.set(IGNORED_HOSTNAMES_KEY, IGNORED_HOSTS)
-            LOGGER.debug("Ignoring %s", host_header)
+            # LOGGER.debug("Ignoring %s", host_header)
             return False
         # At this point we're certain there's a matching ApplicationGateway
         if len(matches) > 1:
@@ -72,7 +74,8 @@ class RequestHandler:
             if app_gw:
                 return app_gw
         except Application.DoesNotExist:
-            LOGGER.debug("ApplicationGateway not associated with Application")
+            pass
+            # LOGGER.debug("ApplicationGateway not associated with Application")
         return True
 
     def _get_upstream(self):
@@ -97,10 +100,10 @@ class RequestHandler:
         return upstream
 
     def _format_path_to_redirect(self):
-        LOGGER.debug("Path before: %s", self.request.get_full_path())
+        # LOGGER.debug("Path before: %s", self.request.get_full_path())
         rewriter = Rewriter(self.app_gw, self.request)
         after = rewriter.build()
-        LOGGER.debug("Path after: %s", after)
+        # LOGGER.debug("Path after: %s", after)
         return after
 
     def get_proxy_request_headers(self):
@@ -126,7 +129,7 @@ class RequestHandler:
         if not self.app_gw.authentication_header:
             return request_headers
         request_headers[self.app_gw.authentication_header] = self.request.user.get_username()
-        LOGGER.info("%s set", self.app_gw.authentication_header)
+        # LOGGER.debug("%s set", self.app_gw.authentication_header)
 
         return request_headers
 
@@ -136,7 +139,7 @@ class RequestHandler:
             return False
         if not self.request.user.is_authenticated:
             return False
-        policy_engine = PolicyEngine(self.app_gw.application.policies.all())
+        policy_engine = PolicyEngine(POLICY_CACHE[self.app_gw.pk])
         policy_engine.for_user(self.request.user).with_request(self.request).build()
         passing, _messages = policy_engine.result
 
@@ -150,14 +153,14 @@ class RequestHandler:
     def _created_proxy_response(self, path):
         request_payload = self.request.body
 
-        LOGGER.debug("Request headers: %s", self._request_headers)
+        # LOGGER.debug("Request headers: %s", self._request_headers)
 
         request_url = self.get_upstream() + path
-        LOGGER.debug("Request URL: %s", request_url)
+        # LOGGER.debug("Request URL: %s", request_url)
 
         if self.request.GET:
             request_url += '?' + self.get_encoded_query_params()
-            LOGGER.debug("Request URL: %s", request_url)
+            # LOGGER.debug("Request URL: %s", request_url)
 
         http = HTTP
         if not self.app_gw.upstream_ssl_verification:
@@ -172,8 +175,8 @@ class RequestHandler:
                                           body=request_payload,
                                           decode_content=False,
                                           preload_content=False)
-            LOGGER.debug("Proxy response header: %s",
-                         proxy_response.getheaders())
+            # LOGGER.debug("Proxy response header: %s",
+            #              proxy_response.getheaders())
         except urllib3.exceptions.HTTPError as error:
             LOGGER.exception(error)
             raise
@@ -195,8 +198,8 @@ class RequestHandler:
             location = location.replace(upstream_host_http, request_host)
             location = location.replace(upstream_host_https, request_host)
             proxy_response.headers['Location'] = location
-            LOGGER.debug("Proxy response LOCATION: %s",
-                         proxy_response.headers['Location'])
+            # LOGGER.debug("Proxy response LOCATION: %s",
+            #              proxy_response.headers['Location'])
 
     def _set_content_type(self, proxy_response):
         content_type = proxy_response.headers.get('Content-Type')
@@ -204,8 +207,8 @@ class RequestHandler:
             content_type = (mimetypes.guess_type(self.request.path)[0] or
                             self.app_gw.default_content_type)
             proxy_response.headers['Content-Type'] = content_type
-            LOGGER.debug("Proxy response CONTENT-TYPE: %s",
-                         proxy_response.headers['Content-Type'])
+            # LOGGER.debug("Proxy response CONTENT-TYPE: %s",
+            #              proxy_response.headers['Content-Type'])
 
     def get_response(self):
         """Pass request to upstream and return response"""
@@ -218,5 +221,5 @@ class RequestHandler:
         self._set_content_type(proxy_response)
         response = get_django_response(proxy_response, strict_cookies=False)
 
-        LOGGER.debug("RESPONSE RETURNED: %s", response)
+        # LOGGER.debug("RESPONSE RETURNED: %s", response)
         return response

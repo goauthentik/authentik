@@ -299,7 +299,7 @@ with CONFIG.cd('log'):
             },
             'django': {
                 'handlers': ['queue'],
-                'level': 'DEBUG',
+                'level': 'INFO',
                 'propagate': True,
             },
             'tasks': {
@@ -324,7 +324,7 @@ with CONFIG.cd('log'):
             },
             'daphne': {
                 'handlers': ['queue'],
-                'level': 'DEBUG',
+                'level': 'INFO',
                 'propagate': True,
             }
         }

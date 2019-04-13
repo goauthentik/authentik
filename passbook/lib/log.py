@@ -1,38 +1,37 @@
+"""QueueListener that can be configured from logging.dictConfig"""
 from atexit import register
-from logging.config import ConvertingDict, ConvertingList, valid_ident
+from logging.config import ConvertingList
 from logging.handlers import QueueHandler, QueueListener
 from queue import Queue
 
-from django.conf import settings
 
-
-def _resolve_handlers(l):
-    # import pudb; pu.db
-    if not isinstance(l, ConvertingList):
-        return l
+def _resolve_handlers(_list):
+    """Evaluates ConvertingList by iterating over it"""
+    if not isinstance(_list, ConvertingList):
+        return _list
 
     # Indexing the list performs the evaluation.
-    return [l[i] for i in range(len(l))]
+    return [_list[i] for i in range(len(_list))]
 
 
 class QueueListenerHandler(QueueHandler):
+    """QueueListener that can be configured from logging.dictConfig"""
 
-    def __init__(self, handlers, respect_handler_level=False, auto_run=True, queue=Queue(-1)):
+    def __init__(self, handlers, auto_run=True, queue=Queue(-1)):
         super().__init__(queue)
         handlers = _resolve_handlers(handlers)
         self._listener = QueueListener(
             self.queue,
             *handlers,
-            respect_handler_level=respect_handler_level)
+            respect_handler_level=True)
         if auto_run:
             self.start()
             register(self.stop)
 
     def start(self):
+        """start background thread"""
         self._listener.start()
 
     def stop(self):
+        """stop background thread"""
         self._listener.stop()
-
-    def emit(self, record):
-        return super().emit(record)

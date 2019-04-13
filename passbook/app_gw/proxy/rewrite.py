@@ -2,6 +2,7 @@
 
 from passbook.app_gw.models import RewriteRule
 
+RULE_CACHE = {}
 
 class Context:
     """Empty class which we dynamically add attributes to"""
@@ -15,6 +16,9 @@ class Rewriter:
     def __init__(self, application, request):
         self.__application = application
         self.__request = request
+        if self.__application.pk not in RULE_CACHE:
+            RULE_CACHE[self.__application.pk] = RewriteRule.objects.filter(
+                provider__in=[self.__application])
 
     def __build_context(self, matches):
         """Build object with .0, .1, etc as groups and give access to request"""
@@ -27,7 +31,7 @@ class Rewriter:
     def build(self):
         """Run all rules over path and return final path"""
         path = self.__request.get_full_path()
-        for rule in RewriteRule.objects.filter(provider__in=[self.__application]):
+        for rule in RULE_CACHE[self.__application.pk]:
             matches = rule.compiled_matcher.search(path)
             if not matches:
                 continue
