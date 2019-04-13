@@ -124,6 +124,7 @@ CACHES = {
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'passbook.app_gw.middleware.ApplicationGatewayMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -219,38 +220,27 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-sentry_init(
-    dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
-         "0d83be640d834e5458@sentry.services.beryju.org/8"),
-    integrations=[
-        DjangoIntegration(),
-        CeleryIntegration(),
-        LoggingIntegration(
-            level=logging.INFO,
-            event_level=logging.ERROR
-        )
-    ],
-    send_default_pii=True
-)
 
-
-# CherryPY settings
-with CONFIG.cd('web'):
-    CHERRYPY_SERVER = {
-        'server.socket_host': CONFIG.get('listen', '0.0.0.0'),  # nosec
-        'server.socket_port': CONFIG.get('port', 8000),
-        'server.thread_pool': CONFIG.get('threads', 30),
-        'log.screen': False,
-        'log.access_file': '',
-        'log.error_file': '',
-    }
+if not DEBUG:
+    sentry_init(
+        dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
+             "0d83be640d834e5458@sentry.services.beryju.org/8"),
+        integrations=[
+            DjangoIntegration(),
+            CeleryIntegration(),
+            LoggingIntegration(
+                level=logging.INFO,
+                event_level=logging.ERROR
+            )
+        ],
+        send_default_pii=True,
+    )
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-LOG_HANDLERS = ['console', 'syslog', 'file']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 with CONFIG.cd('log'):
     LOGGING = {
@@ -294,38 +284,52 @@ with CONFIG.cd('log'):
                 'formatter': 'verbose',
                 'filename': CONFIG.get('file'),
             },
+            'queue': {
+                'level': CONFIG.get('level').get('console'),
+                'class': 'passbook.lib.log.QueueListenerHandler',
+                'handlers': [
+                    'cfg://handlers.console',
+                    # 'cfg://handlers.syslog',
+                    'cfg://handlers.file',
+                ],
+            }
         },
         'loggers': {
             'passbook': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'django': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'INFO',
                 'propagate': True,
             },
             'tasks': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'cherrypy': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'oauthlib': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
             'oauth2_provider': {
-                'handlers': LOG_HANDLERS,
+                'handlers': ['queue'],
                 'level': 'DEBUG',
                 'propagate': True,
             },
+            'daphne': {
+                'handlers': ['queue'],
+                'level': 'INFO',
+                'propagate': True,
+            }
         }
     }
 

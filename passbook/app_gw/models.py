@@ -15,7 +15,7 @@ class ApplicationGatewayProvider(Provider):
     upstream = ArrayField(models.TextField())
     enabled = models.BooleanField(default=True)
 
-    authentication_header = models.TextField(default='X-Remote-User')
+    authentication_header = models.TextField(default='X-Remote-User', blank=True)
     default_content_type = models.TextField(default='application/octet-stream')
     upstream_ssl_verification = models.BooleanField(default=True)
 

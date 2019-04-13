@@ -1,5 +1,4 @@
 celery
-cherrypy
 colorlog
 django-guardian
 django-ipware
@@ -13,3 +12,4 @@ psycopg2
 PyYAML
 sentry-sdk
 pip
+whitenoise

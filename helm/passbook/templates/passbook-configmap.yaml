@@ -15,8 +15,8 @@ data:
         port: ''
     log:
       level:
-        console: DEBUG
-        file: DEBUG
+        console: WARNING
+        file: WARNING
       file: /dev/null
       syslog:
         host: 127.0.0.1
