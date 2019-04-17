@@ -36,6 +36,13 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
 
     _application = None
 
+    def _inject_response_type(self):
+        """Inject response_type into querystring if not set"""
+        LOGGER.debug("response_type not set, defaulting to 'code'")
+        querystring = urlencode(self.request.GET)
+        querystring += '&response_type=code'
+        return redirect(reverse('passbook_oauth_provider:oauth2-ok-authorize') + '?' + querystring)
+
     def dispatch(self, request, *args, **kwargs):
         """Update OAuth2Provider's skip_authorization state"""
         # Get client_id to get provider, so we can update skip_authorization field
@@ -55,6 +62,9 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
             for policy_meaage in policy_meaages:
                 messages.error(request, policy_meaage)
             return redirect('passbook_oauth_provider:oauth2-permission-denied')
+        # Some clients don't pass response_type, so we default to code
+        if 'response_type' not in request.GET:
+            return self._inject_response_type()
         actual_response = super().dispatch(request, *args, **kwargs)
         if actual_response.status_code == 400:
             LOGGER.debug(request.GET.get('redirect_uri'))
