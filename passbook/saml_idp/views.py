@@ -17,7 +17,6 @@ from signxml.util import strip_pem_header
 from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
-from passbook.lib.config import CONFIG
 from passbook.lib.mixins import CSRFExemptMixin
 from passbook.lib.utils.template import render_to_string
 from passbook.saml_idp import exceptions
