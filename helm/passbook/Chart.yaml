@@ -3,4 +3,4 @@ appVersion: "0.1.32-beta"
 description: A Helm chart for passbook.
 name: passbook
 version: "0.1.32-beta"
-icon: https://passbook.beryju.org/images/logo.png
+icon: https://git.beryju.org/uploads/-/system/project/avatar/108/logo.png
