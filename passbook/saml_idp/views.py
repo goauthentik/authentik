@@ -205,7 +205,7 @@ class DescriptorDownloadView(AccessRequiredView):
 
     def get(self, request, application):
         """Replies with the XML Metadata IDSSODescriptor."""
-        entity_id = CONFIG.y('saml_idp.issuer')
+        entity_id = self.application.provider.issuer
         slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml-logout', kwargs={
             'application': application
         }))
