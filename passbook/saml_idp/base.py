@@ -65,7 +65,7 @@ class Processor:
         self._remote = remote
         self._logger = getLogger(__name__)
         self._system_params['ISSUER'] = self._remote.issuer
-        self._logger.info('processor configured')
+        self._logger.debug('processor configured')
 
     def _build_assertion(self):
         """Builds _assertion_params."""
@@ -295,6 +295,7 @@ class Processor:
     def generate_response(self):
         """Processes request and returns template variables suitable for a response."""
         # Build the assertion and response.
+        self.can_handle(self._django_request)
         self._validate_user()
         self._build_assertion()
         self._format_assertion()
