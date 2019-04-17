@@ -1,3 +1,10 @@
+passbook (0.1.32) stable; urgency=medium
+
+  * bump version: 0.1.30-beta -> 0.1.31-beta
+  * automatically add response_type if not given in OAuth Request
+
+ -- Jens Langhammer <jens.langhammer@beryju.org>  Wed, 17 Apr 2019 12:25:58 +0000
+
 passbook (0.1.31) stable; urgency=medium
 
   * bump version: 0.1.29-beta -> 0.1.30-beta
