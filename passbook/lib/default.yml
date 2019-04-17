@@ -101,3 +101,4 @@ saml_idp:
     - passbook.saml_idp.processors.salesforce
     - passbook.saml_idp.processors.shibboleth
     - passbook.saml_idp.processors.wordpress_orange
+    - passbook.saml_idp.processors.rancher
