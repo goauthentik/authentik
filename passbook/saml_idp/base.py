@@ -116,11 +116,7 @@ class Processor:
 
     def _determine_audience(self):
         """Determines the _audience."""
-        self._audience = self._request_params.get('DESTINATION', None)
-
-        if not self._audience:
-            self._audience = self._request_params.get('PROVIDER_NAME', None)
-
+        self._audience = self._remote.audience
         self._logger.info('determined audience')
 
     def _determine_response_id(self):

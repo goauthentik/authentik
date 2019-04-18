@@ -15,6 +15,7 @@ class SAMLProvider(Provider):
 
     name = models.TextField()
     acs_url = models.URLField()
+    audience = models.TextField(default='')
     processor_path = models.CharField(max_length=255, choices=[])
     issuer = models.TextField()
     assertion_valid_for = models.IntegerField(default=86400)
@@ -33,7 +34,10 @@ class SAMLProvider(Provider):
     def processor(self):
         """Return selected processor as instance"""
         if not self._processor:
-            self._processor = path_to_class(self.processor_path)(self)
+            try:
+                self._processor = path_to_class(self.processor_path)(self)
+            except ModuleNotFoundError:
+                self._processor = None
         return self._processor
 
     def __str__(self):
