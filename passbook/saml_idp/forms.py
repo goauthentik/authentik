@@ -25,7 +25,7 @@ class SAMLProviderForm(forms.ModelForm):
     class Meta:
 
         model = SAMLProvider
-        fields = ['name', 'property_mappings', 'acs_url', 'processor_path', 'issuer',
+        fields = ['name', 'property_mappings', 'acs_url', 'audience', 'processor_path', 'issuer',
                   'assertion_valid_for', 'signing', 'signing_cert', 'signing_key', ]
         labels = {
             'acs_url': 'ACS URL',
@@ -33,6 +33,7 @@ class SAMLProviderForm(forms.ModelForm):
         }
         widgets = {
             'name': forms.TextInput(),
+            'audience': forms.TextInput(),
             'issuer': forms.TextInput(),
             'property_mappings': FilteredSelectMultiple(_('Property Mappings'), False)
         }
