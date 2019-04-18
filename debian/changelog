@@ -1,3 +1,16 @@
+passbook (0.1.33) stable; urgency=medium
+
+  * bump version: 0.1.31-beta -> 0.1.32-beta
+  * fix EntityID being None in SAML Metadata
+  * fix SAML Request not being parsed all the time
+  * add Rancher SAML processor
+  * remove unused import
+  * fix broken icon for helm chart
+  * switch to custom CI base image with dependencies installed
+  * remove included CI file
+
+  -- Jens Langhammer <jens.langhammer@beryju.org>  Thu, 18 Apr 2019 08:23:55 +0000
+
 passbook (0.1.32) stable; urgency=medium
 
   * bump version: 0.1.30-beta -> 0.1.31-beta
