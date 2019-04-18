@@ -15,9 +15,6 @@ variables:
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
-include:
-  - /client-packages/allauth/.gitlab-ci.yml
-
 create-build-image:
   image:
     name: gcr.io/kaniko-project/executor:debug
