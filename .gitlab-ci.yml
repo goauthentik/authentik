@@ -22,7 +22,7 @@ create-build-image:
   before_script:
     - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.build-base --destination docker.pkg.beryju.org/passbook-build-base:latest --destination docker.pkg.beryju.org/passbook-build-base:0.1.32-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.build-base --destination docker.pkg.beryju.org/passbook-build-base:latest --destination docker.pkg.beryju.org/passbook-build-base:0.1.33-beta
   stage: build-buildimage
   only:
     refs:
@@ -63,7 +63,7 @@ package-docker:
   before_script:
     - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.32-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.33-beta
   stage: build
   only:
     - tags
