@@ -95,10 +95,4 @@ saml_idp:
   # List of python packages with provider types to load.
   types:
     - passbook.saml_idp.processors.generic
-    - passbook.saml_idp.processors.aws
-    - passbook.saml_idp.processors.gitlab
-    - passbook.saml_idp.processors.nextcloud
     - passbook.saml_idp.processors.salesforce
-    - passbook.saml_idp.processors.shibboleth
-    - passbook.saml_idp.processors.wordpress_orange
-    - passbook.saml_idp.processors.rancher
