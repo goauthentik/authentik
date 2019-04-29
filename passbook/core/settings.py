@@ -24,6 +24,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
+from passbook.lib.sentry import before_send
 
 VERSION = __version__
 
@@ -222,8 +223,7 @@ CELERY_BEAT_SCHEDULE = {
 
 if not DEBUG:
     sentry_init(
-        dsn=("https://55b5dd780bc14f4c96bba69b7a9abbcc:449af483bd0745"
-             "0d83be640d834e5458@sentry.services.beryju.org/8"),
+        dsn="https://55b5dd780bc14f4c96bba69b7a9abbcc@sentry.services.beryju.org/8",
         integrations=[
             DjangoIntegration(),
             CeleryIntegration(),
@@ -233,6 +233,8 @@ if not DEBUG:
             )
         ],
         send_default_pii=True,
+        before_send=before_send,
+        release='p2@%s' % __version__
     )
 
 # Static files (CSS, JavaScript, Images)
