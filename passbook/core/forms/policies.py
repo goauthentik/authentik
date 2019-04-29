@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 
 from passbook.core.models import (DebugPolicy, FieldMatcherPolicy,
                                   GroupMembershipPolicy, PasswordPolicy,
-                                  WebhookPolicy)
+                                  SSOLoginPolicy, WebhookPolicy)
 
 GENERAL_FIELDS = ['name', 'action', 'negate', 'order', 'timeout']
 
@@ -63,6 +63,19 @@ class GroupMembershipPolicyForm(forms.ModelForm):
         fields = GENERAL_FIELDS + ['group', ]
         widgets = {
             'name': forms.TextInput(),
+            'order': forms.NumberInput(),
+        }
+
+class SSOLoginPolicyForm(forms.ModelForm):
+    """Edit SSOLoginPolicy instances"""
+
+    class Meta:
+
+        model = SSOLoginPolicy
+        fields = GENERAL_FIELDS
+        widgets = {
+            'name': forms.TextInput(),
+            'order': forms.NumberInput(),
         }
 
 class PasswordPolicyForm(forms.ModelForm):

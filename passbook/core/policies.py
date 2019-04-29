@@ -74,6 +74,7 @@ class PolicyEngine:
         cached_policies = []
         kwargs = {
             '__password__': getattr(self.__user, '__password__', None),
+            'session': dict(getattr(self.__request, 'session', {}).items()),
         }
         if self.__request:
             kwargs['remote_ip'], _ = get_client_ip(self.__request)

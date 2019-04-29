@@ -4,7 +4,7 @@ from logging import getLogger
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
 
+from passbook.core.auth.view import AuthenticationView, _redirect_with_qs
 from passbook.lib.utils.reflection import app
 from passbook.oauth_client.clients import get_client
 from passbook.oauth_client.models import OAuthSource, UserOAuthSourceConnection
@@ -128,11 +129,6 @@ class OAuthCallback(OAuthClientMixin, View):
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
 
-    # pylint: disable=unused-argument
-    def get_login_redirect(self, source, user, access, new=False):
-        "Return url to redirect authenticated users."
-        return 'passbook_core:overview'
-
     def get_or_create_user(self, source, access, info):
         "Create a shell auth.User."
         raise NotImplementedError()
@@ -149,14 +145,22 @@ class OAuthCallback(OAuthClientMixin, View):
         except KeyError:
             return None
 
+    def handle_login(self, user, source, access):
+        """Prepare AuthenticationView, redirect users to remaining Factors"""
+        user = authenticate(source=access.source,
+                            identifier=access.identifier, request=self.request)
+        self.request.session[AuthenticationView.SESSION_PENDING_USER] = user.pk
+        self.request.session[AuthenticationView.SESSION_USER_BACKEND] = user.backend
+        self.request.session[AuthenticationView.SESSION_IS_SSO_LOGIN] = True
+        return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
+
     # pylint: disable=unused-argument
     def handle_existing_user(self, source, user, access, info):
         "Login user and redirect."
-        login(self.request, user)
         messages.success(self.request, _("Successfully authenticated with %(source)s!" % {
             'source': self.source.name
         }))
-        return redirect(self.get_login_redirect(source, user, access))
+        return self.handle_login(user, source, access)
 
     def handle_login_failure(self, source, reason):
         "Message user and redirect on error."
@@ -176,12 +180,9 @@ class OAuthCallback(OAuthClientMixin, View):
         access.user = user
         access.save()
         UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
-        if not was_authenticated:
-            user = authenticate(source=access.source,
-                                identifier=access.identifier, request=self.request)
-            login(self.request, user)
         if app('passbook_audit'):
             pass
+            # TODO: Create audit entry
             # from passbook.audit.models import something
             # something.event(user=user,)
             # Event.create(
@@ -197,10 +198,13 @@ class OAuthCallback(OAuthClientMixin, View):
             return redirect(reverse('passbook_oauth_client:oauth-client-user', kwargs={
                 'source_slug': self.source.slug
             }))
+        # User was not authenticated, new user has been created
+        user = authenticate(source=access.source,
+                            identifier=access.identifier, request=self.request)
         messages.success(self.request, _("Successfully authenticated with %(source)s!" % {
             'source': self.source.name
         }))
-        return redirect(self.get_login_redirect(source, user, access, True))
+        return self.handle_login(user, source, access)
 
 
 class DisconnectView(LoginRequiredMixin, View):

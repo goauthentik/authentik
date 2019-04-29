@@ -29,6 +29,7 @@ class AuthenticationView(UserPassesTestMixin, View):
     SESSION_PENDING_FACTORS = 'passbook_pending_factors'
     SESSION_PENDING_USER = 'passbook_pending_user'
     SESSION_USER_BACKEND = 'passbook_user_backend'
+    SESSION_IS_SSO_LOGIN = 'passbook_sso_login'
 
     pending_user = None
     pending_factors = []
@@ -79,6 +80,10 @@ class AuthenticationView(UserPassesTestMixin, View):
         if AuthenticationView.SESSION_FACTOR not in request.session:
             # Case when no factors apply to user, return error denied
             if not self.pending_factors:
+                # Case when user logged in from SSO provider and no more factors apply
+                if AuthenticationView.SESSION_IS_SSO_LOGIN in request.session:
+                    LOGGER.debug("User authenticated with SSO, logging in...")
+                    return self._user_passed()
                 return self.user_invalid()
             factor_uuid, factor_class = self.pending_factors[0]
         else:

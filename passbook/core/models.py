@@ -165,8 +165,9 @@ class Source(PolicyModel):
 
     name = models.TextField()
     slug = models.SlugField()
-    form = '' # ModelForm-based class ued to create/edit instance
     enabled = models.BooleanField(default=True)
+
+    form = '' # ModelForm-based class ued to create/edit instance
 
     objects = InheritanceManager()
 
@@ -408,6 +409,21 @@ class GroupMembershipPolicy(Policy):
 
         verbose_name = _('Group Membership Policy')
         verbose_name_plural = _('Group Membership Policies')
+
+class SSOLoginPolicy(Policy):
+    """Policy that applies to users that have authenticated themselves through SSO"""
+
+    form = 'passbook.core.forms.policies.SSOLoginPolicyForm'
+
+    def passes(self, user):
+        """Check if user instance passes this policy"""
+        from passbook.core.auth.view import AuthenticationView
+        return user.session.get(AuthenticationView.SESSION_IS_SSO_LOGIN, False), ""
+
+    class Meta:
+
+        verbose_name = _('SSO Login Policy')
+        verbose_name_plural = _('SSO Login Policies')
 
 class Invitation(UUIDModel):
     """Single-use invitation link"""
