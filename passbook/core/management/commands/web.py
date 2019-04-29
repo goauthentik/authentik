@@ -25,5 +25,6 @@ class Command(BaseCommand):
             '-p', str(CONFIG.y('web.port', 8000)),
             '-b', CONFIG.y('web.listen', '0.0.0.0'),  # nosec
             '--access-log', '/dev/null',
+            '--application-close-timeout', '500',
             'passbook.core.asgi:application'
         ])
