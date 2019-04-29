@@ -26,7 +26,7 @@ spec:
             name: {{ include "passbook.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
-          image: "docker.pkg.beryju.org/passbook:{{ .Values.image.tag }}"
+          image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command: ["./manage.py", "worker"]
           ports:

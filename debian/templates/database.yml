@@ -1,8 +1,0 @@
-databases:
-  default:
-    engine: django.db.backends.postgresql
-    name: _DBC_DBNAME_
-    user: _DBC_DBUSER_
-    password: _DBC_DBPASS_
-    host: _DBC_DBSERVER_
-    port: _DBC_DBPORT_
