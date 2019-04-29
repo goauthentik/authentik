@@ -6,7 +6,6 @@ omit =
     manage.py
     */migrations/*
     */apps.py
-    passbook/management/commands/nexus_upload.py
     passbook/management/commands/web.py
     passbook/management/commands/worker.py
     docs/
