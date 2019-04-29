@@ -60,7 +60,6 @@ LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
 ]
 
 # Application definition
@@ -75,7 +74,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'drf_yasg',
-    'guardian',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
