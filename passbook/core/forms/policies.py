@@ -63,6 +63,7 @@ class GroupMembershipPolicyForm(forms.ModelForm):
         fields = GENERAL_FIELDS + ['group', ]
         widgets = {
             'name': forms.TextInput(),
+            'order': forms.NumberInput(),
         }
 
 class PasswordPolicyForm(forms.ModelForm):

@@ -27,7 +27,8 @@ class PasswordFactorForm(forms.ModelForm):
             'order': forms.NumberInput(),
             'policies': FilteredSelectMultiple(_('policies'), False),
             'backends': FilteredSelectMultiple(_('backends'), False,
-                                               choices=get_authentication_backends())
+                                               choices=get_authentication_backends()),
+            'password_policies': FilteredSelectMultiple(_('password policies'), False),
         }
 
 class DummyFactorForm(forms.ModelForm):
