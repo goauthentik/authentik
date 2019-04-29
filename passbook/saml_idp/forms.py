@@ -54,3 +54,6 @@ class SAMLPropertyMappingForm(forms.ModelForm):
         field_classes = {
             'values': DynamicArrayField
         }
+        help_texts = {
+            'values': 'String substitution uses a syntax like "{variable} test}".'
+        }
