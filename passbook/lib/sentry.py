@@ -3,7 +3,7 @@
 
 def before_send(event, hint):
     """Check if error is database error, and ignore if so"""
-    from django.core.exceptions import OperationalError
+    from django.db import OperationalError
     from django_redis.exceptions import ConnectionInterrupted
 
     ignored_classes = [
