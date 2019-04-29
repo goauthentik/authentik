@@ -16,6 +16,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
     template_name = 'administration/overview.html'
 
     def post(self, *args, **kwargs):
+        """Handle post (clear cache from modal)"""
         if 'clear' in self.request.POST:
             cache.clear()
             return redirect(reverse('passbook_core:auth-login'))
