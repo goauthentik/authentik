@@ -1,2 +1,2 @@
 """passbook audit Header"""
-__version__ = '0.1.33-beta'
+__version__ = '0.1.34-beta'
