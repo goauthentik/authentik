@@ -68,7 +68,7 @@
         {% is_active_app 'passbook_admin' as is_admin %}
         {% if user.is_superuser %}
         <li class="list-group-item {% is_active_app 'passbook_admin' %} secondary-nav-item-pf">
-            <a href="{% url 'passbook_admin:overview' %}">
+            <a>
                 <span class="pficon pficon-user" data-toggle="tooltip" title=""
                     data-original-title="{% trans 'Administration' %}"></span>
                 <span class="list-group-item-value dropdown-title">{% trans 'Administration' %}</span>
