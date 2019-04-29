@@ -190,8 +190,6 @@ def cookie_from_string(cookie_string, strict_cookies=False):
         cookie_dict['key'], cookie_dict['value'] = \
             cookie_parts[0].split('=', 1)
         cookie_dict['value'] = cookie_dict['value'].replace('"', '')
-        # print('aaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        # print(cookie_parts[0].split('=', 1))
     except ValueError:
         logger.warning('Invalid cookie: `%s`', cookie_string)
         return None

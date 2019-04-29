@@ -35,5 +35,4 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs['providers_without_application'] = Provider.objects.filter(application=None)
         kwargs['policies_without_attachment'] = len(Policy.objects.filter(policymodel__isnull=True))
         kwargs['cached_policies'] = len(cache.keys('policy_*'))
-        print(cache.keys('*'))
         return super().get_context_data(**kwargs)
