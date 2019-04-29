@@ -1,2 +1,2 @@
 """Passbook ldap app Header"""
-__version__ = '0.1.36-beta'
+__version__ = '0.1.37-beta'
