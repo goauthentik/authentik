@@ -29,14 +29,13 @@ class OAuthSource(Source):
     def get_login_button(self):
         url = reverse_lazy('passbook_oauth_client:oauth-client-login',
                            kwargs={'source_slug': self.slug})
-        # if self.provider_type == 'github':
-        #     return url, 'github-logo', _('GitHub')
         return url, self.provider_type, self.name
 
     @property
     def additional_info(self):
-        return "Callback URL: '%s'" % reverse_lazy('passbook_oauth_client:oauth-client-callback',
-                                                   kwargs={'source_slug': self.slug})
+        return "Callback URL: <pre>%s</pre>" % \
+            reverse_lazy('passbook_oauth_client:oauth-client-callback',
+                         kwargs={'source_slug': self.slug})
 
     def has_user_settings(self):
         """Entrypoint to integrate with User settings. Can either return False if no

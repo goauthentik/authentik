@@ -36,7 +36,7 @@
             <tr>
                 <td>{{ source.name }}</td>
                 <td>{{ source|fieldtype }}</td>
-                <td>{{ source.additional_info }}</td>
+                <td>{{ source.additional_info|safe }}</td>
                 <td>
                     <a class="btn btn-default btn-sm"
                         href="{% url 'passbook_admin:source-update' pk=source.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
