@@ -33,6 +33,8 @@ class Processor:
     """Base SAML 2.0 AuthnRequest to Response Processor.
     Sub-classes should provide Service Provider-specific functionality."""
 
+    is_idp_initiated = False
+
     _audience = ''
     _assertion_params = None
     _assertion_xml = None
@@ -291,7 +293,10 @@ class Processor:
     def generate_response(self):
         """Processes request and returns template variables suitable for a response."""
         # Build the assertion and response.
-        self.can_handle(self._django_request)
+        # Only call can_handle if SP initiated Request, otherwise we have no Request
+        if not self.is_idp_initiated:
+            self.can_handle(self._django_request)
+
         self._validate_user()
         self._build_assertion()
         self._format_assertion()

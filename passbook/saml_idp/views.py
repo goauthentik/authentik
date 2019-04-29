@@ -231,4 +231,5 @@ class InitiateLoginView(AccessRequiredView):
     def get(self, request, application):
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
         self.provider.processor.init_deep_link(request, '')
+        self.provider.processor.is_idp_initiated = True
         return _generate_response(request, self.provider)

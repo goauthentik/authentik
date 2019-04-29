@@ -1,4 +1,5 @@
 """passbook saml_idp Models"""
+from logging import getLogger
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -8,6 +9,8 @@ from django.utils.translation import gettext as _
 from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.saml_idp.base import Processor
+
+LOGGER = getLogger(__name__)
 
 
 class SAMLProvider(Provider):
@@ -36,7 +39,8 @@ class SAMLProvider(Provider):
         if not self._processor:
             try:
                 self._processor = path_to_class(self.processor_path)(self)
-            except ModuleNotFoundError:
+            except ModuleNotFoundError as exc:
+                LOGGER.warning(exc)
                 self._processor = None
         return self._processor
 
