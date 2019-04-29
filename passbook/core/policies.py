@@ -1,5 +1,6 @@
 """passbook core policy engine"""
-# from logging import getLogger
+from logging import getLogger
+
 from amqp.exceptions import UnexpectedFrame
 from celery import group
 from celery.exceptions import TimeoutError as CeleryTimeoutError
@@ -9,10 +10,10 @@ from ipware import get_client_ip
 from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
 
-# LOGGER = getLogger(__name__)
+LOGGER = getLogger(__name__)
 
 def _cache_key(policy, user):
-    return "%s#%s" % (policy.uuid, user.pk)
+    return "policy_%s#%s" % (policy.uuid, user.pk)
 
 @CELERY_APP.task()
 def _policy_engine_task(user_pk, policy_pk, **kwargs):
@@ -23,8 +24,8 @@ def _policy_engine_task(user_pk, policy_pk, **kwargs):
     user_obj = User.objects.get(pk=user_pk)
     for key, value in kwargs.items():
         setattr(user_obj, key, value)
-    # LOGGER.debug("Running policy `%s`#%s for user %s...", policy_obj.name,
-    #              policy_obj.pk.hex, user_obj)
+    LOGGER.debug("Running policy `%s`#%s for user %s...", policy_obj.name,
+                 policy_obj.pk.hex, user_obj)
     policy_result = policy_obj.passes(user_obj)
     # Handle policy result correctly if result, message or just result
     message = None
@@ -33,10 +34,10 @@ def _policy_engine_task(user_pk, policy_pk, **kwargs):
     # Invert result if policy.negate is set
     if policy_obj.negate:
         policy_result = not policy_result
-    # LOGGER.debug("Policy %r#%s got %s", policy_obj.name, policy_obj.pk.hex, policy_result)
+    LOGGER.debug("Policy %r#%s got %s", policy_obj.name, policy_obj.pk.hex, policy_result)
     cache_key = _cache_key(policy_obj, user_obj)
     cache.set(cache_key, (policy_obj.action, policy_result, message))
-    # LOGGER.debug("Cached entry as %s", cache_key)
+    LOGGER.debug("Cached entry as %s", cache_key)
     return policy_obj.action, policy_result, message
 
 class PolicyEngine:
@@ -81,16 +82,16 @@ class PolicyEngine:
         for policy in self.policies:
             cached_policy = cache.get(_cache_key(policy, self.__user), None)
             if cached_policy:
-                # LOGGER.debug("Taking result from cache for %s", policy.pk.hex)
+                LOGGER.debug("Taking result from cache for %s", policy.pk.hex)
                 cached_policies.append(cached_policy)
             else:
-                # LOGGER.debug("Evaluating policy %s", policy.pk.hex)
+                LOGGER.debug("Evaluating policy %s", policy.pk.hex)
                 signatures.append(_policy_engine_task.signature(
                     args=(self.__user.pk, policy.pk.hex),
                     kwargs=kwargs,
                     time_limit=policy.timeout))
                 self.__get_timeout += policy.timeout
-        # LOGGER.debug("Set total policy timeout to %r", self.__get_timeout)
+        LOGGER.debug("Set total policy timeout to %r", self.__get_timeout)
         # If all policies are cached, we have an empty list here.
         if signatures:
             self.__group = group(signatures)()
@@ -119,7 +120,7 @@ class PolicyEngine:
         for policy_action, policy_result, policy_message in result:
             passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
                       (policy_action == Policy.ACTION_DENY and not policy_result)
-            # LOGGER.debug('Action=%s, Result=%r => %r', policy_action, policy_result, passing)
+            LOGGER.debug('Action=%s, Result=%r => %r', policy_action, policy_result, passing)
             if policy_message:
                 messages.append(policy_message)
             if not passing:

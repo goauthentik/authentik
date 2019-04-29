@@ -1,4 +1,6 @@
 """passbook administration overview"""
+from django.core.cache import cache
+from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
 
 from passbook.admin.mixins import AdminRequiredMixin
@@ -13,6 +15,12 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
 
     template_name = 'administration/overview.html'
 
+    def post(self, *args, **kwargs):
+        if 'clear' in self.request.POST:
+            cache.clear()
+            return redirect(reverse('passbook_core:auth-login'))
+        return self.get(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         kwargs['application_count'] = len(Application.objects.all())
         kwargs['policy_count'] = len(Policy.objects.all())
@@ -25,4 +33,6 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs['worker_count'] = len(CELERY_APP.control.ping(timeout=0.5))
         kwargs['providers_without_application'] = Provider.objects.filter(application=None)
         kwargs['policies_without_attachment'] = len(Policy.objects.filter(policymodel__isnull=True))
+        kwargs['cached_policies'] = len(cache.keys('policy_*'))
+        print(cache.keys('*'))
         return super().get_context_data(**kwargs)

@@ -152,10 +152,8 @@
     <div class="col-xs-6 col-sm-2 col-md-2">
         <div class="card-pf card-pf-accented card-pf-aggregate-status">
             <h2 class="card-pf-title">
-                <a href="#">
-                    <span class="pficon-bundle"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Version' %}
-                </a>
+                <span class="pficon-bundle"></span>
+                <span class="card-pf-aggregate-status-count"></span> {% trans 'Version' %}
             </h2>
             <div class="card-pf-body">
                 <p class="card-pf-aggregate-status-notifications">
@@ -192,5 +190,59 @@
             </div>
         </div>
     </div>
+    <div class="col-xs-6 col-sm-2 col-md-2">
+        <div class="card-pf card-pf-accented card-pf-aggregate-status">
+            <h2 class="card-pf-title">
+                <span class="pficon-server"></span>
+                <span class="card-pf-aggregate-status-count"></span> {% trans 'Cached Policies' %}
+            </h2>
+            <div class="card-pf-body">
+                <p class="card-pf-aggregate-status-notifications">
+                    <span class="card-pf-aggregate-status-notification">
+                        <a href="#" data-toggle="modal" data-target="#clearCacheMOdal">
+                            {% if cached_policies < 1 %}
+                            <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right"
+                                title="{% trans 'No policies cached. Users may experience slow response times.' %}"></span> {{ cached_policies }}
+                            {% else %}
+                            <span class="pficon pficon-ok"></span>{{ cached_policies }}
+                            {% endif %}
+                        </a>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="clearCacheMOdal" tabindex="-1" role="dialog" aria-labelledby="clearCacheMOdalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" id="clearCacheMOdalLabel">{% trans 'Clear Cache' %}</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="clearForm">
+            {% csrf_token %}
+            <input type="hidden" name="clear">
+            <p>
+                {% blocktrans %}
+                    Are you sure you want to clear the cache? This includes all user sessions and all cached Policy results.
+                {% endblocktrans %}
+            </p>
+            <h3>
+                {% blocktrans %}
+                    This will also log you out.
+                {% endblocktrans %}
+            </h3>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button form="clearForm" type="submit" type="button" class="btn btn-danger">{% trans 'Clear' %}</button>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

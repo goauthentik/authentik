@@ -2,6 +2,7 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
+
 from passbook.core.models import Application
 from passbook.core.policies import PolicyEngine
 
