@@ -132,7 +132,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'passbook.core.urls'
+ROOT_URLCONF = 'passbook.root.urls'
 
 TEMPLATES = [
     {
