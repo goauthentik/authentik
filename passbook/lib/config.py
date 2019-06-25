@@ -137,4 +137,6 @@ def signal_handler(sender, **kwargs):
     """Add all loaded config files to autoreload watcher"""
     for path in CONFIG.loaded_file:
         sender.watch_file(path)
+
+
 autoreload_started.connect(signal_handler)

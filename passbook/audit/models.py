@@ -22,7 +22,7 @@ class AuditEntry(UUIDModel):
     ACTION_AUTHORIZE_APPLICATION = 'authorize_application'
     ACTION_SUSPICIOUS_REQUEST = 'suspicious_request'
     ACTION_SIGN_UP = 'sign_up'
-    ACTION_PASSWORD_RESET = 'password_reset' # noqa
+    ACTION_PASSWORD_RESET = 'password_reset' # noqa # nosec
     ACTION_INVITE_CREATED = 'invitation_created'
     ACTION_INVITE_USED = 'invitation_used'
     ACTIONS = (
