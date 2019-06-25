@@ -1,4 +1,4 @@
--r passbook/core/requirements.txt
+-r passbook/root/requirements.txt
 -r passbook/oauth_client/requirements.txt
 -r passbook/ldap/requirements.txt
 -r passbook/saml_idp/requirements.txt
