@@ -6,9 +6,9 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-from passbook.core.celery import CELERY_APP
 from passbook.core.models import Nonce
 from passbook.lib.config import CONFIG
+from passbook.root.celery import CELERY_APP
 
 LOGGER = getLogger(__name__)
 

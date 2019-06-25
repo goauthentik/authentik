@@ -7,7 +7,7 @@ from celery import Celery, signals
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.core.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
 LOGGER = logging.getLogger(__name__)
 

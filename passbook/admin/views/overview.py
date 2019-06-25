@@ -5,9 +5,9 @@ from django.views.generic import TemplateView
 
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core import __version__
-from passbook.core.celery import CELERY_APP
 from passbook.core.models import (Application, Factor, Invitation, Policy,
                                   Provider, Source, User)
+from passbook.root.celery import CELERY_APP
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):

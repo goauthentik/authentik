@@ -5,7 +5,7 @@ from logging import getLogger
 from django.core.management.base import BaseCommand
 from django.utils import autoreload
 
-from passbook.core.celery import CELERY_APP
+from passbook.root.celery import CELERY_APP
 
 LOGGER = getLogger(__name__)
 

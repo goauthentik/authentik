@@ -7,8 +7,8 @@ from celery.exceptions import TimeoutError as CeleryTimeoutError
 from django.core.cache import cache
 from ipware import get_client_ip
 
-from passbook.core.celery import CELERY_APP
 from passbook.core.models import Policy, User
+from passbook.root.celery import CELERY_APP
 
 LOGGER = getLogger(__name__)
 

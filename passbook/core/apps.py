@@ -14,6 +14,7 @@ class PassbookCoreConfig(AppConfig):
     name = 'passbook.core'
     label = 'passbook_core'
     verbose_name = 'passbook Core'
+    mountpoint = ''
 
     def ready(self):
         import_module('passbook.core.policies')
