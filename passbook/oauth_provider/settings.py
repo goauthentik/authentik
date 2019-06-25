@@ -20,6 +20,7 @@ OAUTH2_PROVIDER_APPLICATION_MODEL = 'passbook_oauth_provider.OAuth2Provider'
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
     'SCOPES': {
+        'openid': 'Access OpenID Userinfo',
         'openid:userinfo': 'Access OpenID Userinfo',
         # 'write': 'Write scope',
         # 'groups': 'Access to your groups',

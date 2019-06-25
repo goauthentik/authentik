@@ -8,16 +8,21 @@ from django.views.generic import View
 class OpenIDConfigurationView(View):
     """Return OpenID Configuration"""
 
+    def get_issuer_url(self, request):
+        """Get correct issuer URL"""
+        full_url = request.build_absolute_uri(reverse('passbook_oauth_provider:openid-discovery'))
+        return full_url.replace(".well-known/openid-configuration", "")
+
     def get(self, request: HttpRequest):
         """Get Response conform to https://openid.net/specs/openid-connect-discovery-1_0.html"""
         return JsonResponse({
-            'issuer': request.build_absolute_uri(reverse('passbook_core:overview')),
+            'issuer': self.get_issuer_url(rqeuest),
             'authorization_endpoint': request.build_absolute_uri(
                 reverse('passbook_oauth_provider:oauth2-authorize')),
             'token_endpoint': request.build_absolute_uri(reverse('passbook_oauth_provider:token')),
             "jwks_uri": request.build_absolute_uri(reverse('passbook_oauth_provider:openid-jwks')),
             "scopes_supported": [
-                "openid:userinfo",
+                "openid",
             ],
         })
 
