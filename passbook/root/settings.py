@@ -221,7 +221,7 @@ CELERY_BEAT_SCHEDULE = {
 
 if not DEBUG:
     sentry_init(
-        dsn="https://55b5dd780bc14f4c96bba69b7a9abbcc@sentry.services.beryju.org/8",
+        dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
         integrations=[
             DjangoIntegration(),
             CeleryIntegration(),
