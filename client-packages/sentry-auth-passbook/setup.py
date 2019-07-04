@@ -24,6 +24,7 @@ setup(
     url='https://passbook.beryju.org',
     description='passbook authentication provider for Sentry',
     long_description=__doc__,
+    long_description_content_type='text/markdown',
     license='MIT',
     packages=find_packages(exclude=['tests']),
     zip_safe=False,
