@@ -37,6 +37,8 @@ ingress:
   path: /
   hosts:
     - passbook.k8s.local
+  app_gw_hosts:
+    - '*.passbook.k8s.local'
   defaultHost: passbook.k8s.local
   tls: []
   #  - secretName: chart-example-tls

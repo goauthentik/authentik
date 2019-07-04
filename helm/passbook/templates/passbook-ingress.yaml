@@ -32,7 +32,16 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullName }}-web
+              servicePort: http
+  {{- end }}
+  {{- range .Values.ingress.app_gw_hosts }}}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: {{ $ingressPath }}
+            backend:
+              serviceName: {{ $fullName }}-appgw
               servicePort: http
   {{- end }}
 {{- end }}
