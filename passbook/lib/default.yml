@@ -23,9 +23,13 @@ email:
   use_ssl: false
   from: passbook <passbook@domain.tld>
 web:
-  listen: 0.0.0.0
-  port: 8000
-  threads: 30
+  server.socket_host: 0.0.0.0
+  server.socket_port: 8000
+  server.thread_pool: 20
+  log.screen: false
+  log.access_file: ''
+  log.error_file: ''
+
 debug: false
 secure_proxy_header:
   HTTP_X_FORWARDED_PROTO: https
@@ -96,3 +100,6 @@ saml_idp:
   types:
     - passbook.saml_idp.processors.generic
     - passbook.saml_idp.processors.salesforce
+app_gw:
+  listen: 0.0.0.0
+  port: 8000

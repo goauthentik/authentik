@@ -1,5 +1,6 @@
 celery
 colorlog
+cherrypy
 django-ipware
 django-model-utils
 django-redis
@@ -11,5 +12,4 @@ psycopg2
 PyYAML
 sentry-sdk
 pip
-whitenoise
 urllib3<1.25,>=1.21.1
