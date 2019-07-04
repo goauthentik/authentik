@@ -15,6 +15,10 @@ variables:
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
+before_script:
+  # Ensure all dependencies are installed, even those not included in passbook/build-base
+  - pip install -r requirements-dev.txt
+
 create-build-image:
   image:
     name: gcr.io/kaniko-project/executor:debug
