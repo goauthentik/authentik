@@ -35,7 +35,7 @@ spec:
               serviceName: {{ $fullName }}-web
               servicePort: http
   {{- end }}
-  {{- range .Values.ingress.app_gw_hosts }}}
+  {{- range .Values.ingress.app_gw_hosts }}
     - host: {{ . | quote }}
       http:
         paths:
