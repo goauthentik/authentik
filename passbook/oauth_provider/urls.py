@@ -3,7 +3,7 @@
 from django.urls import path
 from oauth2_provider import views
 
-from passbook.oauth_provider.views import oauth2, openid
+from passbook.oauth_provider.views import oauth2
 
 urlpatterns = [
     # Custom OAuth 2 Authorize View
@@ -17,9 +17,4 @@ urlpatterns = [
     path("token/", views.TokenView.as_view(), name="token"),
     path("revoke_token/", views.RevokeTokenView.as_view(), name="revoke-token"),
     path("introspect/", views.IntrospectTokenView.as_view(), name="introspect"),
-    # OpenID-Connect Discovery
-    path('.well-known/openid-configuration', openid.OpenIDConfigurationView.as_view(),
-         name='openid-discovery'),
-    path('.well-known/jwks.json', openid.JSONWebKeyView.as_view(),
-         name='openid-jwks'),
 ]

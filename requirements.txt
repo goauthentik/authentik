@@ -8,3 +8,4 @@
 -r passbook/admin/requirements.txt
 -r passbook/api/requirements.txt
 -r passbook/app_gw/requirements.txt
+-r passbook/oidc_provider/requirements.txt

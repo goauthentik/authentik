@@ -13,21 +13,30 @@
       <div class="modal-body">
         <form class="form-horizontal">
           <div class="form-group">
-            <label class="col-sm-3 control-label">{% trans 'Authroize URL' %}</label>
+            <label class="col-sm-3 control-label">{% trans 'Authorize URL' %}</label>
             <div class="col-sm-9">
-              <input type="text"class="form-control" readonly value="{{ authorize_url }}">
+              <input type="text"class="form-control" readonly value="{{ authorize }}">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-3 control-label">{% trans 'Token URL' %}</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" readonly value="{{ token_url }}">
+              <input type="text" class="form-control" readonly value="{{ token }}">
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-3 control-label">{% trans 'Userinfo Endpoint' %}</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" readonly value="{{ userinfo_url }}">
+              <input type="text" class="form-control" readonly value="{{ userinfo }}">
+            </div>
+          </div>
+        </form>
+        <hr>
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{% trans 'OpenID Configuration URL' %}</label>
+            <div class="col-sm-9">
+              <input type="text"class="form-control" readonly value="{{ provider_info }}">
             </div>
           </div>
         </form>

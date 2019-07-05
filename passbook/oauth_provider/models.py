@@ -25,8 +25,6 @@ class OAuth2Provider(Provider, AbstractApplication):
                 reverse('passbook_oauth_provider:token')),
             'userinfo_url': request.build_absolute_uri(
                 reverse('passbook_api:openid')),
-            'openid_url': request.build_absolute_uri(
-                reverse('passbook_oauth_provider:openid-discovery'))
         }
 
     class Meta:

@@ -1,4 +1,4 @@
-"""passbook OAuth2 IDP Forms"""
+"""passbook OAuth2 Provider Forms"""
 
 from django import forms
 
