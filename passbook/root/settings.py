@@ -232,7 +232,7 @@ if not DEBUG:
         ],
         send_default_pii=True,
         before_send=before_send,
-        release='p2@%s' % __version__
+        release='passbook@%s' % __version__
     )
 
 # Static files (CSS, JavaScript, Images)
