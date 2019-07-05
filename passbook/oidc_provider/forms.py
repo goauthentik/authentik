@@ -13,7 +13,7 @@ class OIDCProviderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         # Correctly load data from 1:1 rel
-        if 'instance' in kwargs:
+        if 'instance' in kwargs and kwargs['instance']:
             kwargs['instance'] = kwargs['instance'].oidc_client
         super().__init__(*args, **kwargs)
         self.fields['client_id'].initial = generate_client_id()
