@@ -221,5 +221,13 @@ class RequestHandler:
         self._set_content_type(proxy_response)
         response = get_django_response(proxy_response, strict_cookies=False)
 
+        # If response has a 'Location' header, we rewrite that location as well
+        if 'Location' in response:
+            LOGGER.debug("Rewriting Location header")
+            for server_name in self.app_gw.server_name:
+                response['Location'] = response['Location'].replace(
+                    self._parsed_url.hostname, server_name)
+            LOGGER.debug(response['Location'])
+
         # LOGGER.debug("RESPONSE RETURNED: %s", response)
         return response

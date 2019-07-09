@@ -9,7 +9,7 @@ from passbook.app_gw.proxy.utils import (cookie_from_string,
 #: Default number of bytes that are going to be read in a file lecture
 DEFAULT_AMT = 2 ** 16
 
-logger = logging.getLogger('revproxy.response')
+logger = logging.getLogger(__name__)
 
 
 def get_django_response(proxy_response, strict_cookies=False):
