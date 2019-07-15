@@ -18,7 +18,7 @@ tests_require = [
 
 setup(
     name='sentry-auth-passbook',
-    version='0.2.4-beta',
+    version='0.2.5-beta',
     author='BeryJu.org',
     author_email='support@beryju.org',
     url='https://passbook.beryju.org',
