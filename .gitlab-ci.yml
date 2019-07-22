@@ -24,7 +24,7 @@ create-base-image:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.base --destination docker.beryju.org/passbook/base:latest --destination docker.beryju.org/passbook/base:0.2.7-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.base --destination docker.beryju.org/passbook/base:latest --destination docker.beryju.org/passbook/base:0.2.8-beta
   stage: build-base-image
   only:
     refs:
@@ -38,7 +38,7 @@ build-dev-image:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.dev --destination docker.beryju.org/passbook/dev:latest --destination docker.beryju.org/passbook/dev:0.2.7-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.dev --destination docker.beryju.org/passbook/dev:latest --destination docker.beryju.org/passbook/dev:0.2.8-beta
   stage: build-dev-image
   only:
     refs:
@@ -91,7 +91,7 @@ package-passbook-server:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.2.7-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.2.8-beta
   stage: build
   only:
     - tags
@@ -104,7 +104,7 @@ build-passbook-static:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.static --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.2.7-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.static --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.2.8-beta
   only:
     - tags
     - /^version/.*$/
