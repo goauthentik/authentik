@@ -1,11 +1,51 @@
--r passbook/root/requirements.txt
--r passbook/oauth_client/requirements.txt
--r passbook/ldap/requirements.txt
--r passbook/saml_idp/requirements.txt
--r passbook/otp/requirements.txt
--r passbook/oauth_provider/requirements.txt
--r passbook/captcha_factor/requirements.txt
--r passbook/admin/requirements.txt
--r passbook/api/requirements.txt
--r passbook/app_gw/requirements.txt
--r passbook/oidc_provider/requirements.txt
+# Root requirements
+celery
+colorlog
+cherrypy
+django-ipware
+django-model-utils
+django-redis
+django>=2.0
+idna<2.8,>=2.5
+markdown
+psycopg2
+PyYAML
+sentry-sdk
+pip
+urllib3<1.25,>=1.21.1
+grpcio
+grpcio-reflection
+protobuf
+# OAuth Client
+requests_oauthlib>=0.4.2
+oauthlib>=2.0.6
+# LDAP Client
+ldap3
+# SAML IDP
+beautifulsoup4>=4.6.0
+lxml>=3.8.0
+signxml
+defusedxml
+PyCryptodome
+# OTP
+django_otp
+qrcode
+# OAuth Provider
+django-oauth-toolkit
+django-cors-middleware
+# ReCaptcha
+django-recaptcha
+# API
+drf_yasg
+djangorestframework==3.9.4
+django-filters
+# AppGW
+django-revproxy
+urllib3[secure]
+channels
+service_identity
+websocket-client
+daphne<2.3.0
+asgiref~=2.3
+# OIDC Provider
+django-oidc-provider

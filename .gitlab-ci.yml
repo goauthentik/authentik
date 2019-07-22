@@ -1,14 +1,11 @@
 # Global Variables
 stages:
-  - build-buildimage
+  - build-base-image
+  - build-dev-image
   - test
   - build
-  - docs
-  - deploy
-image: docker.beryju.org/passbook/build-base:latest
-services:
-  - postgres:latest
-  - redis:latest
+  - package
+image: docker.beryju.org/passbook/dev:latest
 
 variables:
   POSTGRES_DB: passbook
@@ -16,51 +13,78 @@ variables:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 before_script:
-  # Ensure all dependencies are installed, even those not included in passbook/build-base
+  # Ensure all dependencies are installed, even those not included in passbook/dev
+  - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
 
-create-build-image:
+create-base-image:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.build-base --destination docker.beryju.org/passbook/build-base:latest --destination docker.beryju.org/passbook/build-base:0.2.6-beta
-  stage: build-buildimage
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.base --destination docker.beryju.org/passbook/base:latest --destination docker.beryju.org/passbook/base:0.2.6-beta
+  stage: build-base-image
   only:
     refs:
       - tags
       - /^version/.*$/
 
+build-dev-image:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.dev --destination docker.beryju.org/passbook/dev:latest --destination docker.beryju.org/passbook/dev:0.2.6-beta
+  stage: build-dev-image
+  only:
+    refs:
+      - tags
+      - /^version/.*$/
+
+
 isort:
   script:
     - isort -c -sg env
   stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 migrations:
   script:
     - python manage.py migrate
   stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 prospector:
   script:
     - prospector
   stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 pylint:
   script:
-    - pylint passbook
+    - pylint p2
   stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 coverage:
   script:
-    - python manage.py collectstatic --no-input
     - coverage run manage.py test
     - coverage report
+    - coverage html
   stage: test
-bandit:
-  script:
-    - bandit -r passbook
-  stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 
-package-docker:
+package-passbook-server:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -72,42 +96,37 @@ package-docker:
   only:
     - tags
     - /^version/.*$/
-package-helm:
+build-passbook-static:
   stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile.static --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.2.6-beta
+  only:
+    - tags
+    - /^version/.*$/
+  # running collectstatic fully initialises django, hence we need that databases
+  services:
+    - postgres:latest
+    - redis:latest
+
+package-helm:
+  image: debian:stretch-slim
+  stage: package
+  before_script:
+    - apt update && apt install -y curl
     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+  script:
     - helm init --client-only
+    - helm dependency build helm/passbook
     - helm package helm/passbook
   artifacts:
     paths:
       - passbook-*.tgz
-    expire_in: 2 days
+    expire_in: 1 week
   only:
     - tags
     - /^version/.*$/
-
-package-client-package-allauth:
-  script:
-    - cd client-packages/allauth
-    - python setup.py sdist
-    - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
-  stage: build
-  only:
-    refs:
-      - tags
-      - /^version/.*$/
-    changes:
-      - client-packages/allauth/**
-
-package-client-package-sentry:
-  script:
-    - cd client-packages/sentry-auth-passbook
-    - python setup.py sdist
-    - twine upload --username $TWINE_USERNAME --password $TWINE_PASSWORD dist/*
-  stage: build
-  only:
-    refs:
-      - tags
-      - /^version/.*$/
-    changes:
-      - client-packages/sentry-auth-passbook/**
