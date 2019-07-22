@@ -16,6 +16,7 @@ urllib3<1.25,>=1.21.1
 grpcio
 grpcio-reflection
 protobuf
+packaging
 # OAuth Client
 requests_oauthlib>=0.4.2
 oauthlib>=2.0.6
