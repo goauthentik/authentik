@@ -11,13 +11,21 @@ from passbook.suspicious_policy.models import IPScore, UserScore
 LOGGER = getLogger(__name__)
 
 
+def get_remote_ip(request):
+    """Small wrapper of get_client_ip to catch errors"""
+    try:
+        remote_ip, _ = get_client_ip(request)
+        if remote_ip:
+            return remote_ip
+        if 'ip' in request:
+            return request['ip']
+    except (AttributeError, ValueError):
+        pass
+    return '255.255.255.255'
+
 def update_score(request, username, amount):
     """Update score for IP and User"""
-    remote_ip = '255.255.255.255'
-    if 'ip' in request:
-        remote_ip = request['ip']
-    elif request:
-        remote_ip, _ = get_client_ip(request)
+    remote_ip = get_remote_ip(request)
     ip_score, _ = IPScore.objects.update_or_create(ip=remote_ip)
     ip_score.score += amount
     ip_score.save()
