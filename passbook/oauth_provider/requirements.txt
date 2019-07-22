@@ -1,2 +1,0 @@
-django-oauth-toolkit
-django-cors-middleware

@@ -1,2 +1,0 @@
-django_otp
-qrcode

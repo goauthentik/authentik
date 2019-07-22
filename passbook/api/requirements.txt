@@ -1,3 +1,0 @@
-djangorestframework==3.9.4
-drf_yasg
-django-filters

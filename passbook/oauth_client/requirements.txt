@@ -1,2 +1,0 @@
-requests_oauthlib>=0.4.2
-oauthlib>=2.0.6
