@@ -35,7 +35,7 @@ spec:
               servicePort: http
           - path: /static/
             backend:
-              serviceName: {{ $fullname }}-static
+              serviceName: {{ $fullName }}-static
               servicePort: http
   {{- end }}
   {{- range .Values.ingress.app_gw_hosts }}

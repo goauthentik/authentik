@@ -24,9 +24,6 @@ spec:
         field.cattle.io/workloadMetrics: '[{"path":"/metrics","port":9113,"schema":"HTTP"}]'
     spec:
       containers:
-        - name: {{ .Chart.Name }}-static-prometheus
-          image: nginx/nginx-prometheus-exporter:0.4.1
-          imagePullPolicy: IfNotPresent
         - name: {{ .Chart.Name }}-static
           image: "docker.beryju.org/passbook/static:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
@@ -53,4 +50,6 @@ spec:
             limits:
               cpu: 20m
               memory: 20M
-
+        - name: {{ .Chart.Name }}-static-prometheus
+          image: nginx/nginx-prometheus-exporter:0.4.1
+          imagePullPolicy: IfNotPresent
