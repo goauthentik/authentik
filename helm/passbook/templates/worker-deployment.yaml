@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ include "passbook.fullname" . }}-web
+  name: {{ include "passbook.fullname" . }}-worker
   labels:
     app.kubernetes.io/name: {{ include "passbook.name" . }}
     helm.sh/chart: {{ include "passbook.chart" . }}
@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        passbook.io/component: web
+        passbook.io/component: worker
     spec:
       volumes:
         - name: config-volume
@@ -28,8 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          command: ["/bin/sh","-c"]
-          args: ["./manage.py migrate && ./manage.py web"]
+          command:
+            - ./manage.py
+          args:
+            - worker
           ports:
             - name: http
               containerPort: 8000
@@ -37,31 +39,10 @@ spec:
           volumeMounts:
             - mountPath: /etc/passbook
               name: config-volume
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-              httpHeaders:
-                - name: Host
-                  value: kubernetes-healthcheck-host
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-              httpHeaders:
-                - name: Host
-                  value: kubernetes-healthcheck-host
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+            requests:
+              cpu: 150m
+              memory: 400M
+            limits:
+              cpu: 300m
+              memory: 600M

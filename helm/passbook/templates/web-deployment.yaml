@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ include "passbook.fullname" . }}-worker
+  name: {{ include "passbook.fullname" . }}-web
   labels:
     app.kubernetes.io/name: {{ include "passbook.name" . }}
     helm.sh/chart: {{ include "passbook.chart" . }}
@@ -18,17 +18,30 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        passbook.io/component: worker
+        passbook.io/component: web
     spec:
       volumes:
         - name: config-volume
           configMap:
             name: {{ include "passbook.fullname" . }}-config
+      initContainers:
+        - name: passbook-database-migrations
+          image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
+          command:
+            - ./manage.py
+          args:
+            - migrate
+          volumeMounts:
+            - mountPath: /etc/passbook
+              name: config-volume
       containers:
         - name: {{ .Chart.Name }}
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          command: ["./manage.py", "worker"]
+          command:
+            - ./manage.py
+          args:
+            - web
           ports:
             - name: http
               containerPort: 8000
@@ -36,17 +49,24 @@ spec:
           volumeMounts:
             - mountPath: /etc/passbook
               name: config-volume
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kubernetes-healthcheck-host
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: kubernetes-healthcheck-host
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+            requests:
+              cpu: 50m
+              memory: 150M
+            limits:
+              cpu: 200m
+              memory: 300M

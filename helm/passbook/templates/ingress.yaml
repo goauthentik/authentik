@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "passbook.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -30,16 +29,20 @@ spec:
     - host: {{ . | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: /
             backend:
               serviceName: {{ $fullName }}-web
+              servicePort: http
+          - path: /static/
+            backend:
+              serviceName: {{ $fullname }}-static
               servicePort: http
   {{- end }}
   {{- range .Values.ingress.app_gw_hosts }}
     - host: {{ . | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: /
             backend:
               serviceName: {{ $fullName }}-appgw
               servicePort: http

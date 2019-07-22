@@ -28,8 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          command: ["/bin/sh","-c"]
-          args: ["./manage.py migrate && ./manage.py app_gw_web"]
+          command:
+            - ./manage.py
+          args:
+            - app_gw_web
           ports:
             - name: http
               containerPort: 8000
@@ -52,16 +54,9 @@ spec:
                 - name: Host
                   value: kubernetes-healthcheck-host
           resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+            requests:
+              cpu: 150m
+              memory: 300M
+            limits:
+              cpu: 500m
+              memory: 500M
