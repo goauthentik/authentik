@@ -14,8 +14,8 @@ variables:
 
 before_script:
   # Ensure all dependencies are installed, even those not included in passbook/dev
-  - pip install -r requirements.txt
-  - pip install -r requirements-dev.txt
+  - pipenv lock -r --dev > requirements-all.txt
+  - pip install -r requirements-all.txt
 
 create-base-image:
   image:
