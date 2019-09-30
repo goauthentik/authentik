@@ -166,7 +166,7 @@ class LDAPConnector:
         if not self._source.enabled:
             return None
         # FIXME: Adapt user_uid
-        # email = filters.pop(CONFIG.get('passport').get('ldap').get, '')
+        # email = filters.pop(CONFIG.y('passport').get('ldap').get, '')
         email = filters.pop('email')
         user_dn = self.lookup(self.generate_filter(**{LOGIN_FIELD: email}))
         if not user_dn:

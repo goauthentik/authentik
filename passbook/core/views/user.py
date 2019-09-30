@@ -66,7 +66,7 @@ class UserChangePasswordView(LoginRequiredMixin, FormView):
         return redirect('passbook_core:overview')
 
     def get_context_data(self, **kwargs):
-        kwargs['config'] = CONFIG.get('passbook')
+        kwargs['config'] = CONFIG.y('passbook')
         kwargs['is_login'] = True
         kwargs['title'] = _('Change Password')
         kwargs['primary_action'] = _('Change')

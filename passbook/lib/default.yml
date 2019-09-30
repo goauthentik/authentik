@@ -1,43 +1,20 @@
 # This is the default configuration file
-databases:
-  default:
-    engine: 'django.db.backends.postgresql'
-    name: passbook
-    user: passbook
-    password: 'EK-5jnKfjrGRm<77'
-    host: localhost
-log:
-  level:
-    console: DEBUG
-    file: DEBUG
-  file: /dev/null
-  syslog:
-    host: 127.0.0.1
-    port: 514
-email:
+postgresql:
   host: localhost
-  port: 25
-  user: ''
+  name: passbook
+  user: postgres
   password: ''
-  use_tls: false
-  use_ssl: false
-  from: passbook <passbook@domain.tld>
-web:
-  server.socket_host: 0.0.0.0
-  server.socket_port: 8000
-  server.thread_pool: 20
-  log.screen: false
-  log.access_file: ''
-  log.error_file: ''
+
+redis:
+  host: localhost
+  password: ''
+  cache_db: 0
+  message_queue_db: 1
 
 debug: false
-secure_proxy_header:
-  HTTP_X_FORWARDED_PROTO: https
-rabbitmq: guest:guest@localhost/passbook
-redis: localhost/0
+
 # Error reporting, sends stacktrace to sentry.services.beryju.org
 error_report_enabled: true
-secret_key: 9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s
 
 domains:
     - passbook.local

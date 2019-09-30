@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """passbook cherrypy server"""
-        cherrypy.config.update(CONFIG.get('web'))
+        cherrypy.config.update(CONFIG.y('web'))
         cherrypy.tree.graft(application, '/')
         # Mount NullObject to serve static files
         cherrypy.tree.mount(None, settings.STATIC_URL, config={

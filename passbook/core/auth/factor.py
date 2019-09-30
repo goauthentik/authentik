@@ -19,7 +19,7 @@ class AuthenticationFactor(TemplateView):
         self.authenticator = authenticator
 
     def get_context_data(self, **kwargs):
-        kwargs['config'] = CONFIG.get('passbook')
+        kwargs['config'] = CONFIG.y('passbook')
         kwargs['is_login'] = True
         kwargs['title'] = _('Log in to your account')
         kwargs['primary_action'] = _('Log in')

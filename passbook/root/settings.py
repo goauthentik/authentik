@@ -15,18 +15,14 @@ import logging
 import os
 import sys
 
-from celery.schedules import crontab
-from django.contrib import messages
+import structlog
 from sentry_sdk import init as sentry_init
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
 from passbook.lib.sentry import before_send
-
-VERSION = __version__
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -36,12 +32,13 @@ STATIC_ROOT = BASE_DIR + '/static'
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = CONFIG.get('secret_key')
+SECRET_KEY = CONFIG.y('secret_key',
+                      "9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s")  # noqa Debug
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = CONFIG.get('debug')
+DEBUG = CONFIG.y_bool('debug')
 INTERNAL_IPS = ['127.0.0.1']
-# ALLOWED_HOSTS = CONFIG.get('domains', []) + [CONFIG.get('primary_domain')]
+# ALLOWED_HOSTS = CONFIG.y('domains', []) + [CONFIG.y('primary_domain')]
 ALLOWED_HOSTS = ['*']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -53,7 +50,7 @@ AUTH_USER_MODEL = 'passbook_core.User'
 
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
-SESSION_COOKIE_DOMAIN = CONFIG.get('primary_domain')
+SESSION_COOKIE_DOMAIN = CONFIG.y('primary_domain')
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
@@ -72,8 +69,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'rest_framework',
-    'drf_yasg',
+    # 'rest_framework',
+    # 'drf_yasg',
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
@@ -93,16 +90,6 @@ INSTALLED_APPS = [
     'passbook.app_gw.apps.PassbookApplicationApplicationGatewayConfig',
 ]
 
-# Message Tag fix for bootstrap CSS Classes
-MESSAGE_TAGS = {
-    messages.DEBUG: 'primary',
-    messages.INFO: 'info',
-    messages.SUCCESS: 'success',
-    messages.WARNING: 'warning',
-    messages.ERROR: 'danger',
-}
-
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -114,17 +101,20 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://%s" % CONFIG.get('redis'),
+        "LOCATION": f"redis://{CONFIG.y('redis.host')}:6379/{CONFIG.y('redis.cache_db')}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
+DJANGO_REDIS_IGNORE_EXCEPTIONS = True
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'passbook.app_gw.middleware.ApplicationGatewayMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -150,22 +140,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'passbook.core.wsgi.application'
-
+WSGI_APPLICATION = 'passbook.root.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {}
-for db_alias, db_config in CONFIG.get('databases').items():
-    DATABASES[db_alias] = {
-        'ENGINE': db_config.get('engine'),
-        'HOST': db_config.get('host'),
-        'NAME': db_config.get('name'),
-        'USER': db_config.get('user'),
-        'PASSWORD': db_config.get('password'),
-        'OPTIONS': db_config.get('options', {}),
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': CONFIG.y('postgresql.host'),
+        'NAME': CONFIG.y('postgresql.name'),
+        'USER': CONFIG.y('postgresql.user'),
+        'PASSWORD': CONFIG.y('postgresql.password'),
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -203,20 +191,13 @@ USE_TZ = True
 # Celery settings
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
-CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULE = {}
 CELERY_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = 'passbook'
-CELERY_BROKER_URL = 'amqp://%s' % CONFIG.get('rabbitmq')
-CELERY_RESULT_BACKEND = 'rpc://'
-CELERY_ACKS_LATE = True
-CELERY_BROKER_HEARTBEAT = 0
-CELERY_BEAT_SCHEDULE = {
-    'cleanup-expired-nonces': {
-        'task': 'passbook.core.tasks.clean_nonces',
-        'schedule': crontab(hour=1, minute=1)
-    }
-}
+CELERY_BROKER_URL = (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
+                     f":6379/{CONFIG.y('redis.message_queue_db')}")
+CELERY_RESULT_BACKEND = (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
+                         f":6379/{CONFIG.y('redis.message_queue_db')}")
 
 
 if not DEBUG:
@@ -224,11 +205,7 @@ if not DEBUG:
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
         integrations=[
             DjangoIntegration(),
-            CeleryIntegration(),
-            LoggingIntegration(
-                level=logging.INFO,
-                event_level=logging.ERROR
-            )
+            CeleryIntegration()
         ],
         send_default_pii=True,
         before_send=before_send,
@@ -240,96 +217,77 @@ if not DEBUG:
 
 STATIC_URL = '/static/'
 
+
+structlog.configure_once(
+    processors=[
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(),
+        structlog.processors.StackInfoRenderer(),
+        # structlog.processors.format_exc_info,
+        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+    ],
+    context_class=structlog.threadlocal.wrap_dict(dict),
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+LOG_PRE_CHAIN = [
+    # Add the log level and a timestamp to the event_dict if the log entry
+    # is not from structlog.
+    structlog.stdlib.add_log_level,
+    structlog.processors.TimeStamper(),
+]
+
 with CONFIG.cd('log'):
+    LOGGING_HANDLER_MAP = {
+        'passbook': 'DEBUG',
+        'django': 'WARNING',
+        'celery': 'WARNING',
+        'grpc': 'DEBUG',
+        'oauthlib': 'DEBUG',
+        'oauth2_provider': 'DEBUG',
+        'daphne': 'INFO',
+    }
     LOGGING = {
         'version': 1,
-        'disable_existing_loggers': True,
+        'disable_existing_loggers': False,
         'formatters': {
-            'verbose': {
-                'format': ('%(asctime)s %(levelname)-8s %(name)-55s '
-                           '%(funcName)-20s %(message)s'),
+            "plain": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.processors.JSONRenderer(),
+                "foreign_pre_chain": LOG_PRE_CHAIN,
             },
-            'color': {
-                '()': 'colorlog.ColoredFormatter',
-                'format': ('%(log_color)s%(asctime)s %(levelname)-8s %(name)-55s '
-                           '%(funcName)-20s %(message)s'),
-                'log_colors': {
-                    'DEBUG': 'bold_black',
-                    'INFO': 'white',
-                    'WARNING': 'yellow',
-                    'ERROR': 'red',
-                    'CRITICAL': 'bold_red',
-                    'SUCCESS': 'green',
-                },
-            }
+            "colored": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
+                "foreign_pre_chain": LOG_PRE_CHAIN,
+            },
         },
         'handlers': {
             'console': {
-                'level': CONFIG.get('level').get('console'),
+                'level': DEBUG,
                 'class': 'logging.StreamHandler',
-                'formatter': 'color',
-            },
-            'syslog': {
-                'level': CONFIG.get('level').get('file'),
-                'class': 'logging.handlers.SysLogHandler',
-                'formatter': 'verbose',
-                'address': (CONFIG.get('syslog').get('host'),
-                            CONFIG.get('syslog').get('port'))
-            },
-            'file': {
-                'level': CONFIG.get('level').get('file'),
-                'class': 'logging.FileHandler',
-                'formatter': 'verbose',
-                'filename': CONFIG.get('file'),
+                'formatter': "colored" if DEBUG else "plain",
             },
             'queue': {
-                'level': CONFIG.get('level').get('console'),
+                'level': DEBUG,
                 'class': 'passbook.lib.log.QueueListenerHandler',
                 'handlers': [
                     'cfg://handlers.console',
-                    # 'cfg://handlers.syslog',
-                    'cfg://handlers.file',
                 ],
             }
         },
         'loggers': {
-            'passbook': {
-                'handlers': ['queue'],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-            'django': {
-                'handlers': ['queue'],
-                'level': 'INFO',
-                'propagate': True,
-            },
-            'tasks': {
-                'handlers': ['queue'],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-            'cherrypy': {
-                'handlers': ['queue'],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-            'oauthlib': {
-                'handlers': ['queue'],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-            'oauth2_provider': {
-                'handlers': ['queue'],
-                'level': 'DEBUG',
-                'propagate': True,
-            },
-            'daphne': {
-                'handlers': ['queue'],
-                'level': 'INFO',
-                'propagate': True,
-            }
         }
     }
+    for handler_name, level in LOGGING_HANDLER_MAP.items():
+        LOGGING['loggers'][handler_name] = {
+            'handlers': ['console'],
+            'level': level,
+            'propagate': True,
+        }
 
 TEST = False
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
@@ -341,6 +299,7 @@ if any('test' in arg for arg in sys.argv):
     LOGGING = None
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True
+
 
 _DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
 # Load subapps's INSTALLED_APPS

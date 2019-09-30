@@ -41,6 +41,7 @@ service_identity = "*"
 signxml = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 websocket_client = "*"
+structlog = "*"
 
 [requires]
 python_version = "3.7"
@@ -57,3 +58,4 @@ unittest-xml-reporting = "*"
 autopep8 = "*"
 bandit = "*"
 twine = "*"
+colorama = "*"
