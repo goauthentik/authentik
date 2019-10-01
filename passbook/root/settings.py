@@ -100,7 +100,8 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{CONFIG.y('redis.host')}:6379/{CONFIG.y('redis.cache_db')}",
+        "LOCATION": (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
+                     f"/{CONFIG.y('redis.cache_db')}"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
