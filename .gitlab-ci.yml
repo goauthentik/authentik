@@ -63,20 +63,20 @@ migrations:
   services:
   - postgres:latest
   - redis:latest
-prospector:
-  script:
-    - prospector
-  stage: test
-  services:
-  - postgres:latest
-  - redis:latest
-pylint:
-  script:
-    - pylint passbook
-  stage: test
-  services:
-  - postgres:latest
-  - redis:latest
+# prospector:
+#   script:
+#     - prospector
+#   stage: test
+#   services:
+#   - postgres:latest
+#   - redis:latest
+# pylint:
+#   script:
+#     - pylint passbook
+#   stage: test
+#   services:
+#   - postgres:latest
+#   - redis:latest
 coverage:
   script:
     - coverage run manage.py test
