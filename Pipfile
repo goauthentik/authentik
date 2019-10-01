@@ -42,6 +42,7 @@ signxml = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 websocket_client = "*"
 structlog = "*"
+uwsgi = "*"
 
 [requires]
 python_version = "3.7"
