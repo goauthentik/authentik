@@ -8,10 +8,8 @@ data:
       host: "{{ .Release.Name }}-postgresql"
       name: "{{ .Values.postgresql.postgresqlDatabase }}"
       user: postgres
-      password: "{{ .Values.postgresql.postgresqlPassword }}"
     redis:
       host: "{{ .Release.Name }}-redis-master"
-      password: "{{ .Values.redis.password }}"
       cache_db: 0
       message_queue_db: 1
 
