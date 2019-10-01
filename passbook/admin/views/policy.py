@@ -11,8 +11,8 @@ from django.views.generic.detail import DetailView
 from passbook.admin.forms.policies import PolicyTestForm
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Policy
-from passbook.core.policies import PolicyEngine
 from passbook.lib.utils.reflection import path_to_class
+from passbook.policy.engine import PolicyEngine
 
 
 class PolicyListView(AdminRequiredMixin, ListView):

@@ -34,8 +34,7 @@ class ConfigLoader:
 
     def __init__(self):
         super().__init__()
-        base_dir = os.path.realpath(os.path.join(
-            os.path.dirname(__file__), '../..'))
+        base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
         for path in SEARCH_PATHS:
             # Check if path is relative, and if so join with base_dir
             if not os.path.isabs(path):

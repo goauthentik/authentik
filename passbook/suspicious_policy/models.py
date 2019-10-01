@@ -2,7 +2,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Policy, User
+from passbook.core.models import Policy, PolicyResult, User
 
 
 class SuspiciousRequestPolicy(Policy):
@@ -14,7 +14,7 @@ class SuspiciousRequestPolicy(Policy):
 
     form = 'passbook.suspicious_policy.forms.SuspiciousRequestPolicyForm'
 
-    def passes(self, user: User):
+    def passes(self, user: User) -> PolicyResult:
         remote_ip = user.remote_ip
         passing = True
         if self.check_ip:
@@ -23,7 +23,7 @@ class SuspiciousRequestPolicy(Policy):
         if self.check_username:
             user_scores = UserScore.objects.filter(user=user, score__lte=self.threshold)
             passing = passing and user_scores.exists()
-        return passing
+        return PolicyResult(passing)
 
     class Meta:
 

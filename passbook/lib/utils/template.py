@@ -2,9 +2,9 @@
 from django.template import Context, Template, loader
 
 
-def render_from_string(template: str, ctx: Context) -> str:
+def render_from_string(tmpl: str, ctx: Context) -> str:
     """Render template from string to string"""
-    template = Template(template)
+    template = Template(tmpl)
     return template.render(ctx)
 
 

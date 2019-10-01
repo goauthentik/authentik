@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Policy, User
+from passbook.core.models import Policy, PolicyResult, User
 
 LOGGER = getLogger(__name__)
 
@@ -20,7 +20,7 @@ class PasswordExpiryPolicy(Policy):
 
     form = 'passbook.password_expiry_policy.forms.PasswordExpiryPolicyForm'
 
-    def passes(self, user: User) -> bool:
+    def passes(self, user: User) -> PolicyResult:
         """If password change date is more than x days in the past, call set_unusable_password
         and show a notice"""
         actual_days = (now() - user.password_change_date).days
@@ -29,12 +29,13 @@ class PasswordExpiryPolicy(Policy):
             if not self.deny_only:
                 user.set_unusable_password()
                 user.save()
-                return False, _(('Password expired %(days)d days ago. '
-                                 'Please update your password.') % {
-                                     'days': days_since_expiry
-                                 })
-            return False, _('Password has expired.')
-        return True
+                message = _(('Password expired %(days)d days ago. '
+                             'Please update your password.') % {
+                                 'days': days_since_expiry
+                             })
+                return PolicyResult(False, message)
+            return PolicyResult(False, _('Password has expired.'))
+        return PolicyResult(True)
 
     class Meta:
 

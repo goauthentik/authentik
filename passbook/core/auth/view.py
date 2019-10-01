@@ -1,5 +1,6 @@
 """passbook multi-factor authentication engine"""
 from logging import getLogger
+from typing import List, Tuple
 
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -8,10 +9,10 @@ from django.utils.http import urlencode
 from django.views.generic import View
 
 from passbook.core.models import Factor, User
-from passbook.core.policies import PolicyEngine
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
+from passbook.policy.engine import PolicyEngine
 
 LOGGER = getLogger(__name__)
 
@@ -31,12 +32,12 @@ class AuthenticationView(UserPassesTestMixin, View):
     SESSION_USER_BACKEND = 'passbook_user_backend'
     SESSION_IS_SSO_LOGIN = 'passbook_sso_login'
 
-    pending_user = None
-    pending_factors = []
+    pending_user: User
+    pending_factors: List[Tuple[str, str]] = []
 
-    _current_factor_class = None
+    _current_factor_class: Factor
 
-    current_factor = None
+    current_factor: Factor
 
     # Allow only not authenticated users to login
     def test_func(self):

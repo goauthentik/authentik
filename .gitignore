@@ -191,3 +191,4 @@ pip-selfcheck.json
 # End of https://www.gitignore.io/api/python,django
 /static/
 local.env.yml
+.vscode/

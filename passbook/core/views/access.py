@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Application
-from passbook.core.policies import PolicyEngine
+from passbook.policy.engine import PolicyEngine
 
 LOGGER = getLogger(__name__)
 

@@ -20,7 +20,7 @@ password_changed = Signal(providing_args=['user', 'password'])
 def password_policy_checker(sender, password, **kwargs):
     """Run password through all password policies which are applied to the user"""
     from passbook.core.models import PasswordFactor
-    from passbook.core.policies import PolicyEngine
+    from passbook.policy.engine import PolicyEngine
     setattr(sender, '__password__', password)
     _all_factors = PasswordFactor.objects.filter(enabled=True).order_by('order')
     for factor in _all_factors:

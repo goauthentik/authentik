@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from requests import get
 
-from passbook.core.models import Policy, User
+from passbook.core.models import Policy, PolicyResult, User
 
 LOGGER = getLogger(__name__)
 
@@ -18,13 +18,13 @@ class HaveIBeenPwendPolicy(Policy):
 
     form = 'passbook.hibp_policy.forms.HaveIBeenPwnedPolicyForm'
 
-    def passes(self, user: User) -> bool:
+    def passes(self, user: User) -> PolicyResult:
         """Check if password is in HIBP DB. Hashes given Password with SHA1, uses the first 5
         characters of Password in request and checks if full hash is in response. Returns 0
         if Password is not in result otherwise the count of how many times it was used."""
         # Only check if password is being set
         if not hasattr(user, '__password__'):
-            return True
+            return PolicyResult(True)
         password = getattr(user, '__password__')
         pw_hash = sha1(password.encode('utf-8')).hexdigest() # nosec
         url = 'https://api.pwnedpasswords.com/range/%s' % pw_hash[:5]
@@ -36,8 +36,9 @@ class HaveIBeenPwendPolicy(Policy):
                 final_count = int(count)
         LOGGER.debug("Got count %d for hash %s", final_count, pw_hash[:5])
         if final_count > self.allowed_count:
-            return False, _("Password exists on %(count)d online lists." % {'count': final_count})
-        return True
+            message = _("Password exists on %(count)d online lists." % {'count': final_count})
+            return PolicyResult(False, message)
+        return PolicyResult(True)
 
     class Meta:
 

@@ -27,7 +27,7 @@ class ApplicationGatewayMiddleware:
         handler = RequestHandler(app_gw, request)
 
         if not handler.check_permission():
-            to_url = 'https://%s/?next=%s' % (CONFIG.get('domains')[0], request.get_full_path())
+            to_url = 'https://%s/?next=%s' % (CONFIG.y('domains')[0], request.get_full_path())
             return RedirectView.as_view(url=to_url)(request)
 
         return handler.get_response()

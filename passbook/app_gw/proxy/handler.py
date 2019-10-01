@@ -15,7 +15,7 @@ from passbook.app_gw.proxy.response import get_django_response
 from passbook.app_gw.proxy.rewrite import Rewriter
 from passbook.app_gw.proxy.utils import encode_items, normalize_request_headers
 from passbook.core.models import Application
-from passbook.core.policies import PolicyEngine
+from passbook.policy.engine import PolicyEngine
 
 SESSION_UPSTREAM_KEY = 'passbook_app_gw_upstream'
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'

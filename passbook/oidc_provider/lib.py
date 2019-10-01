@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 
 from passbook.core.models import Application
-from passbook.core.policies import PolicyEngine
+from passbook.policy.engine import PolicyEngine
 
 LOGGER = getLogger(__name__)
 

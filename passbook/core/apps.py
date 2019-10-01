@@ -17,7 +17,7 @@ class PassbookCoreConfig(AppConfig):
     mountpoint = ''
 
     def ready(self):
-        import_module('passbook.core.policies')
+        import_module('passbook.policy.engine')
         factors_to_load = CONFIG.y('passbook.factors', [])
         for factors_to_load in factors_to_load:
             try:

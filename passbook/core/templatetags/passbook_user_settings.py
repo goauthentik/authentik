@@ -3,7 +3,7 @@
 from django import template
 
 from passbook.core.models import Factor, Source
-from passbook.core.policies import PolicyEngine
+from passbook.policy.engine import PolicyEngine
 
 register = template.Library()
 

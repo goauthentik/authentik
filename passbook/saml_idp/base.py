@@ -260,7 +260,6 @@ class Processor:
     def _validate_user(self):
         """Validates the User. Sub-classes should override this and
         throw an CannotHandleAssertion Exception if the validation does not succeed."""
-        pass
 
     def can_handle(self, request):
         """Returns true if this processor can handle this request."""
