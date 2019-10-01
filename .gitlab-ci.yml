@@ -13,6 +13,7 @@ variables:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 before_script:
+  - pip install pipenv
   # Ensure all dependencies are installed, even those not included in passbook/dev
   - pipenv lock -r --dev > requirements-all.txt
   - pip install -r requirements-all.txt
