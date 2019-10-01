@@ -15,7 +15,9 @@ variables:
 before_script:
   - pip install pipenv
   # Ensure all dependencies are installed, even those not included in passbook/dev
-  - pipenv lock -r --dev > requirements-all.txt
+  # According to pipenv docs, -d outputs all packages, however it actually does not
+  - pipenv lock -r > requirements-all.txt
+  - pipenv lock -rd >> requirements-all.txt
   - pip install -r requirements-all.txt
 
 create-base-image:
