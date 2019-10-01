@@ -2,8 +2,8 @@
 postgresql:
   host: localhost
   name: passbook
-  user: postgres
-  password: ''
+  user: passbook
+  password: 'env://POSTGRES_PASSWORD'
 
 redis:
   host: localhost
