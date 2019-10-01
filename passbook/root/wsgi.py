@@ -12,6 +12,6 @@ import os
 from django.core.wsgi import get_wsgi_application
 from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'passbook.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'passbook.root.settings')
 
 application = SentryWsgiMiddleware(get_wsgi_application())

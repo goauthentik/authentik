@@ -31,6 +31,21 @@ spec:
             - ./manage.py
           args:
             - migrate
+          envFrom:
+            - configMapRef:
+                name: {{ include "p2.fullname" . }}-config
+              prefix: PASSBOOK_
+          env:
+            - name: P2_REDIS__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-redis"
+                  key: redis-password
+            - name: P2_POSTGRESQL__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-postgresql"
+                  key: postgresql-password
           volumeMounts:
             - mountPath: /etc/passbook
               name: config-volume
@@ -42,6 +57,21 @@ spec:
             - ./manage.py
           args:
             - web
+          envFrom:
+            - configMapRef:
+                name: {{ include "p2.fullname" . }}-config
+              prefix: PASSBOOK_
+          env:
+            - name: P2_REDIS__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-redis"
+                  key: redis-password
+            - name: P2_POSTGRESQL__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-postgresql"
+                  key: postgresql-password
           ports:
             - name: http
               containerPort: 8000
