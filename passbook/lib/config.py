@@ -143,9 +143,6 @@ class ConfigLoader:
 
 CONFIG = ConfigLoader()
 
-# pylint: disable=unused-argument
-
-
 def signal_handler(sender, **_):
     """Add all loaded config files to autoreload watcher"""
     for path in CONFIG.loaded_file:

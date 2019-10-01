@@ -32,8 +32,7 @@ def reauth_required(view_function):
 
         if RE_AUTH_KEY not in request.session:
             # Timestamp not in session, force user to reauth
-            return redirect(reverse('account-reauth') + '?' +
-                            urlencode({'next': request.path}))
+            return redirect(reverse('account-reauth') + '?' + urlencode({'next': request.path}))
 
         if RE_AUTH_KEY in request.session and \
                 request.session[RE_AUTH_KEY] >= (now - RE_AUTH_MARGAIN) and \

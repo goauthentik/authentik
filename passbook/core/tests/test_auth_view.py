@@ -77,7 +77,7 @@ class TestFactorAuthentication(TestCase):
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
-        request.session.save()
+        request.session.save()  # pylint: disable=no-member
         request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
 
         response = AuthenticationView.as_view()(request)
@@ -93,7 +93,7 @@ class TestFactorAuthentication(TestCase):
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
-        request.session.save()
+        request.session.save()  # pylint: disable=no-member
         request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
 
         response = AuthenticationView.as_view()(request)
@@ -111,7 +111,7 @@ class TestFactorAuthentication(TestCase):
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
-        request.session.save()
+        request.session.save()  # pylint: disable=no-member
         request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
 
         response = AuthenticationView.as_view()(request)
@@ -127,7 +127,7 @@ class TestFactorAuthentication(TestCase):
         middleware.process_request(request)
         for key, value in session_copy:
             request.session[key] = value
-        request.session.save()
+        request.session.save() # pylint: disable=no-member
         response = AuthenticationView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('passbook_core:overview'))

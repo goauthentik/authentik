@@ -204,8 +204,8 @@ class RequestHandler:
     def _set_content_type(self, proxy_response):
         content_type = proxy_response.headers.get('Content-Type')
         if not content_type:
-            content_type = (mimetypes.guess_type(self.request.path)[0] or
-                            self.app_gw.default_content_type)
+            content_type = (mimetypes.guess_type(self.request.path)
+                            [0] or self.app_gw.default_content_type)
             proxy_response.headers['Content-Type'] = content_type
             # LOGGER.debug("Proxy response CONTENT-TYPE: %s",
             #              proxy_response.headers['Content-Type'])

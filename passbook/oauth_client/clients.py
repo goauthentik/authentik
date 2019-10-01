@@ -120,9 +120,9 @@ class OAuthClient(BaseOAuthClient):
         "Parse token and secret from raw token response."
         if raw_token is None:
             return (None, None)
-        qs = parse_qs(raw_token)
-        token = qs.get('oauth_token', [None])[0]
-        secret = qs.get('oauth_token_secret', [None])[0]
+        query_string = parse_qs(raw_token)
+        token = query_string.get('oauth_token', [None])[0]
+        secret = query_string.get('oauth_token_secret', [None])[0]
         return (token, secret)
 
     def request(self, method, url, **kwargs):
@@ -217,8 +217,7 @@ class OAuth2Client(BaseOAuthClient):
         try:
             token_data = json.loads(raw_token)
         except ValueError:
-            qs = parse_qs(raw_token)
-            token = qs.get('access_token', [None])[0]
+            token = parse_qs(raw_token).get('access_token', [None])[0]
         else:
             token = token_data.get('access_token', None)
         return (token, None)
