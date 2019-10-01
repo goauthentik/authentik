@@ -1,6 +1,6 @@
 """passbook core config loader"""
 import os
-from collections import Mapping
+from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
 from typing import Any

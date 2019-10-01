@@ -17,7 +17,7 @@ debug: false
 error_report_enabled: true
 
 domains:
-    - passbook.local
+  - passbook.local
 primary_domain: 'localhost'
 
 passbook:

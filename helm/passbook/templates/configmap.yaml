@@ -4,41 +4,18 @@ metadata:
   name: {{ include "passbook.fullname" . }}-config
 data:
   config.yml: |
-    # Env for Docker images
-    databases:
-      default:
-        engine: django.db.backends.postgresql
-        name: {{ .Values.postgresql.postgresqlDatabase }}
-        user: postgres
-        password: {{ .Values.postgresql.postgresqlPassword }}
-        host: {{ .Release.Name }}-postgresql
-        port: ''
-    log:
-      level:
-        console: WARNING
-        file: WARNING
-      file: /dev/null
-      syslog:
-        host: 127.0.0.1
-        port: 514
-    email:
-      host: {{ .Values.config.email.host }}
-      port: 25
-      user: ''
-      password: ''
-      use_tls: false
-      use_ssl: false
-      from: passbook <passbook@domain.tld>
-    web:
-      listen: 0.0.0.0
-      port: 8000
-      threads: 30
-    debug: false
-    secure_proxy_header:
-      HTTP_X_FORWARDED_PROTO: https
-    rabbitmq: "user:{{ .Values.rabbitmq.rabbitmq.password }}@{{ .Release.Name }}-rabbitmq"
-    redis: ":{{ .Values.redis.password }}@{{ .Release.Name }}-redis-master/0"
-    # Error reporting, sends stacktrace to sentry.services.beryju.org
+    postgresql:
+      host: "{{ .Release.Name }}-postgresql"
+      name: "{{ .Values.postgresql.postgresqlDatabase }}"
+      user: postgres
+      password: "{{ .Values.postgresql.postgresqlPassword }}"
+    redis:
+      host: "{{ .Release.Name }}-redis-master"
+      password: "{{ .Values.redis.password }}"
+      cache_db: 0
+      message_queue_db: 1
+
+    # Error reporting, sends stacktrace to sentry.beryju.org
     error_report_enabled: {{ .Values.config.error_reporting }}
 
     {{- if .Values.config.secret_key }}
@@ -49,10 +26,10 @@ data:
 
     primary_domain: {{ .Values.primary_domain }}
     domains:
-        {{- range .Values.ingress.hosts }}
-        - {{ . | quote }}
-        {{- end }}
-        - kubernetes-healthcheck-host
+      {{- range .Values.ingress.hosts }}
+      - {{ . | quote }}
+      {{- end }}
+      - kubernetes-healthcheck-host
 
     passbook:
       sign_up:
