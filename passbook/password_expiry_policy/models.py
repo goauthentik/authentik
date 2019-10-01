@@ -1,14 +1,14 @@
 """passbook password_expiry_policy Models"""
 from datetime import timedelta
-from logging import getLogger
 
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from structlog import get_logger
 
 from passbook.core.models import Policy, PolicyResult, User
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class PasswordExpiryPolicy(Policy):

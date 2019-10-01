@@ -1,7 +1,6 @@
 """response functions from django-revproxy"""
-import logging
-
 from django.http import HttpResponse, StreamingHttpResponse
+from structlog import get_logger
 
 from passbook.app_gw.proxy.utils import (cookie_from_string,
                                          set_response_headers, should_stream)
@@ -9,7 +8,7 @@ from passbook.app_gw.proxy.utils import (cookie_from_string,
 #: Default number of bytes that are going to be read in a file lecture
 DEFAULT_AMT = 2 ** 16
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def get_django_response(proxy_response, strict_cookies=False):

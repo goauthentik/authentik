@@ -1,10 +1,11 @@
 """Source type manager"""
 from enum import Enum
-from logging import getLogger
+
+from structlog import get_logger
 
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class RequestKind(Enum):
     """Enum of OAuth Request types"""

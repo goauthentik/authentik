@@ -1,11 +1,10 @@
 """passbook auth oidc provider app config"""
-from logging import getLogger
-
 from django.apps import AppConfig
 from django.db.utils import InternalError, OperationalError, ProgrammingError
 from django.urls import include, path
+from structlog import get_logger
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class PassbookOIDCProviderConfig(AppConfig):
     """passbook auth oidc provider app config"""

@@ -1,16 +1,16 @@
 """AzureAD OAuth2 Views"""
 import json
 import uuid
-from logging import getLogger
 
 from requests.exceptions import RequestException
+from structlog import get_logger
 
 from passbook.oauth_client.clients import OAuth2Client
 from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class AzureADOAuth2Client(OAuth2Client):

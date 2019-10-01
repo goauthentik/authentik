@@ -1,16 +1,15 @@
 """passbook core authentication forms"""
-from logging import getLogger
-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
+from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.ui import human_list
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class LoginForm(forms.Form):
     """Allow users to login"""

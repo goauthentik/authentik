@@ -1,12 +1,12 @@
 """passbook mod saml_idp app config"""
 from importlib import import_module
-from logging import getLogger
 
 from django.apps import AppConfig
+from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class PassbookSAMLIDPConfig(AppConfig):
     """passbook saml_idp app config"""

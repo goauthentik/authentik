@@ -1,6 +1,5 @@
 """passbook multi-factor authentication engine"""
 from inspect import Signature
-from logging import getLogger
 
 from django.contrib import messages
 from django.contrib.auth import _clean_credentials
@@ -10,6 +9,7 @@ from django.forms.utils import ErrorList
 from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
+from structlog import get_logger
 
 from passbook.core.auth.factor import AuthenticationFactor
 from passbook.core.auth.view import AuthenticationView
@@ -19,7 +19,7 @@ from passbook.core.tasks import send_email
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def authenticate(request, backends, **credentials):

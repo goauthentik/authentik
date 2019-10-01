@@ -1,15 +1,14 @@
 """passbook Webserver management command"""
 
-from logging import getLogger
-
 import cherrypy
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 from passbook.root.wsgi import application
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class Command(BaseCommand):

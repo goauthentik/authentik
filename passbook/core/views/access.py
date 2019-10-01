@@ -1,13 +1,12 @@
 """passbook access helper classes"""
-from logging import getLogger
-
 from django.contrib import messages
 from django.utils.translation import gettext as _
+from structlog import get_logger
 
 from passbook.core.models import Application
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class AccessMixin:
     """Mixin class for usage in Authorization views.

@@ -1,16 +1,16 @@
 """passbook core tasks"""
 from datetime import datetime
-from logging import getLogger
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from structlog import get_logger
 
 from passbook.core.models import Nonce
 from passbook.lib.config import CONFIG
 from passbook.root.celery import CELERY_APP
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 @CELERY_APP.task()
 def send_email(to_address, subject, template, context):

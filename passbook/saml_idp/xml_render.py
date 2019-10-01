@@ -1,11 +1,11 @@
 """Functions for creating XML output."""
 
-from logging import getLogger
+from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
 from passbook.saml_idp.xml_signing import get_signature_xml, sign_with_signxml
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def _get_attribute_statement(params):

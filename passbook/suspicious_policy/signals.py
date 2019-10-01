@@ -1,14 +1,13 @@
 """passbook suspicious request signals"""
-from logging import getLogger
-
 from django.contrib.auth.signals import user_logged_in, user_login_failed
 from django.dispatch import receiver
 from ipware import get_client_ip
+from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.suspicious_policy.models import IPScore, UserScore
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def get_remote_ip(request):

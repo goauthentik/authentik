@@ -1,12 +1,13 @@
 """passbook policy task"""
-from logging import getLogger
 from multiprocessing import Process
 from multiprocessing.connection import Connection
 from typing import Any, Dict
 
+from structlog import get_logger
+
 from passbook.core.models import Policy, User
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def _cache_key(policy, user):

@@ -2,9 +2,9 @@
 
 import time
 import uuid
-from logging import getLogger
 
 from bs4 import BeautifulSoup
+from structlog import get_logger
 
 from passbook.saml_idp import exceptions, utils, xml_render
 
@@ -65,7 +65,7 @@ class Processor:
     def __init__(self, remote):
         self.name = remote.name
         self._remote = remote
-        self._logger = getLogger(__name__)
+        self._logger = get_logger(__name__)
         self._system_params['ISSUER'] = self._remote.issuer
         self._logger.debug('processor configured')
 

@@ -1,6 +1,4 @@
 """passbook SAML IDP Views"""
-from logging import getLogger
-
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ValidationError
@@ -13,6 +11,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
+from structlog import get_logger
 
 from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
@@ -22,7 +21,7 @@ from passbook.policy.engine import PolicyEngine
 from passbook.saml_idp import exceptions
 from passbook.saml_idp.models import SAMLProvider
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 URL_VALIDATOR = URLValidator(schemes=('http', 'https'))
 
 

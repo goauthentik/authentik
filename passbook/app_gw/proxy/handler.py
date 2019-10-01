@@ -1,6 +1,5 @@
 """passbook app_gw request handler"""
 import mimetypes
-from logging import getLogger
 from random import SystemRandom
 from urllib.parse import urlparse
 
@@ -8,6 +7,7 @@ import certifi
 import urllib3
 from django.core.cache import cache
 from django.utils.http import urlencode
+from structlog import get_logger
 
 from passbook.app_gw.models import ApplicationGatewayProvider
 from passbook.app_gw.proxy.exceptions import InvalidUpstream
@@ -19,7 +19,7 @@ from passbook.policy.engine import PolicyEngine
 
 SESSION_UPSTREAM_KEY = 'passbook_app_gw_upstream'
 IGNORED_HOSTNAMES_KEY = 'passbook_app_gw_ignored'
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 QUOTE_SAFE = r'<.;>\(}*+|~=-$/_:^@)[{]&\'!,"`'
 ERRORS_MESSAGES = {
     'upstream-no-scheme': ("Upstream URL scheme must be either "

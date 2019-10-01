@@ -1,14 +1,14 @@
 """passbook admin templatetags"""
 import inspect
-from logging import getLogger
 
 from django import template
 from django.db.models import Model
+from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
 
 register = template.Library()
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 @register.simple_tag()
 def get_links(model_instance):

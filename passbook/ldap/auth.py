@@ -1,12 +1,11 @@
 """passbook LDAP Authentication Backend"""
-from logging import getLogger
-
 from django.contrib.auth.backends import ModelBackend
+from structlog import get_logger
 
 from passbook.ldap.ldap_connector import LDAPConnector
 from passbook.ldap.models import LDAPSource
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class LDAPBackend(ModelBackend):

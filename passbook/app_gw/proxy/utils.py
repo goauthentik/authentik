@@ -1,7 +1,8 @@
 """Utils from django-revproxy, slightly adjusted"""
-import logging
 import re
 from wsgiref.util import is_hop_by_hop
+
+from structlog import get_logger
 
 try:
     from http.cookies import SimpleCookie
@@ -155,7 +156,7 @@ def encode_items(items):
     return encoded
 
 
-logger = logging.getLogger('revproxy.cookies')
+logger = get_logger()
 
 
 def cookie_from_string(cookie_string, strict_cookies=False):

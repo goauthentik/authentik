@@ -1,13 +1,12 @@
 """passbook Worker management command"""
 
-from logging import getLogger
-
 from django.core.management.base import BaseCommand
 from django.utils import autoreload
+from structlog import get_logger
 
 from passbook.root.celery import CELERY_APP
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class Command(BaseCommand):

@@ -1,14 +1,13 @@
 """passbook app_gw webserver management command"""
 
-from logging import getLogger
-
 from daphne.cli import CommandLineInterface
 from django.core.management.base import BaseCommand
 from django.utils import autoreload
+from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class Command(BaseCommand):

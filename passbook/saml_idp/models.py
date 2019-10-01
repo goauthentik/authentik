@@ -1,16 +1,15 @@
 """passbook saml_idp Models"""
-from logging import getLogger
-
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
+from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.saml_idp.base import Processor
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class SAMLProvider(Provider):

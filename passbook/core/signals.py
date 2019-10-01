@@ -1,14 +1,13 @@
 """passbook core signals"""
-from logging import getLogger
-
 from django.core.cache import cache
 from django.core.signals import Signal
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from structlog import get_logger
 
 from passbook.core.exceptions import PasswordPolicyInvalid
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 user_signed_up = Signal(providing_args=['request', 'user'])
 invitation_created = Signal(providing_args=['request', 'invitation'])

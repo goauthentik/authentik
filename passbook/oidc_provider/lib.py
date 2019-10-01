@@ -1,13 +1,12 @@
 """OIDC Permission checking"""
-from logging import getLogger
-
 from django.contrib import messages
 from django.shortcuts import redirect
+from structlog import get_logger
 
 from passbook.core.models import Application
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 def check_permissions(request, user, client):
     """Check permissions, used for

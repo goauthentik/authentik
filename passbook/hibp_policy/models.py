@@ -1,14 +1,14 @@
 """passbook HIBP Models"""
 from hashlib import sha1
-from logging import getLogger
 
 from django.db import models
 from django.utils.translation import gettext as _
 from requests import get
+from structlog import get_logger
 
 from passbook.core.models import Policy, PolicyResult, User
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class HaveIBeenPwendPolicy(Policy):
     """Check if password is on HaveIBeenPwned's list by upload the first

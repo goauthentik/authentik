@@ -1,7 +1,6 @@
 """passbook core models"""
 import re
 from datetime import timedelta
-from logging import getLogger
 from random import SystemRandom
 from time import sleep
 from typing import List
@@ -14,11 +13,12 @@ from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
+from structlog import get_logger
 
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def default_nonce_duration():

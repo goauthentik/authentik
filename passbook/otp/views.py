@@ -1,7 +1,6 @@
 """passbook OTP Views"""
 from base64 import b32encode
 from binascii import unhexlify
-from logging import getLogger
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +14,7 @@ from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from qrcode import make
 from qrcode.image.svg import SvgPathImage
+from structlog import get_logger
 
 from passbook.lib.boilerplate import NeverCacheMixin
 from passbook.lib.config import CONFIG
@@ -23,7 +23,7 @@ from passbook.otp.utils import otpauth_url
 
 OTP_SESSION_KEY = 'passbook_otp_key'
 OTP_SETTING_UP_KEY = 'passbook_otp_setup'
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""

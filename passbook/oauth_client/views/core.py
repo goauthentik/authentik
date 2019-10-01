@@ -1,7 +1,5 @@
 """Core OAauth Views"""
 
-from logging import getLogger
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
@@ -11,13 +9,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
+from structlog import get_logger
 
 from passbook.core.auth.view import AuthenticationView, _redirect_with_qs
 from passbook.lib.utils.reflection import app
 from passbook.oauth_client.clients import get_client
 from passbook.oauth_client.models import OAuthSource, UserOAuthSourceConnection
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 # pylint: disable=too-few-public-methods

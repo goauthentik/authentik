@@ -1,7 +1,6 @@
 """OAuth Clients"""
 
 import json
-from logging import getLogger
 from urllib.parse import parse_qs, urlencode
 
 from django.conf import settings
@@ -10,8 +9,9 @@ from django.utils.encoding import force_text
 from requests import Session
 from requests.exceptions import RequestException
 from requests_oauthlib import OAuth1
+from structlog import get_logger
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class BaseOAuthClient:

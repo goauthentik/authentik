@@ -1,14 +1,13 @@
 """Signing code goes here."""
-from logging import getLogger
-
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from lxml import etree  # nosec
 from signxml import XMLSigner, XMLVerifier
+from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def sign_with_signxml(private_key, data, cert, reference_uri=None):

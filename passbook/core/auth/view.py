@@ -1,5 +1,4 @@
 """passbook multi-factor authentication engine"""
-from logging import getLogger
 from typing import List, Tuple
 
 from django.contrib.auth import login
@@ -7,6 +6,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.http import urlencode
 from django.views.generic import View
+from structlog import get_logger
 
 from passbook.core.models import Factor, User
 from passbook.core.views.utils import PermissionDeniedView
@@ -14,7 +14,7 @@ from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 def _redirect_with_qs(view, get_query_set=None):
     """Wrapper to redirect whilst keeping GET Parameters"""

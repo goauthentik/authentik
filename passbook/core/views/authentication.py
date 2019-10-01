@@ -1,5 +1,4 @@
 """passbook core authentication views"""
-from logging import getLogger
 from typing import Dict
 
 from django.contrib import messages
@@ -11,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from django.views import View
 from django.views.generic import FormView
+from structlog import get_logger
 
 from passbook.core.auth.view import AuthenticationView, _redirect_with_qs
 from passbook.core.exceptions import PasswordPolicyInvalid
@@ -20,7 +20,7 @@ from passbook.core.signals import invitation_used, user_signed_up
 from passbook.core.tasks import send_email
 from passbook.lib.config import CONFIG
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class LoginView(UserPassesTestMixin, FormView):

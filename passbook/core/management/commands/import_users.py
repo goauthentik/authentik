@@ -1,13 +1,13 @@
 """passbook import_users management command"""
 from csv import DictReader
-from logging import getLogger
 
 from django.core.management.base import BaseCommand
 from django.core.validators import EmailValidator, ValidationError
+from structlog import get_logger
 
 from passbook.core.models import User
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class Command(BaseCommand):
     """Import users from CSV file"""

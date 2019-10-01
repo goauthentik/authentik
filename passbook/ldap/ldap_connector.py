@@ -1,15 +1,15 @@
 """Wrapper for ldap3 to easily manage user"""
-from logging import getLogger
 from time import time
 
 import ldap3
 import ldap3.core.exceptions
+from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.ldap.models import LDAPSource
 from passbook.lib.config import CONFIG
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 USERNAME_FIELD = CONFIG.y('ldap.username_field', 'sAMAccountName')
 LOGIN_FIELD = CONFIG.y('ldap.login_field', 'userPrincipalName')

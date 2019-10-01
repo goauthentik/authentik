@@ -1,15 +1,15 @@
 """passbook core celery"""
-
-import logging
 import os
+from logging.config import dictConfig
 
 from celery import Celery, signals
 from django.conf import settings
+from structlog import get_logger
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 CELERY_APP = Celery('passbook')
@@ -19,7 +19,7 @@ CELERY_APP = Celery('passbook')
 @signals.setup_logging.connect
 def config_loggers(*args, **kwags):
     """Apply logging settings from settings.py to celery"""
-    logging.config.dictConfig(settings.LOGGING)
+    dictConfig(settings.LOGGING)
 
 
 # pylint: disable=unused-argument

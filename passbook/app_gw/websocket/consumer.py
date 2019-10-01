@@ -1,14 +1,14 @@
 """websocket proxy consumer"""
 import threading
-from logging import getLogger
 from ssl import CERT_NONE
 
 import websocket
 from channels.generic.websocket import WebsocketConsumer
+from structlog import get_logger
 
 from passbook.app_gw.models import ApplicationGatewayProvider
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class ProxyConsumer(WebsocketConsumer):
     """Proxy websocket connection to upstream"""

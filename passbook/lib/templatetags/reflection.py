@@ -1,10 +1,9 @@
 """passbook Core Reflection templatetags Templatetag"""
-from logging import getLogger
-
 from django import template
+from structlog import get_logger
 
 register = template.Library()
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 def get_key_unique(context):

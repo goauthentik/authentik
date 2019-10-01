@@ -1,9 +1,9 @@
 """passbook multi-factor authentication engine"""
-from logging import getLogger
+from structlog import get_logger
 
 from passbook.core.auth.factor import AuthenticationFactor
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class DummyFactor(AuthenticationFactor):

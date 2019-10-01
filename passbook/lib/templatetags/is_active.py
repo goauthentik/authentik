@@ -1,12 +1,11 @@
 """passbook lib navbar Templatetag"""
-from logging import getLogger
-
 from django import template
 from django.urls import reverse
+from structlog import get_logger
 
 register = template.Library()
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 @register.simple_tag(takes_context=True)

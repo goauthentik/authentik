@@ -1,16 +1,15 @@
 """OTP Factor logic"""
-from logging import getLogger
-
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django_otp import match_token, user_has_device
+from structlog import get_logger
 
 from passbook.core.auth.factor import AuthenticationFactor
 from passbook.otp.forms import OTPVerifyForm
 from passbook.otp.views import OTP_SETTING_UP_KEY, EnableView
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 class OTPFactor(FormView, AuthenticationFactor):
     """OTP Factor View"""

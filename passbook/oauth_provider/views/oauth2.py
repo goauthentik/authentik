@@ -1,5 +1,4 @@
 """passbook OAuth2 Views"""
-from logging import getLogger
 from urllib.parse import urlencode
 
 from django.contrib import messages
@@ -7,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
+from structlog import get_logger
 
 from passbook.audit.models import AuditEntry
 from passbook.core.models import Application
@@ -14,7 +14,7 @@ from passbook.core.views.access import AccessMixin
 from passbook.core.views.utils import LoadingView, PermissionDeniedView
 from passbook.oauth_provider.models import OAuth2Provider
 
-LOGGER = getLogger(__name__)
+LOGGER = get_logger(__name__)
 
 
 class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):
