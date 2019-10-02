@@ -15,9 +15,9 @@ from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
-from passbook.policy.exceptions import PolicyException
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.policy.exceptions import PolicyException
 
 LOGGER = get_logger(__name__)
 

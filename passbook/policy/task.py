@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from structlog import get_logger
 
-from passbook.core.models import Policy, User, PolicyResult
+from passbook.core.models import Policy, PolicyResult, User
 from passbook.policy.exceptions import PolicyException
 
 LOGGER = get_logger(__name__)
