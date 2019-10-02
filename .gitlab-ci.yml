@@ -124,7 +124,7 @@ package-helm:
     - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
   script:
     - helm init --client-only
-    - helm dependency build helm/passbook
+    - helm dependency update helm/passbook
     - helm package helm/passbook
   artifacts:
     paths:
