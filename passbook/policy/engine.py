@@ -58,6 +58,9 @@ class PolicyEngine:
                 LOGGER.debug("Taking result from cache for %s", policy.pk.hex)
                 cached_policies.append(cached_policy)
             else:
+                LOGGER.debug("Looking up real class of policy...")
+                # TODO: Rewrite this to lookup all policies at once
+                policy = Policy.objects.get_subclass(pk=policy.id)
                 LOGGER.debug("Evaluating policy %s", policy.pk.hex)
                 our_end, task_end = Pipe(False)
                 task = PolicyTask()
