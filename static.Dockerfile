@@ -12,5 +12,5 @@ RUN ./manage.py collectstatic --no-input
 
 FROM nginx:latest
 
-COPY --from=static-build /app/static /static/_/static/
+COPY --from=static-build /app/static /static/static/
 COPY ./passbook/core/nginx.conf /etc/nginx/nginx.conf
