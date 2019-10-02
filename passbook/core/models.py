@@ -15,6 +15,7 @@ from django.utils.translation import gettext as _
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
+from passbook.policy.exceptions import PolicyException
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 
@@ -245,7 +246,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
 
     def passes(self, user: User) -> PolicyResult:
         """Check if user instance passes this policy"""
-        raise NotImplementedError()
+        raise PolicyException()
 
 class FieldMatcherPolicy(Policy):
     """Policy which checks if a field of the User model matches/doesn't match a

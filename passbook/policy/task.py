@@ -5,7 +5,8 @@ from typing import Any, Dict
 
 from structlog import get_logger
 
-from passbook.core.models import Policy, User
+from passbook.core.models import Policy, User, PolicyResult
+from passbook.policy.exceptions import PolicyException
 
 LOGGER = get_logger(__name__)
 
@@ -27,7 +28,11 @@ class PolicyTask(Process):
             setattr(self.user, key, value)
         LOGGER.debug("Running policy `%s`#%s for user %s...", self.policy.name,
                      self.policy.pk.hex, self.user)
-        policy_result = self.policy.passes(self.user)
+        try:
+            policy_result = self.policy.passes(self.user)
+        except PolicyException as exc:
+            LOGGER.debug(exc)
+            policy_result = PolicyResult(False, str(exc))
         # Invert result if policy.negate is set
         if self.policy.negate:
             policy_result = not policy_result
