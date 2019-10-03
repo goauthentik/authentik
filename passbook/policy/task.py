@@ -1,12 +1,12 @@
 """passbook policy task"""
 from multiprocessing import Process
 from multiprocessing.connection import Connection
-from typing import Any, Dict
 
 from structlog import get_logger
 
-from passbook.core.models import Policy, PolicyResult, User
+from passbook.core.models import Policy
 from passbook.policy.exceptions import PolicyException
+from passbook.policy.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger(__name__)
 
@@ -18,18 +18,15 @@ class PolicyTask(Process):
     """Evaluate a single policy within a seprate process"""
 
     ret: Connection
-    user: User
     policy: Policy
-    params: Dict[str, Any]
+    request: PolicyRequest
 
     def run(self):
         """Task wrapper to run policy checking"""
-        for key, value in self.params.items():
-            setattr(self.user, key, value)
         LOGGER.debug("Running policy `%s`#%s for user %s...", self.policy.name,
-                     self.policy.pk.hex, self.user)
+                     self.policy.pk.hex, self.request.user)
         try:
-            policy_result = self.policy.passes(self.user)
+            policy_result = self.policy.passes(self.request)
         except PolicyException as exc:
             LOGGER.debug(exc)
             policy_result = PolicyResult(False, str(exc))
@@ -37,7 +34,7 @@ class PolicyTask(Process):
         if self.policy.negate:
             policy_result = not policy_result
         LOGGER.debug("Policy %r#%s got %s", self.policy.name, self.policy.pk.hex, policy_result)
-        # cache_key = _cache_key(self.policy, self.user)
+        # cache_key = _cache_key(self.policy, self.request.user)
         # cache.set(cache_key, (self.policy.action, policy_result, message))
         # LOGGER.debug("Cached entry as %s", cache_key)
         self.ret.send(policy_result)

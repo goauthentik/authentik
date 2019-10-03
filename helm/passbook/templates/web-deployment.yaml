@@ -59,11 +59,7 @@ spec:
             - --http 0.0.0.0:8000
             - --wsgi-file passbook/root/wsgi.py
             - --master
-            - --processes 24
-            - --threads 2
-            - --offload-threads 4
-            - --stats 0.0.0.0:8001
-            - --stats-http
+            - --enable-threads
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config

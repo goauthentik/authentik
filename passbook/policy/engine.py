@@ -7,8 +7,9 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from structlog import get_logger
 
-from passbook.core.models import Policy, PolicyResult, User
+from passbook.core.models import Policy, User
 from passbook.policy.task import PolicyTask
+from passbook.policy.struct import PolicyResult, PolicyRequest
 
 LOGGER = get_logger()
 
@@ -47,11 +48,8 @@ class PolicyEngine:
         if not self.__user:
             raise ValueError("User not set.")
         cached_policies = []
-        kwargs = {
-            '__password__': getattr(self.__user, '__password__', None),
-            'session': dict(getattr(self.__request, 'session', {}).items()),
-            'request': self.__request,
-        }
+        request = PolicyRequest(self.__user)
+        request.http_request = self.__request
         for policy in self.policies:
             cached_policy = cache.get(_cache_key(policy, self.__user), None)
             if cached_policy:
@@ -60,14 +58,13 @@ class PolicyEngine:
             else:
                 LOGGER.debug("Looking up real class of policy...")
                 # TODO: Rewrite this to lookup all policies at once
-                policy = Policy.objects.get_subclass(pk=policy.id)
+                policy = Policy.objects.get_subclass(pk=policy.pk)
                 LOGGER.debug("Evaluating policy %s", policy.pk.hex)
                 our_end, task_end = Pipe(False)
                 task = PolicyTask()
                 task.ret = task_end
-                task.user = self.__user
+                task.request = request
                 task.policy = policy
-                task.params = kwargs
                 LOGGER.debug("Starting Process %s", task.__class__.__name__)
                 task.start()
                 self.__proc_list.append((our_end, task))

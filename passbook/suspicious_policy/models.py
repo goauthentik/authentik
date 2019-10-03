@@ -1,8 +1,10 @@
 """passbook suspicious request policy"""
 from django.db import models
 from django.utils.translation import gettext as _
+from ipware import get_client_ip
 
-from passbook.core.models import Policy, PolicyResult, User
+from passbook.core.models import Policy, User
+from passbook.policy.struct import PolicyRequest, PolicyResult
 
 
 class SuspiciousRequestPolicy(Policy):
@@ -14,14 +16,14 @@ class SuspiciousRequestPolicy(Policy):
 
     form = 'passbook.suspicious_policy.forms.SuspiciousRequestPolicyForm'
 
-    def passes(self, user: User) -> PolicyResult:
-        remote_ip = user.remote_ip
+    def passes(self, request: PolicyRequest) -> PolicyResult:
+        remote_ip, _ = get_client_ip(request.http_request)
         passing = True
         if self.check_ip:
             ip_scores = IPScore.objects.filter(ip=remote_ip, score__lte=self.threshold)
             passing = passing and ip_scores.exists()
         if self.check_username:
-            user_scores = UserScore.objects.filter(user=user, score__lte=self.threshold)
+            user_scores = UserScore.objects.filter(user=request.user, score__lte=self.threshold)
             passing = passing and user_scores.exists()
         return PolicyResult(passing)
 
