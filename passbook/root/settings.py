@@ -47,8 +47,6 @@ AUTH_USER_MODEL = 'passbook_core.User'
 
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [

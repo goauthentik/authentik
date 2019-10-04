@@ -1,9 +1,12 @@
 """passbook access helper classes"""
+from typing import List, Tuple
+
 from django.contrib import messages
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
-from passbook.core.models import Application
+from passbook.core.models import Application, Provider, User
 from passbook.policy.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -13,9 +16,9 @@ class AccessMixin:
     Provider functions to check application access, etc"""
 
     # request is set by view but since this Mixin has no base class
-    request = None
+    request: HttpRequest = None
 
-    def provider_to_application(self, provider):
+    def provider_to_application(self, provider: Provider) -> Application:
         """Lookup application assigned to provider, throw error if no application assigned"""
         try:
             return provider.application
@@ -25,9 +28,9 @@ class AccessMixin:
                 }))
             raise exc
 
-    def user_has_access(self, application, user):
+    def user_has_access(self, application: Application, user: User) -> Tuple[bool, List[str]]:
         """Check if user has access to application."""
-        LOGGER.debug("Checking permissions of %s on application %s...", user, application)
+        LOGGER.debug("Checking permissions", user=user, application=application)
         policy_engine = PolicyEngine(application.policies.all())
         policy_engine.for_user(user).with_request(self.request).build()
         return policy_engine.result
