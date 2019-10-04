@@ -1,15 +1,15 @@
 """passbook policy engine"""
 from multiprocessing import Pipe
 from multiprocessing.connection import Connection
-from typing import List, Tuple, Tuple
+from typing import List, Tuple
 
 from django.core.cache import cache
 from django.http import HttpRequest
 from structlog import get_logger
 
 from passbook.core.models import Policy, User
+from passbook.policy.struct import PolicyRequest, PolicyResult
 from passbook.policy.task import PolicyTask
-from passbook.policy.struct import PolicyResult, PolicyRequest
 
 LOGGER = get_logger()
 

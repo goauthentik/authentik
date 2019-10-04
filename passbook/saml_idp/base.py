@@ -3,7 +3,7 @@
 import time
 import uuid
 
-from bs4 import BeautifulSoup
+from defusedxml import ElementTree
 from structlog import get_logger
 
 from passbook.saml_idp import exceptions, utils, xml_render
@@ -204,13 +204,13 @@ class Processor:
         if not str(self._request_xml.strip()).startswith('<'):
             raise Exception('RequestXML is not valid XML; '
                             'it may need to be decoded or decompressed.')
-        soup = BeautifulSoup(self._request_xml, features="xml")
-        request = soup.findAll()[0]
+
+        root = ElementTree.fromstring(self._request_xml)
         params = {}
-        params['ACS_URL'] = request['AssertionConsumerServiceURL']
-        params['REQUEST_ID'] = request['ID']
-        params['DESTINATION'] = request.get('Destination', '')
-        params['PROVIDER_NAME'] = request.get('ProviderName', '')
+        params['ACS_URL'] = root.attrib['AssertionConsumerServiceURL']
+        params['REQUEST_ID'] = root.attrib['ID']
+        params['DESTINATION'] = root.attrib.get('Destination', '')
+        params['PROVIDER_NAME'] = root.attrib.get('ProviderName', '')
         self._request_params = params
 
     def _reset(self, django_request, sp_config=None):

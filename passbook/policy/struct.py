@@ -1,16 +1,18 @@
 """policy structs"""
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from django.http import HttpRequest
 
+if TYPE_CHECKING:
+    from passbook.core.models import User
 
 class PolicyRequest:
     """Data-class to hold policy request data"""
 
-    user: 'passbook.core.models.User'
+    user: 'User'
     http_request: HttpRequest
 
-    def __init__(self, user: 'passbook.core.models.User'):
+    def __init__(self, user: 'User'):
         self.user = user
 
     def __str__(self):
