@@ -20,7 +20,7 @@ from passbook.core.signals import invitation_used, user_signed_up
 from passbook.core.tasks import send_email
 from passbook.lib.config import CONFIG
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class LoginView(UserPassesTestMixin, FormView):

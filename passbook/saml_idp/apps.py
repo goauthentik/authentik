@@ -6,7 +6,7 @@ from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class PassbookSAMLIDPConfig(AppConfig):
     """passbook saml_idp app config"""

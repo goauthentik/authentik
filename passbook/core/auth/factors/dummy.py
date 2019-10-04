@@ -3,7 +3,7 @@ from structlog import get_logger
 
 from passbook.core.auth.factor import AuthenticationFactor
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class DummyFactor(AuthenticationFactor):

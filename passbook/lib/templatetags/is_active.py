@@ -5,7 +5,7 @@ from structlog import get_logger
 
 register = template.Library()
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 @register.simple_tag(takes_context=True)

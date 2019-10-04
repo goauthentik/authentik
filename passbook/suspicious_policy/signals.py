@@ -7,7 +7,7 @@ from structlog import get_logger
 from passbook.core.models import User
 from passbook.suspicious_policy.models import IPScore, UserScore
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def get_remote_ip(request):

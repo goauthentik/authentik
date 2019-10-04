@@ -9,7 +9,7 @@ from structlog import get_logger
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 CELERY_APP = Celery('passbook')

@@ -5,7 +5,7 @@ from structlog import get_logger
 from passbook.core.auth import view
 from passbook.core.views import authentication, overview, user
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 urlpatterns = [
     # Authentication views

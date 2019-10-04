@@ -10,7 +10,7 @@ from passbook.oauth_client.source_types.manager import MANAGER, RequestKind
 from passbook.oauth_client.utils import user_get_or_create
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 @MANAGER.source(kind=RequestKind.redirect, name='reddit')

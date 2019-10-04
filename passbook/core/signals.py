@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from passbook.core.exceptions import PasswordPolicyInvalid
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 user_signed_up = Signal(providing_args=['request', 'user'])
 invitation_created = Signal(providing_args=['request', 'invitation'])

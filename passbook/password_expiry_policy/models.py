@@ -9,7 +9,7 @@ from structlog import get_logger
 from passbook.core.models import Policy
 from passbook.policy.struct import PolicyRequest, PolicyResult
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class PasswordExpiryPolicy(Policy):

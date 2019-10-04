@@ -4,7 +4,7 @@ from django.db.utils import InternalError, OperationalError, ProgrammingError
 from django.urls import include, path
 from structlog import get_logger
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class PassbookOIDCProviderConfig(AppConfig):
     """passbook auth oidc provider app config"""

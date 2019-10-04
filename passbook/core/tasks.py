@@ -10,7 +10,7 @@ from passbook.core.models import Nonce
 from passbook.lib.config import CONFIG
 from passbook.root.celery import CELERY_APP
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 @CELERY_APP.task()
 def send_email(to_address, subject, template, context):

@@ -19,7 +19,7 @@ from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 from passbook.policy.exceptions import PolicyException
 from passbook.policy.struct import PolicyRequest, PolicyResult
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def default_nonce_duration():

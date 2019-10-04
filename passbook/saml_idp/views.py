@@ -21,7 +21,7 @@ from passbook.policy.engine import PolicyEngine
 from passbook.saml_idp import exceptions
 from passbook.saml_idp.models import SAMLProvider
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=('http', 'https'))
 
 

@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from passbook.core.models import Policy, PolicyResult, User
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class HaveIBeenPwendPolicy(Policy):
     """Check if password is on HaveIBeenPwned's list by upload the first

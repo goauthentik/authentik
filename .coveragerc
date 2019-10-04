@@ -1,7 +1,6 @@
 [run]
 source = passbook
 omit =
-    env/
     */wsgi.py
     manage.py
     */migrations/*

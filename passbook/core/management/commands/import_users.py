@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from passbook.core.models import User
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class Command(BaseCommand):
     """Import users from CSV file"""

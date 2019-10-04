@@ -16,7 +16,7 @@ from passbook.lib.utils.reflection import app
 from passbook.oauth_client.clients import get_client
 from passbook.oauth_client.models import OAuthSource, UserOAuthSourceConnection
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 # pylint: disable=too-few-public-methods

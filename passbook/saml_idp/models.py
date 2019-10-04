@@ -9,7 +9,7 @@ from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.saml_idp.base import Processor
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class SAMLProvider(Provider):

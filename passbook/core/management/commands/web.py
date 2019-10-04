@@ -8,7 +8,7 @@ from structlog import get_logger
 from passbook.lib.config import CONFIG
 from passbook.root.wsgi import application
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class Command(BaseCommand):

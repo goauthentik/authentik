@@ -6,7 +6,7 @@ from structlog import get_logger
 from passbook.core.models import Application
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 def check_permissions(request, user, client):
     """Check permissions, used for

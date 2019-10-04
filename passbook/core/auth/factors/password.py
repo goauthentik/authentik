@@ -19,7 +19,7 @@ from passbook.core.tasks import send_email
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def authenticate(request, backends, **credentials):

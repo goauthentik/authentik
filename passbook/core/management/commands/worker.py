@@ -6,7 +6,7 @@ from structlog import get_logger
 
 from passbook.root.celery import CELERY_APP
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class Command(BaseCommand):

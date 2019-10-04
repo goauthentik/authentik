@@ -14,7 +14,7 @@ from passbook.core.views.access import AccessMixin
 from passbook.core.views.utils import LoadingView, PermissionDeniedView
 from passbook.oauth_provider.models import OAuth2Provider
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):

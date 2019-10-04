@@ -23,7 +23,7 @@ from passbook.otp.utils import otpauth_url
 
 OTP_SESSION_KEY = 'passbook_otp_key'
 OTP_SETTING_UP_KEY = 'passbook_otp_setup'
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""

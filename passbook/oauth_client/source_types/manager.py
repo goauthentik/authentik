@@ -5,7 +5,7 @@ from structlog import get_logger
 
 from passbook.oauth_client.views.core import OAuthCallback, OAuthRedirect
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class RequestKind(Enum):
     """Enum of OAuth Request types"""

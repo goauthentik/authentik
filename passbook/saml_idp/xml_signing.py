@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def sign_with_signxml(private_key, data, cert, reference_uri=None):

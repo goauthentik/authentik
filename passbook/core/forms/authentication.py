@@ -9,7 +9,7 @@ from passbook.core.models import User
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.ui import human_list
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class LoginForm(forms.Form):
     """Allow users to login"""

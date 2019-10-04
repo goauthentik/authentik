@@ -6,7 +6,7 @@ from structlog import get_logger
 from passbook.core.models import Application
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class AccessMixin:
     """Mixin class for usage in Authorization views.

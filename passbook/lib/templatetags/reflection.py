@@ -3,7 +3,7 @@ from django import template
 from structlog import get_logger
 
 register = template.Library()
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def get_key_unique(context):

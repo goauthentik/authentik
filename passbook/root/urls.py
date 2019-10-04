@@ -8,7 +8,7 @@ from structlog import get_logger
 from passbook.core.views import error
 from passbook.lib.utils.reflection import get_apps
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 admin.autodiscover()
 admin.site.login = RedirectView.as_view(pattern_name='passbook_core:auth-login')
 

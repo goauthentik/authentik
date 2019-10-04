@@ -5,7 +5,7 @@ from structlog import get_logger
 from passbook.ldap.ldap_connector import LDAPConnector
 from passbook.ldap.models import LDAPSource
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class LDAPBackend(ModelBackend):

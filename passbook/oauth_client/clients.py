@@ -11,7 +11,7 @@ from requests.exceptions import RequestException
 from requests_oauthlib import OAuth1
 from structlog import get_logger
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 class BaseOAuthClient:

@@ -14,7 +14,7 @@ from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
 from passbook.policy.engine import PolicyEngine
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 def _redirect_with_qs(view, get_query_set=None):
     """Wrapper to redirect whilst keeping GET Parameters"""

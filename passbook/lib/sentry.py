@@ -1,7 +1,7 @@
 """passbook sentry integration"""
 from structlog import get_logger
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def before_send(event, hint):

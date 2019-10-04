@@ -8,7 +8,7 @@ from structlog import get_logger
 from passbook.lib.utils.template import render_to_string
 
 register = template.Library()
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 @register.simple_tag()
 def get_links(model_instance):

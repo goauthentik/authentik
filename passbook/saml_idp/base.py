@@ -65,7 +65,7 @@ class Processor:
     def __init__(self, remote):
         self.name = remote.name
         self._remote = remote
-        self._logger = get_logger(__name__)
+        self._logger = get_logger()
         self._system_params['ISSUER'] = self._remote.issuer
         self._logger.debug('processor configured')
 

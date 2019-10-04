@@ -9,7 +9,7 @@ from passbook.core.auth.factor import AuthenticationFactor
 from passbook.otp.forms import OTPVerifyForm
 from passbook.otp.views import OTP_SETTING_UP_KEY, EnableView
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class OTPFactor(FormView, AuthenticationFactor):
     """OTP Factor View"""

@@ -10,7 +10,7 @@ from structlog import get_logger
 
 from passbook.lib.models import UUIDModel
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 class AuditEntry(UUIDModel):
     """An individual audit log entry"""
