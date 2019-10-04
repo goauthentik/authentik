@@ -40,10 +40,7 @@ services:
     image: docker.beryju.org/passbook/server:${TAG:-test}
     command:
       - uwsgi
-      - --http=0.0.0.0:8000
-      - --wsgi-file=passbook/root/wsgi.py
-      - --master
-      - --enable-threads
+      - uwsgi.ini
     environment:
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_POSTGRESQL__HOST=postgresql

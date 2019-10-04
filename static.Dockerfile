@@ -14,4 +14,4 @@ FROM nginx:latest
 
 COPY --from=static-build /app/static /data/static/
 COPY --from=static-build /app/static/robots.txt /data/robots.txt
-COPY ./passbook/core/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
