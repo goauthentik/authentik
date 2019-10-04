@@ -8,8 +8,8 @@ from django.http import HttpRequest
 from structlog import get_logger
 
 from passbook.core.models import Policy, User
-from passbook.policy.struct import PolicyRequest, PolicyResult
-from passbook.policy.task import PolicyTask
+from passbook.policy.struct import PolicyRequest
+from passbook.policy.process import PolicyProcess
 
 LOGGER = get_logger()
 
@@ -23,7 +23,7 @@ class PolicyEngine:
     __request: HttpRequest
     __user: User
 
-    __proc_list: List[Tuple[Connection, PolicyTask]] = []
+    __proc_list: List[Tuple[Connection, PolicyProcess]] = []
 
     def __init__(self, policies, user: User = None, request: HttpRequest = None):
         self.policies = policies
@@ -40,6 +40,13 @@ class PolicyEngine:
         self.__request = request
         return self
 
+    def _select_subclasses(self) -> List[Policy]:
+        """Make sure all Policies are their respective classes"""
+        return Policy.objects \
+            .filter(pk__in=[x.pk for x in self.policies]) \
+            .select_subclasses() \
+            .order_by('order')
+
     def build(self) -> 'PolicyEngine':
         """Build task group"""
         if not self.__user:
@@ -47,18 +54,15 @@ class PolicyEngine:
         cached_policies = []
         request = PolicyRequest(self.__user)
         request.http_request = self.__request
-        for policy in self.policies:
+        for policy in self._select_subclasses():
             cached_policy = cache.get(_cache_key(policy, self.__user), None)
             if cached_policy:
                 LOGGER.debug("Taking result from cache", policy=policy.pk.hex)
                 cached_policies.append(cached_policy)
             else:
-                LOGGER.debug("Looking up real class of policy...")
-                # TODO: Rewrite this to lookup all policies at once
-                policy = Policy.objects.get_subclass(pk=policy.pk)
                 LOGGER.debug("Evaluating policy", policy=policy.pk.hex)
                 our_end, task_end = Pipe(False)
-                task = PolicyTask()
+                task = PolicyProcess()
                 task.ret = task_end
                 task.request = request
                 task.policy = policy

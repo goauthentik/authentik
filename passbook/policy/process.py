@@ -8,13 +8,13 @@ from passbook.core.models import Policy
 from passbook.policy.exceptions import PolicyException
 from passbook.policy.struct import PolicyRequest, PolicyResult
 
-LOGGER = get_logger(__name__)
+LOGGER = get_logger()
 
 
 def _cache_key(policy, user):
     return "policy_%s#%s" % (policy.uuid, user.pk)
 
-class PolicyTask(Process):
+class PolicyProcess(Process):
     """Evaluate a single policy within a seprate process"""
 
     ret: Connection
@@ -23,8 +23,8 @@ class PolicyTask(Process):
 
     def run(self):
         """Task wrapper to run policy checking"""
-        LOGGER.debug("Running policy `%s`#%s for user %s...", self.policy.name,
-                     self.policy.pk.hex, self.request.user)
+        LOGGER.debug("Running policy", policy=self.policy,
+                     user=self.request.user, process="PolicyProcess")
         try:
             policy_result = self.policy.passes(self.request)
         except PolicyException as exc:
@@ -33,7 +33,8 @@ class PolicyTask(Process):
         # Invert result if policy.negate is set
         if self.policy.negate:
             policy_result = not policy_result
-        LOGGER.debug("Policy %r#%s got %s", self.policy.name, self.policy.pk.hex, policy_result)
+        LOGGER.debug("Got result", policy=self.policy, result=policy_result,
+                     process="PolicyProcess")
         # cache_key = _cache_key(self.policy, self.request.user)
         # cache.set(cache_key, (self.policy.action, policy_result, message))
         # LOGGER.debug("Cached entry as %s", cache_key)
