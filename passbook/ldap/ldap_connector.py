@@ -222,7 +222,7 @@ class LDAPConnector:
         attrs = {
             'distinguishedName': str(user_dn),
             'cn': str(username),
-            'description': str('t=' + time()),
+            'description': 't=' + str(time()),
             'sAMAccountName': str(username_trunk),
             'givenName': str(user.name),
             'displayName': str(user.username),

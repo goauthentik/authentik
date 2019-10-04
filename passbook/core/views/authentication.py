@@ -1,5 +1,5 @@
 """passbook core authentication views"""
-from typing import Dict
+from typing import Dict, Optional
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -53,7 +53,7 @@ class LoginView(UserPassesTestMixin, FormView):
             self.template_name = 'login/with_sources.html'
         return super().get_context_data(**kwargs)
 
-    def get_user(self, uid_value) -> User:
+    def get_user(self, uid_value) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
         for search_field in CONFIG.y('passbook.uid_fields'):
             # Workaround for E-Mail -> email
@@ -61,7 +61,7 @@ class LoginView(UserPassesTestMixin, FormView):
                 search_field = 'email'
             users = User.objects.filter(**{search_field: uid_value})
             if users.exists():
-                LOGGER.debug("Found user %s with uid_field %s", users.first(), search_field)
+                LOGGER.debug("Found user", user=users.first(), uid_field=search_field)
                 return users.first()
         return None
 
