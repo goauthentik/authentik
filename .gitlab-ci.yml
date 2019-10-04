@@ -87,7 +87,8 @@ coverage:
   - postgres:latest
   - redis:latest
 
-package-passbook-server:
+build-passbook-server:
+  stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
@@ -95,7 +96,6 @@ package-passbook-server:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.5.0-beta
-  stage: build
   only:
     - tags
     - /^version/.*$/
