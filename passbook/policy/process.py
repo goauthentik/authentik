@@ -17,9 +17,15 @@ def _cache_key(policy, user):
 class PolicyProcess(Process):
     """Evaluate a single policy within a seprate process"""
 
-    ret: Connection
+    connection: Connection
     policy: Policy
     request: PolicyRequest
+
+    def __init__(self, policy: Policy, request: PolicyRequest, connection: Connection):
+        super().__init__()
+        self.policy = policy
+        self.request = request
+        self.connection = connection
 
     def run(self):
         """Task wrapper to run policy checking"""
@@ -38,5 +44,4 @@ class PolicyProcess(Process):
         # cache_key = _cache_key(self.policy, self.request.user)
         # cache.set(cache_key, (self.policy.action, policy_result, message))
         # LOGGER.debug("Cached entry as %s", cache_key)
-        self.ret.send(policy_result)
-        self.ret.close()
+        self.connection.send(policy_result)
