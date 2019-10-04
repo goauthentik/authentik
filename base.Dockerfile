@@ -1,15 +1,19 @@
-FROM python:3.7-alpine
+FROM python:3.7-slim-stretch
 
 COPY ./Pipfile /app/
 COPY ./Pipfile.lock /app/
 
 WORKDIR /app/
 
-RUN apk update && \
-    apk add --no-cache openssl-dev build-base libxml2-dev libxslt-dev libffi-dev gcc musl-dev libgcc zlib-dev postgresql-dev && \
-    pip install pipenv --no-cache-dir && \
-    pipenv lock -r > requirements.txt && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential && \
+    pip install pipenv uwsgi --no-cache-dir && \
+    apt-get remove -y --purge build-essential && \
+    apt-get autoremove -y --purge && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pipenv lock -r > requirements.txt && \
     pipenv --rm && \
     pip install -r requirements.txt  --no-cache-dir && \
-    adduser -S passbook && \
+    adduser --system --no-create-home passbook && \
     chown -R passbook /app

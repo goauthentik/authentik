@@ -6,7 +6,6 @@ verify_ssl = true
 [packages]
 celery = "*"
 cherrypy = "*"
-colorlog = "*"
 defusedxml = "*"
 django = "*"
 django-cors-middleware = "*"
@@ -36,7 +35,6 @@ service_identity = "*"
 signxml = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 structlog = "*"
-uwsgi = "*"
 
 [requires]
 python_version = "3.7"

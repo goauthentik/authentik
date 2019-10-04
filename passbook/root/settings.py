@@ -319,3 +319,10 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+
+DBBACKUP_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DBBACKUP_STORAGE_OPTIONS = {
+    'access_key': 'my_id',
+    'secret_key': 'my_secret',
+    'bucket_name': 'my_bucket_name'
+}
