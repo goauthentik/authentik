@@ -268,13 +268,6 @@ with CONFIG.cd('log'):
                 'class': 'logging.StreamHandler',
                 'formatter': "colored" if DEBUG else "plain",
             },
-            'queue': {
-                'level': DEBUG,
-                'class': 'passbook.lib.log.QueueListenerHandler',
-                'handlers': [
-                    'cfg://handlers.console',
-                ],
-            }
         },
         'loggers': {
         }

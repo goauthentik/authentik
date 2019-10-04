@@ -61,10 +61,13 @@ class AuthenticationView(UserPassesTestMixin, View):
         _all_factors = Factor.objects.filter(enabled=True).order_by('order').select_subclasses()
         pending_factors = []
         for factor in _all_factors:
+            LOGGER.debug("Checking if factor applies to user",
+                         factor=factor, user=self.pending_user)
             policy_engine = PolicyEngine(factor.policies.all())
             policy_engine.for_user(self.pending_user).with_request(self.request).build()
             if policy_engine.passing:
                 pending_factors.append((factor.uuid.hex, factor.type))
+                LOGGER.debug("Factor applies", factor=factor, user=self.pending_user)
         return pending_factors
 
     def dispatch(self, request, *args, **kwargs):
