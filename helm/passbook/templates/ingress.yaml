@@ -37,14 +37,9 @@ spec:
             backend:
               serviceName: {{ $fullName }}-static
               servicePort: http
-  {{- end }}
-  {{- range .Values.ingress.app_gw_hosts }}
-    - host: {{ . | quote }}
-      http:
-        paths:
-          - path: /
+          - path: /robots.txt
             backend:
-              serviceName: {{ $fullName }}-appgw
+              serviceName: {{ $fullName }}-static
               servicePort: http
   {{- end }}
 {{- end }}
