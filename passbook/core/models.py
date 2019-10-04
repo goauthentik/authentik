@@ -279,8 +279,8 @@ class FieldMatcherPolicy(Policy):
         if not hasattr(request.user, self.user_field):
             raise ValueError("Field does not exist")
         user_field_value = getattr(request.user, self.user_field, None)
-        LOGGER.debug("Checked '%s' %s with '%s'...",
-                     user_field_value, self.match_action, self.value)
+        LOGGER.debug("Checking field", value=user_field_value,
+                     action=self.match_action, should_be=self.value)
         passes = False
         if self.match_action == FieldMatcherPolicy.MATCH_STARTSWITH:
             passes = user_field_value.startswith(self.value)
@@ -293,8 +293,6 @@ class FieldMatcherPolicy(Policy):
             passes = bool(pattern.match(user_field_value))
         if self.match_action == FieldMatcherPolicy.MATCH_EXACT:
             passes = user_field_value == self.value
-
-        LOGGER.debug("User got '%r'", passes)
         return PolicyResult(passes)
 
     class Meta:
@@ -328,7 +326,6 @@ class PasswordPolicy(Policy):
         if self.amount_symbols > 0:
             filter_regex += r'[%s]{%d,}' % (self.symbol_charset, self.amount_symbols)
         result = bool(re.compile(filter_regex).match(password))
-        LOGGER.debug("User got %r", result)
         if not result:
             return PolicyResult(result, self.error_message)
         return PolicyResult(result)
@@ -387,7 +384,7 @@ class DebugPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Wait random time then return result"""
         wait = SystemRandom().randrange(self.wait_min, self.wait_max)
-        LOGGER.debug("Policy '%s' waiting for %ds", self.name, wait)
+        LOGGER.debug("Policy waiting", policy=self, delay=wait)
         sleep(wait)
         return PolicyResult(self.result, 'Debugging')
 

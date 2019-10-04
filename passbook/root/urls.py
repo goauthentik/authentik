@@ -26,7 +26,7 @@ for _passbook_app in get_apps():
                                                         _passbook_app.label),
                                                        namespace=_passbook_app.label))
         urlpatterns.append(_path)
-        LOGGER.debug("Loaded %s's URLs", _passbook_app.name)
+        LOGGER.debug("Mounted URLs", app_name=_passbook_app.name)
 
 urlpatterns += [
     # Administration

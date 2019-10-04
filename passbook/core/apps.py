@@ -22,6 +22,6 @@ class PassbookCoreConfig(AppConfig):
         for factors_to_load in factors_to_load:
             try:
                 import_module(factors_to_load)
-                LOGGER.info("Loaded %s", factors_to_load)
+                LOGGER.info("Loaded factor", factor_class=factors_to_load)
             except ImportError as exc:
                 LOGGER.debug(exc)

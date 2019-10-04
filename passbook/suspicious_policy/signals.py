@@ -28,14 +28,14 @@ def update_score(request, username, amount):
     ip_score, _ = IPScore.objects.update_or_create(ip=remote_ip)
     ip_score.score += amount
     ip_score.save()
-    LOGGER.debug("Added %s to score of IP %s", amount, remote_ip)
+    LOGGER.debug("Updated score", amount=amount, for_ip=remote_ip)
     user = User.objects.filter(username=username)
     if not user.exists():
         return
     user_score, _ = UserScore.objects.update_or_create(user=user.first())
     user_score.score += amount
     user_score.save()
-    LOGGER.debug("Added %s to score of User %s", amount, username)
+    LOGGER.debug("Updated score", amount=amount, for_user=username)
 
 @receiver(user_login_failed)
 def handle_failed_login(sender, request, credentials, **kwargs):

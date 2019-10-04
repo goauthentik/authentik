@@ -31,14 +31,14 @@ def authenticate(request, backends, **credentials):
             signature = Signature.from_callable(backend.authenticate)
             signature.bind(request, **credentials)
         except TypeError:
-            LOGGER.debug("Backend %s doesn't accept our arguments", backend)
+            LOGGER.debug("Backend doesn't accept our arguments", backend=backend)
             # This backend doesn't accept these credentials as arguments. Try the next one.
             continue
-        LOGGER.debug('Attempting authentication with %s...', backend)
+        LOGGER.debug('Attempting authentication...', backend=backend)
         try:
             user = backend.authenticate(request, **credentials)
         except PermissionDenied:
-            LOGGER.debug('Backend %r threw PermissionDenied', backend)
+            LOGGER.debug('Backend threw PermissionDenied', backend=backend)
             # This backend says to stop in our tracks - this user should not be allowed in at all.
             break
         if user is None:
@@ -104,5 +104,5 @@ class PasswordFactor(FormView, AuthenticationFactor):
             return self.form_invalid(form)
         except PermissionDenied:
             # User was found, but permission was denied (i.e. user is not active)
-            LOGGER.debug("Denied access to %s", kwargs)
+            LOGGER.debug("Denied access", **kwargs)
             return self.authenticator.user_invalid()

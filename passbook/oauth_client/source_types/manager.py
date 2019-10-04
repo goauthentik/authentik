@@ -27,7 +27,7 @@ class SourceTypeManager:
                 self.__source_types[kind] = {}
             self.__source_types[kind][name.lower()] = cls
             self.__names.append(name)
-            LOGGER.debug("Registered source '%s' for '%s'", cls.__name__, kind)
+            LOGGER.debug("Registered source", source_class=cls.__name__, kind=kind)
             return cls
         return inner_wrapper
 

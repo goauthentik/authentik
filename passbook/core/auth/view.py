@@ -100,17 +100,18 @@ class AuthenticationView(UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         """pass get request to current factor"""
-        LOGGER.debug("Passing GET to %s", class_to_path(self._current_factor_class.__class__))
+        LOGGER.debug("Passing GET", view_class=class_to_path(self._current_factor_class.__class__))
         return self._current_factor_class.get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         """pass post request to current factor"""
-        LOGGER.debug("Passing POST to %s", class_to_path(self._current_factor_class.__class__))
+        LOGGER.debug("Passing POST", view_class=class_to_path(self._current_factor_class.__class__))
         return self._current_factor_class.post(request, *args, **kwargs)
 
     def user_ok(self):
         """Redirect to next Factor"""
-        LOGGER.debug("Factor %s passed", class_to_path(self._current_factor_class.__class__))
+        LOGGER.debug("Factor passed",
+                     factor_class=class_to_path(self._current_factor_class.__class__))
         # Remove passed factor from pending factors
         current_factor_tuple = (self.current_factor.uuid.hex,
                                 class_to_path(self._current_factor_class.__class__))
@@ -123,7 +124,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             self.request.session[AuthenticationView.SESSION_PENDING_FACTORS] = \
                 self.pending_factors
             self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
-            LOGGER.debug("Rendering Factor is %s", next_factor)
+            LOGGER.debug("Rendering Factor", next_factor=next_factor)
             return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in")
@@ -140,7 +141,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         """User Successfully passed all factors"""
         backend = self.request.session[AuthenticationView.SESSION_USER_BACKEND]
         login(self.request, self.pending_user, backend=backend)
-        LOGGER.debug("Logged in user %s", self.pending_user)
+        LOGGER.debug("Logged in", user=self.pending_user)
         # Cleanup
         self.cleanup()
         next_param = self.request.GET.get('next', None)

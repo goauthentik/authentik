@@ -35,7 +35,7 @@ def invalidate_policy_cache(sender, instance, **kwargs):
     """Invalidate Policy cache when policy is updated"""
     from passbook.core.models import Policy
     if isinstance(instance, Policy):
-        LOGGER.debug("Invalidating cache for %s", instance.pk)
+        LOGGER.debug("Invalidating policy cache", policy=instance)
         keys = cache.keys("%s#*" % instance.pk)
         cache.delete_many(keys)
         LOGGER.debug("Deleted %d keys", len(keys))
