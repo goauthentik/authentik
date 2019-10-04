@@ -1,0 +1,100 @@
+---
+version: '3.2'
+
+services:
+  postgresql:
+    image: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - internal
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+      - POSTGRES_USER=passbook
+      - POSTGRES_DB=passbook
+    labels:
+      - traefik.enable=false
+  redis:
+    image: redis
+    networks:
+      - internal
+    labels:
+      - traefik.enable=false
+  database-migrate:
+    build:
+      context: .
+    image: docker.beryju.org/passbook/server:${TAG:-test}
+    command:
+      - ./manage.py
+      - migrate
+    networks:
+      - internal
+    restart: 'no'
+    environment:
+      - PASSBOOK_REDIS__HOST=redis
+      - PASSBOOK_POSTGRESQL__HOST=postgresql
+      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+  server:
+    build:
+      context: .
+    image: docker.beryju.org/passbook/server:${TAG:-test}
+    command:
+      - uwsgi
+      - --http=0.0.0.0:8000
+      - --wsgi-file=passbook/root/wsgi.py
+      - --master
+      - --enable-threads
+    environment:
+      - PASSBOOK_REDIS__HOST=redis
+      - PASSBOOK_POSTGRESQL__HOST=postgresql
+      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+    ports:
+      - 8000
+    networks:
+      - internal
+    labels:
+      - traefik.port=8000
+      - traefik.docker.network=internal
+      - traefik.frontend.rule=PathPrefix:/
+  worker:
+    image: docker.beryju.org/passbook/server:${TAG:-test}
+    command:
+      - ./manage.py
+      - worker
+    networks:
+      - internal
+    labels:
+      - traefik.enable=false
+    environment:
+      - PASSBOOK_REDIS__HOST=redis
+      - PASSBOOK_POSTGRESQL__HOST=postgresql
+      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+  static:
+    build:
+      context: .
+      dockerfile: static.Dockerfile
+    image: docker.beryju.org/passbook/static:${TAG:-test}
+    networks:
+      - internal
+    labels:
+      - traefik.frontend.rule=PathPrefix:/static
+      - traefik.port=80
+      - traefik.docker.network=internal
+  traefik:
+    image: traefik:1.7
+    command: --api --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:8080:8080"
+    networks:
+      - internal
+
+volumes:
+  database:
+    driver: local
+
+networks:
+  internal: {}

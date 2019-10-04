@@ -2,3 +2,4 @@ env
 helm
 passbook-ui
 static
+*.env.yml

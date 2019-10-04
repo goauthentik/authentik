@@ -56,8 +56,8 @@ spec:
           command:
             - uwsgi
           args:
-            - --http 0.0.0.0:8000
-            - --wsgi-file passbook/root/wsgi.py
+            - --http=0.0.0.0:8000
+            - --wsgi-file=passbook/root/wsgi.py
             - --master
             - --enable-threads
           envFrom:
