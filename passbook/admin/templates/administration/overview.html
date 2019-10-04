@@ -179,8 +179,8 @@
                     <span class="card-pf-aggregate-status-notification">
                         <a href="#">
                             {% if worker_count < 1%}
-                            <span class="pficon-error-circle-o" data-toggle="tooltip" data-placement="right"
-                                title="{% trans 'No workers connected. Policies will not work and you may expect other issues.' %}"></span> {{ worker_count }}
+                            <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right"
+                                title="{% trans 'No workers connected.' %}"></span> {{ worker_count }}
                             {% else %}
                             <span class="pficon pficon-ok"></span>{{ worker_count }}
                             {% endif %}

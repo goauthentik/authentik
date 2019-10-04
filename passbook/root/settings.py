@@ -34,10 +34,8 @@ STATIC_ROOT = BASE_DIR + '/static'
 SECRET_KEY = CONFIG.y('secret_key',
                       "9$@r!d^1^jrn#fk#1#@ks#9&i$^s#1)_13%$rwjrhd=e8jfi_s")  # noqa Debug
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CONFIG.y_bool('debug')
 INTERNAL_IPS = ['127.0.0.1']
-# ALLOWED_HOSTS = CONFIG.y('domains', []) + [CONFIG.y('primary_domain')]
 ALLOWED_HOSTS = ['*']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -49,7 +47,6 @@ AUTH_USER_MODEL = 'passbook_core.User'
 
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
-SESSION_COOKIE_DOMAIN = CONFIG.y('primary_domain')
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 LANGUAGE_COOKIE_NAME = 'passbook_language'
