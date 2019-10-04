@@ -1,15 +1,15 @@
 """passbook policy engine"""
 from multiprocessing import Pipe
 from multiprocessing.connection import Connection
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 from django.core.cache import cache
 from django.http import HttpRequest
 from structlog import get_logger
 
 from passbook.core.models import Policy, User
-from passbook.policy.struct import PolicyRequest, PolicyResult
 from passbook.policy.process import PolicyProcess
+from passbook.policy.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
@@ -17,6 +17,7 @@ def _cache_key(policy, user):
     return f"policy_{policy.pk}#{user.pk}"
 
 class PolicyProcessInfo:
+    """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
     connection: Connection
@@ -79,7 +80,7 @@ class PolicyEngine:
                 LOGGER.debug("Starting Process", for_policy=policy)
                 task.start()
                 self.__processes.append(PolicyProcessInfo(process=task,
-                                                           connection=our_end, policy=policy))
+                                                          connection=our_end, policy=policy))
         # If all policies are cached, we have an empty list here.
         for proc_info in self.__processes:
             proc_info.process.join(proc_info.policy.timeout)
