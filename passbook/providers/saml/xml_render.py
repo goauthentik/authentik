@@ -1,5 +1,6 @@
 """Functions for creating XML output."""
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from structlog import get_logger

@@ -1,6 +1,5 @@
 """passbook lib navbar Templatetag"""
 from django import template
-from django.urls import reverse
 from structlog import get_logger
 
 register = template.Library()
@@ -17,7 +16,7 @@ def is_active(context, *args, **kwargs):
         return ''
     for url in args:
         short_url = url.split(':')[1] if ':' in url else url
-        # Check if resolve_match matches
+        # Check if resolver_match matches
         if request.resolver_match.url_name.startswith(url) or \
                 request.resolver_match.url_name.startswith(short_url):
             # Monkeypatch app_name: urls from core have app_name == ''
@@ -30,15 +29,19 @@ def is_active(context, *args, **kwargs):
 
 
 @register.simple_tag(takes_context=True)
-def is_active_url(context, view, *args, **kwargs):
+def is_active_url(context, view):
     """Return whether a navbar link is active or not."""
 
-    matching_url = reverse(view, args=args, kwargs=kwargs)
+    # matching_url = reverse(view, args=args, kwargs=kwargs)
     request = context.get('request')
+    current_full_url = f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
+
     if not request.resolver_match:
         return ''
-    if matching_url == request.path:
+    if current_full_url == view:
         return 'active'
+    # if matching_url == request.path:
+    #     return 'active'
     return ''
 
 

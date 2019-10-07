@@ -65,122 +65,93 @@
                 <span class="list-group-item-value">{% trans 'Overview' %}</span>
             </a>
         </li>
-        {% is_active_app 'passbook_admin' as is_admin %}
         {% if user.is_superuser %}
-        <li class="list-group-item {% is_active_app 'passbook_admin' %} secondary-nav-item-pf">
-            <a>
-                <span class="pficon pficon-user" data-toggle="tooltip" title=""
-                    data-original-title="{% trans 'Administration' %}"></span>
-                <span class="list-group-item-value dropdown-title">{% trans 'Administration' %}</span>
+        <li class="list-group-item {% is_active_url 'passbook_admin:overview' %}">
+            <a href="{% url 'passbook_admin:overview' %}">
+                <span class="fa pficon-build" data-toggle="tooltip" title="{% trans 'System Status' %}"></span>
+                <span class="list-group-item-value">{% trans 'System Status' %}</span>
             </a>
-            <div id="user-secondary" class="nav-pf-secondary-nav">
-                <div class="nav-item-pf-header">
-                    <a href="#0" class="secondary-collapse-toggle-pf" data-toggle="collapse-secondary-nav"></a>
-                    <span>{% trans 'Administration' %}</span>
-                </div>
-                <ul class="list-group">
-                    <li class="list-group-item {% is_active 'passbook_admin:overview' %}">
-                        <a href="{% url 'passbook_admin:overview' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Overview' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
-                        <a href="{% url 'passbook_admin:applications' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Applications' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
-                        <a href="{% url 'passbook_admin:sources' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Sources' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
-                        <a href="{% url 'passbook_admin:providers' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Providers' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
-                        <a href="{% url 'passbook_admin:property-mappings' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Property Mappings' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
-                        <a href="{% url 'passbook_admin:factors' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Factors' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
-                        <a href="{% url 'passbook_admin:policies' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Policies' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
-                        <a href="{% url 'passbook_admin:invitations' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Invitations' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
-                        <a href="{% url 'passbook_admin:users' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Users' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li
-                        class="list-group-item {% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
-                        <a href="{% url 'passbook_admin:groups' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Groups' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li class="list-group-item {% is_active 'passbook_admin:audit-log' %}">
-                        <a href="{% url 'passbook_admin:audit-log' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Audit Log' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li class="list-group-item {% is_active_app 'admin' %}">
-                        <a href="{% url 'admin:index' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Django' %}
-                            </span>
-                        </a>
-                    </li>
-                    <li class="list-group-item {% is_active 'passbook_admin:debug-request' %}">
-                        <a href="{% url 'passbook_admin:debug-request' %}">
-                            <span class="list-group-item-value">
-                                {% trans 'Debug' %}
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
+            <a href="{% url 'passbook_admin:applications' %}">
+                <span class="fa pficon-applications" data-toggle="tooltip" title="{% trans 'Applications' %}"></span>
+                <span class="list-group-item-value">{% trans 'Applications' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
+            <a href="{% url 'passbook_admin:sources' %}">
+                <span class="fa pficon-resource-pool" data-toggle="tooltip" title="{% trans 'Sources' %}"></span>
+                <span class="list-group-item-value">{% trans 'Sources' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
+            <a href="{% url 'passbook_admin:providers' %}">
+                <span class="fa pficon-integration" data-toggle="tooltip" title="{% trans 'Providers' %}"></span>
+                <span class="list-group-item-value">{% trans 'Providers' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
+            <a href="{% url 'passbook_admin:property-mappings' %}">
+                <span class="fa fa-table" data-toggle="tooltip" title="{% trans 'Property Mappings' %}"></span>
+                <span class="list-group-item-value">{% trans 'Property Mappings' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
+            <a href="{% url 'passbook_admin:factors' %}">
+                <span class="fa pficon-plugged" data-toggle="tooltip" title="{% trans 'Factors' %}"></span>
+                <span class="list-group-item-value">{% trans 'Factors' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
+            <a href="{% url 'passbook_admin:policies' %}">
+                <span class="fa pficon-infrastructure" data-toggle="tooltip" title="{% trans 'Policies' %}"></span>
+                <span class="list-group-item-value">{% trans 'Policies' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
+            <a href="{% url 'passbook_admin:invitations' %}">
+                <span class="fa pficon-migration" data-toggle="tooltip" title="{% trans 'Invitations' %}"></span>
+                <span class="list-group-item-value">{% trans 'Invitations' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
+            <a href="{% url 'passbook_admin:users' %}">
+                <span class="fa pficon-users" data-toggle="tooltip" title="{% trans 'Users' %}"></span>
+                <span class="list-group-item-value">{% trans 'Users' %}</span>
+            </a>
+        </li>
+        <li
+            class="list-group-item {% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
+            <a href="{% url 'passbook_admin:groups' %}">
+                <span class="fa pficon-users" data-toggle="tooltip" title="{% trans 'Groups' %}"></span>
+                <span class="list-group-item-value">{% trans 'Groups' %}</span>
+            </a>
+        </li>
+        <li class="list-group-item {% is_active 'passbook_admin:audit-log' %}">
+            <a href="{% url 'passbook_admin:audit-log' %}">
+                <span class="fa pficon-catalog" data-toggle="tooltip" title="{% trans 'Audit Log' %}"></span>
+                <span class="list-group-item-value">{% trans 'Audit Log' %}</span>
+            </a>
+        </li>
+        <li class="list-group-item {% is_active_app 'admin' %}">
+            <a href="{% url 'admin:index' %}">
+                <span class="fa fa-database" data-toggle="tooltip" title="{% trans 'Django' %}"></span>
+                <span class="list-group-item-value">{% trans 'Django' %}</span>
+            </a>
+        </li>
+        <li class="list-group-item {% is_active 'passbook_admin:debug-request' %}">
+            <a href="{% url 'passbook_admin:debug-request' %}">
+                <span class="fa fa-bug" data-toggle="tooltip" title="{% trans 'Debug' %}"></span>
+                <span class="list-group-item-value">{% trans 'Debug' %}</span>
+            </a>
         </li>
         {% endif %}
     </ul>
