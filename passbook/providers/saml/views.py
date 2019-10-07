@@ -92,7 +92,7 @@ class LoginBeginView(AccessRequiredView):
             return HttpResponseBadRequest('the SAML request payload is missing')
 
         request.session['RelayState'] = source.get('RelayState', '')
-        return redirect(reverse('passbook_saml_idp:saml-login-process', kwargs={
+        return redirect(reverse('passbook_providers_saml:saml-login-process', kwargs={
             'application': application
         }))
 
@@ -204,10 +204,10 @@ class DescriptorDownloadView(AccessRequiredView):
     def get(self, request, application):
         """Replies with the XML Metadata IDSSODescriptor."""
         entity_id = self.provider.issuer
-        slo_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml-logout', kwargs={
+        slo_url = request.build_absolute_uri(reverse('passbook_providers_saml:saml-logout', kwargs={
             'application': application
         }))
-        sso_url = request.build_absolute_uri(reverse('passbook_saml_idp:saml-login', kwargs={
+        sso_url = request.build_absolute_uri(reverse('passbook_providers_saml:saml-login', kwargs={
             'application': application
         }))
         pubkey = strip_pem_header(self.provider.signing_cert.replace('\r', '')).replace('\n', '')

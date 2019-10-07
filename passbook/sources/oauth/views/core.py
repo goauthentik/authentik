@@ -47,7 +47,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
 
     def get_callback_url(self, source):
         "Return the callback url for this source."
-        return reverse('passbook_oauth_client:oauth-client-callback',
+        return reverse('passbook_sources_oauth:oauth-client-callback',
                        kwargs={'source_slug': source.slug})
 
     def get_redirect_url(self, **kwargs):
@@ -195,7 +195,7 @@ class OAuthCallback(OAuthClientMixin, View):
             messages.success(self.request, _("Successfully linked %(source)s!" % {
                 'source': self.source.name
             }))
-            return redirect(reverse('passbook_oauth_client:oauth-client-user', kwargs={
+            return redirect(reverse('passbook_sources_oauth:oauth-client-user', kwargs={
                 'source_slug': self.source.slug
             }))
         # User was not authenticated, new user has been created
@@ -225,7 +225,7 @@ class DisconnectView(LoginRequiredMixin, View):
             # User confirmed deletion
             self.aas.delete()
             messages.success(request, _('Connection successfully deleted'))
-            return redirect(reverse('passbook_oauth_client:oauth-client-user', kwargs={
+            return redirect(reverse('passbook_sources_oauth:oauth-client-user', kwargs={
                 'source_slug': self.source.slug
             }))
         return self.get(request, source_slug)
@@ -234,7 +234,7 @@ class DisconnectView(LoginRequiredMixin, View):
         """Show delete form"""
         return render(request, 'generic/delete.html', {
             'object': self.source,
-            'delete_url': reverse('passbook_oauth_client:oauth-client-disconnect', kwargs={
+            'delete_url': reverse('passbook_sources_oauth:oauth-client-disconnect', kwargs={
                 'source_slug': self.source.slug,
             })
         })

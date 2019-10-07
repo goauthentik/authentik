@@ -6,12 +6,12 @@
 <h1>{{ source.name }}</h1>
 {% if connections.exists %}
 <p>{% trans 'Connected.' %}</p>
-<a class="btn btn-danger" href="{% url 'passbook_oauth_client:oauth-client-disconnect' source_slug=source.slug %}">
+<a class="btn btn-danger" href="{% url 'passbook_sources_oauth:oauth-client-disconnect' source_slug=source.slug %}">
     {% trans 'Disconnect' %}
 </a>
 {% else %}
 <p>Not connected.</p>
-<a class="btn btn-primary" href="{% url 'passbook_oauth_client:oauth-client-login' source_slug=source.slug %}">
+<a class="btn btn-primary" href="{% url 'passbook_sources_oauth:oauth-client-login' source_slug=source.slug %}">
     {% trans 'Connect' %}
 </a>
 {% endif %}
