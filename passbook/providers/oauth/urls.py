@@ -1,11 +1,11 @@
 """passbook oauth_provider urls"""
 
-from django.urls import path
+from django.urls import path, include
 from oauth2_provider import views
 
 from passbook.providers.oauth.views import github, oauth2
 
-urlpatterns = [
+oauth_urlpatterns = [
     # Custom OAuth 2 Authorize View
     path('authorize/', oauth2.PassbookAuthorizationLoadingView.as_view(),
          name="oauth2-authorize"),
@@ -26,6 +26,7 @@ github_urlpatterns = [
     path('user', github.GitHubUserView.as_view(), name='github-user'),
 ]
 
-# urlpatterns = [
-#     path('', include(github_urlpatterns))
-# ]
+urlpatterns = [
+    path('', include(github_urlpatterns)),
+    path('application/oauth/', include(oauth_urlpatterns)),
+]

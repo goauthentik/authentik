@@ -9,4 +9,4 @@ class PassbookProviderOAuthConfig(AppConfig):
     name = 'passbook.providers.oauth'
     label = 'passbook_providers_oauth'
     verbose_name = 'passbook Providers.OAuth'
-    mountpoint = 'application/oauth/'
+    mountpoint = ''
