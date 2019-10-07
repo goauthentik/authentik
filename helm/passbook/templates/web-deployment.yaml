@@ -20,6 +20,10 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         passbook.io/component: web
     spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "passbook.fullname" . }}-config
       initContainers:
         - name: passbook-database-migrations
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
@@ -27,6 +31,9 @@ spec:
             - ./manage.py
           args:
             - migrate
+          volumeMounts:
+            - mountPath: /etc/passbook
+              name: config-volume
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config
@@ -50,6 +57,9 @@ spec:
             - uwsgi
           args:
             - uwsgi.ini
+          volumeMounts:
+            - mountPath: /etc/passbook
+              name: config-volume
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config

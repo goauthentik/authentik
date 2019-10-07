@@ -20,6 +20,10 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         passbook.io/component: worker
     spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "passbook.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
@@ -32,6 +36,9 @@ spec:
             - -E
             - -B
             - -A passbook.root.celery
+          volumeMounts:
+            - mountPath: /etc/passbook
+              name: config-volume
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config
