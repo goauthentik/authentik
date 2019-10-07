@@ -16,7 +16,6 @@ config:
 
 postgresql:
   postgresqlDatabase: passbook
-  postgresqlPassword: foo
 
 redis:
   cluster:
