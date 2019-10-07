@@ -61,22 +61,6 @@ ldap:
       username: "%(sAMAccountName)s"
       email: "%(mail)s"
       name: "%(displayName)"
-oauth_client:
-  # List of python packages with sources types to load.
-  types:
-    - passbook.oauth_client.source_types.discord
-    - passbook.oauth_client.source_types.facebook
-    - passbook.oauth_client.source_types.github
-    - passbook.oauth_client.source_types.google
-    - passbook.oauth_client.source_types.reddit
-    - passbook.oauth_client.source_types.supervisr
-    - passbook.oauth_client.source_types.twitter
-    - passbook.oauth_client.source_types.azure_ad
-saml_idp:
-  # List of python packages with provider types to load.
-  types:
-    - passbook.saml_idp.processors.generic
-    - passbook.saml_idp.processors.salesforce
 app_gw:
   listen: 0.0.0.0
   port: 8000

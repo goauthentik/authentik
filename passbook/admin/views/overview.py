@@ -3,8 +3,8 @@ from django.core.cache import cache
 from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
 
+from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core import __version__
 from passbook.core.models import (Application, Factor, Invitation, Policy,
                                   Provider, Source, User)
 from passbook.root.celery import CELERY_APP

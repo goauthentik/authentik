@@ -90,23 +90,9 @@ data:
       # create_users: true
       # # Reset LDAP password when user reset their password
       # reset_password: true
-    oauth_client:
-      # List of python packages with sources types to load.
-      types:
-        - passbook.oauth_client.source_types.discord
-        - passbook.oauth_client.source_types.facebook
-        - passbook.oauth_client.source_types.github
-        - passbook.oauth_client.source_types.google
-        - passbook.oauth_client.source_types.reddit
-        - passbook.oauth_client.source_types.supervisr
-        - passbook.oauth_client.source_types.twitter
-        - passbook.oauth_client.source_types.azure_ad
     saml_idp:
       signing: true
       autosubmit: false
       issuer: passbook
       assertion_valid_for: 86400
       # List of python packages with provider types to load.
-      types:
-        - passbook.saml_idp.processors.generic
-        - passbook.saml_idp.processors.salesforce

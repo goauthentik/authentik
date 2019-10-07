@@ -1,12 +1,11 @@
 """passbook core models"""
-import re
 from datetime import timedelta
 from random import SystemRandom
 from time import sleep
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField, HStoreField
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.timezone import now
@@ -16,8 +15,8 @@ from structlog import get_logger
 
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
-from passbook.policy.exceptions import PolicyException
-from passbook.policy.struct import PolicyRequest, PolicyResult
+from passbook.policies.exceptions import PolicyException
+from passbook.policies.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
@@ -32,10 +31,10 @@ class Group(UUIDModel):
     name = models.CharField(_('name'), max_length=80)
     parent = models.ForeignKey('Group', blank=True, null=True,
                                on_delete=models.SET_NULL, related_name='children')
-    tags = HStoreField(default=dict)
+    tags = JSONField(default=dict, blank=True)
 
     def __str__(self):
-        return "Group %s" % self.name
+        return f"Group {self.name}"
 
     class Meta:
 
@@ -94,48 +93,8 @@ class Factor(PolicyModel):
         return False
 
     def __str__(self):
-        return "Factor %s" % self.slug
+        return f"Factor {self.slug}"
 
-class PasswordFactor(Factor):
-    """Password-based Django-backend Authentication Factor"""
-
-    backends = ArrayField(models.TextField())
-    password_policies = models.ManyToManyField('Policy', blank=True)
-
-    type = 'passbook.core.auth.factors.password.PasswordFactor'
-    form = 'passbook.core.forms.factors.PasswordFactorForm'
-
-    def has_user_settings(self):
-        return _('Change Password'), 'pficon-key', 'passbook_core:user-change-password'
-
-    def password_passes(self, user: User) -> bool:
-        """Return true if user's password passes, otherwise False or raise Exception"""
-        for policy in self.policies.all():
-            if not policy.passes(user):
-                return False
-        return True
-
-    def __str__(self):
-        return "Password Factor %s" % self.slug
-
-    class Meta:
-
-        verbose_name = _('Password Factor')
-        verbose_name_plural = _('Password Factors')
-
-class DummyFactor(Factor):
-    """Dummy factor, mostly used to debug"""
-
-    type = 'passbook.core.auth.factors.dummy.DummyFactor'
-    form = 'passbook.core.forms.factors.DummyFactorForm'
-
-    def __str__(self):
-        return "Dummy Factor %s" % self.slug
-
-    class Meta:
-
-        verbose_name = _('Dummy Factor')
-        verbose_name_plural = _('Dummy Factors')
 
 class Application(PolicyModel):
     """Every Application which uses passbook for authentication/identification/authorization
@@ -160,6 +119,7 @@ class Application(PolicyModel):
 
     def __str__(self):
         return self.name
+
 
 class Source(PolicyModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
@@ -196,6 +156,7 @@ class Source(PolicyModel):
     def __str__(self):
         return self.name
 
+
 class UserSourceConnection(CreatedUpdatedModel):
     """Connection between User and Source."""
 
@@ -205,6 +166,7 @@ class UserSourceConnection(CreatedUpdatedModel):
     class Meta:
 
         unique_together = (('user', 'source'),)
+
 
 class Policy(UUIDModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
@@ -228,148 +190,12 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     def __str__(self):
         if self.name:
             return self.name
-        return "%s action %s" % (self.name, self.action)
+        return f"{self.name} action {self.action}"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
         raise PolicyException()
 
-class FieldMatcherPolicy(Policy):
-    """Policy which checks if a field of the User model matches/doesn't match a
-    certain pattern"""
-
-    MATCH_STARTSWITH = 'startswith'
-    MATCH_ENDSWITH = 'endswith'
-    MATCH_CONTAINS = 'contains'
-    MATCH_REGEXP = 'regexp'
-    MATCH_EXACT = 'exact'
-
-    MATCHES = (
-        (MATCH_STARTSWITH, _('Starts with')),
-        (MATCH_ENDSWITH, _('Ends with')),
-        (MATCH_CONTAINS, _('Contains')),
-        (MATCH_REGEXP, _('Regexp')),
-        (MATCH_EXACT, _('Exact')),
-    )
-
-    USER_FIELDS = (
-        ('username', _('Username'),),
-        ('name', _('Name'),),
-        ('email', _('E-Mail'),),
-        ('is_staff', _('Is staff'),),
-        ('is_active', _('Is active'),),
-        ('data_joined', _('Date joined'),),
-    )
-
-    user_field = models.TextField(choices=USER_FIELDS)
-    match_action = models.CharField(max_length=50, choices=MATCHES)
-    value = models.TextField()
-
-    form = 'passbook.core.forms.policies.FieldMatcherPolicyForm'
-
-    def __str__(self):
-        description = "%s, user.%s %s '%s'" % (self.name, self.user_field,
-                                               self.match_action, self.value)
-        if self.name:
-            description = "%s: %s" % (self.name, description)
-        return description
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Check if user instance passes this role"""
-        if not hasattr(request.user, self.user_field):
-            raise ValueError("Field does not exist")
-        user_field_value = getattr(request.user, self.user_field, None)
-        LOGGER.debug("Checking field", value=user_field_value,
-                     action=self.match_action, should_be=self.value)
-        passes = False
-        if self.match_action == FieldMatcherPolicy.MATCH_STARTSWITH:
-            passes = user_field_value.startswith(self.value)
-        if self.match_action == FieldMatcherPolicy.MATCH_ENDSWITH:
-            passes = user_field_value.endswith(self.value)
-        if self.match_action == FieldMatcherPolicy.MATCH_CONTAINS:
-            passes = self.value in user_field_value
-        if self.match_action == FieldMatcherPolicy.MATCH_REGEXP:
-            pattern = re.compile(self.value)
-            passes = bool(pattern.match(user_field_value))
-        if self.match_action == FieldMatcherPolicy.MATCH_EXACT:
-            passes = user_field_value == self.value
-        return PolicyResult(passes)
-
-    class Meta:
-
-        verbose_name = _('Field matcher Policy')
-        verbose_name_plural = _('Field matcher Policies')
-
-class PasswordPolicy(Policy):
-    """Policy to make sure passwords have certain properties"""
-
-    amount_uppercase = models.IntegerField(default=0)
-    amount_lowercase = models.IntegerField(default=0)
-    amount_symbols = models.IntegerField(default=0)
-    length_min = models.IntegerField(default=0)
-    symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
-    error_message = models.TextField()
-
-    form = 'passbook.core.forms.policies.PasswordPolicyForm'
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        # Only check if password is being set
-        if not hasattr(request.user, '__password__'):
-            return PolicyResult(True)
-        password = getattr(request.user, '__password__')
-
-        filter_regex = r''
-        if self.amount_lowercase > 0:
-            filter_regex += r'[a-z]{%d,}' % self.amount_lowercase
-        if self.amount_uppercase > 0:
-            filter_regex += r'[A-Z]{%d,}' % self.amount_uppercase
-        if self.amount_symbols > 0:
-            filter_regex += r'[%s]{%d,}' % (self.symbol_charset, self.amount_symbols)
-        result = bool(re.compile(filter_regex).match(password))
-        if not result:
-            return PolicyResult(result, self.error_message)
-        return PolicyResult(result)
-
-    class Meta:
-
-        verbose_name = _('Password Policy')
-        verbose_name_plural = _('Password Policies')
-
-
-class WebhookPolicy(Policy):
-    """Policy that asks webhook"""
-
-    METHOD_GET = 'GET'
-    METHOD_POST = 'POST'
-    METHOD_PATCH = 'PATCH'
-    METHOD_DELETE = 'DELETE'
-    METHOD_PUT = 'PUT'
-
-    METHODS = (
-        (METHOD_GET, METHOD_GET),
-        (METHOD_POST, METHOD_POST),
-        (METHOD_PATCH, METHOD_PATCH),
-        (METHOD_DELETE, METHOD_DELETE),
-        (METHOD_PUT, METHOD_PUT),
-    )
-
-    url = models.URLField()
-    method = models.CharField(max_length=10, choices=METHODS)
-    json_body = models.TextField()
-    json_headers = models.TextField()
-    result_jsonpath = models.TextField()
-    result_json_value = models.TextField()
-
-    form = 'passbook.core.forms.policies.WebhookPolicyForm'
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Call webhook asynchronously and report back"""
-        raise NotImplementedError()
-
-    class Meta:
-
-        verbose_name = _('Webhook Policy')
-        verbose_name_plural = _('Webhook Policies')
 
 class DebugPolicy(Policy):
     """Policy used for debugging the PolicyEngine. Returns a fixed result,
@@ -393,36 +219,6 @@ class DebugPolicy(Policy):
         verbose_name = _('Debug Policy')
         verbose_name_plural = _('Debug Policies')
 
-class GroupMembershipPolicy(Policy):
-    """Policy to check if the user is member in a certain group"""
-
-    group = models.ForeignKey('Group', on_delete=models.CASCADE)
-
-    form = 'passbook.core.forms.policies.GroupMembershipPolicyForm'
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        return PolicyResult(self.group.user_set.filter(pk=request.user.pk).exists())
-
-    class Meta:
-
-        verbose_name = _('Group Membership Policy')
-        verbose_name_plural = _('Group Membership Policies')
-
-class SSOLoginPolicy(Policy):
-    """Policy that applies to users that have authenticated themselves through SSO"""
-
-    form = 'passbook.core.forms.policies.SSOLoginPolicyForm'
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Check if user instance passes this policy"""
-        from passbook.core.auth.view import AuthenticationView
-        is_sso_login = request.user.session.get(AuthenticationView.SESSION_IS_SSO_LOGIN, False)
-        return PolicyResult(is_sso_login)
-
-    class Meta:
-
-        verbose_name = _('SSO Login Policy')
-        verbose_name_plural = _('SSO Login Policies')
 
 class Invitation(UUIDModel):
     """Single-use invitation link"""
@@ -436,10 +232,10 @@ class Invitation(UUIDModel):
     @property
     def link(self):
         """Get link to use invitation"""
-        return reverse_lazy('passbook_core:auth-sign-up') + '?invitation=%s' % self.uuid
+        return reverse_lazy('passbook_core:auth-sign-up') + f'?invitation={self.uuid.hex}'
 
     def __str__(self):
-        return "Invitation %s created by %s" % (self.uuid, self.created_by)
+        return f"Invitation {self.uuid.hex} created by {self.created_by}"
 
     class Meta:
 
@@ -454,7 +250,7 @@ class Nonce(UUIDModel):
     expiring = models.BooleanField(default=True)
 
     def __str__(self):
-        return "Nonce %s (expires=%s)" % (self.uuid.hex, self.expires)
+        return f"Nonce f{self.uuid.hex} (expires={self.expires})"
 
     class Meta:
 
@@ -470,7 +266,7 @@ class PropertyMapping(UUIDModel):
     objects = InheritanceManager()
 
     def __str__(self):
-        return "Property Mapping %s" % self.name
+        return f"Property Mapping {self.name}"
 
     class Meta:
 

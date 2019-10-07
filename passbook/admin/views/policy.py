@@ -12,7 +12,7 @@ from passbook.admin.forms.policies import PolicyTestForm
 from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Policy
 from passbook.lib.utils.reflection import path_to_class
-from passbook.policy.engine import PolicyEngine
+from passbook.policies.engine import PolicyEngine
 
 
 class PolicyListView(AdminRequiredMixin, ListView):

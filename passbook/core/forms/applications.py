@@ -16,7 +16,7 @@ class ApplicationForm(forms.ModelForm):
 
         model = Application
         fields = ['name', 'slug', 'launch_url', 'icon_url',
-                  'policies', 'provider', 'skip_authorization']
+                  'provider', 'policies', 'skip_authorization']
         widgets = {
             'name': forms.TextInput(),
             'launch_url': forms.TextInput(),

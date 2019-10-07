@@ -2,11 +2,11 @@
 from importlib import import_module
 
 from django.apps import AppConfig
+from django.conf import settings
 from structlog import get_logger
 
-from passbook.lib.config import CONFIG
-
 LOGGER = get_logger()
+
 
 class PassbookCoreConfig(AppConfig):
     """passbook core app config"""
@@ -17,9 +17,7 @@ class PassbookCoreConfig(AppConfig):
     mountpoint = ''
 
     def ready(self):
-        import_module('passbook.policy.engine')
-        factors_to_load = CONFIG.y('passbook.factors', [])
-        for factors_to_load in factors_to_load:
+        for factors_to_load in settings.PASSBOOK_CORE_FACTORS:
             try:
                 import_module(factors_to_load)
                 LOGGER.info("Loaded factor", factor_class=factors_to_load)

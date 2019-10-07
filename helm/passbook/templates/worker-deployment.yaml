@@ -29,9 +29,13 @@ spec:
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command:
-            - ./manage.py
+            - celery
           args:
             - worker
+            - --autoscale=10,3
+            - -E
+            - -B
+            - -A passbook.root.celery
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config

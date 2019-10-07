@@ -12,12 +12,12 @@ from django.views import View
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.core.auth.view import AuthenticationView, _redirect_with_qs
-from passbook.core.exceptions import PasswordPolicyInvalid
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
 from passbook.core.tasks import send_email
+from passbook.factors.password.exceptions import PasswordPolicyInvalid
+from passbook.factors.view import AuthenticationView, _redirect_with_qs
 from passbook.lib.config import CONFIG
 
 LOGGER = get_logger()

@@ -68,20 +68,30 @@ INSTALLED_APPS = [
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
     'passbook.api.apps.PassbookAPIConfig',
-    'passbook.audit.apps.PassbookAuditConfig',
     'passbook.lib.apps.PassbookLibConfig',
-    'passbook.ldap.apps.PassbookLdapConfig',
-    'passbook.oauth_client.apps.PassbookOAuthClientConfig',
-    'passbook.oauth_provider.apps.PassbookOAuthProviderConfig',
-    'passbook.oidc_provider.apps.PassbookOIDCProviderConfig',
-    'passbook.saml_idp.apps.PassbookSAMLIDPConfig',
-    'passbook.otp.apps.PassbookOTPConfig',
-    'passbook.captcha_factor.apps.PassbookCaptchaFactorConfig',
-    'passbook.hibp_policy.apps.PassbookHIBPConfig',
-    'passbook.pretend.apps.PassbookPretendConfig',
-    'passbook.password_expiry_policy.apps.PassbookPasswordExpiryPolicyConfig',
-    'passbook.suspicious_policy.apps.PassbookSuspiciousPolicyConfig',
-    'passbook.app_gw.apps.PassbookApplicationApplicationGatewayConfig',
+    'passbook.audit.apps.PassbookAuditConfig',
+
+    'passbook.sources.ldap.apps.PassbookSourceLDAPConfig',
+    'passbook.sources.oauth.apps.PassbookSourceOAuthConfig',
+
+    'passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig',
+    'passbook.providers.oauth.apps.PassbookProviderOAuthConfig',
+    'passbook.providers.oidc.apps.PassbookProviderOIDCConfig',
+    'passbook.providers.saml.apps.PassbookProviderSAMLConfig',
+
+    'passbook.factors.otp.apps.PassbookFactorOTPConfig',
+    'passbook.factors.captcha.apps.PassbookFactorCaptchaConfig',
+    'passbook.factors.password.apps.PassbookFactorPasswordConfig',
+    'passbook.factors.dummy.apps.PassbookFactorDummyConfig',
+
+    'passbook.policies.expiry.apps.PassbookPolicyExpiryConfig',
+    'passbook.policies.reputation.apps.PassbookPolicyReputationConfig',
+    'passbook.policies.hibp.apps.PassbookPolicyHIBPConfig',
+    'passbook.policies.group.apps.PassbookPoliciesGroupConfig',
+    'passbook.policies.matcher.apps.PassbookPoliciesMatcherConfig',
+    'passbook.policies.password.apps.PassbookPoliciesPasswordConfig',
+    'passbook.policies.sso.apps.PassbookPoliciesSSOConfig',
+    'passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig',
 ]
 
 REST_FRAMEWORK = {
@@ -292,8 +302,7 @@ if any('test' in arg for arg in sys.argv):
 _DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
 # Load subapps's INSTALLED_APPS
 for _app in INSTALLED_APPS:
-    if _app.startswith('passbook') and \
-            not _app.startswith('passbook.core'):
+    if _app.startswith('passbook'):
         if 'apps' in _app:
             _app = '.'.join(_app.split('.')[:-2])
         try:

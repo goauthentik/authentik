@@ -2,8 +2,8 @@
 from django.urls import path
 from structlog import get_logger
 
-from passbook.core.auth import view
 from passbook.core.views import authentication, overview, user
+from passbook.factors import view
 
 LOGGER = get_logger()
 

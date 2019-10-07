@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.core.models import Application, Provider, User
-from passbook.policy.engine import PolicyEngine
+from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
 

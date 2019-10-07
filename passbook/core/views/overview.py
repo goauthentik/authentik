@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
 from passbook.core.models import Application
-from passbook.policy.engine import PolicyEngine
+from passbook.policies.engine import PolicyEngine
 
 
 class OverviewView(LoginRequiredMixin, TemplateView):
