@@ -16,8 +16,7 @@ class CaptchaFactor(FormView, AuthenticationFactor):
 
     def get_form(self, form_class=None):
         form = CaptchaForm(**self.get_form_kwargs())
-        # TODO: uuuhm
-        form.fields['captcha'].public_key = '6Lfi1w8TAAAAAELH-YiWp0OFItmMzvjGmw2xkvUN'
-        form.fields['captcha'].private_key = '6Lfi1w8TAAAAAMQI3f86tGMvd1QkcqqVQyBWI23D'
+        form.fields['captcha'].public_key = self.authenticator.current_factor.public_key
+        form.fields['captcha'].private_key = self.authenticator.current_factor.private_key
         form.fields['captcha'].widget.attrs["data-sitekey"] = form.fields['captcha'].public_key
         return form
