@@ -34,8 +34,10 @@ class OTPVerifyForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # This is a little helper so the field is focused by default
-        # TODO: Tell browser to not suggest any values
-        self.fields['code'].widget.attrs.update({'autofocus': 'autofocus'})
+        self.fields['code'].widget.attrs.update({
+            'autofocus': 'autofocus',
+            'autocomplete': 'off'
+        })
 
 
 class OTPSetupForm(forms.Form):
