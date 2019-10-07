@@ -20,10 +20,6 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         passbook.io/component: web
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "passbook.fullname" . }}-config
       initContainers:
         - name: passbook-database-migrations
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
@@ -46,9 +42,6 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
                   key: postgresql-password
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
       containers:
         - name: {{ .Chart.Name }}
           image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
@@ -76,9 +69,6 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
           livenessProbe:
             httpGet:
               path: /

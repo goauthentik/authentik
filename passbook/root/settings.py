@@ -253,7 +253,6 @@ with CONFIG.cd('log'):
         'grpc': 'DEBUG',
         'oauthlib': 'DEBUG',
         'oauth2_provider': 'DEBUG',
-        'daphne': 'INFO',
     }
     LOGGING = {
         'version': 1,
