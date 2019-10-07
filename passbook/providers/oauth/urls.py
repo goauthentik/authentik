@@ -1,6 +1,6 @@
 """passbook oauth_provider urls"""
 
-from django.urls import path, include
+from django.urls import include, path
 from oauth2_provider import views
 
 from passbook.providers.oauth.views import github, oauth2
