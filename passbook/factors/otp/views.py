@@ -21,8 +21,8 @@ from passbook.factors.otp.utils import otpauth_url
 from passbook.lib.boilerplate import NeverCacheMixin
 from passbook.lib.config import CONFIG
 
-OTP_SESSION_KEY = 'passbook_otp_key'
-OTP_SETTING_UP_KEY = 'passbook_otp_setup'
+OTP_SESSION_KEY = 'passbook_factors_otp_key'
+OTP_SETTING_UP_KEY = 'passbook_factors_otp_setup'
 LOGGER = get_logger()
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -61,7 +61,7 @@ class DisableView(LoginRequiredMixin, View):
         #     current=True,
         #     request=request,
         #     send_notification=True)
-        return redirect(reverse('passbook_otp:otp-user-settings'))
+        return redirect(reverse('passbook_factors_otp:otp-user-settings'))
 
 class EnableView(LoginRequiredMixin, FormView):
     """View to set up OTP"""
@@ -88,7 +88,7 @@ class EnableView(LoginRequiredMixin, FormView):
         if finished_totp_devices.exists() and finished_static_devices.exists():
             messages.error(request, _('You already have TOTP enabled!'))
             del request.session[OTP_SETTING_UP_KEY]
-            return redirect('passbook_otp:otp-user-settings')
+            return redirect('passbook_factors_otp:otp-user-settings')
         request.session[OTP_SETTING_UP_KEY] = True
         # Check if there's an unconfirmed device left to set up
         totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=False)
@@ -121,7 +121,7 @@ class EnableView(LoginRequiredMixin, FormView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
         form.device = self.totp_device
-        form.fields['qr_code'].initial = reverse('passbook_otp:otp-qr')
+        form.fields['qr_code'].initial = reverse('passbook_factors_otp:otp-qr')
         tokens = [(x.token, x.token) for x in self.static_device.token_set.all()]
         form.fields['tokens'].choices = tokens
         return form
@@ -142,7 +142,7 @@ class EnableView(LoginRequiredMixin, FormView):
         #     current=True,
         #     request=self.request,
         #     send_notification=True)
-        return redirect('passbook_otp:otp-user-settings')
+        return redirect('passbook_factors_otp:otp-user-settings')
 
 class QRView(NeverCacheMixin, View):
     """View returns an SVG image with the OTP token information"""

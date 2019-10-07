@@ -16,7 +16,7 @@ class OTPFactor(Factor):
     form = 'passbook.factors.otp.forms.OTPFactorForm'
 
     def has_user_settings(self):
-        return _('OTP'), 'pficon-locked', 'passbook_otp:otp-user-settings'
+        return _('OTP'), 'pficon-locked', 'passbook_factors_otp:otp-user-settings'
 
     def __str__(self):
         return f"OTP Factor {self.slug}"

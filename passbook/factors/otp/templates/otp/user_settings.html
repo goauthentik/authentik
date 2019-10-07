@@ -26,10 +26,10 @@
             </p>
             <p>
                 {% if not state %}
-                <a href="{% url 'passbook_otp:otp-enable' %}"
+                <a href="{% url 'passbook_factors_otp:otp-enable' %}"
                     class="btn btn-success btn-sm">{% trans "Enable OTP" %}</a>
                 {% else %}
-                <a href="{% url 'passbook_otp:otp-disable' %}"
+                <a href="{% url 'passbook_factors_otp:otp-disable' %}"
                     class="btn btn-danger btn-sm">{% trans "Disable OTP" %}</a>
                 {% endif %}
             </p>
