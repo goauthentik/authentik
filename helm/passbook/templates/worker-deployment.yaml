@@ -35,7 +35,7 @@ spec:
             - --autoscale=10,3
             - -E
             - -B
-            - -A passbook.root.celery
+            - -A=passbook.root.celery
           volumeMounts:
             - mountPath: /etc/passbook
               name: config-volume
