@@ -47,6 +47,7 @@ AUTH_USER_MODEL = 'passbook_core.User'
 
 CSRF_COOKIE_NAME = 'passbook_csrf'
 SESSION_COOKIE_NAME = 'passbook_session'
+SESSION_COOKIE_DOMAIN = CONFIG.y('domain', None)
 LANGUAGE_COOKIE_NAME = 'passbook_language'
 
 AUTHENTICATION_BACKENDS = [

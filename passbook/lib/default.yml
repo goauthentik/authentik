@@ -16,9 +16,7 @@ debug: false
 # Error reporting, sends stacktrace to sentry.services.beryju.org
 error_report_enabled: true
 
-domains:
-  - passbook.local
-primary_domain: 'localhost'
+domain: passbook.local
 
 passbook:
   sign_up:
@@ -48,8 +46,6 @@ passbook:
   uid_fields:
     - username
     - email
-  session:
-    remember_age: 2592000 # 60 * 60 * 24 * 30, one month
 # Provider-specific settings
 ldap:
   # Which field from `uid_fields` maps to which LDAP Attribute
@@ -61,6 +57,3 @@ ldap:
       username: "%(sAMAccountName)s"
       email: "%(mail)s"
       name: "%(displayName)"
-app_gw:
-  listen: 0.0.0.0
-  port: 8000
