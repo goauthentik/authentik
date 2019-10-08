@@ -14,13 +14,14 @@ class AuthenticationFactor(TemplateView):
 
     form: ModelForm = None
     required: bool = True
-    authenticator: AuthenticationView = None
-    pending_user: User = None
+    authenticator: AuthenticationView
+    pending_user: User
     request: HttpRequest = None
     template_name = 'login/form_with_user.html'
 
     def __init__(self, authenticator: AuthenticationView):
         self.authenticator = authenticator
+        self.pending_user = None
 
     def get_context_data(self, **kwargs):
         kwargs['config'] = CONFIG.y('passbook')

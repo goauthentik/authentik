@@ -15,7 +15,6 @@ from structlog import get_logger
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
-from passbook.core.tasks import send_email
 from passbook.factors.password.exceptions import PasswordPolicyInvalid
 from passbook.factors.view import AuthenticationView, _redirect_with_qs
 from passbook.lib.config import CONFIG
@@ -97,7 +96,7 @@ class SignUpView(UserPassesTestMixin, FormView):
     template_name = 'login/form.html'
     form_class = SignUpForm
     success_url = '.'
-    # Invitation insatnce, if invitation link was used
+    # Invitation instance, if invitation link was used
     _invitation = None
     # Instance of newly created user
     _user = None
@@ -152,23 +151,23 @@ class SignUpView(UserPassesTestMixin, FormView):
             for error in exc.messages:
                 errors.append(error)
             return self.form_invalid(form)
-        needs_confirmation = True
-        if self._invitation and not self._invitation.needs_confirmation:
-            needs_confirmation = False
-        if needs_confirmation:
-            nonce = Nonce.objects.create(user=self._user)
-            LOGGER.debug(str(nonce.uuid))
-            # Send email to user
-            send_email.delay(self._user.email, _('Confirm your account.'),
-                             'email/account_confirm.html', {
-                                 'url': self.request.build_absolute_uri(
-                                     reverse('passbook_core:auth-sign-up-confirm', kwargs={
-                                         'nonce': nonce.uuid
-                                     })
-                                 )
-                             })
-            self._user.is_active = False
-            self._user.save()
+        # needs_confirmation = True
+        # if self._invitation and not self._invitation.needs_confirmation:
+        #     needs_confirmation = False
+        # if needs_confirmation:
+        #     nonce = Nonce.objects.create(user=self._user)
+        #     LOGGER.debug(str(nonce.uuid))
+        #     # Send email to user
+        #     send_email.delay(self._user.email, _('Confirm your account.'),
+        #                      'email/account_confirm.html', {
+        #                          'url': self.request.build_absolute_uri(
+        #                              reverse('passbook_core:auth-sign-up-confirm', kwargs={
+        #                                  'nonce': nonce.uuid
+        #                              })
+        #                          )
+        #                      })
+        #     self._user.is_active = False
+        #     self._user.save()
         self.consume_invitation()
         messages.success(self.request, _("Successfully signed up!"))
         LOGGER.debug("Successfully signed up %s",

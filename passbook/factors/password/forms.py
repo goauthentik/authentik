@@ -32,7 +32,7 @@ class PasswordFactorForm(forms.ModelForm):
     class Meta:
 
         model = PasswordFactor
-        fields = GENERAL_FIELDS + ['backends', 'password_policies']
+        fields = GENERAL_FIELDS + ['backends', 'password_policies', 'reset_factors']
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
@@ -40,4 +40,5 @@ class PasswordFactorForm(forms.ModelForm):
             'backends': FilteredSelectMultiple(_('backends'), False,
                                                choices=get_authentication_backends()),
             'password_policies': FilteredSelectMultiple(_('password policies'), False),
+            'reset_factors': FilteredSelectMultiple(_('reset factors'), False),
         }

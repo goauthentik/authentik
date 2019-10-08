@@ -11,6 +11,7 @@ class PasswordFactor(Factor):
 
     backends = ArrayField(models.TextField())
     password_policies = models.ManyToManyField(Policy, blank=True)
+    reset_factors = models.ManyToManyField(Factor, blank=True, related_name='reset_factors')
 
     type = 'passbook.factors.password.factor.PasswordFactor'
     form = 'passbook.factors.password.forms.PasswordFactorForm'

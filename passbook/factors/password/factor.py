@@ -1,20 +1,18 @@
 """passbook multi-factor authentication engine"""
 from inspect import Signature
+from typing import Optional
 
-from django.contrib import messages
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.signals import user_login_failed
 from django.core.exceptions import PermissionDenied
 from django.forms.utils import ErrorList
-from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.core.forms.authentication import PasswordFactorForm
-from passbook.core.models import Nonce
-from passbook.core.tasks import send_email
+from passbook.core.models import User
 from passbook.factors.base import AuthenticationFactor
+from passbook.factors.password.forms import PasswordForm
 from passbook.factors.view import AuthenticationView
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
@@ -22,7 +20,7 @@ from passbook.lib.utils.reflection import path_to_class
 LOGGER = get_logger()
 
 
-def authenticate(request, backends, **credentials):
+def authenticate(request, backends, **credentials) -> Optional[User]:
     """If the given credentials are valid, return a User object.
 
     Customized version of django's authenticate, which accepts a list of backends"""
@@ -55,31 +53,8 @@ def authenticate(request, backends, **credentials):
 class PasswordFactor(FormView, AuthenticationFactor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
-    form_class = PasswordFactorForm
+    form_class = PasswordForm
     template_name = 'login/factors/backend.html'
-
-    def get_context_data(self, **kwargs):
-        kwargs['show_password_forget_notice'] = CONFIG.y('passbook.password_reset.enabled')
-        return super().get_context_data(**kwargs)
-
-    def get(self, request, *args, **kwargs):
-        if 'password-forgotten' in request.GET:
-            nonce = Nonce.objects.create(user=self.pending_user)
-            LOGGER.debug("DEBUG %s", str(nonce.uuid))
-            # Send mail to user
-            send_email.delay(self.pending_user.email, _('Forgotten password'),
-                             'email/account_password_reset.html', {
-                                 'url': self.request.build_absolute_uri(
-                                     reverse('passbook_core:auth-password-reset',
-                                             kwargs={
-                                                 'nonce': nonce.uuid
-                                             })
-                                 )
-                             })
-            self.authenticator.cleanup()
-            messages.success(request, _('Check your E-Mails for a password reset link.'))
-            return redirect('passbook_core:auth-login')
-        return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         """Authenticate against django's authentication backend"""

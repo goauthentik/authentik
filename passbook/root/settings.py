@@ -15,6 +15,7 @@ import os
 import sys
 
 import structlog
+from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -84,6 +85,7 @@ INSTALLED_APPS = [
     'passbook.factors.captcha.apps.PassbookFactorCaptchaConfig',
     'passbook.factors.password.apps.PassbookFactorPasswordConfig',
     'passbook.factors.dummy.apps.PassbookFactorDummyConfig',
+    'passbook.factors.email.apps.PassbookFactorEmailConfig',
 
     'passbook.policies.expiry.apps.PassbookPolicyExpiryConfig',
     'passbook.policies.reputation.apps.PassbookPolicyReputationConfig',
@@ -197,7 +199,12 @@ USE_TZ = True
 # Celery settings
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
-CELERY_BEAT_SCHEDULE = {}
+CELERY_BEAT_SCHEDULE = {
+    'clean_nonces': {
+        'task': 'passbook.core.tasks.clean_nonces',
+        'schedule': crontab(minute='*/5') # Run every 5 minutes
+    }
+}
 CELERY_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = 'passbook'
 CELERY_BROKER_URL = (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
