@@ -38,7 +38,7 @@ class SAMLProvider(Provider):
         if not self._processor:
             try:
                 self._processor = path_to_class(self.processor_path)(self)
-            except ModuleNotFoundError as exc:
+            except ImportError as exc:
                 LOGGER.warning(exc)
                 self._processor = None
         return self._processor
