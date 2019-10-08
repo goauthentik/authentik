@@ -81,13 +81,3 @@ class SignUpForm(forms.Form):
         if password != password_repeat:
             raise ValidationError(_("Passwords don't match"))
         return self.cleaned_data.get('password_repeat')
-
-
-class PasswordFactorForm(forms.Form):
-    """Password authentication form"""
-
-    password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': _('Password'),
-        'autofocus': 'autofocus',
-        'autocomplete': 'current-password'
-        }))

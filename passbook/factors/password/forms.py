@@ -16,6 +16,16 @@ def get_authentication_backends():
         yield backend, getattr(klass(), 'name', '%s (%s)' % (klass.__name__, klass.__module__))
 
 
+class PasswordForm(forms.Form):
+    """Password authentication form"""
+
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'placeholder': _('Password'),
+        'autofocus': 'autofocus',
+        'autocomplete': 'current-password'
+    }))
+
+
 class PasswordFactorForm(forms.ModelForm):
     """Form to create/edit Password Factors"""
 
