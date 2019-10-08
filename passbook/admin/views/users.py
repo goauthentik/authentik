@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
 from django.views import View
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from passbook.admin.forms.users import UserForm
 from passbook.admin.mixins import AdminRequiredMixin
@@ -17,6 +17,17 @@ class UserListView(AdminRequiredMixin, ListView):
 
     model = User
     template_name = 'administration/user/list.html'
+
+
+class UserCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+    """Create user"""
+
+    model = User
+    form_class = UserForm
+
+    template_name = 'generic/create.html'
+    success_url = reverse_lazy('passbook_admin:users')
+    success_message = _('Successfully created User')
 
 
 class UserUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):

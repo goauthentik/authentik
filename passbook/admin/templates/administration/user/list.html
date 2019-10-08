@@ -7,6 +7,10 @@
 <div class="container">
     <h1><span class="pficon-users"></span> {% trans "Users" %}</h1>
     <hr>
+    <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="btn btn-primary">
+        {% trans 'Create...' %}
+    </a>
+    <hr>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
