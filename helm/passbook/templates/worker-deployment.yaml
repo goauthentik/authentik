@@ -44,6 +44,11 @@ spec:
                 name: {{ include "passbook.fullname" . }}-config
               prefix: PASSBOOK_
           env:
+            - name: PASSBOOK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "passbook.fullname" . }}-secret-key
+                  key: secret_key
             - name: PASSBOOK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
