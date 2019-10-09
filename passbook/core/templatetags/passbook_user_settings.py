@@ -1,5 +1,6 @@
 """passbook user settings template tags"""
 from typing import List
+
 from django import template
 from django.template.context import RequestContext
 

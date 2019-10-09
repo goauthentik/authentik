@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Source, UserSourceConnection, UserSettings
+from passbook.core.models import Source, UserSettings, UserSourceConnection
 from passbook.sources.oauth.clients import get_client
 
 
