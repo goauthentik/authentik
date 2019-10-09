@@ -1,6 +1,8 @@
 """passbook captcha factor forms"""
 from captcha.fields import ReCaptchaField
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import gettext as _
 
 from passbook.factors.captcha.models import CaptchaFactor
 from passbook.factors.forms import GENERAL_FIELDS
@@ -21,6 +23,7 @@ class CaptchaFactorForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'order': forms.NumberInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False),
             'public_key': forms.TextInput(),
             'private_key': forms.TextInput(),
         }

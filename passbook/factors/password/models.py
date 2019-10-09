@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.models import Factor, Policy, User
+from passbook.core.models import Factor, Policy, User, UserSettings
 
 
 class PasswordFactor(Factor):
@@ -16,8 +16,9 @@ class PasswordFactor(Factor):
     type = 'passbook.factors.password.factor.PasswordFactor'
     form = 'passbook.factors.password.forms.PasswordFactorForm'
 
-    def has_user_settings(self):
-        return _('Change Password'), 'pficon-key', 'passbook_core:user-change-password'
+    def user_settings(self):
+        return UserSettings(_('Change Password'), 'pficon-key',
+                            'passbook_core:user-change-password')
 
     def password_passes(self, user: User) -> bool:
         """Return true if user's password passes, otherwise False or raise Exception"""
