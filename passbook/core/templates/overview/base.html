@@ -141,18 +141,6 @@
                 <span class="list-group-item-value">{% trans 'Audit Log' %}</span>
             </a>
         </li>
-        <li class="list-group-item {% is_active_app 'admin' %}">
-            <a href="{% url 'admin:index' %}">
-                <span class="fa fa-database" data-toggle="tooltip" title="{% trans 'Django' %}"></span>
-                <span class="list-group-item-value">{% trans 'Django' %}</span>
-            </a>
-        </li>
-        <li class="list-group-item {% is_active 'passbook_admin:debug-request' %}">
-            <a href="{% url 'passbook_admin:debug-request' %}">
-                <span class="fa fa-bug" data-toggle="tooltip" title="{% trans 'Debug' %}"></span>
-                <span class="list-group-item-value">{% trans 'Debug' %}</span>
-            </a>
-        </li>
         {% endif %}
     </ul>
 </div>

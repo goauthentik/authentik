@@ -3,13 +3,14 @@
 import json
 from urllib.parse import parse_qs, urlencode
 
-from django.conf import settings
 from django.utils.crypto import constant_time_compare, get_random_string
 from django.utils.encoding import force_text
 from requests import Session
 from requests.exceptions import RequestException
 from requests_oauthlib import OAuth1
 from structlog import get_logger
+
+from passbook import __version__
 
 LOGGER = get_logger()
 
@@ -23,7 +24,7 @@ class BaseOAuthClient:
         self.source = source
         self.token = token
         self._session = Session()
-        self._session.headers.update({'User-Agent': 'web:passbook:%s' % settings.VERSION})
+        self._session.headers.update({'User-Agent': 'web:passbook:%s' % __version__})
 
     def get_access_token(self, request, callback=None):
         "Fetch access token from callback request."
