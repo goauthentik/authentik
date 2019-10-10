@@ -77,8 +77,6 @@ urlpatterns = [
     path('audit/', audit.AuditEntryListView.as_view(), name='audit-log'),
     # Groups
     path('groups/', groups.GroupListView.as_view(), name='groups'),
-    # API
-    path('api/', include('passbook.admin.api.urls')),
     # Debug
     path('debug/request/', debug.DebugRequestView.as_view(), name='debug-request'),
 ]
