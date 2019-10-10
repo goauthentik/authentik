@@ -36,6 +36,7 @@ spec:
             - -E
             - -B
             - -A=passbook.root.celery
+            - -s=/tmp/celerybeat-schedule
           volumeMounts:
             - mountPath: /etc/passbook
               name: config-volume
