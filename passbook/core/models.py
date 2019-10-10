@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
@@ -41,7 +42,7 @@ class Group(UUIDModel):
 
         unique_together = (('name', 'parent',),)
 
-class User(AbstractUser):
+class User(GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)

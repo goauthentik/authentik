@@ -35,6 +35,7 @@ service_identity = "*"
 signxml = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 structlog = "*"
+django-guardian = "*"
 
 [requires]
 python_version = "3.7"
