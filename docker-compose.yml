@@ -49,6 +49,7 @@ services:
       - -E
       - -B
       - -A=passbook.root.celery
+      - -s=/tmp/celerybeat-schedule
     networks:
       - internal
     labels:

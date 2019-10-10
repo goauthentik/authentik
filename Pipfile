@@ -35,18 +35,18 @@ service_identity = "*"
 signxml = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 structlog = "*"
+pyuwsgi = "*"
 django-guardian = "*"
 
 [requires]
 python_version = "3.7"
 
 [dev-packages]
-astroid = "==2.2.5"
 coverage = "*"
 isort = "*"
 pylint = "==2.3.1"
-pylint-django = "==2.0.10"
-prospector = "==1.1.7"
+pylint-django = "*"
+prospector = "*"
 django-debug-toolbar = "*"
 bumpversion = "*"
 unittest-xml-reporting = "*"

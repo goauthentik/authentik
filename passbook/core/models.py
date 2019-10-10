@@ -77,6 +77,7 @@ class Provider(models.Model):
             return getattr(self, 'name')
         return super().__str__()
 
+
 class PolicyModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have policies applied to it"""
 
@@ -262,20 +263,28 @@ class Invitation(UUIDModel):
         verbose_name = _('Invitation')
         verbose_name_plural = _('Invitations')
 
+
 class Nonce(UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
     expires = models.DateTimeField(default=default_nonce_duration)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     expiring = models.BooleanField(default=True)
+    description = models.TextField(default='', blank=True)
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if nonce is expired yet."""
+        return now() > self.expires
 
     def __str__(self):
-        return f"Nonce f{self.uuid.hex} (expires={self.expires})"
+        return f"Nonce f{self.uuid.hex} {self.description} (expires={self.expires})"
 
     class Meta:
 
         verbose_name = _('Nonce')
         verbose_name_plural = _('Nonces')
+
 
 class PropertyMapping(UUIDModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
