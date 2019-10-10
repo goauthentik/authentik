@@ -11,16 +11,16 @@ from passbook.sources.ldap.models import LDAPSource
 
 LOGGER = get_logger()
 
-USERNAME_FIELD = CONFIG.y('ldap.username_field', 'sAMAccountName')
-LOGIN_FIELD = CONFIG.y('ldap.login_field', 'userPrincipalName')
+# USERNAME_FIELD = CONFIG.y('ldap.username_field', 'sAMAccountName')
+# LOGIN_FIELD = CONFIG.y('ldap.login_field', 'userPrincipalName')
 
 
-class LDAPConnector:
+class Connector:
     """Wrapper for ldap3 to easily manage user authentication and creation"""
 
-    _server = None
-    _connection = None
-    _source = None
+    _server: ldap3.Server
+    _connection = ldap3.Connection
+    _source: LDAPSource
 
     def __init__(self, source: LDAPSource):
         self._source = source
@@ -28,68 +28,17 @@ class LDAPConnector:
         if not self._source.enabled:
             LOGGER.debug("LDAP not Enabled")
 
-        # if not con_args:
-        #     con_args = {}
-        # if not server_args:
-        #     server_args = {}
-        # Either use mock argument or test is in argv
-        # if mock or any('test' in arg for arg in sys.argv):
-        #     self.mock = True
-        #     self.create_users_enabled = True
-        #     con_args['client_strategy'] = ldap3.MOCK_SYNC
-        #     server_args['get_info'] = ldap3.OFFLINE_AD_2012_R2
-        # if self.mock:
-        #     json_path = os.path.join(os.path.dirname(__file__), 'tests', 'ldap_mock.json')
-        #     self._connection.strategy.entries_from_json(json_path)
-
         self._server = ldap3.Server(source.server_uri) # Implement URI parsing
         self._connection = ldap3.Connection(self._server, raise_exceptions=True,
                                             user=source.bind_cn,
                                             password=source.bind_password)
 
         self._connection.bind()
-        # if CONFIG.y('ldap.server.use_tls'):
-        #     self._connection.start_tls()
-
-    # @staticmethod
-    # def cleanup_mock():
-    #     """Cleanup mock files which are not this PID's"""
-    #     pid = os.getpid()
-    #     json_path = os.path.join(os.path.dirname(__file__), 'test', 'ldap_mock_%d.json' % pid)
-    #     os.unlink(json_path)
-    #     LOGGER.debug("Cleaned up LDAP Mock from PID %d", pid)
-
-    # def apply_db(self):
-    #     """Check if any unapplied LDAPModification's are left"""
-    #     to_apply = LDAPModification.objects.filter(_purgeable=False)
-    #     for obj in to_apply:
-    #         try:
-    #             if obj.action == LDAPModification.ACTION_ADD:
-    #                 self._connection.add(obj.dn, obj.data)
-    #             elif obj.action == LDAPModification.ACTION_MODIFY:
-    #                 self._connection.modify(obj.dn, obj.data)
-
-    #             # Object has been successfully applied to LDAP
-    #             obj.delete()
-    #         except ldap3.core.exceptions.LDAPException as exc:
-    #             LOGGER.error(exc)
-    #     LOGGER.debug("Recovered %d Modifications from DB.", len(to_apply))
-
-    # @staticmethod
-    # def handle_ldap_error(object_dn, action, data):
-    #     """Custom Handler for LDAP methods to write LDIF to DB"""
-    #     LDAPModification.objects.create(
-    #         dn=object_dn,
-    #         action=action,
-    #         data=data)
-
-    # @property
-    # def enabled(self):
-    #     """Returns whether LDAP is enabled or not"""
-    #     return CONFIG.y('ldap.enabled')
+        if source.start_tls:
+            self._connection.start_tls()
 
     @staticmethod
-    def encode_pass(password):
+    def encode_pass(password: str) -> str:
         """Encodes a plain-text password so it can be used by AD"""
         return '"{}"'.format(password).encode('utf-16-le')
 
@@ -128,7 +77,7 @@ class LDAPConnector:
             return None
         # Create the user data.
         field_map = {
-            'username': '%(' + USERNAME_FIELD + ')s',
+            'username': '%(' + ')s',
             'name': '%(givenName)s %(sn)s',
             'email': '%(mail)s',
         }
@@ -168,7 +117,7 @@ class LDAPConnector:
         # FIXME: Adapt user_uid
         # email = filters.pop(CONFIG.y('passport').get('ldap').get, '')
         email = filters.pop('email')
-        user_dn = self.lookup(self.generate_filter(**{LOGIN_FIELD: email}))
+        user_dn = self.lookup(self.generate_filter(**{'email': email}))
         if not user_dn:
             return None
         # Try to bind as new user
@@ -179,7 +128,7 @@ class LDAPConnector:
             temp_connection.bind()
             if self._connection.search(
                     search_base=self._source.search_base,
-                    search_filter=self.generate_filter(**{LOGIN_FIELD: email}),
+                    search_filter=self.generate_filter(**{'email': email}),
                     search_scope=ldap3.SUBTREE,
                     attributes=[ldap3.ALL_ATTRIBUTES, ldap3.ALL_OPERATIONAL_ATTRIBUTES],
                     get_operational_attributes=True,
@@ -198,47 +147,6 @@ class LDAPConnector:
             LOGGER.warning(exception)
         return None
 
-    def is_email_used(self, mail):
-        """Checks whether an email address is already registered in LDAP"""
-        if self._source.create_user:
-            return self.lookup(self.generate_filter(mail=mail))
-        return False
-
-    def create_ldap_user(self, user, raw_password):
-        """Creates a new LDAP User from a django user and raw_password.
-        Returns True on success, otherwise False"""
-        if self._source.create_user:
-            LOGGER.debug("User creation not enabled")
-            return False
-        # The dn of our new entry/object
-        username = user.pk.hex # UUID without dashes
-        # sAMAccountName is limited to 20 chars
-        # https://msdn.microsoft.com/en-us/library/ms679635.aspx
-        username_trunk = username[:20] if len(username) > 20 else username
-        # AD doesn't like sAMAccountName's with . at the end
-        username_trunk = username_trunk[:-1] if username_trunk[-1] == '.' else username_trunk
-        user_dn = 'cn=' + username + ',' + self._source.search_base
-        LOGGER.debug('New DN: %s', user_dn)
-        attrs = {
-            'distinguishedName': str(user_dn),
-            'cn': str(username),
-            'description': 't=' + str(time()),
-            'sAMAccountName': str(username_trunk),
-            'givenName': str(user.name),
-            'displayName': str(user.username),
-            'name': str(user.name),
-            'mail': str(user.email),
-            'userPrincipalName': str(username + '@' + self._source.domain),
-            'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
-        }
-        try:
-            self._connection.add(user_dn, attributes=attrs)
-        except ldap3.core.exceptions.LDAPException as exception:
-            LOGGER.warning("Failed to create user ('%s'), saved to DB", exception)
-            # LDAPConnector.handle_ldap_error(user_dn, LDAPModification.ACTION_ADD, attrs)
-        LOGGER.debug("Signed up user %s", user.email)
-        return self.change_password(raw_password, mail=user.email)
-
     def _do_modify(self, diff, **fields):
         """Do the LDAP modification itself"""
         user_dn = self.lookup(self.generate_filter(**fields))
@@ -246,7 +154,7 @@ class LDAPConnector:
             self._connection.modify(user_dn, diff)
         except ldap3.core.exceptions.LDAPException as exception:
             LOGGER.warning("Failed to modify %s ('%s'), saved to DB", user_dn, exception)
-            # LDAPConnector.handle_ldap_error(user_dn, LDAPModification.ACTION_MODIFY, diff)
+            # Connector.handle_ldap_error(user_dn, LDAPModification.ACTION_MODIFY, diff)
         LOGGER.debug("modified account '%s' [%s]", user_dn, ','.join(diff.keys()))
         return 'result' in self._connection.result and self._connection.result['result'] == 0
 
@@ -270,7 +178,7 @@ class LDAPConnector:
         """Changes LDAP user's password based on mail or user_dn.
         Returns True on success, otherwise False"""
         diff = {
-            'unicodePwd': [(ldap3.MODIFY_REPLACE, [LDAPConnector.encode_pass(new_password)])],
+            'unicodePwd': [(ldap3.MODIFY_REPLACE, [Connector.encode_pass(new_password)])],
         }
         return self._do_modify(diff, **fields)
 

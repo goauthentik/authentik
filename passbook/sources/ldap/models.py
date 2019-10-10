@@ -1,30 +1,30 @@
 """passbook LDAP Models"""
 
+from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Policy, Source, User
+from passbook.core.models import Group, PropertyMapping, Source
 
 
 class LDAPSource(Source):
     """LDAP Authentication source"""
 
-    TYPE_ACTIVE_DIRECTORY = 'ad'
-    TYPE_GENERIC = 'generic'
-    TYPES = (
-        (TYPE_ACTIVE_DIRECTORY, _('Active Directory')),
-        (TYPE_GENERIC, _('Generic')),
-    )
-
-    server_uri = models.TextField()
+    server_uri = models.URLField(validators=[URLValidator(schemes=['ldap', 'ldaps'])])
     bind_cn = models.TextField()
     bind_password = models.TextField()
-    type = models.CharField(max_length=20, choices=TYPES)
+    start_tls = models.BooleanField(default=False)
 
-    domain = models.TextField()
     base_dn = models.TextField()
-    create_user = models.BooleanField(default=False)
-    reset_password = models.BooleanField(default=True)
+    additional_user_dn = models.TextField(help_text=_('Prepended to Base DN for User-queries.'))
+    additional_group_dn = models.TextField(help_text=_('Prepended to Base DN for Group-queries.'))
+
+    user_object_filter = models.TextField()
+    group_object_filter = models.TextField()
+
+    sync_groups = models.BooleanField(default=True)
+    sync_parent_group = models.ForeignKey(Group, blank=True,
+                                          default=None, on_delete=models.SET_DEFAULT)
 
     form = 'passbook.sources.ldap.forms.LDAPSourceForm'
 
@@ -37,19 +37,8 @@ class LDAPSource(Source):
         verbose_name = _('LDAP Source')
         verbose_name_plural = _('LDAP Sources')
 
-class LDAPGroupMembershipPolicy(Policy):
-    """Policy to check if a user is in a certain LDAP Group"""
 
-    dn = models.TextField()
-    source = models.ForeignKey('LDAPSource', on_delete=models.CASCADE)
+class LDAPPropertyMapping(PropertyMapping):
 
-    form = 'passbook.sources.ldap.forms.LDAPGroupMembershipPolicyForm'
-
-    def passes(self, user: User):
-        """Check if user instance passes this policy"""
-        raise NotImplementedError()
-
-    class Meta:
-
-        verbose_name = _('LDAP Group Membership Policy')
-        verbose_name_plural = _('LDAP Group Membership Policys')
+    ldap_property = models.TextField()
+    object_field = models.TextField()
