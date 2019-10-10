@@ -1,31 +1,44 @@
 """passbook Invitation administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView
+from django.views.generic import DeleteView, ListView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.forms.invitations import InvitationForm
 from passbook.core.models import Invitation
 from passbook.core.signals import invitation_created
+from passbook.lib.views import CreateAssignPermView
 
 
-class InvitationListView(AdminRequiredMixin, ListView):
+class InvitationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all invitations"""
 
     model = Invitation
+    permission_required = 'passbook_core.view_invitation'
     template_name = 'administration/invitation/list.html'
 
 
-class InvitationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class InvitationCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                           DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Invitation"""
 
+    model = Invitation
+    form_class = InvitationForm
+    permission_required = 'passbook_core.add_invitation'
+    permissions = [
+        'passbook_core.view_invitation',
+        'passbook_core.change_invitation',
+        'passbook_core.delete_invitation',
+    ]
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:invitations')
     success_message = _('Successfully created Invitation')
-    form_class = InvitationForm
 
     def get_context_data(self, **kwargs):
         kwargs['type'] = 'Invitation'
@@ -41,10 +54,14 @@ class InvitationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
             invitation=obj)
         return HttpResponseRedirect(self.success_url)
 
-class InvitationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+
+class InvitationDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                           PermissionRequiredMixin, DeleteView):
     """Delete invitation"""
 
     model = Invitation
+    permission_required = 'passbook_core.delete_invitation'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:invitations')
     success_message = _('Successfully deleted Invitation')

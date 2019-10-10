@@ -1,14 +1,18 @@
 """passbook Source administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Source
 from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.views import CreateAssignPermView
 
 
 def all_subclasses(cls):
@@ -16,10 +20,11 @@ def all_subclasses(cls):
     return set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c)])
 
-class SourceListView(AdminRequiredMixin, ListView):
+class SourceListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all sources"""
 
     model = Source
+    permission_required = 'passbook_core.view_source'
     template_name = 'administration/source/list.html'
 
     def get_context_data(self, **kwargs):
@@ -31,8 +36,17 @@ class SourceListView(AdminRequiredMixin, ListView):
         return super().get_queryset().select_subclasses()
 
 
-class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class SourceCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                       DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Source"""
+
+    model = Source
+    permission_required = 'passbook_core.add_source'
+    permissions = [
+        'passbook_core.view_source',
+        'passbook_core.change_source',
+        'passbook_core.delete_source',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:sources')
@@ -46,10 +60,13 @@ class SourceCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
         return path_to_class(model.form)
 
 
-class SourceUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class SourceUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, UpdateView):
     """Update source"""
 
     model = Source
+    permission_required = 'passbook_core.change_source'
+
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:sources')
     success_message = _('Successfully updated Source')
@@ -63,10 +80,13 @@ class SourceUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         return Source.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
-class SourceDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class SourceDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, DeleteView):
     """Delete source"""
 
     model = Source
+    permission_required = 'passbook_core.delete_source'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:sources')
     success_message = _('Successfully deleted Source')

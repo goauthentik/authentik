@@ -1,50 +1,66 @@
 """passbook User administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views import View
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, DetailView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.forms.users import UserForm
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Nonce, User
+from passbook.lib.views import CreateAssignPermView
 
 
-class UserListView(AdminRequiredMixin, ListView):
+class UserListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all users"""
 
     model = User
+    permission_required = 'passbook_core.view_user'
     template_name = 'administration/user/list.html'
 
 
-class UserCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class UserCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                     DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create user"""
 
     model = User
     form_class = UserForm
+    permission_required = 'passbook_core.add_user'
+    permissions = [
+        'passbook_core.view_user',
+        'passbook_core.change_user',
+        'passbook_core.delete_user',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully created User')
 
 
-class UserUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                     PermissionRequiredMixin, UpdateView):
     """Update user"""
 
     model = User
     form_class = UserForm
+    permission_required = 'passbook_core.change_user'
 
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully updated User')
 
 
-class UserDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class UserDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                     PermissionRequiredMixin, DeleteView):
     """Delete user"""
 
     model = User
+    permission_required = 'passbook_core.delete_user'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully deleted User')
@@ -54,14 +70,16 @@ class UserDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class UserPasswordResetView(AdminRequiredMixin, View):
+class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """Get Password reset link for user"""
 
-    # pylint: disable=invalid-name
-    def get(self, request, pk):
+    model = User
+    permission_required = 'passbook_core.reset_user_password'
+
+    def get(self, request, *args, **kwargs):
         """Create nonce for user and return link"""
-        user = get_object_or_404(User, pk=pk)
-        nonce = Nonce.objects.create(user=user)
+        super().get(request, *args, **kwargs)
+        nonce = Nonce.objects.create(user=self.object)
         link = request.build_absolute_uri(reverse(
             'passbook_core:auth-password-reset', kwargs={'nonce': nonce.uuid}))
         messages.success(request, _('Password reset link: <pre>%(link)s</pre>' % {'link': link}))

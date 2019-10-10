@@ -1,14 +1,18 @@
 """passbook Factor administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Factor
 from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.views import CreateAssignPermView
 
 
 def all_subclasses(cls):
@@ -16,11 +20,13 @@ def all_subclasses(cls):
     return set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c)])
 
-class FactorListView(AdminRequiredMixin, ListView):
+
+class FactorListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all factors"""
 
     model = Factor
     template_name = 'administration/factor/list.html'
+    permission_required = 'passbook_core.view_factor'
     ordering = 'order'
 
     def get_context_data(self, **kwargs):
@@ -31,10 +37,20 @@ class FactorListView(AdminRequiredMixin, ListView):
     def get_queryset(self):
         return super().get_queryset().select_subclasses()
 
-class FactorCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+
+class FactorCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                       DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Factor"""
 
+    model = Factor
     template_name = 'generic/create.html'
+    permission_required = 'passbook_core.add_factor'
+    permissions = [
+        'passbook_core.view_factor',
+        'passbook_core.change_factor',
+        'passbook_core.delete_factor',
+    ]
+
     success_url = reverse_lazy('passbook_admin:factors')
     success_message = _('Successfully created Factor')
 
@@ -52,10 +68,13 @@ class FactorCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
             raise Http404
         return path_to_class(model.form)
 
-class FactorUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+
+class FactorUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, UpdateView):
     """Update factor"""
 
     model = Factor
+    permission_required = 'passbook_core.update_application'
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:factors')
     success_message = _('Successfully updated Factor')
@@ -68,11 +87,14 @@ class FactorUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return Factor.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
-class FactorDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+
+class FactorDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, DeleteView):
     """Delete factor"""
 
     model = Factor
     template_name = 'generic/delete.html'
+    permission_required = 'passbook_core.delete_factor'
     success_url = reverse_lazy('passbook_admin:factors')
     success_message = _('Successfully deleted Factor')
 

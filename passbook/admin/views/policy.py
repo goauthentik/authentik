@@ -1,24 +1,30 @@
 """passbook Policy administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import (CreateView, DeleteView, FormView, ListView,
+from django.views.generic import (DeleteView, FormView, ListView,
                                   UpdateView)
 from django.views.generic.detail import DetailView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.forms.policies import PolicyTestForm
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Policy
 from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.views import CreateAssignPermView
 from passbook.policies.engine import PolicyEngine
 
 
-class PolicyListView(AdminRequiredMixin, ListView):
+class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all policies"""
 
     model = Policy
+    permission_required = 'passbook_core.view_policy'
+
     template_name = 'administration/policy/list.html'
 
     def get_context_data(self, **kwargs):
@@ -30,8 +36,17 @@ class PolicyListView(AdminRequiredMixin, ListView):
         return super().get_queryset().order_by('order').select_subclasses()
 
 
-class PolicyCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class PolicyCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                       DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Policy"""
+
+    model = Policy
+    permission_required = 'passbook_core.add_policy'
+    permissions = [
+        'passbook_core.view_policy',
+        'passbook_core.change_policy',
+        'passbook_core.delete_policy',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:policies')
@@ -46,10 +61,13 @@ class PolicyCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
         return path_to_class(model.form)
 
 
-class PolicyUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class PolicyUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, UpdateView):
     """Update policy"""
 
     model = Policy
+    permission_required = 'passbook_core.change_policy'
+
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully updated Policy')
@@ -63,10 +81,13 @@ class PolicyUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         return Policy.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
-class PolicyDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class PolicyDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                       PermissionRequiredMixin, DeleteView):
     """Delete policy"""
 
     model = Policy
+    permission_required = 'passbook_core.delete_policy'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:policies')
     success_message = _('Successfully deleted Policy')
@@ -79,11 +100,12 @@ class PolicyDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class PolicyTestView(AdminRequiredMixin, DetailView, FormView):
+class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, FormView):
     """View to test policy(s)"""
 
     model = Policy
     form_class = PolicyTestForm
+    permission_required = 'passbook_core.view_policy'
     template_name = 'administration/policy/test.html'
     object = None
 

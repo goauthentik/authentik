@@ -1,20 +1,25 @@
 """passbook Provider administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import Provider
 from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.views import CreateAssignPermView
 
 
-class ProviderListView(AdminRequiredMixin, ListView):
+class ProviderListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all providers"""
 
     model = Provider
+    permission_required = 'passbook_core.add_provider'
     template_name = 'administration/provider/list.html'
 
     def get_context_data(self, **kwargs):
@@ -26,8 +31,17 @@ class ProviderListView(AdminRequiredMixin, ListView):
         return super().get_queryset().select_subclasses()
 
 
-class ProviderCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class ProviderCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                         DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Provider"""
+
+    model = Provider
+    permission_required = 'passbook_core.add_provider'
+    permissions = [
+        'passbook_core.view_provider',
+        'passbook_core.change_provider',
+        'passbook_core.delete_provider',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:providers')
@@ -42,10 +56,13 @@ class ProviderCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
         return path_to_class(model.form)
 
 
-class ProviderUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class ProviderUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                         PermissionRequiredMixin, UpdateView):
     """Update provider"""
 
     model = Provider
+    permission_required = 'passbook_core.change_provider'
+
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:providers')
     success_message = _('Successfully updated Provider')
@@ -59,10 +76,13 @@ class ProviderUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
         return Provider.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
-class ProviderDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class ProviderDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                         PermissionRequiredMixin, DeleteView):
     """Delete provider"""
 
     model = Provider
+    permission_required = 'passbook_core.delete_provider'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:providers')
     success_message = _('Successfully deleted Provider')

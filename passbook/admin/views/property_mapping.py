@@ -1,14 +1,18 @@
 """passbook PropertyMapping administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.models import PropertyMapping
 from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.views import CreateAssignPermView
 
 
 def all_subclasses(cls):
@@ -17,10 +21,11 @@ def all_subclasses(cls):
         [s for c in cls.__subclasses__() for s in all_subclasses(c)])
 
 
-class PropertyMappingListView(AdminRequiredMixin, ListView):
+class PropertyMappingListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all property_mappings"""
 
     model = PropertyMapping
+    permission_required = 'passbook_core.view_propertymapping'
     template_name = 'administration/property_mapping/list.html'
     ordering = 'name'
 
@@ -33,8 +38,17 @@ class PropertyMappingListView(AdminRequiredMixin, ListView):
         return super().get_queryset().select_subclasses()
 
 
-class PropertyMappingCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class PropertyMappingCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                                DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new PropertyMapping"""
+
+    model = PropertyMapping
+    permission_required = 'passbook_core.add_propertymapping'
+    permissions = [
+        'passbook_core.view_propertymapping',
+        'passbook_core.change_propertymapping',
+        'passbook_core.delete_propertymapping',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:property-mappings')
@@ -57,10 +71,13 @@ class PropertyMappingCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateV
         return path_to_class(model.form)
 
 
-class PropertyMappingUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class PropertyMappingUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                                PermissionRequiredMixin, UpdateView):
     """Update property_mapping"""
 
     model = PropertyMapping
+    permission_required = 'passbook_core.change_propertymapping'
+
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:property-mappings')
     success_message = _('Successfully updated Property Mapping')
@@ -74,10 +91,13 @@ class PropertyMappingUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateV
         return PropertyMapping.objects.filter(pk=self.kwargs.get('pk')).select_subclasses().first()
 
 
-class PropertyMappingDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class PropertyMappingDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                                PermissionRequiredMixin, DeleteView):
     """Delete property_mapping"""
 
     model = PropertyMapping
+    permission_required = 'passbook_core.delete_propertymapping'
+
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:property-mappings')
     success_message = _('Successfully deleted Property Mapping')

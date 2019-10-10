@@ -1,11 +1,9 @@
 """passbook administration debug views"""
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
-from passbook.admin.mixins import AdminRequiredMixin
 
-
-class DebugRequestView(AdminRequiredMixin, TemplateView):
+class DebugRequestView(LoginRequiredMixin, TemplateView):
     """Show debug info about request"""
 
     template_name = 'administration/debug/request.html'

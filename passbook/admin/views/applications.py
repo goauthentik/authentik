@@ -1,19 +1,24 @@
 """passbook Application administration"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import \
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, ListView, UpdateView
+from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.mixins import AdminRequiredMixin
 from passbook.core.forms.applications import ApplicationForm
 from passbook.core.models import Application
+from passbook.lib.views import CreateAssignPermView
 
 
-class ApplicationListView(AdminRequiredMixin, ListView):
+class ApplicationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all applications"""
 
     model = Application
+    permission_required = 'passbook_core.view_application'
     ordering = 'name'
     template_name = 'administration/application/list.html'
 
@@ -21,10 +26,18 @@ class ApplicationListView(AdminRequiredMixin, ListView):
         return super().get_queryset().select_subclasses()
 
 
-class ApplicationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView):
+class ApplicationCreateView(SuccessMessageMixin, LoginRequiredMixin,
+                            DjangoPermissionRequiredMixin, CreateAssignPermView):
     """Create new Application"""
 
+    model = Application
     form_class = ApplicationForm
+    permission_required = 'passbook_core.add_application'
+    permissions = [
+        'passbook_core.view_application',
+        'passbook_core.change_application',
+        'passbook_core.delete_application',
+    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:applications')
@@ -35,21 +48,25 @@ class ApplicationCreateView(SuccessMessageMixin, AdminRequiredMixin, CreateView)
         return super().get_context_data(**kwargs)
 
 
-class ApplicationUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
+class ApplicationUpdateView(SuccessMessageMixin, LoginRequiredMixin,
+                            PermissionRequiredMixin, UpdateView):
     """Update application"""
 
     model = Application
     form_class = ApplicationForm
+    permission_required = 'passbook_core.change_application'
 
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:applications')
     success_message = _('Successfully updated Application')
 
 
-class ApplicationDeleteView(SuccessMessageMixin, AdminRequiredMixin, DeleteView):
+class ApplicationDeleteView(SuccessMessageMixin, LoginRequiredMixin,
+                            PermissionRequiredMixin, DeleteView):
     """Delete application"""
 
     model = Application
+    permission_required = 'passbook_core.delete_application'
 
     template_name = 'generic/delete.html'
     success_url = reverse_lazy('passbook_admin:applications')
