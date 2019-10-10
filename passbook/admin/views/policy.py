@@ -7,8 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import (DeleteView, FormView, ListView,
-                                  UpdateView)
+from django.views.generic import DeleteView, FormView, ListView, UpdateView
 from django.views.generic.detail import DetailView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
