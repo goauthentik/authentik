@@ -58,6 +58,12 @@ class User(GuardianUserMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(password)
 
+    class Meta:
+
+        permissions = (
+            ('reset_user_password', 'Reset Password'),
+        )
+
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
