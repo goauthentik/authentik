@@ -15,5 +15,4 @@ RUN apt-get update && \
 RUN pipenv lock -r > requirements.txt && \
     pipenv --rm && \
     pip install -r requirements.txt  --no-cache-dir && \
-    adduser --system --no-create-home passbook && \
-    chown -R passbook /app
+    adduser --system --no-create-home --uid 1000 --group --home /app passbook
