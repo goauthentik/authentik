@@ -32,7 +32,7 @@ class Group(UUIDModel):
     name = models.CharField(_('name'), max_length=80)
     parent = models.ForeignKey('Group', blank=True, null=True,
                                on_delete=models.SET_NULL, related_name='children')
-    tags = JSONField(default=dict, blank=True)
+    attributes = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Group {self.name}"
@@ -50,6 +50,8 @@ class User(AbstractUser):
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     groups = models.ManyToManyField('Group')
     password_change_date = models.DateTimeField(auto_now_add=True)
+
+    attributes = JSONField(default=dict, blank=True)
 
     def set_password(self, password):
         if self.pk:
@@ -143,6 +145,7 @@ class Source(PolicyModel):
     name = models.TextField()
     slug = models.SlugField()
     enabled = models.BooleanField(default=True)
+    property_mappings = models.ManyToManyField('PropertyMapping', default=None, blank=True)
 
     form = '' # ModelForm-based class ued to create/edit instance
 

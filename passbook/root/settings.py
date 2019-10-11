@@ -307,7 +307,12 @@ if any('test' in arg for arg in sys.argv):
     CELERY_TASK_ALWAYS_EAGER = True
 
 
-_DISALLOWED_ITEMS = ['INSTALLED_APPS', 'MIDDLEWARE', 'AUTHENTICATION_BACKENDS']
+_DISALLOWED_ITEMS = [
+    'INSTALLED_APPS',
+    'MIDDLEWARE',
+    'AUTHENTICATION_BACKENDS',
+    'CELERY_BEAT_SCHEDULE'
+]
 # Load subapps's INSTALLED_APPS
 for _app in INSTALLED_APPS:
     if _app.startswith('passbook'):
@@ -318,6 +323,7 @@ for _app in INSTALLED_APPS:
             INSTALLED_APPS.extend(getattr(app_settings, 'INSTALLED_APPS', []))
             MIDDLEWARE.extend(getattr(app_settings, 'MIDDLEWARE', []))
             AUTHENTICATION_BACKENDS.extend(getattr(app_settings, 'AUTHENTICATION_BACKENDS', []))
+            CELERY_BEAT_SCHEDULE.update(getattr(app_settings, 'CELERY_BEAT_SCHEDULE', {}))
             for _attr in dir(app_settings):
                 if not _attr.startswith('__') and _attr not in _DISALLOWED_ITEMS:
                     globals()[_attr] = getattr(app_settings, _attr)
