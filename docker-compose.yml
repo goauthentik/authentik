@@ -20,28 +20,15 @@ services:
       - internal
     labels:
       - traefik.enable=false
-  database-migrate:
-    build:
-      context: .
-    image: docker.beryju.org/passbook/server:${TAG:-test}
-    command:
-      - ./manage.py
-      - migrate
-    networks:
-      - internal
-    restart: 'no'
-    environment:
-      - PASSBOOK_REDIS__HOST=redis
-      - PASSBOOK_POSTGRESQL__HOST=postgresql
-      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
   server:
     build:
       context: .
-    image: docker.beryju.org/passbook/server:${TAG:-test}
+    image: docker.beryju.org/passbook/server:${SERVER_TAG:-latest}
     command:
       - uwsgi
       - uwsgi.ini
     environment:
+      - PASSBOOK_DOMAIN=${PASSBOOK_DOMAIN}
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_POSTGRESQL__HOST=postgresql
       - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
@@ -54,15 +41,21 @@ services:
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
   worker:
-    image: docker.beryju.org/passbook/server:${TAG:-test}
+    image: docker.beryju.org/passbook/server:${SERVER_TAG:-latest}
     command:
-      - ./manage.py
+      - celery
       - worker
+      - --autoscale=10,3
+      - -E
+      - -B
+      - -A=passbook.root.celery
+      - -s=/tmp/celerybeat-schedule
     networks:
       - internal
     labels:
       - traefik.enable=false
     environment:
+      - PASSBOOK_DOMAIN=${PASSBOOK_DOMAIN}
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_POSTGRESQL__HOST=postgresql
       - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
@@ -70,7 +63,7 @@ services:
     build:
       context: .
       dockerfile: static.Dockerfile
-    image: docker.beryju.org/passbook/static:${TAG:-test}
+    image: docker.beryju.org/passbook/static:latest
     networks:
       - internal
     labels:

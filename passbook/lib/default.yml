@@ -16,7 +16,7 @@ debug: false
 # Error reporting, sends stacktrace to sentry.services.beryju.org
 error_report_enabled: true
 
-domain: passbook.local
+domain: localhost
 
 passbook:
   sign_up:

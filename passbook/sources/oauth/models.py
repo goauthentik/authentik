@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Source, UserSourceConnection
+from passbook.core.models import Source, UserSettings, UserSourceConnection
 from passbook.sources.oauth.clients import get_client
 
 
@@ -37,18 +37,15 @@ class OAuthSource(Source):
             reverse_lazy('passbook_sources_oauth:oauth-client-callback',
                          kwargs={'source_slug': self.slug})
 
-    def has_user_settings(self):
-        """Entrypoint to integrate with User settings. Can either return False if no
-        user settings are available, or a tuple or string, string, string where the first string
-        is the name the item has, the second string is the icon and the third is the view-name."""
+    def user_settings(self) -> UserSettings:
         icon_type = self.provider_type
         if icon_type == 'azure ad':
             icon_type = 'windows'
         icon_class = 'fa fa-%s' % icon_type
         view_name = 'passbook_sources_oauth:oauth-client-user'
-        return self.name, icon_class, reverse((view_name), kwargs={
+        return UserSettings(self.name, icon_class, reverse((view_name), kwargs={
             'source_slug': self.slug
-        })
+        }))
 
     class Meta:
 

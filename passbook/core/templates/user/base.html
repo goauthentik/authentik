@@ -16,23 +16,27 @@
                         <i class="fa pficon-edit"></i> {% trans 'Details' %}
                     </a>
                 </li>
-                <li class="nav-divider"></li>
                 {% user_factors as uf %}
-                {% for name, icon, link in uf %}
-                <li class="{% is_active link %}">
-                     <a href="{% url link %}">
-                         <i class="{{ icon }}"></i> {{ name }}
-                    </a>
-                </li>
+                {% if uf %}
+                    <li class="nav-divider"></li>
+                {% endif %}
+                {% for user_settings in uf %}
+                    <li class="{% is_active user_settings.view_name %}">
+                        <a href="{% url user_settings.view_name %}">
+                            <i class="{{ user_settings.icon }}"></i> {{ user_settings.name }}
+                        </a>
+                    </li>
                 {% endfor %}
-                <li class="nav-divider"></li>
                 {% user_sources as us %}
-                {% for name, icon, link in us %}
-                <li class="{% if link == request.get_full_path %} active {% endif %}">
-                    <a href="{{ link }}">
-                        <i class="{{ icon }}"></i> {{ name }}
-                    </a>
-                </li>
+                {% if us %}
+                    <li class="nav-divider"></li>
+                {% endif %}
+                {% for user_settings in us %}
+                    <li class="{% if user_settings.view_name == request.get_full_path %} active {% endif %}">
+                        <a href="{{ user_settings.view_name }}">
+                            <i class="{{ user_settings.icon }}"></i> {{ user_settings.name }}
+                        </a>
+                    </li>
                 {% endfor %}
             </ul>
         </div>

@@ -2,6 +2,7 @@
 from datetime import timedelta
 from random import SystemRandom
 from time import sleep
+from typing import Optional
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
@@ -56,6 +57,7 @@ class User(AbstractUser):
         self.password_change_date = now()
         return super().set_password(password)
 
+
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
@@ -69,10 +71,25 @@ class Provider(models.Model):
             return getattr(self, 'name')
         return super().__str__()
 
+
 class PolicyModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have policies applied to it"""
 
     policies = models.ManyToManyField('Policy', blank=True)
+
+
+class UserSettings:
+    """Dataclass for Factor and Source's user_settings"""
+
+    name: str
+    icon: str
+    view_name: str
+
+    def __init__(self, name: str, icon: str, view_name: str):
+        self.name = name
+        self.icon = icon
+        self.view_name = view_name
+
 
 class Factor(PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
@@ -86,11 +103,10 @@ class Factor(PolicyModel):
     type = ''
     form = ''
 
-    def has_user_settings(self):
-        """Entrypoint to integrate with User settings. Can either return False if no
-        user settings are available, or a tuple or string, string, string where the first string
-        is the name the item has, the second string is the icon and the third is the view-name."""
-        return False
+    def user_settings(self) -> Optional[UserSettings]:
+        """Entrypoint to integrate with User settings. Can either return None if no
+        user settings are available, or an instanace of UserSettings."""
+        return None
 
     def __str__(self):
         return f"Factor {self.slug}"
@@ -147,11 +163,10 @@ class Source(PolicyModel):
         """Return additional Info, such as a callback URL. Show in the administration interface."""
         return None
 
-    def has_user_settings(self):
-        """Entrypoint to integrate with User settings. Can either return False if no
-        user settings are available, or a tuple or string, string, string where the first string
-        is the name the item has, the second string is the icon and the third is the view-name."""
-        return False
+    def user_settings(self) -> Optional[UserSettings]:
+        """Entrypoint to integrate with User settings. Can either return None if no
+        user settings are available, or an instanace of UserSettings."""
+        return None
 
     def __str__(self):
         return self.name
@@ -242,20 +257,28 @@ class Invitation(UUIDModel):
         verbose_name = _('Invitation')
         verbose_name_plural = _('Invitations')
 
+
 class Nonce(UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
     expires = models.DateTimeField(default=default_nonce_duration)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     expiring = models.BooleanField(default=True)
+    description = models.TextField(default='', blank=True)
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if nonce is expired yet."""
+        return now() > self.expires
 
     def __str__(self):
-        return f"Nonce f{self.uuid.hex} (expires={self.expires})"
+        return f"Nonce f{self.uuid.hex} {self.description} (expires={self.expires})"
 
     class Meta:
 
         verbose_name = _('Nonce')
         verbose_name_plural = _('Nonces')
+
 
 class PropertyMapping(UUIDModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
