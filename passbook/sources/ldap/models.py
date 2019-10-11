@@ -10,7 +10,7 @@ from passbook.core.models import Group, PropertyMapping, Source
 class LDAPSource(Source):
     """LDAP Authentication source"""
 
-    server_uri = models.URLField(validators=[URLValidator(schemes=['ldap', 'ldaps'])])
+    server_uri = models.TextField(validators=[URLValidator(schemes=['ldap', 'ldaps'])])
     bind_cn = models.TextField()
     bind_password = models.TextField()
     start_tls = models.BooleanField(default=False)
@@ -23,7 +23,7 @@ class LDAPSource(Source):
     group_object_filter = models.TextField()
 
     sync_groups = models.BooleanField(default=True)
-    sync_parent_group = models.ForeignKey(Group, blank=True,
+    sync_parent_group = models.ForeignKey(Group, blank=True, null=True,
                                           default=None, on_delete=models.SET_DEFAULT)
 
     form = 'passbook.sources.ldap.forms.LDAPSourceForm'
@@ -39,6 +39,17 @@ class LDAPSource(Source):
 
 
 class LDAPPropertyMapping(PropertyMapping):
+    """Map LDAP Property to User or Group object"""
 
     ldap_property = models.TextField()
     object_field = models.TextField()
+
+    form = 'passbook.sources.ldap.forms.LDAPPropertyMappingForm'
+
+    def __str__(self):
+        return f"LDAP Property Mapping {self.ldap_property} -> {self.object_field}"
+
+    class Meta:
+
+        verbose_name = _('LDAP Property Mapping')
+        verbose_name_plural = _('LDAP Property Mappings')

@@ -5,7 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
-from passbook.sources.ldap.models import LDAPSource
+from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
 class LDAPSourceForm(forms.ModelForm):
@@ -26,6 +26,7 @@ class LDAPSourceForm(forms.ModelForm):
             'group_object_filter',
             'sync_groups',
             'sync_parent_group',
+            'property_mappings',
         ]
         widgets = {
             'name': forms.TextInput(),
@@ -37,7 +38,8 @@ class LDAPSourceForm(forms.ModelForm):
             'additional_group_dn': forms.TextInput(),
             'user_object_filter': forms.TextInput(),
             'group_object_filter': forms.TextInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            'policies': FilteredSelectMultiple(_('policies'), False),
+            'property_mappings': FilteredSelectMultiple(_('Property Mappings'), False)
         }
         labels = {
             'server_uri': _('Server URI'),
@@ -46,4 +48,18 @@ class LDAPSourceForm(forms.ModelForm):
             'base_dn': _('Base DN'),
             'additional_user_dn': _('Addition User DN'),
             'additional_group_dn': _('Addition Group DN'),
+        }
+
+
+class LDAPPropertyMappingForm(forms.ModelForm):
+    """LDAP Property Mapping form"""
+
+    class Meta:
+
+        model = LDAPPropertyMapping
+        fields = ['name', 'ldap_property', 'object_field']
+        widgets = {
+            'name': forms.TextInput(),
+            'ldap_property': forms.TextInput(),
+            'object_field': forms.TextInput(),
         }
