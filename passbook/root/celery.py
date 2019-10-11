@@ -2,7 +2,9 @@
 import os
 from logging.config import dictConfig
 
-from celery import Celery, signals
+from celery import Celery
+from celery.signals import (after_task_publish, setup_logging, task_postrun,
+                            task_prerun)
 from django.conf import settings
 from structlog import get_logger
 
@@ -10,39 +12,39 @@ from structlog import get_logger
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
 LOGGER = get_logger()
-
-
 CELERY_APP = Celery('passbook')
 
 
 # pylint: disable=unused-argument
-@signals.setup_logging.connect
+@setup_logging.connect
 def config_loggers(*args, **kwags):
     """Apply logging settings from settings.py to celery"""
     dictConfig(settings.LOGGING)
 
 
 # pylint: disable=unused-argument
-@signals.after_task_publish.connect
+@after_task_publish.connect
 def after_task_publish(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
     info = headers if 'task' in headers else body
-    LOGGER.debug('%-40s published (name=%s)', info.get('id'), info.get('task'))
+    LOGGER.debug('Task published', task_id=info.get('id', ''), task_name=info.get('task', ''))
 
 
 # pylint: disable=unused-argument
-@signals.task_prerun.connect
+@task_prerun.connect
 def task_prerun(task_id, task, *args, **kwargs):
     """Log task_id on worker"""
-    LOGGER.debug('%-40s started (name=%s)', task_id, task.__name__)
+    LOGGER.debug('Task started', task_id=task_id, task_name=task.__name__)
 
 
 # pylint: disable=unused-argument
-@signals.task_postrun.connect
+@task_postrun.connect
 def task_postrun(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
-    LOGGER.debug('%-40s finished (name=%s, state=%s)',
-                 task_id, task.__name__, state)
+    LOGGER.debug('Task finished',
+                 task_id=task_id,
+                 task_name=task.__name__,
+                 state=state)
 
 
 # Using a string here means the worker doesn't have to serialize

@@ -1,6 +1,5 @@
 """passbook core tasks"""
 from django.utils.timezone import now
-
 from structlog import get_logger
 
 from passbook.core.models import Nonce

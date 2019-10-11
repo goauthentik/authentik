@@ -23,11 +23,11 @@ class EmailFactorView(AuthenticationFactor):
 
     def get(self, request, *args, **kwargs):
         nonce = Nonce.objects.create(user=self.pending_user)
-        LOGGER.debug("DEBUG %s", str(nonce.uuid))
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_('Forgotten password'),
             template_name='email/account_password_reset.html',
+            to=[self.pending_user.email],
             template_context={
                 'url': self.request.build_absolute_uri(
                     reverse('passbook_core:auth-password-reset',
