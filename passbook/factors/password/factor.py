@@ -30,7 +30,7 @@ def authenticate(request, backends, **credentials) -> Optional[User]:
             signature = Signature.from_callable(backend.authenticate)
             signature.bind(request, **credentials)
         except TypeError:
-            LOGGER.debug("Backend doesn't accept our arguments", backend=backend)
+            LOGGER.warning("Backend doesn't accept our arguments", backend=backend)
             # This backend doesn't accept these credentials as arguments. Try the next one.
             continue
         LOGGER.debug('Attempting authentication...', backend=backend)

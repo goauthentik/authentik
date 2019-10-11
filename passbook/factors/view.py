@@ -134,7 +134,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             LOGGER.debug("Rendering Factor", next_factor=next_factor)
             return _redirect_with_qs('passbook_core:auth-process', self.request.GET)
         # User passed all factors
-        LOGGER.debug("User passed all factors, logging in")
+        LOGGER.debug("User passed all factors, logging in", user=self.pending_user)
         return self._user_passed()
 
     def user_invalid(self):

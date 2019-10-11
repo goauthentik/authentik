@@ -60,7 +60,8 @@ class AuditEntry(UUIDModel):
             # User 255.255.255.255 as fallback if IP cannot be determined
             request_ip=client_ip or '255.255.255.255',
             context=kwargs)
-        LOGGER.debug("Logged %s from %s (%s)", action, user, client_ip)
+        LOGGER.debug("Created Audit entry", action=action,
+                     user=user, from_ip=client_ip, context=kwargs)
         return entry
 
     def save(self, *args, **kwargs):
