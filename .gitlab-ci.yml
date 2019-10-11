@@ -95,7 +95,7 @@ build-passbook-server:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.6.5-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.6.6-beta
   only:
     - tags
     - /^version/.*$/
@@ -107,7 +107,7 @@ build-passbook-static:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/static.Dockerfile --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.6.5-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/static.Dockerfile --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.6.6-beta
   only:
     - tags
     - /^version/.*$/
