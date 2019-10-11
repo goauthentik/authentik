@@ -19,8 +19,14 @@ class LDAPSource(Source):
     additional_user_dn = models.TextField(help_text=_('Prepended to Base DN for User-queries.'))
     additional_group_dn = models.TextField(help_text=_('Prepended to Base DN for Group-queries.'))
 
-    user_object_filter = models.TextField()
-    group_object_filter = models.TextField()
+    user_object_filter = models.TextField(default="(objectCategory=Person)", help_text=_(
+        'Consider Objects matching this filter to be Users.'))
+    user_group_membership_field = models.TextField(default="memberOf", help_text=_(
+        "Field which contains Groups of user."))
+    group_object_filter = models.TextField(default="(objectCategory=Group)", help_text=_(
+        'Consider Objects matching this filter to be Groups.'))
+    object_uniqueness_field = models.TextField(default="objectSid", help_text=_(
+        'Field which contains a unique Identifier.'))
 
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(Group, blank=True, null=True,

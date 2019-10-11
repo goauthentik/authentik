@@ -49,11 +49,9 @@ class Connector:
 
     def sync_groups(self):
         """Iterate over all LDAP Groups and create passbook_core.Group instances"""
-        attributes = [
-            'objectSid', # Used as unique Identifier
-            'name',
-            'dn',
-        ]
+        if not self._source.sync_groups:
+            LOGGER.debug("Group syncing is disabled for this Source")
+            return
         groups = self._connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
@@ -62,8 +60,16 @@ class Connector:
         for group in groups:
             attributes = group.get('attributes', {})
             _, created = Group.objects.update_or_create(
-                attributes__objectSid=attributes.get('objectSid', ''),
-                defaults=self._build_object_properties(attributes),
+                attributes__ldap_uniq=attributes.get(self._source.object_uniqueness_field, ''),
+                parent=self._source.sync_parent_group,
+                # defaults=self._build_object_properties(attributes),
+                defaults={
+                    'name': attributes.get('name', ''),
+                    'attributes': {
+                        'ldap_uniq': attributes.get(self._source.object_uniqueness_field, ''),
+                        'distinguishedName': attributes.get('distinguishedName')
+                    }
+                }
             )
             LOGGER.debug("Synced group", group=attributes.get('name', ''), created=created)
 
@@ -77,14 +83,43 @@ class Connector:
         for user in users:
             attributes = user.get('attributes', {})
             _, created = User.objects.update_or_create(
-                attributes__objectSid=attributes.get('objectSid', ''),
+                attributes__ldap_uniq=attributes.get(self._source.object_uniqueness_field, ''),
                 defaults=self._build_object_properties(attributes),
             )
             LOGGER.debug("Synced User", user=attributes.get('name', ''), created=created)
 
     def sync_membership(self):
         """Iterate over all Users and assign Groups using memberOf Field"""
-        pass
+        users = self._connection.extend.standard.paged_search(
+            search_base=self.base_dn_users,
+            search_filter=self._source.user_object_filter,
+            search_scope=ldap3.SUBTREE,
+            attributes=[
+                self._source.user_group_membership_field,
+                self._source.object_uniqueness_field])
+        group_cache: Dict[str, Group] = {}
+        for user in users:
+            member_of = user.get('attributes', {}).get(self._source.user_group_membership_field, [])
+            uniq = user.get('attributes', {}).get(self._source.object_uniqueness_field, [])
+            for group_dn in member_of:
+                # Check if group_dn is within our base_dn_groups, and skip if not
+                if not group_dn.endswith(self.base_dn_groups):
+                    continue
+                # Check if we fetched the group already, and if not cache it for later
+                if group_dn not in group_cache:
+                    groups = Group.objects.filter(attributes__distinguishedName=group_dn)
+                    if not groups.exists():
+                        LOGGER.warning("Group does not exist in our DB yet, run sync_groups first.",
+                                       group=group_dn)
+                        return
+                    group_cache[group_dn] = groups.first()
+                group = group_cache[group_dn]
+                users = User.objects.filter(attributes__ldap_uniq=uniq)
+                group.user_set.add(*list(users))
+        # Now that all users are added, lets write everything
+        for _, group in group_cache.items():
+            group.save()
+        LOGGER.debug("Successfully updated group membership")
 
     def _build_object_properties(self, attributes: Dict[str, Any]) -> Dict[str, Dict[Any, Any]]:
         properties = {
@@ -92,8 +127,9 @@ class Connector:
         }
         for mapping in self._source.property_mappings.all().select_subclasses():
             properties[mapping.object_field] = attributes.get(mapping.ldap_property, '')
-        if 'objectSid' in attributes:
-            properties['attributes']['objectSid'] = attributes.get('objectSid')
+        if self._source.object_uniqueness_field in attributes:
+            properties['attributes']['ldap_uniq'] = \
+                attributes.get(self._source.object_uniqueness_field)
         properties['attributes']['distinguishedName'] = attributes.get('distinguishedName')
         return properties
 
