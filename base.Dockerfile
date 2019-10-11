@@ -12,6 +12,7 @@ RUN pip install pipenv && \
 FROM python:3.7-slim-buster
 
 COPY --from=locker /app/requirements.txt /app/
+COPY --from=locker /app/requirements-dev.txt /app/
 
 WORKDIR /app/
 
