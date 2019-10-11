@@ -26,7 +26,7 @@ class GroupForm(forms.ModelForm):
     class Meta:
 
         model = Group
-        fields = ['name', 'parent', 'members', 'tags']
+        fields = ['name', 'parent', 'members', 'attributes']
         widgets = {
             'name': forms.TextInput(),
         }
