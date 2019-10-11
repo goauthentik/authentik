@@ -1,3 +1,4 @@
+"""LDAP Sync tasks"""
 from passbook.root.celery import CELERY_APP
 from passbook.sources.ldap.connector import Connector
 from passbook.sources.ldap.models import LDAPSource
