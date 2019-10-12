@@ -82,10 +82,13 @@ class Connector:
             attributes=ldap3.ALL_ATTRIBUTES)
         for user in users:
             attributes = user.get('attributes', {})
-            _, created = User.objects.update_or_create(
+            user, created = User.objects.update_or_create(
                 attributes__ldap_uniq=attributes.get(self._source.object_uniqueness_field, ''),
                 defaults=self._build_object_properties(attributes),
             )
+            if created:
+                user.set_unusable_password()
+                user.save()
             LOGGER.debug("Synced User", user=attributes.get('name', ''), created=created)
 
     def sync_membership(self):
