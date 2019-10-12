@@ -2,6 +2,7 @@
 
 from django import forms
 
+from passbook.admin.fields import YAMLField
 from passbook.core.models import User
 
 
@@ -13,5 +14,8 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ['username', 'name', 'email', 'is_staff', 'is_active', 'attributes']
         widgets = {
-            'name': forms.TextInput
+            'name': forms.TextInput,
+        }
+        field_classes = {
+            'attributes': YAMLField,
         }
