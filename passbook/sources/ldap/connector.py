@@ -142,10 +142,26 @@ class Connector:
         users = User.objects.filter(**filters)
         if not users.exists():
             return None
-        user = users.first()
+        user: User = users.first()
         if 'distinguishedName' not in user.attributes:
             LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None
+        # Either has unusable password,
+        # or has a password, but couldn't be authenticated by ModelBackend.
+        # This means we check with a bind to see if the LDAP password has changed
+        if self.auth_user_by_bind(user, password):
+            # Password given successfully binds to LDAP, so we save it in our Database
+            LOGGER.debug("Updating user's password in DB", user=user)
+            user.set_password(password)
+            user.save()
+            return user
+        # Password doesn't match
+        LOGGER.debug("Failed to bind, password invalid")
+        return None
+
+    def auth_user_by_bind(self, user: User, password: str) -> Optional[User]:
+        """Attempt authentication by binding to the LDAP server as `user`. This
+        method should be avoided as its slow to do the bind."""
         # Try to bind as new user
         LOGGER.debug("Attempting Binding as user", user=user)
         try:
