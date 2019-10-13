@@ -32,11 +32,15 @@ class LDAPSource(Source):
     sync_parent_group = models.ForeignKey(Group, blank=True, null=True,
                                           default=None, on_delete=models.SET_DEFAULT)
 
+    # This field is written to by the sync_* tasks
+    # displayed by additional_info
+    status = models.TextField(default="")
+
     form = 'passbook.sources.ldap.forms.LDAPSourceForm'
 
     @property
-    def get_login_button(self):
-        raise NotImplementedError()
+    def additional_info(self):
+        return self.status
 
     class Meta:
 

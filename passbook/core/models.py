@@ -152,14 +152,10 @@ class Source(PolicyModel):
     objects = InheritanceManager()
 
     @property
-    def is_link(self):
-        """Return true if Source should get a link on the login page"""
-        return False
-
-    @property
-    def get_login_button(self):
-        """Return a tuple of URL, Icon name and Name"""
-        raise NotImplementedError
+    def login_button(self):
+        """Return a tuple of URL, Icon name and Name
+        if Source should get a link on the login page"""
+        return None
 
     @property
     def additional_info(self):
