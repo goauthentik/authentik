@@ -21,6 +21,7 @@ exclude_lines =
     def __str__
     def __repr__
     if self\.debug
+    if TYPE_CHECKING
 
     # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError

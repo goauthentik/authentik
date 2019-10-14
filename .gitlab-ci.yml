@@ -80,9 +80,9 @@ pylint:
   - redis:latest
 coverage:
   script:
-    - coverage run manage.py test
+    - coverage run --concurrency=multiprocessing manage.py test
+    - coverage combine
     - coverage report
-    - coverage html
   stage: test
   services:
   - postgres:latest

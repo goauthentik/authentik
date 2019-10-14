@@ -1,7 +1,7 @@
 """passbook policy engine"""
 from multiprocessing import Pipe
 from multiprocessing.connection import Connection
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -19,13 +19,14 @@ class PolicyProcessInfo:
 
     process: PolicyProcess
     connection: Connection
-    result: PolicyResult
+    result: Optional[PolicyResult]
     policy: Policy
 
     def __init__(self, process: PolicyProcess, connection: Connection, policy: Policy):
         self.process = process
         self.connection = connection
         self.policy = policy
+        self.result = None
 
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
