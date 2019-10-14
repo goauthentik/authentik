@@ -136,12 +136,17 @@ package-helm:
     - /^version/.*$/
 
 notify-sentry:
-  image: alpine
+  image: getsentry/sentry-cli
   stage: post-release
+  variables:
+    SENTRY_URL: https://sentry.beryju.org
+    SENTRY_ORG: beryjuorg
+    SENTRY_PROJECT: passbook
   before_script:
     - apk add curl
   script:
-    - "curl $SENTRY_RELEASE -X POST -H 'Content-Type: application/json' -d '{\"version\": \"passbook@0.6.8-beta\"}'"
+    - sentry-cli releases new passbook@0.6.8-beta
+    - sentry-cli releases set-commits --auto passbook@0.6.8-beta
   only:
     - tags
     - /^version/.*$/
