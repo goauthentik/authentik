@@ -5,6 +5,7 @@ stages:
   - test
   - build
   - package
+  - post-release
 image: docker.beryju.org/passbook/dev:latest
 
 variables:
@@ -130,6 +131,17 @@ package-helm:
     paths:
       - passbook-*.tgz
     expire_in: 1 week
+  only:
+    - tags
+    - /^version/.*$/
+
+notify-sentry:
+  image: alpine
+  stage: post-release
+  before_script:
+    - apk add curl
+  script:
+    - "curl $SENTRY_RELEASE -X POST -H 'Content-Type: application/json' -d '{\"version\": \"passbook@0.6.7-beta\"}'"
   only:
     - tags
     - /^version/.*$/
