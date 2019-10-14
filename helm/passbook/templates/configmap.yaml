@@ -13,4 +13,4 @@ data:
       cache_db: 0
       message_queue_db: 1
     error_report_enabled: {{ .Values.config.error_reporting }}
-    domain: ".{{ .Values.ingress.hosts[0] }}"
+    domain: ".{{ index .Values.ingress.hosts 0 }}"
