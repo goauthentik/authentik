@@ -36,6 +36,8 @@ class UserUpdateView(SuccessMessageMixin, AdminRequiredMixin, UpdateView):
     model = User
     form_class = UserForm
 
+    context_object_name = 'object' # By default the object's name
+                                   # is user which is used by other checks
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully updated User')
