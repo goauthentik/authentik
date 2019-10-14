@@ -1,3 +1,3 @@
 """General fields"""
 
-GENERAL_FIELDS = ['name', 'action', 'negate', 'order', 'timeout']
+GENERAL_FIELDS = ['name', 'negate', 'order', 'timeout']

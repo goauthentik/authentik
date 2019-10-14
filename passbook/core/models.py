@@ -186,15 +186,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
-    ACTION_ALLOW = 'allow'
-    ACTION_DENY = 'deny'
-    ACTIONS = (
-        (ACTION_ALLOW, ACTION_ALLOW),
-        (ACTION_DENY, ACTION_DENY),
-    )
-
     name = models.TextField(blank=True, null=True)
-    action = models.CharField(max_length=20, choices=ACTIONS)
     negate = models.BooleanField(default=False)
     order = models.IntegerField(default=0)
     timeout = models.IntegerField(default=30)
