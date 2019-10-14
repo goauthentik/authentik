@@ -1,5 +1,6 @@
 """passbook reputation request forms"""
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from passbook.core.forms.policies import GENERAL_FIELDS
 from passbook.policies.reputation.models import ReputationPolicy
@@ -15,4 +16,7 @@ class ReputationPolicyForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(),
             'value': forms.TextInput(),
+        }
+        labels = {
+            'check_ip': _('Check IP'),
         }

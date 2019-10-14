@@ -13,12 +13,13 @@ from passbook.policies.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
+
 class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
     connection: Connection
-    result: PolicyResult = None
+    result: PolicyResult
     policy: Policy
 
     def __init__(self, process: PolicyProcess, connection: Connection, policy: Policy):
@@ -91,9 +92,7 @@ class PolicyEngine:
         """Get policy-checking result"""
         messages: List[str] = []
         for proc_info in self.__processes:
-            # passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
-            #           (policy_action == Policy.ACTION_DENY and not policy_result)
-            LOGGER.debug("Result", passing=proc_info.result.passing)
+            LOGGER.debug("Result", policy=proc_info.policy, passing=proc_info.result.passing)
             if proc_info.result.messages:
                 messages += proc_info.result.messages
             if not proc_info.result.passing:

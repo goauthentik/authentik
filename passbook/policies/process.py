@@ -40,7 +40,7 @@ class PolicyProcess(Process):
             policy_result = PolicyResult(False, str(exc))
         # Invert result if policy.negate is set
         if self.policy.negate:
-            policy_result = not policy_result
+            policy_result.passing = not policy_result.passing
         LOGGER.debug("Got result", policy=self.policy, result=policy_result,
                      process="PolicyProcess")
         key = cache_key(self.policy, self.request.user)

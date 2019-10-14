@@ -194,9 +194,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     objects = InheritanceManager()
 
     def __str__(self):
-        if self.name:
-            return self.name
-        return f"{self.name} action {self.action}"
+        return f"Policy {self.name}"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
