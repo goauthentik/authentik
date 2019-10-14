@@ -15,6 +15,7 @@ class GroupListView(AdminRequiredMixin, ListView):
 
     model = Group
     ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/group/list.html'
 
 

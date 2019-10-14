@@ -16,6 +16,8 @@ class InvitationListView(AdminRequiredMixin, ListView):
     """Show list of all invitations"""
 
     model = Invitation
+    ordering = 'expires'
+    paginate_by = 40
     template_name = 'administration/invitation/list.html'
 
 

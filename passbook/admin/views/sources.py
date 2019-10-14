@@ -20,6 +20,8 @@ class SourceListView(AdminRequiredMixin, ListView):
     """Show list of all sources"""
 
     model = Source
+    ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/source/list.html'
 
     def get_context_data(self, **kwargs):

@@ -15,6 +15,7 @@ class ProviderListView(AdminRequiredMixin, ListView):
     """Show list of all providers"""
 
     model = Provider
+    paginate_by = 40
     template_name = 'administration/provider/list.html'
 
     def get_context_data(self, **kwargs):

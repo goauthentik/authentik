@@ -19,6 +19,8 @@ class PolicyListView(AdminRequiredMixin, ListView):
     """Show list of all policies"""
 
     model = Policy
+    ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/policy/list.html'
 
     def get_context_data(self, **kwargs):

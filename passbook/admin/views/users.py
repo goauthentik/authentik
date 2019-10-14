@@ -16,6 +16,8 @@ class UserListView(AdminRequiredMixin, ListView):
     """Show list of all users"""
 
     model = User
+    ordering = 'username'
+    paginate_by = 40
     template_name = 'administration/user/list.html'
 
 

@@ -23,6 +23,7 @@ class PropertyMappingListView(AdminRequiredMixin, ListView):
     model = PropertyMapping
     template_name = 'administration/property_mapping/list.html'
     ordering = 'name'
+    paginate_by = 40
 
     def get_context_data(self, **kwargs):
         kwargs['types'] = {

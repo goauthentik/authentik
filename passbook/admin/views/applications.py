@@ -15,6 +15,7 @@ class ApplicationListView(AdminRequiredMixin, ListView):
 
     model = Application
     ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/application/list.html'
 
     def get_queryset(self):
