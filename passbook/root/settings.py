@@ -24,6 +24,8 @@ from passbook import __version__
 from passbook.lib.config import CONFIG
 from passbook.lib.sentry import before_send
 
+LOGGER = structlog.get_logger()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STATIC_ROOT = BASE_DIR + '/static'
@@ -213,7 +215,24 @@ CELERY_BROKER_URL = (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.ho
 CELERY_RESULT_BACKEND = (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
                          f":6379/{CONFIG.y('redis.message_queue_db')}")
 
+# Database backup
+if CONFIG.y('postgresql.backup'):
+    INSTALLED_APPS += ['dbbackup']
+    DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+    AWS_ACCESS_KEY_ID = CONFIG.y('postgresql.backup.access_key')
+    AWS_SECRET_ACCESS_KEY = CONFIG.y('postgresql.backup.secret_key')
+    AWS_STORAGE_BUCKET_NAME = CONFIG.y('postgresql.backup.bucket')
+    AWS_S3_ENDPOINT_URL = CONFIG.y('postgresql.backup.host')
+    AWS_DEFAULT_ACL = None
+    LOGGER.info('Database backup is configured', host=CONFIG.y('postgresql.backup.host'))
+    # Add automatic task to backup
+    CELERY_BEAT_SCHEDULE['db_backup'] = {
+        'task': 'passbook.lib.tasks.backup_database',
+        'schedule': crontab(minute=0, hour=0)  # Run every day, midnight
+    }
+
+# Sentry integration
 if not DEBUG:
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",

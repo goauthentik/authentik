@@ -11,4 +11,4 @@ LOGGER = get_logger()
 def clean_nonces():
     """Remove expired nonces"""
     amount, _ = Nonce.objects.filter(expires__lt=now(), expiring=True).delete()
-    LOGGER.debug("Deleted expired nonces", amount=amount)
+    LOGGER.debug('Deleted expired nonces', amount=amount)
