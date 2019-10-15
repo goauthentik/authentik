@@ -17,8 +17,8 @@ def user_factors(context: RequestContext) -> List[UserSettings]:
     matching_factors: List[UserSettings] = []
     for factor in _all_factors:
         user_settings = factor.user_settings()
-        policy_engine = PolicyEngine(factor.policies.all())
-        policy_engine.for_user(user).with_request(context.get('request')).build()
+        policy_engine = PolicyEngine(factor.policies.all(), user, context.get('request'))
+        policy_engine.build()
         if policy_engine.passing and user_settings:
             matching_factors.append(user_settings)
     return matching_factors
@@ -31,8 +31,8 @@ def user_sources(context: RequestContext) -> List[UserSettings]:
     matching_sources: List[UserSettings] = []
     for factor in _all_sources:
         user_settings = factor.user_settings()
-        policy_engine = PolicyEngine(factor.policies.all())
-        policy_engine.for_user(user).with_request(context.get('request')).build()
+        policy_engine = PolicyEngine(factor.policies.all(), user, context.get('request'))
+        policy_engine.build()
         if policy_engine.passing and user_settings:
             matching_sources.append(user_settings)
     return matching_sources

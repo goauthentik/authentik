@@ -18,8 +18,8 @@ def check_permissions(request, user, client):
     except Application.DoesNotExist:
         return redirect('passbook_providers_oauth:oauth2-permission-denied')
     LOGGER.debug("Checking permissions for application", user=user, application=application)
-    policy_engine = PolicyEngine(application.policies.all())
-    policy_engine.for_user(user).with_request(request).build()
+    policy_engine = PolicyEngine(application.policies.all(), user, request)
+    policy_engine.build()
 
     # Check permissions
     passing, policy_messages = policy_engine.result

@@ -103,8 +103,9 @@ class PolicyTestView(AdminRequiredMixin, DetailView, FormView):
     def form_valid(self, form):
         policy = self.get_object()
         user = form.cleaned_data.get('user')
-        policy_engine = PolicyEngine([policy])
-        policy_engine.for_user(user).with_request(self.request).build()
+        policy_engine = PolicyEngine([policy], user, self.request)
+        policy_engine.use_cache = False
+        policy_engine.build()
         result = policy_engine.passing
         if result:
             messages.success(self.request, _('User successfully passed policy.'))
