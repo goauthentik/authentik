@@ -288,7 +288,7 @@ with CONFIG.cd('log'):
         'formatters': {
             "plain": {
                 "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(),
+                "processor": structlog.processors.JSONRenderer(sort_keys=True),
                 "foreign_pre_chain": LOG_PRE_CHAIN,
             },
             "colored": {
