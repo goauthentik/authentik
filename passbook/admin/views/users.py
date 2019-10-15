@@ -20,6 +20,8 @@ class UserListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = User
     permission_required = 'passbook_core.view_user'
+    ordering = 'username'
+    paginate_by = 40
     template_name = 'administration/user/list.html'
 
 
@@ -49,6 +51,8 @@ class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin,
     form_class = UserForm
     permission_required = 'passbook_core.change_user'
 
+    context_object_name = 'object' # By default the object's name
+                                   # is user which is used by other checks
     template_name = 'generic/update.html'
     success_url = reverse_lazy('passbook_admin:users')
     success_message = _('Successfully updated User')

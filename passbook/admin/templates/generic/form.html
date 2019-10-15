@@ -16,6 +16,10 @@
 <script type="text/javascript" src="{% static 'admin/js/prepopulate.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/SelectBox.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/SelectFilter2.js' %}"></script>
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror/theme/monokai.css' %}">
+<script src="{% static 'codemirror/mode/yaml/yaml.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -31,6 +35,16 @@
   </div>
   {% block beneath_form %}
   {% endblock %}
+  <script>
+    let attributes = document.getElementsByName('attributes');
+    if (attributes.length > 0) {
+      let myCodeMirror = CodeMirror.fromTextArea(attributes[0], {
+        mode: 'yaml',
+        theme: 'monokai',
+        lineNumbers: true,
+      });
+    }
+  </script>
 </div>
 {% endblock %}
 

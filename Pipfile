@@ -37,6 +37,9 @@ urllib3 = {extras = ["secure"],version = "*"}
 structlog = "*"
 pyuwsgi = "*"
 django-guardian = "*"
+django-dbbackup = "*"
+boto3 = "*"
+django-storages = "*"
 
 [requires]
 python_version = "3.7"

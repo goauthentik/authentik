@@ -5,8 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
-from passbook.core.forms.policies import GENERAL_FIELDS
-from passbook.sources.ldap.models import LDAPGroupMembershipPolicy, LDAPSource
+from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
 class LDAPSourceForm(forms.ModelForm):
@@ -15,36 +14,56 @@ class LDAPSourceForm(forms.ModelForm):
     class Meta:
 
         model = LDAPSource
-        fields = SOURCE_FORM_FIELDS + ['server_uri', 'bind_cn', 'bind_password',
-                                       'type', 'domain', 'base_dn', 'create_user',
-                                       'reset_password']
+        fields = SOURCE_FORM_FIELDS + [
+            'server_uri',
+            'bind_cn',
+            'bind_password',
+            'start_tls',
+            'base_dn',
+            'additional_user_dn',
+            'additional_group_dn',
+            'user_object_filter',
+            'group_object_filter',
+            'user_group_membership_field',
+            'object_uniqueness_field',
+            'sync_groups',
+            'sync_parent_group',
+            'property_mappings',
+        ]
         widgets = {
             'name': forms.TextInput(),
             'server_uri': forms.TextInput(),
             'bind_cn': forms.TextInput(),
             'bind_password': forms.TextInput(),
-            'domain': forms.TextInput(),
             'base_dn': forms.TextInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            'additional_user_dn': forms.TextInput(),
+            'additional_group_dn': forms.TextInput(),
+            'user_object_filter': forms.TextInput(),
+            'group_object_filter': forms.TextInput(),
+            'user_group_membership_field': forms.TextInput(),
+            'object_uniqueness_field': forms.TextInput(),
+            'policies': FilteredSelectMultiple(_('policies'), False),
+            'property_mappings': FilteredSelectMultiple(_('Property Mappings'), False)
         }
         labels = {
             'server_uri': _('Server URI'),
             'bind_cn': _('Bind CN'),
+            'start_tls': _('Enable Start TLS'),
             'base_dn': _('Base DN'),
+            'additional_user_dn': _('Addition User DN'),
+            'additional_group_dn': _('Addition Group DN'),
         }
 
 
-class LDAPGroupMembershipPolicyForm(forms.ModelForm):
-    """LDAPGroupMembershipPolicy Form"""
+class LDAPPropertyMappingForm(forms.ModelForm):
+    """LDAP Property Mapping form"""
 
     class Meta:
 
-        model = LDAPGroupMembershipPolicy
-        fields = GENERAL_FIELDS + ['dn', ]
+        model = LDAPPropertyMapping
+        fields = ['name', 'ldap_property', 'object_field']
         widgets = {
             'name': forms.TextInput(),
-            'dn': forms.TextInput(),
-        }
-        labels = {
-            'dn': _('DN')
+            'ldap_property': forms.TextInput(),
+            'object_field': forms.TextInput(),
         }

@@ -1,7 +1,7 @@
 """passbook policy engine"""
 from multiprocessing import Pipe
 from multiprocessing.connection import Connection
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -13,18 +13,20 @@ from passbook.policies.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
+
 class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
     connection: Connection
-    result: PolicyResult = None
+    result: Optional[PolicyResult]
     policy: Policy
 
     def __init__(self, process: PolicyProcess, connection: Connection, policy: Policy):
         self.process = process
         self.connection = connection
         self.policy = policy
+        self.result = None
 
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
@@ -91,9 +93,7 @@ class PolicyEngine:
         """Get policy-checking result"""
         messages: List[str] = []
         for proc_info in self.__processes:
-            # passing = (policy_action == Policy.ACTION_ALLOW and policy_result) or \
-            #           (policy_action == Policy.ACTION_DENY and not policy_result)
-            LOGGER.debug("Result", passing=proc_info.result.passing)
+            LOGGER.debug("Result", policy=proc_info.policy, passing=proc_info.result.passing)
             if proc_info.result.messages:
                 messages += proc_info.result.messages
             if not proc_info.result.passing:

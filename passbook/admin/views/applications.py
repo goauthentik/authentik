@@ -20,6 +20,7 @@ class ApplicationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     model = Application
     permission_required = 'passbook_core.view_application'
     ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/application/list.html'
 
     def get_queryset(self):

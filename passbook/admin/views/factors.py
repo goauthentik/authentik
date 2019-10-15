@@ -28,6 +28,7 @@ class FactorListView(LoginRequiredMixin, PermissionListMixin, ListView):
     template_name = 'administration/factor/list.html'
     permission_required = 'passbook_core.view_factor'
     ordering = 'order'
+    paginate_by = 40
 
     def get_context_data(self, **kwargs):
         kwargs['types'] = {

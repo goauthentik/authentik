@@ -15,7 +15,7 @@ class EmailFactor(Factor):
     password = models.TextField(default='', blank=True)
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
-    timeout = models.IntegerField(default=0)
+    timeout = models.IntegerField(default=10)
 
     ssl_keyfile = models.TextField(default=None, blank=True, null=True)
     ssl_certfile = models.TextField(default=None, blank=True, null=True)

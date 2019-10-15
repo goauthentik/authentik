@@ -25,6 +25,8 @@ class SourceListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = Source
     permission_required = 'passbook_core.view_source'
+    ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/source/list.html'
 
     def get_context_data(self, **kwargs):

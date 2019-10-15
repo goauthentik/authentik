@@ -20,6 +20,7 @@ class GroupListView(LoginRequiredMixin, PermissionListMixin, ListView):
     model = Group
     permission_required = 'passbook_core.view_group'
     ordering = 'name'
+    paginate_by = 40
     template_name = 'administration/group/list.html'
 
 

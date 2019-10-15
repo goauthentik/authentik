@@ -28,6 +28,7 @@ class PropertyMappingListView(LoginRequiredMixin, PermissionListMixin, ListView)
     permission_required = 'passbook_core.view_propertymapping'
     template_name = 'administration/property_mapping/list.html'
     ordering = 'name'
+    paginate_by = 40
 
     def get_context_data(self, **kwargs):
         kwargs['types'] = {

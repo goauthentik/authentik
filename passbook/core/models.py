@@ -33,7 +33,7 @@ class Group(UUIDModel):
     name = models.CharField(_('name'), max_length=80)
     parent = models.ForeignKey('Group', blank=True, null=True,
                                on_delete=models.SET_NULL, related_name='children')
-    tags = JSONField(default=dict, blank=True)
+    attributes = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Group {self.name}"
@@ -51,6 +51,8 @@ class User(GuardianUserMixin, AbstractUser):
     sources = models.ManyToManyField('Source', through='UserSourceConnection')
     groups = models.ManyToManyField('Group')
     password_change_date = models.DateTimeField(auto_now_add=True)
+
+    attributes = JSONField(default=dict, blank=True)
 
     def set_password(self, password):
         if self.pk:
@@ -149,20 +151,17 @@ class Source(PolicyModel):
     name = models.TextField()
     slug = models.SlugField()
     enabled = models.BooleanField(default=True)
+    property_mappings = models.ManyToManyField('PropertyMapping', default=None, blank=True)
 
     form = '' # ModelForm-based class ued to create/edit instance
 
     objects = InheritanceManager()
 
     @property
-    def is_link(self):
-        """Return true if Source should get a link on the login page"""
-        return False
-
-    @property
-    def get_login_button(self):
-        """Return a tuple of URL, Icon name and Name"""
-        raise NotImplementedError
+    def login_button(self):
+        """Return a tuple of URL, Icon name and Name
+        if Source should get a link on the login page"""
+        return None
 
     @property
     def additional_info(self):
@@ -193,15 +192,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
-    ACTION_ALLOW = 'allow'
-    ACTION_DENY = 'deny'
-    ACTIONS = (
-        (ACTION_ALLOW, ACTION_ALLOW),
-        (ACTION_DENY, ACTION_DENY),
-    )
-
     name = models.TextField(blank=True, null=True)
-    action = models.CharField(max_length=20, choices=ACTIONS)
     negate = models.BooleanField(default=False)
     order = models.IntegerField(default=0)
     timeout = models.IntegerField(default=30)
@@ -209,9 +200,7 @@ class Policy(UUIDModel, CreatedUpdatedModel):
     objects = InheritanceManager()
 
     def __str__(self):
-        if self.name:
-            return self.name
-        return f"{self.name} action {self.action}"
+        return f"Policy {self.name}"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""

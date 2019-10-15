@@ -1,3 +1,7 @@
+.navbar-brand-name {
+    height: 35px;
+}
+
 .dynamic-array-widget .array-item {
   display: flex;
   align-items: center;
@@ -23,7 +27,6 @@
 }
 
 /* Selector */
-
 .selector {
     display: flex;
     width: 100%;

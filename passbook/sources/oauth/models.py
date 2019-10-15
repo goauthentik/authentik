@@ -22,11 +22,7 @@ class OAuthSource(Source):
     form = 'passbook.sources.oauth.forms.OAuthSourceForm'
 
     @property
-    def is_link(self):
-        return True
-
-    @property
-    def get_login_button(self):
+    def login_button(self):
         url = reverse_lazy('passbook_sources_oauth:oauth-client-login',
                            kwargs={'source_slug': self.slug})
         return url, self.provider_type, self.name

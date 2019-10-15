@@ -4,9 +4,12 @@ from typing import Any, Dict, List
 
 from celery import group
 from django.core.mail import EmailMessage
+from structlog import get_logger
 
 from passbook.factors.email.models import EmailFactor
 from passbook.root.celery import CELERY_APP
+
+LOGGER = get_logger()
 
 
 def send_mails(factor: EmailFactor, *messages: List[EmailMessage]):
@@ -31,6 +34,7 @@ def _send_mail_task(self, email_factor_pk: int, message: Dict[Any, Any]):
     for key, value in message.items():
         setattr(message_object, key, value)
     message_object.from_email = factor.from_address
+    LOGGER.debug("Sending mail", to=message_object.to)
     try:
         num_sent = factor.backend.send_messages([message_object])
     except SMTPException as exc:
