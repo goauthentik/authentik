@@ -31,6 +31,7 @@ class PolicyProcessInfo:
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
 
+    use_cache: bool = True
     policies: List[Policy] = []
     __request: HttpRequest
     __user: User
@@ -42,16 +43,6 @@ class PolicyEngine:
         self.__request = request
         self.__user = user
         self.__processes = []
-
-    def for_user(self, user: User) -> 'PolicyEngine':
-        """Check policies for user"""
-        self.__user = user
-        return self
-
-    def with_request(self, request: HttpRequest) -> 'PolicyEngine':
-        """Set request"""
-        self.__request = request
-        return self
 
     def _select_subclasses(self) -> List[Policy]:
         """Make sure all Policies are their respective classes"""
@@ -69,14 +60,14 @@ class PolicyEngine:
         request.http_request = self.__request
         for policy in self._select_subclasses():
             cached_policy = cache.get(cache_key(policy, self.__user), None)
-            if cached_policy:
+            if cached_policy and self.use_cache:
                 LOGGER.debug("Taking result from cache", policy=policy)
                 cached_policies.append(cached_policy)
             else:
                 LOGGER.debug("Evaluating policy", policy=policy)
                 our_end, task_end = Pipe(False)
                 task = PolicyProcess(policy, request, task_end)
-                LOGGER.debug("Starting Process", for_policy=policy)
+                LOGGER.debug("Starting Process", policy=policy)
                 task.start()
                 self.__processes.append(PolicyProcessInfo(process=task,
                                                           connection=our_end, policy=policy))

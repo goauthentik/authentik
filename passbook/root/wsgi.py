@@ -14,14 +14,12 @@ from structlog import get_logger
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
-LOGGER = get_logger()
-
-
 class WSGILogger:
     """ This is the generalized WSGI middleware for any style request logging. """
 
     def __init__(self, application):
         self.application = application
+        self.logger = get_logger('passbook.wsgi')
 
     def __healthcheck(self, start_response):
         start_response('204 OK', [])
@@ -64,13 +62,13 @@ class WSGILogger:
         query_string = ''
         if environ.get('QUERY_STRING') != '':
             query_string = f"?{environ.get('QUERY_STRING')}"
-        LOGGER.info(f"{environ.get('PATH_INFO', '')}{query_string}",
-                    host=host,
-                    method=environ.get('REQUEST_METHOD', ''),
-                    protocol=environ.get('SERVER_PROTOCOL', ''),
-                    status=status_code,
-                    size=content_length / 1000 if content_length > 0 else '-',
-                    runtime=kwargs.get('runtime'))
+        self.logger.info(f"{environ.get('PATH_INFO', '')}{query_string}",
+                         host=host,
+                         method=environ.get('REQUEST_METHOD', ''),
+                         protocol=environ.get('SERVER_PROTOCOL', ''),
+                         status=status_code,
+                         size=content_length / 1000 if content_length > 0 else '-',
+                         runtime=kwargs.get('runtime'))
 
 
 application = WSGILogger(get_wsgi_application())

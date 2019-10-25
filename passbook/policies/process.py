@@ -42,7 +42,7 @@ class PolicyProcess(Process):
         if self.policy.negate:
             policy_result.passing = not policy_result.passing
         LOGGER.debug("Got result", policy=self.policy, result=policy_result,
-                     process="PolicyProcess")
+                     process="PolicyProcess", passing=policy_result.passing, user=self.request.user)
         key = cache_key(self.policy, self.request.user)
         cache.set(key, policy_result)
         LOGGER.debug("Cached policy evaluation", key=key)

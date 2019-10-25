@@ -67,8 +67,8 @@ class AuthenticationView(UserPassesTestMixin, View):
         for factor in _all_factors:
             LOGGER.debug("Checking if factor applies to user",
                          factor=factor, user=self.pending_user)
-            policy_engine = PolicyEngine(factor.policies.all())
-            policy_engine.for_user(self.pending_user).with_request(self.request).build()
+            policy_engine = PolicyEngine(factor.policies.all(), self.pending_user, self.request)
+            policy_engine.build()
             if policy_engine.passing:
                 pending_factors.append((factor.uuid.hex, factor.type))
                 LOGGER.debug("Factor applies", factor=factor, user=self.pending_user)

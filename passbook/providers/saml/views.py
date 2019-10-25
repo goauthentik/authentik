@@ -59,8 +59,9 @@ class AccessRequiredView(AccessMixin, View):
 
     def _has_access(self):
         """Check if user has access to application"""
-        policy_engine = PolicyEngine(self.provider.application.policies.all())
-        policy_engine.for_user(self.request.user).with_request(self.request).build()
+        policy_engine = PolicyEngine(self.provider.application.policies.all(),
+                                     self.request.user, self.request)
+        policy_engine.build()
         return policy_engine.passing
 
     def dispatch(self, request, *args, **kwargs):
