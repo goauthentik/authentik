@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
 from structlog import get_logger
 
-from passbook.audit.models import AuditEntry
+from passbook.audit.models import Event
 from passbook.core.models import Application
 from passbook.lib.mixins import CSRFExemptMixin
 from passbook.lib.utils.template import render_to_string
@@ -123,8 +123,8 @@ class LoginProcessView(AccessRequiredView):
         if self.provider.application.skip_authorization:
             ctx = self.provider.processor.generate_response()
             # Log Application Authorization
-            AuditEntry.create(
-                action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+            Event.create(
+                action=Event.ACTION_AUTHORIZE_APPLICATION,
                 request=request,
                 app=self.provider.application.name,
                 skipped_authorization=True)
@@ -145,8 +145,8 @@ class LoginProcessView(AccessRequiredView):
         # Check if user has access
         if request.POST.get('ACSUrl', None):
             # User accepted request
-            AuditEntry.create(
-                action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+            Event.create(
+                action=Event.ACTION_AUTHORIZE_APPLICATION,
                 request=request,
                 app=self.provider.application.name,
                 skipped_authorization=False)

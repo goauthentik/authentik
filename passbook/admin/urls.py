@@ -1,5 +1,5 @@
 """passbook URL Configuration"""
-from django.urls import include, path
+from django.urls import path
 
 from passbook.admin.views import (applications, audit, debug, factors, groups,
                                   invitations, overview, policy,
@@ -74,7 +74,7 @@ urlpatterns = [
     path('group/<uuid:pk>/update/', groups.GroupUpdateView.as_view(), name='group-update'),
     path('group/<uuid:pk>/delete/', groups.GroupDeleteView.as_view(), name='group-delete'),
     # Audit Log
-    path('audit/', audit.AuditEntryListView.as_view(), name='audit-log'),
+    path('audit/', audit.EventListView.as_view(), name='audit-log'),
     # Groups
     path('groups/', groups.GroupListView.as_view(), name='groups'),
     # Debug

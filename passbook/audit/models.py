@@ -12,8 +12,8 @@ from passbook.lib.models import UUIDModel
 
 LOGGER = get_logger()
 
-class AuditEntry(UUIDModel):
-    """An individual audit log entry"""
+class Event(UUIDModel):
+    """An individual audit log event"""
 
     ACTION_LOGIN = 'login'
     ACTION_LOGIN_FAILED = 'login_failed'
@@ -46,7 +46,7 @@ class AuditEntry(UUIDModel):
 
     @staticmethod
     def create(action, request, **kwargs):
-        """Create AuditEntry from arguments"""
+        """Create Event from arguments"""
         client_ip, _ = get_client_ip(request)
         if not hasattr(request, 'user'):
             user = None
@@ -54,7 +54,7 @@ class AuditEntry(UUIDModel):
             user = request.user
         if isinstance(user, AnonymousUser):
             user = kwargs.get('user', None)
-        entry = AuditEntry.objects.create(
+        entry = Event.objects.create(
             action=action,
             user=user,
             # User 255.255.255.255 as fallback if IP cannot be determined

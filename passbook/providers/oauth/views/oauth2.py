@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
 from structlog import get_logger
 
-from passbook.audit.models import AuditEntry
+from passbook.audit.models import Event
 from passbook.core.models import Application
 from passbook.core.views.access import AccessMixin
 from passbook.core.views.utils import LoadingView, PermissionDeniedView
@@ -77,8 +77,8 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
 
     def form_valid(self, form):
         # User has clicked on "Authorize"
-        AuditEntry.create(
-            action=AuditEntry.ACTION_AUTHORIZE_APPLICATION,
+        Event.create(
+            action=Event.ACTION_AUTHORIZE_APPLICATION,
             request=self.request,
             app=str(self._application))
         LOGGER.debug('user %s authorized %s', self.request.user, self._application)
