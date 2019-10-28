@@ -3,7 +3,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from passbook.admin.forms.source import SOURCE_SERIALIZER_FIELDS
-from passbook.sources.ldap.models import LDAPSource
+from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
 class LDAPSourceSerializer(ModelSerializer):
@@ -28,12 +28,27 @@ class LDAPSourceSerializer(ModelSerializer):
             'property_mappings',
         ]
         extra_kwargs = {
-            'password': {'bind_password': True}
+            'bind_password': {'write_only': True}
         }
 
 
+class LDAPPropertyMappingSerializer(ModelSerializer):
+    """LDAP PropertyMapping Serializer"""
+
+    class Meta:
+        model = LDAPPropertyMapping
+        fields = SOURCE_SERIALIZER_FIELDS + ['name', 'ldap_property', 'object_field']
+
+
 class LDAPSourceViewSet(ModelViewSet):
-    """Source Viewset"""
+    """LDAP Source Viewset"""
 
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
+
+
+class LDAPPropertyMappingViewSet(ModelViewSet):
+    """LDAP PropertyMapping Viewset"""
+
+    queryset = LDAPPropertyMapping.objects.all()
+    serializer_class = LDAPPropertyMappingSerializer
