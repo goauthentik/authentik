@@ -1,3 +1,4 @@
+"""Application API Views"""
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -5,6 +6,7 @@ from passbook.core.models import Application
 
 
 class ApplicationSerializer(ModelSerializer):
+    """Application Serializer"""
 
     class Meta:
 
@@ -14,6 +16,7 @@ class ApplicationSerializer(ModelSerializer):
 
 
 class ApplicationViewSet(ModelViewSet):
+    """Application Viewset"""
 
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer

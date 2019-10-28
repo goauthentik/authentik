@@ -26,10 +26,10 @@ def on_user_signed_up(sender, request, user, **kwargs):
 def on_invitation_created(sender, request, invitation, **kwargs):
     """Log Invitation creation"""
     Event.create(Event.ACTION_INVITE_CREATED, request,
-                      invitation_uuid=invitation.uuid.hex)
+                 invitation_uuid=invitation.uuid.hex)
 
 @receiver(invitation_used)
 def on_invitation_used(sender, request, invitation, **kwargs):
     """Log Invitation usage"""
     Event.create(Event.ACTION_INVITE_USED, request,
-                      invitation_uuid=invitation.uuid.hex)
+                 invitation_uuid=invitation.uuid.hex)
