@@ -33,15 +33,15 @@ class PolicyEngine:
 
     use_cache: bool = True
     policies: List[Policy] = []
-    __request: HttpRequest
-    __user: User
+    request: PolicyRequest
 
     __processes: List[PolicyProcessInfo] = []
 
-    def __init__(self, policies, user: User = None, request: HttpRequest = None):
+    def __init__(self, policies, user: User, request: HttpRequest = None):
         self.policies = policies
-        self.__request = request
-        self.__user = user
+        self.request = PolicyRequest(user)
+        if request:
+            self.request.http_request = request
         self.__processes = []
 
     def _select_subclasses(self) -> List[Policy]:
@@ -53,20 +53,16 @@ class PolicyEngine:
 
     def build(self) -> 'PolicyEngine':
         """Build task group"""
-        if not self.__user:
-            raise ValueError("User not set.")
         cached_policies = []
-        request = PolicyRequest(self.__user)
-        request.http_request = self.__request
         for policy in self._select_subclasses():
-            cached_policy = cache.get(cache_key(policy, self.__user), None)
+            cached_policy = cache.get(cache_key(policy, self.request.user), None)
             if cached_policy and self.use_cache:
                 LOGGER.debug("Taking result from cache", policy=policy)
                 cached_policies.append(cached_policy)
             else:
                 LOGGER.debug("Evaluating policy", policy=policy)
                 our_end, task_end = Pipe(False)
-                task = PolicyProcess(policy, request, task_end)
+                task = PolicyProcess(policy, self.request, task_end)
                 LOGGER.debug("Starting Process", policy=policy)
                 task.start()
                 self.__processes.append(PolicyProcessInfo(process=task,

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
 
+from django.db.models import Model
 from django.http import HttpRequest
 
 if TYPE_CHECKING:
@@ -13,6 +14,7 @@ class PolicyRequest:
 
     user: User
     http_request: HttpRequest
+    obj: Model
 
     def __init__(self, user: User):
         self.user = user

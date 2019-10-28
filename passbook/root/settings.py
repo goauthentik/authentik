@@ -104,12 +104,33 @@ INSTALLED_APPS = [
 
 GUARDIAN_MONKEY_PATCH = False
 
+SWAGGER_SETTINGS = {
+    'DEFAULT_INFO': 'passbook.api.v2.urls.info',
+    # 'SECURITY_DEFINITIONS': {
+    #     'JWT': {
+    #         'type': 'apiKey',
+    #         'name': 'Authorization',
+    #         'in': 'header'
+    #     }
+    # }
+}
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated',
+        'passbook.api.permissions.CustomObjectPermissions',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
 }
 
 CACHES = {

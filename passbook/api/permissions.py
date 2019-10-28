@@ -25,5 +25,7 @@ class PolicyPermissions(BasePermission):
     policy_engine: PolicyEngine
 
     def has_object_permission(self, request, view, obj: PolicyModel) -> bool:
+        # if not obj.po
         self.policy_engine = PolicyEngine(obj.policies, request.user, request)
+        self.policy_engine.request.obj = obj
         return self.policy_engine.build().passing

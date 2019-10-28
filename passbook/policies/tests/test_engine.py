@@ -34,11 +34,6 @@ class PolicyTestEngine(TestCase):
         engine = PolicyEngine([], self.user)
         self.assertEqual(engine.build().passing, True)
 
-    def test_engine_without_user(self):
-        """Ensure engine raises error if no user is set"""
-        with self.assertRaises(ValueError):
-            PolicyEngine([]).build()
-
     def test_engine(self):
         """Ensure all policies passes (Mix of false and true -> false)"""
         engine = PolicyEngine(DebugPolicy.objects.filter(negate__exact=False), self.user)
