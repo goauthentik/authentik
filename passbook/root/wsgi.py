@@ -30,7 +30,7 @@ class WSGILogger:
         status_codes = []
         content_lengths = []
 
-        if environ.get('HTTP_HOST').startswith('kubernetes-healthcheck-host'):
+        if environ.get('HTTP_HOST', '').startswith('kubernetes-healthcheck-host'):
             # Don't log kubernetes health/readiness requests
             return self.__healthcheck(start_response)
 
