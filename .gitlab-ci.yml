@@ -96,7 +96,7 @@ build-passbook-server:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.6.11-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.7.0-beta
   only:
     - tags
     - /^version/.*$/
@@ -108,7 +108,7 @@ build-passbook-static:
   before_script:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/static.Dockerfile --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.6.11-beta
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/static.Dockerfile --destination docker.beryju.org/passbook/static:latest --destination docker.beryju.org/passbook/static:0.7.0-beta
   only:
     - tags
     - /^version/.*$/
@@ -145,8 +145,8 @@ notify-sentry:
   before_script:
     - apk add curl
   script:
-    - sentry-cli releases new passbook@0.6.11-beta
-    - sentry-cli releases set-commits --auto passbook@0.6.11-beta
+    - sentry-cli releases new passbook@0.7.0-beta
+    - sentry-cli releases set-commits --auto passbook@0.7.0-beta
   only:
     - tags
     - /^version/.*$/
