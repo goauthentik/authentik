@@ -11,6 +11,7 @@ def before_send(event, hint):
     from rest_framework.exceptions import APIException
     from billiard.exceptions import WorkerLostError
     from django.core.exceptions import DisallowedHost
+    from botocore.client import ClientError
     ignored_classes = (
         OperationalError,
         ConnectionInterrupted,
@@ -20,6 +21,8 @@ def before_send(event, hint):
         WorkerLostError,
         DisallowedHost,
         ConnectionResetError,
+        KeyboardInterrupt,
+        ClientError
     )
     if 'exc_info' in hint:
         _exc_type, exc_value, _ = hint['exc_info']
