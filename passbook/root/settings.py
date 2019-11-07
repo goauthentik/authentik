@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'passbook.audit.apps.PassbookAuditConfig',
     'passbook.recovery.apps.PassbookRecoveryConfig',
 
+    'passbook.sources.saml.apps.PassbookSourceSAMLConfig',
     'passbook.sources.ldap.apps.PassbookSourceLDAPConfig',
     'passbook.sources.oauth.apps.PassbookSourceOAuthConfig',
 

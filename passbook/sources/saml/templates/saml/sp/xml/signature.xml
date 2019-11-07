@@ -1,0 +1,9 @@
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    {{ SIGNED_INFO }}
+    <ds:SignatureValue>{{ RSA_SIGNATURE }}</ds:SignatureValue>
+    <ds:KeyInfo>
+        <ds:X509Data>
+            <ds:X509Certificate>{{ CERTIFICATE }}</ds:X509Certificate>
+        </ds:X509Data>
+    </ds:KeyInfo>
+</ds:Signature>

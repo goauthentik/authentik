@@ -1,0 +1,19 @@
+{% extends "saml/sp/base.html" %}
+
+{% block content %}
+You are now logged out of this Service Provider.<br />
+{% if idp_logout_url %}
+You are still logged into your Identity Provider.
+You should logout of your Identity Provider here:<br />
+<a href="{{ idp_logout_url }}">{{ idp_logout_url }}</a>
+{#XXX: Maybe this should happen as a redirect, rather than as javascript. #}
+{% if autosubmit %}
+<script language="javascript">
+<!--
+/* Automatically submit the form. */
+document.location.href = '{{ idp_logout_url }}';
+//-->
+</script>
+{% endif %}
+{% endif %}
+{% endblock content %}
