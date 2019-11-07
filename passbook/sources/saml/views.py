@@ -3,7 +3,7 @@ import base64
 
 from defusedxml import ElementTree
 from django.contrib.auth import login, logout
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -24,6 +24,8 @@ class InitiateView(View):
     def get(self, request: HttpRequest, source: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        if not source.enabled:
+            raise Http404
         sso_destination = request.GET.get('next', None)
         request.session['sso_destination'] = sso_destination
         parameters = {
@@ -49,6 +51,9 @@ class ACSView(View):
 
     def post(self, request: HttpRequest, source: str) -> HttpResponse:
         """Handles a POSTed SSO Assertion and logs the user in."""
+        source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        if not source.enabled:
+            raise Http404
         # sso_session = request.POST.get('RelayState', None)
         data = request.POST.get('SAMLResponse', None)
         response = base64.b64decode(data)
@@ -65,6 +70,8 @@ class SLOView(View):
     def dispatch(self, request: HttpRequest, source: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        if not source.enabled:
+            raise Http404
         logout(request)
         return render(request, 'saml/sp/sso_single_logout.html', {
             'idp_logout_url': source.idp_logout_url,
