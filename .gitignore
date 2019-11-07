@@ -192,3 +192,7 @@ pip-selfcheck.json
 /static/
 local.env.yml
 .vscode/
+
+### Helm ###
+# Chart dependencies
+**/charts/*.tgz
