@@ -30,7 +30,7 @@ class OAuthSourceForm(forms.ModelForm):
             'consumer_key': forms.TextInput(),
             'consumer_secret': forms.TextInput(),
             'provider_type': forms.Select(choices=MANAGER.get_name_tuple()),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            'policies': FilteredSelectMultiple(_('policies'), False),
         }
         labels = {
             'request_token_url': _('Request Token URL'),
