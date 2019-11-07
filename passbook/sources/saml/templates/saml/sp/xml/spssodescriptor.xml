@@ -1,0 +1,70 @@
+<md:EntityDescriptor
+  xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  entityID="{{ entity_id }}">
+  <md:SPSSODescriptor
+    protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>{{ cert_public_key }}</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>{{ cert_public_key }}</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:NameIDFormat>
+      urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+    </md:NameIDFormat>
+    <md:AssertionConsumerService isDefault="true" index="0"
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{{ acs_url }}"/>
+{% comment %}
+<!-- Other bits that we might need. -->
+<!-- Ref: saml-metadata-2.0-os.pdf, pg 10, section 2.3... -->
+    <md:NameIDFormat>
+      urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+    </md:NameIDFormat>
+    <md:ArtifactResolutionService isDefault="true" index="0"
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="https://sp.example.com/SAML2/ArtifactResolution"/>
+    <md:AssertionConsumerService index="1"
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
+      Location="https://sp.example.com/SAML2/Artifact"/>
+    <md:AttributeConsumingService isDefault="true" index="1">
+      <md:ServiceName xml:lang="en">
+        Service Provider Portal
+      </md:ServiceName>
+      <md:RequestedAttribute
+        NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+        Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1"
+        FriendlyName="eduPersonAffiliation">
+      </md:RequestedAttribute>
+    </md:AttributeConsumingService>
+{% endcomment %}
+  </md:SPSSODescriptor>
+{% comment %}
+<!-- #TODO: Add support for optional Organization section -->
+{# if org #}
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">{{ org.name }}</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">{{ org.display_name }}</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">{{ org.url }}</md:OrganizationURL>
+  </md:Organization>
+{# endif #}
+<!-- #TODO: Add support for optional ContactPerson section(s) -->
+{# for contact in contacts #}
+  <md:ContactPerson contactType="{{ contact.type }}">
+    <md:GivenName>{{ contact.given_name }}</md:GivenName>
+    <md:SurName>{{ contact.sur_name }}</md:SurName>
+    <md:EmailAddress>{{ contact.email }}</md:EmailAddress>
+  </md:ContactPerson>
+{# endfor #}
+{% endcomment %}
+</md:EntityDescriptor>

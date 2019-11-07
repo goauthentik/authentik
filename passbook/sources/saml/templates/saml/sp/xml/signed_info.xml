@@ -1,0 +1,12 @@
+<ds:SignedInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:CanonicalizationMethod>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></ds:SignatureMethod>
+    <ds:Reference URI="#${REFERENCE_URI}">
+        <ds:Transforms>
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></ds:Transform>
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"></ds:Transform>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+        <ds:DigestValue>{{ SUBJECT_DIGEST }}</ds:DigestValue>
+    </ds:Reference>
+</ds:SignedInfo>

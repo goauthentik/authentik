@@ -1,0 +1,27 @@
+{% extends "login/base.html" %}
+
+{% load utils %}
+{% load i18n %}
+
+{% block title %}
+{% title 'Authorize Application' %}
+{% endblock %}
+
+{% block card %}
+<header class="login-pf-header">
+    <h1>{% trans 'Authorize Application' %}</h1>
+</header>
+<form method="POST" action="{{ request_url }}">
+    {% csrf_token %}
+    <input type="hidden" name="SAMLRequest" value="{{ request }}" />
+    <input type="hidden" name="RelayState" value="{{ token }}" />
+    <div class="login-group">
+        <h3>
+            {% blocktrans with remote=source.name %}
+            You're about to sign-in via {{ remote }}
+            {% endblocktrans %}
+        </h3>
+        <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
+    </div>
+</form>
+{% endblock %}
