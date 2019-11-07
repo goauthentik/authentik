@@ -3,7 +3,7 @@ import base64
 
 from defusedxml import ElementTree
 from django.contrib.auth import login, logout
-from django.http import HttpRequest, HttpResponse, Http404
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
