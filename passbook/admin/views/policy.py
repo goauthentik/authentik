@@ -41,11 +41,6 @@ class PolicyCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     model = Policy
     permission_required = 'passbook_core.add_policy'
-    permissions = [
-        'passbook_core.view_policy',
-        'passbook_core.change_policy',
-        'passbook_core.delete_policy',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:policies')

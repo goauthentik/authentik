@@ -31,11 +31,7 @@ class InvitationCreateView(SuccessMessageMixin, LoginRequiredMixin,
     model = Invitation
     form_class = InvitationForm
     permission_required = 'passbook_core.add_invitation'
-    permissions = [
-        'passbook_core.view_invitation',
-        'passbook_core.change_invitation',
-        'passbook_core.delete_invitation',
-    ]
+
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:invitations')
     success_message = _('Successfully created Invitation')

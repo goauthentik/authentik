@@ -34,11 +34,6 @@ class ApplicationCreateView(SuccessMessageMixin, LoginRequiredMixin,
     model = Application
     form_class = ApplicationForm
     permission_required = 'passbook_core.add_application'
-    permissions = [
-        'passbook_core.view_application',
-        'passbook_core.change_application',
-        'passbook_core.delete_application',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:applications')

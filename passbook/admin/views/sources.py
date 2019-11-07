@@ -44,11 +44,6 @@ class SourceCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     model = Source
     permission_required = 'passbook_core.add_source'
-    permissions = [
-        'passbook_core.view_source',
-        'passbook_core.change_source',
-        'passbook_core.delete_source',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:sources')

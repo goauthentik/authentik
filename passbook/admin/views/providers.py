@@ -37,11 +37,6 @@ class ProviderCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     model = Provider
     permission_required = 'passbook_core.add_provider'
-    permissions = [
-        'passbook_core.view_provider',
-        'passbook_core.change_provider',
-        'passbook_core.delete_provider',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:providers')

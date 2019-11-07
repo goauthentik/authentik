@@ -46,11 +46,6 @@ class FactorCreateView(SuccessMessageMixin, LoginRequiredMixin,
     model = Factor
     template_name = 'generic/create.html'
     permission_required = 'passbook_core.add_factor'
-    permissions = [
-        'passbook_core.view_factor',
-        'passbook_core.change_factor',
-        'passbook_core.delete_factor',
-    ]
 
     success_url = reverse_lazy('passbook_admin:factors')
     success_message = _('Successfully created Factor')

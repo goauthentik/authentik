@@ -32,11 +32,6 @@ class UserCreateView(SuccessMessageMixin, LoginRequiredMixin,
     model = User
     form_class = UserForm
     permission_required = 'passbook_core.add_user'
-    permissions = [
-        'passbook_core.view_user',
-        'passbook_core.change_user',
-        'passbook_core.delete_user',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:users')

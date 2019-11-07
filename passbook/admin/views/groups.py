@@ -31,11 +31,7 @@ class GroupCreateView(SuccessMessageMixin, LoginRequiredMixin,
     model = Group
     form_class = GroupForm
     permission_required = 'passbook_core.add_group'
-    permissions = [
-        'passbook_core.view_group',
-        'passbook_core.change_group',
-        'passbook_core.delete_group',
-    ]
+
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:groups')
     success_message = _('Successfully created Group')

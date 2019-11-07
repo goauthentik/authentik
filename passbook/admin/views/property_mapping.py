@@ -45,11 +45,6 @@ class PropertyMappingCreateView(SuccessMessageMixin, LoginRequiredMixin,
 
     model = PropertyMapping
     permission_required = 'passbook_core.add_propertymapping'
-    permissions = [
-        'passbook_core.view_propertymapping',
-        'passbook_core.change_propertymapping',
-        'passbook_core.delete_propertymapping',
-    ]
 
     template_name = 'generic/create.html'
     success_url = reverse_lazy('passbook_admin:property-mappings')
