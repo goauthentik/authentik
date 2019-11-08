@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'guardian',
+    'django_prometheus',
 
     'passbook.core.apps.PassbookCoreConfig',
     'passbook.admin.apps.PassbookAdminConfig',
@@ -136,7 +137,7 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
         "LOCATION": (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
                      f"/{CONFIG.y('redis.cache_db')}"),
         "OPTIONS": {
@@ -150,6 +151,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -157,6 +159,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'passbook.root.urls'
@@ -184,7 +187,7 @@ WSGI_APPLICATION = 'passbook.root.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django_prometheus.db.backends.postgresql',
         'HOST': CONFIG.y('postgresql.host'),
         'NAME': CONFIG.y('postgresql.name'),
         'USER': CONFIG.y('postgresql.user'),

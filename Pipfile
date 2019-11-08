@@ -42,6 +42,7 @@ django-dbbackup = "*"
 boto3 = "*"
 django-storages = "*"
 swagger-spec-validator = "*"
+django-prometheus = "*"
 
 [requires]
 python_version = "3.7"

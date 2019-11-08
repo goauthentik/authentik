@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from structlog import get_logger
 
 from passbook.core.views import error
+from passbook.root.monitoring import MetricsView
 from passbook.lib.utils.reflection import get_apps
 
 LOGGER = get_logger()
@@ -31,6 +32,7 @@ for _passbook_app in get_apps():
 urlpatterns += [
     # Administration
     path('administration/django/', admin.site.urls),
+    path('metrics/', MetricsView.as_view(), name='metrics')
 ]
 
 if settings.DEBUG:
