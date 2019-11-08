@@ -118,7 +118,4 @@ spec:
         for: 1m
         labels:
           severity: testing
-        annotations:
-          summary: "Unapplied django migrations on {{$labels.connection}}"
-          description: "Django detected {{$value}} unapplied migrations on database {{$labels.connection}}"
 {{- end }}
