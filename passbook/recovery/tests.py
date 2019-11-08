@@ -25,7 +25,8 @@ class TestRecovery(TestCase):
 
     def test_recovery_view(self):
         """Test recovery view"""
-        call_command('create_recovery_key', '1', self.user.username)
+        out = StringIO()
+        call_command('create_recovery_key', '1', self.user.username, stdout=out)
         nonce = Nonce.objects.first()
         self.client.get(reverse('passbook_recovery:use-nonce', kwargs={'uuid': str(nonce.uuid)}))
         self.assertEqual(int(self.client.session['_auth_user_id']), nonce.user.pk)

@@ -137,7 +137,7 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": (f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
                      f"/{CONFIG.y('redis.cache_db')}"),
         "OPTIONS": {
