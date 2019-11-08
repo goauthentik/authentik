@@ -1,9 +1,11 @@
 """Metrics view"""
 from base64 import b64encode
+
 from django.conf import settings
+from django.http import Http404, HttpRequest, HttpResponse
 from django.views import View
-from django.http import HttpRequest, HttpResponse, Http404
 from django_prometheus.exports import ExportToDjangoView
+
 
 class MetricsView(View):
     """Wrapper around ExportToDjangoView, using http-basic auth"""

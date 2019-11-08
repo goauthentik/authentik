@@ -6,8 +6,8 @@ from django.views.generic import RedirectView
 from structlog import get_logger
 
 from passbook.core.views import error
-from passbook.root.monitoring import MetricsView
 from passbook.lib.utils.reflection import get_apps
+from passbook.root.monitoring import MetricsView
 
 LOGGER = get_logger()
 admin.autodiscover()

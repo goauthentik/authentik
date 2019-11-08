@@ -4,9 +4,10 @@ metadata:
   name: {{ include "passbook.fullname" . }}-web
   labels:
     app.kubernetes.io/name: {{ include "passbook.name" . }}
-    helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "passbook.chart" . }}
+    k8s.passbook.io/component: web
 spec:
   type: {{ .Values.service.type }}
   ports:
