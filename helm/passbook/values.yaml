@@ -14,19 +14,10 @@ config:
   email:
     host: localhost
 
-postgresql:
-  postgresqlDatabase: passbook
-
-redis:
-  cluster:
-    enabled: false
-  master:
-    persistence:
-      enabled: false
-
-service:
-  type: ClusterIP
-  port: 80
+# This Helm chart ships with built-in Prometheus ServiceMonitors and Rules.
+# This requires the CoreOS Prometheus Operator.
+monitoring:
+  enabled: false
 
 ingress:
   enabled: false
@@ -40,3 +31,14 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - passbook.k8s.local
+
+# These settings configure the packaged PostgreSQL and Redis chart.
+postgresql:
+  postgresqlDatabase: passbook
+
+redis:
+  cluster:
+    enabled: false
+  master:
+    persistence:
+      enabled: false

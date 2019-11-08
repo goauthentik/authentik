@@ -1,3 +1,4 @@
+{{- if .Values.monitoring.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -17,6 +18,8 @@ spec:
         name: {{ include "passbook.fullname" . }}-secret-key
         key: monitoring_username
     port: http
+    interval: 10s
   selector:
     matchLabels:
       k8s.passbook.io/component: web
+{{- end }}

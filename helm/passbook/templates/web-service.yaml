@@ -9,9 +9,9 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     k8s.passbook.io/component: web
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
