@@ -1,0 +1,90 @@
+{% load i18n %}
+{% load static %}
+
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/addon/display/autorefresh.js' %}"></script>
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror/theme/monokai.css' %}">
+<script src="{% static 'codemirror/mode/yaml/yaml.js' %}"></script>
+
+<div class="dropdown" style="display: inline-block;">
+    <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="setupDropdown-{{ provider.pk }}" data-toggle="dropdown">
+        {% trans 'Setup with...' %}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="setupDropdown-{{ provider.pk }}">
+        <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#docker-compose-{{ provider.pk }}">{% trans 'docker-compose' %}</a></li>
+        <li role="presentation"><a role="menuitem" data-toggle="modal" data-target="#k8s-{{ provider.pk }}">{% trans 'Kubernetes' %}</a></li>
+    </ul>
+</div>
+
+<div class="modal fade" id="docker-compose-{{ provider.pk }}" tabindex="-1" role="dialog" aria-labelledby="{{ provider.pk }}Label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" id="{{ provider.pk }}Label">{% trans 'Setup with docker-compose' %}</h4>
+      </div>
+      <div class="modal-body">
+        {% trans 'Add the following snippet to your docker-compose file.' %}
+        <textarea class="codemirror">version: "3.5"
+
+services:
+  passbook_gatekeeper:
+    container_name: gatekeeper
+    image: docker.beryju.org/passbook/gatekeeper:{{ version }}
+    ports:
+      - 4180:4180
+    environment:
+      OAUTH2_PROXY_CLIENT_ID: {{ provider.client.client_id }}
+      OAUTH2_PROXY_CLIENT_SECRET: {{ provider.client.client_secret }}
+      OAUTH2_PROXY_REDIRECT_URL: https://{{ provider.host }}/oauth2/callback
+      OAUTH2_PROXY_OIDC_ISSUER_URL: https://{{ request.META.host }}/application/oidc
+      OAUTH2_PROXY_COOKIE_SECRET: {{ cookie_secret }}
+      OAUTH2_PROXY_UPSTREAM: http://{{ provider.host }}</textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="k8s-{{ provider.pk }}" tabindex="-1" role="dialog" aria-labelledby="{{ provider.pk }}Label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" id="{{ provider.pk }}Label">{% trans 'Setup with Kubernetes' %}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{% trans 'Download the manifest to create the Gatekeeper deployment and service:' %}</p>
+        <a href="{% url 'passbook_providers_app_gw:k8s-manifest' provider=provider.pk %}">{% trans 'Here' %}</a>
+        <p>{% trans 'Afterwards, add the following annotations to the Ingress you want to secure:' %}</p>
+        <textarea class="codemirror">
+nginx.ingress.kubernetes.io/auth-url: "https://{{ provider.host }}/oauth2/auth"
+nginx.ingress.kubernetes.io/auth-signin: "https://{{ provider.host }}/oauth2/start?rd=$escaped_request_uri"
+</textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let attributes = document.getElementsByClassName('codemirror');
+for (let attrib of attributes) {
+  let myCodeMirror = CodeMirror.fromTextArea(attrib, {
+    mode: 'yaml',
+    theme: 'monokai',
+    lineNumbers: false,
+    readOnly: true,
+    autoRefresh: true,
+  });
+}
+</script>
