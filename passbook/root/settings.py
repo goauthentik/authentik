@@ -302,46 +302,46 @@ LOG_PRE_CHAIN = [
     structlog.processors.TimeStamper(),
 ]
 
-with CONFIG.cd('log'):
-    LOGGING_HANDLER_MAP = {
-        'passbook': 'DEBUG',
-        'django': 'WARNING',
-        'celery': 'WARNING',
-        'grpc': 'DEBUG',
-        'oauthlib': 'DEBUG',
-        'oauth2_provider': 'DEBUG',
-    }
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            "plain": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(sort_keys=True),
-                "foreign_pre_chain": LOG_PRE_CHAIN,
-            },
-            "colored": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
-                "foreign_pre_chain": LOG_PRE_CHAIN,
-            },
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        "plain": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.processors.JSONRenderer(sort_keys=True),
+            "foreign_pre_chain": LOG_PRE_CHAIN,
         },
-        'handlers': {
-            'console': {
-                'level': DEBUG,
-                'class': 'logging.StreamHandler',
-                'formatter': "colored" if DEBUG else "plain",
-            },
+        "colored": {
+            "()": structlog.stdlib.ProcessorFormatter,
+            "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
+            "foreign_pre_chain": LOG_PRE_CHAIN,
         },
-        'loggers': {
-        }
+    },
+    'handlers': {
+        'console': {
+            'level': DEBUG,
+            'class': 'logging.StreamHandler',
+            'formatter': "colored" if DEBUG else "plain",
+        },
+    },
+    'loggers': {
     }
-    for handler_name, level in LOGGING_HANDLER_MAP.items():
-        LOGGING['loggers'][handler_name] = {
-            'handlers': ['console'],
-            'level': level,
-            'propagate': True,
-        }
+}
+_LOGGING_HANDLER_MAP = {
+    'passbook': 'DEBUG',
+    'django': 'WARNING',
+    'celery': 'WARNING',
+    'grpc': 'DEBUG',
+    'oauthlib': 'DEBUG',
+    'oauth2_provider': 'DEBUG',
+    'oidc_provider': 'DEBUG',
+}
+for handler_name, level in _LOGGING_HANDLER_MAP.items():
+    LOGGING['loggers'][handler_name] = {
+        'handlers': ['console'],
+        'level': level,
+        'propagate': True,
+    }
 
 TEST = False
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
