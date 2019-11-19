@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 10
@@ -46,6 +46,3 @@ spec:
             limits:
               cpu: 20m
               memory: 20M
-        - name: {{ .Chart.Name }}-static-prometheus
-          image: nginx/nginx-prometheus-exporter:0.4.1
-          imagePullPolicy: IfNotPresent
