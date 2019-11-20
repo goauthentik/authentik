@@ -266,7 +266,9 @@ if CONFIG.y('postgresql.backup'):
     }
 
 # Sentry integration
-if not DEBUG:
+_ERROR_REPORTING = CONFIG.y_bool('error_reporting', False)
+if not DEBUG and _ERROR_REPORTING:
+    LOGGER.info("Error reporting is enabled.")
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
         integrations=[

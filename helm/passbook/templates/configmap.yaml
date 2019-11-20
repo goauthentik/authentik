@@ -12,5 +12,5 @@ data:
       host: "{{ .Release.Name }}-redis-master"
       cache_db: 0
       message_queue_db: 1
-    error_report_enabled: {{ .Values.config.error_reporting }}
+    error_reporting: {{ .Values.config.error_reporting }}
     domain: ".{{ index .Values.ingress.hosts 0 }}"

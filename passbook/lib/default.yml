@@ -13,8 +13,8 @@ redis:
 
 debug: false
 
-# Error reporting, sends stacktrace to sentry.services.beryju.org
-error_report_enabled: true
+# Error reporting, sends stacktrace to sentry.beryju.org
+error_reporting: false
 
 domain: localhost
 
