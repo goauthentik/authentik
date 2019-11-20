@@ -116,18 +116,18 @@ build-passbook-static:
   services:
     - postgres:latest
     - redis:latest
-build-passbook-gatekeeper:
-  stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  before_script:
-    - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
-  script:
-    - /kaniko/executor --context $CI_PROJECT_DIR/gatekeeper --dockerfile $CI_PROJECT_DIR/gatekeeper/Dockerfile --destination docker.beryju.org/passbook/gatekeeper:latest --destination docker.beryju.org/passbook/gatekeeper:0.7.3-beta
-  only:
-    - tags
-    - /^version/.*$/
+# build-passbook-gatekeeper:
+#   stage: build
+#   image:
+#     name: gcr.io/kaniko-project/executor:debug
+#     entrypoint: [""]
+#   before_script:
+#     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
+#   script:
+#     - /kaniko/executor --context $CI_PROJECT_DIR/gatekeeper --dockerfile $CI_PROJECT_DIR/gatekeeper/Dockerfile --destination docker.beryju.org/passbook/gatekeeper:latest --destination docker.beryju.org/passbook/gatekeeper:0.7.3-beta
+#   only:
+#     - tags
+#     - /^version/.*$/
 
 package-helm:
   image: debian:stretch-slim
