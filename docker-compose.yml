@@ -21,8 +21,6 @@ services:
     labels:
       - traefik.enable=false
   server:
-    build:
-      context: .
     image: docker.beryju.org/passbook/server:${SERVER_TAG:-latest}
     command:
       - uwsgi
@@ -60,9 +58,6 @@ services:
       - PASSBOOK_POSTGRESQL__HOST=postgresql
       - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
   static:
-    build:
-      context: .
-      dockerfile: static.Dockerfile
     image: docker.beryju.org/passbook/static:latest
     networks:
       - internal
