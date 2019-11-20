@@ -31,13 +31,13 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 5
             httpGet:
-              path: /_/healthz
+              path: /-/ping
               port: http
           readinessProbe:
             initialDelaySeconds: 10
             timeoutSeconds: 5
             httpGet:
-              path: /_/healthz
+              path: /-/ping
               port: http
           resources:
             requests:
