@@ -45,7 +45,7 @@ class WSGILogger:
         runtime = int((time() - start) * 10**6)
         content_length = content_lengths[0] if content_lengths else 0
         self.log(status_codes[0], environ, content_length,
-                 ip_header=None, runtime=runtime)
+                 ip_header='HTTP_X_FORWARDED_FOR', runtime=runtime)
         return retval
 
     def log(self, status_code, environ, content_length, **kwargs):
