@@ -63,6 +63,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+unittest.xml
 
 # Translations
 *.mo
@@ -184,7 +185,6 @@ dmypy.json
 [Ii]nclude
 [Ll]ib64
 [Ll]ocal
-[Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
 
