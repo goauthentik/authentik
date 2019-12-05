@@ -1,5 +1,5 @@
 #!/bin/bash -xe
+scripts/coverage.sh
 isort
 pylint passbook
 prospector
-scripts/coverage.sh
