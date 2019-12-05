@@ -11,8 +11,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
 from structlog import get_logger
 
+from passbook.audit.models import Event, EventAction
 from passbook.factors.view import AuthenticationView, _redirect_with_qs
-from passbook.lib.utils.reflection import app
 from passbook.sources.oauth.clients import get_client
 from passbook.sources.oauth.models import (OAuthSource,
                                            UserOAuthSourceConnection)
@@ -180,17 +180,8 @@ class OAuthCallback(OAuthClientMixin, View):
         access.user = user
         access.save()
         UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
-        if app('passbook_audit'):
-            pass
-            # TODO: Create audit entry
-            # from passbook.audit.models import something
-            # something.event(user=user,)
-            # Event.create(
-            #     user=user,
-            #     message=_("Linked user with OAuth source %s" % self.source.name),
-            #     request=self.request,
-            #     hidden=True,
-            #     current=False)
+        Event.new(EventAction.CUSTOM, message="Linked OAuth Source",
+                  source=source).from_http(self.request)
         if was_authenticated:
             messages.success(self.request, _("Successfully linked %(source)s!" % {
                 'source': self.source.name

@@ -16,6 +16,7 @@ from qrcode import make
 from qrcode.image.svg import SvgPathImage
 from structlog import get_logger
 
+from passbook.audit.models import Event, EventAction
 from passbook.factors.otp.forms import OTPSetupForm
 from passbook.factors.otp.utils import otpauth_url
 from passbook.lib.boilerplate import NeverCacheMixin
@@ -55,12 +56,7 @@ class DisableView(LoginRequiredMixin, View):
             token.delete()
         messages.success(request, 'Successfully disabled OTP')
         # Create event with email notification
-        # Event.create(
-        #     user=request.user,
-        #     message=_('You disabled TOTP.'),
-        #     current=True,
-        #     request=request,
-        #     send_notification=True)
+        Event.new(EventAction.CUSTOM, message='User disabled OTP.').from_http(request)
         return redirect(reverse('passbook_factors_otp:otp-user-settings'))
 
 class EnableView(LoginRequiredMixin, FormView):
@@ -77,7 +73,7 @@ class EnableView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         kwargs['config'] = CONFIG.y('passbook')
         kwargs['is_login'] = True
-        kwargs['title'] = _('Configue OTP')
+        kwargs['title'] = _('Configure OTP')
         kwargs['primary_action'] = _('Setup')
         return super().get_context_data(**kwargs)
 
@@ -134,14 +130,7 @@ class EnableView(LoginRequiredMixin, FormView):
         self.static_device.confirmed = True
         self.static_device.save()
         del self.request.session[OTP_SETTING_UP_KEY]
-        # Create event with email notification
-        # TODO: Create Audit Log entry
-        # Event.create(
-        #     user=self.request.user,
-        #     message=_('You activated TOTP.'),
-        #     current=True,
-        #     request=self.request,
-        #     send_notification=True)
+        Event.new(EventAction.CUSTOM, message='User enabled OTP.').from_http(self.request)
         return redirect('passbook_factors_otp:otp-user-settings')
 
 class QRView(NeverCacheMixin, View):
