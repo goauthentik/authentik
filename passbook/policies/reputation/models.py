@@ -1,9 +1,9 @@
 """passbook reputation request policy"""
 from django.db import models
 from django.utils.translation import gettext as _
-from ipware import get_client_ip
 
 from passbook.core.models import Policy, User
+from passbook.lib.utils.http import get_client_ip
 from passbook.policies.struct import PolicyRequest, PolicyResult
 
 
@@ -17,7 +17,7 @@ class ReputationPolicy(Policy):
     form = 'passbook.policies.reputation.forms.ReputationPolicyForm'
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        remote_ip, _ = get_client_ip(request.http_request)
+        remote_ip = get_client_ip(request.http_request)
         passing = True
         if self.check_ip:
             ip_scores = IPReputation.objects.filter(ip=remote_ip, score__lte=self.threshold)

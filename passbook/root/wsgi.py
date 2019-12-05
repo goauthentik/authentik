@@ -12,6 +12,8 @@ from time import time
 from django.core.wsgi import get_wsgi_application
 from structlog import get_logger
 
+from passbook.lib.utils.http import _get_client_ip_from_meta
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
 class WSGILogger:
@@ -44,8 +46,7 @@ class WSGILogger:
         retval = self.application(environ, custom_start_response)
         runtime = int((time() - start) * 10**6)
         content_length = content_lengths[0] if content_lengths else 0
-        self.log(status_codes[0], environ, content_length,
-                 ip_header='HTTP_X_FORWARDED_FOR', runtime=runtime)
+        self.log(status_codes[0], environ, content_length, runtime=runtime)
         return retval
 
     def log(self, status_code, environ, content_length, **kwargs):
@@ -54,11 +55,7 @@ class WSGILogger:
         "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
         see http://httpd.apache.org/docs/current/mod/mod_log_config.html#formats
         """
-        ip_header = kwargs.get('ip_header', None)
-        if ip_header:
-            host = environ.get(ip_header, '')
-        else:
-            host = environ.get('REMOTE_ADDR', '')
+        host = _get_client_ip_from_meta(environ)
         query_string = ''
         if environ.get('QUERY_STRING') != '':
             query_string = f"?{environ.get('QUERY_STRING')}"

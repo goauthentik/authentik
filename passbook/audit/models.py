@@ -5,10 +5,10 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext as _
-from ipware import get_client_ip
 from structlog import get_logger
 
 from passbook.lib.models import UUIDModel
+from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
 
@@ -47,7 +47,7 @@ class Event(UUIDModel):
     @staticmethod
     def create(action, request, **kwargs):
         """Create Event from arguments"""
-        client_ip, _ = get_client_ip(request)
+        client_ip = get_client_ip(request)
         if not hasattr(request, 'user'):
             user = None
         else:
