@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from structlog import get_logger
 
-from passbook.audit.models import Event
+from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application
 from passbook.policies.engine import PolicyEngine
 
@@ -28,9 +28,7 @@ def check_permissions(request, user, client):
             messages.error(request, policy_message)
         return redirect('passbook_providers_oauth:oauth2-permission-denied')
 
-    Event.create(
-        action=Event.ACTION_AUTHORIZE_APPLICATION,
-        request=request,
-        app=application.name,
-        skipped_authorization=False)
+    Event.new(EventAction.AUTHORIZE_APPLICATION,
+              authorized_application=application,
+              skipped_authorization=False).from_http(request)
     return None

@@ -1,30 +1,18 @@
 """passbook reputation request signals"""
 from django.contrib.auth.signals import user_logged_in, user_login_failed
 from django.dispatch import receiver
-from ipware import get_client_ip
 from structlog import get_logger
 
 from passbook.core.models import User
+from passbook.lib.utils.http import get_client_ip
 from passbook.policies.reputation.models import IPReputation, UserReputation
 
 LOGGER = get_logger()
 
 
-def get_remote_ip(request):
-    """Small wrapper of get_client_ip to catch errors"""
-    try:
-        remote_ip, _ = get_client_ip(request)
-        if remote_ip:
-            return remote_ip
-        if 'ip' in request:
-            return request['ip']
-    except (AttributeError, ValueError):
-        pass
-    return '255.255.255.255'
-
 def update_score(request, username, amount):
     """Update score for IP and User"""
-    remote_ip = get_remote_ip(request)
+    remote_ip = get_client_ip(request) or '255.255.255.255.'
     ip_score, _ = IPReputation.objects.update_or_create(ip=remote_ip)
     ip_score.score += amount
     ip_score.save()

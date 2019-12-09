@@ -64,13 +64,13 @@ migrations:
   services:
   - postgres:latest
   - redis:latest
-# prospector:
-#   script:
-#     - prospector
-#   stage: test
-#   services:
-#   - postgres:latest
-#   - redis:latest
+prospector:
+  script:
+    - prospector
+  stage: test
+  services:
+  - postgres:latest
+  - redis:latest
 pylint:
   script:
     - pylint passbook
@@ -80,9 +80,7 @@ pylint:
   - redis:latest
 coverage:
   script:
-    - coverage run --concurrency=multiprocessing manage.py test
-    - coverage combine
-    - coverage report
+    - ./scripts/coverage.sh
   stage: test
   services:
   - postgres:latest
@@ -116,18 +114,6 @@ build-passbook-static:
   services:
     - postgres:latest
     - redis:latest
-# build-passbook-gatekeeper:
-#   stage: build
-#   image:
-#     name: gcr.io/kaniko-project/executor:debug
-#     entrypoint: [""]
-#   before_script:
-#     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
-#   script:
-#     - /kaniko/executor --context $CI_PROJECT_DIR/gatekeeper --dockerfile $CI_PROJECT_DIR/gatekeeper/Dockerfile --destination docker.beryju.org/passbook/gatekeeper:latest --destination docker.beryju.org/passbook/gatekeeper:0.7.4-beta
-#   only:
-#     - tags
-#     - /^version/.*$/
 
 package-helm:
   image: debian:stretch-slim
