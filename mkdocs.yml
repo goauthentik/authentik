@@ -1,0 +1,16 @@
+site_name: passbook Docs
+nav:
+    - Home: index.md
+    - Installation:
+          - Installation: installation/install.md
+          - docker-compose: installation/docker-compose.md
+          - Kubernetes: installation/kubernetes.md
+    - Policies: policies.md
+    - Factors: factors.md
+
+repo_url: https://git.beryju.org/BeryJu.org/passbook
+theme:
+    name: bootstrap4
+
+extra_css:
+    - css/custom.css

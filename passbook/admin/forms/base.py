@@ -1,4 +1,4 @@
-"""p2 form helpers"""
+"""passbook form helpers"""
 from django import forms
 
 from passbook.admin.fields import YAMLField
