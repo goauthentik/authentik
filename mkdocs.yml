@@ -7,10 +7,12 @@ nav:
           - Kubernetes: installation/kubernetes.md
     - Policies: policies.md
     - Factors: factors.md
+    - Property Mappings: property-mappings.md
 
 repo_url: https://git.beryju.org/BeryJu.org/passbook
 theme:
-    name: bootstrap4
+    name: "material"
 
-extra_css:
-    - css/custom.css
+markdown_extensions:
+    - toc:
+          permalink: "¶"

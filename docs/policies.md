@@ -6,6 +6,8 @@ There are two different Kind of policies, a Standard Policy and a Password Polic
 
 ## Standard Policies
 
+---
+
 ### Group-Membership Policy
 
 This policy evaluates to True if the current user is a Member of the selected group.
@@ -43,6 +45,8 @@ This policy evaluates to True if the current Authentication Flow has been initia
 This policy allows you to send an arbitrary HTTP Request to any URL. You can then use JSONPath to extract the result you need.
 
 ## Password Policies
+
+---
 
 ### Password Policy
 
