@@ -1,0 +1,21 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/name: passbook-docs
+  name: passbook-docs
+  namespace: prod-passbook-docs
+spec:
+  rules:
+    - host: docs.passbook.beryju.org
+      http:
+        paths:
+          - backend:
+              serviceName: passbook-docs-http
+              servicePort: http
+            path: /
+  tls:
+    - hosts:
+        - docs.passbook.beryju.org
+      secretName: passbook-docs-acme

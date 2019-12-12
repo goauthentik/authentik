@@ -25,10 +25,12 @@ def update_score(request, username, amount):
     user_score.save()
     LOGGER.debug("Updated score", amount=amount, for_user=username)
 
+
 @receiver(user_login_failed)
 def handle_failed_login(sender, request, credentials, **kwargs):
     """Lower Score for failed loging attempts"""
     update_score(request, credentials.get('username'), -1)
+
 
 @receiver(user_logged_in)
 def handle_successful_login(sender, request, user, **kwargs):

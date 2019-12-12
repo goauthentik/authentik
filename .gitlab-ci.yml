@@ -49,42 +49,41 @@ build-dev-image:
       - tags
       - /^version/.*$/
 
-
 isort:
   script:
     - isort -c -sg env
   stage: test
   services:
-  - postgres:latest
-  - redis:latest
+    - postgres:latest
+    - redis:latest
 migrations:
   script:
     - python manage.py migrate
   stage: test
   services:
-  - postgres:latest
-  - redis:latest
+    - postgres:latest
+    - redis:latest
 prospector:
   script:
     - prospector
   stage: test
   services:
-  - postgres:latest
-  - redis:latest
+    - postgres:latest
+    - redis:latest
 pylint:
   script:
     - pylint passbook
   stage: test
   services:
-  - postgres:latest
-  - redis:latest
+    - postgres:latest
+    - redis:latest
 coverage:
   script:
     - ./scripts/coverage.sh
   stage: test
   services:
-  - postgres:latest
-  - redis:latest
+    - postgres:latest
+    - redis:latest
 
 build-passbook-server:
   stage: build
@@ -95,6 +94,18 @@ build-passbook-server:
     - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
   script:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.beryju.org/passbook/server:latest --destination docker.beryju.org/passbook/server:0.7.4-beta
+  only:
+    - tags
+    - /^version/.*$/
+build-docs:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - echo "{\"auths\":{\"docker.beryju.org\":{\"auth\":\"$DOCKER_AUTH\"}}}" > /kaniko/.docker/config.json
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/docs/Dockerfile --destination docker.beryju.org/passbook/docs:latest --destination docker.beryju.org/passbook/docs:0.7.4-beta
   only:
     - tags
     - /^version/.*$/

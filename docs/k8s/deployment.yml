@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: passbook-docs
+  namespace: prod-passbook-docs
+  labels:
+    app.kubernetes.io/name: passbook-docs
+    app.kubernetes.io/managed-by: passbook-docs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: passbook-docs
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: passbook-docs
+    spec:
+      containers:
+        - name: passbook-docs
+          image: "docker.beryju.org/passbook/docs:latest"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 10m
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
