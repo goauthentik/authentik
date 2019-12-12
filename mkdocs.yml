@@ -1,4 +1,7 @@
 site_name: passbook Docs
+site_url: https://docs.passbook.beryju.org
+copyright: "Copyright &copy; 2019 - 2020 BeryJu.org"
+
 nav:
     - Home: index.md
     - Installation:
@@ -9,9 +12,11 @@ nav:
     - Factors: factors.md
     - Property Mappings: property-mappings.md
 
+repo_name: "BeryJu.org/passbook"
 repo_url: https://git.beryju.org/BeryJu.org/passbook
 theme:
     name: "material"
+    logo: "images/logo.svg"
 
 markdown_extensions:
     - toc:
