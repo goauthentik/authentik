@@ -13,6 +13,9 @@ nav:
   - Property Mappings: property-mappings.md
   - Factors: factors.md
   - Policies: policies.md
+  - Integrations:
+      - as Provider:
+          - GitLab: integrations/as-sp/gitlab/index.md
 
 repo_name: "BeryJu.org/passbook"
 repo_url: https://git.beryju.org/BeryJu.org/passbook
