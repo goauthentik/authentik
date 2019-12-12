@@ -3,21 +3,23 @@ site_url: https://docs.passbook.beryju.org
 copyright: "Copyright &copy; 2019 - 2020 BeryJu.org"
 
 nav:
-    - Home: index.md
-    - Installation:
-          - Installation: installation/install.md
-          - docker-compose: installation/docker-compose.md
-          - Kubernetes: installation/kubernetes.md
-    - Policies: policies.md
-    - Factors: factors.md
-    - Property Mappings: property-mappings.md
+  - Home: index.md
+  - Installation:
+      - Installation: installation/install.md
+      - docker-compose: installation/docker-compose.md
+      - Kubernetes: installation/kubernetes.md
+  - Sources: sources.md
+  - Providers: providers.md
+  - Property Mappings: property-mappings.md
+  - Factors: factors.md
+  - Policies: policies.md
 
 repo_name: "BeryJu.org/passbook"
 repo_url: https://git.beryju.org/BeryJu.org/passbook
 theme:
-    name: "material"
-    logo: "images/logo.svg"
+  name: "material"
+  logo: "images/logo.svg"
 
 markdown_extensions:
-    - toc:
-          permalink: "¶"
+  - toc:
+      permalink: "¶"
