@@ -143,6 +143,7 @@ class Processor:
 
     def _format_assertion(self):
         """Formats _assertion_params as _assertion_xml."""
+        # https://commons.lbl.gov/display/IDMgmt/Attribute+Definitions
         self._assertion_params['ATTRIBUTES'] = [
             {
                 'FriendlyName': 'eduPersonPrincipalName',
@@ -163,6 +164,11 @@ class Processor:
                 'FriendlyName': 'displayName',
                 'Name': 'urn:oid:2.16.840.1.113730.3.1.241',
                 'Value': self._django_request.user.username,
+            },
+            {
+                'FriendlyName': 'uid',
+                'Name': 'urn:oid:0.9.2342.19200300.100.1.1',
+                'Value': self._django_request.user.pk,
             },
         ]
         from passbook.providers.saml.models import SAMLPropertyMapping
