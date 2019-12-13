@@ -15,8 +15,9 @@ nav:
   - Policies: policies.md
   - Integrations:
       - as Provider:
-          - GitLab: integrations/as-sp/gitlab/index.md
-          - Rancher: integrations/as-sp/rancher/index.md
+          - GitLab: integrations/services/gitlab/index.md
+          - Rancher: integrations/services/rancher/index.md
+          - Harbor: integrations/services/harbor/index.md
 
 repo_name: "BeryJu.org/passbook"
 repo_url: https://git.beryju.org/BeryJu.org/passbook
