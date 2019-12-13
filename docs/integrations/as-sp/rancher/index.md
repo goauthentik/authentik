@@ -1,6 +1,13 @@
 # Rancher Integration
 
-Rancher can authenticate against passbook using SAML.
+## What is Rancher
+
+From https://rancher.com/products/rancher
+
+```
+An Enterprise Platform for Managing Kubernetes Everywhere
+Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
+```
 
 ## Preparation
 
@@ -11,12 +18,12 @@ The following placeholders will be used:
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML Provider with the following Parameters:
 
--   `ACS URL`: https://rancher.company/v1-saml/adfs/saml/acs
--   `Audience`: https://rancher.company/v1-saml/adfs/saml/metadata
--   `Issuer`: passbook
+-   ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
+-   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
+-   Issuer: `passbook`
 
 You can of course use a custom Signing Certificate, and adjust the Assertion Length.
 
 ## Rancher
 
-![aaa](./rancher.png)
+![](./rancher.png)

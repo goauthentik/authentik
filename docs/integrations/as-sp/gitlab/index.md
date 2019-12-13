@@ -1,6 +1,12 @@
 # GitLab Integration
 
-GitLab can authenticate against passbook using SAML.
+## What is GitLab
+
+From https://about.gitlab.com/what-is-gitlab/
+
+```
+GitLab is a complete DevOps platform, delivered as a single application. This makes GitLab unique and makes Concurrent DevOps possible, unlocking your organization from the constraints of a pieced together toolchain. Join us for a live Q&A to learn how GitLab can give you unmatched visibility and higher levels of efficiency in a single application across the DevOps lifecycle.
+```
 
 ## Preparation
 
@@ -11,9 +17,9 @@ The following placeholders will be used:
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML Provider with the following Parameters:
 
--   `ACS URL`: https://gitlab.company/users/auth/saml/callback
--   `Audience`: https://gitlab.company
--   `Issuer`: https://gitlab.company
+-   ACS URL: `https://gitlab.company/users/auth/saml/callback`
+-   Audience: `https://gitlab.company`
+-   Issuer: `https://gitlab.company`
 
 You can of course use a custom Signing Certificate, and adjust the Assertion Length. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
 
