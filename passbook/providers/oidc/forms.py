@@ -30,9 +30,8 @@ class OIDCProviderForm(forms.ModelForm):
         model = Client
         fields = [
             'name', 'client_type', 'client_id', 'client_secret', 'response_types',
-            'jwt_alg', 'reuse_consent', 'require_consent', '_redirect_uris', '_scope'
+            'jwt_alg', '_redirect_uris', '_scope'
         ]
-        # exclude = ['owner', 'website_url', 'terms_url', 'contact_email', 'logo', ]
         labels = {
             'client_secret': "Client Secret"
         }
