@@ -131,11 +131,10 @@ package-helm:
   stage: package
   before_script:
     - apt update && apt install -y curl
-    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
   script:
-    - helm init --client-only
-    - helm dependency update helm/passbook
-    - helm package helm/passbook
+    - helm dependency update helm
+    - helm package helm
   artifacts:
     paths:
       - passbook-*.tgz
