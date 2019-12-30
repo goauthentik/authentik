@@ -189,5 +189,5 @@ jobs:
           helm init
       - name: Helm package
         run: |
-          helm dependency update helm/passbook
-          helm package helm/passbook
+          helm dependency update helm/
+          helm package helm/
