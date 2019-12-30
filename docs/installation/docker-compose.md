@@ -9,7 +9,7 @@ This installation Method is for test-setups and small-scale productive setups.
 
 ## Install
 
-Download the latest `docker-compose.yml` from [here](https://git.beryju.org/BeryJu.org/passbook/raw/master/docker-compose.yml). Place it in a directory of your choice.
+Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml). Place it in a directory of your choice.
 
 passbook needs to know it's primary URL to create links in E-Mails and set cookies, so you have to run the following command:
 
