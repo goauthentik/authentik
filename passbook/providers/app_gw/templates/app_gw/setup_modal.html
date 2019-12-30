@@ -34,7 +34,7 @@
 services:
   passbook_gatekeeper:
     container_name: gatekeeper
-    image: docker.beryju.org/passbook/gatekeeper:{{ version }}
+    image: beryju/passbook-gatekeeper:{{ version }}
     ports:
       - 4180:4180
     environment:

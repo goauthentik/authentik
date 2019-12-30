@@ -21,7 +21,7 @@ services:
     labels:
       - traefik.enable=false
   server:
-    image: docker.beryju.org/passbook/server:${SERVER_TAG:-latest}
+    image: beryju/passbook:${SERVER_TAG:-latest}
     command:
       - uwsgi
       - uwsgi.ini
@@ -40,7 +40,7 @@ services:
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
   worker:
-    image: docker.beryju.org/passbook/server:${SERVER_TAG:-latest}
+    image: beryju/passbook:${SERVER_TAG:-latest}
     command:
       - celery
       - worker
@@ -60,7 +60,7 @@ services:
       - PASSBOOK_POSTGRESQL__HOST=postgresql
       - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
   static:
-    image: docker.beryju.org/passbook/static:latest
+    image: beryju/passbook-static:latest
     networks:
       - internal
     labels:

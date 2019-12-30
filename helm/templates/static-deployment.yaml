@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-static
-          image: "docker.beryju.org/passbook/static:{{ .Values.image.tag }}"
+          image: "beryju/passbook-static:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

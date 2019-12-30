@@ -1,4 +1,4 @@
-FROM docker.beryju.org/passbook/dev:latest as static-build
+FROM beryju/passbook-dev:latest as static-build
 
 COPY ./passbook/ /app/passbook
 COPY ./manage.py /app/

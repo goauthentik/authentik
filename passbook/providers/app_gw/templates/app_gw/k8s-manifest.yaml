@@ -25,7 +25,7 @@ spec:
           value: {{ provider.client.client_secret }}
         - name: OAUTH2_PROXY_COOKIE_SECRET
           value: {{ cookie_secret }}
-        image: docker.beryju.org/passbook/gatekeeper:{{ version }}
+        image: beryju/passbook-gatekeeper:{{ version }}
         imagePullPolicy: Always
         name: passbook-gatekeeper
         ports:

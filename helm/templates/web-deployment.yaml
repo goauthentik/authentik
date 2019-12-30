@@ -26,7 +26,7 @@ spec:
             name: {{ include "passbook.fullname" . }}-config
       initContainers:
         - name: passbook-database-migrations
-          image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
+          image: "beryju/passbook:{{ .Values.image.tag }}"
           command:
             - ./manage.py
           args:
@@ -56,7 +56,7 @@ spec:
                   key: postgresql-password
       containers:
         - name: {{ .Chart.Name }}
-          image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
+          image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command:
             - uwsgi

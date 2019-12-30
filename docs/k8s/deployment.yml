@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: passbook-docs
-          image: "docker.beryju.org/passbook/docs:latest"
+          image: "beryju/passbook-docs:latest"
           ports:
             - name: http
               containerPort: 80

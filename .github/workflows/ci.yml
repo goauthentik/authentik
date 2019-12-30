@@ -1,0 +1,193 @@
+name: passbook | CI
+on:
+  - push
+  - release
+env:
+  POSTGRES_DB: passbook
+  POSTGRES_USER: passbook
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  # Linting
+  pylint:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Lint with pylint
+        run: pipenv run pylint passbook
+  isort:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Lint with isort
+        run: pipenv run isort -c
+  prospector:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Lint with prospector
+        run: pipenv run prospector
+  # Actual CI tests
+  migrations:
+    needs:
+      - pylint
+      - isort
+      - prospector
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: passbook
+          POSTGRES_USER: passbook
+          POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Run migrations
+        run: pipenv run ./manage.py migrate
+  coverage:
+    needs:
+      - pylint
+      - isort
+      - prospector
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: passbook
+          POSTGRES_USER: passbook
+          POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Run coverage
+        run: pipenv run ./scripts/coverage.sh
+  # Build
+  build-server:
+    needs:
+      - migrations
+      - coverage
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build --no-cache -t beryju/passbook:${{ github.sha }} -f Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook:${{ github.sha }}
+  build-static:
+    needs:
+      - migrations
+      - coverage
+    runs-on: [ubuntu-latest]
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: passbook
+          POSTGRES_USER: passbook
+          POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      redis:
+        image: redis:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build
+          --no-cache
+          --network=$(docker network ls | grep github | awk '{print $1}')
+          -t beryju/passbook-static:${{ github.sha }}
+          -f static.Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook-static:${{ github.sha }}
+  package-helm:
+    needs:
+      - build-server
+      - build-static
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Helm
+        run: |
+          apt update && apt install -y curl
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          helm init
+      - name: Helm package
+        run: |
+          helm dependency update helm/passbook
+          helm package helm/passbook

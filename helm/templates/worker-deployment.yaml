@@ -26,7 +26,7 @@ spec:
             name: {{ include "passbook.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
-          image: "docker.beryju.org/passbook/server:{{ .Values.image.tag }}"
+          image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command:
             - celery
