@@ -64,7 +64,7 @@ jobs:
   migrations:
     needs:
       - pylint
-      - isort
+      - black
       - prospector
     services:
       postgres:
@@ -98,7 +98,7 @@ jobs:
   coverage:
     needs:
       - pylint
-      - isort
+      - black
       - prospector
     services:
       postgres:
