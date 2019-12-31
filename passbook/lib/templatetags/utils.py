@@ -3,6 +3,7 @@ from hashlib import md5
 from urllib.parse import urlencode
 
 from django import template
+from django.template import Context
 from django.apps import apps
 from django.db.models import Model
 from django.utils.html import escape
@@ -15,9 +16,10 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def back(context):
+def back(context: Context) -> str:
     """Return a link back (either from GET paramter or referer."""
-
+    if "request" not in context:
+        return ""
     request = context.get("request")
     url = ""
     if "HTTP_REFERER" in request.META:
@@ -33,25 +35,25 @@ def back(context):
 @register.filter("fieldtype")
 def fieldtype(field):
     """Return classname"""
-    # if issubclass(field.__class__, CastableModel):
-    #     field = field.cast()
     if isinstance(field.__class__, Model) or issubclass(field.__class__, Model):
         return field._meta.verbose_name
     return field.__class__.__name__
 
 
 @register.simple_tag(takes_context=True)
-def title(context, *title):
+def title(context: Context, *title) -> str:
     """Return either just branding or title - branding"""
     branding = CONFIG.y("passbook.branding", "passbook")
     if not title:
         return branding
+    if "request" not in context:
+        return ""
+    resolver_match = context.request.resolver_match
+    if not resolver_match:
+        return ""
     # Include App Title in title
     app = ""
-    if (
-        context.request.resolver_match
-        and context.request.resolver_match.namespace != ""
-    ):
+    if resolver_match.namespace != "":
         dj_app = None
         namespace = context.request.resolver_match.namespace.split(":")[0]
         # New label (App URL Namespace == App Label)

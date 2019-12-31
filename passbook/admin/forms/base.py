@@ -13,8 +13,8 @@ class TagModelForm(forms.ModelForm):
         tags = instance.tags if instance else {}
         # Make sure all predefined tags exist in tags, and set default if they don't
         predefined_tags = (
-            self._meta.model().get_predefined_tags()
-        )  # pylint: disable=no-member
+            self._meta.model().get_predefined_tags()  # pylint: disable=no-member
+        )
         for key, value in predefined_tags.items():
             if key not in tags:
                 tags[key] = value
