@@ -2,4 +2,4 @@
 
 from passbook.lib.admin import admin_autoregister
 
-admin_autoregister('passbook_core')
+admin_autoregister("passbook_core")

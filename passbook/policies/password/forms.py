@@ -13,17 +13,22 @@ class PasswordPolicyForm(forms.ModelForm):
     class Meta:
 
         model = PasswordPolicy
-        fields = GENERAL_FIELDS + ['amount_uppercase', 'amount_lowercase',
-                                   'amount_symbols', 'length_min', 'symbol_charset',
-                                   'error_message']
+        fields = GENERAL_FIELDS + [
+            "amount_uppercase",
+            "amount_lowercase",
+            "amount_symbols",
+            "length_min",
+            "symbol_charset",
+            "error_message",
+        ]
         widgets = {
-            'name': forms.TextInput(),
-            'symbol_charset': forms.TextInput(),
-            'error_message': forms.TextInput(),
+            "name": forms.TextInput(),
+            "symbol_charset": forms.TextInput(),
+            "error_message": forms.TextInput(),
         }
         labels = {
-            'amount_uppercase': _('Minimum amount of Uppercase Characters'),
-            'amount_lowercase': _('Minimum amount of Lowercase Characters'),
-            'amount_symbols': _('Minimum amount of Symbols Characters'),
-            'length_min': _('Minimum Length'),
+            "amount_uppercase": _("Minimum amount of Uppercase Characters"),
+            "amount_lowercase": _("Minimum amount of Lowercase Characters"),
+            "amount_symbols": _("Minimum amount of Symbols Characters"),
+            "length_min": _("Minimum Length"),
         }

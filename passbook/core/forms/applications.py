@@ -9,21 +9,29 @@ from passbook.core.models import Application, Provider
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
-    provider = forms.ModelChoiceField(queryset=Provider.objects.all().select_subclasses(),
-                                      required=False)
+    provider = forms.ModelChoiceField(
+        queryset=Provider.objects.all().select_subclasses(), required=False
+    )
 
     class Meta:
 
         model = Application
-        fields = ['name', 'slug', 'launch_url', 'icon_url',
-                  'provider', 'policies', 'skip_authorization']
+        fields = [
+            "name",
+            "slug",
+            "launch_url",
+            "icon_url",
+            "provider",
+            "policies",
+            "skip_authorization",
+        ]
         widgets = {
-            'name': forms.TextInput(),
-            'launch_url': forms.TextInput(),
-            'icon_url': forms.TextInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            "name": forms.TextInput(),
+            "launch_url": forms.TextInput(),
+            "icon_url": forms.TextInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }
         labels = {
-            'launch_url': _('Launch URL'),
-            'icon_url': _('Icon URL'),
+            "launch_url": _("Launch URL"),
+            "icon_url": _("Icon URL"),
         }

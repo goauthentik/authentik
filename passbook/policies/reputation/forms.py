@@ -12,11 +12,11 @@ class ReputationPolicyForm(forms.ModelForm):
     class Meta:
 
         model = ReputationPolicy
-        fields = GENERAL_FIELDS + ['check_ip', 'check_username', 'threshold']
+        fields = GENERAL_FIELDS + ["check_ip", "check_username", "threshold"]
         widgets = {
-            'name': forms.TextInput(),
-            'value': forms.TextInput(),
+            "name": forms.TextInput(),
+            "value": forms.TextInput(),
         }
         labels = {
-            'check_ip': _('Check IP'),
+            "check_ip": _("Check IP"),
         }

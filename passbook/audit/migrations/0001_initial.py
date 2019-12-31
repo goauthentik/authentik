@@ -18,20 +18,55 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AuditEntry',
+            name="AuditEntry",
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('action', models.TextField(choices=[('login', 'login'), ('login_failed', 'login_failed'), ('logout', 'logout'), ('authorize_application', 'authorize_application'), ('suspicious_request', 'suspicious_request'), ('sign_up', 'sign_up'), ('password_reset', 'password_reset'), ('invitation_created', 'invitation_created'), ('invitation_used', 'invitation_used')])),
-                ('date', models.DateTimeField(auto_now_add=True)),
-                ('app', models.TextField()),
-                ('context', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
-                ('request_ip', models.GenericIPAddressField()),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "uuid",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "action",
+                    models.TextField(
+                        choices=[
+                            ("login", "login"),
+                            ("login_failed", "login_failed"),
+                            ("logout", "logout"),
+                            ("authorize_application", "authorize_application"),
+                            ("suspicious_request", "suspicious_request"),
+                            ("sign_up", "sign_up"),
+                            ("password_reset", "password_reset"),
+                            ("invitation_created", "invitation_created"),
+                            ("invitation_used", "invitation_used"),
+                        ]
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                ("app", models.TextField()),
+                (
+                    "context",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        blank=True, default=dict
+                    ),
+                ),
+                ("request_ip", models.GenericIPAddressField()),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Audit Entry',
-                'verbose_name_plural': 'Audit Entries',
+                "verbose_name": "Audit Entry",
+                "verbose_name_plural": "Audit Entries",
             },
         ),
     ]

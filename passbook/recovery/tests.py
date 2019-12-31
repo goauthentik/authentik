@@ -12,21 +12,22 @@ class TestRecovery(TestCase):
     """recovery tests"""
 
     def setUp(self):
-        self.user = User.objects.create_user(
-            username='recovery-test-user')
+        self.user = User.objects.create_user(username="recovery-test-user")
 
     def test_create_key(self):
         """Test creation of a new key"""
         out = StringIO()
         self.assertEqual(len(Nonce.objects.all()), 0)
-        call_command('create_recovery_key', '1', self.user.username, stdout=out)
-        self.assertIn('https://localhost/recovery/use-nonce/', out.getvalue())
+        call_command("create_recovery_key", "1", self.user.username, stdout=out)
+        self.assertIn("https://localhost/recovery/use-nonce/", out.getvalue())
         self.assertEqual(len(Nonce.objects.all()), 1)
 
     def test_recovery_view(self):
         """Test recovery view"""
         out = StringIO()
-        call_command('create_recovery_key', '1', self.user.username, stdout=out)
+        call_command("create_recovery_key", "1", self.user.username, stdout=out)
         nonce = Nonce.objects.first()
-        self.client.get(reverse('passbook_recovery:use-nonce', kwargs={'uuid': str(nonce.uuid)}))
-        self.assertEqual(int(self.client.session['_auth_user_id']), nonce.user.pk)
+        self.client.get(
+            reverse("passbook_recovery:use-nonce", kwargs={"uuid": str(nonce.uuid)})
+        )
+        self.assertEqual(int(self.client.session["_auth_user_id"]), nonce.user.pk)

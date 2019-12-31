@@ -11,19 +11,24 @@ class EmailFactorSerializer(ModelSerializer):
     class Meta:
 
         model = EmailFactor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled', 'host',
-                  'port',
-                  'username',
-                  'password',
-                  'use_tls',
-                  'use_ssl',
-                  'timeout',
-                  'from_address',
-                  'ssl_keyfile',
-                  'ssl_certfile', ]
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        fields = [
+            "pk",
+            "name",
+            "slug",
+            "order",
+            "enabled",
+            "host",
+            "port",
+            "username",
+            "password",
+            "use_tls",
+            "use_ssl",
+            "timeout",
+            "from_address",
+            "ssl_keyfile",
+            "ssl_certfile",
+        ]
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class EmailFactorViewSet(ModelViewSet):

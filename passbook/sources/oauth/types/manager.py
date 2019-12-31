@@ -7,11 +7,12 @@ from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
 
 LOGGER = get_logger()
 
+
 class RequestKind(Enum):
     """Enum of OAuth Request types"""
 
-    callback = 'callback'
-    redirect = 'redirect'
+    callback = "callback"
+    redirect = "redirect"
 
 
 class SourceTypeManager:
@@ -22,6 +23,7 @@ class SourceTypeManager:
 
     def source(self, kind, name):
         """Class decorator to register classes inline."""
+
         def inner_wrapper(cls):
             if kind not in self.__source_types:
                 self.__source_types[kind] = {}
@@ -29,6 +31,7 @@ class SourceTypeManager:
             self.__names.append(name)
             LOGGER.debug("Registered source", source_class=cls.__name__, kind=kind)
             return cls
+
         return inner_wrapper
 
     def get_name_tuple(self):

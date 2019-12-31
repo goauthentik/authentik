@@ -9,21 +9,31 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CaptchaFactor',
+            name="CaptchaFactor",
             fields=[
-                ('factor_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Factor')),
-                ('public_key', models.TextField()),
-                ('private_key', models.TextField()),
+                (
+                    "factor_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Factor",
+                    ),
+                ),
+                ("public_key", models.TextField()),
+                ("private_key", models.TextField()),
             ],
             options={
-                'verbose_name': 'Captcha Factor',
-                'verbose_name_plural': 'Captcha Factors',
+                "verbose_name": "Captcha Factor",
+                "verbose_name_plural": "Captcha Factors",
             },
-            bases=('passbook_core.factor',),
+            bases=("passbook_core.factor",),
         ),
     ]

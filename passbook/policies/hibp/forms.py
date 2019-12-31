@@ -14,9 +14,9 @@ class HaveIBeenPwnedPolicyForm(forms.ModelForm):
     class Meta:
 
         model = HaveIBeenPwendPolicy
-        fields = GENERAL_FIELDS + ['allowed_count']
+        fields = GENERAL_FIELDS + ["allowed_count"]
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }

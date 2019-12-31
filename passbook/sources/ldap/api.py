@@ -12,24 +12,22 @@ class LDAPSourceSerializer(ModelSerializer):
     class Meta:
         model = LDAPSource
         fields = SOURCE_SERIALIZER_FIELDS + [
-            'server_uri',
-            'bind_cn',
-            'bind_password',
-            'start_tls',
-            'base_dn',
-            'additional_user_dn',
-            'additional_group_dn',
-            'user_object_filter',
-            'group_object_filter',
-            'user_group_membership_field',
-            'object_uniqueness_field',
-            'sync_groups',
-            'sync_parent_group',
-            'property_mappings',
+            "server_uri",
+            "bind_cn",
+            "bind_password",
+            "start_tls",
+            "base_dn",
+            "additional_user_dn",
+            "additional_group_dn",
+            "user_object_filter",
+            "group_object_filter",
+            "user_group_membership_field",
+            "object_uniqueness_field",
+            "sync_groups",
+            "sync_parent_group",
+            "property_mappings",
         ]
-        extra_kwargs = {
-            'bind_password': {'write_only': True}
-        }
+        extra_kwargs = {"bind_password": {"write_only": True}}
 
 
 class LDAPPropertyMappingSerializer(ModelSerializer):
@@ -37,7 +35,7 @@ class LDAPPropertyMappingSerializer(ModelSerializer):
 
     class Meta:
         model = LDAPPropertyMapping
-        fields = ['pk', 'name', 'ldap_property', 'object_field']
+        fields = ["pk", "name", "ldap_property", "object_field"]
 
 
 class LDAPSourceViewSet(ModelViewSet):

@@ -9,11 +9,11 @@ from passbook.policies.struct import PolicyRequest, PolicyResult
 class WebhookPolicy(Policy):
     """Policy that asks webhook"""
 
-    METHOD_GET = 'GET'
-    METHOD_POST = 'POST'
-    METHOD_PATCH = 'PATCH'
-    METHOD_DELETE = 'DELETE'
-    METHOD_PUT = 'PUT'
+    METHOD_GET = "GET"
+    METHOD_POST = "POST"
+    METHOD_PATCH = "PATCH"
+    METHOD_DELETE = "DELETE"
+    METHOD_PUT = "PUT"
 
     METHODS = (
         (METHOD_GET, METHOD_GET),
@@ -30,7 +30,7 @@ class WebhookPolicy(Policy):
     result_jsonpath = models.TextField()
     result_json_value = models.TextField()
 
-    form = 'passbook.policies.webhook.forms.WebhookPolicyForm'
+    form = "passbook.policies.webhook.forms.WebhookPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Call webhook asynchronously and report back"""
@@ -38,5 +38,5 @@ class WebhookPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _('Webhook Policy')
-        verbose_name_plural = _('Webhook Policies')
+        verbose_name = _("Webhook Policy")
+        verbose_name_plural = _("Webhook Policies")

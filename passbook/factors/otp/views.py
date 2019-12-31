@@ -22,25 +22,26 @@ from passbook.factors.otp.utils import otpauth_url
 from passbook.lib.boilerplate import NeverCacheMixin
 from passbook.lib.config import CONFIG
 
-OTP_SESSION_KEY = 'passbook_factors_otp_key'
-OTP_SETTING_UP_KEY = 'passbook_factors_otp_setup'
+OTP_SESSION_KEY = "passbook_factors_otp_key"
+OTP_SETTING_UP_KEY = "passbook_factors_otp_setup"
 LOGGER = get_logger()
 
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""
 
-    template_name = 'otp/user_settings.html'
+    template_name = "otp/user_settings.html"
 
     # TODO: Check if OTP Factor exists and applies to user
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         static = StaticDevice.objects.filter(user=self.request.user, confirmed=True)
         if static.exists():
-            kwargs['static_tokens'] = StaticToken.objects.filter(device=static.first()) \
-                .order_by('token')
+            kwargs["static_tokens"] = StaticToken.objects.filter(
+                device=static.first()
+            ).order_by("token")
         totp_devices = TOTPDevice.objects.filter(user=self.request.user, confirmed=True)
-        kwargs['state'] = totp_devices.exists() and static.exists()
+        kwargs["state"] = totp_devices.exists() and static.exists()
         return kwargs
 
 
@@ -50,44 +51,48 @@ class DisableView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         """Delete all the devices for user"""
         static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
-        static_tokens = StaticToken.objects.filter(device=static).order_by('token')
+        static_tokens = StaticToken.objects.filter(device=static).order_by("token")
         totp = TOTPDevice.objects.filter(user=request.user, confirmed=True)
         static.delete()
         totp.delete()
         for token in static_tokens:
             token.delete()
-        messages.success(request, 'Successfully disabled OTP')
+        messages.success(request, "Successfully disabled OTP")
         # Create event with email notification
-        Event.new(EventAction.CUSTOM, message='User disabled OTP.').from_http(request)
-        return redirect(reverse('passbook_factors_otp:otp-user-settings'))
+        Event.new(EventAction.CUSTOM, message="User disabled OTP.").from_http(request)
+        return redirect(reverse("passbook_factors_otp:otp-user-settings"))
 
 
 class EnableView(LoginRequiredMixin, FormView):
     """View to set up OTP"""
 
-    title = _('Set up OTP')
+    title = _("Set up OTP")
     form_class = OTPSetupForm
-    template_name = 'login/form.html'
+    template_name = "login/form.html"
 
     totp_device = None
     static_device = None
 
     # TODO: Check if OTP Factor exists and applies to user
     def get_context_data(self, **kwargs):
-        kwargs['config'] = CONFIG.y('passbook')
-        kwargs['is_login'] = True
-        kwargs['title'] = _('Configure OTP')
-        kwargs['primary_action'] = _('Setup')
+        kwargs["config"] = CONFIG.y("passbook")
+        kwargs["is_login"] = True
+        kwargs["title"] = _("Configure OTP")
+        kwargs["primary_action"] = _("Setup")
         return super().get_context_data(**kwargs)
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if user has TOTP setup already
-        finished_totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=True)
-        finished_static_devices = StaticDevice.objects.filter(user=request.user, confirmed=True)
+        finished_totp_devices = TOTPDevice.objects.filter(
+            user=request.user, confirmed=True
+        )
+        finished_static_devices = StaticDevice.objects.filter(
+            user=request.user, confirmed=True
+        )
         if finished_totp_devices.exists() and finished_static_devices.exists():
-            messages.error(request, _('You already have TOTP enabled!'))
+            messages.error(request, _("You already have TOTP enabled!"))
             del request.session[OTP_SETTING_UP_KEY]
-            return redirect('passbook_factors_otp:otp-user-settings')
+            return redirect("passbook_factors_otp:otp-user-settings")
         request.session[OTP_SETTING_UP_KEY] = True
         # Check if there's an unconfirmed device left to set up
         totp_devices = TOTPDevice.objects.filter(user=request.user, confirmed=False)
@@ -107,22 +112,24 @@ class EnableView(LoginRequiredMixin, FormView):
             # Create 9 tokens and save them
             # TODO: Send static tokens via E-Mail
             for _counter in range(0, 9):
-                token = StaticToken(device=self.static_device, token=StaticToken.random_token())
+                token = StaticToken(
+                    device=self.static_device, token=StaticToken.random_token()
+                )
                 token.save()
         else:
             self.static_device = static_devices.first()
 
         # Somehow convert the generated key to base32 for the QR code
-        rawkey = unhexlify(self.totp_device.key.encode('ascii'))
+        rawkey = unhexlify(self.totp_device.key.encode("ascii"))
         request.session[OTP_SESSION_KEY] = b32encode(rawkey).decode("utf-8")
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
         form.device = self.totp_device
-        form.fields['qr_code'].initial = reverse('passbook_factors_otp:otp-qr')
+        form.fields["qr_code"].initial = reverse("passbook_factors_otp:otp-qr")
         tokens = [(x.token, x.token) for x in self.static_device.token_set.all()]
-        form.fields['tokens'].choices = tokens
+        form.fields["tokens"].choices = tokens
         return form
 
     def form_valid(self, form):
@@ -133,8 +140,10 @@ class EnableView(LoginRequiredMixin, FormView):
         self.static_device.confirmed = True
         self.static_device.save()
         del self.request.session[OTP_SETTING_UP_KEY]
-        Event.new(EventAction.CUSTOM, message='User enabled OTP.').from_http(self.request)
-        return redirect('passbook_factors_otp:otp-user-settings')
+        Event.new(EventAction.CUSTOM, message="User enabled OTP.").from_http(
+            self.request
+        )
+        return redirect("passbook_factors_otp:otp-user-settings")
 
 
 class QRView(NeverCacheMixin, View):
@@ -151,6 +160,6 @@ class QRView(NeverCacheMixin, View):
         url = otpauth_url(accountname=request.user.username, secret=key)
         # Make and return QR code
         img = make(url, image_factory=SvgPathImage)
-        resp = HttpResponse(content_type='image/svg+xml; charset=utf-8')
+        resp = HttpResponse(content_type="image/svg+xml; charset=utf-8")
         img.save(resp)
         return resp

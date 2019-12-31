@@ -7,23 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0002_nonce_description'),
+        ("passbook_core", "0002_nonce_description"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='group',
-            old_name='tags',
-            new_name='attributes',
+            model_name="group", old_name="tags", new_name="attributes",
         ),
         migrations.AddField(
-            model_name='source',
-            name='property_mappings',
-            field=models.ManyToManyField(blank=True, default=None, to='passbook_core.PropertyMapping'),
+            model_name="source",
+            name="property_mappings",
+            field=models.ManyToManyField(
+                blank=True, default=None, to="passbook_core.PropertyMapping"
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='attributes',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict),
+            model_name="user",
+            name="attributes",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                blank=True, default=dict
+            ),
         ),
     ]

@@ -1,8 +1,9 @@
 """passbook User administration"""
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import \
-    PermissionRequiredMixin as DjangoPermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin as DjangoPermissionRequiredMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -19,50 +20,56 @@ class UserListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all users"""
 
     model = User
-    permission_required = 'passbook_core.view_user'
-    ordering = 'username'
+    permission_required = "passbook_core.view_user"
+    ordering = "username"
     paginate_by = 40
-    template_name = 'administration/user/list.html'
+    template_name = "administration/user/list.html"
 
 
-class UserCreateView(SuccessMessageMixin, LoginRequiredMixin,
-                     DjangoPermissionRequiredMixin, CreateAssignPermView):
+class UserCreateView(
+    SuccessMessageMixin,
+    LoginRequiredMixin,
+    DjangoPermissionRequiredMixin,
+    CreateAssignPermView,
+):
     """Create user"""
 
     model = User
     form_class = UserForm
-    permission_required = 'passbook_core.add_user'
+    permission_required = "passbook_core.add_user"
 
-    template_name = 'generic/create.html'
-    success_url = reverse_lazy('passbook_admin:users')
-    success_message = _('Successfully created User')
+    template_name = "generic/create.html"
+    success_url = reverse_lazy("passbook_admin:users")
+    success_message = _("Successfully created User")
 
 
-class UserUpdateView(SuccessMessageMixin, LoginRequiredMixin,
-                     PermissionRequiredMixin, UpdateView):
+class UserUpdateView(
+    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+):
     """Update user"""
 
     model = User
     form_class = UserForm
-    permission_required = 'passbook_core.change_user'
+    permission_required = "passbook_core.change_user"
 
     # By default the object's name is user which is used by other checks
-    context_object_name = 'object'
-    template_name = 'generic/update.html'
-    success_url = reverse_lazy('passbook_admin:users')
-    success_message = _('Successfully updated User')
+    context_object_name = "object"
+    template_name = "generic/update.html"
+    success_url = reverse_lazy("passbook_admin:users")
+    success_message = _("Successfully updated User")
 
 
-class UserDeleteView(SuccessMessageMixin, LoginRequiredMixin,
-                     PermissionRequiredMixin, DeleteView):
+class UserDeleteView(
+    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+):
     """Delete user"""
 
     model = User
-    permission_required = 'passbook_core.delete_user'
+    permission_required = "passbook_core.delete_user"
 
-    template_name = 'generic/delete.html'
-    success_url = reverse_lazy('passbook_admin:users')
-    success_message = _('Successfully deleted User')
+    template_name = "generic/delete.html"
+    success_url = reverse_lazy("passbook_admin:users")
+    success_message = _("Successfully deleted User")
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
@@ -73,13 +80,16 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
     """Get Password reset link for user"""
 
     model = User
-    permission_required = 'passbook_core.reset_user_password'
+    permission_required = "passbook_core.reset_user_password"
 
     def get(self, request, *args, **kwargs):
         """Create nonce for user and return link"""
         super().get(request, *args, **kwargs)
         nonce = Nonce.objects.create(user=self.object)
-        link = request.build_absolute_uri(reverse(
-            'passbook_core:auth-password-reset', kwargs={'nonce': nonce.uuid}))
-        messages.success(request, _('Password reset link: <pre>%(link)s</pre>' % {'link': link}))
-        return redirect('passbook_admin:users')
+        link = request.build_absolute_uri(
+            reverse("passbook_core:auth-password-reset", kwargs={"nonce": nonce.uuid})
+        )
+        messages.success(
+            request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})
+        )
+        return redirect("passbook_admin:users")

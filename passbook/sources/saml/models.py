@@ -15,21 +15,21 @@ class SAMLSource(Source):
     auto_logout = models.BooleanField(default=False)
     signing_cert = models.TextField()
 
-    form = 'passbook.sources.saml.forms.SAMLSourceForm'
+    form = "passbook.sources.saml.forms.SAMLSourceForm"
 
     @property
     def login_button(self):
-        url = reverse_lazy('passbook_sources_saml:login', kwargs={'source': self.slug})
-        return url, '', self.name
+        url = reverse_lazy("passbook_sources_saml:login", kwargs={"source": self.slug})
+        return url, "", self.name
 
     @property
     def additional_info(self):
-        metadata_url = reverse_lazy('passbook_sources_saml:metadata', kwargs={
-            'source': self
-        })
-        return f"<a href=\"{metadata_url}\" class=\"btn btn-default btn-sm\">Metadata Download</a>"
+        metadata_url = reverse_lazy(
+            "passbook_sources_saml:metadata", kwargs={"source": self}
+        )
+        return f'<a href="{metadata_url}" class="btn btn-default btn-sm">Metadata Download</a>'
 
     class Meta:
 
-        verbose_name = _('SAML Source')
-        verbose_name_plural = _('SAML Sources')
+        verbose_name = _("SAML Source")
+        verbose_name_plural = _("SAML Sources")

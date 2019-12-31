@@ -11,7 +11,13 @@ class InvitationSerializer(ModelSerializer):
     class Meta:
 
         model = Invitation
-        fields = ['pk', 'expires', 'fixed_username', 'fixed_email', 'needs_confirmation']
+        fields = [
+            "pk",
+            "expires",
+            "fixed_username",
+            "fixed_email",
+            "needs_confirmation",
+        ]
 
 
 class InvitationViewSet(ModelViewSet):

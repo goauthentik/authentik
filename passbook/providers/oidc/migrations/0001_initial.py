@@ -9,21 +9,37 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
-        ('oidc_provider', '0026_client_multiple_response_types'),
+        ("passbook_core", "0001_initial"),
+        ("oidc_provider", "0026_client_multiple_response_types"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OpenIDProvider',
+            name="OpenIDProvider",
             fields=[
-                ('provider_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Provider')),
-                ('oidc_client', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='oidc_provider.Client')),
+                (
+                    "provider_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Provider",
+                    ),
+                ),
+                (
+                    "oidc_client",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="oidc_provider.Client",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'OpenID Provider',
-                'verbose_name_plural': 'OpenID Providers',
+                "verbose_name": "OpenID Provider",
+                "verbose_name_plural": "OpenID Providers",
             },
-            bases=('passbook_core.provider',),
+            bases=("passbook_core.provider",),
         ),
     ]

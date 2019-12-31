@@ -7,13 +7,14 @@ from structlog import get_logger
 
 LOGGER = get_logger()
 
+
 class PassbookSourceOAuthConfig(AppConfig):
     """passbook source.oauth config"""
 
-    name = 'passbook.sources.oauth'
-    label = 'passbook_sources_oauth'
-    verbose_name = 'passbook Sources.OAuth'
-    mountpoint = 'source/oauth/'
+    name = "passbook.sources.oauth"
+    label = "passbook_sources_oauth"
+    verbose_name = "passbook Sources.OAuth"
+    mountpoint = "source/oauth/"
 
     def ready(self):
         """Load source_types from config file"""

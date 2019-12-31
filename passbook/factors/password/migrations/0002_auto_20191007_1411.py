@@ -8,18 +8,17 @@ def create_initial_factor(apps, schema_editor):
     PasswordFactor = apps.get_model("passbook_factors_password", "PasswordFactor")
     if not PasswordFactor.objects.exists():
         PasswordFactor.objects.create(
-            name='password',
-            slug='password',
+            name="password",
+            slug="password",
             order=0,
-            backends=['django.contrib.auth.backends.ModelBackend']
+            backends=["django.contrib.auth.backends.ModelBackend"],
         )
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_factors_password', '0001_initial'),
+        ("passbook_factors_password", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RunPython(create_initial_factor)
-    ]
+    operations = [migrations.RunPython(create_initial_factor)]

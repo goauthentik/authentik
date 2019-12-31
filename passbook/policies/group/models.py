@@ -11,12 +11,12 @@ class GroupMembershipPolicy(Policy):
 
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
-    form = 'passbook.policies.group.forms.GroupMembershipPolicyForm'
+    form = "passbook.policies.group.forms.GroupMembershipPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         return PolicyResult(self.group.user_set.filter(pk=request.user.pk).exists())
 
     class Meta:
 
-        verbose_name = _('Group Membership Policy')
-        verbose_name_plural = _('Group Membership Policies')
+        verbose_name = _("Group Membership Policy")
+        verbose_name_plural = _("Group Membership Policies")

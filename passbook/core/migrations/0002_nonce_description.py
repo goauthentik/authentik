@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='nonce',
-            name='description',
-            field=models.TextField(blank=True, default=''),
+            model_name="nonce",
+            name="description",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

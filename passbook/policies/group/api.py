@@ -11,7 +11,7 @@ class GroupMembershipPolicySerializer(ModelSerializer):
 
     class Meta:
         model = GroupMembershipPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['group']
+        fields = GENERAL_SERIALIZER_FIELDS + ["group"]
 
 
 class GroupMembershipPolicyViewSet(ModelViewSet):

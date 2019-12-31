@@ -11,5 +11,11 @@ class OAuth2ProviderForm(forms.ModelForm):
     class Meta:
 
         model = OAuth2Provider
-        fields = ['name', 'redirect_uris', 'client_type',
-                  'authorization_grant_type', 'client_id', 'client_secret', ]
+        fields = [
+            "name",
+            "redirect_uris",
+            "client_type",
+            "authorization_grant_type",
+            "client_id",
+            "client_secret",
+        ]

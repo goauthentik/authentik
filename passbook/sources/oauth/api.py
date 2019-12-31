@@ -11,9 +11,15 @@ class OAuthSourceSerializer(ModelSerializer):
 
     class Meta:
         model = OAuthSource
-        fields = SOURCE_SERIALIZER_FIELDS + ['provider_type', 'request_token_url',
-                                             'authorization_url', 'access_token_url',
-                                             'profile_url', 'consumer_key', 'consumer_secret']
+        fields = SOURCE_SERIALIZER_FIELDS + [
+            "provider_type",
+            "request_token_url",
+            "authorization_url",
+            "access_token_url",
+            "profile_url",
+            "consumer_key",
+            "consumer_secret",
+        ]
 
 
 class OAuthSourceViewSet(ModelViewSet):

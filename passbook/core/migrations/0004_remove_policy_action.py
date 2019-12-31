@@ -6,12 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0003_auto_20191011_0914'),
+        ("passbook_core", "0003_auto_20191011_0914"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='policy',
-            name='action',
-        ),
+        migrations.RemoveField(model_name="policy", name="action",),
     ]

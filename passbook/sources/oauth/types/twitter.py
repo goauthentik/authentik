@@ -17,17 +17,18 @@ class TwitterOAuthClient(OAuthClient):
     def get_profile_info(self, raw_token):
         "Fetch user profile information."
         try:
-            response = self.request('get', self.source.profile_url + "?include_email=true",
-                                    token=raw_token)
+            response = self.request(
+                "get", self.source.profile_url + "?include_email=true", token=raw_token
+            )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning('Unable to fetch user profile: %s', exc)
+            LOGGER.warning("Unable to fetch user profile: %s", exc)
             return None
         else:
             return response.json() or response.text
 
 
-@MANAGER.source(kind=RequestKind.callback, name='Twitter')
+@MANAGER.source(kind=RequestKind.callback, name="Twitter")
 class TwitterOAuthCallback(OAuthCallback):
     """Twitter OAuth2 Callback"""
 
@@ -35,10 +36,10 @@ class TwitterOAuthCallback(OAuthCallback):
 
     def get_or_create_user(self, source, access, info):
         user_data = {
-            'username': info.get('screen_name'),
-            'email': info.get('email', ''),
-            'name': info.get('name'),
-            'password': None,
+            "username": info.get("screen_name"),
+            "email": info.get("email", ""),
+            "name": info.get("name"),
+            "password": None,
         }
         tw_user = user_get_or_create(**user_data)
         return tw_user

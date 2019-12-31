@@ -7,10 +7,10 @@ from structlog import get_logger
 
 LOGGER = get_logger()
 
-user_signed_up = Signal(providing_args=['request', 'user'])
-invitation_created = Signal(providing_args=['request', 'invitation'])
-invitation_used = Signal(providing_args=['request', 'invitation', 'user'])
-password_changed = Signal(providing_args=['user', 'password'])
+user_signed_up = Signal(providing_args=["request", "user"])
+invitation_created = Signal(providing_args=["request", "invitation"])
+invitation_used = Signal(providing_args=["request", "invitation", "user"])
+password_changed = Signal(providing_args=["user", "password"])
 
 
 @receiver(post_save)
@@ -18,6 +18,7 @@ password_changed = Signal(providing_args=['user', 'password'])
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
     from passbook.core.models import Policy
+
     if isinstance(instance, Policy):
         LOGGER.debug("Invalidating policy cache", policy=instance)
         keys = cache.keys("%s#*" % instance.pk)

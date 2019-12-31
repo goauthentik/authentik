@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 
 
-class NeverCacheMixin():
+class NeverCacheMixin:
     """Use never_cache as mixin for CBV"""
 
     @method_decorator(never_cache)

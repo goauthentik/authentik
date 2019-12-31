@@ -12,8 +12,20 @@ class OpenIDProviderSerializer(ModelSerializer):
     class Meta:
 
         model = Client
-        fields = ['pk', 'name', 'client_type', 'client_id', 'client_secret', 'response_types',
-                  'jwt_alg', 'reuse_consent', 'require_consent', '_redirect_uris', '_scope']
+        fields = [
+            "pk",
+            "name",
+            "client_type",
+            "client_id",
+            "client_secret",
+            "response_types",
+            "jwt_alg",
+            "reuse_consent",
+            "require_consent",
+            "_redirect_uris",
+            "_scope",
+        ]
+
 
 class OpenIDProviderViewSet(ModelViewSet):
     """OpenIDProvider Viewset"""

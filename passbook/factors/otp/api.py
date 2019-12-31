@@ -11,7 +11,7 @@ class OTPFactorSerializer(ModelSerializer):
     class Meta:
 
         model = OTPFactor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled', 'enforced']
+        fields = ["pk", "name", "slug", "order", "enabled", "enforced"]
 
 
 class OTPFactorViewSet(ModelViewSet):

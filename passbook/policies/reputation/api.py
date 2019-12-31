@@ -11,7 +11,7 @@ class ReputationPolicySerializer(ModelSerializer):
 
     class Meta:
         model = ReputationPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['check_ip', 'check_username', 'threshold']
+        fields = GENERAL_SERIALIZER_FIELDS + ["check_ip", "check_username", "threshold"]
 
 
 class ReputationPolicyViewSet(ModelViewSet):

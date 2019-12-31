@@ -11,7 +11,16 @@ class EventSerializer(ModelSerializer):
     class Meta:
 
         model = Event
-        fields = ['pk', 'user', 'action', 'date', 'app', 'context', 'request_ip', 'created', ]
+        fields = [
+            "pk",
+            "user",
+            "action",
+            "date",
+            "app",
+            "context",
+            "request_ip",
+            "created",
+        ]
 
 
 class EventViewSet(ReadOnlyModelViewSet):

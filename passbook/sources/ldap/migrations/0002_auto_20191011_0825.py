@@ -6,12 +6,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_sources_ldap', '0001_initial'),
+        ("passbook_sources_ldap", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ldappropertymapping',
-            options={'verbose_name': 'LDAP Property Mapping', 'verbose_name_plural': 'LDAP Property Mappings'},
+            name="ldappropertymapping",
+            options={
+                "verbose_name": "LDAP Property Mapping",
+                "verbose_name_plural": "LDAP Property Mappings",
+            },
         ),
     ]

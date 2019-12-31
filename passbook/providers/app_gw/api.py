@@ -1,6 +1,5 @@
 """ApplicationGatewayProvider API Views"""
-from oauth2_provider.generators import (generate_client_id,
-                                        generate_client_secret)
+from oauth2_provider.generators import generate_client_id, generate_client_secret
 from oidc_provider.models import Client
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -17,8 +16,8 @@ class ApplicationGatewayProviderSerializer(ModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
         instance.client = Client.objects.create(
-            client_id=generate_client_id(),
-            client_secret=generate_client_secret())
+            client_id=generate_client_id(), client_secret=generate_client_secret()
+        )
         instance.save()
         return instance
 
@@ -28,15 +27,16 @@ class ApplicationGatewayProviderSerializer(ModelSerializer):
             f"http://{self.instance.host}/oauth2/callback",
             f"https://{self.instance.host}/oauth2/callback",
         ]
-        self.instance.client.scope = ['openid', 'email']
+        self.instance.client.scope = ["openid", "email"]
         self.instance.client.save()
         return super().update(instance, validated_data)
 
     class Meta:
 
         model = ApplicationGatewayProvider
-        fields = ['pk', 'name', 'host', 'client']
-        read_only_fields = ['client']
+        fields = ["pk", "name", "host", "client"]
+        read_only_fields = ["client"]
+
 
 class ApplicationGatewayProviderViewSet(ModelViewSet):
     """ApplicationGatewayProvider Viewset"""

@@ -1,5 +1,6 @@
 """passbook password policy exceptions"""
 
+
 class PasswordPolicyInvalid(Exception):
     """Exception raised when a Password Policy fails"""
 

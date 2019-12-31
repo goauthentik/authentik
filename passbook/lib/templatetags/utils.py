@@ -18,19 +18,19 @@ register = template.Library()
 def back(context):
     """Return a link back (either from GET paramter or referer."""
 
-    request = context.get('request')
-    url = ''
-    if 'HTTP_REFERER' in request.META:
-        url = request.META.get('HTTP_REFERER')
-    if 'back' in request.GET:
-        url = request.GET.get('back')
+    request = context.get("request")
+    url = ""
+    if "HTTP_REFERER" in request.META:
+        url = request.META.get("HTTP_REFERER")
+    if "back" in request.GET:
+        url = request.GET.get("back")
 
     if not is_url_absolute(url):
         return url
-    return ''
+    return ""
 
 
-@register.filter('fieldtype')
+@register.filter("fieldtype")
 def fieldtype(field):
     """Return classname"""
     # if issubclass(field.__class__, CastableModel):
@@ -43,34 +43,40 @@ def fieldtype(field):
 @register.simple_tag(takes_context=True)
 def title(context, *title):
     """Return either just branding or title - branding"""
-    branding = CONFIG.y('passbook.branding', 'passbook')
+    branding = CONFIG.y("passbook.branding", "passbook")
     if not title:
         return branding
     # Include App Title in title
-    app = ''
-    if context.request.resolver_match and context.request.resolver_match.namespace != '':
+    app = ""
+    if (
+        context.request.resolver_match
+        and context.request.resolver_match.namespace != ""
+    ):
         dj_app = None
-        namespace = context.request.resolver_match.namespace.split(':')[0]
+        namespace = context.request.resolver_match.namespace.split(":")[0]
         # New label (App URL Namespace == App Label)
         dj_app = apps.get_app_config(namespace)
-        title_modifier = getattr(dj_app, 'title_modifier', None)
+        title_modifier = getattr(dj_app, "title_modifier", None)
         if title_modifier:
             app_title = dj_app.title_modifier(context.request)
-            app = app_title + ' -'
-    return _("%(title)s - %(app)s %(branding)s" % {
-        'title': ' - '.join([str(x) for x in title]),
-        'branding': branding,
-        'app': app,
-    })
+            app = app_title + " -"
+    return _(
+        "%(title)s - %(app)s %(branding)s"
+        % {
+            "title": " - ".join([str(x) for x in title]),
+            "branding": branding,
+            "app": app,
+        }
+    )
 
 
 @register.simple_tag
-def config(path, default=''):
+def config(path, default=""):
     """Get a setting from the database. Returns default is setting doesn't exist."""
     return CONFIG.y(path, default)
 
 
-@register.filter(name='css_class')
+@register.filter(name="css_class")
 def css_class(field, css):
     """Add css class to form field"""
     return field.as_widget(attrs={"class": css})
@@ -90,16 +96,15 @@ def gravatar(email, size=None, rating=None):
         {% gravatar someone@example.com 48 pg %}
     """
     # gravatar uses md5 for their URLs, so md5 can't be avoided
-    gravatar_url = "%savatar/%s" % ('https://secure.gravatar.com/',
-                                    md5(email.encode('utf-8')).hexdigest())  # nosec
+    gravatar_url = "%savatar/%s" % (
+        "https://secure.gravatar.com/",
+        md5(email.encode("utf-8")).hexdigest(),
+    )  # nosec
 
-    parameters = [p for p in (
-        ('s', size or '158'),
-        ('r', rating or 'g'),
-    ) if p[1]]
+    parameters = [p for p in (("s", size or "158"), ("r", rating or "g"),) if p[1]]
 
     if parameters:
-        gravatar_url += '?' + urlencode(parameters, doseq=True)
+        gravatar_url += "?" + urlencode(parameters, doseq=True)
 
     return escape(gravatar_url)
 
@@ -108,7 +113,7 @@ def gravatar(email, size=None, rating=None):
 def verbose_name(obj):
     """Return Object's Verbose Name"""
     if not obj:
-        return ''
+        return ""
     return obj._meta.verbose_name
 
 
@@ -116,5 +121,5 @@ def verbose_name(obj):
 def form_verbose_name(obj):
     """Return ModelForm's Object's Verbose Name"""
     if not obj:
-        return ''
+        return ""
     return obj._meta.model._meta.verbose_name

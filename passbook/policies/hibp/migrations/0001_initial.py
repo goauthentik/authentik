@@ -9,20 +9,30 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HaveIBeenPwendPolicy',
+            name="HaveIBeenPwendPolicy",
             fields=[
-                ('policy_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Policy')),
-                ('allowed_count', models.IntegerField(default=0)),
+                (
+                    "policy_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Policy",
+                    ),
+                ),
+                ("allowed_count", models.IntegerField(default=0)),
             ],
             options={
-                'verbose_name': 'Have I Been Pwned Policy',
-                'verbose_name_plural': 'Have I Been Pwned Policies',
+                "verbose_name": "Have I Been Pwned Policy",
+                "verbose_name_plural": "Have I Been Pwned Policies",
             },
-            bases=('passbook_core.policy',),
+            bases=("passbook_core.policy",),
         ),
     ]

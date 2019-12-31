@@ -19,106 +19,111 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
-    form = 'passbook.sources.oauth.forms.OAuthSourceForm'
+    form = "passbook.sources.oauth.forms.OAuthSourceForm"
 
     @property
     def login_button(self):
-        url = reverse_lazy('passbook_sources_oauth:oauth-client-login',
-                           kwargs={'source_slug': self.slug})
+        url = reverse_lazy(
+            "passbook_sources_oauth:oauth-client-login",
+            kwargs={"source_slug": self.slug},
+        )
         return url, self.provider_type, self.name
 
     @property
     def additional_info(self):
-        return "Callback URL: <pre>%s</pre>" % \
-            reverse_lazy('passbook_sources_oauth:oauth-client-callback',
-                         kwargs={'source_slug': self.slug})
+        return "Callback URL: <pre>%s</pre>" % reverse_lazy(
+            "passbook_sources_oauth:oauth-client-callback",
+            kwargs={"source_slug": self.slug},
+        )
 
     def user_settings(self) -> UserSettings:
         icon_type = self.provider_type
-        if icon_type == 'azure ad':
-            icon_type = 'windows'
-        icon_class = 'fa fa-%s' % icon_type
-        view_name = 'passbook_sources_oauth:oauth-client-user'
-        return UserSettings(self.name, icon_class, reverse((view_name), kwargs={
-            'source_slug': self.slug
-        }))
+        if icon_type == "azure ad":
+            icon_type = "windows"
+        icon_class = "fa fa-%s" % icon_type
+        view_name = "passbook_sources_oauth:oauth-client-user"
+        return UserSettings(
+            self.name,
+            icon_class,
+            reverse((view_name), kwargs={"source_slug": self.slug}),
+        )
 
     class Meta:
 
-        verbose_name = _('Generic OAuth Source')
-        verbose_name_plural = _('Generic OAuth Sources')
+        verbose_name = _("Generic OAuth Source")
+        verbose_name_plural = _("Generic OAuth Sources")
 
 
 class GitHubOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify GitHub Form"""
 
-    form = 'passbook.sources.oauth.forms.GitHubOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.GitHubOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('GitHub OAuth Source')
-        verbose_name_plural = _('GitHub OAuth Sources')
+        verbose_name = _("GitHub OAuth Source")
+        verbose_name_plural = _("GitHub OAuth Sources")
 
 
 class TwitterOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify Twitter Form"""
 
-    form = 'passbook.sources.oauth.forms.TwitterOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.TwitterOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('Twitter OAuth Source')
-        verbose_name_plural = _('Twitter OAuth Sources')
+        verbose_name = _("Twitter OAuth Source")
+        verbose_name_plural = _("Twitter OAuth Sources")
 
 
 class FacebookOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify Facebook Form"""
 
-    form = 'passbook.sources.oauth.forms.FacebookOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.FacebookOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('Facebook OAuth Source')
-        verbose_name_plural = _('Facebook OAuth Sources')
+        verbose_name = _("Facebook OAuth Source")
+        verbose_name_plural = _("Facebook OAuth Sources")
 
 
 class DiscordOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify Discord Form"""
 
-    form = 'passbook.sources.oauth.forms.DiscordOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.DiscordOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('Discord OAuth Source')
-        verbose_name_plural = _('Discord OAuth Sources')
+        verbose_name = _("Discord OAuth Source")
+        verbose_name_plural = _("Discord OAuth Sources")
 
 
 class GoogleOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify Google Form"""
 
-    form = 'passbook.sources.oauth.forms.GoogleOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.GoogleOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('Google OAuth Source')
-        verbose_name_plural = _('Google OAuth Sources')
+        verbose_name = _("Google OAuth Source")
+        verbose_name_plural = _("Google OAuth Sources")
 
 
 class AzureADOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify AzureAD Form"""
 
-    form = 'passbook.sources.oauth.forms.AzureADOAuthSourceForm'
+    form = "passbook.sources.oauth.forms.AzureADOAuthSourceForm"
 
     class Meta:
 
         abstract = True
-        verbose_name = _('Azure AD OAuth Source')
-        verbose_name_plural = _('Azure AD OAuth Sources')
+        verbose_name = _("Azure AD OAuth Source")
+        verbose_name_plural = _("Azure AD OAuth Sources")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):
@@ -134,9 +139,9 @@ class UserOAuthSourceConnection(UserSourceConnection):
     @property
     def api_client(self):
         """Get API Client"""
-        return get_client(self.source, self.access_token or '')
+        return get_client(self.source, self.access_token or "")
 
     class Meta:
 
-        verbose_name = _('User OAuth Source Connection')
-        verbose_name_plural = _('User OAuth Source Connections')
+        verbose_name = _("User OAuth Source Connection")
+        verbose_name_plural = _("User OAuth Source Connections")

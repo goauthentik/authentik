@@ -12,7 +12,7 @@ LOGGER = get_logger()
 
 def update_score(request, username, amount):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request) or '255.255.255.255.'
+    remote_ip = get_client_ip(request) or "255.255.255.255."
     ip_score, _ = IPReputation.objects.update_or_create(ip=remote_ip)
     ip_score.score += amount
     ip_score.save()
@@ -30,7 +30,7 @@ def update_score(request, username, amount):
 # pylint: disable=unused-argument
 def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed loging attempts"""
-    update_score(request, credentials.get('username'), -1)
+    update_score(request, credentials.get("username"), -1)
 
 
 @receiver(user_logged_in)

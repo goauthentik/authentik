@@ -13,10 +13,8 @@ class DebugPolicyForm(forms.ModelForm):
     class Meta:
 
         model = DebugPolicy
-        fields = GENERAL_FIELDS + ['result', 'wait_min', 'wait_max']
+        fields = GENERAL_FIELDS + ["result", "wait_min", "wait_max"]
         widgets = {
-            'name': forms.TextInput(),
+            "name": forms.TextInput(),
         }
-        labels = {
-            'result': _('Allow user')
-        }
+        labels = {"result": _("Allow user")}

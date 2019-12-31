@@ -11,6 +11,7 @@ from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
 
+
 class AccessMixin:
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
@@ -23,12 +24,18 @@ class AccessMixin:
         try:
             return provider.application
         except Application.DoesNotExist as exc:
-            messages.error(self.request, _('Provider "%(name)s" has no application assigned' % {
-                'name': provider
-                }))
+            messages.error(
+                self.request,
+                _(
+                    'Provider "%(name)s" has no application assigned'
+                    % {"name": provider}
+                ),
+            )
             raise exc
 
-    def user_has_access(self, application: Application, user: User) -> Tuple[bool, List[str]]:
+    def user_has_access(
+        self, application: Application, user: User
+    ) -> Tuple[bool, List[str]]:
         """Check if user has access to application."""
         LOGGER.debug("Checking permissions", user=user, application=application)
         policy_engine = PolicyEngine(application.policies.all(), user, self.request)

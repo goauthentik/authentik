@@ -11,7 +11,14 @@ class SAMLSourceSerializer(ModelSerializer):
     class Meta:
 
         model = SAMLSource
-        fields = ['pk', 'entity_id', 'idp_url', 'idp_logout_url', 'auto_logout', 'signing_cert']
+        fields = [
+            "pk",
+            "entity_id",
+            "idp_url",
+            "idp_logout_url",
+            "auto_logout",
+            "signing_cert",
+        ]
 
 
 class SAMLSourceViewSet(ModelViewSet):

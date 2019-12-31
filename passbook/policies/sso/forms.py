@@ -14,6 +14,6 @@ class SSOLoginPolicyForm(forms.ModelForm):
         model = SSOLoginPolicy
         fields = GENERAL_FIELDS
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
         }

@@ -10,16 +10,15 @@ def get_entity_id(request: HttpRequest, source: SAMLSource):
     """Get Source's entity ID, falling back to our Metadata URL if none is set"""
     entity_id = source.entity_id
     if entity_id is None:
-        return build_full_url('metadata', request, source)
+        return build_full_url("metadata", request, source)
     return entity_id
 
 
 def build_full_url(view: str, request: HttpRequest, source: SAMLSource) -> str:
     """Build Full ACS URL to be used in IDP"""
     return request.build_absolute_uri(
-        reverse(f"passbook_sources_saml:{view}", kwargs={
-            'source': source.slug
-        }))
+        reverse(f"passbook_sources_saml:{view}", kwargs={"source": source.slug})
+    )
 
 
 def _get_email_from_response(root):
@@ -48,20 +47,22 @@ def _get_attributes_from_response(root):
     """
     flat_attributes = {}
     assertion = root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
-    attributes = assertion.find("{urn:oasis:names:tc:SAML:2.0:assertion}AttributeStatement")
+    attributes = assertion.find(
+        "{urn:oasis:names:tc:SAML:2.0:assertion}AttributeStatement"
+    )
     for attribute in attributes.getchildren():
-        name = attribute.attrib.get('Name')
+        name = attribute.attrib.get("Name")
         children = attribute.getchildren()
         if not children:
             # Ignore empty-valued attributes. (I think these are not allowed.)
             continue
         if len(children) == 1:
-            #See NOTE:
+            # See NOTE:
             flat_attributes[name] = children[0].text
         else:
             # It has multiple values.
             for child in children:
-                #See NOTE:
+                # See NOTE:
                 flat_attributes.setdefault(name, []).append(child.text)
     return flat_attributes
 
@@ -76,9 +77,7 @@ def _get_user_from_response(root):
     try:
         user = User.objects.get(email=email)
     except User.DoesNotExist:
-        user = User.objects.create_user(
-            username=email,
-            email=email)
+        user = User.objects.create_user(username=email, email=email)
         user.set_unusable_password()
         user.save()
     return user

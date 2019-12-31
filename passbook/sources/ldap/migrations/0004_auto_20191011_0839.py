@@ -8,18 +8,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_sources_ldap', '0003_auto_20191011_0825'),
+        ("passbook_sources_ldap", "0003_auto_20191011_0825"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ldapsource',
-            name='server_uri',
-            field=models.TextField(validators=[django.core.validators.URLValidator(schemes=['ldap', 'ldaps'])]),
+            model_name="ldapsource",
+            name="server_uri",
+            field=models.TextField(
+                validators=[
+                    django.core.validators.URLValidator(schemes=["ldap", "ldaps"])
+                ]
+            ),
         ),
         migrations.AlterField(
-            model_name='ldapsource',
-            name='sync_parent_group',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_DEFAULT, to='passbook_core.Group'),
+            model_name="ldapsource",
+            name="sync_parent_group",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to="passbook_core.Group",
+            ),
         ),
     ]

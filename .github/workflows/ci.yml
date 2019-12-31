@@ -26,7 +26,7 @@ jobs:
         run: pip install -U pip pipenv && pipenv install --dev
       - name: Lint with pylint
         run: pipenv run pylint passbook
-  isort:
+  black:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
@@ -41,8 +41,8 @@ jobs:
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
         run: pip install -U pip pipenv && pipenv install --dev
-      - name: Lint with isort
-        run: pipenv run isort -c
+      - name: Lint with black
+        run: pipenv run black --check passbook
   prospector:
     runs-on: [ubuntu-latest]
     steps:

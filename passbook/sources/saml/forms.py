@@ -16,22 +16,27 @@ class SAMLSourceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         builder = CertificateBuilder()
         builder.build()
-        self.fields['signing_cert'].initial = builder.certificate
+        self.fields["signing_cert"].initial = builder.certificate
 
     class Meta:
 
         model = SAMLSource
-        fields = SOURCE_FORM_FIELDS + ['entity_id', 'idp_url',
-                                       'idp_logout_url', 'auto_logout', 'signing_cert']
+        fields = SOURCE_FORM_FIELDS + [
+            "entity_id",
+            "idp_url",
+            "idp_logout_url",
+            "auto_logout",
+            "signing_cert",
+        ]
         labels = {
-            'entity_id': 'Entity ID',
-            'idp_url': 'IDP URL',
-            'idp_logout_url': 'IDP Logout URL',
+            "entity_id": "Entity ID",
+            "idp_url": "IDP URL",
+            "idp_logout_url": "IDP Logout URL",
         }
         widgets = {
-            'name': forms.TextInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False),
-            'entity_id': forms.TextInput(),
-            'idp_url': forms.TextInput(),
-            'idp_logout_url': forms.TextInput(),
+            "name": forms.TextInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
+            "entity_id": forms.TextInput(),
+            "idp_url": forms.TextInput(),
+            "idp_logout_url": forms.TextInput(),
         }

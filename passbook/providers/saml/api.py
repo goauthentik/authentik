@@ -11,8 +11,19 @@ class SAMLProviderSerializer(ModelSerializer):
     class Meta:
 
         model = SAMLProvider
-        fields = ['pk', 'name', 'property_mappings', 'acs_url', 'audience', 'processor_path',
-                  'issuer', 'assertion_valid_for', 'signing', 'signing_cert', 'signing_key', ]
+        fields = [
+            "pk",
+            "name",
+            "property_mappings",
+            "acs_url",
+            "audience",
+            "processor_path",
+            "issuer",
+            "assertion_valid_for",
+            "signing",
+            "signing_cert",
+            "signing_key",
+        ]
 
 
 class SAMLProviderViewSet(ModelViewSet):
@@ -28,7 +39,7 @@ class SAMLPropertyMappingSerializer(ModelSerializer):
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = ['pk', 'name', 'saml_name', 'friendly_name', 'values']
+        fields = ["pk", "name", "saml_name", "friendly_name", "values"]
 
 
 class SAMLPropertyMappingViewSet(ModelViewSet):

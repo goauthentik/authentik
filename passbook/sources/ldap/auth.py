@@ -14,7 +14,7 @@ class LDAPBackend(ModelBackend):
 
     def authenticate(self, request: HttpRequest, **kwargs):
         """Try to authenticate a user via ldap"""
-        if 'password' not in kwargs:
+        if "password" not in kwargs:
             return None
         for source in LDAPSource.objects.filter(enabled=True):
             LOGGER.debug("LDAP Auth attempt", source=source)

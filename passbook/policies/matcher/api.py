@@ -11,7 +11,11 @@ class FieldMatcherPolicySerializer(ModelSerializer):
 
     class Meta:
         model = FieldMatcherPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['user_field', 'match_action', 'value', ]
+        fields = GENERAL_SERIALIZER_FIELDS + [
+            "user_field",
+            "match_action",
+            "value",
+        ]
 
 
 class FieldMatcherPolicyViewSet(ModelViewSet):

@@ -12,6 +12,7 @@ def sync_groups(source_pk: int):
     connector.bind()
     connector.sync_groups()
 
+
 @CELERY_APP.task()
 def sync_users(source_pk: int):
     """Sync LDAP Users on background worker"""
@@ -19,6 +20,7 @@ def sync_users(source_pk: int):
     connector = Connector(source)
     connector.bind()
     connector.sync_users()
+
 
 @CELERY_APP.task()
 def sync():

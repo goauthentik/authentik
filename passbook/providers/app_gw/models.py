@@ -18,22 +18,23 @@ class ApplicationGatewayProvider(Provider):
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
-    form = 'passbook.providers.app_gw.forms.ApplicationGatewayProviderForm'
+    form = "passbook.providers.app_gw.forms.ApplicationGatewayProviderForm"
 
     def html_setup_urls(self, request):
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        cookie_secret = ''.join(SystemRandom().choice(
-            string.ascii_uppercase + string.digits) for _ in range(50))
-        return "app_gw/setup_modal.html", {
-            'provider': self,
-            'cookie_secret': cookie_secret,
-            'version': __version__
-        }
+        cookie_secret = "".join(
+            SystemRandom().choice(string.ascii_uppercase + string.digits)
+            for _ in range(50)
+        )
+        return (
+            "app_gw/setup_modal.html",
+            {"provider": self, "cookie_secret": cookie_secret, "version": __version__},
+        )
 
     def __str__(self):
         return f"Application Gateway {self.name}"
 
     class Meta:
 
-        verbose_name = _('Application Gateway Provider')
-        verbose_name_plural = _('Application Gateway Providers')
+        verbose_name = _("Application Gateway Provider")
+        verbose_name_plural = _("Application Gateway Providers")

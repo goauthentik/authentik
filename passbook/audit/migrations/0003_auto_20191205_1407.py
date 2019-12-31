@@ -8,17 +8,33 @@ import passbook.audit.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_audit', '0002_auto_20191028_0829'),
+        ("passbook_audit", "0002_auto_20191028_0829"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='event',
-            options={'verbose_name': 'Audit Event', 'verbose_name_plural': 'Audit Events'},
+            name="event",
+            options={
+                "verbose_name": "Audit Event",
+                "verbose_name_plural": "Audit Events",
+            },
         ),
         migrations.AlterField(
-            model_name='event',
-            name='action',
-            field=models.TextField(choices=[('LOGIN', 'login'), ('LOGIN_FAILED', 'login_failed'), ('LOGOUT', 'logout'), ('AUTHORIZE_APPLICATION', 'authorize_application'), ('SUSPICIOUS_REQUEST', 'suspicious_request'), ('SIGN_UP', 'sign_up'), ('PASSWORD_RESET', 'password_reset'), ('INVITE_CREATED', 'invitation_created'), ('INVITE_USED', 'invitation_used'), ('CUSTOM', 'custom')]),
+            model_name="event",
+            name="action",
+            field=models.TextField(
+                choices=[
+                    ("LOGIN", "login"),
+                    ("LOGIN_FAILED", "login_failed"),
+                    ("LOGOUT", "logout"),
+                    ("AUTHORIZE_APPLICATION", "authorize_application"),
+                    ("SUSPICIOUS_REQUEST", "suspicious_request"),
+                    ("SIGN_UP", "sign_up"),
+                    ("PASSWORD_RESET", "password_reset"),
+                    ("INVITE_CREATED", "invitation_created"),
+                    ("INVITE_USED", "invitation_used"),
+                    ("CUSTOM", "custom"),
+                ]
+            ),
         ),
     ]

@@ -12,17 +12,17 @@ def get_authnrequest_xml(parameters, signed=False):
     # Reset signature.
     params = {}
     params.update(parameters)
-    params['AUTHN_REQUEST_SIGNATURE'] = ''
+    params["AUTHN_REQUEST_SIGNATURE"] = ""
 
-    unsigned = render_to_string('saml/sp/xml/authn_request.xml', params)
-    LOGGER.debug('AuthN Request', unsigned=unsigned)
+    unsigned = render_to_string("saml/sp/xml/authn_request.xml", params)
+    LOGGER.debug("AuthN Request", unsigned=unsigned)
     if not signed:
         return unsigned
 
     # Sign it.
     signature_xml = get_signature_xml()
-    params['AUTHN_REQUEST_SIGNATURE'] = signature_xml
-    signed = render_to_string('saml/sp/xml/authn_request.xml', params)
+    params["AUTHN_REQUEST_SIGNATURE"] = signature_xml
+    signed = render_to_string("saml/sp/xml/authn_request.xml", params)
 
-    LOGGER.debug('AuthN Request', signed=signed)
+    LOGGER.debug("AuthN Request", signed=signed)
     return signed

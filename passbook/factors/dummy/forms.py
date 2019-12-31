@@ -15,7 +15,7 @@ class DummyFactorForm(forms.ModelForm):
         model = DummyFactor
         fields = GENERAL_FIELDS
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }

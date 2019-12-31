@@ -9,6 +9,7 @@ from django.http import HttpRequest
 if TYPE_CHECKING:
     from passbook.core.models import User
 
+
 class PolicyRequest:
     """Data-class to hold policy request data"""
 

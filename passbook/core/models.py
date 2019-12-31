@@ -27,12 +27,18 @@ def default_nonce_duration():
     """Default duration a Nonce is valid"""
     return now() + timedelta(hours=4)
 
+
 class Group(UUIDModel):
     """Custom Group model which supports a basic hierarchy"""
 
-    name = models.CharField(_('name'), max_length=80)
-    parent = models.ForeignKey('Group', blank=True, null=True,
-                               on_delete=models.SET_NULL, related_name='children')
+    name = models.CharField(_("name"), max_length=80)
+    parent = models.ForeignKey(
+        "Group",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="children",
+    )
     attributes = JSONField(default=dict, blank=True)
 
     def __str__(self):
@@ -40,7 +46,8 @@ class Group(UUIDModel):
 
     class Meta:
 
-        unique_together = (('name', 'parent',),)
+        unique_together = (("name", "parent",),)
+
 
 class User(GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
@@ -48,8 +55,8 @@ class User(GuardianUserMixin, AbstractUser):
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField()
 
-    sources = models.ManyToManyField('Source', through='UserSourceConnection')
-    groups = models.ManyToManyField('Group')
+    sources = models.ManyToManyField("Source", through="UserSourceConnection")
+    groups = models.ManyToManyField("Group")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     attributes = JSONField(default=dict, blank=True)
@@ -62,28 +69,29 @@ class User(GuardianUserMixin, AbstractUser):
 
     class Meta:
 
-        permissions = (
-            ('reset_user_password', 'Reset Password'),
-        )
+        permissions = (("reset_user_password", "Reset Password"),)
+
 
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
-    property_mappings = models.ManyToManyField('PropertyMapping', default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True
+    )
 
     objects = InheritanceManager()
 
     # This class defines no field for easier inheritance
     def __str__(self):
-        if hasattr(self, 'name'):
-            return getattr(self, 'name')
+        if hasattr(self, "name"):
+            return getattr(self, "name")
         return super().__str__()
 
 
 class PolicyModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have policies applied to it"""
 
-    policies = models.ManyToManyField('Policy', blank=True)
+    policies = models.ManyToManyField("Policy", blank=True)
 
 
 class UserSettings:
@@ -108,8 +116,8 @@ class Factor(PolicyModel):
     enabled = models.BooleanField(default=True)
 
     objects = InheritanceManager()
-    type = ''
-    form = ''
+    type = ""
+    form = ""
 
     def user_settings(self) -> Optional[UserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
@@ -129,8 +137,9 @@ class Application(PolicyModel):
     slug = models.SlugField()
     launch_url = models.URLField(null=True, blank=True)
     icon_url = models.TextField(null=True, blank=True)
-    provider = models.OneToOneField('Provider', null=True, blank=True,
-                                    default=None, on_delete=models.SET_DEFAULT)
+    provider = models.OneToOneField(
+        "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
+    )
     skip_authorization = models.BooleanField(default=False)
 
     objects = InheritanceManager()
@@ -151,9 +160,11 @@ class Source(PolicyModel):
     name = models.TextField()
     slug = models.SlugField()
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField('PropertyMapping', default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True
+    )
 
-    form = '' # ModelForm-based class ued to create/edit instance
+    form = ""  # ModelForm-based class ued to create/edit instance
 
     objects = InheritanceManager()
 
@@ -185,7 +196,7 @@ class UserSourceConnection(CreatedUpdatedModel):
 
     class Meta:
 
-        unique_together = (('user', 'source'),)
+        unique_together = (("user", "source"),)
 
 
 class Policy(UUIDModel, CreatedUpdatedModel):
@@ -215,25 +226,25 @@ class DebugPolicy(Policy):
     wait_min = models.IntegerField(default=5)
     wait_max = models.IntegerField(default=30)
 
-    form = 'passbook.core.forms.policies.DebugPolicyForm'
+    form = "passbook.core.forms.policies.DebugPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Wait random time then return result"""
         wait = SystemRandom().randrange(self.wait_min, self.wait_max)
         LOGGER.debug("Policy waiting", policy=self, delay=wait)
         sleep(wait)
-        return PolicyResult(self.result, 'Debugging')
+        return PolicyResult(self.result, "Debugging")
 
     class Meta:
 
-        verbose_name = _('Debug Policy')
-        verbose_name_plural = _('Debug Policies')
+        verbose_name = _("Debug Policy")
+        verbose_name_plural = _("Debug Policies")
 
 
 class Invitation(UUIDModel):
     """Single-use invitation link"""
 
-    created_by = models.ForeignKey('User', on_delete=models.CASCADE)
+    created_by = models.ForeignKey("User", on_delete=models.CASCADE)
     expires = models.DateTimeField(default=None, blank=True, null=True)
     fixed_username = models.TextField(blank=True, default=None)
     fixed_email = models.TextField(blank=True, default=None)
@@ -242,24 +253,26 @@ class Invitation(UUIDModel):
     @property
     def link(self):
         """Get link to use invitation"""
-        return reverse_lazy('passbook_core:auth-sign-up') + f'?invitation={self.uuid.hex}'
+        return (
+            reverse_lazy("passbook_core:auth-sign-up") + f"?invitation={self.uuid.hex}"
+        )
 
     def __str__(self):
         return f"Invitation {self.uuid.hex} created by {self.created_by}"
 
     class Meta:
 
-        verbose_name = _('Invitation')
-        verbose_name_plural = _('Invitations')
+        verbose_name = _("Invitation")
+        verbose_name_plural = _("Invitations")
 
 
 class Nonce(UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
     expires = models.DateTimeField(default=default_nonce_duration)
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
     expiring = models.BooleanField(default=True)
-    description = models.TextField(default='', blank=True)
+    description = models.TextField(default="", blank=True)
 
     @property
     def is_expired(self) -> bool:
@@ -271,8 +284,8 @@ class Nonce(UUIDModel):
 
     class Meta:
 
-        verbose_name = _('Nonce')
-        verbose_name_plural = _('Nonces')
+        verbose_name = _("Nonce")
+        verbose_name_plural = _("Nonces")
 
 
 class PropertyMapping(UUIDModel):
@@ -280,7 +293,7 @@ class PropertyMapping(UUIDModel):
 
     name = models.TextField()
 
-    form = ''
+    form = ""
     objects = InheritanceManager()
 
     def __str__(self):
@@ -288,5 +301,5 @@ class PropertyMapping(UUIDModel):
 
     class Meta:
 
-        verbose_name = _('Property Mapping')
-        verbose_name_plural = _('Property Mappings')
+        verbose_name = _("Property Mapping")
+        verbose_name_plural = _("Property Mappings")

@@ -10,42 +10,87 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='LDAPPropertyMapping',
+            name="LDAPPropertyMapping",
             fields=[
-                ('propertymapping_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.PropertyMapping')),
-                ('ldap_property', models.TextField()),
-                ('object_field', models.TextField()),
+                (
+                    "propertymapping_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.PropertyMapping",
+                    ),
+                ),
+                ("ldap_property", models.TextField()),
+                ("object_field", models.TextField()),
             ],
-            options={
-                'abstract': False,
-            },
-            bases=('passbook_core.propertymapping',),
+            options={"abstract": False,},
+            bases=("passbook_core.propertymapping",),
         ),
         migrations.CreateModel(
-            name='LDAPSource',
+            name="LDAPSource",
             fields=[
-                ('source_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Source')),
-                ('server_uri', models.URLField(validators=[django.core.validators.URLValidator(schemes=['ldap', 'ldaps'])])),
-                ('bind_cn', models.TextField()),
-                ('bind_password', models.TextField()),
-                ('start_tls', models.BooleanField(default=False)),
-                ('base_dn', models.TextField()),
-                ('additional_user_dn', models.TextField(help_text='Prepended to Base DN for User-queries.')),
-                ('additional_group_dn', models.TextField(help_text='Prepended to Base DN for Group-queries.')),
-                ('user_object_filter', models.TextField()),
-                ('group_object_filter', models.TextField()),
-                ('sync_groups', models.BooleanField(default=True)),
-                ('sync_parent_group', models.ForeignKey(blank=True, default=None, on_delete=django.db.models.deletion.SET_DEFAULT, to='passbook_core.Group')),
+                (
+                    "source_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Source",
+                    ),
+                ),
+                (
+                    "server_uri",
+                    models.URLField(
+                        validators=[
+                            django.core.validators.URLValidator(
+                                schemes=["ldap", "ldaps"]
+                            )
+                        ]
+                    ),
+                ),
+                ("bind_cn", models.TextField()),
+                ("bind_password", models.TextField()),
+                ("start_tls", models.BooleanField(default=False)),
+                ("base_dn", models.TextField()),
+                (
+                    "additional_user_dn",
+                    models.TextField(
+                        help_text="Prepended to Base DN for User-queries."
+                    ),
+                ),
+                (
+                    "additional_group_dn",
+                    models.TextField(
+                        help_text="Prepended to Base DN for Group-queries."
+                    ),
+                ),
+                ("user_object_filter", models.TextField()),
+                ("group_object_filter", models.TextField()),
+                ("sync_groups", models.BooleanField(default=True)),
+                (
+                    "sync_parent_group",
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        on_delete=django.db.models.deletion.SET_DEFAULT,
+                        to="passbook_core.Group",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'LDAP Source',
-                'verbose_name_plural': 'LDAP Sources',
+                "verbose_name": "LDAP Source",
+                "verbose_name_plural": "LDAP Sources",
             },
-            bases=('passbook_core.source',),
+            bases=("passbook_core.source",),
         ),
     ]

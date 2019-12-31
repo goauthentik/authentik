@@ -21,6 +21,7 @@ def send_mails(factor: EmailFactor, *messages: List[EmailMessage]):
     promise = lazy_group()
     return promise
 
+
 @CELERY_APP.task(bind=True)
 def _send_mail_task(self, email_factor_pk: int, message: Dict[Any, Any]):
     """Send E-Mail according to EmailFactor parameters from background worker.

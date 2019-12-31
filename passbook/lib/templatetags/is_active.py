@@ -10,22 +10,23 @@ LOGGER = get_logger()
 @register.simple_tag(takes_context=True)
 def is_active(context, *args, **kwargs):
     """Return whether a navbar link is active or not."""
-    request = context.get('request')
-    app_name = kwargs.get('app_name', None)
+    request = context.get("request")
+    app_name = kwargs.get("app_name", None)
     if not request.resolver_match:
-        return ''
+        return ""
     for url in args:
-        short_url = url.split(':')[1] if ':' in url else url
+        short_url = url.split(":")[1] if ":" in url else url
         # Check if resolver_match matches
-        if request.resolver_match.url_name.startswith(url) or \
-                request.resolver_match.url_name.startswith(short_url):
+        if request.resolver_match.url_name.startswith(
+            url
+        ) or request.resolver_match.url_name.startswith(short_url):
             # Monkeypatch app_name: urls from core have app_name == ''
             # since the root urlpatterns have no namespace
             if app_name and request.resolver_match.app_name == app_name:
-                return 'active'
+                return "active"
             if app_name is None:
-                return 'active'
-    return ''
+                return "active"
+    return ""
 
 
 @register.simple_tag(takes_context=True)
@@ -33,26 +34,28 @@ def is_active_url(context, view):
     """Return whether a navbar link is active or not."""
 
     # matching_url = reverse(view, args=args, kwargs=kwargs)
-    request = context.get('request')
-    current_full_url = f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
+    request = context.get("request")
+    current_full_url = (
+        f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
+    )
 
     if not request.resolver_match:
-        return ''
+        return ""
     if current_full_url == view:
-        return 'active'
+        return "active"
     # if matching_url == request.path:
     #     return 'active'
-    return ''
+    return ""
 
 
 @register.simple_tag(takes_context=True)
 def is_active_app(context, *args):
     """Return True if current link is from app"""
 
-    request = context.get('request')
+    request = context.get("request")
     if not request.resolver_match:
-        return ''
+        return ""
     for app_name in args:
         if request.resolver_match.app_name == app_name:
-            return 'active'
-    return ''
+            return "active"
+    return ""

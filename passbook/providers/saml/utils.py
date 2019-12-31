@@ -26,7 +26,7 @@ def deflate_and_base64_encode(string_val):
 
 def nice64(src):
     """ Returns src base64-encoded and formatted nicely for our XML. """
-    return base64.b64encode(src).decode('utf-8').replace('\n', '')
+    return base64.b64encode(src).decode("utf-8").replace("\n", "")
 
 
 class CertificateBuilder:
@@ -47,28 +47,44 @@ class CertificateBuilder:
         """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)
         self.__private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-            backend=default_backend()
+            public_exponent=65537, key_size=2048, backend=default_backend()
         )
         self.__public_key = self.__private_key.public_key()
-        self.__builder = \
-            x509.CertificateBuilder(). \
-            subject_name(x509.Name([
-                x509.NameAttribute(NameOID.COMMON_NAME, u'passbook Self-signed SAML Certificate'),
-                x509.NameAttribute(NameOID.ORGANIZATION_NAME, u'passbook'),
-                x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, u'Self-signed'),
-            ])). \
-            issuer_name(x509.Name([
-                x509.NameAttribute(NameOID.COMMON_NAME, u'passbook Self-signed SAML Certificate'),
-            ])). \
-            not_valid_before(datetime.datetime.today() - one_day). \
-            not_valid_after(datetime.datetime.today() + datetime.timedelta(days=365)). \
-            serial_number(int(uuid.uuid4())). \
-            public_key(self.__public_key)
+        self.__builder = (
+            x509.CertificateBuilder()
+            .subject_name(
+                x509.Name(
+                    [
+                        x509.NameAttribute(
+                            NameOID.COMMON_NAME,
+                            u"passbook Self-signed SAML Certificate",
+                        ),
+                        x509.NameAttribute(NameOID.ORGANIZATION_NAME, u"passbook"),
+                        x509.NameAttribute(
+                            NameOID.ORGANIZATIONAL_UNIT_NAME, u"Self-signed"
+                        ),
+                    ]
+                )
+            )
+            .issuer_name(
+                x509.Name(
+                    [
+                        x509.NameAttribute(
+                            NameOID.COMMON_NAME,
+                            u"passbook Self-signed SAML Certificate",
+                        ),
+                    ]
+                )
+            )
+            .not_valid_before(datetime.datetime.today() - one_day)
+            .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=365))
+            .serial_number(int(uuid.uuid4()))
+            .public_key(self.__public_key)
+        )
         self.__certificate = self.__builder.sign(
-            private_key=self.__private_key, algorithm=hashes.SHA256(),
-            backend=default_backend()
+            private_key=self.__private_key,
+            algorithm=hashes.SHA256(),
+            backend=default_backend(),
         )
 
     @property
@@ -78,11 +94,11 @@ class CertificateBuilder:
             encoding=serialization.Encoding.PEM,
             format=serialization.PrivateFormat.TraditionalOpenSSL,
             encryption_algorithm=serialization.NoEncryption(),
-        ).decode('utf-8')
+        ).decode("utf-8")
 
     @property
     def certificate(self):
         """Return certificate in PEM format"""
         return self.__certificate.public_bytes(
             encoding=serialization.Encoding.PEM,
-        ).decode('utf-8')
+        ).decode("utf-8")

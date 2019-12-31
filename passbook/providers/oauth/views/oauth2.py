@@ -20,11 +20,13 @@ LOGGER = get_logger()
 class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):
     """Show loading view for permission checks"""
 
-    title = _('Checking permissions...')
+    title = _("Checking permissions...")
 
     def get_url(self):
         querystring = urlencode(self.request.GET)
-        return reverse('passbook_providers_oauth:oauth2-ok-authorize') + '?' + querystring
+        return (
+            reverse("passbook_providers_oauth:oauth2-ok-authorize") + "?" + querystring
+        )
 
 
 class OAuthPermissionDenied(PermissionDeniedView):
@@ -40,18 +42,20 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         """Inject response_type into querystring if not set"""
         LOGGER.debug("response_type not set, defaulting to 'code'")
         querystring = urlencode(self.request.GET)
-        querystring += '&response_type=code'
-        return redirect(reverse('passbook_providers_oauth:oauth2-ok-authorize') + '?' + querystring)
+        querystring += "&response_type=code"
+        return redirect(
+            reverse("passbook_providers_oauth:oauth2-ok-authorize") + "?" + querystring
+        )
 
     def dispatch(self, request, *args, **kwargs):
         """Update OAuth2Provider's skip_authorization state"""
         # Get client_id to get provider, so we can update skip_authorization field
-        client_id = request.GET.get('client_id')
+        client_id = request.GET.get("client_id")
         provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         try:
             application = self.provider_to_application(provider)
         except Application.DoesNotExist:
-            return redirect('passbook_providers_oauth:oauth2-permission-denied')
+            return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Update field here so oauth-toolkit does work for us
         provider.skip_authorization = application.skip_authorization
         provider.save()
@@ -61,24 +65,29 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         if not passing:
             for policy_message in policy_messages:
                 messages.error(request, policy_message)
-            return redirect('passbook_providers_oauth:oauth2-permission-denied')
+            return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Some clients don't pass response_type, so we default to code
-        if 'response_type' not in request.GET:
+        if "response_type" not in request.GET:
             return self._inject_response_type()
         actual_response = super().dispatch(request, *args, **kwargs)
         if actual_response.status_code == 400:
-            LOGGER.debug(request.GET.get('redirect_uri'))
+            LOGGER.debug(request.GET.get("redirect_uri"))
         return actual_response
 
     def render_to_response(self, context, **kwargs):
         # Always set is_login to true for correct css class
-        context['is_login'] = True
+        context["is_login"] = True
         return super().render_to_response(context, **kwargs)
 
     def form_valid(self, form):
         # User has clicked on "Authorize"
-        Event.new(EventAction.AUTHORIZE_APPLICATION,
-                  authorized_application=self._application.pk).from_http(self.request)
-        LOGGER.debug('User authorized Application',
-                     user=self.request.user, application=self._application)
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=self._application.pk,
+        ).from_http(self.request)
+        LOGGER.debug(
+            "User authorized Application",
+            user=self.request.user,
+            application=self._application,
+        )
         return super().form_valid(form)

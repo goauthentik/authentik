@@ -17,16 +17,16 @@ class AuthenticationFactor(TemplateView):
     authenticator: AuthenticationView
     pending_user: User
     request: HttpRequest = None
-    template_name = 'login/form_with_user.html'
+    template_name = "login/form_with_user.html"
 
     def __init__(self, authenticator: AuthenticationView):
         self.authenticator = authenticator
         self.pending_user = None
 
     def get_context_data(self, **kwargs):
-        kwargs['config'] = CONFIG.y('passbook')
-        kwargs['is_login'] = True
-        kwargs['title'] = _('Log in to your account')
-        kwargs['primary_action'] = _('Log in')
-        kwargs['user'] = self.pending_user
+        kwargs["config"] = CONFIG.y("passbook")
+        kwargs["is_login"] = True
+        kwargs["title"] = _("Log in to your account")
+        kwargs["primary_action"] = _("Log in")
+        kwargs["user"] = self.pending_user
         return super().get_context_data(**kwargs)

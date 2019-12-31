@@ -11,7 +11,7 @@ class HaveIBeenPwendPolicySerializer(ModelSerializer):
 
     class Meta:
         model = HaveIBeenPwendPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['allowed_count']
+        fields = GENERAL_SERIALIZER_FIELDS + ["allowed_count"]
 
 
 class HaveIBeenPwendPolicyViewSet(ModelViewSet):

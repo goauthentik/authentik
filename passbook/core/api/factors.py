@@ -8,16 +8,16 @@ from passbook.core.models import Factor
 class FactorSerializer(ModelSerializer):
     """Factor Serializer"""
 
-    __type__ = SerializerMethodField(method_name='get_type')
+    __type__ = SerializerMethodField(method_name="get_type")
 
     def get_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace('factor', '')
+        return obj._meta.object_name.lower().replace("factor", "")
 
     class Meta:
 
         model = Factor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled', '__type__']
+        fields = ["pk", "name", "slug", "order", "enabled", "__type__"]
 
 
 class FactorViewSet(ReadOnlyModelViewSet):

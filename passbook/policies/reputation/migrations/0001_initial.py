@@ -10,41 +10,73 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='IPReputation',
+            name="IPReputation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ip', models.GenericIPAddressField(unique=True)),
-                ('score', models.IntegerField(default=0)),
-                ('updated', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("ip", models.GenericIPAddressField(unique=True)),
+                ("score", models.IntegerField(default=0)),
+                ("updated", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.CreateModel(
-            name='ReputationPolicy',
+            name="ReputationPolicy",
             fields=[
-                ('policy_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Policy')),
-                ('check_ip', models.BooleanField(default=True)),
-                ('check_username', models.BooleanField(default=True)),
-                ('threshold', models.IntegerField(default=-5)),
+                (
+                    "policy_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Policy",
+                    ),
+                ),
+                ("check_ip", models.BooleanField(default=True)),
+                ("check_username", models.BooleanField(default=True)),
+                ("threshold", models.IntegerField(default=-5)),
             ],
             options={
-                'verbose_name': 'Reputation Policy',
-                'verbose_name_plural': 'Reputation Policies',
+                "verbose_name": "Reputation Policy",
+                "verbose_name_plural": "Reputation Policies",
             },
-            bases=('passbook_core.policy',),
+            bases=("passbook_core.policy",),
         ),
         migrations.CreateModel(
-            name='UserReputation',
+            name="UserReputation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('score', models.IntegerField(default=0)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("score", models.IntegerField(default=0)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

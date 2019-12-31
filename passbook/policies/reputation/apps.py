@@ -7,9 +7,9 @@ from django.apps import AppConfig
 class PassbookPolicyReputationConfig(AppConfig):
     """Passbook reputation app config"""
 
-    name = 'passbook.policies.reputation'
-    label = 'passbook_policies_reputation'
-    verbose_name = 'passbook Policies.Reputation'
+    name = "passbook.policies.reputation"
+    label = "passbook_policies_reputation"
+    verbose_name = "passbook Policies.Reputation"
 
     def ready(self):
-        import_module('passbook.policies.reputation.signals')
+        import_module("passbook.policies.reputation.signals")

@@ -11,14 +11,12 @@ from django.conf import ImproperlyConfigured
 from django.utils.autoreload import autoreload_started
 from structlog import get_logger
 
-SEARCH_PATHS = [
-    'passbook/lib/default.yml',
-    '/etc/passbook/config.yml',
-    '',
-] + glob('/etc/passbook/config.d/*.yml', recursive=True)
+SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", "",] + glob(
+    "/etc/passbook/config.d/*.yml", recursive=True
+)
 LOGGER = get_logger()
-ENV_PREFIX = 'PASSBOOK'
-ENVIRONMENT = os.getenv(f'{ENV_PREFIX}_ENV', 'local')
+ENV_PREFIX = "PASSBOOK"
+ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 
 class ConfigLoader:
@@ -34,7 +32,7 @@ class ConfigLoader:
 
     def __init__(self):
         super().__init__()
-        base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
+        base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../.."))
         for path in SEARCH_PATHS:
             # Check if path is relative, and if so join with base_dir
             if not os.path.isabs(path):
@@ -44,8 +42,10 @@ class ConfigLoader:
                 self.update_from_file(path)
             elif os.path.isdir(path) and os.path.exists(path):
                 # Path is an existing dir, so we try to read the env config from it
-                env_paths = [os.path.join(path, ENVIRONMENT + '.yml'),
-                             os.path.join(path, ENVIRONMENT + '.env.yml')]
+                env_paths = [
+                    os.path.join(path, ENVIRONMENT + ".yml"),
+                    os.path.join(path, ENVIRONMENT + ".env.yml"),
+                ]
                 for env_file in env_paths:
                     if os.path.isfile(env_file) and os.path.exists(env_file):
                         # Update config with env file
@@ -66,7 +66,7 @@ class ConfigLoader:
     def parse_uri(self, value):
         """Parse string values which start with a URI"""
         url = urlparse(value)
-        if url.scheme == 'env':
+        if url.scheme == "env":
             value = os.getenv(url.netloc, url.query)
         return value
 
@@ -81,7 +81,7 @@ class ConfigLoader:
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            LOGGER.warning('Permission denied while reading file', path=path, error=exc)
+            LOGGER.warning("Permission denied while reading file", path=path, error=exc)
 
     def update_from_dict(self, update: dict):
         """Update config from dict"""
@@ -94,10 +94,10 @@ class ConfigLoader:
         for key, value in os.environ.items():
             if not key.startswith(ENV_PREFIX):
                 continue
-            relative_key = key.replace(f"{ENV_PREFIX}_", '').replace('__', '.').lower()
+            relative_key = key.replace(f"{ENV_PREFIX}_", "").replace("__", ".").lower()
             # Recursively convert path from a.b.c into outer[a][b][c]
             current_obj = outer
-            dot_parts = relative_key.split('.')
+            dot_parts = relative_key.split(".")
             for dot_part in dot_parts[:-1]:
                 if dot_part not in current_obj:
                     current_obj[dot_part] = {}
@@ -122,7 +122,7 @@ class ConfigLoader:
         return self.__config
 
     # pylint: disable=invalid-name
-    def y(self, path: str, default=None, sep='.') -> Any:
+    def y(self, path: str, default=None, sep=".") -> Any:
         """Access attribute by using yaml path"""
         # Walk sub_dicts before parsing path
         root = self.raw
@@ -138,7 +138,7 @@ class ConfigLoader:
 
     def y_bool(self, path: str, default=False) -> bool:
         """Wrapper for y that converts value into boolean"""
-        return str(self.y(path, default)).lower() == 'true'
+        return str(self.y(path, default)).lower() == "true"
 
 
 CONFIG = ConfigLoader()

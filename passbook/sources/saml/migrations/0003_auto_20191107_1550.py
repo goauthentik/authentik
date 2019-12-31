@@ -6,17 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_sources_saml', '0002_auto_20191107_1505'),
+        ("passbook_sources_saml", "0002_auto_20191107_1505"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='samlsource',
-            name='signing_key',
-        ),
+        migrations.RemoveField(model_name="samlsource", name="signing_key",),
         migrations.AddField(
-            model_name='samlsource',
-            name='idp_logout_url',
+            model_name="samlsource",
+            name="idp_logout_url",
             field=models.URLField(blank=True, default=None, null=True),
         ),
     ]

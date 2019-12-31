@@ -7,13 +7,14 @@ from structlog import get_logger
 
 LOGGER = get_logger()
 
+
 class PassbookProviderSAMLConfig(AppConfig):
     """passbook saml_idp app config"""
 
-    name = 'passbook.providers.saml'
-    label = 'passbook_providers_saml'
-    verbose_name = 'passbook Providers.SAML'
-    mountpoint = 'application/saml/'
+    name = "passbook.providers.saml"
+    label = "passbook_providers_saml"
+    verbose_name = "passbook Providers.SAML"
+    mountpoint = "application/saml/"
 
     def ready(self):
         """Load source_types from config file"""

@@ -6,20 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_sources_saml', '0001_initial'),
+        ("passbook_sources_saml", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='samlsource',
-            options={'verbose_name': 'SAML Source', 'verbose_name_plural': 'SAML Sources'},
+            name="samlsource",
+            options={
+                "verbose_name": "SAML Source",
+                "verbose_name_plural": "SAML Sources",
+            },
         ),
-        migrations.RemoveField(
-            model_name='samlsource',
-            name='acs_url',
-        ),
-        migrations.RemoveField(
-            model_name='samlsource',
-            name='slo_url',
-        ),
+        migrations.RemoveField(model_name="samlsource", name="acs_url",),
+        migrations.RemoveField(model_name="samlsource", name="slo_url",),
     ]

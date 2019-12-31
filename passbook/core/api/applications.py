@@ -11,8 +11,16 @@ class ApplicationSerializer(ModelSerializer):
     class Meta:
 
         model = Application
-        fields = ['pk', 'name', 'slug', 'launch_url', 'icon_url',
-                  'provider', 'policies', 'skip_authorization']
+        fields = [
+            "pk",
+            "name",
+            "slug",
+            "launch_url",
+            "icon_url",
+            "provider",
+            "policies",
+            "skip_authorization",
+        ]
 
 
 class ApplicationViewSet(ModelViewSet):

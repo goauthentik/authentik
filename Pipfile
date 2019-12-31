@@ -51,8 +51,11 @@ bumpversion = "*"
 colorama = "*"
 coverage = "*"
 django-debug-toolbar = "*"
-isort = "*"
 prospector = "*"
 pylint = "*"
 pylint-django = "*"
 unittest-xml-reporting = "*"
+black = "*"
+
+[pipenv]
+allow_prereleases = true

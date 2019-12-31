@@ -12,6 +12,7 @@ def before_send(event, hint):
     from billiard.exceptions import WorkerLostError
     from django.core.exceptions import DisallowedHost
     from botocore.client import ClientError
+
     ignored_classes = (
         OperationalError,
         ConnectionInterrupted,
@@ -22,10 +23,10 @@ def before_send(event, hint):
         DisallowedHost,
         ConnectionResetError,
         KeyboardInterrupt,
-        ClientError
+        ClientError,
     )
-    if 'exc_info' in hint:
-        _exc_type, exc_value, _ = hint['exc_info']
+    if "exc_info" in hint:
+        _exc_type, exc_value, _ = hint["exc_info"]
         if isinstance(exc_value, ignored_classes):
             LOGGER.info("Supressing error %r", exc_value)
             return None

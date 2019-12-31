@@ -17,7 +17,7 @@ class SAMLProvider(Provider):
 
     name = models.TextField()
     acs_url = models.URLField()
-    audience = models.TextField(default='')
+    audience = models.TextField(default="")
     processor_path = models.CharField(max_length=255, choices=[])
     issuer = models.TextField()
     assertion_valid_for = models.IntegerField(default=86400)
@@ -25,12 +25,12 @@ class SAMLProvider(Provider):
     signing_cert = models.TextField()
     signing_key = models.TextField()
 
-    form = 'passbook.providers.saml.forms.SAMLProviderForm'
+    form = "passbook.providers.saml.forms.SAMLProviderForm"
     _processor = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._meta.get_field('processor_path').choices = get_provider_choices()
+        self._meta.get_field("processor_path").choices = get_provider_choices()
 
     @property
     def processor(self):
@@ -50,15 +50,17 @@ class SAMLProvider(Provider):
         """Get link to download XML metadata for admin interface"""
         try:
             # pylint: disable=no-member
-            return reverse('passbook_providers_saml:saml-metadata',
-                           kwargs={'application': self.application.slug})
+            return reverse(
+                "passbook_providers_saml:saml-metadata",
+                kwargs={"application": self.application.slug},
+            )
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
     class Meta:
 
-        verbose_name = _('SAML Provider')
-        verbose_name_plural = _('SAML Providers')
+        verbose_name = _("SAML Provider")
+        verbose_name_plural = _("SAML Providers")
 
 
 class SAMLPropertyMapping(PropertyMapping):
@@ -68,15 +70,16 @@ class SAMLPropertyMapping(PropertyMapping):
     friendly_name = models.TextField(default=None, blank=True, null=True)
     values = ArrayField(models.TextField())
 
-    form = 'passbook.providers.saml.forms.SAMLPropertyMappingForm'
+    form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
 
     def __str__(self):
         return "SAML Property Mapping %s" % self.saml_name
 
     class Meta:
 
-        verbose_name = _('SAML Property Mapping')
-        verbose_name_plural = _('SAML Property Mappings')
+        verbose_name = _("SAML Property Mapping")
+        verbose_name_plural = _("SAML Property Mappings")
+
 
 def get_provider_choices():
     """Return tuple of class_path, class name of all providers."""

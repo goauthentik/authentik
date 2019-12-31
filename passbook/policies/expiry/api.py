@@ -11,7 +11,7 @@ class PasswordExpiryPolicySerializer(ModelSerializer):
 
     class Meta:
         model = PasswordExpiryPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['days', 'deny_only']
+        fields = GENERAL_SERIALIZER_FIELDS + ["days", "deny_only"]
 
 
 class PasswordExpiryPolicyViewSet(ModelViewSet):

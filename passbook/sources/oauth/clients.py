@@ -20,30 +20,30 @@ class BaseOAuthClient:
 
     _session = None
 
-    def __init__(self, source, token=''):  # nosec
+    def __init__(self, source, token=""):  # nosec
         self.source = source
         self.token = token
         self._session = Session()
-        self._session.headers.update({'User-Agent': 'web:passbook:%s' % __version__})
+        self._session.headers.update({"User-Agent": "web:passbook:%s" % __version__})
 
     def get_access_token(self, request, callback=None):
         "Fetch access token from callback request."
-        raise NotImplementedError('Defined in a sub-class')  # pragma: no cover
+        raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
     def get_profile_info(self, raw_token):
         "Fetch user profile information."
         try:
-            response = self.request('get', self.source.profile_url, token=raw_token)
+            response = self.request("get", self.source.profile_url, token=raw_token)
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning('Unable to fetch user profile: %s', exc)
+            LOGGER.warning("Unable to fetch user profile: %s", exc)
             return None
         else:
             return response.json() or response.text
 
     def get_redirect_args(self, request, callback):
         "Get request parameters for redirect url."
-        raise NotImplementedError('Defined in a sub-class')  # pragma: no cover
+        raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
     def get_redirect_url(self, request, callback, parameters=None):
         "Build authentication redirect url."
@@ -52,11 +52,11 @@ class BaseOAuthClient:
         args.update(additional)
         params = urlencode(args)
         LOGGER.info("Redirect args: %s", args)
-        return '{0}?{1}'.format(self.source.authorization_url, params)
+        return "{0}?{1}".format(self.source.authorization_url, params)
 
     def parse_raw_token(self, raw_token):
         "Parse token and secret from raw token response."
-        raise NotImplementedError('Defined in a sub-class')  # pragma: no cover
+        raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
     def request(self, method, url, **kwargs):
         "Build remote url request."
@@ -67,7 +67,7 @@ class BaseOAuthClient:
         """
         Return Session Key
         """
-        raise NotImplementedError('Defined in a sub-class')  # pragma: no cover
+        raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
 
 class OAuthClient(BaseOAuthClient):
@@ -76,17 +76,22 @@ class OAuthClient(BaseOAuthClient):
     def get_access_token(self, request, callback=None):
         "Fetch access token from callback request."
         raw_token = request.session.get(self.session_key, None)
-        verifier = request.GET.get('oauth_verifier', None)
+        verifier = request.GET.get("oauth_verifier", None)
         if raw_token is not None and verifier is not None:
-            data = {'oauth_verifier': verifier}
+            data = {"oauth_verifier": verifier}
             callback = request.build_absolute_uri(callback or request.path)
             callback = force_text(callback)
             try:
-                response = self.request('post', self.source.access_token_url,
-                                        token=raw_token, data=data, oauth_callback=callback)
+                response = self.request(
+                    "post",
+                    self.source.access_token_url,
+                    token=raw_token,
+                    data=data,
+                    oauth_callback=callback,
+                )
                 response.raise_for_status()
             except RequestException as exc:
-                LOGGER.warning('Unable to fetch access token: %s', exc)
+                LOGGER.warning("Unable to fetch access token: %s", exc)
                 return None
             else:
                 return response.text
@@ -97,10 +102,11 @@ class OAuthClient(BaseOAuthClient):
         callback = force_text(request.build_absolute_uri(callback))
         try:
             response = self.request(
-                'post', self.source.request_token_url, oauth_callback=callback)
+                "post", self.source.request_token_url, oauth_callback=callback
+            )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning('Unable to fetch request token: %s', exc)
+            LOGGER.warning("Unable to fetch request token: %s", exc)
             return None
         else:
             return response.text
@@ -113,8 +119,8 @@ class OAuthClient(BaseOAuthClient):
         if token is not None and secret is not None:
             request.session[self.session_key] = raw_token
         return {
-            'oauth_token': token,
-            'oauth_callback': callback,
+            "oauth_token": token,
+            "oauth_callback": callback,
         }
 
     def parse_raw_token(self, raw_token):
@@ -122,16 +128,16 @@ class OAuthClient(BaseOAuthClient):
         if raw_token is None:
             return (None, None)
         query_string = parse_qs(raw_token)
-        token = query_string.get('oauth_token', [None])[0]
-        secret = query_string.get('oauth_token_secret', [None])[0]
+        token = query_string.get("oauth_token", [None])[0]
+        secret = query_string.get("oauth_token_secret", [None])[0]
         return (token, secret)
 
     def request(self, method, url, **kwargs):
         "Build remote url request. Constructs necessary auth."
-        user_token = kwargs.pop('token', self.token)
+        user_token = kwargs.pop("token", self.token)
         token, secret = self.parse_raw_token(user_token)
-        callback = kwargs.pop('oauth_callback', None)
-        verifier = kwargs.get('data', {}).pop('oauth_verifier', None)
+        callback = kwargs.pop("oauth_callback", None)
+        verifier = kwargs.get("data", {}).pop("oauth_verifier", None)
         oauth = OAuth1(
             resource_owner_key=token,
             resource_owner_secret=secret,
@@ -140,12 +146,12 @@ class OAuthClient(BaseOAuthClient):
             verifier=verifier,
             callback_uri=callback,
         )
-        kwargs['auth'] = oauth
+        kwargs["auth"] = oauth
         return super(OAuthClient, self).request(method, url, **kwargs)
 
     @property
     def session_key(self):
-        return 'oauth-client-{0}-request-token'.format(self.source.name)
+        return "oauth-client-{0}-request-token".format(self.source.name)
 
 
 class OAuth2Client(BaseOAuthClient):
@@ -155,40 +161,41 @@ class OAuth2Client(BaseOAuthClient):
     def check_application_state(self, request, callback):
         "Check optional state parameter."
         stored = request.session.get(self.session_key, None)
-        returned = request.GET.get('state', None)
+        returned = request.GET.get("state", None)
         check = False
         if stored is not None:
             if returned is not None:
                 check = constant_time_compare(stored, returned)
             else:
-                LOGGER.warning('No state parameter returned by the source.')
+                LOGGER.warning("No state parameter returned by the source.")
         else:
-            LOGGER.warning('No state stored in the sesssion.')
+            LOGGER.warning("No state stored in the sesssion.")
         return check
 
     def get_access_token(self, request, callback=None, **request_kwargs):
         "Fetch access token from callback request."
         callback = request.build_absolute_uri(callback or request.path)
         if not self.check_application_state(request, callback):
-            LOGGER.warning('Application state check failed.')
+            LOGGER.warning("Application state check failed.")
             return None
-        if 'code' in request.GET:
+        if "code" in request.GET:
             args = {
-                'client_id': self.source.consumer_key,
-                'redirect_uri': callback,
-                'client_secret': self.source.consumer_secret,
-                'code': request.GET['code'],
-                'grant_type': 'authorization_code',
+                "client_id": self.source.consumer_key,
+                "redirect_uri": callback,
+                "client_secret": self.source.consumer_secret,
+                "code": request.GET["code"],
+                "grant_type": "authorization_code",
             }
         else:
-            LOGGER.warning('No code returned by the source')
+            LOGGER.warning("No code returned by the source")
             return None
         try:
-            response = self.request('post', self.source.access_token_url,
-                                    data=args, **request_kwargs)
+            response = self.request(
+                "post", self.source.access_token_url, data=args, **request_kwargs
+            )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning('Unable to fetch access token: %s', exc)
+            LOGGER.warning("Unable to fetch access token: %s", exc)
             return None
         else:
             return response.text
@@ -202,13 +209,13 @@ class OAuth2Client(BaseOAuthClient):
         "Get request parameters for redirect url."
         callback = request.build_absolute_uri(callback)
         args = {
-            'client_id': self.source.consumer_key,
-            'redirect_uri': callback,
-            'response_type': 'code',
+            "client_id": self.source.consumer_key,
+            "redirect_uri": callback,
+            "response_type": "code",
         }
         state = self.get_application_state(request, callback)
         if state is not None:
-            args['state'] = state
+            args["state"] = state
             request.session[self.session_key] = state
         return args
 
@@ -220,27 +227,27 @@ class OAuth2Client(BaseOAuthClient):
         try:
             token_data = json.loads(raw_token)
         except ValueError:
-            token = parse_qs(raw_token).get('access_token', [None])[0]
+            token = parse_qs(raw_token).get("access_token", [None])[0]
         else:
-            token = token_data.get('access_token', None)
+            token = token_data.get("access_token", None)
         return (token, None)
 
     def request(self, method, url, **kwargs):
         "Build remote url request. Constructs necessary auth."
-        user_token = kwargs.pop('token', self.token)
+        user_token = kwargs.pop("token", self.token)
         token, _ = self.parse_raw_token(user_token)
         if token is not None:
-            params = kwargs.get('params', {})
-            params['access_token'] = token
-            kwargs['params'] = params
+            params = kwargs.get("params", {})
+            params["access_token"] = token
+            kwargs["params"] = params
         return super(OAuth2Client, self).request(method, url, **kwargs)
 
     @property
     def session_key(self):
-        return 'oauth-client-{0}-request-state'.format(self.source.name)
+        return "oauth-client-{0}-request-state".format(self.source.name)
 
 
-def get_client(source, token=''):  # nosec
+def get_client(source, token=""):  # nosec
     "Return the API client for the given source."
     cls = OAuth2Client
     if source.request_token_url:

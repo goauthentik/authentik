@@ -11,7 +11,7 @@ class DummyFactorSerializer(ModelSerializer):
     class Meta:
 
         model = DummyFactor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled']
+        fields = ["pk", "name", "slug", "order", "enabled"]
 
 
 class DummyFactorViewSet(ModelViewSet):

@@ -9,20 +9,36 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='GroupMembershipPolicy',
+            name="GroupMembershipPolicy",
             fields=[
-                ('policy_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Policy')),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='passbook_core.Group')),
+                (
+                    "policy_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Policy",
+                    ),
+                ),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="passbook_core.Group",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Group Membership Policy',
-                'verbose_name_plural': 'Group Membership Policies',
+                "verbose_name": "Group Membership Policy",
+                "verbose_name_plural": "Group Membership Policies",
             },
-            bases=('passbook_core.policy',),
+            bases=("passbook_core.policy",),
         ),
     ]

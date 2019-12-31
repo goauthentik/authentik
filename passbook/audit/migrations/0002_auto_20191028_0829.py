@@ -8,12 +8,9 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('passbook_audit', '0001_initial'),
+        ("passbook_audit", "0001_initial"),
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='AuditEntry',
-            new_name='Event',
-        ),
+        migrations.RenameModel(old_name="AuditEntry", new_name="Event",),
     ]

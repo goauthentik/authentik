@@ -6,17 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_audit', '0003_auto_20191205_1407'),
+        ("passbook_audit", "0003_auto_20191205_1407"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='event',
-            name='request_ip',
-        ),
+        migrations.RemoveField(model_name="event", name="request_ip",),
         migrations.AddField(
-            model_name='event',
-            name='client_ip',
+            model_name="event",
+            name="client_ip",
             field=models.GenericIPAddressField(null=True),
         ),
     ]

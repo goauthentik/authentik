@@ -17,8 +17,10 @@ def check_permissions(request, user, client):
     try:
         application = client.openidprovider.application
     except Application.DoesNotExist:
-        return redirect('passbook_providers_oauth:oauth2-permission-denied')
-    LOGGER.debug("Checking permissions for application", user=user, application=application)
+        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+    LOGGER.debug(
+        "Checking permissions for application", user=user, application=application
+    )
     policy_engine = PolicyEngine(application.policies.all(), user, request)
     policy_engine.build()
 
@@ -27,9 +29,11 @@ def check_permissions(request, user, client):
     if not passing:
         for policy_message in policy_messages:
             messages.error(request, policy_message)
-        return redirect('passbook_providers_oauth:oauth2-permission-denied')
+        return redirect("passbook_providers_oauth:oauth2-permission-denied")
 
-    Event.new(EventAction.AUTHORIZE_APPLICATION,
-              authorized_application=application.pk,
-              skipped_authorization=False).from_http(request)
+    Event.new(
+        EventAction.AUTHORIZE_APPLICATION,
+        authorized_application=application.pk,
+        skipped_authorization=False,
+    ).from_http(request)
     return None

@@ -14,13 +14,11 @@ class PasswordExpiryPolicyForm(forms.ModelForm):
     class Meta:
 
         model = PasswordExpiryPolicy
-        fields = GENERAL_FIELDS + ['days', 'deny_only']
+        fields = GENERAL_FIELDS + ["days", "deny_only"]
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
-            'days': forms.NumberInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False)
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
+            "days": forms.NumberInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }
-        labels = {
-            'deny_only': _("Only fail the policy, don't set user's password.")
-        }
+        labels = {"deny_only": _("Only fail the policy, don't set user's password.")}

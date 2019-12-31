@@ -6,23 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0005_merge_20191025_2022'),
-        ('passbook_providers_app_gw', '0001_initial'),
+        ("passbook_core", "0005_merge_20191025_2022"),
+        ("passbook_providers_app_gw", "0001_initial"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='rewriterule',
-            name='conditions',
-        ),
-        migrations.RemoveField(
-            model_name='rewriterule',
-            name='propertymapping_ptr',
-        ),
-        migrations.DeleteModel(
-            name='ApplicationGatewayProvider',
-        ),
-        migrations.DeleteModel(
-            name='RewriteRule',
-        ),
+        migrations.RemoveField(model_name="rewriterule", name="conditions",),
+        migrations.RemoveField(model_name="rewriterule", name="propertymapping_ptr",),
+        migrations.DeleteModel(name="ApplicationGatewayProvider",),
+        migrations.DeleteModel(name="RewriteRule",),
     ]

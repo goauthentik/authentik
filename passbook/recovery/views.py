@@ -18,7 +18,7 @@ class UseNonceView(View):
         if nonce.is_expired:
             nonce.delete()
             raise Http404
-        login(request, nonce.user, backend='django.contrib.auth.backends.ModelBackend')
+        login(request, nonce.user, backend="django.contrib.auth.backends.ModelBackend")
         nonce.delete()
         messages.warning(request, _("Used recovery-link to authenticate."))
-        return redirect('passbook_core:overview')
+        return redirect("passbook_core:overview")

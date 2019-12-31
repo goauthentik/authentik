@@ -16,7 +16,7 @@ class YAMLField(forms.CharField):
     """Django's JSON Field converted to YAML"""
 
     default_error_messages = {
-        'invalid': _("'%(value)s' value must be valid YAML."),
+        "invalid": _("'%(value)s' value must be valid YAML."),
     }
     widget = forms.Textarea
 
@@ -31,9 +31,7 @@ class YAMLField(forms.CharField):
             converted = yaml.safe_load(value)
         except yaml.YAMLError:
             raise forms.ValidationError(
-                self.error_messages['invalid'],
-                code='invalid',
-                params={'value': value},
+                self.error_messages["invalid"], code="invalid", params={"value": value},
             )
         if isinstance(converted, str):
             return YAMLString(converted)

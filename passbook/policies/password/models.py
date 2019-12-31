@@ -21,21 +21,21 @@ class PasswordPolicy(Policy):
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
     error_message = models.TextField()
 
-    form = 'passbook.policies.password.forms.PasswordPolicyForm'
+    form = "passbook.policies.password.forms.PasswordPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         # Only check if password is being set
-        if not hasattr(request.user, '__password__'):
+        if not hasattr(request.user, "__password__"):
             return PolicyResult(True)
-        password = getattr(request.user, '__password__')
+        password = getattr(request.user, "__password__")
 
-        filter_regex = r''
+        filter_regex = r""
         if self.amount_lowercase > 0:
-            filter_regex += r'[a-z]{%d,}' % self.amount_lowercase
+            filter_regex += r"[a-z]{%d,}" % self.amount_lowercase
         if self.amount_uppercase > 0:
-            filter_regex += r'[A-Z]{%d,}' % self.amount_uppercase
+            filter_regex += r"[A-Z]{%d,}" % self.amount_uppercase
         if self.amount_symbols > 0:
-            filter_regex += r'[%s]{%d,}' % (self.symbol_charset, self.amount_symbols)
+            filter_regex += r"[%s]{%d,}" % (self.symbol_charset, self.amount_symbols)
         result = bool(re.compile(filter_regex).match(password))
         if not result:
             return PolicyResult(result, self.error_message)
@@ -43,5 +43,5 @@ class PasswordPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _('Password Policy')
-        verbose_name_plural = _('Password Policies')
+        verbose_name = _("Password Policy")
+        verbose_name_plural = _("Password Policies")

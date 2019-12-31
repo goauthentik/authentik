@@ -11,8 +11,14 @@ class WebhookPolicySerializer(ModelSerializer):
 
     class Meta:
         model = WebhookPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ['url', 'method', 'json_body', 'json_headers',
-                                              'result_jsonpath', 'result_json_value', ]
+        fields = GENERAL_SERIALIZER_FIELDS + [
+            "url",
+            "method",
+            "json_body",
+            "json_headers",
+            "result_jsonpath",
+            "result_json_value",
+        ]
 
 
 class WebhookPolicyViewSet(ModelViewSet):

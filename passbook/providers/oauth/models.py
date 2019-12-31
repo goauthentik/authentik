@@ -10,24 +10,30 @@ from passbook.core.models import Provider
 class OAuth2Provider(Provider, AbstractApplication):
     """Associate an OAuth2 Application with a Product"""
 
-    form = 'passbook.providers.oauth.forms.OAuth2ProviderForm'
+    form = "passbook.providers.oauth.forms.OAuth2ProviderForm"
 
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
     def html_setup_urls(self, request):
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        return "oauth2_provider/setup_url_modal.html", {
-            'provider': self,
-            'authorize_url': request.build_absolute_uri(
-                reverse('passbook_providers_oauth:oauth2-authorize')),
-            'token_url': request.build_absolute_uri(
-                reverse('passbook_providers_oauth:token')),
-            'userinfo_url': request.build_absolute_uri(
-                reverse('passbook_api:openid')),
-        }
+        return (
+            "oauth2_provider/setup_url_modal.html",
+            {
+                "provider": self,
+                "authorize_url": request.build_absolute_uri(
+                    reverse("passbook_providers_oauth:oauth2-authorize")
+                ),
+                "token_url": request.build_absolute_uri(
+                    reverse("passbook_providers_oauth:token")
+                ),
+                "userinfo_url": request.build_absolute_uri(
+                    reverse("passbook_api:openid")
+                ),
+            },
+        )
 
     class Meta:
 
-        verbose_name = _('OAuth2 Provider')
-        verbose_name_plural = _('OAuth2 Providers')
+        verbose_name = _("OAuth2 Provider")
+        verbose_name_plural = _("OAuth2 Providers")

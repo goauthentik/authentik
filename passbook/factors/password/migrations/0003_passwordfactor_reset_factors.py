@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
-        ('passbook_factors_password', '0002_auto_20191007_1411'),
+        ("passbook_core", "0001_initial"),
+        ("passbook_factors_password", "0002_auto_20191007_1411"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='passwordfactor',
-            name='reset_factors',
-            field=models.ManyToManyField(blank=True, related_name='reset_factors', to='passbook_core.Factor'),
+            model_name="passwordfactor",
+            name="reset_factors",
+            field=models.ManyToManyField(
+                blank=True, related_name="reset_factors", to="passbook_core.Factor"
+            ),
         ),
     ]

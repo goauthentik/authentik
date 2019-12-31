@@ -11,8 +11,16 @@ class PasswordFactorSerializer(ModelSerializer):
     class Meta:
 
         model = PasswordFactor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled',
-                  'backends', 'password_policies', 'reset_factors']
+        fields = [
+            "pk",
+            "name",
+            "slug",
+            "order",
+            "enabled",
+            "backends",
+            "password_policies",
+            "reset_factors",
+        ]
 
 
 class PasswordFactorViewSet(ModelViewSet):

@@ -18,19 +18,20 @@ from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
 
+
 class EventAction(Enum):
     """All possible actions to save into the audit log"""
 
-    LOGIN = 'login'
-    LOGIN_FAILED = 'login_failed'
-    LOGOUT = 'logout'
-    AUTHORIZE_APPLICATION = 'authorize_application'
-    SUSPICIOUS_REQUEST = 'suspicious_request'
-    SIGN_UP = 'sign_up'
-    PASSWORD_RESET = 'password_reset' # noqa # nosec
-    INVITE_CREATED = 'invitation_created'
-    INVITE_USED = 'invitation_used'
-    CUSTOM = 'custom'
+    LOGIN = "login"
+    LOGIN_FAILED = "login_failed"
+    LOGOUT = "logout"
+    AUTHORIZE_APPLICATION = "authorize_application"
+    SUSPICIOUS_REQUEST = "suspicious_request"
+    SIGN_UP = "sign_up"
+    PASSWORD_RESET = "password_reset"  # noqa # nosec
+    INVITE_CREATED = "invitation_created"
+    INVITE_USED = "invitation_used"
+    CUSTOM = "custom"
 
     @staticmethod
     def as_choices():
@@ -41,7 +42,9 @@ class EventAction(Enum):
 class Event(UUIDModel):
     """An individual audit log event"""
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
+    )
     action = models.TextField(choices=EventAction.as_choices())
     date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
@@ -56,28 +59,30 @@ class Event(UUIDModel):
         return request.resolver_match.app_name
 
     @staticmethod
-    def new(action: EventAction,
-            app: Optional[str] = None,
-            _inspect_offset: int = 1,
-            **kwargs) -> 'Event':
+    def new(
+        action: EventAction,
+        app: Optional[str] = None,
+        _inspect_offset: int = 1,
+        **kwargs,
+    ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
         if not isinstance(action, EventAction):
-            raise ValueError(f"action must be EventAction instance but was {type(action)}")
+            raise ValueError(
+                f"action must be EventAction instance but was {type(action)}"
+            )
         if not app:
             app = getmodule(stack()[_inspect_offset][0]).__name__
-        event = Event(
-            action=action.value,
-            app=app,
-            context=kwargs)
+        event = Event(action=action.value, app=app, context=kwargs)
         LOGGER.debug("Created Audit event", action=action, context=kwargs)
         return event
 
-    def from_http(self, request: HttpRequest,
-                  user: Optional[settings.AUTH_USER_MODEL] = None) -> 'Event':
+    def from_http(
+        self, request: HttpRequest, user: Optional[settings.AUTH_USER_MODEL] = None
+    ) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
-        if hasattr(request, 'user'):
+        if hasattr(request, "user"):
             if isinstance(request.user, AnonymousUser):
                 self.user = get_anonymous_user()
             else:
@@ -85,7 +90,7 @@ class Event(UUIDModel):
         if user:
             self.user = user
         # User 255.255.255.255 as fallback if IP cannot be determined
-        self.client_ip = get_client_ip(request) or '255.255.255.255'
+        self.client_ip = get_client_ip(request) or "255.255.255.255"
         # If there's no app set, we get it from the requests too
         if not self.app:
             self.app = Event._get_app_from_request(request)
@@ -94,10 +99,12 @@ class Event(UUIDModel):
 
     def save(self, *args, **kwargs):
         if not self._state.adding:
-            raise ValidationError("you may not edit an existing %s" % self._meta.model_name)
+            raise ValidationError(
+                "you may not edit an existing %s" % self._meta.model_name
+            )
         return super().save(*args, **kwargs)
 
     class Meta:
 
-        verbose_name = _('Audit Event')
-        verbose_name_plural = _('Audit Events')
+        verbose_name = _("Audit Event")
+        verbose_name_plural = _("Audit Events")

@@ -11,14 +11,17 @@ class PasswordFactor(Factor):
 
     backends = ArrayField(models.TextField())
     password_policies = models.ManyToManyField(Policy, blank=True)
-    reset_factors = models.ManyToManyField(Factor, blank=True, related_name='reset_factors')
+    reset_factors = models.ManyToManyField(
+        Factor, blank=True, related_name="reset_factors"
+    )
 
-    type = 'passbook.factors.password.factor.PasswordFactor'
-    form = 'passbook.factors.password.forms.PasswordFactorForm'
+    type = "passbook.factors.password.factor.PasswordFactor"
+    form = "passbook.factors.password.forms.PasswordFactorForm"
 
     def user_settings(self):
-        return UserSettings(_('Change Password'), 'pficon-key',
-                            'passbook_core:user-change-password')
+        return UserSettings(
+            _("Change Password"), "pficon-key", "passbook_core:user-change-password"
+        )
 
     def password_passes(self, user: User) -> bool:
         """Return true if user's password passes, otherwise False or raise Exception"""
@@ -32,5 +35,5 @@ class PasswordFactor(Factor):
 
     class Meta:
 
-        verbose_name = _('Password Factor')
-        verbose_name_plural = _('Password Factors')
+        verbose_name = _("Password Factor")
+        verbose_name_plural = _("Password Factors")

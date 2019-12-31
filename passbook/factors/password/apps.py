@@ -7,9 +7,9 @@ from django.apps import AppConfig
 class PassbookFactorPasswordConfig(AppConfig):
     """passbook password factor config"""
 
-    name = 'passbook.factors.password'
-    label = 'passbook_factors_password'
-    verbose_name = 'passbook Factors.Password'
+    name = "passbook.factors.password"
+    label = "passbook_factors_password"
+    verbose_name = "passbook Factors.Password"
 
     def ready(self):
-        import_module('passbook.factors.password.signals')
+        import_module("passbook.factors.password.signals")

@@ -11,13 +11,13 @@ class CaptchaFactor(Factor):
     public_key = models.TextField()
     private_key = models.TextField()
 
-    type = 'passbook.factors.captcha.factor.CaptchaFactor'
-    form = 'passbook.factors.captcha.forms.CaptchaFactorForm'
+    type = "passbook.factors.captcha.factor.CaptchaFactor"
+    form = "passbook.factors.captcha.forms.CaptchaFactorForm"
 
     def __str__(self):
         return f"Captcha Factor {self.slug}"
 
     class Meta:
 
-        verbose_name = _('Captcha Factor')
-        verbose_name_plural = _('Captcha Factors')
+        verbose_name = _("Captcha Factor")
+        verbose_name_plural = _("Captcha Factors")

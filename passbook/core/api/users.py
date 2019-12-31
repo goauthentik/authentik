@@ -11,7 +11,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
 
         model = User
-        fields = ['pk', 'username', 'name', 'email']
+        fields = ["pk", "username", "name", "email"]
 
 
 class UserViewSet(ModelViewSet):

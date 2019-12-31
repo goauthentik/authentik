@@ -12,8 +12,10 @@ class GroupMembershipPolicyForm(forms.ModelForm):
     class Meta:
 
         model = GroupMembershipPolicy
-        fields = GENERAL_FIELDS + ['group', ]
+        fields = GENERAL_FIELDS + [
+            "group",
+        ]
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
         }

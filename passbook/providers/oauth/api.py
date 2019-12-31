@@ -11,8 +11,16 @@ class OAuth2ProviderSerializer(ModelSerializer):
     class Meta:
 
         model = OAuth2Provider
-        fields = ['pk', 'name', 'redirect_uris', 'client_type',
-                  'authorization_grant_type', 'client_id', 'client_secret', ]
+        fields = [
+            "pk",
+            "name",
+            "redirect_uris",
+            "client_type",
+            "authorization_grant_type",
+            "client_id",
+            "client_secret",
+        ]
+
 
 class OAuth2ProviderViewSet(ModelViewSet):
     """OAuth2Provider Viewset"""

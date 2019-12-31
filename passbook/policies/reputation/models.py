@@ -14,24 +14,27 @@ class ReputationPolicy(Policy):
     check_username = models.BooleanField(default=True)
     threshold = models.IntegerField(default=-5)
 
-    form = 'passbook.policies.reputation.forms.ReputationPolicyForm'
+    form = "passbook.policies.reputation.forms.ReputationPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         remote_ip = get_client_ip(request.http_request)
         passing = True
         if self.check_ip:
-            ip_scores = IPReputation.objects.filter(ip=remote_ip, score__lte=self.threshold)
+            ip_scores = IPReputation.objects.filter(
+                ip=remote_ip, score__lte=self.threshold
+            )
             passing = passing and ip_scores.exists()
         if self.check_username:
-            user_scores = UserReputation.objects.filter(user=request.user,
-                                                        score__lte=self.threshold)
+            user_scores = UserReputation.objects.filter(
+                user=request.user, score__lte=self.threshold
+            )
             passing = passing and user_scores.exists()
         return PolicyResult(passing)
 
     class Meta:
 
-        verbose_name = _('Reputation Policy')
-        verbose_name_plural = _('Reputation Policies')
+        verbose_name = _("Reputation Policy")
+        verbose_name_plural = _("Reputation Policies")
 
 
 class IPReputation(models.Model):

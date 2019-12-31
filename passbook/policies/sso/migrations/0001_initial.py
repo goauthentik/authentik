@@ -9,19 +9,29 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SSOLoginPolicy',
+            name="SSOLoginPolicy",
             fields=[
-                ('policy_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Policy')),
+                (
+                    "policy_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Policy",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'SSO Login Policy',
-                'verbose_name_plural': 'SSO Login Policies',
+                "verbose_name": "SSO Login Policy",
+                "verbose_name_plural": "SSO Login Policies",
             },
-            bases=('passbook_core.policy',),
+            bases=("passbook_core.policy",),
         ),
     ]

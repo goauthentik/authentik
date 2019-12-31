@@ -10,21 +10,39 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('passbook_core', '0001_initial'),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PasswordFactor',
+            name="PasswordFactor",
             fields=[
-                ('factor_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='passbook_core.Factor')),
-                ('backends', django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), size=None)),
-                ('password_policies', models.ManyToManyField(blank=True, to='passbook_core.Policy')),
+                (
+                    "factor_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="passbook_core.Factor",
+                    ),
+                ),
+                (
+                    "backends",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.TextField(), size=None
+                    ),
+                ),
+                (
+                    "password_policies",
+                    models.ManyToManyField(blank=True, to="passbook_core.Policy"),
+                ),
             ],
             options={
-                'verbose_name': 'Password Factor',
-                'verbose_name_plural': 'Password Factors',
+                "verbose_name": "Password Factor",
+                "verbose_name_plural": "Password Factors",
             },
-            bases=('passbook_core.factor',),
+            bases=("passbook_core.factor",),
         ),
     ]

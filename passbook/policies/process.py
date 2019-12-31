@@ -16,6 +16,7 @@ def cache_key(policy, user):
     """Generate Cache key for policy"""
     return f"policy_{policy.pk}#{user.pk}"
 
+
 class PolicyProcess(Process):
     """Evaluate a single policy within a seprate process"""
 
@@ -31,8 +32,12 @@ class PolicyProcess(Process):
 
     def run(self):
         """Task wrapper to run policy checking"""
-        LOGGER.debug("Running policy", policy=self.policy,
-                     user=self.request.user, process="PolicyProcess")
+        LOGGER.debug(
+            "Running policy",
+            policy=self.policy,
+            user=self.request.user,
+            process="PolicyProcess",
+        )
         try:
             policy_result = self.policy.passes(self.request)
         except PolicyException as exc:
@@ -41,8 +46,14 @@ class PolicyProcess(Process):
         # Invert result if policy.negate is set
         if self.policy.negate:
             policy_result.passing = not policy_result.passing
-        LOGGER.debug("Got result", policy=self.policy, result=policy_result,
-                     process="PolicyProcess", passing=policy_result.passing, user=self.request.user)
+        LOGGER.debug(
+            "Got result",
+            policy=self.policy,
+            result=policy_result,
+            process="PolicyProcess",
+            passing=policy_result.passing,
+            user=self.request.user,
+        )
         key = cache_key(self.policy, self.request.user)
         cache.set(key, policy_result)
         LOGGER.debug("Cached policy evaluation", key=key)

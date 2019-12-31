@@ -8,16 +8,16 @@ from passbook.core.models import Provider
 class ProviderSerializer(ModelSerializer):
     """Provider Serializer"""
 
-    __type__ = SerializerMethodField(method_name='get_type')
+    __type__ = SerializerMethodField(method_name="get_type")
 
     def get_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace('provider', '')
+        return obj._meta.object_name.lower().replace("provider", "")
 
     class Meta:
 
         model = Provider
-        fields = ['pk', 'property_mappings', '__type__']
+        fields = ["pk", "property_mappings", "__type__"]
 
 
 class ProviderViewSet(ReadOnlyModelViewSet):

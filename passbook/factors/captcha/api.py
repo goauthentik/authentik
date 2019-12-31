@@ -11,7 +11,7 @@ class CaptchaFactorSerializer(ModelSerializer):
     class Meta:
 
         model = CaptchaFactor
-        fields = ['pk', 'name', 'slug', 'order', 'enabled', 'public_key', 'private_key']
+        fields = ["pk", "name", "slug", "order", "enabled", "public_key", "private_key"]
 
 
 class CaptchaFactorViewSet(ModelViewSet):

@@ -28,6 +28,7 @@ class PolicyProcessInfo:
         self.policy = policy
         self.result = None
 
+
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
 
@@ -46,12 +47,13 @@ class PolicyEngine:
 
     def _select_subclasses(self) -> List[Policy]:
         """Make sure all Policies are their respective classes"""
-        return Policy.objects \
-            .filter(pk__in=[x.pk for x in self.policies]) \
-            .select_subclasses() \
-            .order_by('order')
+        return (
+            Policy.objects.filter(pk__in=[x.pk for x in self.policies])
+            .select_subclasses()
+            .order_by("order")
+        )
 
-    def build(self) -> 'PolicyEngine':
+    def build(self) -> "PolicyEngine":
         """Build task group"""
         cached_policies = []
         for policy in self._select_subclasses():
@@ -65,8 +67,9 @@ class PolicyEngine:
                 task = PolicyProcess(policy, self.request, task_end)
                 LOGGER.debug("Starting Process", policy=policy)
                 task.start()
-                self.__processes.append(PolicyProcessInfo(process=task,
-                                                          connection=our_end, policy=policy))
+                self.__processes.append(
+                    PolicyProcessInfo(process=task, connection=our_end, policy=policy)
+                )
         # If all policies are cached, we have an empty list here.
         for proc_info in self.__processes:
             proc_info.process.join(proc_info.policy.timeout)
@@ -80,7 +83,9 @@ class PolicyEngine:
         """Get policy-checking result"""
         messages: List[str] = []
         for proc_info in self.__processes:
-            LOGGER.debug("Result", policy=proc_info.policy, passing=proc_info.result.passing)
+            LOGGER.debug(
+                "Result", policy=proc_info.policy, passing=proc_info.result.passing
+            )
             if proc_info.result.messages:
                 messages += proc_info.result.messages
             if not proc_info.result.passing:

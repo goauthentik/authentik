@@ -13,17 +13,18 @@ class CaptchaForm(forms.Form):
 
     captcha = ReCaptchaField()
 
+
 class CaptchaFactorForm(forms.ModelForm):
     """Form to edit CaptchaFactor Instance"""
 
     class Meta:
 
         model = CaptchaFactor
-        fields = GENERAL_FIELDS + ['public_key', 'private_key']
+        fields = GENERAL_FIELDS + ["public_key", "private_key"]
         widgets = {
-            'name': forms.TextInput(),
-            'order': forms.NumberInput(),
-            'policies': FilteredSelectMultiple(_('policies'), False),
-            'public_key': forms.TextInput(),
-            'private_key': forms.TextInput(),
+            "name": forms.TextInput(),
+            "order": forms.NumberInput(),
+            "policies": FilteredSelectMultiple(_("policies"), False),
+            "public_key": forms.TextInput(),
+            "private_key": forms.TextInput(),
         }
