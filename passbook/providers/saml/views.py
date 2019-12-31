@@ -137,7 +137,7 @@ class LoginProcessView(AccessRequiredView):
             # Log Application Authorization
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
-                authorized_application=self.provider.application.pk,
+                authorized_application=self.provider.application,
                 skipped_authorization=True,
             ).from_http(request)
             return RedirectToSPView.as_view()(
@@ -161,7 +161,7 @@ class LoginProcessView(AccessRequiredView):
             # User accepted request
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
-                authorized_application=self.provider.application.pk,
+                authorized_application=self.provider.application,
                 skipped_authorization=False,
             ).from_http(request)
             return RedirectToSPView.as_view()(

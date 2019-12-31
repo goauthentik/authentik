@@ -82,8 +82,7 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
     def form_valid(self, form):
         # User has clicked on "Authorize"
         Event.new(
-            EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=self._application.pk,
+            EventAction.AUTHORIZE_APPLICATION, authorized_application=self._application,
         ).from_http(self.request)
         LOGGER.debug(
             "User authorized Application",

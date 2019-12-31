@@ -33,7 +33,7 @@ def check_permissions(request, user, client):
 
     Event.new(
         EventAction.AUTHORIZE_APPLICATION,
-        authorized_application=application.pk,
+        authorized_application=application,
         skipped_authorization=False,
     ).from_http(request)
     return None
