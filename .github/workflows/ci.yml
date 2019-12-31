@@ -143,9 +143,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Building Docker Image
-        run: docker build --no-cache -t beryju/passbook:${{ github.sha }} -f Dockerfile .
+        run: docker build --no-cache -t beryju/passbook:0.7.5-beta -f Dockerfile .
       - name: Push Docker Container to Registry
-        run: docker push beryju/passbook:${{ github.sha }}
+        run: docker push beryju/passbook:0.7.5-beta
   build-static:
     needs:
       - migrations
@@ -171,10 +171,10 @@ jobs:
         run: docker build
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
-          -t beryju/passbook-static:${{ github.sha }}
+          -t beryju/passbook-static:0.7.5-beta
           -f static.Dockerfile .
       - name: Push Docker Container to Registry
-        run: docker push beryju/passbook-static:${{ github.sha }}
+        run: docker push beryju/passbook-static:0.7.5-beta
   package-helm:
     needs:
       - build-server
