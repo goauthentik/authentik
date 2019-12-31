@@ -134,7 +134,7 @@ jobs:
     needs:
       - migrations
       - coverage
-    if: github.event == 'release'
+    if: github.event.action == 'release'
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
@@ -151,7 +151,7 @@ jobs:
     needs:
       - migrations
       - coverage
-    if: github.event == 'release'
+    if: github.event.action == 'release'
     runs-on: [ubuntu-latest]
     services:
       postgres:
@@ -181,7 +181,7 @@ jobs:
     needs:
       - build-server
       - build-static
-    if: github.event == 'release'
+    if: github.event.action == 'release'
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
