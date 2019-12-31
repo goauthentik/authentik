@@ -20,7 +20,7 @@ class Connector:
 
     def __init__(self, source: LDAPSource):
         self._source = source
-        self._server = ldap3.Server(source.server_uri) # Implement URI parsing
+        self._server = ldap3.Server(source.server_uri)  # Implement URI parsing
 
     def bind(self):
         """Bind using Source's Credentials"""
@@ -171,7 +171,7 @@ class Connector:
             temp_connection.bind()
             return user
         except ldap3.core.exceptions.LDAPInvalidCredentialsResult as exception:
-            LOGGER.debug("LDAPInvalidCredentialsResult", user=user)
+            LOGGER.debug("LDAPInvalidCredentialsResult", user=user, error=exception)
         except ldap3.core.exceptions.LDAPException as exception:
             LOGGER.warning(exception)
         return None

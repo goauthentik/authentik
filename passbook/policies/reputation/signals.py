@@ -27,12 +27,14 @@ def update_score(request, username, amount):
 
 
 @receiver(user_login_failed)
-def handle_failed_login(sender, request, credentials, **kwargs):
+# pylint: disable=unused-argument
+def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed loging attempts"""
     update_score(request, credentials.get('username'), -1)
 
 
 @receiver(user_logged_in)
-def handle_successful_login(sender, request, user, **kwargs):
+# pylint: disable=unused-argument
+def handle_successful_login(sender, request, user, **_):
     """Raise score for successful attempts"""
     update_score(request, user.username, 1)

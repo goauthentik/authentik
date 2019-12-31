@@ -9,7 +9,7 @@ class OpenIDUserInfoView(ScopedResourceMixin, View):
 
     required_scopes = ['openid:userinfo']
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *_, **__):
         """Passbook v1 OpenID API"""
         payload = {
             'sub': request.user.uuid.int,

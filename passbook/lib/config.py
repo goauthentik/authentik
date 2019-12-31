@@ -81,7 +81,7 @@ class ConfigLoader:
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            LOGGER.warning('Permission denied while reading %s', path)
+            LOGGER.warning('Permission denied while reading file', path=path, error=exc)
 
     def update_from_dict(self, update: dict):
         """Update config from dict"""
@@ -142,6 +142,7 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
+
 
 def signal_handler(sender, **_):
     """Add all loaded config files to autoreload watcher"""

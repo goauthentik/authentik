@@ -20,7 +20,7 @@ class BaseOAuthClient:
 
     _session = None
 
-    def __init__(self, source, token=''): # nosec
+    def __init__(self, source, token=''):  # nosec
         self.source = source
         self.token = token
         self._session = Session()
@@ -151,6 +151,7 @@ class OAuthClient(BaseOAuthClient):
 class OAuth2Client(BaseOAuthClient):
     """OAuth2 Client"""
 
+    # pylint: disable=unused-argument
     def check_application_state(self, request, callback):
         "Check optional state parameter."
         stored = request.session.get(self.session_key, None)
@@ -192,6 +193,7 @@ class OAuth2Client(BaseOAuthClient):
         else:
             return response.text
 
+    # pylint: disable=unused-argument
     def get_application_state(self, request, callback):
         "Generate state optional parameter."
         return get_random_string(32)
@@ -238,7 +240,7 @@ class OAuth2Client(BaseOAuthClient):
         return 'oauth-client-{0}-request-state'.format(self.source.name)
 
 
-def get_client(source, token=''): # nosec
+def get_client(source, token=''):  # nosec
     "Return the API client for the given source."
     cls = OAuth2Client
     if source.request_token_url:

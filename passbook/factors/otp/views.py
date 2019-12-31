@@ -26,6 +26,7 @@ OTP_SESSION_KEY = 'passbook_factors_otp_key'
 OTP_SETTING_UP_KEY = 'passbook_factors_otp_setup'
 LOGGER = get_logger()
 
+
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""
 
@@ -37,15 +38,16 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         static = StaticDevice.objects.filter(user=self.request.user, confirmed=True)
         if static.exists():
             kwargs['static_tokens'] = StaticToken.objects.filter(device=static.first()) \
-                                        .order_by('token')
+                .order_by('token')
         totp_devices = TOTPDevice.objects.filter(user=self.request.user, confirmed=True)
         kwargs['state'] = totp_devices.exists() and static.exists()
         return kwargs
 
+
 class DisableView(LoginRequiredMixin, View):
     """Disable TOTP for user"""
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest) -> HttpResponse:
         """Delete all the devices for user"""
         static = get_object_or_404(StaticDevice, user=request.user, confirmed=True)
         static_tokens = StaticToken.objects.filter(device=static).order_by('token')
@@ -58,6 +60,7 @@ class DisableView(LoginRequiredMixin, View):
         # Create event with email notification
         Event.new(EventAction.CUSTOM, message='User disabled OTP.').from_http(request)
         return redirect(reverse('passbook_factors_otp:otp-user-settings'))
+
 
 class EnableView(LoginRequiredMixin, FormView):
     """View to set up OTP"""
@@ -132,6 +135,7 @@ class EnableView(LoginRequiredMixin, FormView):
         del self.request.session[OTP_SETTING_UP_KEY]
         Event.new(EventAction.CUSTOM, message='User enabled OTP.').from_http(self.request)
         return redirect('passbook_factors_otp:otp-user-settings')
+
 
 class QRView(NeverCacheMixin, View):
     """View returns an SVG image with the OTP token information"""

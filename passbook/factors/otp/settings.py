@@ -1,6 +1,5 @@
 """passbook OTP Settings"""
 
-OTP_TOTP_ISSUER = 'passbook'
 MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
 ]

@@ -72,7 +72,7 @@ class OAuthCallback(OAuthClientMixin, View):
     source_id = None
     source = None
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *_, **kwargs):
         """View Get handler"""
         slug = kwargs.get('source_slug', '')
         try:
@@ -221,7 +221,8 @@ class DisconnectView(LoginRequiredMixin, View):
             }))
         return self.get(request, source_slug)
 
-    def get(self, request, source):
+    # pylint: disable=unused-argument
+    def get(self, request, source_slug):
         """Show delete form"""
         return render(request, 'generic/delete.html', {
             'object': self.source,

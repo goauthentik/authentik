@@ -12,6 +12,7 @@ invitation_created = Signal(providing_args=['request', 'invitation'])
 invitation_used = Signal(providing_args=['request', 'invitation', 'user'])
 password_changed = Signal(providing_args=['user', 'password'])
 
+
 @receiver(post_save)
 # pylint: disable=unused-argument
 def invalidate_policy_cache(sender, instance, **_):

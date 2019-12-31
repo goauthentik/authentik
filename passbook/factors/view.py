@@ -15,17 +15,17 @@ from passbook.lib.utils.urls import is_url_absolute
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
+# Argument used to redirect user after login
+NEXT_ARG_NAME = 'next'
+
 
 def _redirect_with_qs(view, get_query_set=None):
     """Wrapper to redirect whilst keeping GET Parameters"""
     target = reverse(view)
     if get_query_set:
-        target += '?' + urlencode({key: value for key, value in get_query_set.items()})
+        target += '?' + urlencode(get_query_set)
     return redirect(target)
 
-
-# Argument used to redirect user after login
-NEXT_ARG_NAME = 'next'
 
 class AuthenticationView(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
@@ -164,6 +164,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             if key in self.request.session:
                 del self.request.session[key]
         LOGGER.debug("Cleaned up sessions")
+
 
 class FactorPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""

@@ -116,9 +116,10 @@ class LoginProcessView(AccessRequiredView):
     """Processor-based login continuation.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
 
+    # pylint: disable=unused-argument
     def get(self, request, application):
         """Handle get request, i.e. render form"""
-        LOGGER.debug("Request: %s", request)
+        LOGGER.debug("SAMLLoginProcessView", request=request, method='get')
         # Check if user has access
         if self.provider.application.skip_authorization:
             ctx = self.provider.processor.generate_response()
@@ -137,9 +138,10 @@ class LoginProcessView(AccessRequiredView):
         except exceptions.CannotHandleAssertion as exc:
             LOGGER.debug(exc)
 
+    # pylint: disable=unused-argument
     def post(self, request, application):
         """Handle post request, return back to ACS"""
-        LOGGER.debug("Request: %s", request)
+        LOGGER.debug("SAMLLoginProcessView", request=request, method='post')
         # Check if user has access
         if request.POST.get('ACSUrl', None):
             # User accepted request
@@ -163,6 +165,7 @@ class LogoutView(CSRFExemptMixin, AccessRequiredView):
     returns a standard logged-out page. (SalesForce and others use this method,
     though it's technically not SAML 2.0)."""
 
+    # pylint: disable=unused-argument
     def get(self, request, application):
         """Perform logout"""
         logout(request)
@@ -183,6 +186,7 @@ class SLOLogout(CSRFExemptMixin, AccessRequiredView):
     """Receives a SAML 2.0 LogoutRequest from a Service Provider,
     logs out the user and returns a standard logged-out page."""
 
+    # pylint: disable=unused-argument
     def post(self, request, application):
         """Perform logout"""
         request.session['SAMLRequest'] = request.POST['SAMLRequest']
@@ -224,6 +228,7 @@ class DescriptorDownloadView(AccessRequiredView):
 class InitiateLoginView(AccessRequiredView):
     """IdP-initiated Login"""
 
+    # pylint: disable=unused-argument
     def get(self, request, application):
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
         self.provider.processor.init_deep_link(request, '')

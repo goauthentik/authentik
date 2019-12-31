@@ -78,6 +78,7 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def invalid_login(self, request: HttpRequest, disabled_user: User = None) -> HttpResponse:
         """Handle login for disabled users/invalid login attempts"""
+        LOGGER.debug("invalid_login", user=disabled_user)
         messages.error(request, _('Failed to authenticate.'))
         return self.render_to_response(self.get_context_data())
 

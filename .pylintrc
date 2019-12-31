@@ -1,6 +1,6 @@
 [MASTER]
 
-disable=redefined-outer-name,arguments-differ,no-self-use,cyclic-import,fixme,locally-disabled,unpacking-non-sequence,too-many-ancestors,too-many-branches,too-few-public-methods
+disable=redefined-outer-name,arguments-differ,no-self-use,cyclic-import,fixme,locally-disabled,unpacking-non-sequence,too-many-ancestors,too-many-branches,too-few-public-methods,import-outside-toplevel
 load-plugins=pylint_django,pylint.extensions.bad_builtin
 extension-pkg-whitelist=lxml
 const-rgx=[a-zA-Z0-9_]{1,40}$
