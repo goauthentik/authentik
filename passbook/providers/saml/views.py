@@ -124,7 +124,7 @@ class LoginProcessView(AccessRequiredView):
             ctx = self.provider.processor.generate_response()
             # Log Application Authorization
             Event.new(EventAction.AUTHORIZE_APPLICATION,
-                      authorized_application=self.provider.application,
+                      authorized_application=self.provider.application.pk,
                       skipped_authorization=True).from_http(request)
             return RedirectToSPView.as_view()(
                 request=request,
@@ -144,7 +144,7 @@ class LoginProcessView(AccessRequiredView):
         if request.POST.get('ACSUrl', None):
             # User accepted request
             Event.new(EventAction.AUTHORIZE_APPLICATION,
-                      authorized_application=self.provider.application,
+                      authorized_application=self.provider.application.pk,
                       skipped_authorization=False).from_http(request)
             return RedirectToSPView.as_view()(
                 request=request,

@@ -9,6 +9,7 @@ from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
 
+
 def check_permissions(request, user, client):
     """Check permissions, used for
     https://django-oidc-provider.readthedocs.io/en/latest/
@@ -29,6 +30,6 @@ def check_permissions(request, user, client):
         return redirect('passbook_providers_oauth:oauth2-permission-denied')
 
     Event.new(EventAction.AUTHORIZE_APPLICATION,
-              authorized_application=application,
+              authorized_application=application.pk,
               skipped_authorization=False).from_http(request)
     return None

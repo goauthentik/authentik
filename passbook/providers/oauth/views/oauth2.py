@@ -24,7 +24,7 @@ class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):
 
     def get_url(self):
         querystring = urlencode(self.request.GET)
-        return reverse('passbook_providers_oauth:oauth2-ok-authorize')+'?'+querystring
+        return reverse('passbook_providers_oauth:oauth2-ok-authorize') + '?' + querystring
 
 
 class OAuthPermissionDenied(PermissionDeniedView):
@@ -78,7 +78,7 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
     def form_valid(self, form):
         # User has clicked on "Authorize"
         Event.new(EventAction.AUTHORIZE_APPLICATION,
-                  authorized_application=self._application).from_http(self.request)
+                  authorized_application=self._application.pk).from_http(self.request)
         LOGGER.debug('User authorized Application',
                      user=self.request.user, application=self._application)
         return super().form_valid(form)
