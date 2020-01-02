@@ -1,5 +1,6 @@
 """passbook audit models"""
 from enum import Enum
+from uuid import UUID
 from inspect import getmodule, stack
 from typing import Optional, Dict, Any
 
@@ -32,11 +33,15 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
             source[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
             model_content_type = ContentType.objects.get_for_model(value)
-            source[key] = {
-                "app": model_content_type.app_label,
-                "name": model_content_type.model,
-                "pk": value.pk,
-            }
+            source[key] = sanitize_dict(
+                {
+                    "app": model_content_type.app_label,
+                    "name": model_content_type.model,
+                    "pk": value.pk,
+                }
+            )
+        elif isinstance(value, UUID):
+            source[key] = value.hex
     return source
 
 
