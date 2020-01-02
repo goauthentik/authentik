@@ -14,7 +14,8 @@ class ApplicationGatewayProvider(Provider):
     """This provider uses oauth2_proxy with the OIDC Provider."""
 
     name = models.TextField()
-    host = models.TextField()
+    internal_host = models.TextField()
+    external_host = models.TextField()
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 

@@ -40,10 +40,10 @@ services:
     environment:
       OAUTH2_PROXY_CLIENT_ID: {{ provider.client.client_id }}
       OAUTH2_PROXY_CLIENT_SECRET: {{ provider.client.client_secret }}
-      OAUTH2_PROXY_REDIRECT_URL: https://{{ provider.host }}/oauth2/callback
       OAUTH2_PROXY_OIDC_ISSUER_URL: https://{{ request.META.host }}/application/oidc
+      OAUTH2_PROXY_REDIRECT_URL: https://{{ provider.external_host }}/oauth2/callback
       OAUTH2_PROXY_COOKIE_SECRET: {{ cookie_secret }}
-      OAUTH2_PROXY_UPSTREAM: http://{{ provider.host }}</textarea>
+      OAUTH2_PROXY_UPSTREAM: http://{{ provider.internal_host }}</textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>

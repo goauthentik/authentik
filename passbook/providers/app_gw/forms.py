@@ -20,8 +20,10 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
             "code"
         )
         self.instance.client.redirect_uris = [
-            f"http://{self.instance.host}/oauth2/callback",
-            f"https://{self.instance.host}/oauth2/callback",
+            f"http://{self.instance.external_host}/oauth2/callback",
+            f"https://{self.instance.external_host}/oauth2/callback",
+            f"http://{self.instance.internal_host}/oauth2/callback",
+            f"https://{self.instance.internal_host}/oauth2/callback",
         ]
         self.instance.client.scope = ["openid", "email"]
         self.instance.client.save()
@@ -30,8 +32,9 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
     class Meta:
 
         model = ApplicationGatewayProvider
-        fields = ["name", "host"]
+        fields = ["name", "internal_host", "external_host"]
         widgets = {
             "name": forms.TextInput(),
-            "host": forms.TextInput(),
+            "internal_host": forms.TextInput(),
+            "external_host": forms.TextInput(),
         }
