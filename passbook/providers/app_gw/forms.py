@@ -1,7 +1,7 @@
 """passbook Application Security Gateway Forms"""
 from django import forms
 from oauth2_provider.generators import generate_client_id, generate_client_secret
-from oidc_provider.models import Client
+from oidc_provider.models import Client, ResponseType
 
 from passbook.providers.app_gw.models import ApplicationGatewayProvider
 
@@ -16,6 +16,9 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
                 client_id=generate_client_id(), client_secret=generate_client_secret()
             )
         self.instance.client.name = self.instance.name
+        self.instance.client.response_types = ResponseType.objects.get_by_natural_key(
+            "code"
+        )
         self.instance.client.redirect_uris = [
             f"http://{self.instance.host}/oauth2/callback",
             f"https://{self.instance.host}/oauth2/callback",
