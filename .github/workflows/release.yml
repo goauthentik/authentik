@@ -52,9 +52,23 @@ jobs:
         run: docker push beryju/passbook-static:0.7.6-beta
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-static:latest
+  test-release:
     needs:
       - build-server
       - build-static
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run test suite in final docker images
+        run: |
+          export PASSBOOK_DOMAIN=localhost
+          docker-compose pull
+          docker-compose up --no-start
+          docker-compose start postgresql redis
+          docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+  package-helm:
+    needs:
+      - test-release
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
