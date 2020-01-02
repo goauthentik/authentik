@@ -2,14 +2,14 @@
 from typing import Optional
 
 from django.contrib import messages
+from django.db.models.deletion import Collector
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from oidc_provider.models import Client
 from structlog import get_logger
-from django.db.models.deletion import Collector
 
 from passbook.audit.models import Event, EventAction
-from passbook.core.models import Application, User, Provider
+from passbook.core.models import Application, Provider, User
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()

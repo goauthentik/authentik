@@ -1,5 +1,7 @@
 # passbook
 
+![](https://github.com/BeryJu/passbook/workflows/passbook-ci/badge.svg)
+
 ## Quick instance
 
 ```
