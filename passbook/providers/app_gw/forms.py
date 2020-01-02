@@ -16,9 +16,9 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
                 client_id=generate_client_id(), client_secret=generate_client_secret()
             )
         self.instance.client.name = self.instance.name
-        self.instance.client.response_types = ResponseType.objects.get_by_natural_key(
+        self.instance.client.response_types.set([ResponseType.objects.get_by_natural_key(
             "code"
-        )
+        )])
         self.instance.client.redirect_uris = [
             f"http://{self.instance.external_host}/oauth2/callback",
             f"https://{self.instance.external_host}/oauth2/callback",
