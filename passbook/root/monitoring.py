@@ -13,11 +13,11 @@ class MetricsView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
-        token_type, _, credentials = auth_header.partition(" ")
-        creds = f"monitor:{settings.SECRET_KEY}"
-        expected = b64encode(str.encode(creds)).decode()
+        auth_type, _, credentials = auth_header.partition(" ")
+        credentials = f"monitor:{settings.SECRET_KEY}"
+        expected = b64encode(str.encode(credentials)).decode()
 
-        if token_type != "Basic" or credentials != expected:
+        if auth_type != "Basic" or credentials != expected:
             raise Http404
 
         return ExportToDjangoView(request)

@@ -59,6 +59,23 @@ jobs:
         run: pip install -U pip pipenv && pipenv install --dev
       - name: Lint with prospector
         run: pipenv run prospector
+  bandit:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.7'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv-
+      - name: Install dependencies
+        run: pip install -U pip pipenv && pipenv install --dev
+      - name: Lint with bandit
+        run: pipenv run bandit -r passbook
   # Actual CI tests
   migrations:
     needs:
