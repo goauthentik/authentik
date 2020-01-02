@@ -33,11 +33,13 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Building Docker Image
-        run: docker build
-          --no-cache
-          -t beryju/passbook-gatekeeper:0.7.11-beta
-          -t beryju/passbook-gatekeeper:latest
-          -f Dockerfile gatekeeper/
+        run: |
+          cd gatekeeper
+          docker build \
+          --no-cache \
+          -t beryju/passbook-gatekeeper:0.7.11-beta \
+          -t beryju/passbook-gatekeeper:latest \
+          -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
         run: docker push beryju/passbook-gatekeeper:0.7.11-beta
       - name: Push Docker Container to Registry (latest)
