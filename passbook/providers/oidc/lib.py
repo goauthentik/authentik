@@ -31,7 +31,7 @@ def check_permissions(
         for _, related in collector.data.items():
             related_object = next(iter(related))
             if isinstance(related_object, Provider):
-                application = related.application
+                application = related_object.application
                 break
     except Application.DoesNotExist:
         return redirect("passbook_providers_oauth:oauth2-permission-denied")
