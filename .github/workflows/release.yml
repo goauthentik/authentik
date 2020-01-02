@@ -1,8 +1,6 @@
 name: passbook-release
 on:
-  release:
-    types: # This configuration does not affect the page_build event above
-      - created
+  release
 
 jobs:
   # Build
@@ -16,9 +14,15 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Building Docker Image
-        run: docker build --no-cache -t beryju/passbook:0.7.6-beta -f Dockerfile .
-      - name: Push Docker Container to Registry
+        run: docker build
+          --no-cache
+          -t beryju/passbook:0.7.6-beta
+          -t beryju/passbook:latest
+          -f Dockerfile .
+      - name: Push Docker Container to Registry (versioned)
         run: docker push beryju/passbook:0.7.6-beta
+      - name: Push Docker Container to Registry (latest)
+        run: docker push beryju/passbook:latest
   build-static:
     runs-on: [ubuntu-latest]
     services:
@@ -42,10 +46,12 @@ jobs:
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
           -t beryju/passbook-static:0.7.6-beta
+          -t beryju/passbook-static:latest
           -f static.Dockerfile .
-      - name: Push Docker Container to Registry
+      - name: Push Docker Container to Registry (versioned)
         run: docker push beryju/passbook-static:0.7.6-beta
-  package-helm:
+      - name: Push Docker Container to Registry (latest)
+        run: docker push beryju/passbook-static:latest
     needs:
       - build-server
       - build-static
@@ -56,9 +62,7 @@ jobs:
         run: |
           apt update && apt install -y curl
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-          helm init
       - name: Helm package
         run: |
           helm dependency update helm/passbook
           helm package helm/passbook
-
