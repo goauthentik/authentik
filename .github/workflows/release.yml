@@ -1,0 +1,64 @@
+name: passbook-release
+on:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+
+jobs:
+  # Build
+  build-server:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build --no-cache -t beryju/passbook:0.7.7-beta -f Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook:0.7.7-beta
+  build-static:
+    runs-on: [ubuntu-latest]
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: passbook
+          POSTGRES_USER: passbook
+          POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      redis:
+        image: redis:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build
+          --no-cache
+          --network=$(docker network ls | grep github | awk '{print $1}')
+          -t beryju/passbook-static:0.7.7-beta
+          -f static.Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook-static:0.7.7-beta
+  package-helm:
+    needs:
+      - build-server
+      - build-static
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Helm
+        run: |
+          apt update && apt install -y curl
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          helm init
+      - name: Helm package
+        run: |
+          helm dependency update helm/passbook
+          helm package helm/passbook
+
