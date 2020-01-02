@@ -1,0 +1,53 @@
+on:
+  push:
+    tags:
+    - 'version/*'
+
+name: Create Release from Tag
+
+jobs:
+  build:
+    name: Create Release from Tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Pre-release test
+        run: |
+          export PASSBOOK_DOMAIN=localhost
+          docker-compose pull
+          docker build
+            --no-cache
+            -t beryju/passbook:latest
+            -f Dockerfile .
+          docker-compose up --no-start
+          docker-compose start postgresql redis
+          docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+      - name: Install Helm
+        run: |
+          apt update && apt install -y curl
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Helm package
+        run: |
+          helm dependency update helm/
+          helm package helm/
+          mv passbook-*.tgz passbook-chart.tgz
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Create Release from Tag
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./passbook-chart.tgz
+          asset_name: passbook-chart.tgz
+          asset_content_type: application/gzip

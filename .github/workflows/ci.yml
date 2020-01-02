@@ -9,7 +9,7 @@ env:
 jobs:
   # Linting
   pylint:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -26,7 +26,7 @@ jobs:
       - name: Lint with pylint
         run: pipenv run pylint passbook
   black:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -43,7 +43,7 @@ jobs:
       - name: Lint with black
         run: pipenv run black --check passbook
   prospector:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -60,7 +60,7 @@ jobs:
       - name: Lint with prospector
         run: pipenv run prospector
   bandit:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -95,7 +95,7 @@ jobs:
         image: redis:latest
         ports:
           - 6379:6379
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -129,7 +129,7 @@ jobs:
         image: redis:latest
         ports:
           - 6379:6379
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1

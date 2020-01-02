@@ -7,7 +7,7 @@ on:
 jobs:
   # Build
   build-server:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Docker Login Registry
@@ -26,7 +26,7 @@ jobs:
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook:latest
   build-static:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
@@ -58,7 +58,7 @@ jobs:
     needs:
       - build-server
       - build-static
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Run test suite in final docker images
@@ -68,17 +68,3 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
-  package-helm:
-    needs:
-      - test-release
-    runs-on: [ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Install Helm
-        run: |
-          apt update && apt install -y curl
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-      - name: Helm package
-        run: |
-          helm dependency update helm/
-          helm package helm/
