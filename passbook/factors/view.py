@@ -23,7 +23,7 @@ def _redirect_with_qs(view, get_query_set=None):
     """Wrapper to redirect whilst keeping GET Parameters"""
     target = reverse(view)
     if get_query_set:
-        target += "?" + urlencode(get_query_set)
+        target += "?" + urlencode(get_query_set.items())
     return redirect(target)
 
 
