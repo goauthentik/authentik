@@ -3,7 +3,7 @@ on:
     tags:
     - 'version/*'
 
-name: Create Release from Tag
+name: passbook-version-tag
 
 jobs:
   build:
@@ -15,9 +15,9 @@ jobs:
         run: |
           export PASSBOOK_DOMAIN=localhost
           docker-compose pull
-          docker build
-            --no-cache
-            -t beryju/passbook:latest
+          docker build \
+            --no-cache \
+            -t beryju/passbook:latest \
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
