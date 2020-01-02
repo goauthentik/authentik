@@ -23,6 +23,25 @@ jobs:
         run: docker push beryju/passbook:0.7.10-beta
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook:latest
+  build-gatekeeper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build
+          --no-cache
+          -t beryju/passbook-gatekeeper:0.7.10-beta
+          -t beryju/passbook-gatekeeper:latest
+          -f Dockerfile gatekeeper/
+      - name: Push Docker Container to Registry (versioned)
+        run: docker push beryju/passbook-gatekeeper:0.7.10-beta
+      - name: Push Docker Container to Registry (latest)
+        run: docker push beryju/passbook-gatekeeper:latest
   build-static:
     runs-on: ubuntu-latest
     services:
