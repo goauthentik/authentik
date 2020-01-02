@@ -34,8 +34,7 @@ ENV PASSBOOK_POSTGRESQL__USER=passbook
 ENV PASSBOOK_POSTGRESQL__PASSWORD="EK-5jnKfjrGRm<77"
 RUN ./manage.py collectstatic --no-input
 
-FROM docker.beryju.org/pixie/server
+FROM beryju/pixie:latest
 
-COPY --from=static-build /app/static /data/static/
-COPY --from=static-build /app/static/robots.txt /data/robots.txt
-WORKDIR /data
+COPY --from=static-build /app/static /web-root/static/
+COPY --from=static-build /app/static/robots.txt /web-root/robots.txt
