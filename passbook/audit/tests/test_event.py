@@ -1,11 +1,11 @@
 """audit event tests"""
 
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
-from django.contrib.contenttypes.models import ContentType
 
-from passbook.core.models import Policy
 from passbook.audit.models import Event, EventAction
+from passbook.core.models import Policy
 
 
 class TestAuditEvent(TestCase):
