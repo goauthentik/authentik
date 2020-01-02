@@ -20,6 +20,5 @@ class CreateAssignPermView(CreateView):
                 self.object._meta.app_label,
                 self.object._meta.model_name,
             )
-            print(full_permission)
             assign_perm(full_permission, self.request.user, self.object)
         return response
