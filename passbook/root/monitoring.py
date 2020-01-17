@@ -13,11 +13,11 @@ class MetricsView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
-        auth_type, _, credentials = auth_header.partition(" ")
+        auth_type, _, given_credentials = auth_header.partition(" ")
         credentials = f"monitor:{settings.SECRET_KEY}"
         expected = b64encode(str.encode(credentials)).decode()
 
-        if auth_type != "Basic" or credentials != expected:
+        if auth_type != "Basic" or given_credentials != expected:
             response = HttpResponse(status=401)
             response['WWW-Authenticate'] = 'Basic realm="passbook-monitoring"'
             return response
