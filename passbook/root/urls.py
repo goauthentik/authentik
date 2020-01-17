@@ -35,7 +35,7 @@ for _passbook_app in get_apps():
 urlpatterns += [
     # Administration
     path("administration/django/", admin.site.urls),
-    path("metrics", MetricsView.as_view(), name="metrics"),
+    path("metrics/", MetricsView.as_view(), name="metrics"),
 ]
 
 if settings.DEBUG:

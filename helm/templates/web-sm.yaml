@@ -18,6 +18,7 @@ spec:
         name: {{ include "passbook.fullname" . }}-secret-key
         key: monitoring_username
     port: http
+    path: /metrics/
     interval: 10s
   selector:
     matchLabels:
