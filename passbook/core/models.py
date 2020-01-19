@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
+from django_prometheus.models import ExportModelOperationsMixin
 
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
@@ -28,7 +29,7 @@ def default_nonce_duration():
     return now() + timedelta(hours=4)
 
 
-class Group(UUIDModel):
+class Group(ExportModelOperationsMixin("group"), UUIDModel):
     """Custom Group model which supports a basic hierarchy"""
 
     name = models.CharField(_("name"), max_length=80)
@@ -49,7 +50,7 @@ class Group(UUIDModel):
         unique_together = (("name", "parent",),)
 
 
-class User(GuardianUserMixin, AbstractUser):
+class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
@@ -72,7 +73,7 @@ class User(GuardianUserMixin, AbstractUser):
         permissions = (("reset_user_password", "Reset Password"),)
 
 
-class Provider(models.Model):
+class Provider(ExportModelOperationsMixin("provider"), models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     property_mappings = models.ManyToManyField(
@@ -107,7 +108,7 @@ class UserSettings:
         self.view_name = view_name
 
 
-class Factor(PolicyModel):
+class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
     name = models.TextField()
@@ -128,7 +129,7 @@ class Factor(PolicyModel):
         return f"Factor {self.slug}"
 
 
-class Application(PolicyModel):
+class Application(ExportModelOperationsMixin("application"), PolicyModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -154,7 +155,7 @@ class Application(PolicyModel):
         return self.name
 
 
-class Source(PolicyModel):
+class Source(ExportModelOperationsMixin("source"), PolicyModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField()
@@ -199,7 +200,7 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
-class Policy(UUIDModel, CreatedUpdatedModel):
+class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
@@ -241,7 +242,7 @@ class DebugPolicy(Policy):
         verbose_name_plural = _("Debug Policies")
 
 
-class Invitation(UUIDModel):
+class Invitation(ExportModelOperationsMixin("invitation"), UUIDModel):
     """Single-use invitation link"""
 
     created_by = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -266,7 +267,7 @@ class Invitation(UUIDModel):
         verbose_name_plural = _("Invitations")
 
 
-class Nonce(UUIDModel):
+class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
     expires = models.DateTimeField(default=default_nonce_duration)

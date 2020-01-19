@@ -19,7 +19,7 @@ class MetricsView(View):
 
         if auth_type != "Basic" or given_credentials != expected:
             response = HttpResponse(status=401)
-            response['WWW-Authenticate'] = 'Basic realm="passbook-monitoring"'
+            response["WWW-Authenticate"] = 'Basic realm="passbook-monitoring"'
             return response
 
         return ExportToDjangoView(request)
