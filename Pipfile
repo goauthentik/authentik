@@ -42,7 +42,7 @@ swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [dev-packages]
 autopep8 = "*"
