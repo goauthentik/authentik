@@ -7,7 +7,7 @@ from rest_framework import routers
 from structlog import get_logger
 
 from passbook.api.permissions import CustomObjectPermissions
-from passbook.audit.api.events import EventViewSet
+from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.factors import FactorViewSet
 from passbook.core.api.groups import GroupViewSet
@@ -37,6 +37,7 @@ from passbook.providers.oidc.api import OpenIDProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
+from passbook.flows.api.execute import FlowsExecuteViewSet
 
 LOGGER = get_logger()
 router = routers.DefaultRouter()
@@ -78,6 +79,7 @@ router.register("factors/dummy", DummyFactorViewSet)
 router.register("factors/email", EmailFactorViewSet)
 router.register("factors/otp", OTPFactorViewSet)
 router.register("factors/password", PasswordFactorViewSet)
+router.register("flows/execute", FlowsExecuteViewSet, basename="flow")
 
 info = openapi.Info(
     title="passbook API",

@@ -34,7 +34,7 @@ class ApplicationGatewayProviderSerializer(ModelSerializer):
     class Meta:
 
         model = ApplicationGatewayProvider
-        fields = ["pk", "name", "host", "client"]
+        fields = ["pk", "name", "internal_host", "external_host", "client"]
         read_only_fields = ["client"]
 
 

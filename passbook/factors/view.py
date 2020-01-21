@@ -30,19 +30,6 @@ def _redirect_with_qs(view, get_query_set=None):
 class AuthenticationView(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
 
-    SESSION_FACTOR = "passbook_factor"
-    SESSION_PENDING_FACTORS = "passbook_pending_factors"
-    SESSION_PENDING_USER = "passbook_pending_user"
-    SESSION_USER_BACKEND = "passbook_user_backend"
-    SESSION_IS_SSO_LOGIN = "passbook_sso_login"
-
-    pending_user: User
-    pending_factors: List[Tuple[str, str]] = []
-
-    _current_factor_class: Factor
-
-    current_factor: Factor
-
     # Allow only not authenticated users to login
     def test_func(self):
         return AuthenticationView.SESSION_PENDING_USER in self.request.session
@@ -54,32 +41,6 @@ class AuthenticationView(UserPassesTestMixin, View):
         if self.request.user.is_authenticated:
             return _redirect_with_qs("passbook_core:overview", self.request.GET)
         return _redirect_with_qs("passbook_core:auth-login", self.request.GET)
-
-    def get_pending_factors(self):
-        """Loading pending factors from Database or load from session variable"""
-        # Write pending factors to session
-        if AuthenticationView.SESSION_PENDING_FACTORS in self.request.session:
-            return self.request.session[AuthenticationView.SESSION_PENDING_FACTORS]
-        # Get an initial list of factors which are currently enabled
-        # and apply to the current user. We check policies here and block the request
-        _all_factors = (
-            Factor.objects.filter(enabled=True).order_by("order").select_subclasses()
-        )
-        pending_factors = []
-        for factor in _all_factors:
-            LOGGER.debug(
-                "Checking if factor applies to user",
-                factor=factor,
-                user=self.pending_user,
-            )
-            policy_engine = PolicyEngine(
-                factor.policies.all(), self.pending_user, self.request
-            )
-            policy_engine.build()
-            if policy_engine.passing:
-                pending_factors.append((factor.uuid.hex, factor.type))
-                LOGGER.debug("Factor applies", factor=factor, user=self.pending_user)
-        return pending_factors
 
     def dispatch(self, request, *args, **kwargs):
         # Check if user passes test (i.e. SESSION_PENDING_USER is set)
