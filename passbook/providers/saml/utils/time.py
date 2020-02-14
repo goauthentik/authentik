@@ -40,6 +40,8 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
 
 def get_time_string(delta: datetime.timedelta = None) -> str:
     """Get Data formatted in SAML format"""
+    if delta is None:
+        delta = datetime.timedelta()
     now = datetime.datetime.now()
     final = now + delta
     return final.strftime("%Y-%m-%dT%H:%M:%SZ")

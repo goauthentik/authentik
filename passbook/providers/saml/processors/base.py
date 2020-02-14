@@ -194,10 +194,6 @@ class Processor:
             self._logger.info(msg)
             raise CannotHandleAssertion(msg)
 
-    def _validate_user(self):
-        """Validates the User. Sub-classes should override this and
-        throw an CannotHandleAssertion Exception if the validation does not succeed."""
-
     def can_handle(self, request: HttpRequest) -> bool:
         """Returns true if this processor can handle this request."""
         self._http_request = request
@@ -224,7 +220,6 @@ class Processor:
         if not self.is_idp_initiated:
             self.can_handle(self._http_request)
 
-        self._validate_user()
         self._build_assertion()
         self._format_assertion()
         self._build_response()
