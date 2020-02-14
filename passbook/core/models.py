@@ -11,10 +11,10 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
-from django_prometheus.models import ExportModelOperationsMixin
 
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel

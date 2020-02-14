@@ -1,14 +1,14 @@
 """passbook audit models"""
 from enum import Enum
-from uuid import UUID
 from inspect import getmodule, stack
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _

@@ -3,9 +3,9 @@ from hashlib import md5
 from urllib.parse import urlencode
 
 from django import template
-from django.template import Context
 from django.apps import apps
 from django.db.models import Model
+from django.template import Context
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
 
