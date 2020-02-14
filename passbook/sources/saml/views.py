@@ -9,9 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from passbook.providers.saml.base import get_random_id, get_time_string
-from passbook.providers.saml.utils import nice64
-from passbook.providers.saml.views import render_xml
+from passbook.providers.saml.utils import get_random_id, render_xml
+from passbook.providers.saml.utils.encoding import nice64
+from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.utils import (
     _get_user_from_response,

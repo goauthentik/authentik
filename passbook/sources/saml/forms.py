@@ -5,7 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
-from passbook.providers.saml.utils import CertificateBuilder
+from passbook.providers.saml.utils.cert import CertificateBuilder
 from passbook.sources.saml.models import SAMLSource
 
 

@@ -10,7 +10,7 @@ from passbook.providers.saml.models import (
     SAMLProvider,
     get_provider_choices,
 )
-from passbook.providers.saml.utils import CertificateBuilder
+from passbook.providers.saml.utils.cert import CertificateBuilder
 
 
 class SAMLProviderForm(forms.ModelForm):
@@ -32,12 +32,14 @@ class SAMLProviderForm(forms.ModelForm):
         model = SAMLProvider
         fields = [
             "name",
-            "property_mappings",
+            "processor_path",
             "acs_url",
             "audience",
-            "processor_path",
             "issuer",
-            "assertion_valid_for",
+            "assertion_valid_not_before",
+            "assertion_valid_not_on_or_after",
+            "session_valid_not_on_or_after",
+            "property_mappings",
             "signing",
             "signing_cert",
             "signing_key",
@@ -50,6 +52,9 @@ class SAMLProviderForm(forms.ModelForm):
             "name": forms.TextInput(),
             "audience": forms.TextInput(),
             "issuer": forms.TextInput(),
+            "assertion_valid_not_before": forms.TextInput(),
+            "assertion_valid_not_on_or_after": forms.TextInput(),
+            "session_valid_not_on_or_after": forms.TextInput(),
             "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
         }
 

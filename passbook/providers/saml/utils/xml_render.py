@@ -6,7 +6,10 @@ from typing import TYPE_CHECKING
 from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
-from passbook.providers.saml.xml_signing import get_signature_xml, sign_with_signxml
+from passbook.providers.saml.utils.xml_signing import (
+    get_signature_xml,
+    sign_with_signxml,
+)
 
 if TYPE_CHECKING:
     from passbook.providers.saml.models import SAMLProvider
@@ -60,7 +63,6 @@ def get_assertion_xml(template, parameters, signed=False):
     _get_attribute_statement(params)
 
     unsigned = render_to_string(template, params)
-    # LOGGER.debug('Unsigned: %s', unsigned)
     if not signed:
         return unsigned
 
@@ -80,13 +82,11 @@ def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=""):
 
     raw_response = render_to_string("saml/xml/response.xml", params)
 
-    # LOGGER.debug('Unsigned: %s', unsigned)
     if not saml_provider.signing:
         return raw_response
 
     signature_xml = get_signature_xml()
     params["RESPONSE_SIGNATURE"] = signature_xml
-    # LOGGER.debug("Raw response: %s", raw_response)
 
     signed = sign_with_signxml(
         saml_provider.signing_key,

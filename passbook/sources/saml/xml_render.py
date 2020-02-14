@@ -2,7 +2,7 @@
 from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
-from passbook.providers.saml.xml_signing import get_signature_xml
+from passbook.providers.saml.utils.xml_signing import get_signature_xml
 
 LOGGER = get_logger()
 

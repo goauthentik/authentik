@@ -39,18 +39,13 @@ def _generate_response(request, provider: SAMLProvider):
     return render(request, "saml/idp/login.html", ctx)
 
 
-def render_xml(request, template, ctx):
-    """Render template with content_type application/xml"""
-    return render(request, template, context=ctx, content_type="application/xml")
-
-
 class AccessRequiredView(AccessMixin, View):
     """Mixin class for Views using a provider instance"""
 
-    _provider = None
+    _provider: SAMLProvider
 
     @property
-    def provider(self):
+    def provider(self) -> SAMLProvider:
         """Get provider instance"""
         if not self._provider:
             application = get_object_or_404(
@@ -147,10 +142,10 @@ class LoginProcessView(AccessRequiredView):
                 relay_state=ctx["relay_state"],
             )
         try:
-            full_res = _generate_response(request, self.provider)
-            return full_res
+            return _generate_response(request, self.provider)
         except exceptions.CannotHandleAssertion as exc:
             LOGGER.debug(exc)
+        return HttpResponseBadRequest()
 
     # pylint: disable=unused-argument
     def post(self, request, application):
