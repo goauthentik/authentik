@@ -62,7 +62,8 @@ class WSGILogger:
         if environ.get("QUERY_STRING") != "":
             query_string = f"?{environ.get('QUERY_STRING')}"
         self.logger.info(
-            f"{environ.get('PATH_INFO', '')}{query_string}",
+            "request",
+            path=f"{environ.get('PATH_INFO', '')}{query_string}",
             host=host,
             method=environ.get("REQUEST_METHOD", ""),
             protocol=environ.get("SERVER_PROTOCOL", ""),
