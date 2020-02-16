@@ -2,7 +2,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.shortcuts import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
@@ -19,7 +19,7 @@ class SAMLProvider(Provider):
     name = models.TextField()
     processor_path = models.CharField(max_length=255, choices=[])
 
-    acs_url = models.URLField()
+    acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(default="")
     issuer = models.TextField()
 
@@ -56,7 +56,7 @@ class SAMLProvider(Provider):
     )
 
     signing = models.BooleanField(default=True)
-    signing_cert = models.TextField()
+    signing_cert = models.TextField(verbose_name=_("Singing Certificate"))
     signing_key = models.TextField()
 
     form = "passbook.providers.saml.forms.SAMLProviderForm"
@@ -100,9 +100,17 @@ class SAMLProvider(Provider):
 class SAMLPropertyMapping(PropertyMapping):
     """SAML Property mapping, allowing Name/FriendlyName mapping to a list of strings"""
 
-    saml_name = models.TextField()
+    saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
-    values = ArrayField(models.TextField())
+    values = ArrayField(
+        models.TextField(),
+        help_text=_(
+            (
+                "This string can contain string substitutions delimited by {}."
+                " The following Variables are available: user, request"
+            )
+        ),
+    )
 
     form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
 

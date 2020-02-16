@@ -44,10 +44,6 @@ class SAMLProviderForm(forms.ModelForm):
             "signing_cert",
             "signing_key",
         ]
-        labels = {
-            "acs_url": "ACS URL",
-            "signing_cert": "Singing Certificate",
-        }
         widgets = {
             "name": forms.TextInput(),
             "audience": forms.TextInput(),
@@ -72,6 +68,3 @@ class SAMLPropertyMappingForm(forms.ModelForm):
             "friendly_name": forms.TextInput(),
         }
         field_classes = {"values": DynamicArrayField}
-        help_texts = {
-            "values": 'String substitution uses a syntax like "{variable} test}".'
-        }
