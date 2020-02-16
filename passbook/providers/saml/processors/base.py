@@ -33,7 +33,6 @@ class Processor:
 
     _assertion_params: Dict[str, Union[str, List[Dict[str, str]]]]
     _request_params: Dict[str, str]
-    _system_params: Dict[str, str]
     _response_params: Dict[str, str]
 
     @property
@@ -45,9 +44,6 @@ class Processor:
         self.name = remote.name
         self._remote = remote
         self._logger = get_logger()
-        self._system_params = {
-            "ISSUER": self._remote.issuer,
-        }
 
     def _build_assertion(self):
         """Builds _assertion_params."""
@@ -70,8 +66,8 @@ class Processor:
             "SP_NAME_QUALIFIER": self._remote.audience,
             "SUBJECT": self._http_request.user.email,
             "SUBJECT_FORMAT": self.subject_format,
+            "ISSUER": self._remote.issuer,
         }
-        self._assertion_params.update(self._system_params)
         self._assertion_params.update(self._request_params)
 
     def _build_response(self):
@@ -81,8 +77,8 @@ class Processor:
             "ISSUE_INSTANT": get_time_string(),
             "RESPONSE_ID": get_random_id(),
             "RESPONSE_SIGNATURE": "",  # initially unsigned
+            "ISSUER": self._remote.issuer,
         }
-        self._response_params.update(self._system_params)
         self._response_params.update(self._request_params)
 
     def _encode_response(self):
@@ -97,33 +93,7 @@ class Processor:
     def _format_assertion(self):
         """Formats _assertion_params as _assertion_xml."""
         # https://commons.lbl.gov/display/IDMgmt/Attribute+Definitions
-        self._assertion_params["ATTRIBUTES"] = [
-            {
-                "FriendlyName": "eduPersonPrincipalName",
-                "Name": "urn:oid:1.3.6.1.4.1.5923.1.1.1.6",
-                "Value": self._http_request.user.email,
-            },
-            {
-                "FriendlyName": "cn",
-                "Name": "urn:oid:2.5.4.3",
-                "Value": self._http_request.user.name,
-            },
-            {
-                "FriendlyName": "mail",
-                "Name": "urn:oid:0.9.2342.19200300.100.1.3",
-                "Value": self._http_request.user.email,
-            },
-            {
-                "FriendlyName": "displayName",
-                "Name": "urn:oid:2.16.840.1.113730.3.1.241",
-                "Value": self._http_request.user.username,
-            },
-            {
-                "FriendlyName": "uid",
-                "Name": "urn:oid:0.9.2342.19200300.100.1.1",
-                "Value": self._http_request.user.pk,
-            },
-        ]
+        attributes = []
         from passbook.providers.saml.models import SAMLPropertyMapping
 
         for mapping in self._remote.property_mappings.all().select_subclasses():
@@ -139,7 +109,8 @@ class Processor:
                             user=self._http_request.user, request=self._http_request
                         )
                     )
-                self._assertion_params["ATTRIBUTES"].append(mapping_payload)
+                attributes.append(mapping_payload)
+        self._assertion_params["ATTRIBUTES"] = attributes
         self._assertion_xml = get_assertion_xml(
             "saml/xml/assertions/generic.xml", self._assertion_params, signed=True
         )
