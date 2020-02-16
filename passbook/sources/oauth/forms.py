@@ -38,12 +38,6 @@ class OAuthSourceForm(forms.ModelForm):
             "provider_type": forms.Select(choices=MANAGER.get_name_tuple()),
             "policies": FilteredSelectMultiple(_("policies"), False),
         }
-        labels = {
-            "request_token_url": _("Request Token URL"),
-            "authorization_url": _("Authorization URL"),
-            "access_token_url": _("Access Token URL"),
-            "profile_url": _("Profile URL"),
-        }
 
 
 class GitHubOAuthSourceForm(OAuthSourceForm):

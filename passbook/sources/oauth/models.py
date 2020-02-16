@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source, UserSettings, UserSourceConnection
 from passbook.sources.oauth.clients import get_client
@@ -12,10 +12,16 @@ class OAuthSource(Source):
     """Configuration for OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
-    request_token_url = models.CharField(blank=True, max_length=255)
-    authorization_url = models.CharField(max_length=255)
-    access_token_url = models.CharField(max_length=255)
-    profile_url = models.CharField(max_length=255)
+    request_token_url = models.CharField(
+        blank=True, max_length=255, verbose_name=_("Request Token URL")
+    )
+    authorization_url = models.CharField(
+        max_length=255, verbose_name=_("Authorization URL")
+    )
+    access_token_url = models.CharField(
+        max_length=255, verbose_name=_("Access Token URL")
+    )
+    profile_url = models.CharField(max_length=255, verbose_name=_("Profile URL"))
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
