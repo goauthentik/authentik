@@ -13,8 +13,9 @@ def create_default_ad_property_mappings(apps: Apps, schema_editor):
         "sAMAccountName": "username",
         "mail": "email",
     }
+    db_alias = schema_editor.connection.alias
     for ldap_property, object_field in mapping.items():
-        LDAPPropertyMapping.objects.get_or_create(
+        LDAPPropertyMapping.objects.using(db_alias).get_or_create(
             ldap_property=ldap_property,
             object_field=object_field,
             defaults={

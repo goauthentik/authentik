@@ -45,14 +45,6 @@ class LDAPSourceForm(forms.ModelForm):
             "policies": FilteredSelectMultiple(_("policies"), False),
             "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
         }
-        labels = {
-            "server_uri": _("Server URI"),
-            "bind_cn": _("Bind CN"),
-            "start_tls": _("Enable Start TLS"),
-            "base_dn": _("Base DN"),
-            "additional_user_dn": _("Addition User DN"),
-            "additional_group_dn": _("Addition Group DN"),
-        }
 
 
 class LDAPPropertyMappingForm(forms.ModelForm):
