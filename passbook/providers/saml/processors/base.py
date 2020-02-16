@@ -159,8 +159,9 @@ class Processor:
         request_acs_url = self._request_params["ACS_URL"]
 
         if self._remote.acs_url != request_acs_url:
-            msg = "couldn't find ACS url '{}' in SAML2IDP_REMOTES " "setting.".format(
-                request_acs_url
+            msg = (
+                f"ACS URL of {request_acs_url} doesn't match Provider "
+                f"ACS URL of {self._remote.acs_url}."
             )
             self._logger.info(msg)
             raise CannotHandleAssertion(msg)
