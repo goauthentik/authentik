@@ -28,11 +28,6 @@ class SAMLSourceForm(forms.ModelForm):
             "auto_logout",
             "signing_cert",
         ]
-        labels = {
-            "entity_id": "Entity ID",
-            "idp_url": "IDP URL",
-            "idp_logout_url": "IDP Logout URL",
-        }
         widgets = {
             "name": forms.TextInput(),
             "policies": FilteredSelectMultiple(_("policies"), False),

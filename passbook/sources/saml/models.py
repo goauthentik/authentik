@@ -1,7 +1,7 @@
 """saml sp models"""
 from django.db import models
 from django.urls import reverse_lazy
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source
 
@@ -9,9 +9,11 @@ from passbook.core.models import Source
 class SAMLSource(Source):
     """SAML2 Source"""
 
-    entity_id = models.TextField(blank=True, default=None)
-    idp_url = models.URLField()
-    idp_logout_url = models.URLField(default=None, blank=True, null=True)
+    entity_id = models.TextField(blank=True, default=None, verbose_name=_("Entity ID"))
+    idp_url = models.URLField(verbose_name=_("IDP URL"))
+    idp_logout_url = models.URLField(
+        default=None, blank=True, null=True, verbose_name=_("IDP Logout URL")
+    )
     auto_logout = models.BooleanField(default=False)
     signing_cert = models.TextField()
 
