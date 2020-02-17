@@ -59,13 +59,12 @@ class LDAPSource(Source):
 class LDAPPropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object"""
 
-    ldap_property = models.TextField(verbose_name=_("LDAP Property"))
     object_field = models.TextField()
 
     form = "passbook.sources.ldap.forms.LDAPPropertyMappingForm"
 
     def __str__(self):
-        return f"LDAP Property Mapping {self.ldap_property} -> {self.object_field}"
+        return f"LDAP Property Mapping {self.template} -> {self.object_field}"
 
     class Meta:
 
