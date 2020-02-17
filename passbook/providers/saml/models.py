@@ -55,6 +55,22 @@ class SAMLProvider(Provider):
         ),
     )
 
+    digest_algorithm = models.CharField(
+        max_length=50,
+        choices=(("sha1", _("SHA1")), ("sha256", _("SHA256")),),
+        default="sha256",
+    )
+    signature_algorithm = models.CharField(
+        max_length=50,
+        choices=(
+            ("rsa-sha1", _("RSA-SHA1")),
+            ("rsa-sha256", _("RSA-SHA256")),
+            ("ecdsa-sha256", _("ECDSA-SHA256")),
+            ("dsa-sha1", _("DSA-SHA1")),
+        ),
+        default="rsa-sha256",
+    )
+
     signing = models.BooleanField(default=True)
     signing_cert = models.TextField(verbose_name=_("Singing Certificate"))
     signing_key = models.TextField()

@@ -88,10 +88,5 @@ def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=""):
     signature_xml = get_signature_xml()
     params["RESPONSE_SIGNATURE"] = signature_xml
 
-    signed = sign_with_signxml(
-        saml_provider.signing_key,
-        raw_response,
-        saml_provider.signing_cert,
-        reference_uri=assertion_id,
-    )
+    signed = sign_with_signxml(raw_response, saml_provider, reference_uri=assertion_id,)
     return signed
