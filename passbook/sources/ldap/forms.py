@@ -50,6 +50,8 @@ class LDAPSourceForm(forms.ModelForm):
 class LDAPPropertyMappingForm(forms.ModelForm):
     """LDAP Property Mapping form"""
 
+    template_name = "ldap/property_mapping_form.html"
+
     class Meta:
 
         model = LDAPPropertyMapping

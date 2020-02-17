@@ -59,6 +59,8 @@ class SAMLProviderForm(forms.ModelForm):
 class SAMLPropertyMappingForm(forms.ModelForm):
     """SAML Property Mapping form"""
 
+    template_name = "saml/idp/property_mapping_form.html"
+
     class Meta:
 
         model = SAMLPropertyMapping

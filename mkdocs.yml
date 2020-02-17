@@ -19,6 +19,9 @@ nav:
           - Rancher: integrations/services/rancher/index.md
           - Harbor: integrations/services/harbor/index.md
           - Sentry: integrations/services/sentry/index.md
+  - Reference:
+      - Property Mappings:
+          - User Object: reference/property-mappings/user-object.md
 
 repo_name: "BeryJu.org/passbook"
 repo_url: https://github.com/BeryJu/passbook
