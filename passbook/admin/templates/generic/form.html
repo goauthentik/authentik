@@ -47,11 +47,11 @@
         lineNumbers: true,
       });
     }
-    const templates = document.getElementsByName('template');
-    if (templates.length > 0) {
+    const expressions = document.getElementsByName('expression');
+    if (expressions.length > 0) {
       // https://github.com/codemirror/CodeMirror/issues/5092
-      templates[0].removeAttribute("required");
-      const templateCM = CodeMirror.fromTextArea(templates[0], {
+      expressions[0].removeAttribute("required");
+      const expressionCM = CodeMirror.fromTextArea(expressions[0], {
         mode: 'jinja2',
         theme: 'monokai',
         lineNumbers: true,
