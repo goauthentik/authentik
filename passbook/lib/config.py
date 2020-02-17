@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
-from django.utils.autoreload import autoreload_started
 from structlog import get_logger
 
 SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", "",] + glob(
@@ -142,12 +141,3 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
-
-
-def signal_handler(sender, **_):
-    """Add all loaded config files to autoreload watcher"""
-    for path in CONFIG.loaded_file:
-        sender.watch_file(path)
-
-
-autoreload_started.connect(signal_handler)
