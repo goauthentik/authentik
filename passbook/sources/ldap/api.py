@@ -35,7 +35,7 @@ class LDAPPropertyMappingSerializer(ModelSerializer):
 
     class Meta:
         model = LDAPPropertyMapping
-        fields = ["pk", "name", "template", "object_field"]
+        fields = ["pk", "name", "expression", "object_field"]
 
 
 class LDAPSourceViewSet(ModelViewSet):

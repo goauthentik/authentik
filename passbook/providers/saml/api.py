@@ -43,7 +43,7 @@ class SAMLPropertyMappingSerializer(ModelSerializer):
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = ["pk", "name", "saml_name", "friendly_name", "template"]
+        fields = ["pk", "name", "saml_name", "friendly_name", "expression"]
 
 
 class SAMLPropertyMappingViewSet(ModelViewSet):

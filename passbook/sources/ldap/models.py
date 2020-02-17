@@ -64,7 +64,7 @@ class LDAPPropertyMapping(PropertyMapping):
     form = "passbook.sources.ldap.forms.LDAPPropertyMappingForm"
 
     def __str__(self):
-        return f"LDAP Property Mapping {self.template} -> {self.object_field}"
+        return f"LDAP Property Mapping {self.expression} -> {self.object_field}"
 
     class Meta:
 

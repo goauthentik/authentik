@@ -98,7 +98,7 @@ class Processor:
 
         for mapping in self._remote.property_mappings.all().select_subclasses():
             if isinstance(mapping, SAMLPropertyMapping):
-                value = mapping.render(
+                value = mapping.evaluate(
                     user=self._http_request.user,
                     request=self._http_request,
                     provider=self._remote,

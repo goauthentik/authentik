@@ -155,7 +155,7 @@ class Connector:
         properties = {"attributes": {}}
         for mapping in self._source.property_mappings.all().select_subclasses():
             mapping: LDAPPropertyMapping
-            properties[mapping.object_field] = mapping.render(
+            properties[mapping.object_field] = mapping.evaluate(
                 user=None, request=None, ldap=attributes
             )
         if self._source.object_uniqueness_field in attributes:

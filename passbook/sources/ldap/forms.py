@@ -55,7 +55,7 @@ class LDAPPropertyMappingForm(forms.ModelForm):
     class Meta:
 
         model = LDAPPropertyMapping
-        fields = ["name", "object_field", "template"]
+        fields = ["name", "object_field", "expression"]
         widgets = {
             "name": forms.TextInput(),
             "ldap_property": forms.TextInput(),

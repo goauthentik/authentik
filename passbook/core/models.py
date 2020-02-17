@@ -296,15 +296,15 @@ class PropertyMapping(UUIDModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     name = models.TextField()
-    template = models.TextField()
+    expression = models.TextField()
 
     form = ""
     objects = InheritanceManager()
 
-    def render(self, user: User, request: HttpRequest, **kwargs) -> Any:
-        """Render `self.template` using `**kwargs` as Context."""
-        template = NATIVE_ENVIRONMENT.from_string(self.template)
-        return template.render(user=user, request=request, **kwargs)
+    def evaluate(self, user: User, request: HttpRequest, **kwargs) -> Any:
+        """Evaluate `self.expression` using `**kwargs` as Context."""
+        expression = NATIVE_ENVIRONMENT.from_string(self.expression)
+        return expression.render(user=user, request=request, **kwargs)
 
     def __str__(self):
         return f"Property Mapping {self.name}"

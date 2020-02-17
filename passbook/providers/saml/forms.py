@@ -64,7 +64,7 @@ class SAMLPropertyMappingForm(forms.ModelForm):
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = ["name", "saml_name", "friendly_name", "template"]
+        fields = ["name", "saml_name", "friendly_name", "expression"]
         widgets = {
             "name": forms.TextInput(),
             "saml_name": forms.TextInput(),
