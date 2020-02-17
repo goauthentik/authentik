@@ -27,7 +27,7 @@ LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
 
 
-def _generate_response(request: HttpRequest, provider: SAMLProvider):
+def _generate_response(request: HttpRequest, provider: SAMLProvider) -> HttpResponse:
     """Generate a SAML response using processor_instance and return it in the proper Django
     response."""
     try:
@@ -58,13 +58,16 @@ class AccessRequiredView(AccessMixin, View):
 
     def _has_access(self) -> bool:
         """Check if user has access to application"""
+        LOGGER.debug(
+            "_has_access", user=self.request.user, app=self.provider.application
+        )
         policy_engine = PolicyEngine(
             self.provider.application.policies.all(), self.request.user, self.request
         )
         policy_engine.build()
         return policy_engine.passing
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         if not self._has_access():
@@ -84,7 +87,7 @@ class LoginBeginView(AccessRequiredView):
     stores it in the session prior to enforcing login."""
 
     @method_decorator(csrf_exempt)
-    def dispatch(self, request, application):
+    def dispatch(self, request: HttpRequest, application: str) -> HttpResponse:
         if request.method == "POST":
             source = request.POST
         else:
@@ -108,7 +111,9 @@ class LoginBeginView(AccessRequiredView):
 class RedirectToSPView(AccessRequiredView):
     """Return autosubmit form"""
 
-    def get(self, request, acs_url, saml_response, relay_state):
+    def get(
+        self, request: HttpRequest, acs_url: str, saml_response: str, relay_state: str
+    ) -> HttpResponse:
         """Return autosubmit form"""
         return render(
             request,
@@ -149,7 +154,7 @@ class LoginProcessView(AccessRequiredView):
         return HttpResponseBadRequest()
 
     # pylint: disable=unused-argument
-    def post(self, request, application: str) -> HttpResponse:
+    def post(self, request: HttpRequest, application: str) -> HttpResponse:
         """Handle post request, return back to ACS"""
         # User access gets checked in dispatch
         if request.POST.get("ACSUrl", None):
@@ -178,7 +183,7 @@ class LogoutView(CSRFExemptMixin, AccessRequiredView):
     though it's technically not SAML 2.0)."""
 
     # pylint: disable=unused-argument
-    def get(self, request, application):
+    def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Perform logout"""
         logout(request)
 
@@ -199,7 +204,7 @@ class SLOLogout(CSRFExemptMixin, AccessRequiredView):
     logs out the user and returns a standard logged-out page."""
 
     # pylint: disable=unused-argument
-    def post(self, request, application):
+    def post(self, request: HttpRequest, application: str) -> HttpResponse:
         """Perform logout"""
         request.session["SAMLRequest"] = request.POST["SAMLRequest"]
         # TODO: Parse SAML LogoutRequest from POST data, similar to login_process().
@@ -214,7 +219,7 @@ class SLOLogout(CSRFExemptMixin, AccessRequiredView):
 class DescriptorDownloadView(AccessRequiredView):
     """Replies with the XML Metadata IDSSODescriptor."""
 
-    def get(self, request, application):
+    def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
         entity_id = self.provider.issuer
         slo_url = request.build_absolute_uri(
@@ -250,7 +255,7 @@ class InitiateLoginView(AccessRequiredView):
     """IdP-initiated Login"""
 
     # pylint: disable=unused-argument
-    def get(self, request, application):
+    def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
         self.provider.processor.init_deep_link(request, "")
         self.provider.processor.is_idp_initiated = True
