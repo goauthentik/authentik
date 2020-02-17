@@ -2,15 +2,17 @@
 from datetime import timedelta
 from random import SystemRandom
 from time import sleep
-from typing import Optional
+from typing import Optional, Any
 from uuid import uuid4
 
+from jinja2.nativetypes import NativeEnvironment
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.urls import reverse_lazy
+from django.http import HttpRequest
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -22,6 +24,7 @@ from passbook.policies.exceptions import PolicyException
 from passbook.policies.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+NATIVE_ENVIRONMENT = NativeEnvironment()
 
 
 def default_nonce_duration():
@@ -293,9 +296,15 @@ class PropertyMapping(UUIDModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     name = models.TextField()
+    template = models.TextField()
 
     form = ""
     objects = InheritanceManager()
+
+    def render(self, user: User, request: HttpRequest, **kwargs) -> Any:
+        """Render `self.template` using `**kwargs` as Context."""
+        template = NATIVE_ENVIRONMENT.from_string(self.template)
+        return template.render(user=user, request=request, **kwargs)
 
     def __str__(self):
         return f"Property Mapping {self.name}"
