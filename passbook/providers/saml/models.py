@@ -23,12 +23,12 @@ class SAMLProvider(Provider):
     issuer = models.TextField()
 
     assertion_valid_not_before = models.TextField(
-        default="minutes=5",
+        default="minutes=-5",
         validators=[timedelta_string_validator],
         help_text=_(
             (
-                "Assertion valid not before current time - this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
+                "Assertion valid not before current time + this value "
+                "(Format: hours=-1;minutes=-2;seconds=-3)."
             )
         ),
     )
