@@ -1,5 +1,5 @@
 """passbook policy engine"""
-from multiprocessing import Pipe
+from multiprocessing import Pipe, set_start_method
 from multiprocessing.connection import Connection
 from typing import List, Optional, Tuple
 
@@ -12,7 +12,9 @@ from passbook.policies.process import PolicyProcess, cache_key
 from passbook.policies.struct import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-
+# This is only really needed for macOS, because Python 3.8 changed the default to spawn
+# spawn causes issues with objects that aren't picklable, and also the django setup
+set_start_method("fork")
 
 class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
