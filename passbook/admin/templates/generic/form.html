@@ -30,12 +30,12 @@
   <div class="">
     <form action="" method="post" class="form-horizontal">
       {% include 'partials/form.html' with form=form %}
+      {% block beneath_form %}
+      {% endblock %}
       <a class="btn btn-default" href="{% back %}">{% trans "Cancel" %}</a>
       <input type="submit" class="btn btn-primary" value="{% block action %}{% endblock %}" />
     </form>
   </div>
-  {% block beneath_form %}
-  {% endblock %}
   <script>
     const attributes = document.getElementsByName('attributes');
     if (attributes.length > 0) {
