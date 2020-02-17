@@ -96,6 +96,7 @@ class PropertyMappingUpdateView(
     success_message = _("Successfully updated Property Mapping")
 
     def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):
             kwargs["base_template"] = form_cls.template_name
