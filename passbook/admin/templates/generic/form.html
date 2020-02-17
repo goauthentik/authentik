@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
 <link rel="stylesheet" href="{% static 'codemirror/theme/monokai.css' %}">
 <script src="{% static 'codemirror/mode/yaml/yaml.js' %}"></script>
+<script src="{% static 'codemirror/mode/jinja2/jinja2.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -29,17 +30,29 @@
   <div class="">
     <form action="" method="post" class="form-horizontal">
       {% include 'partials/form.html' with form=form %}
+      {% block beneath_form %}
+      {% endblock %}
       <a class="btn btn-default" href="{% back %}">{% trans "Cancel" %}</a>
       <input type="submit" class="btn btn-primary" value="{% block action %}{% endblock %}" />
     </form>
   </div>
-  {% block beneath_form %}
-  {% endblock %}
   <script>
-    let attributes = document.getElementsByName('attributes');
+    const attributes = document.getElementsByName('attributes');
     if (attributes.length > 0) {
-      let myCodeMirror = CodeMirror.fromTextArea(attributes[0], {
+      // https://github.com/codemirror/CodeMirror/issues/5092
+      attributes[0].removeAttribute("required");
+      const attributesCM = CodeMirror.fromTextArea(attributes[0], {
         mode: 'yaml',
+        theme: 'monokai',
+        lineNumbers: true,
+      });
+    }
+    const templates = document.getElementsByName('template');
+    if (templates.length > 0) {
+      // https://github.com/codemirror/CodeMirror/issues/5092
+      templates[0].removeAttribute("required");
+      const templateCM = CodeMirror.fromTextArea(templates[0], {
+        mode: 'jinja2',
         theme: 'monokai',
         lineNumbers: true,
       });

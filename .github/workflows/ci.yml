@@ -56,7 +56,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pip pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev && pipenv install --dev prospector --skip-lock
       - name: Lint with prospector
         run: pipenv run prospector
   bandit:

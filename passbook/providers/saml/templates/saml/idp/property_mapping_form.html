@@ -1,0 +1,20 @@
+{% extends "generic/form.html" %}
+
+{% load i18n %}
+
+{% block beneath_form %}
+<div class="form-group ">
+    <label class="col-sm-2 control-label" for="friendly_name-2">
+    </label>
+    <div class="col-sm-10">
+        <p>
+            Expression using <a href="https://jinja.palletsprojects.com/en/2.11.x/templates/">Jinja</a>. Following variables are available:
+            <ul>
+                <li><code>user</code>: Passbook User Object (<a href="https://beryju.github.io/passbook/reference/property-mappings/user-object/">Reference</a>)</li>
+                <li><code>request</code>: Django HTTP Request Object (<a href="https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects">Reference</a>) </li>
+                <li><code>provider</code>: Passbook SAML Provider Object (<a href="https://github.com/BeryJu/passbook/blob/master/passbook/providers/saml/models.py#L16">Reference</a>) </li>
+            </ul>
+        </p>
+    </div>
+</div>
+{% endblock %}

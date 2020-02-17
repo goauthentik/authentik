@@ -6,7 +6,7 @@ import ldap3.core.exceptions
 from structlog import get_logger
 
 from passbook.core.models import Group, User
-from passbook.sources.ldap.models import LDAPSource
+from passbook.sources.ldap.models import LDAPSource, LDAPPropertyMapping
 
 LOGGER = get_logger()
 
@@ -154,7 +154,10 @@ class Connector:
     ) -> Dict[str, Dict[Any, Any]]:
         properties = {"attributes": {}}
         for mapping in self._source.property_mappings.all().select_subclasses():
-            properties[mapping.object_field] = attributes.get(mapping.ldap_property, "")
+            mapping: LDAPPropertyMapping
+            properties[mapping.object_field] = mapping.evaluate(
+                user=None, request=None, ldap=attributes
+            )
         if self._source.object_uniqueness_field in attributes:
             properties["attributes"]["ldap_uniq"] = attributes.get(
                 self._source.object_uniqueness_field

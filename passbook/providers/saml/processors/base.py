@@ -98,17 +98,19 @@ class Processor:
 
         for mapping in self._remote.property_mappings.all().select_subclasses():
             if isinstance(mapping, SAMLPropertyMapping):
+                value = mapping.evaluate(
+                    user=self._http_request.user,
+                    request=self._http_request,
+                    provider=self._remote,
+                )
                 mapping_payload = {
                     "Name": mapping.saml_name,
-                    "ValueArray": [],
                     "FriendlyName": mapping.friendly_name,
                 }
-                for value in mapping.values:
-                    mapping_payload["ValueArray"].append(
-                        value.format(
-                            user=self._http_request.user, request=self._http_request
-                        )
-                    )
+                if isinstance(value, list):
+                    mapping_payload["ValueArray"] = value
+                else:
+                    mapping_payload["Value"] = value
                 attributes.append(mapping_payload)
         self._assertion_params["ATTRIBUTES"] = attributes
         self._assertion_xml = get_assertion_xml(

@@ -50,10 +50,12 @@ class LDAPSourceForm(forms.ModelForm):
 class LDAPPropertyMappingForm(forms.ModelForm):
     """LDAP Property Mapping form"""
 
+    template_name = "ldap/property_mapping_form.html"
+
     class Meta:
 
         model = LDAPPropertyMapping
-        fields = ["name", "ldap_property", "object_field"]
+        fields = ["name", "object_field", "expression"]
         widgets = {
             "name": forms.TextInput(),
             "ldap_property": forms.TextInput(),

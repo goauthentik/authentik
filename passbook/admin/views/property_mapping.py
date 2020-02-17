@@ -66,6 +66,9 @@ class PropertyMappingCreateView(
             if x.__name__ == property_mapping_type
         )
         kwargs["type"] = model._meta.verbose_name
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
         return kwargs
 
     def get_form_class(self):
@@ -91,6 +94,12 @@ class PropertyMappingUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("passbook_admin:property-mappings")
     success_message = _("Successfully updated Property Mapping")
+
+    def get_context_data(self, **kwargs):
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
+        return kwargs
 
     def get_form_class(self):
         form_class_path = self.get_object().form
