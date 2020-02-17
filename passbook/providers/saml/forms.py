@@ -4,7 +4,6 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
-from passbook.lib.fields import DynamicArrayField
 from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
@@ -63,10 +62,9 @@ class SAMLPropertyMappingForm(forms.ModelForm):
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = ["name", "saml_name", "friendly_name", "values"]
+        fields = ["name", "saml_name", "friendly_name", "template"]
         widgets = {
             "name": forms.TextInput(),
             "saml_name": forms.TextInput(),
             "friendly_name": forms.TextInput(),
         }
-        field_classes = {"values": DynamicArrayField}

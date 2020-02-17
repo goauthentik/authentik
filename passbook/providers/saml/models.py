@@ -1,5 +1,4 @@
 """passbook saml_idp Models"""
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -118,15 +117,6 @@ class SAMLPropertyMapping(PropertyMapping):
 
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
-    values = ArrayField(
-        models.TextField(),
-        help_text=_(
-            (
-                "This string can contain string substitutions delimited by {}."
-                " The following Variables are available: user, request"
-            )
-        ),
-    )
 
     form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
 
