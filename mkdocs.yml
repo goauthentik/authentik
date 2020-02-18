@@ -19,6 +19,7 @@ nav:
           - Rancher: integrations/services/rancher/index.md
           - Harbor: integrations/services/harbor/index.md
           - Sentry: integrations/services/sentry/index.md
+          - Ansible Tower/AWX: integrations/services/tower-awx/index.md
   - Reference:
       - Property Mappings:
           - User Object: reference/property-mappings/user-object.md
