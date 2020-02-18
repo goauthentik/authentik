@@ -20,7 +20,7 @@ Create an application in passbook and note the slug, as this will be used later.
 -   Audience: `https://gitlab.company`
 -   Issuer: `https://gitlab.company`
 
-You can of course use a custom Signing Certificate, and adjust the Assertion Length. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
+You can of course use a custom Signing Certificate, and adjust durations. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
 
 ## GitLab Configuration
 

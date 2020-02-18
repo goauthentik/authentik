@@ -21,7 +21,7 @@ Create an application in passbook and note the slug, as this will be used later.
 -   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
 -   Issuer: `passbook`
 
-You can of course use a custom Signing Certificate, and adjust the Assertion Length.
+You can of course use a custom Signing Certificate, and adjust durations.
 
 ## Rancher
 

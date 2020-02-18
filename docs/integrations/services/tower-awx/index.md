@@ -25,7 +25,7 @@ Create an application in passbook and note the slug, as this will be used later.
 -   Audience: `awx`
 -   Issuer: `https://awx.company/sso/metadata/saml/`
 
-You can of course use a custom Signing Certificate, and adjust the Assertion Length.
+You can of course use a custom Signing Certificate, and adjust durations.
 
 ## AWX Configuration
 

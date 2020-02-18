@@ -15,6 +15,7 @@ nav:
   - Policies: policies.md
   - Integrations:
       - as Provider:
+          - Amazon Web Services: integrations/services/aws/index.md
           - GitLab: integrations/services/gitlab/index.md
           - Rancher: integrations/services/rancher/index.md
           - Harbor: integrations/services/harbor/index.md
