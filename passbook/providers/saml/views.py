@@ -18,7 +18,6 @@ from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application
-from passbook.lib.mixins import CSRFExemptMixin
 from passbook.lib.utils.template import render_to_string
 from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
@@ -180,7 +179,8 @@ class LoginProcessView(AccessRequiredView):
         return self.handle_redirect(saml_params, True)
 
 
-class LogoutView(CSRFExemptMixin, AccessRequiredView):
+@method_decorator(csrf_exempt, name="dispatch")
+class LogoutView(AccessRequiredView):
     """Allows a non-SAML 2.0 URL to log out the user and
     returns a standard logged-out page. (SalesForce and others use this method,
     though it's technically not SAML 2.0)."""
@@ -202,7 +202,8 @@ class LogoutView(CSRFExemptMixin, AccessRequiredView):
         return render(request, "saml/idp/logged_out.html")
 
 
-class SLOLogout(CSRFExemptMixin, AccessRequiredView):
+@method_decorator(csrf_exempt, name="dispatch")
+class SLOLogout(AccessRequiredView):
     """Receives a SAML 2.0 LogoutRequest from a Service Provider,
     logs out the user and returns a standard logged-out page."""
 
