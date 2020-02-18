@@ -2,20 +2,20 @@
 from datetime import timedelta
 from random import SystemRandom
 from time import sleep
-from typing import Optional, Any
+from typing import Any, Optional
 from uuid import uuid4
 
-from jinja2.exceptions import TemplateSyntaxError, UndefinedError
-from jinja2.nativetypes import NativeEnvironment
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.urls import reverse_lazy
 from django.http import HttpRequest
+from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
+from jinja2.exceptions import TemplateSyntaxError, UndefinedError
+from jinja2.nativetypes import NativeEnvironment
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
