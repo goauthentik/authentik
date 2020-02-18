@@ -15,7 +15,7 @@ class OverviewView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs["applications"] = []
-        for application in Application.objects.all():
+        for application in Application.objects.all().order_by('name'):
             engine = PolicyEngine(
                 application.policies.all(), self.request.user, self.request
             )
