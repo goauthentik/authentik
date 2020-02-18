@@ -67,6 +67,8 @@ class UserDeleteView(
     model = User
     permission_required = "passbook_core.delete_user"
 
+    # By default the object's name is user which is used by other checks
+    context_object_name = "object"
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:users")
     success_message = _("Successfully deleted User")
