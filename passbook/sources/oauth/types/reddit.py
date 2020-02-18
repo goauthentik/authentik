@@ -1,16 +1,10 @@
 """Reddit OAuth Views"""
-import json
-
 from requests.auth import HTTPBasicAuth
-from requests.exceptions import RequestException
-from structlog import get_logger
 
 from passbook.sources.oauth.clients import OAuth2Client
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
 from passbook.sources.oauth.utils import user_get_or_create
 from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
-
-LOGGER = get_logger()
 
 
 @MANAGER.source(kind=RequestKind.redirect, name="reddit")
@@ -33,26 +27,6 @@ class RedditOAuth2Client(OAuth2Client):
         return super(RedditOAuth2Client, self).get_access_token(
             request, callback, auth=auth
         )
-
-    def get_profile_info(self, raw_token):
-        "Fetch user profile information."
-        try:
-            token = json.loads(raw_token)
-            headers = {
-                "Authorization": "%s %s" % (token["token_type"], token["access_token"])
-            }
-            response = self.request(
-                "get",
-                self.source.profile_url,
-                token=token["access_token"],
-                headers=headers,
-            )
-            response.raise_for_status()
-        except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile", exc=exc)
-            return None
-        else:
-            return response.json() or response.text
 
 
 @MANAGER.source(kind=RequestKind.callback, name="reddit")
