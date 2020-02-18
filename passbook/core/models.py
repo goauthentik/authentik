@@ -5,6 +5,7 @@ from time import sleep
 from typing import Any, Optional
 from uuid import uuid4
 
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -313,6 +314,13 @@ class PropertyMapping(UUIDModel):
             return expression.render(user=user, request=request, **kwargs)
         except UndefinedError as exc:
             raise PropertyMappingExpressionException from exc
+
+    def save(self, *args, **kwargs):
+        try:
+            NATIVE_ENVIRONMENT.from_string(self.expression)
+        except TemplateSyntaxError as exc:
+            raise ValidationError("Expression Syntax Error") from exc
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Property Mapping {self.name}"
