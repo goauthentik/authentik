@@ -124,9 +124,9 @@ class OAuthCallback(OAuthClientMixin, View):
                 source=self.source, identifier=identifier, request=request
             )
             if user is None:
-                LOGGER.debug("Handling new user")
+                LOGGER.debug("Handling new user", source=self.source)
                 return self.handle_new_user(self.source, connection, info)
-            LOGGER.debug("Handling existing user")
+            LOGGER.debug("Handling existing user", source=self.source)
             return self.handle_existing_user(self.source, user, connection, info)
 
     # pylint: disable=unused-argument
@@ -179,7 +179,7 @@ class OAuthCallback(OAuthClientMixin, View):
 
     def handle_login_failure(self, source, reason):
         "Message user and redirect on error."
-        LOGGER.warning("Authentication Failure: %s", reason)
+        LOGGER.warning("Authentication Failure", reason=reason)
         messages.error(self.request, _("Authentication Failed."))
         return redirect(self.get_error_redirect(source, reason))
 

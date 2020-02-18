@@ -18,7 +18,7 @@ def get_links(model_instance):
     links = {}
 
     if not isinstance(model_instance, Model):
-        LOGGER.warning("Model %s is not instance of Model", model_instance)
+        LOGGER.warning("Model is not instance of Model", model_instance=model_instance)
         return links
 
     try:
@@ -43,7 +43,7 @@ def get_htmls(context, model_instance):
     htmls = []
 
     if not isinstance(model_instance, Model):
-        LOGGER.warning("Model %s is not instance of Model", model_instance)
+        LOGGER.warning("Model is not instance of Model", model_instance=model_instance)
         return htmls
 
     try:

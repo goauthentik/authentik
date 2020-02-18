@@ -70,7 +70,7 @@ class SignUpForm(forms.Form):
         """Check if username is used already"""
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
-            LOGGER.warning("Username %s already exists", username)
+            LOGGER.warning("username already exists", username=username)
             raise ValidationError(_("Username already exists"))
         return username
 
@@ -79,7 +79,7 @@ class SignUpForm(forms.Form):
         email = self.cleaned_data.get("email")
         # Check if user exists already, error early
         if User.objects.filter(email=email).exists():
-            LOGGER.debug("email %s exists in django", email)
+            LOGGER.debug("email already exists", email=email)
             raise ValidationError(_("Email already exists"))
         return email
 

@@ -24,7 +24,7 @@ class AzureADOAuth2Client(OAuth2Client):
             response = self.request("get", self.source.profile_url, headers=headers)
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile: %s", exc)
+            LOGGER.warning("Unable to fetch user profile", exc=exc)
             return None
         else:
             return response.json() or response.text

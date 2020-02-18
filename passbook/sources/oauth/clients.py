@@ -18,13 +18,13 @@ LOGGER = get_logger()
 class BaseOAuthClient:
     """Base OAuth Client"""
 
-    _session = None
+    _session: Session = None
 
     def __init__(self, source, token=""):  # nosec
         self.source = source
         self.token = token
         self._session = Session()
-        self._session.headers.update({"User-Agent": "web:passbook:%s" % __version__})
+        self._session.headers.update({"User-Agent": "passbook %s" % __version__})
 
     def get_access_token(self, request, callback=None):
         "Fetch access token from callback request."
@@ -36,7 +36,7 @@ class BaseOAuthClient:
             response = self.request("get", self.source.profile_url, token=raw_token)
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile: %s", exc)
+            LOGGER.warning("Unable to fetch user profile", exc=exc)
             return None
         else:
             return response.json() or response.text
@@ -51,7 +51,7 @@ class BaseOAuthClient:
         additional = parameters or {}
         args.update(additional)
         params = urlencode(args)
-        LOGGER.info("Redirect args: %s", args)
+        LOGGER.info("redirect args", **args)
         return "{0}?{1}".format(self.source.authorization_url, params)
 
     def parse_raw_token(self, raw_token):
@@ -91,7 +91,7 @@ class OAuthClient(BaseOAuthClient):
                 )
                 response.raise_for_status()
             except RequestException as exc:
-                LOGGER.warning("Unable to fetch access token: %s", exc)
+                LOGGER.warning("Unable to fetch access token", exc=exc)
                 return None
             else:
                 return response.text
@@ -106,7 +106,7 @@ class OAuthClient(BaseOAuthClient):
             )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch request token: %s", exc)
+            LOGGER.warning("Unable to fetch request token", exc=exc)
             return None
         else:
             return response.text
@@ -195,7 +195,7 @@ class OAuth2Client(BaseOAuthClient):
             )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch access token: %s", exc)
+            LOGGER.warning("Unable to fetch access token", exc=exc)
             return None
         else:
             return response.text

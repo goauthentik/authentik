@@ -156,26 +156,9 @@ class SignUpView(UserPassesTestMixin, FormView):
             for error in exc.messages:
                 errors.append(error)
             return self.form_invalid(form)
-        # needs_confirmation = True
-        # if self._invitation and not self._invitation.needs_confirmation:
-        #     needs_confirmation = False
-        # if needs_confirmation:
-        #     nonce = Nonce.objects.create(user=self._user)
-        #     LOGGER.debug(str(nonce.uuid))
-        #     # Send email to user
-        #     send_email.delay(self._user.email, _('Confirm your account.'),
-        #                      'email/account_confirm.html', {
-        #                          'url': self.request.build_absolute_uri(
-        #                              reverse('passbook_core:auth-sign-up-confirm', kwargs={
-        #                                  'nonce': nonce.uuid
-        #                              })
-        #                          )
-        #                      })
-        #     self._user.is_active = False
-        #     self._user.save()
         self.consume_invitation()
         messages.success(self.request, _("Successfully signed up!"))
-        LOGGER.debug("Successfully signed up %s", form.cleaned_data.get("email"))
+        LOGGER.debug("Successfully signed up", email=form.cleaned_data.get("email"))
         return redirect(reverse("passbook_core:auth-login"))
 
     def consume_invitation(self):
