@@ -51,7 +51,10 @@
                 {% for url, icon, name in sources %}
                 <li class="login-pf-social-link">
                     <a href="{{ url }}">
-                        <img src="{% static 'img/logos/' %}{{ icon }}.svg" alt="{{ name }}"> {{ name }}
+                        {% if icon %}
+                        <img src="{% static 'img/logos/' %}{{ icon }}.svg" alt="{{ name }}">
+                        {% endif %}
+                        {{ name }}
                     </a>
                 </li>
                 {% endfor %}
