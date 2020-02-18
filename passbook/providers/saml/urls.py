@@ -4,13 +4,16 @@ from django.urls import path
 from passbook.providers.saml import views
 
 urlpatterns = [
-    path(
-        "<slug:application>/login/", views.LoginBeginView.as_view(), name="saml-login"
-    ),
+    # This view is used to initiate a Login-flow from the IDP
     path(
         "<slug:application>/login/initiate/",
         views.InitiateLoginView.as_view(),
         name="saml-login-initiate",
+    ),
+    # This view is the endpoint a SP would redirect to, and saves data into the session
+    # this is required as the process view which it redirects to might have to login first.
+    path(
+        "<slug:application>/login/", views.LoginProcessView.as_view(), name="saml-login"
     ),
     path(
         "<slug:application>/login/process/",

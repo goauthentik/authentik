@@ -5,10 +5,11 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
+from django.utils.html import mark_safe
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -19,26 +20,14 @@ from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application
 from passbook.lib.mixins import CSRFExemptMixin
 from passbook.lib.utils.template import render_to_string
+from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
 from passbook.providers.saml import exceptions
 from passbook.providers.saml.models import SAMLProvider
+from passbook.providers.saml.processors.types import SAMLResponseParams
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
-
-
-def _generate_response(request: HttpRequest, provider: SAMLProvider) -> HttpResponse:
-    """Generate a SAML response using processor_instance and return it in the proper Django
-    response."""
-    try:
-        provider.processor.init_deep_link(request, "")
-        ctx = provider.processor.generate_response()
-        ctx["remote"] = provider
-        ctx["is_login"] = True
-    except exceptions.UserNotAuthorized:
-        return render(request, "saml/idp/invalid_user.html")
-
-    return render(request, "saml/idp/login.html", ctx)
 
 
 class AccessRequiredView(AccessMixin, View):
@@ -97,7 +86,7 @@ class LoginBeginView(AccessRequiredView):
         try:
             request.session["SAMLRequest"] = source["SAMLRequest"]
         except (KeyError, MultiValueDictKeyError):
-            return HttpResponseBadRequest("the SAML request payload is missing")
+            return bad_request_message(request, "The SAML request payload is missing.")
 
         request.session["RelayState"] = source.get("RelayState", "")
         return redirect(
@@ -108,73 +97,84 @@ class LoginBeginView(AccessRequiredView):
         )
 
 
-class RedirectToSPView(AccessRequiredView):
-    """Return autosubmit form"""
-
-    def get(
-        self, request: HttpRequest, acs_url: str, saml_response: str, relay_state: str
-    ) -> HttpResponse:
-        """Return autosubmit form"""
-        return render(
-            request,
-            "core/autosubmit_form.html",
-            {
-                "url": acs_url,
-                "attrs": {"SAMLResponse": saml_response, "RelayState": relay_state},
-            },
-        )
-
-
 class LoginProcessView(AccessRequiredView):
     """Processor-based login continuation.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
+
+    def handle_redirect(
+        self, params: SAMLResponseParams, skipped_authorization: bool
+    ) -> HttpResponse:
+        """Handle direct redirect to SP"""
+        # Log Application Authorization
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=self.provider.application,
+            skipped_authorization=skipped_authorization,
+        ).from_http(self.request)
+        return render(
+            self.request,
+            "saml/idp/autosubmit_form.html",
+            {
+                "url": params.acs_url,
+                "attrs": {
+                    "SAMLResponse": params.saml_response,
+                    "RelayState": params.relay_state,
+                },
+            },
+        )
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Handle get request, i.e. render form"""
         # User access gets checked in dispatch
-        if self.provider.application.skip_authorization:
-            ctx = self.provider.processor.generate_response()
-            # Log Application Authorization
-            Event.new(
-                EventAction.AUTHORIZE_APPLICATION,
-                authorized_application=self.provider.application,
-                skipped_authorization=True,
-            ).from_http(request)
-            return RedirectToSPView.as_view()(
-                request=request,
-                acs_url=ctx["acs_url"],
-                saml_response=ctx["saml_response"],
-                relay_state=ctx["relay_state"],
-            )
+
+        # Otherwise we generate the IdP initiated session
         try:
-            return _generate_response(request, self.provider)
+            # application.skip_authorization is set so we directly redirect the user
+            if self.provider.application.skip_authorization:
+                self.provider.processor.can_handle(request)
+                saml_params = self.provider.processor.generate_response()
+                return self.handle_redirect(saml_params, True)
+
+            self.provider.processor.init_deep_link(request)
+            params = self.provider.processor.generate_response()
+
+            return render(
+                request,
+                "saml/idp/login.html",
+                {
+                    "saml_params": params,
+                    "provider": self.provider,
+                    # This is only needed to for the template to render correctly
+                    "is_login": True,
+                },
+            )
+
         except exceptions.CannotHandleAssertion as exc:
-            LOGGER.debug(exc)
-        return HttpResponseBadRequest()
+            LOGGER.error(exc)
+            did_you_mean_link = request.build_absolute_uri(
+                reverse(
+                    "passbook_providers_saml:saml-login-initiate",
+                    kwargs={"application": application},
+                )
+            )
+            did_you_mean_message = (
+                f" Did you mean to go <a href='{did_you_mean_link}'>here</a>?"
+            )
+            return bad_request_message(
+                request, mark_safe(str(exc) + did_you_mean_message)
+            )
 
     # pylint: disable=unused-argument
     def post(self, request: HttpRequest, application: str) -> HttpResponse:
         """Handle post request, return back to ACS"""
         # User access gets checked in dispatch
-        if request.POST.get("ACSUrl", None):
-            # User accepted request
-            Event.new(
-                EventAction.AUTHORIZE_APPLICATION,
-                authorized_application=self.provider.application,
-                skipped_authorization=False,
-            ).from_http(request)
-            return RedirectToSPView.as_view()(
-                request=request,
-                acs_url=request.POST.get("ACSUrl"),
-                saml_response=request.POST.get("SAMLResponse"),
-                relay_state=request.POST.get("RelayState"),
-            )
-        try:
-            return _generate_response(request, self.provider)
-        except exceptions.CannotHandleAssertion as exc:
-            LOGGER.debug(exc)
-        return HttpResponseBadRequest()
+
+        # we get here when skip_authorization is False, and after the user accepted
+        # the authorization form
+        self.provider.processor.can_handle(request)
+        saml_params = self.provider.processor.generate_response()
+        return self.handle_redirect(saml_params, True)
 
 
 class LogoutView(CSRFExemptMixin, AccessRequiredView):
@@ -254,9 +254,46 @@ class DescriptorDownloadView(AccessRequiredView):
 class InitiateLoginView(AccessRequiredView):
     """IdP-initiated Login"""
 
+    def handle_redirect(
+        self, params: SAMLResponseParams, skipped_authorization: bool
+    ) -> HttpResponse:
+        """Handle direct redirect to SP"""
+        # Log Application Authorization
+        Event.new(
+            EventAction.AUTHORIZE_APPLICATION,
+            authorized_application=self.provider.application,
+            skipped_authorization=skipped_authorization,
+        ).from_http(self.request)
+        return render(
+            self.request,
+            "saml/idp/autosubmit_form.html",
+            {
+                "url": params.acs_url,
+                "attrs": {
+                    "SAMLResponse": params.saml_response,
+                    "RelayState": params.relay_state,
+                },
+            },
+        )
+
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
-        self.provider.processor.init_deep_link(request, "")
         self.provider.processor.is_idp_initiated = True
-        return _generate_response(request, self.provider)
+        self.provider.processor.init_deep_link(request)
+        params = self.provider.processor.generate_response()
+
+        # IdP-initiated Login Flow
+        if self.provider.application.skip_authorization:
+            return self.handle_redirect(params, True)
+
+        return render(
+            request,
+            "saml/idp/login.html",
+            {
+                "saml_params": params,
+                "provider": self.provider,
+                # This is only needed to for the template to render correctly
+                "is_login": True,
+            },
+        )

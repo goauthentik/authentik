@@ -1,5 +1,9 @@
-{% extends "saml/idp/base.html" %}
+{% extends "login/base.html" %}
+
 {% load i18n %}
-{% block content %}
-{% trans "You have successfully logged out of the Identity Provider." %}
+
+{% block card %}
+<p>
+    {% trans "You have successfully logged out of the Identity Provider." %}
+</p>
 {% endblock %}

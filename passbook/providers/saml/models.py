@@ -82,7 +82,7 @@ class SAMLProvider(Provider):
         self._meta.get_field("processor_path").choices = get_provider_choices()
 
     @property
-    def processor(self):
+    def processor(self) -> Processor:
         """Return selected processor as instance"""
         if not self._processor:
             try:

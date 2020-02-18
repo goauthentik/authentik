@@ -7,6 +7,7 @@ from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.providers.saml.exceptions import CannotHandleAssertion
+from passbook.providers.saml.processors.types import SAMLResponseParams
 from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate, nice64
 from passbook.providers.saml.utils.time import get_time_string, timedelta_from_string
@@ -133,14 +134,13 @@ class Processor:
             self._response_params, saml_provider=self._remote, assertion_id=assertion_id
         )
 
-    def _get_django_response_params(self) -> Dict[str, str]:
+    def _get_saml_response_params(self) -> SAMLResponseParams:
         """Returns a dictionary of parameters for the response template."""
-        return {
-            "acs_url": self._request_params["ACS_URL"],
-            "saml_response": self._saml_response,
-            "relay_state": self._relay_state,
-            "autosubmit": self._remote.application.skip_authorization,
-        }
+        return SAMLResponseParams(
+            acs_url=self._request_params["ACS_URL"],
+            saml_response=self._saml_response,
+            relay_state=self._relay_state,
+        )
 
     def _decode_and_parse_request(self):
         """Parses various parameters from _request_xml into _request_params."""
@@ -183,7 +183,7 @@ class Processor:
         # Read the request.
         try:
             self._extract_saml_request()
-        except Exception as exc:
+        except KeyError as exc:
             raise CannotHandleAssertion(
                 f"can't find SAML request in user session: {exc}"
             ) from exc
@@ -196,7 +196,7 @@ class Processor:
         self._validate_request()
         return True
 
-    def generate_response(self) -> Dict[str, str]:
+    def generate_response(self) -> SAMLResponseParams:
         """Processes request and returns template variables suitable for a response."""
         # Build the assertion and response.
         # Only call can_handle if SP initiated Request, otherwise we have no Request
@@ -210,9 +210,9 @@ class Processor:
         self._encode_response()
 
         # Return proper template params.
-        return self._get_django_response_params()
+        return self._get_saml_response_params()
 
-    def init_deep_link(self, request: HttpRequest, url: str):
+    def init_deep_link(self, request: HttpRequest):
         """Initialize this Processor to make an IdP-initiated call to the SP's
         deep-linked URL."""
         self._http_request = request
@@ -227,4 +227,4 @@ class Processor:
             "DESTINATION": "",
             "PROVIDER_NAME": "",
         }
-        self._relay_state = url
+        self._relay_state = ""

@@ -4,23 +4,21 @@
 {% load i18n %}
 
 {% block title %}
-{% title 'Authorize Application' %}
+{% title 'Redirecting...' %}
 {% endblock %}
 
 {% block card %}
 <header class="login-pf-header">
-    <h1>{% trans 'Authorize Application' %}</h1>
+    <h1>{% trans 'Redirecting...' %}</h1>
 </header>
-<form method="POST" action="{{ saml_params.acs_url }}">
+<form method="POST" action="{{ url }}">
     {% csrf_token %}
-    <input type="hidden" name="ACSUrl" value="{{ saml_params.acs_url }}">
-    <input type="hidden" name="RelayState" value="{{ saml_params.relay_state }}" />
-    <input type="hidden" name="SAMLResponse" value="{{ saml_params.saml_response }}" />
+    {% for key, value in attrs.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
     <div class="login-group">
         <h3>
-            {% blocktrans with provider=provider.application.name %}
-            You're about to sign into {{ provider }}
-            {% endblocktrans %}
+            {% trans "Redirecting..." %}
         </h3>
         <p>
             {% blocktrans with user=user %}
@@ -31,4 +29,11 @@
         <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
     </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    $('form').submit();
+</script>
 {% endblock %}

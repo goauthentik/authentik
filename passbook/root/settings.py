@@ -276,7 +276,7 @@ structlog.configure_once(
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(),
         structlog.processors.StackInfoRenderer(),
-        # structlog.processors.format_exc_info,
+        structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     context_class=structlog.threadlocal.wrap_dict(dict),
