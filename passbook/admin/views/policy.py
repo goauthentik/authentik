@@ -52,6 +52,13 @@ class PolicyCreateView(
     success_url = reverse_lazy("passbook_admin:policies")
     success_message = _("Successfully created Policy")
 
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
+        return kwargs
+
     def get_form_class(self):
         policy_type = self.request.GET.get("type")
         model = next(x for x in Policy.__subclasses__() if x.__name__ == policy_type)
@@ -71,6 +78,13 @@ class PolicyUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("passbook_admin:policies")
     success_message = _("Successfully updated Policy")
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
+        return kwargs
 
     def get_form_class(self):
         form_class_path = self.get_object().form
