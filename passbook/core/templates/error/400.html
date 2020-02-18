@@ -20,7 +20,7 @@
 </header>
 <form>
     {% if message %}
-    <p>{% trans message %}</p>
+    <h3>{% trans message %}</h3>
     {% endif %}
     {% if 'back' in request.GET %}
     <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
