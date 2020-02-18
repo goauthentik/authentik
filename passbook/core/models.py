@@ -5,6 +5,7 @@ from time import sleep
 from typing import Optional, Any
 from uuid import uuid4
 
+from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
@@ -18,6 +19,7 @@ from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
+from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 from passbook.policies.exceptions import PolicyException
@@ -303,8 +305,14 @@ class PropertyMapping(UUIDModel):
 
     def evaluate(self, user: User, request: HttpRequest, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        expression = NATIVE_ENVIRONMENT.from_string(self.expression)
-        return expression.render(user=user, request=request, **kwargs)
+        try:
+            expression = NATIVE_ENVIRONMENT.from_string(self.expression)
+        except TemplateSyntaxError as exc:
+            raise PropertyMappingExpressionException from exc
+        try:
+            return expression.render(user=user, request=request, **kwargs)
+        except UndefinedError as exc:
+            raise PropertyMappingExpressionException from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

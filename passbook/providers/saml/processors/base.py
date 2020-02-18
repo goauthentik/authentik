@@ -5,6 +5,7 @@ from defusedxml import ElementTree
 from django.http import HttpRequest
 from structlog import get_logger
 
+from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate, nice64
@@ -97,7 +98,10 @@ class Processor:
         from passbook.providers.saml.models import SAMLPropertyMapping
 
         for mapping in self._remote.property_mappings.all().select_subclasses():
-            if isinstance(mapping, SAMLPropertyMapping):
+            if not isinstance(mapping, SAMLPropertyMapping):
+                continue
+            try:
+                mapping: SAMLPropertyMapping
                 value = mapping.evaluate(
                     user=self._http_request.user,
                     request=self._http_request,
@@ -107,11 +111,16 @@ class Processor:
                     "Name": mapping.saml_name,
                     "FriendlyName": mapping.friendly_name,
                 }
+                # Normal values and arrays need different dict keys as they are handeled
+                # differently in the template
                 if isinstance(value, list):
                     mapping_payload["ValueArray"] = value
                 else:
                     mapping_payload["Value"] = value
                 attributes.append(mapping_payload)
+            except PropertyMappingExpressionException as exc:
+                self._logger.warning(exc)
+                continue
         self._assertion_params["ATTRIBUTES"] = attributes
         self._assertion_xml = get_assertion_xml(
             "saml/xml/assertions/generic.xml", self._assertion_params, signed=True
