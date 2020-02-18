@@ -53,6 +53,8 @@ class AuthenticationView(UserPassesTestMixin, View):
         """Checks if current request's domain matches configured Domain, and
         adds a warning if not."""
         current_domain = self.request.get_host()
+        if ":" in current_domain:
+            current_domain, _ = current_domain.split(":")
         config_domain = CONFIG.y("domain")
         if current_domain != config_domain:
             message = (
