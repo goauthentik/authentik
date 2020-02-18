@@ -1,6 +1,6 @@
 """OAuth Clients"""
-
 import json
+from typing import Dict
 from urllib.parse import parse_qs, urlencode
 
 from django.utils.crypto import constant_time_compare, get_random_string
@@ -33,7 +33,16 @@ class BaseOAuthClient:
     def get_profile_info(self, raw_token):
         "Fetch user profile information."
         try:
-            response = self.request("get", self.source.profile_url, token=raw_token)
+            token = json.loads(raw_token)
+            headers = {
+                "Authorization": f"{token['token_type']} {token['access_token']}"
+            }
+            response = self.request(
+                "get",
+                self.source.profile_url,
+                token=token["access_token"],
+                headers=headers,
+            )
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)
@@ -41,7 +50,7 @@ class BaseOAuthClient:
         else:
             return response.json() or response.text
 
-    def get_redirect_args(self, request, callback):
+    def get_redirect_args(self, request, callback) -> Dict[str, str]:
         "Get request parameters for redirect url."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
@@ -64,9 +73,7 @@ class BaseOAuthClient:
 
     @property
     def session_key(self):
-        """
-        Return Session Key
-        """
+        """Return Session Key"""
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
 
