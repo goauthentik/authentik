@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load static %}
+
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/addon/display/autorefresh.js' %}"></script>
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror/theme/monokai.css' %}">
+<script src="{% static 'codemirror/mode/xml/xml.js' %}"></script>
+
+<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{ provider.pk }}">{% trans 'View Metadata' %}</button>
+<div class="modal fade" id="{{ provider.pk }}" tabindex="-1" role="dialog" aria-labelledby="{{ provider.pk }}Label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" aria-label="Close">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" id="{{ provider.pk }}Label">{% trans 'Metadata' %}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <textarea class="codemirror" id="{{ provider.pk }}-textarea">
+{{ metadata }}
+          </textarea>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  CodeMirror.fromTextArea(document.getElementById("{{ provider.pk }}-textarea"), {
+    mode: 'xml',
+    theme: 'monokai',
+    lineNumbers: false,
+    readOnly: true,
+    autoRefresh: true,
+  });
+</script>

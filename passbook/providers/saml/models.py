@@ -106,6 +106,16 @@ class SAMLProvider(Provider):
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
+    def html_metadata_view(self, request):
+        """return template and context modal with to view Metadata without downloading it"""
+        from passbook.providers.saml.views import DescriptorDownloadView
+
+        metadata = DescriptorDownloadView.get_metadata(request, self)
+        return (
+            "saml/idp/admin_metadata_modal.html",
+            {"provider": self, "metadata": metadata,},
+        )
+
     class Meta:
 
         verbose_name = _("SAML Provider")

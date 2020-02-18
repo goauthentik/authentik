@@ -219,22 +219,23 @@ class SLOLogout(CSRFExemptMixin, AccessRequiredView):
 class DescriptorDownloadView(AccessRequiredView):
     """Replies with the XML Metadata IDSSODescriptor."""
 
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Replies with the XML Metadata IDSSODescriptor."""
-        entity_id = self.provider.issuer
+    @staticmethod
+    def get_metadata(request: HttpRequest, provider: SAMLProvider) -> str:
+        """Return rendered XML Metadata"""
+        entity_id = provider.issuer
         slo_url = request.build_absolute_uri(
             reverse(
                 "passbook_providers_saml:saml-logout",
-                kwargs={"application": application},
+                kwargs={"application": provider.application},
             )
         )
         sso_url = request.build_absolute_uri(
             reverse(
                 "passbook_providers_saml:saml-login",
-                kwargs={"application": application},
+                kwargs={"application": provider.application},
             )
         )
-        pubkey = strip_pem_header(self.provider.signing_cert.replace("\r", "")).replace(
+        pubkey = strip_pem_header(provider.signing_cert.replace("\r", "")).replace(
             "\n", ""
         )
         ctx = {
@@ -243,7 +244,12 @@ class DescriptorDownloadView(AccessRequiredView):
             "slo_url": slo_url,
             "sso_url": sso_url,
         }
-        metadata = render_to_string("saml/xml/metadata.xml", ctx)
+        return render_to_string("saml/xml/metadata.xml", ctx)
+
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, application: str) -> HttpResponse:
+        """Replies with the XML Metadata IDSSODescriptor."""
+        metadata = DescriptorDownloadView.get_metadata(request, self.provider)
         response = HttpResponse(metadata, content_type="application/xml")
         response["Content-Disposition"] = (
             'attachment; filename="' '%s_passbook_meta.xml"' % self.provider.name
