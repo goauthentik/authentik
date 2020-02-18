@@ -5,9 +5,9 @@ from time import sleep
 from typing import Any, Optional
 from uuid import uuid4
 
-from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.urls import reverse_lazy

@@ -98,6 +98,7 @@ INSTALLED_APPS = [
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
     "passbook.policies.sso.apps.PassbookPoliciesSSOConfig",
     "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
+    "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
