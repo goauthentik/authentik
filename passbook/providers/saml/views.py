@@ -123,7 +123,6 @@ class LoginProcessView(AccessRequiredView):
             },
         )
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Handle get request, i.e. render form"""
         # User access gets checked in dispatch
