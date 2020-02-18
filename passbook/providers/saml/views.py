@@ -225,13 +225,13 @@ class DescriptorDownloadView(AccessRequiredView):
         slo_url = request.build_absolute_uri(
             reverse(
                 "passbook_providers_saml:saml-logout",
-                kwargs={"application": provider.application},
+                kwargs={"application": provider.application.slug},
             )
         )
         sso_url = request.build_absolute_uri(
             reverse(
                 "passbook_providers_saml:saml-login",
-                kwargs={"application": provider.application},
+                kwargs={"application": provider.application.slug},
             )
         )
         pubkey = strip_pem_header(provider.signing_cert.replace("\r", "")).replace(
