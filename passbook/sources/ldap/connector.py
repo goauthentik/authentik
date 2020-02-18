@@ -5,8 +5,9 @@ import ldap3
 import ldap3.core.exceptions
 from structlog import get_logger
 
+from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.models import Group, User
-from passbook.sources.ldap.models import LDAPSource, LDAPPropertyMapping
+from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 LOGGER = get_logger()
 
@@ -155,9 +156,13 @@ class Connector:
         properties = {"attributes": {}}
         for mapping in self._source.property_mappings.all().select_subclasses():
             mapping: LDAPPropertyMapping
-            properties[mapping.object_field] = mapping.evaluate(
-                user=None, request=None, ldap=attributes
-            )
+            try:
+                properties[mapping.object_field] = mapping.evaluate(
+                    user=None, request=None, ldap=attributes
+                )
+            except PropertyMappingExpressionException as exc:
+                LOGGER.warning(exc)
+                continue
         if self._source.object_uniqueness_field in attributes:
             properties["attributes"]["ldap_uniq"] = attributes.get(
                 self._source.object_uniqueness_field
