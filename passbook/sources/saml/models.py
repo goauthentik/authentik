@@ -21,13 +21,15 @@ class SAMLSource(Source):
 
     @property
     def login_button(self):
-        url = reverse_lazy("passbook_sources_saml:login", kwargs={"source": self.slug})
+        url = reverse_lazy(
+            "passbook_sources_saml:login", kwargs={"source_slug": self.slug}
+        )
         return url, "", self.name
 
     @property
     def additional_info(self):
         metadata_url = reverse_lazy(
-            "passbook_sources_saml:metadata", kwargs={"source": self}
+            "passbook_sources_saml:metadata", kwargs={"source_slug": self}
         )
         return f'<a href="{metadata_url}" class="btn btn-default btn-sm">Metadata Download</a>'
 

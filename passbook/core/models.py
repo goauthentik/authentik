@@ -304,7 +304,9 @@ class PropertyMapping(UUIDModel):
     form = ""
     objects = InheritanceManager()
 
-    def evaluate(self, user: User, request: HttpRequest, **kwargs) -> Any:
+    def evaluate(
+        self, user: Optional[User], request: Optional[HttpRequest], **kwargs
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         try:
             expression = NATIVE_ENVIRONMENT.from_string(self.expression)

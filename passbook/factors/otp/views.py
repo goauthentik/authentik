@@ -19,7 +19,7 @@ from structlog import get_logger
 from passbook.audit.models import Event, EventAction
 from passbook.factors.otp.forms import OTPSetupForm
 from passbook.factors.otp.utils import otpauth_url
-from passbook.lib.boilerplate import NeverCacheMixin
+from passbook.lib.mixins import NeverCacheMixin
 from passbook.lib.config import CONFIG
 
 OTP_SESSION_KEY = "passbook_factors_otp_key"

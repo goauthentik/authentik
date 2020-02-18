@@ -42,7 +42,11 @@ class AccessRequiredView(AccessMixin, View):
             application = get_object_or_404(
                 Application, slug=self.kwargs["application"]
             )
-            self._provider = get_object_or_404(SAMLProvider, pk=application.provider_id)
+            provider: SAMLProvider = get_object_or_404(
+                SAMLProvider, pk=application.provider_id
+            )
+            self._provider = provider
+            return self._provider
         return self._provider
 
     def _has_access(self) -> bool:

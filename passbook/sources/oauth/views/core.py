@@ -1,4 +1,5 @@
 """Core OAauth Views"""
+from typing import Callable, Optional
 
 from django.conf import settings
 from django.contrib import messages
@@ -23,7 +24,7 @@ LOGGER = get_logger()
 class OAuthClientMixin:
     "Mixin for getting OAuth client for a source."
 
-    client_class = None
+    client_class: Optional[Callable] = None
 
     def get_client(self, source):
         "Get instance of the OAuth client for this source."

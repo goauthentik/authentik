@@ -1,7 +1,7 @@
 """policy structures"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Tuple
 
 from django.db.models import Model
 from django.http import HttpRequest
@@ -27,8 +27,8 @@ class PolicyRequest:
 class PolicyResult:
     """Small data-class to hold policy results"""
 
-    passing: bool = False
-    messages: List[str] = []
+    passing: bool
+    messages: Tuple[str]
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

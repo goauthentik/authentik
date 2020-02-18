@@ -24,9 +24,9 @@ from passbook.sources.saml.xml_render import get_authnrequest_xml
 class InitiateView(View):
     """Get the Form with SAML Request, which sends us to the IDP"""
 
-    def get(self, request: HttpRequest, source: str) -> HttpResponse:
+    def get(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
-        source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
         sso_destination = request.GET.get("next", None)
@@ -56,9 +56,9 @@ class InitiateView(View):
 class ACSView(View):
     """AssertionConsumerService, consume assertion and log user in"""
 
-    def post(self, request: HttpRequest, source: str) -> HttpResponse:
+    def post(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Handles a POSTed SSO Assertion and logs the user in."""
-        source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
         # sso_session = request.POST.get('RelayState', None)
@@ -74,9 +74,9 @@ class ACSView(View):
 class SLOView(View):
     """Single-Logout-View"""
 
-    def dispatch(self, request: HttpRequest, source: str) -> HttpResponse:
+    def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
-        source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
         logout(request)
@@ -93,9 +93,9 @@ class SLOView(View):
 class MetadataView(View):
     """Return XML Metadata for IDP"""
 
-    def dispatch(self, request: HttpRequest, source: str) -> HttpResponse:
+    def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with the XML Metadata SPSSODescriptor."""
-        source: SAMLSource = get_object_or_404(SAMLSource, slug=source)
+        source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         entity_id = get_entity_id(request, source)
         return render_xml(
             request,
