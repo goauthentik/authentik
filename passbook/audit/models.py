@@ -100,7 +100,6 @@ class Event(UUIDModel):
             app = getmodule(stack()[_inspect_offset][0]).__name__
         cleaned_kwargs = sanitize_dict(kwargs)
         event = Event(action=action.value, app=app, context=cleaned_kwargs)
-        LOGGER.debug("Created Audit event", action=action, context=cleaned_kwargs)
         return event
 
     def from_http(
@@ -129,6 +128,12 @@ class Event(UUIDModel):
             raise ValidationError(
                 "you may not edit an existing %s" % self._meta.model_name
             )
+        LOGGER.debug(
+            "Created Audit event",
+            action=self.action,
+            context=self.context,
+            client_ip=self.client_ip,
+        )
         return super().save(*args, **kwargs)
 
     class Meta:
