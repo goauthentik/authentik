@@ -10,9 +10,14 @@ nav:
       - Kubernetes: installation/kubernetes.md
   - Sources: sources.md
   - Providers: providers.md
-  - Property Mappings: property-mappings.md
+  - Property Mappings:
+      - Overview: property-mappings/index.md
+      - Reference:
+          - User Object: property-mappings/reference/user-object.md
   - Factors: factors.md
-  - Policies: policies.md
+  - Policies:
+      - Overview: policies/index.md
+      - Expression: policies/expression/index.md
   - Integrations:
       - as Provider:
           - Amazon Web Services: integrations/services/aws/index.md
@@ -21,9 +26,6 @@ nav:
           - Harbor: integrations/services/harbor/index.md
           - Sentry: integrations/services/sentry/index.md
           - Ansible Tower/AWX: integrations/services/tower-awx/index.md
-  - Reference:
-      - Property Mappings:
-          - User Object: reference/property-mappings/user-object.md
 
 repo_name: "BeryJu.org/passbook"
 repo_url: https://github.com/BeryJu/passbook

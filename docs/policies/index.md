@@ -18,27 +18,9 @@ passbook keeps track of failed login attempts by Source IP and Attempted Usernam
 
 This policy can be used to for example prompt Clients with a low score to pass a Captcha before they can continue.
 
-### Field matcher Policy
+## Expression Policy
 
-This policy allows you to evaluate arbitrary comparisons against the User instance. Currently supported fields are:
-
--   Username
--   E-Mail
--   Name
--   Is_active
--   Date joined
-
-Any of the following operations are supported:
-
--   Starts with
--   Ends with
--   Contains
--   Regexp (standard Python engine)
--   Exact
-
-### SSO Policy
-
-This policy evaluates to True if the current Authentication Flow has been initiated through an external Source, like OAuth and SAML.
+See [Expression Policy](expression/index.md).
 
 ### Webhook Policy
 
