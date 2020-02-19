@@ -15,6 +15,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
+from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from model_utils.managers import InheritanceManager
@@ -313,7 +314,10 @@ class PropertyMapping(UUIDModel):
         except TemplateSyntaxError as exc:
             raise PropertyMappingExpressionException from exc
         try:
-            return expression.render(user=user, request=request, **kwargs)
+            response = expression.render(user=user, request=request, **kwargs)
+            if isinstance(response, Undefined):
+                raise PropertyMappingExpressionException("Response was 'Undefined'")
+            return response
         except UndefinedError as exc:
             raise PropertyMappingExpressionException from exc
 
