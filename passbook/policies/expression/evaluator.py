@@ -47,7 +47,7 @@ class Evaluator:
         """Return dictionary with additional global variables passed to expression"""
         # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
-        kwargs["pb_is_sso_flow"] = request.user.session.get(
+        kwargs["pb_is_sso_flow"] = request.http_request.session.get(
             AuthenticationView.SESSION_IS_SSO_LOGIN, False
         )
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
