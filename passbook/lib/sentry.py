@@ -8,6 +8,7 @@ def before_send(event, hint):
     """Check if error is database error, and ignore if so"""
     from django_redis.exceptions import ConnectionInterrupted
     from django.db import OperationalError, InternalError
+    from django.core.exceptions import ValidationError
     from rest_framework.exceptions import APIException
     from billiard.exceptions import WorkerLostError
     from django.core.exceptions import DisallowedHost
@@ -24,6 +25,7 @@ def before_send(event, hint):
         ConnectionResetError,
         KeyboardInterrupt,
         ClientError,
+        ValidationError,
     )
     if "exc_info" in hint:
         _exc_type, exc_value, _ = hint["exc_info"]
