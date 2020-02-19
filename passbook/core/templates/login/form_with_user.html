@@ -6,13 +6,19 @@
 {% block head %}
 {{ block.super }}
 <style>
-.login-pf-settings img {
-    max-height: 32px;
-    border-radius: 100%;
-    border-width: 1px;
-    border-color: #000;
+.form-control-static {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.login-pf-settings a {
+.form-control-static .left {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: 5px;
+}
+.form-control-static a {
     padding-top: 3px;
     padding-bottom: 3px;
     line-height: 32px;
@@ -21,11 +27,18 @@
 {% endblock %}
 
 {% block above_form %}
-<div class="form-group login-pf-settings">
-    <p class="form-control-static">
-        <img src="{% gravatar user.email %}" alt="">
-        {{ user.username }}
-    </p>
-    <a href="{% url 'passbook_core:auth-login' %}">{% trans 'Not you?' %}</a>
+<div class="pf-c-form__group">
+    <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+        <span class="pf-c-form__label-text">{% trans "Username" %}</span>
+    </label>
+    <div class="form-control-static">
+        <div class="left">
+            <img class="pf-c-avatar" src="{% gravatar user.email %}" alt="">
+            {{ user.username }}
+        </div>
+        <div class="right">
+            <a href="{% url 'passbook_core:auth-login' %}">{% trans 'Not you?' %}</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

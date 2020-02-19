@@ -1,0 +1,52 @@
+{% load utils %}
+{% load i18n %}
+
+{% csrf_token %}
+{% for field in form %}
+<div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
+    {% if field.field.widget|fieldtype == 'RadioSelect' %}
+        <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
+            for="{{ field.name }}-{{ forloop.counter0 }}">
+            {{ field.label }}
+        </label>
+        {% for c in field %}
+        <div class="radio col-sm-10">
+            <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
+                name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}"
+                {% if c.data.selected %} checked {% endif %}>
+            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
+        </div>
+        {% endfor %}
+    {% elif field.field.widget|fieldtype == 'Select' %}
+        <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
+            for="{{ field.name }}-{{ forloop.counter0 }}">
+            {{ field.label }}
+        </label>
+        <div class="select col-sm-10">
+            {{ field }}
+        </div>
+    {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
+        <label class="checkbox-label">
+            {{ field }} {{ field.label }}
+        </label>
+    {% else %}
+        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+            <span class="pf-c-form__label-text">{{ field.label }}</span>
+            {% if field.field.required %}
+            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+            {% endif %}
+        </label>
+        {{ field|css_class:'pf-c-form-control' }}
+        {% if field.help_text %}
+        <span>
+            {{ field.help_text }}
+        </span>
+        {% endif %}
+    {% endif %}
+    {% for error in field.errors %}
+    <span class="help-block">
+        {{ error }}
+    </span>
+    {% endfor %}
+</div>
+{% endfor %}

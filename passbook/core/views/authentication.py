@@ -50,8 +50,8 @@ class LoginView(UserPassesTestMixin, FormView):
             login_button = source.login_button
             if login_button:
                 kwargs["sources"].append(login_button)
-        if kwargs["sources"]:
-            self.template_name = "login/with_sources.html"
+        # if kwargs["sources"]:
+        #     self.template_name = "login/with_sources.html"
         return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value) -> Optional[User]:

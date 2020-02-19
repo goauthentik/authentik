@@ -20,7 +20,7 @@
 </header>
 <form method="POST">
   {% csrf_token %}
-  {% include 'partials/form_login.html' %}
+  {% include 'partials/form_login_pf4.html' %}
   <span class="pf-icon pficon-error-circle-o btn-block"></span>
   Access denied
   {% if 'back' in request.GET %}

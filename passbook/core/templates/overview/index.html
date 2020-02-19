@@ -5,39 +5,53 @@
 {% block head %}
 {{ block.super }}
 <style>
-  img.app-icon {
-    max-height: 72px;
-  }
+    img.app-icon {
+        max-height: 72px;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row row-cards-pf">
-    {% for app in applications %}
-    <div class="col-xs-12 col-sm-6 col-md-3">
-      <div class="card-pf card-pf-accented card-pf-aggregate-status">
-        <h2 class="card-pf-title">
-          <span class="fa fa-shield"></span> {{ app.name }}
-        </h2>
-        <div class="card-pf-body">
-          <p class="card-pf-aggregate-status-notifications">
-            <span class="card-pf-aggregate-status-notification">
-              <a href="{{ app.launch_url }}" class="add" data-toggle="tooltip" data-placement="top" title="{% trans 'Open App...' %}">
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>{% trans 'Applications' %}</h1>
+    </div>
+</section>
+<section class="pf-c-page__main-section">
+    {% if applications %}
+    <div class="pf-l-gallery pf-m-gutter">
+        {% for app in applications %}
+        <a href="{{ app.launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
+            <div class="pf-c-card__head">
                 {% if not app.icon_url %}
-                <span class="pficon pficon-arrow"></span>
+                <i class="pf-icon pf-icon-arrow"></i>
                 {% else %}
                 <img class="app-icon" src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
                 {% endif %}
-              </a>
-            </span>
-          </p>
-        </div>
-      </div>
+            </div>
+            <div class="pf-c-card__header pf-c-title pf-m-md">
+                <p id="card-1-check-label">{{ app.name }}</p>
+                <div class="pf-c-content">
+                    <small>{{ app.subtitle }}</small>
+                </div>
+            </div>
+            <div class="pf-c-card__body">{% trans app.description %}</div>
+        </a>
+        {% endfor %}
     </div>
-    {% empty %}
-    <h1>{% trans 'No Applications available.' %}</h1>
-    {% endfor %}
-  </div><!-- /row -->
-</div>
+    {% else %}
+    <div class="pf-c-empty-state">
+        <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+        <h1 class="pf-c-title pf-m-lg">{% trans 'No Applications available.' %}</h1>
+        <div class="pf-c-empty-state__body">
+            {% trans "Either no applications are defined, or you don't have access to any." %}
+        </div>
+        {% if user.is_superuser %} {# todo: use guardian permissions instead #}
+        <a href="{% url 'passbook_admin:application-create' %}" class="pf-c-button pf-m-primary" type="button">
+            {% trans 'Create Application' %}
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

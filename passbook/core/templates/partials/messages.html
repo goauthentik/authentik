@@ -1,19 +1,30 @@
 {% if messages %}
-{% for msg in messages %}
-<div class="toast-pf alert alert-dismissable alert-{{ msg.level_tag }}">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span class="pficon pficon-close"></span>
-    </button>
-    {% if msg.level_tag == 'danger' %}
-    <span class="pficon pficon-error-circle-o"></span>
-    {% elif msg.level_tag == 'warning' %}
-    <span class="pficon pficon-warning-triangle-o"></span>
-    {% elif msg.level_tag == 'success' %}
-    <span class="pficon pficon-ok"></span>
-    {% elif msg.level_tag == 'info' %}
-    <span class="pficon pficon-info"></span>
-    {% endif %}
-    {{ msg.message|safe }}
-</div>
-{% endfor %}
+<ul class="pf-c-alert-group pf-m-toast">
+    {% for msg in messages %}
+    <li class="pf-c-alert-group__item">
+        <div class="pf-c-alert pf-m-{{ msg.level_tag }}">
+            <div class="pf-c-alert__icon">
+                {% if msg.level_tag == 'danger' %}
+                <o class="pficon pficon-error-circle-o"></o>
+                {% elif msg.level_tag == 'warning' %}
+                <o class="pficon pficon-warning-triangle-o"></o>
+                {% elif msg.level_tag == 'success' %}
+                <o class="pficon pficon-ok"></o>
+                {% elif msg.level_tag == 'info' %}
+                <o class="pficon pficon-info"></o>
+                {% endif %}
+            </div>
+            <div class="pf-c-alert__description">
+                {{ msg.message|safe }}
+            </div>
+            <div class="pf-c-alert__action">
+                <button class="pf-c-button pf-m-plain" type="button"
+                    aria-label="Close success alert: Newest notification">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
 {% endif %}

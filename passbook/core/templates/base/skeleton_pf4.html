@@ -1,0 +1,33 @@
+{% load static %}
+{% load i18n %}
+{% load utils %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>{% block title %}{% title %}{% endblock %}</title>
+        <link rel="icon" type="image/png" href="{% static 'passbook/logo.png' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'passbook/logo.png' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        {% if 'impersonate_id' in request.session %}
+        <div class="experimental-pf-bar">
+            <span id="experimentalBar" class="experimental-pf-text">
+                {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
+                <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
+            </span>
+        </div>
+        {% endif %}
+        {% block body %}
+        {% endblock %}
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>
