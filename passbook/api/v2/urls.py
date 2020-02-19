@@ -25,6 +25,7 @@ from passbook.factors.password.api import PasswordFactorViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.group.api import GroupMembershipPolicyViewSet
+from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.matcher.api import FieldMatcherPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
@@ -64,6 +65,7 @@ router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 router.register("policies/ssologin", SSOLoginPolicyViewSet)
 router.register("policies/webhook", WebhookPolicyViewSet)
+router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("providers/all", ProviderViewSet)
 router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)
 router.register("providers/oauth", OAuth2ProviderViewSet)
