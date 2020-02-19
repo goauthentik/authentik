@@ -93,10 +93,7 @@ INSTALLED_APPS = [
     "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
-    "passbook.policies.group.apps.PassbookPoliciesGroupConfig",
-    "passbook.policies.matcher.apps.PassbookPoliciesMatcherConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
-    "passbook.policies.sso.apps.PassbookPoliciesSSOConfig",
     "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
     "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
 ]
