@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 import ldap3
 import ldap3.core.exceptions
 from structlog import get_logger
+from django.db.utils import IntegrityError
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.models import Group, User
@@ -94,18 +95,31 @@ class Connector:
         )
         for user in users:
             attributes = user.get("attributes", {})
-            user, created = User.objects.update_or_create(
-                attributes__ldap_uniq=attributes.get(
-                    self._source.object_uniqueness_field, ""
-                ),
-                defaults=self._build_object_properties(attributes),
-            )
-            if created:
-                user.set_unusable_password()
-                user.save()
-            LOGGER.debug(
-                "Synced User", user=attributes.get("name", ""), created=created
-            )
+            try:
+                uniq = attributes[self._source.object_uniqueness_field]
+            except KeyError:
+                LOGGER.warning("Cannot find uniqueness Field in attributes")
+                continue
+            try:
+                user, created = User.objects.update_or_create(
+                    attributes__ldap_uniq=uniq,
+                    defaults=self._build_object_properties(attributes),
+                )
+            except IntegrityError as exc:
+                LOGGER.warning("Failed to create user", exc=exc)
+                LOGGER.warning(
+                    (
+                        "To merge new User with existing user, set the User's "
+                        f"Attribute 'ldap_uniq' to '{uniq}'"
+                    )
+                )
+            else:
+                if created:
+                    user.set_unusable_password()
+                    user.save()
+                LOGGER.debug(
+                    "Synced User", user=attributes.get("name", ""), created=created
+                )
 
     def sync_membership(self):
         """Iterate over all Users and assign Groups using memberOf Field"""
@@ -155,13 +169,15 @@ class Connector:
     ) -> Dict[str, Dict[Any, Any]]:
         properties = {"attributes": {}}
         for mapping in self._source.property_mappings.all().select_subclasses():
+            if not isinstance(mapping, LDAPPropertyMapping):
+                continue
             mapping: LDAPPropertyMapping
             try:
                 properties[mapping.object_field] = mapping.evaluate(
                     user=None, request=None, ldap=attributes
                 )
             except PropertyMappingExpressionException as exc:
-                LOGGER.warning(exc)
+                LOGGER.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
         if self._source.object_uniqueness_field in attributes:
             properties["attributes"]["ldap_uniq"] = attributes.get(
