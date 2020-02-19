@@ -11,7 +11,7 @@ from passbook.factors.view import AuthenticationView
 from passbook.policies.struct import PolicyRequest, PolicyResult
 
 if TYPE_CHECKING:
-    from passbook.policies.expression.models import ExpressionPolicy
+    from passbook.core.models import User
 
 
 class Evaluator:
@@ -21,29 +21,36 @@ class Evaluator:
 
     def __init__(self):
         self._env = NativeEnvironment()
-        self._env.filters["regex_match"] = Evaluator.jinja2_regex_match
-        self._env.filters["regex_replace"] = Evaluator.jinja2_regex_replace
+        # update passbook/policies/expression/templates/policy/expression/form.html
+        # update docs/policies/expression/index.md
+        self._env.filters["regex_match"] = Evaluator.jinja2_filter_regex_match
+        self._env.filters["regex_replace"] = Evaluator.jinja2_filter_regex_replace
 
     @staticmethod
-    def jinja2_regex_match(value: Any, regex: str) -> bool:
+    def jinja2_filter_regex_match(value: Any, regex: str) -> bool:
         """Jinja2 Filter to run re.search"""
         return re.search(regex, value) is None
 
     @staticmethod
-    def jinja2_regex_replace(value: Any, regex: str, repl: str) -> str:
+    def jinja2_filter_regex_replace(value: Any, regex: str, repl: str) -> str:
         """Jinja2 Filter to run re.sub"""
         return re.sub(regex, repl, value)
+
+    @staticmethod
+    def jinja2_func_is_group_member(user: "User", group_name: str) -> bool:
+        """Check if `user` is member of group with name `group_name`"""
+        return user.groups.filter(name=group_name).exists()
 
     def _get_expression_context(
         self, request: PolicyRequest, **kwargs
     ) -> Dict[str, Any]:
         """Return dictionary with additional global variables passed to expression"""
+        # update passbook/policies/expression/templates/policy/expression/form.html
+        # update docs/policies/expression/index.md
         kwargs["pb_is_sso_flow"] = request.user.session.get(
             AuthenticationView.SESSION_IS_SSO_LOGIN, False
         )
-        kwargs["pb_is_group_member"] = lambda user, group: group.user_set.filter(
-            pk=user.pk
-        ).exists()
+        kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
         return kwargs
 
