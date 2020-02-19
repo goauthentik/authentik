@@ -13,6 +13,7 @@ def before_send(event, hint):
     from billiard.exceptions import WorkerLostError
     from django.core.exceptions import DisallowedHost
     from botocore.client import ClientError
+    from redis.exceptions import RedisError
 
     ignored_classes = (
         OperationalError,
@@ -26,6 +27,8 @@ def before_send(event, hint):
         KeyboardInterrupt,
         ClientError,
         ValidationError,
+        OSError,
+        RedisError,
     )
     if "exc_info" in hint:
         _exc_type, exc_value, _ = hint["exc_info"]
