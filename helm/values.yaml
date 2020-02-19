@@ -42,3 +42,5 @@ redis:
   master:
     persistence:
       enabled: false
+    # https://stackoverflow.com/a/59189742
+    disableCommands: []
