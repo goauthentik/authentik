@@ -9,12 +9,18 @@
     <div class="col-sm-10">
         <p>
             Expression using <a href="https://jinja.palletsprojects.com/en/2.11.x/templates/">Jinja</a>. Following variables are available:
-            <ul>
-                <li><code>request.user</code>: Passbook User Object (<a href="https://beryju.github.io/passbook/reference/property-mappings/user-object/">Reference</a>)</li>
-                <li><code>request.http_request</code>: Django HTTP Request Object (<a href="https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects">Reference</a>) </li>
-                <li><code>request.obj</code>: Model the Policy is run against. </li>
-            </ul>
         </p>
+        <ul>
+            <li><code>request.user</code>: Passbook User Object (<a href="https://beryju.github.io/passbook/reference/property-mappings/user-object/">Reference</a>)</li>
+            <li><code>request.http_request</code>: Django HTTP Request Object (<a href="https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects">Reference</a>) </li>
+            <li><code>request.obj</code>: Model the Policy is run against. </li>
+            <li><code>pb_is_sso_flow</code>: Boolean which is true if request was initiated by by Authenticating through an external Provider.</li>
+        </ul>
+        <p>Custom Filters:</p>
+        <ul>
+            <li><code>regex_match(regex)</code>: Checks if value matches <code>regex</code></li>
+            <li><code>regex_replace(regex, repl)</code>: Replace string matched by <code>regex</code> with <code>repl</code></li>
+        </ul>
     </div>
 </div>
 {% endblock %}
