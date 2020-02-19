@@ -3,6 +3,7 @@ import re
 from typing import TYPE_CHECKING, Any, Dict
 
 from django.core.exceptions import ValidationError
+from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
@@ -12,6 +13,8 @@ from passbook.policies.struct import PolicyRequest, PolicyResult
 
 if TYPE_CHECKING:
     from passbook.core.models import User
+
+LOGGER = get_logger()
 
 
 class Evaluator:
@@ -67,6 +70,13 @@ class Evaluator:
             result = expression.render(
                 request=request, **self._get_expression_context(request)
             )
+            if isinstance(result, Undefined):
+                LOGGER.warning(
+                    "Expression policy returned undefined",
+                    src=expression_source,
+                    req=request,
+                )
+                return PolicyRequest(False)
             if isinstance(result, list) and len(result) == 2:
                 return PolicyResult(*result)
             if result:
