@@ -183,15 +183,13 @@ class Processor:
         # Read the request.
         try:
             self._extract_saml_request()
-        except KeyError as exc:
-            raise CannotHandleAssertion(
-                f"can't find SAML request in user session: {exc}"
-            ) from exc
+        except KeyError:
+            raise CannotHandleAssertion(f"Couldn't find SAML request in user session:")
 
         try:
             self._decode_and_parse_request()
         except Exception as exc:
-            raise CannotHandleAssertion(f"can't parse SAML request: {exc}") from exc
+            raise CannotHandleAssertion(f"Couldn't parse SAML request: {exc}") from exc
 
         self._validate_request()
         return True
