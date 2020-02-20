@@ -37,7 +37,7 @@ class Processor:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
         # relay_state = request.POST.get('RelayState', None)
         # Check if response is compressed, b64 decode it
-        self._root_xml = response = decode_base64_and_inflate(raw_response)
+        self._root_xml = decode_base64_and_inflate(raw_response)
         self._root = ElementTree.fromstring(self._root_xml)
         # Verify signed XML
         self._verify_signed()

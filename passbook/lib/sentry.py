@@ -4,6 +4,10 @@ from structlog import get_logger
 LOGGER = get_logger()
 
 
+class SentryIgnoredException(Exception):
+    """Base Class for all errors that are supressed, and not sent to sentry."""
+
+
 def before_send(event, hint):
     """Check if error is database error, and ignore if so"""
     from django_redis.exceptions import ConnectionInterrupted
@@ -29,6 +33,7 @@ def before_send(event, hint):
         ValidationError,
         OSError,
         RedisError,
+        SentryIgnoredException,
     )
     if "exc_info" in hint:
         _exc_type, exc_value, _ = hint["exc_info"]
