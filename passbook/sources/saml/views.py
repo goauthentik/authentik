@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from signxml.util import strip_pem_header
 
 from passbook.providers.saml.utils import get_random_id, render_xml
 from passbook.providers.saml.utils.encoding import nice64
@@ -97,12 +98,15 @@ class MetadataView(View):
         """Replies with the XML Metadata SPSSODescriptor."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         entity_id = get_entity_id(request, source)
+        cert_stripped = strip_pem_header(source.signing_cert.replace("\r", "")).replace(
+            "\n", ""
+        )
         return render_xml(
             request,
             "saml/sp/xml/spssodescriptor.xml",
             {
                 "acs_url": build_full_url("acs", request, source),
                 "entity_id": entity_id,
-                "cert_public_key": source.signing_cert,
+                "cert_public_key": cert_stripped,
             },
         )
