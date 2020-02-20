@@ -21,9 +21,9 @@ from jinja2.nativetypes import NativeEnvironment
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
-from passbook.core.types import UIUserSettings, UILoginButton
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
+from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.types import PolicyRequest, PolicyResult

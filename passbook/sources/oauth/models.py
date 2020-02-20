@@ -4,8 +4,8 @@ from django.db import models
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.core.models import Source, UserSourceConnection
+from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.sources.oauth.clients import get_client
 
 

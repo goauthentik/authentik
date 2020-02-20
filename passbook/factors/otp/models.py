@@ -2,8 +2,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from passbook.core.types import UIUserSettings
 from passbook.core.models import Factor
+from passbook.core.types import UIUserSettings
 
 
 class OTPFactor(Factor):

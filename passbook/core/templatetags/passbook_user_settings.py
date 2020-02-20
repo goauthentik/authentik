@@ -1,11 +1,11 @@
 """passbook user settings template tags"""
-from typing import List, Iterable
+from typing import Iterable, List
 
 from django import template
 from django.template.context import RequestContext
 
-from passbook.core.types import UIUserSettings
 from passbook.core.models import Factor, Source
+from passbook.core.types import UIUserSettings
 from passbook.policies.engine import PolicyEngine
 
 register = template.Library()

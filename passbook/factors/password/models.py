@@ -3,8 +3,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.types import UIUserSettings
 from passbook.core.models import Factor, Policy, User
+from passbook.core.types import UIUserSettings
 
 
 class PasswordFactor(Factor):
