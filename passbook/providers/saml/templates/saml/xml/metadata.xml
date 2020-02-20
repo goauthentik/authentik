@@ -17,6 +17,7 @@
     </md:KeyDescriptor>
     <md:NameIDFormat>{{ subject_format }}</md:NameIDFormat>
     <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ slo_url }}"/>
-    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ sso_url }}"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{{ sso_post_url }}"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ sso_redirect_url }}"/>
   </md:IDPSSODescriptor>
 </md:EntityDescriptor>
