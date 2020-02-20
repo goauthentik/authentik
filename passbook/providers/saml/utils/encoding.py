@@ -3,20 +3,20 @@ import base64
 import zlib
 
 
-def decode_base64_and_inflate(b64string):
+def decode_base64_and_inflate(encoded: str, encoding="utf-8") -> str:
     """Base64 decode and ZLib decompress b64string"""
-    decoded_data = base64.b64decode(b64string)
+    decoded_data = base64.b64decode(encoded)
     try:
-        return zlib.decompress(decoded_data, -15)
+        return zlib.decompress(decoded_data, -15).decode(encoding)
     except zlib.error:
-        return decoded_data
+        return decoded_data.decode(encoding)
 
 
-def deflate_and_base64_encode(string_val):
+def deflate_and_base64_encode(inflated: bytes, encoding="utf-8"):
     """Base64 and ZLib Compress b64string"""
-    zlibbed_str = zlib.compress(string_val)
+    zlibbed_str = zlib.compress(inflated)
     compressed_string = zlibbed_str[2:-4]
-    return base64.b64encode(compressed_string)
+    return base64.b64encode(compressed_string).decode(encoding)
 
 
 def nice64(src):

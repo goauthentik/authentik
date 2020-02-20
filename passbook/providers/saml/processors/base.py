@@ -144,7 +144,7 @@ class Processor:
 
     def _decode_and_parse_request(self):
         """Parses various parameters from _request_xml into _request_params."""
-        decoded_xml = decode_base64_and_inflate(self._saml_request).decode("utf-8")
+        decoded_xml = decode_base64_and_inflate(self._saml_request)
 
         root = ElementTree.fromstring(decoded_xml)
 
