@@ -49,10 +49,15 @@ LOGIN_URL = "passbook_core:auth-login"
 # Custom user model
 AUTH_USER_MODEL = "passbook_core.User"
 
-CSRF_COOKIE_NAME = "passbook_csrf"
-SESSION_COOKIE_NAME = "passbook_session"
+if DEBUG:
+    CSRF_COOKIE_NAME = "passbook_csrf_debug"
+    LANGUAGE_COOKIE_NAME = "passbook_language_debug"
+    SESSION_COOKIE_NAME = "passbook_session_debug"
+else:
+    CSRF_COOKIE_NAME = "passbook_csrf"
+    LANGUAGE_COOKIE_NAME = "passbook_language"
+    SESSION_COOKIE_NAME = "passbook_session"
 SESSION_COOKIE_DOMAIN = CONFIG.y("domain", None)
-LANGUAGE_COOKIE_NAME = "passbook_language"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
