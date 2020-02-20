@@ -1,7 +1,4 @@
 """saml sp views"""
-import base64
-
-from defusedxml import ElementTree
 from django.contrib.auth import login, logout
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
@@ -10,15 +7,17 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
 
+from passbook.lib.views import bad_request_message
 from passbook.providers.saml.utils import get_random_id, render_xml
 from passbook.providers.saml.utils.encoding import nice64
 from passbook.providers.saml.utils.time import get_time_string
-from passbook.sources.saml.models import SAMLSource
-from passbook.sources.saml.utils import (
-    _get_user_from_response,
-    build_full_url,
-    get_issuer,
+from passbook.sources.saml.exceptions import (
+    MissingSAMLResponse,
+    UnsupportedNameIDFormat,
 )
+from passbook.sources.saml.models import SAMLSource
+from passbook.sources.saml.processors.base import Processor
+from passbook.sources.saml.utils import build_full_url, get_issuer
 from passbook.sources.saml.xml_render import get_authnrequest_xml
 
 
@@ -62,14 +61,18 @@ class ACSView(View):
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
-        # sso_session = request.POST.get('RelayState', None)
-        data = request.POST.get("SAMLResponse", None)
-        response = base64.b64decode(data)
-        root = ElementTree.fromstring(response)
-        user = _get_user_from_response(root)
-        # attributes = _get_attributes_from_response(root)
-        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-        return redirect(reverse("passbook_core:overview"))
+        processor = Processor(source)
+        try:
+            processor.parse(request)
+        except MissingSAMLResponse as exc:
+            return bad_request_message(request, str(exc))
+
+        try:
+            user = processor.get_user()
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+            return redirect(reverse("passbook_core:overview"))
+        except UnsupportedNameIDFormat as exc:
+            return bad_request_message(request, str(exc))
 
 
 class SLOView(View):

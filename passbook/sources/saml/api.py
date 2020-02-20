@@ -13,7 +13,7 @@ class SAMLSourceSerializer(ModelSerializer):
         model = SAMLSource
         fields = [
             "pk",
-            "entity_id",
+            "issuer",
             "idp_url",
             "idp_logout_url",
             "auto_logout",
