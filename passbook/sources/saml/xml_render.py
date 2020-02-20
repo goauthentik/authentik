@@ -15,7 +15,6 @@ def get_authnrequest_xml(parameters, signed=False):
     params["AUTHN_REQUEST_SIGNATURE"] = ""
 
     unsigned = render_to_string("saml/sp/xml/authn_request.xml", params)
-    LOGGER.debug("AuthN Request", unsigned=unsigned)
     if not signed:
         return unsigned
 
@@ -24,5 +23,4 @@ def get_authnrequest_xml(parameters, signed=False):
     params["AUTHN_REQUEST_SIGNATURE"] = signature_xml
     signed = render_to_string("saml/sp/xml/authn_request.xml", params)
 
-    LOGGER.debug("AuthN Request", signed=signed)
     return signed
