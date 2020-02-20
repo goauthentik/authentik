@@ -242,11 +242,13 @@ class DescriptorDownloadView(AccessRequiredView):
         pubkey = strip_pem_header(provider.signing_cert.replace("\r", "")).replace(
             "\n", ""
         )
+        subject_format = provider.processor.subject_format
         ctx = {
             "entity_id": entity_id,
             "cert_public_key": pubkey,
             "slo_url": slo_url,
             "sso_url": sso_url,
+            "subject_format": subject_format,
         }
         return render_to_string("saml/xml/metadata.xml", ctx)
 

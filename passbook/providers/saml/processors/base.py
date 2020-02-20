@@ -40,7 +40,7 @@ class Processor:
     @property
     def subject_format(self) -> str:
         """Get subject Format"""
-        return "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+        return "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
     def __init__(self, remote: "SAMLProvider"):
         self.name = remote.name
