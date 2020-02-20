@@ -26,7 +26,7 @@ from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 from passbook.policies.exceptions import PolicyException
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 NATIVE_ENVIRONMENT = NativeEnvironment()

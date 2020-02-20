@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 from passbook.core.models import Policy
 from passbook.policies.expression.evaluator import Evaluator
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class ExpressionPolicy(Policy):

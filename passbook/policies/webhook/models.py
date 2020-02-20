@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Policy
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class WebhookPolicy(Policy):

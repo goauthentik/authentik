@@ -9,7 +9,7 @@ from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
 from passbook.factors.view import AuthenticationView
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 if TYPE_CHECKING:
     from passbook.core.models import User
