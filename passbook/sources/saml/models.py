@@ -11,6 +11,7 @@ class SAMLSource(Source):
     """SAML Source"""
 
     entity_id = models.TextField(blank=True, default=None, verbose_name=_("Entity ID"))
+
     idp_url = models.URLField(verbose_name=_("IDP URL"))
     idp_logout_url = models.URLField(
         default=None, blank=True, null=True, verbose_name=_("IDP Logout URL")
@@ -33,7 +34,7 @@ class SAMLSource(Source):
     @property
     def ui_additional_info(self) -> str:
         metadata_url = reverse_lazy(
-            "passbook_sources_saml:metadata", kwargs={"source_slug": self}
+            "passbook_sources_saml:metadata", kwargs={"source_slug": self.slug}
         )
         return f'<a href="{metadata_url}" class="btn btn-default btn-sm">Metadata Download</a>'
 

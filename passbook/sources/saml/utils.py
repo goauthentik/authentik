@@ -17,7 +17,7 @@ def get_entity_id(request: HttpRequest, source: SAMLSource):
 def build_full_url(view: str, request: HttpRequest, source: SAMLSource) -> str:
     """Build Full ACS URL to be used in IDP"""
     return request.build_absolute_uri(
-        reverse(f"passbook_sources_saml:{view}", kwargs={"source": source.slug})
+        reverse(f"passbook_sources_saml:{view}", kwargs={"source_slug": source.slug})
     )
 
 
