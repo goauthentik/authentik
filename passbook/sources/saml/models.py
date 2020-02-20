@@ -3,14 +3,19 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.types import UILoginButton
 from passbook.core.models import Source
+from passbook.core.types import UILoginButton
 
 
 class SAMLSource(Source):
     """SAML Source"""
 
-    entity_id = models.TextField(blank=True, default=None, verbose_name=_("Entity ID"))
+    issuer = models.TextField(
+        blank=True,
+        default=None,
+        verbose_name=_("Issuer"),
+        help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
+    )
 
     idp_url = models.URLField(verbose_name=_("IDP URL"))
     idp_logout_url = models.URLField(

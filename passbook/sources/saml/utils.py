@@ -6,12 +6,12 @@ from passbook.core.models import User
 from passbook.sources.saml.models import SAMLSource
 
 
-def get_entity_id(request: HttpRequest, source: SAMLSource):
-    """Get Source's entity ID, falling back to our Metadata URL if none is set"""
-    entity_id = source.entity_id
-    if entity_id is None:
+def get_issuer(request: HttpRequest, source: SAMLSource) -> str:
+    """Get Source's Issuer, falling back to our Metadata URL if none is set"""
+    issuer = source.issuer
+    if issuer is None:
         return build_full_url("metadata", request, source)
-    return entity_id
+    return issuer
 
 
 def build_full_url(view: str, request: HttpRequest, source: SAMLSource) -> str:

@@ -17,7 +17,7 @@ from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.utils import (
     _get_user_from_response,
     build_full_url,
-    get_entity_id,
+    get_issuer,
 )
 from passbook.sources.saml.xml_render import get_authnrequest_xml
 
@@ -37,7 +37,7 @@ class InitiateView(View):
             "DESTINATION": source.idp_url,
             "AUTHN_REQUEST_ID": get_random_id(),
             "ISSUE_INSTANT": get_time_string(),
-            "ISSUER": get_entity_id(request, source),
+            "ISSUER": get_issuer(request, source),
         }
         authn_req = get_authnrequest_xml(parameters, signed=False)
         _request = nice64(str.encode(authn_req))
@@ -97,16 +97,16 @@ class MetadataView(View):
     def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with the XML Metadata SPSSODescriptor."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
-        entity_id = get_entity_id(request, source)
+        issuer = get_issuer(request, source)
         cert_stripped = strip_pem_header(source.signing_cert.replace("\r", "")).replace(
             "\n", ""
         )
         return render_xml(
             request,
-            "saml/sp/xml/spssodescriptor.xml",
+            "saml/sp/xml/sp_sso_descriptor.xml",
             {
                 "acs_url": build_full_url("acs", request, source),
-                "entity_id": entity_id,
+                "issuer": issuer,
                 "cert_public_key": cert_stripped,
             },
         )

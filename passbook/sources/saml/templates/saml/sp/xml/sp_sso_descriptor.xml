@@ -1,6 +1,6 @@
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
   xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-  xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="{{ entity_id }}">
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="{{ issuer }}">
   <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <md:KeyDescriptor use="signing">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
