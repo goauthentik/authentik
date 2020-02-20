@@ -17,7 +17,7 @@ from signxml.util import strip_pem_header
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.core.models import Application
+from passbook.core.models import Application, Provider
 from passbook.lib.utils.template import render_to_string
 from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
@@ -253,12 +253,18 @@ class DescriptorDownloadView(AccessRequiredView):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
-        metadata = DescriptorDownloadView.get_metadata(request, self.provider)
-        response = HttpResponse(metadata, content_type="application/xml")
-        response["Content-Disposition"] = (
-            'attachment; filename="' '%s_passbook_meta.xml"' % self.provider.name
-        )
-        return response
+        try:
+            metadata = DescriptorDownloadView.get_metadata(request, self.provider)
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return bad_request_message(
+                request, "Provider is not assigned to an application."
+            )
+        else:
+            response = HttpResponse(metadata, content_type="application/xml")
+            response["Content-Disposition"] = (
+                'attachment; filename="' '%s_passbook_meta.xml"' % self.provider.name
+            )
+            return response
 
 
 class InitiateLoginView(AccessRequiredView):
