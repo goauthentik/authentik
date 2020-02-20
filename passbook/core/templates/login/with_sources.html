@@ -48,13 +48,16 @@
         <!--login-pf-section-->
         <section class="login-pf-social-section" role="contentinfo" aria-label="Log in with third party account">
             <ul class="login-pf-social login-pf-social-double-col list-unstyled">
-                {% for url, icon, name in sources %}
+                {% for source in sources %}
                 <li class="login-pf-social-link">
-                    <a href="{{ url }}">
-                        {% if icon %}
-                        <img src="{% static 'img/logos/' %}{{ icon }}.svg" alt="{{ name }}">
+                    <a href="{{ source.url }}">
+                        {% if source.icon_path %}
+                        <img src="{% static source.icon_path %}" alt="{{ source.name }}">
                         {% endif %}
-                        {{ name }}
+                        {% if source.icon_url %}
+                        <img src="icon_url" alt="{{ source.name }}">
+                        {% endif %}
+                        {{ source.name }}
                     </a>
                 </li>
                 {% endfor %}

@@ -2,42 +2,44 @@
 
 {% load i18n %}
 
-{% block head %}
-{{ block.super }}
-<style>
-  img.app-icon {
-    max-height: 72px;
-  }
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="container">
-  <div class="row row-cards-pf">
-    {% for app in applications %}
-    <div class="col-xs-12 col-sm-6 col-md-3">
-      <div class="card-pf card-pf-accented card-pf-aggregate-status">
-        <h2 class="card-pf-title">
-          <span class="fa fa-shield"></span> {{ app.name }}
-        </h2>
-        <div class="card-pf-body">
-          <p class="card-pf-aggregate-status-notifications">
-            <span class="card-pf-aggregate-status-notification">
-              <a href="{{ app.launch_url }}" class="add" data-toggle="tooltip" data-placement="top" title="{% trans 'Open App...' %}">
-                {% if not app.icon_url %}
-                <span class="pficon pficon-arrow"></span>
-                {% else %}
-                <img class="app-icon" src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
-                {% endif %}
-              </a>
-            </span>
-          </p>
+    <div class="row row-cards-pf">
+        {% for app in applications %}
+        <div class="col-xs-12 col-sm-6 col-md-3">
+            <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+                <div class="card-pf-body">
+                    <div class="card-pf-top-element">
+                        <a href="{{ app.meta_launch_url }}">
+                            {% if not app.meta_icon_url %}
+                            <span class="pficon pficon-arrow card-pf-icon-circle"></span>
+                            {% else %}
+                            <img class="app-icon card-pf-icon-circle" src="{{ app.meta_icon_url }}" alt="{% trans 'Application Icon' %}">
+                            {% endif %}
+                        </a>
+                    </div>
+                    <h2 class="card-pf-title text-center">
+                        <a href="{{ app.meta_launch_url }}">
+                            {{ app.name }}
+                        </a>
+                    </h2>
+                    {% if app.meta_publisher %}
+                    <div class="card-pf-items text-center">
+                        <small>{{ app.meta_publisher }}</small>
+                    </div>
+                    {% endif %}
+                    {% if app.meta_description %}
+                    <div class="card-pf-items text-center">
+                        <p>{{ app.meta_description }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-pf-view-checkbox">
+                    <a href="{{ app.meta_launch_url }}"></a>
+                </div>
+            </div>
         </div>
-      </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <h1>{% trans 'No Applications available.' %}</h1>
-    {% endfor %}
-  </div><!-- /row -->
 </div>
 {% endblock %}

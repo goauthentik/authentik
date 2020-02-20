@@ -37,5 +37,7 @@ class ApplicationForm(forms.ModelForm):
         labels = {
             "meta_launch_url": _("Launch URL"),
             "meta_icon_url": _("Icon URL"),
+            "meta_description": _("Description"),
+            "meta_publisher": _("Publisher"),
         }
         help_texts = {"policies": _("Policies required to access this Application.")}

@@ -35,7 +35,7 @@ class OAuthSource(Source):
                 "passbook_sources_oauth:oauth-client-login",
                 kwargs={"source_slug": self.slug},
             ),
-            icon_path=f"{self.provider_type}.svg",
+            icon_path=f"img/logos/{self.provider_type}.svg",
             name=self.name,
         )
 
