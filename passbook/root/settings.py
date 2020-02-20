@@ -271,6 +271,7 @@ STATIC_URL = "/static/"
 structlog.configure_once(
     processors=[
         structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(),
         structlog.processors.StackInfoRenderer(),
