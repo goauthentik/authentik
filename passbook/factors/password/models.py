@@ -3,7 +3,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.models import Factor, Policy, User, UserSettings
+from passbook.core.types import UIUserSettings
+from passbook.core.models import Factor, Policy, User
 
 
 class PasswordFactor(Factor):
@@ -18,9 +19,12 @@ class PasswordFactor(Factor):
     type = "passbook.factors.password.factor.PasswordFactor"
     form = "passbook.factors.password.forms.PasswordFactorForm"
 
-    def user_settings(self):
-        return UserSettings(
-            _("Change Password"), "pficon-key", "passbook_core:user-change-password"
+    @property
+    def ui_user_settings(self) -> UIUserSettings:
+        return UIUserSettings(
+            name="Change Password",
+            icon="pficon-key",
+            view_name="passbook_core:user-change-password",
         )
 
     def password_passes(self, user: User) -> bool:

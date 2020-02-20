@@ -21,6 +21,7 @@ from jinja2.nativetypes import NativeEnvironment
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
+from passbook.core.types import UIUserSettings, UILoginButton
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
@@ -102,19 +103,6 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
     policies = models.ManyToManyField("Policy", blank=True)
 
 
-class UserSettings:
-    """Dataclass for Factor and Source's user_settings"""
-
-    name: str
-    icon: str
-    view_name: str
-
-    def __init__(self, name: str, icon: str, view_name: str):
-        self.name = name
-        self.icon = icon
-        self.view_name = view_name
-
-
 class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
@@ -127,9 +115,10 @@ class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     type = ""
     form = ""
 
-    def user_settings(self) -> Optional[UserSettings]:
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UserSettings."""
+        user settings are available, or an instanace of UIUserSettings."""
         return None
 
     def __str__(self):
@@ -181,19 +170,20 @@ class Source(ExportModelOperationsMixin("source"), PolicyModel):
     objects = InheritanceManager()
 
     @property
-    def login_button(self):
-        """Return a tuple of URL, Icon name and Name
-        if Source should get a link on the login page"""
+    def ui_login_button(self) -> Optional[UILoginButton]:
+        """If source uses a http-based flow, return UI Information about the login
+        button. If source doesn't use http-based flow, return None."""
         return None
 
     @property
-    def additional_info(self):
+    def ui_additional_info(self) -> Optional[str]:
         """Return additional Info, such as a callback URL. Show in the administration interface."""
         return None
 
-    def user_settings(self) -> Optional[UserSettings]:
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UserSettings."""
+        user settings are available, or an instanace of UIUserSettings."""
         return None
 
     def __str__(self):

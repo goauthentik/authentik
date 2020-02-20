@@ -3,11 +3,12 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
+from passbook.core.types import UILoginButton
 from passbook.core.models import Source
 
 
 class SAMLSource(Source):
-    """SAML2 Source"""
+    """SAML Source"""
 
     entity_id = models.TextField(blank=True, default=None, verbose_name=_("Entity ID"))
     idp_url = models.URLField(verbose_name=_("IDP URL"))
@@ -20,14 +21,17 @@ class SAMLSource(Source):
     form = "passbook.sources.saml.forms.SAMLSourceForm"
 
     @property
-    def login_button(self):
-        url = reverse_lazy(
-            "passbook_sources_saml:login", kwargs={"source_slug": self.slug}
+    def ui_login_button(self) -> UILoginButton:
+        return UILoginButton(
+            name=self.name,
+            url=reverse_lazy(
+                "passbook_sources_saml:login", kwargs={"source_slug": self.slug}
+            ),
+            icon_path="",
         )
-        return url, "", self.name
 
     @property
-    def additional_info(self):
+    def ui_additional_info(self) -> str:
         metadata_url = reverse_lazy(
             "passbook_sources_saml:metadata", kwargs={"source_slug": self}
         )

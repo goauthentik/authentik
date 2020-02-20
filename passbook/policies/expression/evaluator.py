@@ -76,7 +76,7 @@ class Evaluator:
                     src=expression_source,
                     req=request,
                 )
-                return PolicyRequest(False)
+                return PolicyResult(False)
             if isinstance(result, list) and len(result) == 2:
                 return PolicyResult(*result)
             if result:
