@@ -143,16 +143,19 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
 
     name = models.TextField()
     slug = models.SlugField()
-    launch_url = models.URLField(null=True, blank=True)
-    icon_url = models.TextField(null=True, blank=True)
+    skip_authorization = models.BooleanField(default=False)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
-    skip_authorization = models.BooleanField(default=False)
+
+    meta_launch_url = models.URLField(null=True, blank=True)
+    meta_icon_url = models.TextField(null=True, blank=True)
+    meta_description = models.TextField(null=True, blank=True)
+    meta_publisher = models.TextField(null=True, blank=True)
 
     objects = InheritanceManager()
 
-    def get_provider(self):
+    def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""
         if not self.provider:
             return None
@@ -167,6 +170,7 @@ class Source(ExportModelOperationsMixin("source"), PolicyModel):
 
     name = models.TextField()
     slug = models.SlugField()
+
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
