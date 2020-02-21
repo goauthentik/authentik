@@ -52,7 +52,7 @@
                             <small>{% trans 'Warning: Policy is not assigned.' %}</small>
                             {% else %}
                             <i class="pf-icon pf-icon-ok"></i>
-                            <small>{% blocktrans with objects=policy.policymodel_set.all|join:', ' %}Assigned to objects {{ objects }}{% endblocktrans %}</small>
+                            <small>{% blocktrans with object_count=policy.policymodel_set.all|length %}Assigned to {{ object_count }} objects.{% endblocktrans %}</small>
                             {% endif %}
                         </div>
                     </th>
