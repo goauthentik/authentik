@@ -25,19 +25,19 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             initialDelaySeconds: 10
             timeoutSeconds: 5
             httpGet:
-              path: /-/ping
+              path: /
               port: http
           readinessProbe:
             initialDelaySeconds: 10
             timeoutSeconds: 5
             httpGet:
-              path: /-/ping
+              path: /
               port: http
           resources:
             requests:

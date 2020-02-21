@@ -24,7 +24,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = Policy
     permission_required = "passbook_core.view_policy"
-
+    ordering = "order"
     template_name = "administration/policy/list.html"
 
     def get_context_data(self, **kwargs):
@@ -34,7 +34,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
-        return super().get_queryset().order_by("order").select_subclasses()
+        return super().get_queryset().select_subclasses()
 
 
 class PolicyCreateView(
