@@ -26,10 +26,10 @@
         {% for app in applications %}
         <a href="{{ app.launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
             <div class="pf-c-card__head">
-                {% if not app.icon_url %}
+                {% if not app.meta_icon_url %}
                 <i class="pf-icon pf-icon-arrow"></i>
                 {% else %}
-                <img class="app-icon" src="{{ app.icon_url }}" alt="{% trans 'Application Icon' %}">
+                <img class="app-icon pf-c-avatar" src="{{ app.meta_icon_url }}" alt="{% trans 'Application Icon' %}">
                 {% endif %}
             </div>
             <div class="pf-c-card__header pf-c-title pf-m-md">
