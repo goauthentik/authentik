@@ -1,0 +1,6 @@
+{
+  "license": "MIT",
+  "dependencies": {
+    "@patternfly/patternfly": "^2.65.3"
+  }
+}

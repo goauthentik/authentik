@@ -44,13 +44,14 @@
                 <p>{{ config.login.subtext }}</p>
                 {% endif %}
                 <ul class="pf-c-login__main-footer-links">
-                    {% for url, icon, name in sources %}
+                    {% for source in sources %}
                     <li class="pf-c-login__main-footer-links-item">
-                        <a href="{{ url }}" class="pf-c-login__main-footer-links-item-link">
-                            {% if icon %}
-                            <img src="{% static icon %}">
-                            {% else %}
-                            {{ name }}
+                        <a href="{{ source.url }}" class="pf-c-login__main-footer-links-item-link">
+                            {% if source.icon_path %}
+                            <img src="{% static source.icon_path %}" alt="{{ source.name }}">
+                            {% endif %}
+                            {% if source.icon_url %}
+                            <img src="icon_url" alt="{{ source.name }}">
                             {% endif %}
                         </a>
                     </li>

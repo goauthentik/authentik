@@ -47,9 +47,9 @@ class LoginView(UserPassesTestMixin, FormView):
         kwargs["sources"] = []
         sources = Source.objects.filter(enabled=True).select_subclasses()
         for source in sources:
+            ui_login_button = source.ui_login_button
             if ui_login_button:
                 kwargs["sources"].append(ui_login_button)
-            ui_login_button = source.ui_login_button
         # if kwargs["sources"]:
         #     self.template_name = "login/with_sources.html"
         return super().get_context_data(**kwargs)
