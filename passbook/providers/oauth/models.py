@@ -1,10 +1,14 @@
 """Oauth2 provider product extension"""
 
+from typing import Optional
+
+from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from oauth2_provider.models import AbstractApplication
 
 from passbook.core.models import Provider
+from passbook.lib.utils.template import render_to_string
 
 
 class OAuth2Provider(Provider, AbstractApplication):
@@ -15,9 +19,9 @@ class OAuth2Provider(Provider, AbstractApplication):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def html_setup_urls(self, request):
+    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        return (
+        return render_to_string(
             "oauth2_provider/setup_url_modal.html",
             {
                 "provider": self,
