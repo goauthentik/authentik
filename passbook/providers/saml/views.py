@@ -139,7 +139,11 @@ class LoginProcessView(AccessRequiredView):
             return render(
                 request,
                 "saml/idp/login.html",
-                {"saml_params": params, "provider": self.provider,},
+                {
+                    "saml_params": params,
+                    "provider": self.provider,
+                    "title": "Authorize Application",
+                },
             )
 
         except exceptions.CannotHandleAssertion as exc:
@@ -300,5 +304,9 @@ class InitiateLoginView(AccessRequiredView):
         return render(
             request,
             "saml/idp/login.html",
-            {"saml_params": params, "provider": self.provider,},
+            {
+                "saml_params": params,
+                "provider": self.provider,
+                "title": "Authorize Application",
+            },
         )

@@ -24,7 +24,7 @@
     {% if applications %}
     <div class="pf-l-gallery pf-m-gutter">
         {% for app in applications %}
-        <a href="{{ app.launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
+        <a href="{{ app.meta_launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
             <div class="pf-c-card__head">
                 {% if not app.meta_icon_url %}
                 <i class="pf-icon pf-icon-arrow"></i>
@@ -35,10 +35,10 @@
             <div class="pf-c-card__header pf-c-title pf-m-md">
                 <p id="card-1-check-label">{{ app.name }}</p>
                 <div class="pf-c-content">
-                    <small>{{ app.subtitle }}</small>
+                    <small>{{ app.meta_publisher }}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">{% trans app.description %}</div>
+            <div class="pf-c-card__body">{% trans app.meta_description %}</div>
         </a>
         {% endfor %}
     </div>
