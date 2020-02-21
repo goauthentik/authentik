@@ -22,7 +22,7 @@ class SAMLSourceForm(forms.ModelForm):
 
         model = SAMLSource
         fields = SOURCE_FORM_FIELDS + [
-            "entity_id",
+            "issuer",
             "idp_url",
             "idp_logout_url",
             "auto_logout",
@@ -31,7 +31,7 @@ class SAMLSourceForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(),
             "policies": FilteredSelectMultiple(_("policies"), False),
-            "entity_id": forms.TextInput(),
+            "issuer": forms.TextInput(),
             "idp_url": forms.TextInput(),
             "idp_logout_url": forms.TextInput(),
         }

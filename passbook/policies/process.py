@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from passbook.core.models import Policy
 from passbook.policies.exceptions import PolicyException
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 

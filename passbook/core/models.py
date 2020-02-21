@@ -23,9 +23,10 @@ from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
+from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
 from passbook.policies.exceptions import PolicyException
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 NATIVE_ENVIRONMENT = NativeEnvironment()
@@ -102,19 +103,6 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
     policies = models.ManyToManyField("Policy", blank=True)
 
 
-class UserSettings:
-    """Dataclass for Factor and Source's user_settings"""
-
-    name: str
-    icon: str
-    view_name: str
-
-    def __init__(self, name: str, icon: str, view_name: str):
-        self.name = name
-        self.icon = icon
-        self.view_name = view_name
-
-
 class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
@@ -127,9 +115,10 @@ class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     type = ""
     form = ""
 
-    def user_settings(self) -> Optional[UserSettings]:
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UserSettings."""
+        user settings are available, or an instanace of UIUserSettings."""
         return None
 
     def __str__(self):
@@ -143,16 +132,19 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
 
     name = models.TextField()
     slug = models.SlugField()
-    launch_url = models.URLField(null=True, blank=True)
-    icon_url = models.TextField(null=True, blank=True)
+    skip_authorization = models.BooleanField(default=False)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
-    skip_authorization = models.BooleanField(default=False)
+
+    meta_launch_url = models.URLField(null=True, blank=True)
+    meta_icon_url = models.TextField(null=True, blank=True)
+    meta_description = models.TextField(null=True, blank=True)
+    meta_publisher = models.TextField(null=True, blank=True)
 
     objects = InheritanceManager()
 
-    def get_provider(self):
+    def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""
         if not self.provider:
             return None
@@ -167,6 +159,7 @@ class Source(ExportModelOperationsMixin("source"), PolicyModel):
 
     name = models.TextField()
     slug = models.SlugField()
+
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
@@ -177,19 +170,20 @@ class Source(ExportModelOperationsMixin("source"), PolicyModel):
     objects = InheritanceManager()
 
     @property
-    def login_button(self):
-        """Return a tuple of URL, Icon name and Name
-        if Source should get a link on the login page"""
+    def ui_login_button(self) -> Optional[UILoginButton]:
+        """If source uses a http-based flow, return UI Information about the login
+        button. If source doesn't use http-based flow, return None."""
         return None
 
     @property
-    def additional_info(self):
+    def ui_additional_info(self) -> Optional[str]:
         """Return additional Info, such as a callback URL. Show in the administration interface."""
         return None
 
-    def user_settings(self) -> Optional[UserSettings]:
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UserSettings."""
+        user settings are available, or an instanace of UIUserSettings."""
         return None
 
     def __str__(self):

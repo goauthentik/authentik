@@ -1,9 +1,9 @@
 """OTP Factor"""
-
 from django.db import models
 from django.utils.translation import gettext as _
 
-from passbook.core.models import Factor, UserSettings
+from passbook.core.models import Factor
+from passbook.core.types import UIUserSettings
 
 
 class OTPFactor(Factor):
@@ -17,9 +17,12 @@ class OTPFactor(Factor):
     type = "passbook.factors.otp.factors.OTPFactor"
     form = "passbook.factors.otp.forms.OTPFactorForm"
 
-    def user_settings(self) -> UserSettings:
-        return UserSettings(
-            _("OTP"), "pficon-locked", "passbook_factors_otp:otp-user-settings"
+    @property
+    def ui_user_settings(self) -> UIUserSettings:
+        return UIUserSettings(
+            name="OTP",
+            icon="pficon-locked",
+            view_name="passbook_factors_otp:otp-user-settings",
         )
 
     def __str__(self):

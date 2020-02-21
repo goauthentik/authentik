@@ -17,7 +17,7 @@ from signxml.util import strip_pem_header
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.core.models import Application
+from passbook.core.models import Application, Provider
 from passbook.lib.utils.template import render_to_string
 from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
@@ -134,9 +134,7 @@ class LoginProcessView(AccessRequiredView):
         try:
             # application.skip_authorization is set so we directly redirect the user
             if self.provider.application.skip_authorization:
-                self.provider.processor.can_handle(request)
-                saml_params = self.provider.processor.generate_response()
-                return self.handle_redirect(saml_params, True)
+                return self.post(request, application)
 
             self.provider.processor.init_deep_link(request)
             params = self.provider.processor.generate_response()
@@ -233,7 +231,7 @@ class DescriptorDownloadView(AccessRequiredView):
                 kwargs={"application": provider.application.slug},
             )
         )
-        sso_url = request.build_absolute_uri(
+        sso_post_url = request.build_absolute_uri(
             reverse(
                 "passbook_providers_saml:saml-login",
                 kwargs={"application": provider.application.slug},
@@ -242,23 +240,33 @@ class DescriptorDownloadView(AccessRequiredView):
         pubkey = strip_pem_header(provider.signing_cert.replace("\r", "")).replace(
             "\n", ""
         )
+        subject_format = provider.processor.subject_format
         ctx = {
             "entity_id": entity_id,
             "cert_public_key": pubkey,
             "slo_url": slo_url,
-            "sso_url": sso_url,
+            # Currently, the same endpoint accepts POST and REDIRECT
+            "sso_post_url": sso_post_url,
+            "sso_redirect_url": sso_post_url,
+            "subject_format": subject_format,
         }
         return render_to_string("saml/xml/metadata.xml", ctx)
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
-        metadata = DescriptorDownloadView.get_metadata(request, self.provider)
-        response = HttpResponse(metadata, content_type="application/xml")
-        response["Content-Disposition"] = (
-            'attachment; filename="' '%s_passbook_meta.xml"' % self.provider.name
-        )
-        return response
+        try:
+            metadata = DescriptorDownloadView.get_metadata(request, self.provider)
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+            return bad_request_message(
+                request, "Provider is not assigned to an application."
+            )
+        else:
+            response = HttpResponse(metadata, content_type="application/xml")
+            response["Content-Disposition"] = (
+                'attachment; filename="' '%s_passbook_meta.xml"' % self.provider.name
+            )
+            return response
 
 
 class InitiateLoginView(AccessRequiredView):

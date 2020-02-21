@@ -9,7 +9,7 @@ from structlog import get_logger
 
 from passbook.core.models import Policy, User
 from passbook.policies.process import PolicyProcess, cache_key
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 # This is only really needed for macOS, because Python 3.8 changed the default to spawn
@@ -63,13 +63,13 @@ class PolicyEngine:
         for policy in self._select_subclasses():
             cached_policy = cache.get(cache_key(policy, self.request.user), None)
             if cached_policy and self.use_cache:
-                LOGGER.debug("Taking result from cache", policy=policy)
+                LOGGER.debug("P_ENG: Taking result from cache", policy=policy)
                 self.__cached_policies.append(cached_policy)
                 continue
-            LOGGER.debug("Evaluating policy", policy=policy)
+            LOGGER.debug("P_ENG: Evaluating policy", policy=policy)
             our_end, task_end = Pipe(False)
             task = PolicyProcess(policy, self.request, task_end)
-            LOGGER.debug("Starting Process", policy=policy)
+            LOGGER.debug("P_ENG: Starting Process", policy=policy)
             task.start()
             self.__processes.append(
                 PolicyProcessInfo(process=task, connection=our_end, policy=policy)
@@ -90,7 +90,7 @@ class PolicyEngine:
             x.result for x in self.__processes if x.result
         ]
         for result in process_results + self.__cached_policies:
-            LOGGER.debug("result", passing=result.passing)
+            LOGGER.debug("P_ENG: result", passing=result.passing)
             if result.messages:
                 messages += result.messages
             if not result.passing:

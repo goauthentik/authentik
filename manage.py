@@ -2,6 +2,9 @@
 """Django manage.py"""
 import os
 import sys
+from defusedxml import defuse_stdlib
+
+defuse_stdlib()
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'passbook.root.settings')

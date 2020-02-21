@@ -40,7 +40,7 @@ class Processor:
     @property
     def subject_format(self) -> str:
         """Get subject Format"""
-        return "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+        return "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
     def __init__(self, remote: "SAMLProvider"):
         self.name = remote.name
@@ -144,7 +144,7 @@ class Processor:
 
     def _decode_and_parse_request(self):
         """Parses various parameters from _request_xml into _request_params."""
-        decoded_xml = decode_base64_and_inflate(self._saml_request).decode("utf-8")
+        decoded_xml = decode_base64_and_inflate(self._saml_request)
 
         root = ElementTree.fromstring(decoded_xml)
 
@@ -183,15 +183,13 @@ class Processor:
         # Read the request.
         try:
             self._extract_saml_request()
-        except KeyError as exc:
-            raise CannotHandleAssertion(
-                f"can't find SAML request in user session: {exc}"
-            ) from exc
+        except KeyError:
+            raise CannotHandleAssertion(f"Couldn't find SAML request in user session:")
 
         try:
             self._decode_and_parse_request()
         except Exception as exc:
-            raise CannotHandleAssertion(f"can't parse SAML request: {exc}") from exc
+            raise CannotHandleAssertion(f"Couldn't parse SAML request: {exc}") from exc
 
         self._validate_request()
         return True

@@ -3,8 +3,8 @@ from typing import Any, Dict, Optional
 
 import ldap3
 import ldap3.core.exceptions
-from structlog import get_logger
 from django.db.utils import IntegrityError
+from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.models import Group, User
