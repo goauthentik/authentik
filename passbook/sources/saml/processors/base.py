@@ -1,6 +1,5 @@
 """passbook saml source processor"""
-from typing import Optional
-from xml.etree.ElementTree import Element
+from typing import TYPE_CHECKING, Optional
 
 from defusedxml import ElementTree
 from django.http import HttpRequest
@@ -16,6 +15,8 @@ from passbook.sources.saml.exceptions import (
 from passbook.sources.saml.models import SAMLSource
 
 LOGGER = get_logger()
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec
 
 
 class Processor:
@@ -23,7 +24,7 @@ class Processor:
 
     _source: SAMLSource
 
-    _root: Element
+    _root: "Element"
     _root_xml: str
 
     def __init__(self, source: SAMLSource):
