@@ -7,11 +7,11 @@
 <link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
 <script src="{% static 'node_modules/codemirror/mode/xml/xml.js' %}"></script>
 
-<button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="{{ provider.pk }}">{% trans 'View Metadata' %}</button>
+<button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="saml-{{ provider.pk }}">{% trans 'View Metadata' %}</button>
 
-<div class="pf-c-backdrop" id="{{ provider.pk }}" hidden>
+<div class="pf-c-backdrop" id="saml-{{ provider.pk }}" hidden>
     <div class="pf-l-bullseye">
-        <div class="pf-c-modal-box pf-m-sm" role="dialog">
+        <div class="pf-c-modal-box pf-m-lg" role="dialog">
             <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>

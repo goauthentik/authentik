@@ -15,7 +15,7 @@ document.querySelectorAll("[data-target='modal']").forEach((m) => {
         document.querySelector(`#${modalId}`).removeAttribute("hidden");
     });
 });
-document.querySelectorAll(".pf-c-modal-box [data-modal-close]").forEach(b => {
+document.querySelectorAll(".pf-c-modal-box [data-modal-close]").forEach((b) => {
     b.addEventListener("click", (e) => {
         const parentContainer = e.target.closest('.pf-c-backdrop');
         parentContainer.setAttribute("hidden", true);
