@@ -1,11 +1,15 @@
 """passbook saml_idp Models"""
+from typing import Optional
+
 from django.db import models
+from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
 from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
+from passbook.lib.utils.template import render_to_string
 from passbook.providers.saml.processors.base import Processor
 from passbook.providers.saml.utils.time import timedelta_string_validator
 
@@ -106,15 +110,19 @@ class SAMLProvider(Provider):
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
-    def html_metadata_view(self, request):
+    def html_metadata_view(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with to view Metadata without downloading it"""
         from passbook.providers.saml.views import DescriptorDownloadView
 
-        metadata = DescriptorDownloadView.get_metadata(request, self)
-        return (
-            "saml/idp/admin_metadata_modal.html",
-            {"provider": self, "metadata": metadata,},
-        )
+        try:
+            # pylint: disable=no-member
+            metadata = DescriptorDownloadView.get_metadata(request, self)
+            return render_to_string(
+                "saml/idp/admin_metadata_modal.html",
+                {"provider": self, "metadata": metadata,},
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
 
     class Meta:
 

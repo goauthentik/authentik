@@ -1,10 +1,14 @@
 """oidc models"""
+from typing import Optional
+
 from django.db import models
+from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from oidc_provider.models import Client
 
 from passbook.core.models import Provider
+from passbook.lib.utils.template import render_to_string
 
 
 class OpenIDProvider(Provider):
@@ -26,9 +30,9 @@ class OpenIDProvider(Provider):
     def __str__(self):
         return "OpenID Connect Provider %s" % self.oidc_client.__str__()
 
-    def html_setup_urls(self, request):
+    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        return (
+        return render_to_string(
             "oidc_provider/setup_url_modal.html",
             {
                 "provider": self,

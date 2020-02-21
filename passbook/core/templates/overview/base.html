@@ -2,144 +2,124 @@
 
 {% load static %}
 {% load i18n %}
+
 {% load is_active %}
+{% load utils %}
 
 {% block body %}
-<div class="toast-notifications-list-pf">
-    {% include 'partials/messages.html' %}
-</div>
-<nav class="navbar navbar-pf-vertical">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/">
-            <img class="navbar-brand-icon" src="{% static 'img/logo.png' %}" alt="" />
-            <img class="navbar-brand-name" src="{% static 'img/brand.svg' %}" alt="passbook" />
-        </a>
-    </div>
-    <nav class="collapse navbar-collapse">
-        <ul class="nav navbar-nav navbar-right navbar-iconic navbar-utility">
-            <a href="{% url 'passbook_core:auth-logout' %}" class="btn btn-link nav-item-iconic" aria-haspopup="true" aria-expanded="true">
-                <span title="Username" class="fa fa-sign-out"></span>
-                <span class="dropdown-title">
-                    {% trans 'Logout' %}
-                </span>
+{% include 'partials/messages.html' %}
+<div class="pf-c-page" id="page-default-nav-example">
+    <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content">{% trans 'Skip to content' %}</a>
+    <header role="banner" class="pf-c-page__header">
+        <div class="pf-c-page__header-brand">
+            <div class="pf-c-page__header-brand-toggle">
+                <button class="pf-c-button pf-m-plain" type="button" id="page-default-nav-example-nav-toggle"
+                    aria-label="Global navigation" aria-expanded="true"
+                    aria-controls="page-default-nav-example-primary-nav">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+            <a class="pf-c-page__header-brand-link">
+                <img class="pf-c-brand" src="{% static 'passbook/logo.png' %}" alt="" />
+                <img class="pf-c-brand" src="{% static 'passbook/brand.svg' %}" alt="passbook" />
             </a>
-            <a href="{% url 'passbook_core:user-settings' %}" class="btn btn-link nav-item-iconic" aria-haspopup="true" aria-expanded="true">
-                <span title="Username" class="fa pficon-user"></span>
-                <span class="dropdown-title">
+        </div>
+        <div class="pf-c-page__header-tools">
+            <div class="pf-c-page__header-tools-group pf-m-icons">
+                <a href="{% url 'passbook_core:auth-logout' %}" class="pf-c-button pf-m-plain" type="button">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                </a>
+            </div>
+            <div class="pf-c-page__header-tools-group">
+                <a href="{% url 'passbook_core:user-settings' %}" class="pf-c-button">
                     {{ user.username }}
-                </span>
-            </a>
-        </ul>
-    </nav>
-</nav>
-<div class="nav-pf-vertical nav-pf-vertical-with-sub-menus hide-nav-pf">
-    <ul class="list-group">
-        <li class="list-group-item {% is_active_url 'passbook_core:overview' %}">
-            <a href="{% url 'passbook_core:overview' %}">
-                <span class="fa fa-dashboard" data-toggle="tooltip" title="{% trans 'Overview' %}"></span>
-                <span class="list-group-item-value">{% trans 'Overview' %}</span>
-            </a>
-        </li>
-        {% if user.is_superuser %}
-        <li class="list-group-item {% is_active_url 'passbook_admin:overview' %}">
-            <a href="{% url 'passbook_admin:overview' %}">
-                <span class="fa pficon-build" data-toggle="tooltip" title="{% trans 'System Status' %}"></span>
-                <span class="list-group-item-value">{% trans 'System Status' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
-            <a href="{% url 'passbook_admin:applications' %}">
-                <span class="fa pficon-applications" data-toggle="tooltip" title="{% trans 'Applications' %}"></span>
-                <span class="list-group-item-value">{% trans 'Applications' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
-            <a href="{% url 'passbook_admin:sources' %}">
-                <span class="fa pficon-resource-pool" data-toggle="tooltip" title="{% trans 'Sources' %}"></span>
-                <span class="list-group-item-value">{% trans 'Sources' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
-            <a href="{% url 'passbook_admin:providers' %}">
-                <span class="fa pficon-integration" data-toggle="tooltip" title="{% trans 'Providers' %}"></span>
-                <span class="list-group-item-value">{% trans 'Providers' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
-            <a href="{% url 'passbook_admin:property-mappings' %}">
-                <span class="fa fa-table" data-toggle="tooltip" title="{% trans 'Property Mappings' %}"></span>
-                <span class="list-group-item-value">{% trans 'Property Mappings' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
-            <a href="{% url 'passbook_admin:factors' %}">
-                <span class="fa pficon-plugged" data-toggle="tooltip" title="{% trans 'Factors' %}"></span>
-                <span class="list-group-item-value">{% trans 'Factors' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
-            <a href="{% url 'passbook_admin:policies' %}">
-                <span class="fa pficon-infrastructure" data-toggle="tooltip" title="{% trans 'Policies' %}"></span>
-                <span class="list-group-item-value">{% trans 'Policies' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
-            <a href="{% url 'passbook_admin:invitations' %}">
-                <span class="fa pficon-migration" data-toggle="tooltip" title="{% trans 'Invitations' %}"></span>
-                <span class="list-group-item-value">{% trans 'Invitations' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
-            <a href="{% url 'passbook_admin:users' %}">
-                <span class="fa pficon-users" data-toggle="tooltip" title="{% trans 'Users' %}"></span>
-                <span class="list-group-item-value">{% trans 'Users' %}</span>
-            </a>
-        </li>
-        <li
-            class="list-group-item {% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
-            <a href="{% url 'passbook_admin:groups' %}">
-                <span class="fa pficon-users" data-toggle="tooltip" title="{% trans 'Groups' %}"></span>
-                <span class="list-group-item-value">{% trans 'Groups' %}</span>
-            </a>
-        </li>
-        <li class="list-group-item {% is_active 'passbook_admin:audit-log' %}">
-            <a href="{% url 'passbook_admin:audit-log' %}">
-                <span class="fa pficon-catalog" data-toggle="tooltip" title="{% trans 'Audit Log' %}"></span>
-                <span class="list-group-item-value">{% trans 'Audit Log' %}</span>
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</div>
-<div class="container-fluid container-cards-pf container-pf-nav-pf-vertical hide-nav-pf">
-    {% block content %}
-    {% endblock %}
-</div>
-{% endblock %}
+                </a>
+            </div>
+            <img class="pf-c-avatar" src="{% gravatar user.email %}" alt="">
+        </div>
+    </header>
+    <div class="pf-c-page__sidebar pf-m-dark">
+        <div class="pf-c-page__sidebar-body">
+            <nav class="pf-c-nav pf-m-dark" id="page-default-nav-example-primary-nav" aria-label="Global">
+                <ul class="pf-c-nav__list">
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_core:overview' %}" class="pf-c-nav__link  {% is_active_url 'passbook_core:overview' %}">
+                            {% trans 'Overview' %}
+                        </a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:overview' %}" class="pf-c-nav__link {% is_active_url 'passbook_admin:overview' %}">
+                            {% trans 'System Status' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-nav__link {% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
+                            {% trans 'Applications' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-nav__link {% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
+                            {% trans 'Sources' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-nav__link {% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
+                            {% trans 'Providers' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:property-mappings' %}" class="pf-c-nav__link {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
+                            {% trans 'Property Mappings' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:factors' %}" class="pf-c-nav__link {% is_active 'passbook_admin:factors' 'passbook_admin:factor-create' 'passbook_admin:factor-update' 'passbook_admin:factor-delete' %}">
+                            {% trans 'Factors' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:policies' %}" class="pf-c-nav__link {% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
+                            {% trans 'Policies' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:invitations' %}" class="pf-c-nav__link {% is_active 'passbook_admin:invitations' 'passbook_admin:invitation-create' 'passbook_admin:invitation-update' 'passbook_admin:invitation-delete' 'passbook_admin:invitation-test' %}">
+                            {% trans 'Invitations' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:users' %}" class="pf-c-nav__link {% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
+                            {% trans 'Users' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:groups' %}" class="pf-c-nav__link {% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
+                            {% trans 'Groups' %}
+                        </a>
+                    </li>
+                    <li class="pf-c-nav__item">
+                        <a href="{% url 'passbook_admin:audit-log' %}" class="pf-c-nav__link {% is_active 'passbook_admin:audit-log' %}">
+                            {% trans 'Audit Log' %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
+        {% block content %}
+            <section class="pf-c-page__main-section pf-m-light">
+                <div class="pf-c-content">
+                    <h1>Main title</h1>
+                    <p>This is a demo of the Page component.</p>
+                </div>
+            </section>
+            <section class="pf-c-page__main-section">
 
-{% block scripts %}
-{{ block.super }}
-<script>
-    $(document).ready(function () {
-        // initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // Initialize the vertical navigation
-        $().setupVerticalNavigation(true);
-    });
-</script>
+            </section>
+        {% endblock %}
+    </main>
+</div>
 {% endblock %}

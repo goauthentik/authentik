@@ -1,7 +1,14 @@
 {% extends "overview/base.html" %}
 
-{% load i18n %}
-{% load is_active %}
+{% load static %}
 
-{% block nav_secondary %}
+{% block head %}
+{{ block.super }}
+<script src="{% static 'node_modules/codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'node_modules/codemirror/addon/display/autorefresh.js' %}"></script>
+<link rel="stylesheet" href="{% static 'node_modules/codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
+<script src="{% static 'node_modules/codemirror/mode/xml/xml.js' %}"></script>
+<script src="{% static 'node_modules/codemirror/mode/yaml/yaml.js' %}"></script>
+<script src="{% static 'node_modules/codemirror/mode/jinja2/jinja2.js' %}"></script>
 {% endblock %}

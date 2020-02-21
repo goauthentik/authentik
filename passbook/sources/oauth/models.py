@@ -35,7 +35,7 @@ class OAuthSource(Source):
                 "passbook_sources_oauth:oauth-client-login",
                 kwargs={"source_slug": self.slug},
             ),
-            icon_path=f"img/logos/{self.provider_type}.svg",
+            icon_path=f"passbook/sources/{self.provider_type.replace(' ', '-')}.svg",
             name=self.name,
         )
 
@@ -52,7 +52,7 @@ class OAuthSource(Source):
         icon_type = self.provider_type
         if icon_type == "azure ad":
             icon_type = "windows"
-        icon_class = f"fa fa-{icon_type}"
+        icon_class = f"fab fa-{icon_type}"
         view_name = "passbook_sources_oauth:oauth-client-user"
         return UIUserSettings(
             name=self.name,

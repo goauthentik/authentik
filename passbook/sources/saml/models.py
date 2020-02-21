@@ -43,6 +43,9 @@ class SAMLSource(Source):
         )
         return f'<a href="{metadata_url}" class="btn btn-default btn-sm">Metadata Download</a>'
 
+    def __str__(self):
+        return f"SAML Source {self.name}"
+
     class Meta:
 
         verbose_name = _("SAML Source")

@@ -34,7 +34,20 @@ ENV PASSBOOK_POSTGRESQL__USER=passbook
 ENV PASSBOOK_POSTGRESQL__PASSWORD="EK-5jnKfjrGRm<77"
 RUN ./manage.py collectstatic --no-input
 
-FROM beryju/pixie:latest
+FROM node as npm-packager
 
-COPY --from=static-build /app/static /web-root/static/
-COPY --from=static-build /app/static/robots.txt /web-root/robots.txt
+COPY --from=static-build /app/static/package.json /static/package.json
+COPY --from=static-build /app/static/yarn.lock /static/yarn.lock
+
+RUN cd /static && yarn
+
+FROM nginx
+
+COPY --from=static-build /app/static /usr/share/nginx/html/static
+COPY --from=static-build /app/static/robots.txt /usr/share/nginx/html/robots.txt
+COPY --from=npm-packager /static/node_modules /usr/share/nginx/html/static/node_modules
+
+# FROM beryju/pixie:latest
+
+# COPY --from=static-build /app/static /web-root/static/
+# COPY --from=static-build /app/static/robots.txt /web-root/robots.txt

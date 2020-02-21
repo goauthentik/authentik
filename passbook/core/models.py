@@ -62,7 +62,7 @@ class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
-    name = models.TextField()
+    name = models.TextField(help_text=_("User's display name."))
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     groups = models.ManyToManyField("Group")
@@ -106,8 +106,10 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
 class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     """Authentication factor, multiple instances of the same Factor can be used"""
 
-    name = models.TextField()
-    slug = models.SlugField(unique=True)
+    name = models.TextField(help_text=_("Factor's display Name."))
+    slug = models.SlugField(
+        unique=True, help_text=_("Internal factor name, used in URLs.")
+    )
     order = models.IntegerField()
     enabled = models.BooleanField(default=True)
 
@@ -130,8 +132,8 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
 
-    name = models.TextField()
-    slug = models.SlugField()
+    name = models.TextField(help_text=_("Application's display Name."))
+    slug = models.SlugField(help_text=_("Internal application name, used in URLs."))
     skip_authorization = models.BooleanField(default=False)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
@@ -157,8 +159,8 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
 class Source(ExportModelOperationsMixin("source"), PolicyModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
-    name = models.TextField()
-    slug = models.SlugField()
+    name = models.TextField(help_text=_("Source's display Name."))
+    slug = models.SlugField(help_text=_("Internal source name, used in URLs."))
 
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(

@@ -29,37 +29,37 @@ class ServerErrorTemplateResponse(TemplateResponse, HttpResponseServerError):
 class BadRequestView(TemplateView):
     """Show Bad Request message"""
 
-    response_class = BadRequestTemplateResponse
-    template_name = "error/400.html"
+    extra_context = {"card_title": "Bad Request"}
 
-    extra_context = {"is_login": True}
+    response_class = BadRequestTemplateResponse
+    template_name = "error/generic.html"
 
 
 class ForbiddenView(TemplateView):
     """Show Forbidden message"""
 
-    response_class = ForbiddenTemplateResponse
-    template_name = "error/403.html"
+    extra_context = {"card_title": "Forbidden"}
 
-    extra_context = {"is_login": True}
+    response_class = ForbiddenTemplateResponse
+    template_name = "error/generic.html"
 
 
 class NotFoundView(TemplateView):
     """Show Not Found message"""
 
-    response_class = NotFoundTemplateResponse
-    template_name = "error/404.html"
+    extra_context = {"card_title": "Not Found"}
 
-    extra_context = {"is_login": True}
+    response_class = NotFoundTemplateResponse
+    template_name = "error/generic.html"
 
 
 class ServerErrorView(TemplateView):
     """Show Server Error message"""
 
-    response_class = ServerErrorTemplateResponse
-    template_name = "error/500.html"
+    extra_context = {"card_title": "Server Error"}
 
-    extra_context = {"is_login": True}
+    response_class = ServerErrorTemplateResponse
+    template_name = "error/generic.html"
 
     # pylint: disable=useless-super-delegation
     def dispatch(self, *args, **kwargs):

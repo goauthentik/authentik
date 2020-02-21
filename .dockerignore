@@ -3,3 +3,4 @@ helm
 passbook-ui
 static
 *.env.yml
+node_modules/

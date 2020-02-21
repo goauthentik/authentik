@@ -40,7 +40,6 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def get_context_data(self, **kwargs):
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["is_login"] = True
         kwargs["title"] = _("Log in to your account")
         kwargs["primary_action"] = _("Log in")
         kwargs["show_sign_up_notice"] = CONFIG.y("passbook.sign_up.enabled")
@@ -50,8 +49,8 @@ class LoginView(UserPassesTestMixin, FormView):
             ui_login_button = source.ui_login_button
             if ui_login_button:
                 kwargs["sources"].append(ui_login_button)
-        if kwargs["sources"]:
-            self.template_name = "login/with_sources.html"
+        # if kwargs["sources"]:
+        #     self.template_name = "login/with_sources.html"
         return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value) -> Optional[User]:
@@ -139,7 +138,6 @@ class SignUpView(UserPassesTestMixin, FormView):
 
     def get_context_data(self, **kwargs):
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["is_login"] = True
         kwargs["title"] = _("Sign Up")
         kwargs["primary_action"] = _("Sign up")
         return super().get_context_data(**kwargs)

@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "guardian",
     "django_prometheus",
     "passbook.core.apps.PassbookCoreConfig",
+    "passbook.static.apps.PassbookStaticConfig",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.lib.apps.PassbookLibConfig",

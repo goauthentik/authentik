@@ -4,21 +4,16 @@
 {% load i18n %}
 
 {% block card %}
-<header class="login-pf-header">
-  <h1>{% trans title %}</h1>
-</header>
-<form method="POST">
-  {% block above_form %}
-  {% endblock %}
-  {% include 'partials/form_login.html' %}
-  {% block beneath_form %}
-  {% endblock %}
-  <button type="submit" class="btn btn-primary btn-block btn-lg">{% trans primary_action %}</button>
+<form method="POST" class="pf-c-form">
+    {% block above_form %}
+    {% endblock %}
+
+    {% include 'partials/form.html' %}
+
+    {% block beneath_form %}
+    {% endblock %}
+    <div class="pf-c-form__group pf-m-action">
+        <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans primary_action %}</button>
+    </div>
 </form>
-{% if show_sign_up_notice %}
-<p class="login-pf-signup">
-  {% trans 'Need an account?' %}
-  <a href="{% url 'passbook_core:auth-sign-up' %}">{% trans 'Sign up' %}</a>
-</p>
-{% endif %}
 {% endblock %}

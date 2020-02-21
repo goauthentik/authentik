@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.http import urlencode
 from django.views.generic import View
 from structlog import get_logger
@@ -14,6 +14,7 @@ from passbook.core.views.utils import PermissionDeniedView
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
+from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -62,9 +63,7 @@ class AuthenticationView(UserPassesTestMixin, View):
                 f"match configured domain of '{config_domain}'."
             )
             LOGGER.warning(message)
-            return render(
-                self.request, "error/400.html", context={"message": message}, status=400
-            )
+            return bad_request_message(self.request, message)
         return None
 
     def handle_no_permission(self) -> HttpResponse:
