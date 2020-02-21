@@ -1,12 +1,5 @@
 {% load i18n %}
 {% load static %}
-
-<script src="{% static 'node_modules/codemirror/lib/codemirror.js' %}"></script>
-<script src="{% static 'node_modules/codemirror/addon/display/autorefresh.js' %}"></script>
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
-<script src="{% static 'node_modules/codemirror/mode/yaml/yaml.js' %}"></script>
-
 <div class="pf-c-dropdown">
     <button class="pf-c-button pf-m-tertiary pf-c-dropdown__toggle" type="button">
         <span class="pf-c-dropdown__toggle-text">{% trans 'Setup with...' %}</span>
@@ -31,7 +24,7 @@
             <h1 class="pf-c-title pf-m-2xl">{% trans 'Setup with docker-compose' %}</h1>
             <div class="pf-c-modal-box__body">
                 {% trans 'Add the following snippet to your docker-compose file.' %}
-                <textarea class="codemirror">{% include 'app_gw/docker-compose.yml' %}</textarea>
+                <textarea class="codemirror" readonly data-cm-mode="yaml">{% include 'app_gw/docker-compose.yml' %}</textarea>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
                 <button data-modal-close class="pf-c-button pf-m-primary" type="button">{% trans 'Close' %}</button>
@@ -51,7 +44,7 @@
                 <p>{% trans 'Download the manifest to create the Gatekeeper deployment and service:' %}</p>
                 <a href="{% url 'passbook_providers_app_gw:k8s-manifest' provider=provider.pk %}">{% trans 'Here' %}</a>
                 <p>{% trans 'Afterwards, add the following annotations to the Ingress you want to secure:' %}</p>
-                <textarea class="codemirror">
+                <textarea class="codemirror" readonly data-cm-mode="yaml">
 nginx.ingress.kubernetes.io/auth-url: "https://{{ provider.external_host }}/oauth2/auth"
 nginx.ingress.kubernetes.io/auth-signin: "https://{{ provider.external_host }}/oauth2/start?rd=$escaped_request_uri"
                 </textarea>
@@ -62,16 +55,3 @@ nginx.ingress.kubernetes.io/auth-signin: "https://{{ provider.external_host }}/o
         </div>
     </div>
 </div>
-
-<script>
-    let attributes = document.getElementsByClassName('codemirror');
-    for (let attrib of attributes) {
-        let myCodeMirror = CodeMirror.fromTextArea(attrib, {
-            mode: 'yaml',
-            theme: 'monokai',
-            lineNumbers: false,
-            readOnly: true,
-            autoRefresh: true,
-        });
-    }
-</script>

@@ -1,12 +1,5 @@
 {% load i18n %}
 {% load static %}
-
-<script src="{% static 'node_modules/codemirror/lib/codemirror.js' %}"></script>
-<script src="{% static 'node_modules/codemirror/addon/display/autorefresh.js' %}"></script>
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
-<script src="{% static 'node_modules/codemirror/mode/xml/xml.js' %}"></script>
-
 <button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="saml-{{ provider.pk }}">{% trans 'View Metadata' %}</button>
 
 <div class="pf-c-backdrop" id="saml-{{ provider.pk }}" hidden>
@@ -18,9 +11,7 @@
             <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Metadata' %}</h1>
             <div class="pf-c-modal-box__body" id="modal-description">
                 <form method="post">
-                    <textarea class="codemirror" id="{{ provider.pk }}-textarea">
-                        {{ metadata }}
-                    </textarea>
+                    <textarea class="codemirror" readonly data-cm-mode="xml">{{ metadata }}</textarea>
                 </form>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
@@ -29,13 +20,3 @@
         </div>
     </div>
 </div>
-
-<script>
-CodeMirror.fromTextArea(document.getElementById("{{ provider.pk }}-textarea"), {
-    mode: 'xml',
-    theme: 'monokai',
-    lineNumbers: false,
-    readOnly: true,
-    autoRefresh: true,
-});
-</script>

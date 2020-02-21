@@ -21,3 +21,18 @@ document.querySelectorAll(".pf-c-modal-box [data-modal-close]").forEach((b) => {
         parentContainer.setAttribute("hidden", true);
     });
 });
+
+// CodeMirror
+document.querySelectorAll(".codemirror").forEach((cm) => {
+    let cmMode = 'xml';
+    if ('data-cm-mode' in cm.attributes) {
+        cmMode = cm.attributes['data-cm-mode'].value;
+    }
+    CodeMirror.fromTextArea(cm, {
+        mode: cmMode,
+        theme: 'monokai',
+        lineNumbers: false,
+        readOnly: cm.readOnly,
+        autoRefresh: true,
+    });
+});
