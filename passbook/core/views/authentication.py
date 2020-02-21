@@ -40,7 +40,6 @@ class LoginView(UserPassesTestMixin, FormView):
 
     def get_context_data(self, **kwargs):
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["is_login"] = True
         kwargs["title"] = _("Log in to your account")
         kwargs["primary_action"] = _("Log in")
         kwargs["show_sign_up_notice"] = CONFIG.y("passbook.sign_up.enabled")
@@ -139,7 +138,6 @@ class SignUpView(UserPassesTestMixin, FormView):
 
     def get_context_data(self, **kwargs):
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["is_login"] = True
         kwargs["title"] = _("Sign Up")
         kwargs["primary_action"] = _("Sign up")
         return super().get_context_data(**kwargs)

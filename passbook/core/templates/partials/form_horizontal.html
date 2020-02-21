@@ -5,9 +5,11 @@
 {% for field in form %}
 <div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
     {% if field.field.widget|fieldtype == 'RadioSelect' %}
-        <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
-            for="{{ field.name }}-{{ forloop.counter0 }}">
-            {{ field.label }}
+        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+            <span class="pf-c-form__label-text">{{ field.label }}</span>
+            {% if field.field.required %}
+            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+            {% endif %}
         </label>
         {% for c in field %}
         <div class="radio col-sm-10">
@@ -18,17 +20,22 @@
         </div>
         {% endfor %}
     {% elif field.field.widget|fieldtype == 'Select' %}
-        <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
-            for="{{ field.name }}-{{ forloop.counter0 }}">
-            {{ field.label }}
+        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+            <span class="pf-c-form__label-text">{{ field.label }}</span>
+            {% if field.field.required %}
+            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+            {% endif %}
         </label>
-        <div class="select col-sm-10">
-            {{ field }}
+        <div class="pf-c-form__horizontal-group">
+            {{ field|css_class:"pf-c-form-control" }}
         </div>
     {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
-        <label class="checkbox-label">
-            {{ field }} {{ field.label }}
-        </label>
+        <div class="pf-c-form__horizontal-group">
+            <div class="pf-c-check">
+                {{ field|css_class:"pf-c-check__input" }}
+                <label class="pf-c-check__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ field.label }}</label>
+            </div>
+        </div>
     {% else %}
         <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
             <span class="pf-c-form__label-text">{{ field.label }}</span>
@@ -36,12 +43,12 @@
             <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
             {% endif %}
         </label>
-        {{ field|css_class:'pf-c-form-control' }}
-        {% if field.help_text %}
-        <span>
-            {{ field.help_text }}
-        </span>
-        {% endif %}
+        <div class="c-form__horizontal-group">
+            {{ field|css_class:'pf-c-form-control' }}
+            {% if field.help_text %}
+                <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+            {% endif %}
+        </div>
     {% endif %}
     {% for error in field.errors %}
     <p class="pf-c-form__helper-text pf-m-error">

@@ -32,16 +32,12 @@ class BadRequestView(TemplateView):
     response_class = BadRequestTemplateResponse
     template_name = "error/400.html"
 
-    extra_context = {"is_login": True}
-
 
 class ForbiddenView(TemplateView):
     """Show Forbidden message"""
 
     response_class = ForbiddenTemplateResponse
     template_name = "error/403.html"
-
-    extra_context = {"is_login": True}
 
 
 class NotFoundView(TemplateView):
@@ -50,16 +46,12 @@ class NotFoundView(TemplateView):
     response_class = NotFoundTemplateResponse
     template_name = "error/404.html"
 
-    extra_context = {"is_login": True}
-
 
 class ServerErrorView(TemplateView):
     """Show Server Error message"""
 
     response_class = ServerErrorTemplateResponse
     template_name = "error/500.html"
-
-    extra_context = {"is_login": True}
 
     # pylint: disable=useless-super-delegation
     def dispatch(self, *args, **kwargs):

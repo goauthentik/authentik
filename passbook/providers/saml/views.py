@@ -66,10 +66,7 @@ class AccessRequiredView(AccessMixin, View):
             return render(
                 request,
                 "login/denied.html",
-                {
-                    "title": _("You don't have access to this application"),
-                    "is_login": True,
-                },
+                {"title": _("You don't have access to this application"),},
             )
         return super().dispatch(request, *args, **kwargs)
 
@@ -142,12 +139,7 @@ class LoginProcessView(AccessRequiredView):
             return render(
                 request,
                 "saml/idp/login.html",
-                {
-                    "saml_params": params,
-                    "provider": self.provider,
-                    # This is only needed to for the template to render correctly
-                    "is_login": True,
-                },
+                {"saml_params": params, "provider": self.provider,},
             )
 
         except exceptions.CannotHandleAssertion as exc:
@@ -308,10 +300,5 @@ class InitiateLoginView(AccessRequiredView):
         return render(
             request,
             "saml/idp/login.html",
-            {
-                "saml_params": params,
-                "provider": self.provider,
-                # This is only needed to for the template to render correctly
-                "is_login": True,
-            },
+            {"saml_params": params, "provider": self.provider,},
         )

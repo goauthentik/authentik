@@ -74,11 +74,6 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
             LOGGER.debug(request.GET.get("redirect_uri"))
         return actual_response
 
-    def render_to_response(self, context, **kwargs):
-        # Always set is_login to true for correct css class
-        context["is_login"] = True
-        return super().render_to_response(context, **kwargs)
-
     def form_valid(self, form):
         # User has clicked on "Authorize"
         Event.new(

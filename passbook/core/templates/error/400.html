@@ -14,10 +14,11 @@
 </style>
 {% endblock %}
 
+{% block card_title %}
+{% trans 'Bad Request' %}
+{% endblock %}
+
 {% block card %}
-<header class="login-pf-header">
-    <h1>{% trans 'Bad Request' %}</h1>
-</header>
 <form>
     {% if message %}
     <h3>{% trans message %}</h3>

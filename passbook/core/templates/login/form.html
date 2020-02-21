@@ -5,13 +5,15 @@
 
 {% block card %}
 <form method="POST" class="pf-c-form">
-  {% block above_form %}
-  {% endblock %}
-  {% include 'partials/form_login_pf4.html' %}
-  {% block beneath_form %}
-  {% endblock %}
-  <div class="pf-c-form__group pf-m-action">
-    <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans primary_action %}</button>
-  </div>
+    {% block above_form %}
+    {% endblock %}
+
+    {% include 'partials/form.html' %}
+
+    {% block beneath_form %}
+    {% endblock %}
+    <div class="pf-c-form__group pf-m-action">
+        <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans primary_action %}</button>
+    </div>
 </form>
 {% endblock %}

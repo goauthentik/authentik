@@ -17,6 +17,7 @@
         </filter>
     </svg>
 </div>
+{% include 'partials/messages.html' %}
 <div class="pf-c-login">
     <div class="pf-c-login__container">
         <header class="pf-c-login__header">
@@ -27,12 +28,16 @@
         </header>
         <main class="pf-c-login__main">
             <header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">{% trans title %}</h1>
+                <h1 class="pf-c-title pf-m-3xl">
+                    {% block card_title %}
+                    {% trans title %}
+                    {% endblock %}
+                </h1>
             </header>
             <div class="pf-c-login__main-body">
                 {% block card %}
                 <form method="POST" class="pf-c-form">
-                    {% include 'partials/form_login_pf4.html' %}
+                    {% include 'partials/form.html' %}
                     <div class="pf-c-form__group pf-m-action">
                         <button class="pf-c-button pf-m-primary pf-m-block" type="submit">Log in</button>
                     </div>
@@ -71,7 +76,7 @@
             <p></p>
             <ul class="pf-c-list pf-m-inline">
                 <li>
-                    <a href="https://beryju.github.io/passbook/">Help</a>
+                    <a href="https://beryju.github.io/passbook/">{% trans 'Documentation' %}</a>
                 </li>
                 <!-- todo: load config.passbook.footer.links -->
             </ul>
