@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 image:
-  tag: 0.8.6-beta
+  tag: 0.8.7-beta
 
 nameOverride: ""
 
