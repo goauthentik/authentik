@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.http import urlencode
 from django.views.generic import View
 from structlog import get_logger

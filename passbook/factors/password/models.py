@@ -10,7 +10,10 @@ from passbook.core.types import UIUserSettings
 class PasswordFactor(Factor):
     """Password-based Django-backend Authentication Factor"""
 
-    backends = ArrayField(models.TextField())
+    backends = ArrayField(
+        models.TextField(),
+        help_text=_("Selection of backends to test the password against."),
+    )
     password_policies = models.ManyToManyField(Policy, blank=True)
     reset_factors = models.ManyToManyField(
         Factor, blank=True, related_name="reset_factors"
