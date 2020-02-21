@@ -139,10 +139,10 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    meta_launch_url = models.URLField(null=True, blank=True)
-    meta_icon_url = models.TextField(null=True, blank=True)
-    meta_description = models.TextField(null=True, blank=True)
-    meta_publisher = models.TextField(null=True, blank=True)
+    meta_launch_url = models.URLField(default="", blank=True)
+    meta_icon_url = models.TextField(default="", blank=True)
+    meta_description = models.TextField(default="", blank=True)
+    meta_publisher = models.TextField(default="", blank=True)
 
     objects = InheritanceManager()
 
