@@ -55,7 +55,7 @@ metadata:
   namespace: kube-system
 spec:
   rules:
-  - host: {{ provider.host }}
+  - host: {{ provider.external_host }}
     http:
       paths:
       - backend:

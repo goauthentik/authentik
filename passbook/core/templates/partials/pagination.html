@@ -1,22 +1,43 @@
 {% load i18n %}
 
-<div class="btn-group">
-  {% with param=get_param|default:'page' %}
-  {% if page_obj.has_previous %}
-    <a class="btn btn-default" href="?{{ param }}={{ page_obj.previous_page_number }}"><span class="fa fa-angle-left"></span></a>
-  {% else %}
-    <a class="btn btn-default disabled" href=""><span class="fa fa-angle-left"></span></a>
-  {% endif %}
-  <span class="btn btn-default">
-    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
-    Page {{ current }} of {{ total }}
-    {% endblocktrans %}
-  </span>
-  {% if page_obj.has_next %}
-    <a class="btn btn-default" href="?{{ param }}={{ page_obj.next_page_number }}"><span class="fa fa-angle-right"></span></a>
-  {% else %}
-    <a class="btn btn-default disabled" href=""><span class="fa fa-angle-right"></span></a>
-  {% endif %}
-  {% endwith %}
+<div class="pf-c-pagination">
+    <div class="pf-c-pagination__total-items">
+        <b>{{ page_obj.start_index }} - {{ page_obj.end_index }}</b>of
+        <b>{{ page_obj.count }}</b>
+    </div>
+    {% with param=get_param|default:'page' %}
+    <nav class="pf-c-pagination__nav" aria-label="Pagination">
+        <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to first page"
+            href="?{{ param }}=1">
+            <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+        </a>
+        <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to previous page"
+            {% if page_obj.has_previous %}
+            href="?{{ param }}={{ page_obj.previous_page_number }}"
+            {% else %}
+            disabled
+            {% endif %}>
+            <i class="fas fa-angle-left" aria-hidden="true"></i>
+        </a>
+        <div class="pf-c-pagination__nav-page-select">
+            <span>
+                {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+                {{ current }} of {{ total }}
+                {% endblocktrans %}
+            </span>
+        </div>
+        <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to next page"
+            {% if page_obj.has_next %}
+            href="?{{ param }}={{ page_obj.next_page_number }}"
+            {% else %}
+            disabled
+            {% endif %}>
+            <i class="fas fa-angle-right" aria-hidden="true"></i>
+        </a>
+        <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to last page"
+            href="?{{ param }}={{ page_obj.num_pages }}">
+            <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+        </a>
+    </nav>
+    {% endwith %}
 </div>
-<hr>

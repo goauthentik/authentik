@@ -5,53 +5,81 @@
 {% load admin_reflection %}
 
 {% block content %}
-<div class="container">
-    <h1><span class="pficon-resource-pool"></span> {% trans "Sources" %}</h1>
-    <span>{% trans "External Sources which can be used to get Identities into passbook, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP." %}</span>
-    <hr>
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-            {% trans 'Create...' %}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-            {% for type, name in types.items %}
-            <li role="presentation"><a role="menuitem" tabindex="-1"
-                    href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a></li>
-            {% endfor %}
-        </ul>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-middleware"></i>
+            {% trans 'Source' %}
+        </h1>
+        <p>{% trans "External Sources which can be used to get Identities into passbook, for example Social Providers like Twiter and GitHub or Enterprise Providers like ADFS and LDAP." %}
+        </p>
     </div>
-    <hr>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Class' %}</th>
-                <th>{% trans 'Additional Info' %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for source in object_list %}
-            <tr>
-                <td>{{ source.name }}</td>
-                <td>{{ source|fieldtype }}</td>
-                <td>{{ source.ui_additional_info|safe|default:"" }}</td>
-                <td>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:source-update' pk=source.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:source-delete' pk=source.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                    {% get_links source as links %}
-                    {% for name, href in links %}
-                    <a class="btn btn-default btn-sm"
-                        href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
-                    {% endfor %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include 'partials/pagination.html' %}
-</div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <div class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        {% for type, name in types.items %}
+                        <li>
+                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Additional Info' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for source in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ source.name }}</div>
+                            {% if not source.enabled %}
+                            <small>{% trans 'Disabled' %}</small>
+                            {% endif %}
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ source|fieldtype }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ source.ui_additional_info|default:""|safe }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:source-update' pk=source.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:source-delete' pk=source.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        {% get_links source as links %}
+                        {% for name, href in links %}
+                            <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
 {% endblock %}

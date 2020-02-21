@@ -1,4 +1,4 @@
-{% extends "base/skeleton_pf4.html" %}
+{% extends "base/skeleton.html" %}
 
 {% load static %}
 {% load i18n %}
@@ -122,17 +122,4 @@
         {% endblock %}
     </main>
 </div>
-{% endblock %}
-
-{% block scripts %}
-{{ block.super }}
-<script>
-    $(document).ready(function () {
-        // initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // Initialize the vertical navigation
-        $().setupVerticalNavigation(true);
-    });
-</script>
 {% endblock %}

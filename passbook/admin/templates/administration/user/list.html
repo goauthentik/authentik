@@ -4,44 +4,63 @@
 {% load utils %}
 
 {% block content %}
-<div class="container">
-    <h1><span class="pficon-users"></span> {% trans "Users" %}</h1>
-    <hr>
-    <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="btn btn-primary">
-        {% trans 'Create...' %}
-    </a>
-    <hr>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>{% trans 'Username' %}</th>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Active' %}</th>
-                <th>{% trans 'Last Login' %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in object_list %}
-            <tr>
-                <td>{{ user.username }}</td>
-                <td>{{ user.name|default:'-' }}</td>
-                <td>{{ user.is_active }}</td>
-                <td>{{ user.last_login }}</td>
-                <td>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:user-update' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:user-delete' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_core:overview' %}?__impersonate={{ user.pk }}">{% trans 'Impersonate' %}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include 'partials/pagination.html' %}
-</div>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-user"></i>
+            {% trans 'Users' %}
+        </h1>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Active' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Last Login' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for user in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ user.username }}</div>
+                            <small>{{ user.name }}</small>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ user.is_active }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ user.last_login }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:user-update' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:user-delete' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
+                        <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_core:overview' %}?__impersonate={{ user.pk }}">{% trans 'Impersonate' %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
 {% endblock %}

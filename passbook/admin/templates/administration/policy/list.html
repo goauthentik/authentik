@@ -3,61 +3,76 @@
 {% load i18n %}
 {% load utils %}
 
-{% block title %}
-{% title %}
-{% endblock %}
-
 {% block content %}
-<div class="container">
-    <h1><span class="pficon-infrastructure"></span> {% trans "Policies" %}</h1>
-    <span>{% trans "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Factors." %}</span>
-    <hr>
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-            {% trans 'Create...' %}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-            {% for type, name in types.items %}
-            <li role="presentation"><a role="menuitem" tabindex="-1"
-                    href="{% url 'passbook_admin:policy-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a></li>
-            {% endfor %}
-        </ul>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-infrastructure"></i>
+            {% trans 'Policies' %}
+        </h1>
+        <p>{% trans "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Factors." %}</p>
     </div>
-    <hr>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th></th>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Type' %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for policy in object_list %}
-            <tr {% if not policy.policymodel_set.exists %} class="warning" {% endif %}>
-                <th>
-                    {% if not policy.policymodel_set.exists %}
-                    <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right" title="{% trans 'Warning: Policy is not assigned.' %}"></span>
-                    {% else %}
-                    <span class="pficon-ok" data-toggle="tooltip" data-placement="right" title="{% blocktrans with objects=policy.policymodel_set.all|join:', ' %}Assigned to objects {{ objects }}{% endblocktrans %}"></span>
-                    {% endif %}
-                </th>
-                <td>{{ policy.name }}</td>
-                <td>{{ policy|verbose_name }}</td>
-                <td>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:policy-update' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:policy-test' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:policy-delete' pk=policy.uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include 'partials/pagination.html' %}
-</div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <div class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        {% for type, name in types.items %}
+                        <li>
+                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:policy-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for policy in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ policy.name }}</div>
+                            {% if not policy.policymodel_set.exists %}
+                            <i class="pf-icon pf-icon-warning-triangle"></i>
+                            <small>{% trans 'Warning: Policy is not assigned.' %}</small>
+                            {% else %}
+                            <i class="pf-icon pf-icon-ok"></i>
+                            <small>{% blocktrans with objects=policy.policymodel_set.all|join:', ' %}Assigned to objects {{ objects }}{% endblocktrans %}</small>
+                            {% endif %}
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ policy|verbose_name }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:policy-update' pk=policy.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_admin:policy-test' pk=policy.pk %}?back={{ request.get_full_path }}">{% trans 'Test' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:policy-delete' pk=policy.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
 {% endblock %}

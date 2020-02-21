@@ -3,29 +3,34 @@
 {% load i18n %}
 {% load utils %}
 
-{% block title %}
-{% title %}
-{% endblock %}
-
 {% block content %}
-<div class="container">
-    <h1><span class="pficon-applications"></span> {% trans "Request" %}</h1>
-    <hr>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>{% trans 'Key' %}</th>
-                <th>{% trans 'Value' %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in request_dict.items %}
-            <tr>
-                <td>{{ key }}</td>
-                <td>{{ value }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-applications"></i>
+            {% trans 'Request' %}
+        </h1>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col" style="min-width: 150px;">{% trans 'Key' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Value' %}</th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for key, value in request_dict.items %}
+                <tr role="row">
+                    <td role="cell">{{ key }}</td>
+                    <td role="cell">{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 </div>
 {% endblock %}

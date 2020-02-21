@@ -3,49 +3,33 @@
 {% load utils %}
 
 <!DOCTYPE html>
-<html lang="en" class="layout-pf layout-pf-fixed transitions">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>
-    {% block title %}
-    {% title %}
-    {% endblock %}
-  </title>
-  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
-  <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.png' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly.min.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/patternfly-additions.min.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/passbook.css' %}">
-  <style>
-    .login-pf {
-      background-attachment: fixed;
-      scroll-behavior: smooth;
-      background-size: cover;
-    }
-  </style>
-  {% block head %}
-  {% endblock %}
-</head>
-
-<body {% if is_login %} class="login-pf" {% endif %}>
-  {% if 'impersonate_id' in request.session %}
-  <div class="experimental-pf-bar">
-    <span id="experimentalBar" class="experimental-pf-text">
-      {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
-      <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
-    </span>
-  </div>
-  {% endif %}
-  {% block body %}
-  {% endblock %}
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-  <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'js/patternfly.min.js' %}"></script>
-  <script src="{% static 'js/passbook.js' %}"></script>
-  {% block scripts %}
-  {% endblock %}
-</body>
-
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>{% block title %}{% title %}{% endblock %}</title>
+        <link rel="icon" type="image/png" href="{% static 'passbook/logo.png' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'passbook/logo.png' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'passbook/pf.css' %}">
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        {% if 'impersonate_id' in request.session %}
+        <div class="experimental-pf-bar">
+            <span id="experimentalBar" class="experimental-pf-text">
+                {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
+                <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
+            </span>
+        </div>
+        {% endif %}
+        {% block body %}
+        {% endblock %}
+        {% block scripts %}
+        {% endblock %}
+        <script src="{% static 'passbook/pf.js' %}"></script>
+    </body>
 </html>

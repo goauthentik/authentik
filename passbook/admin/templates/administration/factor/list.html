@@ -4,60 +4,80 @@
 {% load utils %}
 {% load admin_reflection %}
 
-{% block title %}
-{% title %}
-{% endblock %}
-
 {% block content %}
-<div class="container">
-    <h1><span class="pficon-plugged"></span> {% trans "Factors" %}</h1>
-    <span>{% trans "Factors required for a user to successfully authenticate." %}</span>
-    <hr>
-    <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="createDropdown" data-toggle="dropdown">
-            {% trans 'Create...' %}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="createDropdown">
-            {% for type, name in types.items %}
-            <li role="presentation"><a role="menuitem" tabindex="-1"
-                    href="{% url 'passbook_admin:factor-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a></li>
-            {% endfor %}
-        </ul>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-plugged"></i>
+            {% trans 'Factors' %}
+        </h1>
+        <p>{% trans "Factors required for a user to successfully authenticate." %}
+        </p>
     </div>
-    <hr>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Type' %}</th>
-                <th>{% trans 'Order' %}</th>
-                <th>{% trans 'Enabled?' %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for factor in object_list %}
-            <tr>
-                <td>{{ factor.name }} ({{ factor.slug }})</td>
-                <td>{{ factor|verbose_name }}</td>
-                <td>{{ factor.order }}</td>
-                <td>{{ factor.enabled }}</td>
-                <td>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:factor-update' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                    <a class="btn btn-default btn-sm"
-                        href="{% url 'passbook_admin:factor-delete' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                    {% get_links factor as links %}
-                    {% for name, href in links.items %}
-                    <a class="btn btn-default btn-sm"
-                        href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
-                    {% endfor %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include 'partials/pagination.html' %}
-</div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <div class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        {% for type, name in types.items %}
+                        <li>
+                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:factor-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for factor in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ factor.name }} ({{ factor.slug }})</div>
+                            <small>{{ factor|verbose_name }}</small>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ factor.order }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ factor.enabled }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:factor-update' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:factor-delete' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        {% get_links factor as links %}
+                        {% for name, href in links.items %}
+                        <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
 {% endblock %}

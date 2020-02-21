@@ -3,224 +3,177 @@
 {% load i18n %}
 
 {% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>{% trans 'System Overview' %}</h1>
+    </div>
+</section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
+        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__head">
-                <i class="pf-icon pf-icon-applications"></i> {% trans 'Applications' %}
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-applications"></i> {% trans 'Applications' %}
+                </div>
             </div>
             <div class="pf-c-card__body">
                 <i class="pf-icon pf-icon-ok"></i> {{ application_count }}
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
+        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__head">
-                <i class="pf-icon pf-icon-resource-pool"></i> {% trans 'Sources' %}
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-middleware"></i> {% trans 'Sources' %}
+                </div>
             </div>
             <div class="pf-c-card__body">
                 <i class="pf-icon pf-icon-ok"></i> {{ source_count }}
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-card pf-m-hoverable pf-m-compact" id="card-1">
+        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__head">
-                <i class="pf-icon pf-icon-plugged"></i> {% trans 'Providers' %}
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-plugged"></i> {% trans 'Providers' %}
+                </div>
             </div>
             <div class="pf-c-card__body">
                 {% if providers_without_application.exists %}
                 <i class="pf-icon pf-icon-warning-triangle"></i> {{ provider_count }}
-                <div class="pf-c-tooltip pf-m-top" role="tooltip">
-                    <div class="pf-c-tooltip__arrow"></div>
-                    <div class="pf-c-tooltip__content" id="tooltip-top-content">
-                        {% trans 'Warning: At least one Provider has no application assigned.' %}
-                    </div>
-                </div>
+                <p>{% trans 'Warning: At least one Provider has no application assigned.' %}</p>
                 {% else %}
                 <i class="pf-icon pf-icon-ok"></i> {{ provider_count }}
                 {% endif %}
             </div>
         </a>
-    </div>
-</section>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <a href="{% url 'passbook_admin:factors' %}">
-                    <span class="pficon-plugged"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Factors' %}
-                </a>
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        {% if factor_count < 1 %}
-                        <span class="pficon-error-circle-o" data-toggle="tooltip" data-placement="right"
-                            title="{% trans 'No Factors configured. No Users will be able to login.' %}"></span>
-                        {{ factor_count }}
-                        {% else %}
-                        <i class="pf-icon pf-icon-ok"></i>{{ factor_count }}
-                        {% endif %}
-                    </span>
-                </p>
+
+        <a href="{% url 'passbook_admin:factors' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-plugged"></i> {% trans 'Factors' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                {% if factor_count < 1 %}
+                <i class="pficon-error-circle-o"></i> {{ factor_count }}
+                <p>{% trans 'No Factors configured. No Users will be able to login.' %}"></p>
+                {% else %}
+                <i class="pf-icon pf-icon-ok"></i> {{ factor_count }}
+                {% endif %}
+            </div>
+        </a>
+
+        <a href="{% url 'passbook_admin:policies' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-infrastructure"></i> {% trans 'Policies' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                {% if policies_without_binding %}
+                <i class="pf-icon pf-icon-warning-triangle"></i> {{ policy_count }}
+                <p>{% trans 'Policies without binding exist.' %}</p>
+                {% else %}
+                <i class="pf-icon pf-icon-ok"></i> {{ policy_count }}
+                {% endif %}
+            </div>
+        </a>
+
+        <a href="{% url 'passbook_admin:invitations' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-migration"></i> {% trans 'Invitation' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                <i class="pf-icon pf-icon-ok"></i> {{ invitation_count }}
+            </div>
+        </a>
+
+        <a href="{% url 'passbook_admin:users' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-user"></i> {% trans 'Users' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                <i class="pf-icon pf-icon-ok"></i> {{ user_count }}
+            </div>
+        </a>
+
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-bundle"></i> {% trans 'Version' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                <i class="pf-icon pf-icon-ok"></i> {{ version }}
             </div>
         </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <a href="{% url 'passbook_admin:policies' %}">
-                    <span class="pficon-infrastructure"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Policies' %}
-                </a>
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        {% if policies_without_attachment > 0 %}
-                        <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right"
-                            title="{% trans 'Policies without attachment exist.' %}"></span>
-                        {{ policy_count }}
-                        {% else %}
-                        <i class="pf-icon pf-icon-ok"></i>{{ policy_count }}
-                        {% endif %}
-                    </span>
-                </p>
+
+        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-server"></i> {% trans 'Workers' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                {% if worker_count < 1 %}
+                <i class="pf-icon pf-icon-warning-triangle"></i> {{ worker_count }}
+                <p>{% trans 'No workers connected.' %}</p>
+                {% else %}
+                <i class="pf-icon pf-icon-ok"></i> {{ worker_count }}
+                {% endif %}
             </div>
         </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <a href="{% url 'passbook_admin:invitations' %}">
-                    <span class="pficon-migration"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Invitation' %}
-                </a>
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        <a href="{% url 'passbook_admin:invitations' %}">
-                            <i class="pf-icon pf-icon-ok"></i>{{ invitation_count }}
-                        </a>
-                    </span>
-                </p>
+
+        <a class="pf-c-card pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <a href="{% url 'passbook_admin:users' %}">
-                    <span class="pficon-users"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Users' %}
-                </a>
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        <a href="{% url 'passbook_admin:users' %}">
-                            <i class="pf-icon pf-icon-ok"></i>{{ user_count }}
-                        </a>
-                    </span>
-                </p>
+            <div class="pf-c-card__body">
+                {% if cached_policies < 1 %}
+                <i class="pf-icon pf-icon-warning-triangle"></i> {{ cached_policies }}
+                <p>{% trans 'No policies cached. Users may experience slow response times.' %}</p>
+                {% else %}
+                <i class="pf-icon pf-icon-ok"></i> {{ cached_policies }}
+                {% endif %}
             </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <span class="pficon-bundle"></span>
-                <span class="card-pf-aggregate-status-count"></span> {% trans 'Version' %}
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        <a href="#">
-                            {{ version }}
-                        </a>
-                    </span>
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <a href="#">
-                    <span class="pficon-server"></span>
-                    <span class="card-pf-aggregate-status-count"></span> {% trans 'Worker(s)' %}
-                </a>
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        <a href="#">
-                            {% if worker_count < 1%}
-                            <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right"
-                                title="{% trans 'No workers connected.' %}"></span> {{ worker_count }}
-                            {% else %}
-                            <i class="pf-icon pf-icon-ok"></i>{{ worker_count }}
-                            {% endif %}
-                        </a>
-                    </span>
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-6 col-sm-2 col-md-2">
-        <div class="card-pf card-pf-accented card-pf-aggregate-status">
-            <h2 class="card-pf-title">
-                <span class="pficon-server"></span>
-                <span class="card-pf-aggregate-status-count"></span> {% trans 'Cached Policies' %}
-            </h2>
-            <div class="card-pf-body">
-                <p class="card-pf-aggregate-status-notifications">
-                    <span class="card-pf-aggregate-status-notification">
-                        <a href="#" data-toggle="modal" data-target="#clearCacheMOdal">
-                            {% if cached_policies < 1 %}
-                            <span class="pficon-warning-triangle-o" data-toggle="tooltip" data-placement="right"
-                                title="{% trans 'No policies cached. Users may experience slow response times.' %}"></span> {{ cached_policies }}
-                            {% else %}
-                            <i class="pf-icon pf-icon-ok"></i>{{ cached_policies }}
-                            {% endif %}
-                        </a>
-                    </span>
-                </p>
-            </div>
-        </div>
-    </div>
+        </a>
+    </section>
 </div>
-<div class="modal fade" id="clearCacheMOdal" tabindex="-1" role="dialog" aria-labelledby="clearCacheMOdalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          <span class="pficon pficon-close"></span>
-        </button>
-        <h4 class="modal-title" id="clearCacheMOdalLabel">{% trans 'Clear Cache' %}</h4>
-      </div>
-      <div class="modal-body">
-        <form method="post" id="clearForm">
-            {% csrf_token %}
-            <input type="hidden" name="clear">
-            <p>
-                {% blocktrans %}
-                    Are you sure you want to clear the cache? This includes all user sessions and all cached Policy results.
-                {% endblocktrans %}
-            </p>
-            <h3>
-                {% blocktrans %}
-                    This will also log you out.
-                {% endblocktrans %}
-            </h3>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button form="clearForm" type="submit" type="button" class="btn btn-danger">{% trans 'Clear' %}</button>
-      </div>
+<div class="pf-c-backdrop" id="clearCacheModalRoot" hidden>
+    <div class="pf-l-bullseye">
+        <div class="pf-c-modal-box pf-m-sm" role="dialog">
+            <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Clear Cache' %}?</h1>
+            <div class="pf-c-modal-box__body" id="modal-description">
+                <form method="post" id="clearForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="clear">
+                    <p>
+                        {% blocktrans %}
+                        Are you sure you want to clear the cache? This includes all user sessions and all cached Policy results.
+                        {% endblocktrans %}
+                    </p>
+                    <h3>
+                        {% blocktrans %}
+                        This will also log you out.
+                        {% endblocktrans %}
+                    </h3>
+                </form>
+            </div>
+            <footer class="pf-c-modal-box__footer pf-m-align-left">
+                <button form="clearForm" class="pf-c-button pf-m-primary" type="submit">{% trans 'Clear' %}</button>
+                <button data-modal-close class="pf-c-button pf-m-link" type="button">{% trans 'Cancel' %}</button>
+            </footer>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

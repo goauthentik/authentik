@@ -3,85 +3,66 @@
 {% load i18n %}
 {% load utils %}
 
-{% block title %}
-{% title %}
-{% endblock %}
-
 {% block content %}
-<h1><span class="pficon-catalog"></span> {% trans "Audit Log" %}</h1>
-<div id="pf-list-standard" class="list-group list-view-pf list-view-pf-view">
-    {% for entry in object_list %}
-    <div class="list-group-item">
-        <div class="list-view-pf-main-info">
-            <div class="list-view-pf-left">
-                <span class="fa fa-plane list-view-pf-icon-sm"></span>
-            </div>
-            <div class="list-view-pf-body">
-                <div class="list-view-pf-description">
-                    <div class="list-group-item-heading">
-                        {{ entry.action }}
-                    </div>
-                    <div class="list-group-item-text">
-                        {{ entry.context }}
-                    </div>
-                </div>
-                <div class="list-view-pf-additional-info">
-                    <div class="list-view-pf-additional-info-item">
-                        <span class="pficon pficon-user"></span>
-                        <strong>{{ entry.user }}</strong>
-                    </div>
-                    <div class="list-view-pf-additional-info-item">
-                        <span class="pficon pficon-cluster"></span>
-                        <strong>{{ entry.app|default:'-' }}</strong>
-                    </div>
-                    <div class="list-view-pf-additional-info-item">
-                        <span class="fa fa-clock-o"></span>
-                        <strong>{{ entry.created }}</strong>
-                    </div>
-                    <div class="list-view-pf-additional-info-item">
-                        <span class="pficon pficon-screen"></span>
-                        <strong>{{ entry.request_ip }}</strong>
-                    </div>
-                </div>
-            </div>
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-catalog"></i>
+            {% trans 'Audit Log' %}
+        </h1>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Action' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Context' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'User' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Creation Date' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Client IP' %}</th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for entry in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ entry.action }}</div>
+                            <small>{{ entry.app|default:'-' }}</small>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ entry.context }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ entry.user }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ entry.created }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ entry.client_ip }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
         </div>
     </div>
-    {% endfor %}
-    <script>
-        $(document).ready(function () {
-            // Row Checkbox Selection
-            $("#pf-list-standard input[type='checkbox']").change(function (e) {
-                if ($(this).is(":checked")) {
-                    $(this).closest('.list-group-item').addClass("active");
-                } else {
-                    $(this).closest('.list-group-item').removeClass("active");
-                }
-            });
-            // toggle dropdown menu
-            $('#pf-list-standard .list-view-pf-actions').on('show.bs.dropdown', function () {
-                var $this = $(this);
-                var $dropdown = $this.find('.dropdown');
-                var space = $(window).height() - $dropdown[0].getBoundingClientRect().top - $this.find('.dropdown-menu').outerHeight(true);
-                $dropdown.toggleClass('dropup', space < 10);
-            });
-            // allow users to select multiple list items with shift key
-            $('#pf-list-standard .list-group').on('click', '.list-view-pf-checkbox>input', function (event) {
-                var $list = $('.list-group');
-                var prevIndex = $list.data('preIndex');
-                var $listItems = $list.children('.list-group-item');
-                var $currentItem = $(this).closest('.list-group-item');
-                if (event.shiftKey && prevIndex > -1 && this.checked) {
-                    var currentIndex = $listItems.index($currentItem);
-                    var $selectScope = currentIndex - prevIndex > 0
-                        ? $currentItem.prevAll().not($listItems.eq(prevIndex).prevAll().addBack())
-                        : $listItems.eq(prevIndex).prevAll().not($currentItem.prevAll().addBack());
-                    $selectScope.addClass('active').find('.list-view-pf-checkbox').children('input').prop('checked', true);
-                }
-                $list.data('preIndex', this.checked ? $listItems.index($currentItem) : -1);
-            });
-
-        });
-    </script>
-    {% include 'partials/pagination.html' %}
-</div>
+</section>
 {% endblock %}
