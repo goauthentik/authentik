@@ -3,48 +3,46 @@
 {% load utils %}
 {% load i18n %}
 
-{% block title %}
-{% title "OTP" %}
-{% endblock %}
-
 {% block page %}
-<h1>
-    <clr-icon shape="two-way-arrows" size="48"></clr-icon>{% trans "One-Time Passwords" %}
-</h1>
-<div class="row">
-    <div class="col-md-6">
-        <div class="card-footer">
-            <p>
-                {% blocktrans with state=state|yesno:"Enabled,Disabled" %}
-                Status: {{ state }}
-                {% endblocktrans %}
-                {% if state %}
-                <clr-icon shape="check" size="32" class="is-success"></clr-icon>
-                {% else %}
-                <clr-icon shape="times" size="32" class="is-error"></clr-icon>
-                {% endif %}
-            </p>
-            <p>
-                {% if not state %}
-                <a href="{% url 'passbook_factors_otp:otp-enable' %}"
-                    class="btn btn-success btn-sm">{% trans "Enable OTP" %}</a>
-                {% else %}
-                <a href="{% url 'passbook_factors_otp:otp-disable' %}"
-                    class="btn btn-danger btn-sm">{% trans "Disable OTP" %}</a>
-                {% endif %}
-            </p>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                {% trans "Your Backup tokens:" %}
-            </div>
-            <div class="card-block">
-                <pre>{% for token in static_tokens %}{{ token.token }}
-{% empty %}{% trans 'N/A' %}{% endfor %}</pre>
-            </div>
-        </div>
-    </div>
+<div class="pf-c-card__header pf-c-title pf-m-md">
+    <h1>{% trans "One-Time Passwords" %}</h1>
 </div>
-{% endblock %}
+<div class="pf-c-card__body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card-footer">
+                <p>
+                    {% blocktrans with state=state|yesno:"Enabled,Disabled" %}
+                    Status: {{ state }}
+                    {% endblocktrans %}
+                    {% if state %}
+                    <clr-icon shape="check" size="32" class="is-success"></clr-icon>
+                    {% else %}
+                    <clr-icon shape="times" size="32" class="is-error"></clr-icon>
+                    {% endif %}
+                </p>
+                <p>
+                    {% if not state %}
+                    <a href="{% url 'passbook_factors_otp:otp-enable' %}"
+                    class="btn btn-success btn-sm">{% trans "Enable OTP" %}</a>
+                    {% else %}
+                    <a href="{% url 'passbook_factors_otp:otp-disable' %}"
+                    class="btn btn-danger btn-sm">{% trans "Disable OTP" %}</a>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    {% trans "Your Backup tokens:" %}
+                </div>
+                <div class="card-block">
+                    <pre>{% for token in static_tokens %}{{ token.token }}
+                        {% empty %}{% trans 'N/A' %}{% endfor %}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

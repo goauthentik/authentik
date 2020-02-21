@@ -52,7 +52,7 @@ class OAuthSource(Source):
         icon_type = self.provider_type
         if icon_type == "azure ad":
             icon_type = "windows"
-        icon_class = f"fa fa-{icon_type}"
+        icon_class = f"fab fa-{icon_type}"
         view_name = "passbook_sources_oauth:oauth-client-user"
         return UIUserSettings(
             name=self.name,
