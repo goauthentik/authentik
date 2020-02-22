@@ -9,6 +9,7 @@ from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
 from passbook.factors.view import AuthenticationView
+from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 if TYPE_CHECKING:
@@ -55,6 +56,9 @@ class Evaluator:
         )
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
+        kwargs["pb_client_ip"] = (
+            get_client_ip(request.http_request) or "255.255.255.255"
+        )
         return kwargs
 
     def evaluate(self, expression_source: str, request: PolicyRequest) -> PolicyResult:

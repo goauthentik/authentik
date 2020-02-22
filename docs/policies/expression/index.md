@@ -12,6 +12,8 @@ The following objects are passed into the variable:
     - `request.obj`: A Django Model instance. This is only set if the Policy is ran against an object.
 - `pb_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external Provider.
 - `pb_is_group_member(user, group_name)`: Function which checks if `user` is member of a Group with Name `gorup_name`.
+- `pb_logger`: Standard Python Logger Object, which can be used to debug expressions.
+- `pb_client_ip`: Client's IP Address.
 
 There are also the following custom filters available:
 
