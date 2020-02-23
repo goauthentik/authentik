@@ -42,7 +42,6 @@ class LDAPSourceForm(forms.ModelForm):
             "group_object_filter": forms.TextInput(),
             "user_group_membership_field": forms.TextInput(),
             "object_uniqueness_field": forms.TextInput(),
-            "policies": FilteredSelectMultiple(_("policies"), False),
             "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
         }
 
