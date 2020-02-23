@@ -53,6 +53,7 @@ if DEBUG:
     CSRF_COOKIE_NAME = "passbook_csrf_debug"
     LANGUAGE_COOKIE_NAME = "passbook_language_debug"
     SESSION_COOKIE_NAME = "passbook_session_debug"
+    SESSION_COOKIE_SAMESITE = None
 else:
     CSRF_COOKIE_NAME = "passbook_csrf"
     LANGUAGE_COOKIE_NAME = "passbook_language"
