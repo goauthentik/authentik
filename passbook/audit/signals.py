@@ -34,7 +34,6 @@ def on_user_login_failed(
     sender, credentials: Dict[str, str], request: HttpRequest, **_
 ):
     """Failed Login"""
-    credentials.pop("password")
     Event.new(EventAction.LOGIN_FAILED, **credentials).from_http(request)
 
 
