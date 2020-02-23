@@ -1,7 +1,7 @@
 """policy structures"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple
 
 from django.db.models import Model
 from django.http import HttpRequest
@@ -14,11 +14,13 @@ class PolicyRequest:
     """Data-class to hold policy request data"""
 
     user: User
-    http_request: HttpRequest
-    obj: Model
+    http_request: Optional[HttpRequest]
+    obj: Optional[Model]
 
     def __init__(self, user: User):
         self.user = user
+        self.http_request = None
+        self.obj = None
 
     def __str__(self):
         return f"<PolicyRequest user={self.user}>"

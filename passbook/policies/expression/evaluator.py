@@ -19,7 +19,7 @@ LOGGER = get_logger()
 
 
 class Evaluator:
-    """Validate and evaulate jinja2-based expressions"""
+    """Validate and evaluate jinja2-based expressions"""
 
     _env: NativeEnvironment
 
@@ -51,14 +51,15 @@ class Evaluator:
         """Return dictionary with additional global variables passed to expression"""
         # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
-        kwargs["pb_is_sso_flow"] = request.http_request.session.get(
-            AuthenticationView.SESSION_IS_SSO_LOGIN, False
-        )
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
-        kwargs["pb_client_ip"] = (
-            get_client_ip(request.http_request) or "255.255.255.255"
-        )
+        if request.http_request:
+            kwargs["pb_is_sso_flow"] = request.http_request.session.get(
+                AuthenticationView.SESSION_IS_SSO_LOGIN, False
+            )
+            kwargs["pb_client_ip"] = (
+                get_client_ip(request.http_request) or "255.255.255.255"
+            )
         return kwargs
 
     def evaluate(self, expression_source: str, request: PolicyRequest) -> PolicyResult:
@@ -81,7 +82,7 @@ class Evaluator:
                     req=request,
                 )
                 return PolicyResult(False)
-            if isinstance(result, list) and len(result) == 2:
+            if isinstance(result, (list, tuple)) and len(result) == 2:
                 return PolicyResult(*result)
             if result:
                 return PolicyResult(result)
