@@ -33,11 +33,15 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
             source[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
             model_content_type = ContentType.objects.get_for_model(value)
+            name = str(value)
+            if hasattr(value, "name"):
+                name = value.name
             source[key] = sanitize_dict(
                 {
                     "app": model_content_type.app_label,
-                    "name": model_content_type.model,
+                    "model_name": model_content_type.model,
                     "pk": value.pk,
+                    "name": name,
                 }
             )
         elif isinstance(value, UUID):
