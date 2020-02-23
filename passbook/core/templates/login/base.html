@@ -54,9 +54,10 @@
                         <a href="{{ source.url }}" class="pf-c-login__main-footer-links-item-link">
                             {% if source.icon_path %}
                             <img src="{% static source.icon_path %}" alt="{{ source.name }}">
-                            {% endif %}
-                            {% if source.icon_url %}
+                            {% elif source.icon_url %}
                             <img src="icon_url" alt="{{ source.name }}">
+                            {% else %}
+                            <i class="pf-icon pf-icon-arrow" title="{{ source.name }}"></i>
                             {% endif %}
                         </a>
                     </li>
