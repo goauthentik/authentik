@@ -22,6 +22,8 @@ class ProviderListView(LoginRequiredMixin, PermissionListMixin, ListView):
     model = Provider
     permission_required = "passbook_core.add_provider"
     template_name = "administration/provider/list.html"
+    paginate_by = 10
+    ordering = "id"
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
