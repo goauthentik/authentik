@@ -89,13 +89,15 @@ class OAuthCallback(OAuthClientMixin, View):
             client = self.get_client(self.source)
             callback = self.get_callback_url(self.source)
             # Fetch access token
-            raw_token = client.get_access_token(self.request, callback=callback)
-            if raw_token is None:
+            token = client.get_access_token(self.request, callback=callback)
+            if token is None:
                 return self.handle_login_failure(
                     self.source, "Could not retrieve token."
                 )
+            if "error" in token:
+                return self.handle_login_failure(self.source, token["error"])
             # Fetch profile info
-            info = client.get_profile_info(raw_token)
+            info = client.get_profile_info(token)
             if info is None:
                 return self.handle_login_failure(
                     self.source, "Could not retrieve profile."
@@ -105,7 +107,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 return self.handle_login_failure(self.source, "Could not determine id.")
             # Get or create access record
             defaults = {
-                "access_token": raw_token,
+                "access_token": token.get("access_token"),
             }
             existing = UserOAuthSourceConnection.objects.filter(
                 source=self.source, identifier=identifier
@@ -113,13 +115,15 @@ class OAuthCallback(OAuthClientMixin, View):
 
             if existing.exists():
                 connection = existing.first()
-                connection.access_token = raw_token
+                connection.access_token = token.get("access_token")
                 UserOAuthSourceConnection.objects.filter(pk=connection.pk).update(
                     **defaults
                 )
             else:
                 connection = UserOAuthSourceConnection(
-                    source=self.source, identifier=identifier, access_token=raw_token
+                    source=self.source,
+                    identifier=identifier,
+                    access_token=token.get("access_token"),
                 )
             user = authenticate(
                 source=self.source, identifier=identifier, request=request

@@ -116,7 +116,7 @@ class AzureADOAuthSourceForm(OAuthSourceForm):
     class Meta(OAuthSourceForm.Meta):
 
         overrides = {
-            "provider_type": "azure_ad",
+            "provider_type": "azure-ad",
             "request_token_url": "",
             "authorization_url": "https://login.microsoftonline.com/common/oauth2/authorize",
             "access_token_url": "https://login.microsoftonline.com/common/oauth2/token",
