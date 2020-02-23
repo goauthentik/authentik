@@ -145,3 +145,73 @@ jobs:
         run: pip install -U pip pipenv && pipenv install --dev
       - name: Run coverage
         run: pipenv run ./scripts/coverage.sh
+  # Build
+  build-server:
+    needs:
+      - migrations
+      - coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build
+          --no-cache
+          -t beryju/passbook:${GITHUB_REF##*/}
+          -f Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook:${GITHUB_REF##*/}
+  build-gatekeeper:
+    needs:
+      - migrations
+      - coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: |
+          cd gatekeeper
+          docker build \
+          --no-cache \
+          -t beryju/passbook-gatekeeper:${GITHUB_REF##*/} \
+          -f Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook-gatekeeper:${GITHUB_REF##*/}
+  build-static:
+    needs:
+      - migrations
+      - coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: passbook
+          POSTGRES_USER: passbook
+          POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      redis:
+        image: redis:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Docker Login Registry
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Building Docker Image
+        run: docker build
+          --no-cache
+          --network=$(docker network ls | grep github | awk '{print $1}')
+          -t beryju/passbook-static:${GITHUB_REF##*/}
+          -f static.Dockerfile .
+      - name: Push Docker Container to Registry
+        run: docker push beryju/passbook-static:${GITHUB_REF##*/}
