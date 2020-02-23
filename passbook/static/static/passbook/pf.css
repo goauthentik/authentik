@@ -7,11 +7,16 @@
     z-index: 0;
 }
 
-@@ -1,204 +0,0 @@
-.navbar-brand-name {
-    height: 35px;
+/* login page's icons */
+.pf-c-login__main-footer-links-item-link img {
+    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+    width: 100%;
+    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+    height: 100%;
+    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
 }
 
+/* Dynamic array widget */
 .dynamic-array-widget .array-item {
   display: flex;
   align-items: center;
