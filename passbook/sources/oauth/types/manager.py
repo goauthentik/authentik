@@ -1,6 +1,7 @@
 """Source type manager"""
 from enum import Enum
 
+from django.utils.text import slugify
 from structlog import get_logger
 
 from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
@@ -36,7 +37,7 @@ class SourceTypeManager:
 
     def get_name_tuple(self):
         """Get list of tuples of all registered names"""
-        return [(x.lower(), x) for x in set(self.__names)]
+        return [(slugify(x), x) for x in set(self.__names)]
 
     def find(self, source, kind):
         """Find fitting Source Type"""
