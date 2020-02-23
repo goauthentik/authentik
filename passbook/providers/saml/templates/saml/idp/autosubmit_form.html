@@ -3,23 +3,17 @@
 {% load utils %}
 {% load i18n %}
 
-{% block title %}
+{% block card_title %}
 {% title 'Redirecting...' %}
 {% endblock %}
 
 {% block card %}
-<header class="login-pf-header">
-    <h1>{% trans 'Redirecting...' %}</h1>
-</header>
 <form method="POST" action="{{ url }}">
     {% csrf_token %}
     {% for key, value in attrs.items %}
     <input type="hidden" name="{{ key }}" value="{{ value }}">
     {% endfor %}
     <div class="login-group">
-        <h3>
-            {% trans "Redirecting..." %}
-        </h3>
         <p>
             {% blocktrans with user=user %}
             You are logged in as {{ user }}.
@@ -34,6 +28,6 @@
 {% block scripts %}
 {{ block.super }}
 <script>
-    $('form').submit();
+document.querySelector("form").submit();
 </script>
 {% endblock %}

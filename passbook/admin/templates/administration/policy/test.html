@@ -11,16 +11,22 @@
 {% endblock %}
 
 {% block beneath_form %}
-<p class="loading" style="display: none;">
-  <span class="spinner spinner-xs spinner-inline"></span> {% trans 'Processing, please wait...' %}
-</p>
+<div class="pf-c-form__group pf-m-action" style="display: none;" id="loading">
+    <div class="pf-c-form__horizontal-group">
+        <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+            <span class="pf-c-spinner__clipper"></span>
+            <span class="pf-c-spinner__lead-ball"></span>
+            <span class="pf-c-spinner__tail-ball"></span>
+        </span>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 {{ block.super }}
 <script>
-  $('form').on('submit', function () {
-    $('p.loading').show();
-  })
+document.querySelector("form").addEventListener("submit", (e) => {
+    document.getElementById("loading").removeAttribute("style");
+});
 </script>
 {% endblock %}
