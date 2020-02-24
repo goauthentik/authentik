@@ -9,7 +9,7 @@
         <p>
             Expression using <a href="https://jinja.palletsprojects.com/en/2.11.x/templates/">Jinja</a>. Following variables are available:
         </p>
-        <ul>
+        <ul class="pf-c-list">
             <li><code>request.user</code>: Passbook User Object (<a href="https://beryju.github.io/passbook/property-mappings/reference/user-object/">Reference</a>)</li>
             <li><code>request.http_request</code>: Django HTTP Request Object (<a href="https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects">Reference</a>) </li>
             <li><code>request.obj</code>: Model the Policy is run against. </li>
@@ -19,7 +19,7 @@
             <li><code>pb_client_ip</code>: Client's IP Address.</li>
         </ul>
         <p>Custom Filters:</p>
-        <ul>
+        <ul class="pf-c-list">
             <li><code>regex_match(regex)</code>: Checks if value matches <code>regex</code></li>
             <li><code>regex_replace(regex, repl)</code>: Replace string matched by <code>regex</code> with <code>repl</code></li>
         </ul>
