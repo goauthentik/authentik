@@ -10,7 +10,7 @@ class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
     provider = forms.ModelChoiceField(
-        queryset=Provider.objects.all().select_subclasses(), required=False
+        queryset=Provider.objects.all().order_by('pk').select_subclasses(), required=False
     )
 
     class Meta:
