@@ -22,6 +22,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
+from passbook.lib.logging import add_process_id
 from passbook.lib.sentry import before_send
 
 LOGGER = structlog.get_logger()
@@ -279,6 +280,7 @@ structlog.configure_once(
     processors=[
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
+        add_process_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(),
         structlog.processors.StackInfoRenderer(),
