@@ -16,6 +16,11 @@
     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
 }
 
+/* fix multiple selects height */
+select[multiple] {
+    height: initial;
+}
+
 /* Selector */
 .selector {
     display: flex;
