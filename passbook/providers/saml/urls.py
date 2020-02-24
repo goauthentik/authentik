@@ -16,9 +16,9 @@ urlpatterns = [
         "<slug:application>/login/", views.LoginBeginView.as_view(), name="saml-login"
     ),
     path(
-        "<slug:application>/login/process/",
-        views.LoginProcessView.as_view(),
-        name="saml-login-process",
+        "<slug:application>/login/authorize/",
+        views.AuthorizeView.as_view(),
+        name="saml-login-authorize",
     ),
     path("<slug:application>/logout/", views.LogoutView.as_view(), name="saml-logout"),
     path(

@@ -91,14 +91,14 @@ class LoginBeginView(AccessRequiredView):
         request.session["RelayState"] = source.get("RelayState", "")
         return redirect(
             reverse(
-                "passbook_providers_saml:saml-login-process",
+                "passbook_providers_saml:saml-login-authorize",
                 kwargs={"application": application},
             )
         )
 
 
-class LoginProcessView(AccessRequiredView):
-    """Processor-based login continuation.
+class AuthorizeView(AccessRequiredView):
+    """Ask the user for authorization to continue to the SP.
     Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
 
     def handle_redirect(
@@ -131,9 +131,10 @@ class LoginProcessView(AccessRequiredView):
         try:
             # application.skip_authorization is set so we directly redirect the user
             if self.provider.application.skip_authorization:
+                LOGGER.debug("skipping authz", application=self.provider.application)
                 return self.post(request, application)
 
-            self.provider.processor.init_deep_link(request)
+            self.provider.processor.can_handle(request)
             params = self.provider.processor.generate_response()
 
             return render(
@@ -166,7 +167,7 @@ class LoginProcessView(AccessRequiredView):
         """Handle post request, return back to ACS"""
         # User access gets checked in dispatch
 
-        # we get here when skip_authorization is False, and after the user accepted
+        # we get here when skip_authorization is True, and after the user accepted
         # the authorization form
         self.provider.processor.can_handle(request)
         saml_params = self.provider.processor.generate_response()
@@ -268,45 +269,11 @@ class DescriptorDownloadView(AccessRequiredView):
 class InitiateLoginView(AccessRequiredView):
     """IdP-initiated Login"""
 
-    def handle_redirect(
-        self, params: SAMLResponseParams, skipped_authorization: bool
-    ) -> HttpResponse:
-        """Handle direct redirect to SP"""
-        # Log Application Authorization
-        Event.new(
-            EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=self.provider.application,
-            skipped_authorization=skipped_authorization,
-        ).from_http(self.request)
-        return render(
-            self.request,
-            "saml/idp/autosubmit_form.html",
-            {
-                "url": params.acs_url,
-                "attrs": {
-                    "SAMLResponse": params.saml_response,
-                    "RelayState": params.relay_state,
-                },
-            },
-        )
-
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Initiates an IdP-initiated link to a simple SP resource/target URL."""
-        self.provider.processor.is_idp_initiated = True
-        self.provider.processor.init_deep_link(request)
-        params = self.provider.processor.generate_response()
-
-        # IdP-initiated Login Flow
-        if self.provider.application.skip_authorization:
-            return self.handle_redirect(params, True)
-
-        return render(
-            request,
-            "saml/idp/login.html",
-            {
-                "saml_params": params,
-                "provider": self.provider,
-                "title": "Authorize Application",
-            },
+        return redirect(
+            reverse(
+                "passbook_providers_saml:saml-login-authorize",
+                kwargs={"application": application},
+            )
         )

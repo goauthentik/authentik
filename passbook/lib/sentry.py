@@ -12,7 +12,7 @@ LOGGER = get_logger()
 
 
 class SentryIgnoredException(Exception):
-    """Base Class for all errors that are supressed, and not sent to sentry."""
+    """Base Class for all errors that are suppressed, and not sent to sentry."""
 
 
 def before_send(event, hint):

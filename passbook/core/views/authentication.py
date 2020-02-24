@@ -231,7 +231,6 @@ class PasswordResetView(View):
         login(request, nonce.user)
         nonce.delete()
         messages.success(
-            request,
-            _(("Temporarily authenticated with Nonce, " "please change your password")),
+            request, _(("Temporarily authenticated, please change your password")),
         )
         return redirect("passbook_core:user-change-password")
