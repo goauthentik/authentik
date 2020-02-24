@@ -105,7 +105,7 @@ class LoginBeginView(AccessRequiredView):
             params = self.provider.processor.generate_response()
             request.session[SESSION_KEY_PARAMS] = params
         except CannotHandleAssertion as exc:
-            LOGGER.error(exc)
+            LOGGER.info(exc)
             did_you_mean_link = request.build_absolute_uri(
                 reverse(
                     "passbook_providers_saml:saml-login-initiate",

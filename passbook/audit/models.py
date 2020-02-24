@@ -137,6 +137,7 @@ class Event(UUIDModel):
             action=self.action,
             context=self.context,
             client_ip=self.client_ip,
+            user=self.user,
         )
         return super().save(*args, **kwargs)
 
