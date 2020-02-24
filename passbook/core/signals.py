@@ -18,9 +18,11 @@ password_changed = Signal(providing_args=["user", "password"])
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
     from passbook.core.models import Policy
+    from passbook.policies.process import cache_key
 
     if isinstance(instance, Policy):
         LOGGER.debug("Invalidating policy cache", policy=instance)
-        keys = cache.keys("%s#*" % instance.pk)
+        prefix = cache_key(instance) + "*"
+        keys = cache.keys(prefix)
         cache.delete_many(keys)
         LOGGER.debug("Deleted %d keys", len(keys))
