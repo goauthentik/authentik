@@ -4,11 +4,8 @@
 {% load i18n %}
 
 {% block card %}
-<form method="POST" class="pf-c-form" action="{{ saml_params.acs_url }}">
+<form method="POST" class="pf-c-form">
     {% csrf_token %}
-    <input type="hidden" name="ACSUrl" value="{{ saml_params.acs_url }}">
-    <input type="hidden" name="RelayState" value="{{ saml_params.relay_state }}" />
-    <input type="hidden" name="SAMLResponse" value="{{ saml_params.saml_response }}" />
     <div class="pf-c-form__group">
         <h3>
             {% blocktrans with provider=provider.application.name %}
