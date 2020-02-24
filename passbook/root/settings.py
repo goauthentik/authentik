@@ -317,7 +317,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": DEBUG,
+            "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "colored" if DEBUG else "plain",
         },
@@ -325,6 +325,7 @@ LOGGING = {
     "loggers": {},
 }
 _LOGGING_HANDLER_MAP = {
+    "": "DEBUG",
     "passbook": "DEBUG",
     "django": "WARNING",
     "celery": "WARNING",
@@ -337,7 +338,7 @@ for handler_name, level in _LOGGING_HANDLER_MAP.items():
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
-        "propagate": True,
+        "propagate": False,
     }
 
 TEST = False
