@@ -135,7 +135,7 @@ class InitiateLoginView(AccessRequiredView):
         self.provider.processor.is_idp_initiated = True
         self.provider.processor.init_deep_link(request)
         params = self.provider.processor.generate_response()
-        request.session[SESSION_KEY_SAML_RESPONSE] = params
+        request.session[SESSION_KEY_PARAMS] = params
         return redirect(
             reverse(
                 "passbook_providers_saml:saml-login-authorize",
