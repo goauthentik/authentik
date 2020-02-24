@@ -49,6 +49,6 @@ document.querySelectorAll("input[name=name]").forEach((input) => {
     input.addEventListener("input", (e) => {
         const form = e.target.closest("form");
         const slugField = form.querySelector("input[name=slug]");
-        slugField.value = convertToSlug(slugField.value);
+        slugField.value = convertToSlug(e.target.value);
     });
 });
