@@ -3,15 +3,12 @@
 {% load utils %}
 {% load i18n %}
 
-{% block title %}
+{% block card_title %}
 {% title 'Authorize Application' %}
 {% endblock %}
 
 {% block card %}
-<header class="login-pf-header">
-  <h1>{% trans 'Authorize Application' %}</h1>
-</header>
-<form method="POST">
+<form method="POST" class="pf-c-form">
     {% csrf_token %}
     {% if not error %}
         {% csrf_token %}
@@ -20,32 +17,40 @@
                 {{ field }}
             {% endif %}
         {% endfor %}
-        <div class="form-group">
+        <div class="pf-c-form__group">
             <p class="subtitle">
                 {% blocktrans with remote=application.name %}
-                You're about to sign into {{ remote }}
+                You're about to sign into {{ remote }}.
                 {% endblocktrans %}
             </p>
             <p>{% trans "Application requires following permissions" %}</p>
-            <ul>
+            <ul class="pf-c-list">
                 {% for scope in scopes_descriptions %}
                 <li>{{ scope }}</li>
                 {% endfor %}
             </ul>
             {{ form.errors }}
             {{ form.non_field_errors }}
+        </div>
+        <div class="pf-c-form__group">
             <p>
                 {% blocktrans with user=user %}
                 You are logged in as {{ user }}. Not you?
                 {% endblocktrans %}
                 <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
             </p>
-            <div class="form-group">
-                <input type="submit" class="btn btn-success btn-disabled btn-lg click-spinner" name="allow" value="{% trans 'Continue' %}">
-                <a href="{% back %}" class="btn btn-default btn-lg">{% trans "Cancel" %}</a>
-            </div>
-            <div class="form-group spinner-hidden hidden">
-                <div class="spinner"></div>
+        </div>
+        <div class="pf-c-form__group pf-m-action">
+            <input type="submit" class="pf-c-button pf-m-primary" name="allow" value="{% trans 'Continue' %}">
+            <a href="{% back %}" class="pf-c-button pf-m-secondary">{% trans "Cancel" %}</a>
+        </div>
+        <div class="pf-c-form__group" style="display: none;" id="loading">
+            <div class="pf-c-form__horizontal-group">
+                <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+                    <span class="pf-c-spinner__clipper"></span>
+                    <span class="pf-c-spinner__lead-ball"></span>
+                    <span class="pf-c-spinner__tail-ball"></span>
+                </span>
             </div>
         </div>
     {% else %}
@@ -61,9 +66,8 @@
 
 {% block scripts %}
 <script>
-    $('.click-spinner').on('click', function (e) {
-        $('.spinner-hidden').removeClass('hidden');
-        $(e.target).addClass('disabled');
-    })
+document.querySelector("form").addEventListener("submit", (e) => {
+    document.getElementById("loading").removeAttribute("style");
+});
 </script>
 {% endblock %}
