@@ -16,11 +16,11 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/passbook:0.8.10-beta
+          -t beryju/passbook:0.8.11-beta
           -t beryju/passbook:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook:0.8.10-beta
+        run: docker push beryju/passbook:0.8.11-beta
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook:latest
   build-gatekeeper:
@@ -37,11 +37,11 @@ jobs:
           cd gatekeeper
           docker build \
           --no-cache \
-          -t beryju/passbook-gatekeeper:0.8.10-beta \
+          -t beryju/passbook-gatekeeper:0.8.11-beta \
           -t beryju/passbook-gatekeeper:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-gatekeeper:0.8.10-beta
+        run: docker push beryju/passbook-gatekeeper:0.8.11-beta
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-gatekeeper:latest
   build-static:
@@ -66,11 +66,11 @@ jobs:
         run: docker build
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
-          -t beryju/passbook-static:0.8.10-beta
+          -t beryju/passbook-static:0.8.11-beta
           -t beryju/passbook-static:latest
           -f static.Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-static:0.8.10-beta
+        run: docker push beryju/passbook-static:0.8.11-beta
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-static:latest
   test-release:
