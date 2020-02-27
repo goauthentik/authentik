@@ -27,7 +27,7 @@ nav:
           - Sentry: integrations/services/sentry/index.md
           - Ansible Tower/AWX: integrations/services/tower-awx/index.md
 
-repo_name: "BeryJu.org/passbook"
+repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook
 theme:
   name: "material"
