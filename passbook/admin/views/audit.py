@@ -12,4 +12,4 @@ class EventListView(PermissionListMixin, ListView):
     template_name = "administration/audit/list.html"
     permission_required = "passbook_audit.view_event"
     ordering = "-created"
-    paginate_by = 10
+    paginate_by = 20
