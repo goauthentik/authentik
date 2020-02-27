@@ -42,7 +42,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["providers_without_application"] = Provider.objects.filter(
             application=None
         )
-        kwargs["policies_without_attachment"] = len(
+        kwargs["policies_without_binding"] = len(
             Policy.objects.filter(policymodel__isnull=True)
         )
         kwargs["cached_policies"] = len(cache.keys("policy_*"))

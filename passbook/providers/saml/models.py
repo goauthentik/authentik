@@ -1,13 +1,17 @@
 """passbook saml_idp Models"""
-from django.contrib.postgres.fields import ArrayField
+from typing import Optional
+
 from django.db import models
+from django.http import HttpRequest
 from django.shortcuts import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
 from passbook.lib.utils.reflection import class_to_path, path_to_class
-from passbook.providers.saml.base import Processor
+from passbook.lib.utils.template import render_to_string
+from passbook.providers.saml.processors.base import Processor
+from passbook.providers.saml.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
@@ -16,13 +20,62 @@ class SAMLProvider(Provider):
     """Model to save information about a Remote SAML Endpoint"""
 
     name = models.TextField()
-    acs_url = models.URLField()
-    audience = models.TextField(default="")
     processor_path = models.CharField(max_length=255, choices=[])
+
+    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    audience = models.TextField(default="")
     issuer = models.TextField()
-    assertion_valid_for = models.IntegerField(default=86400)
+
+    assertion_valid_not_before = models.TextField(
+        default="minutes=-5",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "Assertion valid not before current time + this value "
+                "(Format: hours=-1;minutes=-2;seconds=-3)."
+            )
+        ),
+    )
+    assertion_valid_not_on_or_after = models.TextField(
+        default="minutes=5",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "Assertion not valid on or after current time + this value "
+                "(Format: hours=1;minutes=2;seconds=3)."
+            )
+        ),
+    )
+
+    session_valid_not_on_or_after = models.TextField(
+        default="minutes=86400",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            (
+                "Session not valid on or after current time + this value "
+                "(Format: hours=1;minutes=2;seconds=3)."
+            )
+        ),
+    )
+
+    digest_algorithm = models.CharField(
+        max_length=50,
+        choices=(("sha1", _("SHA1")), ("sha256", _("SHA256")),),
+        default="sha256",
+    )
+    signature_algorithm = models.CharField(
+        max_length=50,
+        choices=(
+            ("rsa-sha1", _("RSA-SHA1")),
+            ("rsa-sha256", _("RSA-SHA256")),
+            ("ecdsa-sha256", _("ECDSA-SHA256")),
+            ("dsa-sha1", _("DSA-SHA1")),
+        ),
+        default="rsa-sha256",
+    )
+
     signing = models.BooleanField(default=True)
-    signing_cert = models.TextField()
+    signing_cert = models.TextField(verbose_name=_("Singing Certificate"))
     signing_key = models.TextField()
 
     form = "passbook.providers.saml.forms.SAMLProviderForm"
@@ -33,7 +86,7 @@ class SAMLProvider(Provider):
         self._meta.get_field("processor_path").choices = get_provider_choices()
 
     @property
-    def processor(self):
+    def processor(self) -> Processor:
         """Return selected processor as instance"""
         if not self._processor:
             try:
@@ -44,7 +97,7 @@ class SAMLProvider(Provider):
         return self._processor
 
     def __str__(self):
-        return "SAML Provider %s" % self.name
+        return f"SAML Provider {self.name}"
 
     def link_download_metadata(self):
         """Get link to download XML metadata for admin interface"""
@@ -53,6 +106,20 @@ class SAMLProvider(Provider):
             return reverse(
                 "passbook_providers_saml:saml-metadata",
                 kwargs={"application": self.application.slug},
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
+
+    def html_metadata_view(self, request: HttpRequest) -> Optional[str]:
+        """return template and context modal with to view Metadata without downloading it"""
+        from passbook.providers.saml.views import DescriptorDownloadView
+
+        try:
+            # pylint: disable=no-member
+            metadata = DescriptorDownloadView.get_metadata(request, self)
+            return render_to_string(
+                "saml/idp/admin_metadata_modal.html",
+                {"provider": self, "metadata": metadata,},
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return None
@@ -66,14 +133,13 @@ class SAMLProvider(Provider):
 class SAMLPropertyMapping(PropertyMapping):
     """SAML Property mapping, allowing Name/FriendlyName mapping to a list of strings"""
 
-    saml_name = models.TextField()
+    saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
-    values = ArrayField(models.TextField())
 
     form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
 
     def __str__(self):
-        return "SAML Property Mapping %s" % self.saml_name
+        return f"SAML Property Mapping {self.saml_name}"
 
     class Meta:
 

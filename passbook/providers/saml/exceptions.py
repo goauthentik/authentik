@@ -1,9 +1,6 @@
 """passbook SAML IDP Exceptions"""
+from passbook.lib.sentry import SentryIgnoredException
 
 
-class CannotHandleAssertion(Exception):
+class CannotHandleAssertion(SentryIgnoredException):
     """This processor does not handle this assertion."""
-
-
-class UserNotAuthorized(Exception):
-    """User not authorized for SAML 2.0 authentication."""

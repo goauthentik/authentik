@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 
 from passbook.factors.forms import GENERAL_FIELDS
@@ -79,4 +79,9 @@ class OTPFactorForm(forms.ModelForm):
             "name": forms.TextInput(),
             "order": forms.NumberInput(),
             "policies": FilteredSelectMultiple(_("policies"), False),
+        }
+        help_texts = {
+            "policies": _(
+                "Policies which determine if this factor applies to the current user."
+            )
         }

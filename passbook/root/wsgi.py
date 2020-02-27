@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 import os
 from time import time
 
+from defusedxml import defuse_stdlib
 from django.core.wsgi import get_wsgi_application
 from structlog import get_logger
 
 from passbook.lib.utils.http import _get_client_ip_from_meta
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
+defuse_stdlib()
 
 
 class WSGILogger:
@@ -62,7 +64,8 @@ class WSGILogger:
         if environ.get("QUERY_STRING") != "":
             query_string = f"?{environ.get('QUERY_STRING')}"
         self.logger.info(
-            f"{environ.get('PATH_INFO', '')}{query_string}",
+            "request",
+            path=f"{environ.get('PATH_INFO', '')}{query_string}",
             host=host,
             method=environ.get("REQUEST_METHOD", ""),
             protocol=environ.get("SERVER_PROTOCOL", ""),

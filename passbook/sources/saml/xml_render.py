@@ -2,7 +2,7 @@
 from structlog import get_logger
 
 from passbook.lib.utils.template import render_to_string
-from passbook.providers.saml.xml_signing import get_signature_xml
+from passbook.providers.saml.utils.xml_signing import get_signature_xml
 
 LOGGER = get_logger()
 
@@ -15,7 +15,6 @@ def get_authnrequest_xml(parameters, signed=False):
     params["AUTHN_REQUEST_SIGNATURE"] = ""
 
     unsigned = render_to_string("saml/sp/xml/authn_request.xml", params)
-    LOGGER.debug("AuthN Request", unsigned=unsigned)
     if not signed:
         return unsigned
 
@@ -24,5 +23,4 @@ def get_authnrequest_xml(parameters, signed=False):
     params["AUTHN_REQUEST_SIGNATURE"] = signature_xml
     signed = render_to_string("saml/sp/xml/authn_request.xml", params)
 
-    LOGGER.debug("AuthN Request", signed=signed)
     return signed

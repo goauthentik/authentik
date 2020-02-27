@@ -12,7 +12,4 @@ class EventListView(PermissionListMixin, ListView):
     template_name = "administration/audit/list.html"
     permission_required = "passbook_audit.view_event"
     ordering = "-created"
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Event.objects.all().order_by("-created")
+    paginate_by = 20

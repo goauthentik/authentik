@@ -1,7 +1,8 @@
 """passbook password policy exceptions"""
+from passbook.lib.sentry import SentryIgnoredException
 
 
-class PasswordPolicyInvalid(Exception):
+class PasswordPolicyInvalid(SentryIgnoredException):
     """Exception raised when a Password Policy fails"""
 
     messages = []

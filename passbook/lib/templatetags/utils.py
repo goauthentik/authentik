@@ -3,11 +3,9 @@ from hashlib import md5
 from urllib.parse import urlencode
 
 from django import template
-from django.template import Context
-from django.apps import apps
 from django.db.models import Model
+from django.template import Context
 from django.utils.html import escape
-from django.utils.translation import ugettext as _
 
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.urls import is_url_absolute
@@ -38,38 +36,6 @@ def fieldtype(field):
     if isinstance(field.__class__, Model) or issubclass(field.__class__, Model):
         return field._meta.verbose_name
     return field.__class__.__name__
-
-
-@register.simple_tag(takes_context=True)
-def title(context: Context, *title) -> str:
-    """Return either just branding or title - branding"""
-    branding = CONFIG.y("passbook.branding", "passbook")
-    if not title:
-        return branding
-    if "request" not in context:
-        return ""
-    resolver_match = context.request.resolver_match
-    if not resolver_match:
-        return ""
-    # Include App Title in title
-    app = ""
-    if resolver_match.namespace != "":
-        dj_app = None
-        namespace = context.request.resolver_match.namespace.split(":")[0]
-        # New label (App URL Namespace == App Label)
-        dj_app = apps.get_app_config(namespace)
-        title_modifier = getattr(dj_app, "title_modifier", None)
-        if title_modifier:
-            app_title = dj_app.title_modifier(context.request)
-            app = app_title + " -"
-    return _(
-        "%(title)s - %(app)s %(branding)s"
-        % {
-            "title": " - ".join([str(x) for x in title]),
-            "branding": branding,
-            "app": app,
-        }
-    )
 
 
 @register.simple_tag

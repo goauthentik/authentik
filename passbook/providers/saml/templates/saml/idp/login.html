@@ -3,23 +3,13 @@
 {% load utils %}
 {% load i18n %}
 
-{% block title %}
-{% title 'Authorize Application' %}
-{% endblock %}
-
 {% block card %}
-<header class="login-pf-header">
-    <h1>{% trans 'Authorize Application' %}</h1>
-</header>
-<form method="POST" action="{{ acs_url }}">
+<form method="POST" class="pf-c-form">
     {% csrf_token %}
-    <input type="hidden" name="ACSUrl" value="{{ acs_url }}">
-    <input type="hidden" name="RelayState" value="{{ relay_state }}" />
-    <input type="hidden" name="SAMLResponse" value="{{ saml_response }}" />
-    <div class="login-group">
+    <div class="pf-c-form__group">
         <h3>
-            {% blocktrans with remote=remote.application.name %}
-            You're about to sign into {{ remote }}
+            {% blocktrans with provider=provider.application.name %}
+            You're about to sign into {{ provider }}
             {% endblocktrans %}
         </h3>
         <p>
@@ -28,7 +18,9 @@
             {% endblocktrans %}
             <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Not you?' %}</a>
         </p>
-        <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
+    </div>
+    <div class="pf-c-form__group pf-m-action">
+        <input class="pf-c-button pf-m-primary pf-m-block" type="submit" value="{% trans 'Continue' %}" />
     </div>
 </form>
 {% endblock %}

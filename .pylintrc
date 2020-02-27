@@ -7,7 +7,3 @@ const-rgx=[a-zA-Z0-9_]{1,40}$
 ignored-modules=django-otp
 jobs=4
 
-[SIMILARITIES]
-
-# Minimum lines number of a similarity.
-min-similarity-lines=20

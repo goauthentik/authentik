@@ -22,6 +22,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from passbook import __version__
 from passbook.lib.config import CONFIG
+from passbook.lib.logging import add_process_id
 from passbook.lib.sentry import before_send
 
 LOGGER = structlog.get_logger()
@@ -49,10 +50,16 @@ LOGIN_URL = "passbook_core:auth-login"
 # Custom user model
 AUTH_USER_MODEL = "passbook_core.User"
 
-CSRF_COOKIE_NAME = "passbook_csrf"
-SESSION_COOKIE_NAME = "passbook_session"
+if DEBUG:
+    CSRF_COOKIE_NAME = "passbook_csrf_debug"
+    LANGUAGE_COOKIE_NAME = "passbook_language_debug"
+    SESSION_COOKIE_NAME = "passbook_session_debug"
+    SESSION_COOKIE_SAMESITE = None
+else:
+    CSRF_COOKIE_NAME = "passbook_csrf"
+    LANGUAGE_COOKIE_NAME = "passbook_language"
+    SESSION_COOKIE_NAME = "passbook_session"
 SESSION_COOKIE_DOMAIN = CONFIG.y("domain", None)
-LANGUAGE_COOKIE_NAME = "passbook_language"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -73,6 +80,7 @@ INSTALLED_APPS = [
     "guardian",
     "django_prometheus",
     "passbook.core.apps.PassbookCoreConfig",
+    "passbook.static.apps.PassbookStaticConfig",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.flows.apps.PassbookFlowsConfig",
@@ -94,11 +102,9 @@ INSTALLED_APPS = [
     "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
-    "passbook.policies.group.apps.PassbookPoliciesGroupConfig",
-    "passbook.policies.matcher.apps.PassbookPoliciesMatcherConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
-    "passbook.policies.sso.apps.PassbookPoliciesSSOConfig",
     "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
+    "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
@@ -274,10 +280,12 @@ STATIC_URL = "/static/"
 structlog.configure_once(
     processors=[
         structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
+        add_process_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(),
         structlog.processors.StackInfoRenderer(),
-        # structlog.processors.format_exc_info,
+        structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     context_class=structlog.threadlocal.wrap_dict(dict),
@@ -310,7 +318,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": DEBUG,
+            "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "colored" if DEBUG else "plain",
         },
@@ -318,6 +326,7 @@ LOGGING = {
     "loggers": {},
 }
 _LOGGING_HANDLER_MAP = {
+    "": "DEBUG",
     "passbook": "DEBUG",
     "django": "WARNING",
     "celery": "WARNING",
@@ -330,7 +339,7 @@ for handler_name, level in _LOGGING_HANDLER_MAP.items():
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
-        "propagate": True,
+        "propagate": False,
     }
 
 TEST = False

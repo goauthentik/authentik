@@ -1,7 +1,7 @@
 """passbook administration forms"""
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.factors.email.models import EmailFactor
 from passbook.factors.forms import GENERAL_FIELDS
@@ -40,4 +40,9 @@ class EmailFactorForm(forms.ModelForm):
             "use_ssl": _("Use SSL"),
             "ssl_keyfile": _("SSL Keyfile (optional)"),
             "ssl_certfile": _("SSL Certfile (optional)"),
+        }
+        help_texts = {
+            "policies": _(
+                "Policies which determine if this factor applies to the current user."
+            )
         }

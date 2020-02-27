@@ -1,6 +1,6 @@
 """passbook captcha factor"""
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Factor
 
@@ -8,8 +8,16 @@ from passbook.core.models import Factor
 class CaptchaFactor(Factor):
     """Captcha Factor instance"""
 
-    public_key = models.TextField()
-    private_key = models.TextField()
+    public_key = models.TextField(
+        help_text=_(
+            "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html"
+        )
+    )
+    private_key = models.TextField(
+        help_text=_(
+            "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html"
+        )
+    )
 
     type = "passbook.factors.captcha.factor.CaptchaFactor"
     form = "passbook.factors.captcha.forms.CaptchaFactorForm"

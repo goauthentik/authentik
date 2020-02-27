@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 from passbook.core.models import Policy, User
 from passbook.lib.utils.http import get_client_ip
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class ReputationPolicy(Policy):

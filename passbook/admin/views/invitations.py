@@ -23,6 +23,8 @@ class InvitationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     model = Invitation
     permission_required = "passbook_core.view_invitation"
     template_name = "administration/invitation/list.html"
+    paginate_by = 10
+    ordering = "-expires"
 
 
 class InvitationCreateView(

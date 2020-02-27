@@ -9,7 +9,11 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
 from django.views.generic import DeleteView, DetailView, ListView, UpdateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.mixins import (
+    PermissionListMixin,
+    PermissionRequiredMixin,
+    get_anonymous_user,
+)
 
 from passbook.admin.forms.users import UserForm
 from passbook.core.models import Nonce, User
@@ -24,6 +28,9 @@ class UserListView(LoginRequiredMixin, PermissionListMixin, ListView):
     ordering = "username"
     paginate_by = 40
     template_name = "administration/user/list.html"
+
+    def get_queryset(self):
+        return super().get_queryset().exclude(pk=get_anonymous_user().pk)
 
 
 class UserCreateView(
@@ -67,6 +74,8 @@ class UserDeleteView(
     model = User
     permission_required = "passbook_core.delete_user"
 
+    # By default the object's name is user which is used by other checks
+    context_object_name = "object"
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:users")
     success_message = _("Successfully deleted User")

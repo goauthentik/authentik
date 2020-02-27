@@ -42,26 +42,19 @@ class LDAPSourceForm(forms.ModelForm):
             "group_object_filter": forms.TextInput(),
             "user_group_membership_field": forms.TextInput(),
             "object_uniqueness_field": forms.TextInput(),
-            "policies": FilteredSelectMultiple(_("policies"), False),
             "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
-        }
-        labels = {
-            "server_uri": _("Server URI"),
-            "bind_cn": _("Bind CN"),
-            "start_tls": _("Enable Start TLS"),
-            "base_dn": _("Base DN"),
-            "additional_user_dn": _("Addition User DN"),
-            "additional_group_dn": _("Addition Group DN"),
         }
 
 
 class LDAPPropertyMappingForm(forms.ModelForm):
     """LDAP Property Mapping form"""
 
+    template_name = "ldap/property_mapping_form.html"
+
     class Meta:
 
         model = LDAPPropertyMapping
-        fields = ["name", "ldap_property", "object_field"]
+        fields = ["name", "object_field", "expression"]
         widgets = {
             "name": forms.TextInput(),
             "ldap_property": forms.TextInput(),

@@ -1,0 +1,18 @@
+{% extends 'login/base.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load utils %}
+
+{% block card_title %}
+{% trans error %}
+{% endblock %}
+
+{% block card %}
+<form>
+    <h3>{% trans description %}</h3>
+    {% if 'back' in request.GET %}
+    <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
+    {% endif %}
+</form>
+{% endblock %}

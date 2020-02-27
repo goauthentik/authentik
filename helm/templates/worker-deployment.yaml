@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        passbook.io/component: worker
+        k8s.passbook.io/component: worker
     spec:
       volumes:
         - name: config-volume
@@ -29,8 +29,10 @@ spec:
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command:
-            - celery
+            - ./manage.py
           args:
+            - bootstrap
+            - celery
             - worker
             - --autoscale=10,3
             - -E

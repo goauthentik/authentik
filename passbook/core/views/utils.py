@@ -15,7 +15,6 @@ class LoadingView(TemplateView):
         return self.target_url
 
     def get_context_data(self, **kwargs):
-        kwargs["is_login"] = True
         kwargs["title"] = self.title
         kwargs["target_url"] = self.get_url()
         return super().get_context_data(**kwargs)
@@ -28,6 +27,5 @@ class PermissionDeniedView(TemplateView):
     title = _("Permission denied.")
 
     def get_context_data(self, **kwargs):
-        kwargs["is_login"] = True
         kwargs["title"] = self.title
         return super().get_context_data(**kwargs)

@@ -5,6 +5,7 @@ from structlog import get_logger
 register = template.Library()
 
 LOGGER = get_logger()
+ACTIVE_STRING = "pf-m-current"
 
 
 @register.simple_tag(takes_context=True)
@@ -23,9 +24,9 @@ def is_active(context, *args, **kwargs):
             # Monkeypatch app_name: urls from core have app_name == ''
             # since the root urlpatterns have no namespace
             if app_name and request.resolver_match.app_name == app_name:
-                return "active"
+                return ACTIVE_STRING
             if app_name is None:
-                return "active"
+                return ACTIVE_STRING
     return ""
 
 
@@ -42,7 +43,7 @@ def is_active_url(context, view):
     if not request.resolver_match:
         return ""
     if current_full_url == view:
-        return "active"
+        return ACTIVE_STRING
     # if matching_url == request.path:
     #     return 'active'
     return ""
@@ -57,5 +58,5 @@ def is_active_app(context, *args):
         return ""
     for app_name in args:
         if request.resolver_match.app_name == app_name:
-            return "active"
+            return ACTIVE_STRING
     return ""

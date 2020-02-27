@@ -3,9 +3,8 @@ import inspect
 
 from django import template
 from django.db.models import Model
+from django.utils.html import mark_safe
 from structlog import get_logger
-
-from passbook.lib.utils.template import render_to_string
 
 register = template.Library()
 LOGGER = get_logger()
@@ -18,7 +17,7 @@ def get_links(model_instance):
     links = {}
 
     if not isinstance(model_instance, Model):
-        LOGGER.warning("Model %s is not instance of Model", model_instance)
+        LOGGER.warning("Model is not instance of Model", model_instance=model_instance)
         return links
 
     try:
@@ -43,7 +42,7 @@ def get_htmls(context, model_instance):
     htmls = []
 
     if not isinstance(model_instance, Model):
-        LOGGER.warning("Model %s is not instance of Model", model_instance)
+        LOGGER.warning("Model is not instance of Model", model_instance=model_instance)
         return htmls
 
     try:
@@ -51,8 +50,9 @@ def get_htmls(context, model_instance):
             model_instance, predicate=inspect.ismethod
         ):
             if name.startswith(prefix):
-                template, _context = method(context.get("request"))
-                htmls.append(render_to_string(template, _context))
+                html = method(context.get("request"))
+                if html:
+                    htmls.append(mark_safe(html))
     except NotImplementedError:
         pass
 

@@ -3,11 +3,22 @@
 {% load i18n %}
 
 {% block page %}
-<h1>{% trans 'Update details' %}</h1>
-<form action="" method="post" class="form-horizontal">
-    {% csrf_token %}
-    {% include 'partials/form.html' %}
-    <input class="btn btn-primary" type="submit" value="{% trans 'Update' %}">
-    <a class="btn btn-danger" href="{% url 'passbook_core:user-delete' %}?back={{ request.get_full_path }}">{% trans 'Delete user' %}</a>
-</form>
+<div class="pf-c-card__header pf-c-title pf-m-md">
+    <h1>{% trans 'Update details' %}</h1>
+</div>
+<div class="pf-c-card__body">
+    <form action="" method="post" class="pf-c-form pf-m-horizontal">
+        {% include 'partials/form_horizontal.html' with form=form %}
+        {% block beneath_form %}
+        {% endblock %}
+        <div class="pf-c-form__group pf-m-action">
+            <div class="pf-c-form__horizontal-group">
+                <div class="pf-c-form__actions">
+                    <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
+                    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_core:user-delete' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}

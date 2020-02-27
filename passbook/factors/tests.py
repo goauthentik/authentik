@@ -38,9 +38,8 @@ class TestFactorAuthentication(TestCase):
     def test_unauthenticated_raw(self):
         """test direct call to AuthenticationView"""
         response = self.client.get(reverse("passbook_core:auth-process"))
-        # Response should be 302 since no pending user is set
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:auth-login"))
+        # Response should be 400 since no pending user is set
+        self.assertEqual(response.status_code, 400)
 
     def test_unauthenticated_prepared(self):
         """test direct call but with pending_uesr in session"""
@@ -71,9 +70,8 @@ class TestFactorAuthentication(TestCase):
         """Test with already logged in user"""
         self.client.force_login(self.user)
         response = self.client.get(reverse("passbook_core:auth-process"))
-        # Response should be 302 since no pending user is set
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        # Response should be 400 since no pending user is set
+        self.assertEqual(response.status_code, 400)
         self.client.logout()
 
     def test_unauthenticated_post(self):

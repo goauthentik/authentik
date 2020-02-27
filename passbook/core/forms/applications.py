@@ -10,7 +10,8 @@ class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
     provider = forms.ModelChoiceField(
-        queryset=Provider.objects.all().select_subclasses(), required=False
+        queryset=Provider.objects.all().order_by("pk").select_subclasses(),
+        required=False,
     )
 
     class Meta:
@@ -19,19 +20,25 @@ class ApplicationForm(forms.ModelForm):
         fields = [
             "name",
             "slug",
-            "launch_url",
-            "icon_url",
-            "provider",
-            "policies",
             "skip_authorization",
+            "provider",
+            "meta_launch_url",
+            "meta_icon_url",
+            "meta_description",
+            "meta_publisher",
+            "policies",
         ]
         widgets = {
             "name": forms.TextInput(),
-            "launch_url": forms.TextInput(),
-            "icon_url": forms.TextInput(),
+            "meta_launch_url": forms.TextInput(),
+            "meta_icon_url": forms.TextInput(),
+            "meta_publisher": forms.TextInput(),
             "policies": FilteredSelectMultiple(_("policies"), False),
         }
         labels = {
-            "launch_url": _("Launch URL"),
-            "icon_url": _("Icon URL"),
+            "meta_launch_url": _("Launch URL"),
+            "meta_icon_url": _("Icon URL"),
+            "meta_description": _("Description"),
+            "meta_publisher": _("Publisher"),
         }
+        help_texts = {"policies": _("Policies required to access this Application.")}

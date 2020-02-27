@@ -24,12 +24,10 @@ from passbook.factors.otp.api import OTPFactorViewSet
 from passbook.factors.password.api import PasswordFactorViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
-from passbook.policies.group.api import GroupMembershipPolicyViewSet
+from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
-from passbook.policies.matcher.api import FieldMatcherPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
-from passbook.policies.sso.api import SSOLoginPolicyViewSet
 from passbook.policies.webhook.api import WebhookPolicyViewSet
 from passbook.providers.app_gw.api import ApplicationGatewayProviderViewSet
 from passbook.providers.oauth.api import OAuth2ProviderViewSet
@@ -58,13 +56,11 @@ router.register("sources/ldap", LDAPSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
 router.register("policies/all", PolicyViewSet)
 router.register("policies/passwordexpiry", PasswordExpiryPolicyViewSet)
-router.register("policies/groupmembership", GroupMembershipPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
-router.register("policies/fieldmatcher", FieldMatcherPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
-router.register("policies/ssologin", SSOLoginPolicyViewSet)
 router.register("policies/webhook", WebhookPolicyViewSet)
+router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("providers/all", ProviderViewSet)
 router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)
 router.register("providers/oauth", OAuth2ProviderViewSet)

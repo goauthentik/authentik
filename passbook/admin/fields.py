@@ -48,7 +48,7 @@ class YAMLField(forms.CharField):
     def prepare_value(self, value):
         if isinstance(value, InvalidYAMLInput):
             return value
-        return yaml.dump(value, explicit_start=True)
+        return yaml.dump(value, explicit_start=True, default_flow_style=False)
 
     def has_changed(self, initial, data):
         if super().has_changed(initial, data):

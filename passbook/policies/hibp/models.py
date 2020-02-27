@@ -35,7 +35,7 @@ class HaveIBeenPwendPolicy(Policy):
             full_hash, count = line.split(":")
             if pw_hash[5:] == full_hash.lower():
                 final_count = int(count)
-        LOGGER.debug("Got count %d for hash %s", final_count, pw_hash[:5])
+        LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.allowed_count:
             message = _(
                 "Password exists on %(count)d online lists." % {"count": final_count}

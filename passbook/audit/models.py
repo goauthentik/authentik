@@ -1,14 +1,14 @@
 """passbook audit models"""
 from enum import Enum
-from uuid import UUID
 from inspect import getmodule, stack
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -33,11 +33,15 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
             source[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
             model_content_type = ContentType.objects.get_for_model(value)
+            name = str(value)
+            if hasattr(value, "name"):
+                name = value.name
             source[key] = sanitize_dict(
                 {
                     "app": model_content_type.app_label,
-                    "name": model_content_type.model,
+                    "model_name": model_content_type.model,
                     "pk": value.pk,
+                    "name": name,
                 }
             )
         elif isinstance(value, UUID):
@@ -100,7 +104,6 @@ class Event(UUIDModel):
             app = getmodule(stack()[_inspect_offset][0]).__name__
         cleaned_kwargs = sanitize_dict(kwargs)
         event = Event(action=action.value, app=app, context=cleaned_kwargs)
-        LOGGER.debug("Created Audit event", action=action, context=cleaned_kwargs)
         return event
 
     def from_http(
@@ -129,6 +132,13 @@ class Event(UUIDModel):
             raise ValidationError(
                 "you may not edit an existing %s" % self._meta.model_name
             )
+        LOGGER.debug(
+            "Created Audit event",
+            action=self.action,
+            context=self.context,
+            client_ip=self.client_ip,
+            user=self.user,
+        )
         return super().save(*args, **kwargs)
 
     class Meta:

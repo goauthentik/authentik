@@ -1,5 +1,5 @@
 """passbook policy engine"""
-from multiprocessing import Pipe
+from multiprocessing import Pipe, set_start_method
 from multiprocessing.connection import Connection
 from typing import List, Optional, Tuple
 
@@ -9,9 +9,12 @@ from structlog import get_logger
 
 from passbook.core.models import Policy, User
 from passbook.policies.process import PolicyProcess, cache_key
-from passbook.policies.struct import PolicyRequest, PolicyResult
+from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+# This is only really needed for macOS, because Python 3.8 changed the default to spawn
+# spawn causes issues with objects that aren't picklable, and also the django setup
+set_start_method("fork")
 
 
 class PolicyProcessInfo:
@@ -36,13 +39,15 @@ class PolicyEngine:
     policies: List[Policy] = []
     request: PolicyRequest
 
-    __processes: List[PolicyProcessInfo] = []
+    __cached_policies: List[PolicyResult]
+    __processes: List[PolicyProcessInfo]
 
     def __init__(self, policies, user: User, request: HttpRequest = None):
         self.policies = policies
         self.request = PolicyRequest(user)
         if request:
             self.request.http_request = request
+        self.__cached_policies = []
         self.__processes = []
 
     def _select_subclasses(self) -> List[Policy]:
@@ -55,21 +60,20 @@ class PolicyEngine:
 
     def build(self) -> "PolicyEngine":
         """Build task group"""
-        cached_policies = []
         for policy in self._select_subclasses():
             cached_policy = cache.get(cache_key(policy, self.request.user), None)
             if cached_policy and self.use_cache:
-                LOGGER.debug("Taking result from cache", policy=policy)
-                cached_policies.append(cached_policy)
-            else:
-                LOGGER.debug("Evaluating policy", policy=policy)
-                our_end, task_end = Pipe(False)
-                task = PolicyProcess(policy, self.request, task_end)
-                LOGGER.debug("Starting Process", policy=policy)
-                task.start()
-                self.__processes.append(
-                    PolicyProcessInfo(process=task, connection=our_end, policy=policy)
-                )
+                LOGGER.debug("P_ENG: Taking result from cache", policy=policy)
+                self.__cached_policies.append(cached_policy)
+                continue
+            LOGGER.debug("P_ENG: Evaluating policy", policy=policy)
+            our_end, task_end = Pipe(False)
+            task = PolicyProcess(policy, self.request, task_end)
+            LOGGER.debug("P_ENG: Starting Process", policy=policy)
+            task.start()
+            self.__processes.append(
+                PolicyProcessInfo(process=task, connection=our_end, policy=policy)
+            )
         # If all policies are cached, we have an empty list here.
         for proc_info in self.__processes:
             proc_info.process.join(proc_info.policy.timeout)
@@ -82,13 +86,14 @@ class PolicyEngine:
     def result(self) -> Tuple[bool, List[str]]:
         """Get policy-checking result"""
         messages: List[str] = []
-        for proc_info in self.__processes:
-            LOGGER.debug(
-                "Result", policy=proc_info.policy, passing=proc_info.result.passing
-            )
-            if proc_info.result.messages:
-                messages += proc_info.result.messages
-            if not proc_info.result.passing:
+        process_results: List[PolicyResult] = [
+            x.result for x in self.__processes if x.result
+        ]
+        for result in process_results + self.__cached_policies:
+            LOGGER.debug("P_ENG: result", passing=result.passing)
+            if result.messages:
+                messages += result.messages
+            if not result.passing:
                 return False, messages
         return True, messages
 

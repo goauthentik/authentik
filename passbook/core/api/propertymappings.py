@@ -17,7 +17,7 @@ class PropertyMappingSerializer(ModelSerializer):
     class Meta:
 
         model = PropertyMapping
-        fields = ["pk", "name", "__type__"]
+        fields = ["pk", "name", "expression", "__type__"]
 
 
 class PropertyMappingViewSet(ReadOnlyModelViewSet):

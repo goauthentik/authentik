@@ -1,8 +1,9 @@
 """passbook multi-factor authentication engine"""
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from django.contrib.auth import login
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.http import urlencode
 from django.views.generic import View
@@ -10,8 +11,10 @@ from structlog import get_logger
 
 from passbook.core.models import Factor, User
 from passbook.core.views.utils import PermissionDeniedView
+from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
+from passbook.lib.views import bad_request_message
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -31,10 +34,26 @@ class AuthenticationView(UserPassesTestMixin, View):
     """Wizard-like Multi-factor authenticator"""
 
     # Allow only not authenticated users to login
-    def test_func(self):
+    def test_func(self) -> bool:
         return AuthenticationView.SESSION_PENDING_USER in self.request.session
 
-    def handle_no_permission(self):
+    def _check_config_domain(self) -> Optional[HttpResponse]:
+        """Checks if current request's domain matches configured Domain, and
+        adds a warning if not."""
+        current_domain = self.request.get_host()
+        if ":" in current_domain:
+            current_domain, _ = current_domain.split(":")
+        config_domain = CONFIG.y("domain")
+        if current_domain != config_domain:
+            message = (
+                f"Current domain of '{current_domain}' doesn't "
+                f"match configured domain of '{config_domain}'."
+            )
+            LOGGER.warning(message)
+            return bad_request_message(self.request, message)
+        return None
+
+    def handle_no_permission(self) -> HttpResponse:
         # Function from UserPassesTestMixin
         if NEXT_ARG_NAME in self.request.GET:
             return redirect(self.request.GET.get(NEXT_ARG_NAME))
@@ -42,10 +61,40 @@ class AuthenticationView(UserPassesTestMixin, View):
             return _redirect_with_qs("passbook_core:overview", self.request.GET)
         return _redirect_with_qs("passbook_core:auth-login", self.request.GET)
 
-    def dispatch(self, request, *args, **kwargs):
+    def get_pending_factors(self) -> List[Tuple[str, str]]:
+        """Loading pending factors from Database or load from session variable"""
+        # Write pending factors to session
+        if AuthenticationView.SESSION_PENDING_FACTORS in self.request.session:
+            return self.request.session[AuthenticationView.SESSION_PENDING_FACTORS]
+        # Get an initial list of factors which are currently enabled
+        # and apply to the current user. We check policies here and block the request
+        _all_factors = (
+            Factor.objects.filter(enabled=True).order_by("order").select_subclasses()
+        )
+        pending_factors = []
+        for factor in _all_factors:
+            factor: Factor
+            LOGGER.debug(
+                "Checking if factor applies to user",
+                factor=factor,
+                user=self.pending_user,
+            )
+            policy_engine = PolicyEngine(
+                factor.policies.all(), self.pending_user, self.request
+            )
+            policy_engine.build()
+            if policy_engine.passing:
+                pending_factors.append((factor.uuid.hex, factor.type))
+                LOGGER.debug("Factor applies", factor=factor, user=self.pending_user)
+        return pending_factors
+
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if user passes test (i.e. SESSION_PENDING_USER is set)
         user_test_result = self.get_test_func()()
         if not user_test_result:
+            incorrect_domain_message = self._check_config_domain()
+            if incorrect_domain_message:
+                return incorrect_domain_message
             return self.handle_no_permission()
         # Extract pending user from session (only remember uid)
         self.pending_user = get_object_or_404(
@@ -78,7 +127,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         self._current_factor_class.request = request
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass get request to current factor"""
         LOGGER.debug(
             "Passing GET",
@@ -86,7 +135,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         )
         return self._current_factor_class.get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current factor"""
         LOGGER.debug(
             "Passing POST",
@@ -94,7 +143,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         )
         return self._current_factor_class.post(request, *args, **kwargs)
 
-    def user_ok(self):
+    def user_ok(self) -> HttpResponse:
         """Redirect to next Factor"""
         LOGGER.debug(
             "Factor passed",
@@ -121,14 +170,14 @@ class AuthenticationView(UserPassesTestMixin, View):
         LOGGER.debug("User passed all factors, logging in", user=self.pending_user)
         return self._user_passed()
 
-    def user_invalid(self):
+    def user_invalid(self) -> HttpResponse:
         """Show error message, user cannot login.
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
         self.cleanup()
         return _redirect_with_qs("passbook_core:auth-denied", self.request.GET)
 
-    def _user_passed(self):
+    def _user_passed(self) -> HttpResponse:
         """User Successfully passed all factors"""
         backend = self.request.session[AuthenticationView.SESSION_USER_BACKEND]
         login(self.request, self.pending_user, backend=backend)

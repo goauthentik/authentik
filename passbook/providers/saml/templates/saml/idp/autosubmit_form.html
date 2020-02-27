@@ -1,0 +1,33 @@
+{% extends "login/base.html" %}
+
+{% load utils %}
+{% load i18n %}
+
+{% block card_title %}
+{% trans 'Redirecting...' %}
+{% endblock %}
+
+{% block card %}
+<form method="POST" action="{{ url }}">
+    {% csrf_token %}
+    {% for key, value in attrs.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <div class="login-group">
+        <p>
+            {% blocktrans with user=user %}
+            You are logged in as {{ user }}.
+            {% endblocktrans %}
+            <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Not you?' %}</a>
+        </p>
+        <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.querySelector("form").submit();
+</script>
+{% endblock %}

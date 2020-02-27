@@ -2,7 +2,7 @@
 
 from django.core.validators import URLValidator
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Group, PropertyMapping, Source
 
@@ -10,17 +10,22 @@ from passbook.core.models import Group, PropertyMapping, Source
 class LDAPSource(Source):
     """LDAP Authentication source"""
 
-    server_uri = models.TextField(validators=[URLValidator(schemes=["ldap", "ldaps"])])
-    bind_cn = models.TextField()
+    server_uri = models.TextField(
+        validators=[URLValidator(schemes=["ldap", "ldaps"])],
+        verbose_name=_("Server URI"),
+    )
+    bind_cn = models.TextField(verbose_name=_("Bind CN"))
     bind_password = models.TextField()
-    start_tls = models.BooleanField(default=False)
+    start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
 
-    base_dn = models.TextField()
+    base_dn = models.TextField(verbose_name=_("Base DN"))
     additional_user_dn = models.TextField(
-        help_text=_("Prepended to Base DN for User-queries.")
+        help_text=_("Prepended to Base DN for User-queries."),
+        verbose_name=_("Addition User DN"),
     )
     additional_group_dn = models.TextField(
-        help_text=_("Prepended to Base DN for Group-queries.")
+        help_text=_("Prepended to Base DN for Group-queries."),
+        verbose_name=_("Addition Group DN"),
     )
 
     user_object_filter = models.TextField(
@@ -54,13 +59,12 @@ class LDAPSource(Source):
 class LDAPPropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object"""
 
-    ldap_property = models.TextField()
     object_field = models.TextField()
 
     form = "passbook.sources.ldap.forms.LDAPPropertyMappingForm"
 
     def __str__(self):
-        return f"LDAP Property Mapping {self.ldap_property} -> {self.object_field}"
+        return f"LDAP Property Mapping {self.expression} -> {self.object_field}"
 
     class Meta:
 

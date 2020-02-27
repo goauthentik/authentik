@@ -15,11 +15,13 @@ class ApplicationSerializer(ModelSerializer):
             "pk",
             "name",
             "slug",
-            "launch_url",
-            "icon_url",
-            "provider",
-            "policies",
             "skip_authorization",
+            "provider",
+            "meta_launch_url",
+            "meta_icon_url",
+            "meta_description",
+            "meta_publisher",
+            "policies",
         ]
 
 

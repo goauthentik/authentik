@@ -3,13 +3,17 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.models import Factor, Policy, User, UserSettings
+from passbook.core.models import Factor, Policy, User
+from passbook.core.types import UIUserSettings
 
 
 class PasswordFactor(Factor):
     """Password-based Django-backend Authentication Factor"""
 
-    backends = ArrayField(models.TextField())
+    backends = ArrayField(
+        models.TextField(),
+        help_text=_("Selection of backends to test the password against."),
+    )
     password_policies = models.ManyToManyField(Policy, blank=True)
     reset_factors = models.ManyToManyField(
         Factor, blank=True, related_name="reset_factors"
@@ -18,9 +22,12 @@ class PasswordFactor(Factor):
     type = "passbook.factors.password.factor.PasswordFactor"
     form = "passbook.factors.password.forms.PasswordFactorForm"
 
-    def user_settings(self):
-        return UserSettings(
-            _("Change Password"), "pficon-key", "passbook_core:user-change-password"
+    @property
+    def ui_user_settings(self) -> UIUserSettings:
+        return UIUserSettings(
+            name="Change Password",
+            icon="pficon-key",
+            view_name="passbook_core:user-change-password",
         )
 
     def password_passes(self, user: User) -> bool:

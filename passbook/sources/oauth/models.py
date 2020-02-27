@@ -2,9 +2,10 @@
 
 from django.db import models
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from passbook.core.models import Source, UserSettings, UserSourceConnection
+from passbook.core.models import Source, UserSourceConnection
+from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.sources.oauth.clients import get_client
 
 
@@ -12,40 +13,51 @@ class OAuthSource(Source):
     """Configuration for OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
-    request_token_url = models.CharField(blank=True, max_length=255)
-    authorization_url = models.CharField(max_length=255)
-    access_token_url = models.CharField(max_length=255)
-    profile_url = models.CharField(max_length=255)
+    request_token_url = models.CharField(
+        blank=True, max_length=255, verbose_name=_("Request Token URL")
+    )
+    authorization_url = models.CharField(
+        max_length=255, verbose_name=_("Authorization URL")
+    )
+    access_token_url = models.CharField(
+        max_length=255, verbose_name=_("Access Token URL")
+    )
+    profile_url = models.CharField(max_length=255, verbose_name=_("Profile URL"))
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
     form = "passbook.sources.oauth.forms.OAuthSourceForm"
 
     @property
-    def login_button(self):
-        url = reverse_lazy(
-            "passbook_sources_oauth:oauth-client-login",
-            kwargs={"source_slug": self.slug},
+    def ui_login_button(self) -> UILoginButton:
+        return UILoginButton(
+            url=reverse_lazy(
+                "passbook_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.slug},
+            ),
+            icon_path=f"passbook/sources/{self.provider_type}.svg",
+            name=self.name,
         )
-        return url, self.provider_type, self.name
 
     @property
-    def additional_info(self):
-        return "Callback URL: <pre>%s</pre>" % reverse_lazy(
+    def ui_additional_info(self) -> str:
+        url = reverse_lazy(
             "passbook_sources_oauth:oauth-client-callback",
             kwargs={"source_slug": self.slug},
         )
+        return f"Callback URL: <pre>{url}</pre>"
 
-    def user_settings(self) -> UserSettings:
+    @property
+    def ui_user_settings(self) -> UIUserSettings:
         icon_type = self.provider_type
         if icon_type == "azure ad":
             icon_type = "windows"
-        icon_class = "fa fa-%s" % icon_type
+        icon_class = f"fab fa-{icon_type}"
         view_name = "passbook_sources_oauth:oauth-client-user"
-        return UserSettings(
-            self.name,
-            icon_class,
-            reverse((view_name), kwargs={"source_slug": self.slug}),
+        return UIUserSettings(
+            name=self.name,
+            icon=icon_class,
+            view_name=reverse((view_name), kwargs={"source_slug": self.slug}),
         )
 
     class Meta:

@@ -19,6 +19,8 @@ class OIDCProviderForm(forms.ModelForm):
         self.fields["client_secret"].initial = generate_client_secret()
 
     def save(self, *args, **kwargs):
+        self.instance.reuse_consent = False  # This is managed by passbook
+        self.instance.require_consent = True  # This is managed by passbook
         response = super().save(*args, **kwargs)
         # Check if openidprovider class instance exists
         if not OpenIDProvider.objects.filter(oidc_client=self.instance).exists():

@@ -4,27 +4,18 @@
 {% load i18n %}
 {% load utils %}
 
-{% block head %}
-{{ block.super }}
-<style>
-    .pf-icon {
-        font-size: 48px;
-        text-align: center;
-    }
-</style>
-{% endblock %}
-
 {% block card %}
-<header class="login-pf-header">
-  <h1>{% trans title %}</h1>
-</header>
-<form method="POST">
-  {% csrf_token %}
-  {% include 'partials/form_login.html' %}
-  <span class="pf-icon pficon-error-circle-o btn-block"></span>
-  Access denied
-  {% if 'back' in request.GET %}
-  <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
-  {% endif %}
+<form method="POST" class="pf-c-form">
+    {% csrf_token %}
+    {% include 'partials/form.html' %}
+    <div class="pf-c-form__group">
+        <p>
+            <i class="pf-icon pf-icon-error-circle-o"></i>
+            {% trans 'Access denied' %}
+        </p>
+    </div>
+    {% if 'back' in request.GET %}
+    <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
+    {% endif %}
 </form>
 {% endblock %}

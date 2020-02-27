@@ -4,10 +4,9 @@
 
 From https://rancher.com/products/rancher
 
-```
-An Enterprise Platform for Managing Kubernetes Everywhere
-Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
-```
+!!! note ""
+    An Enterprise Platform for Managing Kubernetes Everywhere
+    Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
 
 ## Preparation
 
@@ -22,7 +21,7 @@ Create an application in passbook and note the slug, as this will be used later.
 -   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
 -   Issuer: `passbook`
 
-You can of course use a custom Signing Certificate, and adjust the Assertion Length.
+You can of course use a custom Signing Certificate, and adjust durations.
 
 ## Rancher
 

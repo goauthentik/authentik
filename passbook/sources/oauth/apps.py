@@ -21,6 +21,5 @@ class PassbookSourceOAuthConfig(AppConfig):
         for source_type in settings.PASSBOOK_SOURCES_OAUTH_TYPES:
             try:
                 import_module(source_type)
-                LOGGER.info("Loaded source_type", source_class=source_type)
             except ImportError as exc:
                 LOGGER.debug(exc)

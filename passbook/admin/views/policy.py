@@ -24,7 +24,8 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = Policy
     permission_required = "passbook_core.view_policy"
-
+    paginate_by = 10
+    ordering = "order"
     template_name = "administration/policy/list.html"
 
     def get_context_data(self, **kwargs):
@@ -34,7 +35,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
-        return super().get_queryset().order_by("order").select_subclasses()
+        return super().get_queryset().select_subclasses()
 
 
 class PolicyCreateView(
@@ -51,6 +52,13 @@ class PolicyCreateView(
     template_name = "generic/create.html"
     success_url = reverse_lazy("passbook_admin:policies")
     success_message = _("Successfully created Policy")
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
+        return kwargs
 
     def get_form_class(self):
         policy_type = self.request.GET.get("type")
@@ -71,6 +79,13 @@ class PolicyUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("passbook_admin:policies")
     success_message = _("Successfully updated Policy")
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        form_cls = self.get_form_class()
+        if hasattr(form_cls, "template_name"):
+            kwargs["base_template"] = form_cls.template_name
+        return kwargs
 
     def get_form_class(self):
         form_class_path = self.get_object().form

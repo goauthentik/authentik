@@ -6,44 +6,62 @@
 {% load passbook_user_settings %}
 
 {% block content %}
-<div class="container">
-    <div class="col-md-3 ">
-        <div class="nav-category">
-            <h2>{% trans 'User Settings'%}</h2>
-            <ul class="nav nav-pills nav-stacked">
-                <li class="{% is_active 'passbook_core:user-settings' %}">
-                    <a href="{% url 'passbook_core:user-settings' %}">
-                        <i class="fa pficon-edit"></i> {% trans 'Details' %}
-                    </a>
-                </li>
-                {% user_factors as uf %}
-                {% if uf %}
-                    <li class="nav-divider"></li>
-                {% endif %}
-                {% for user_settings in uf %}
-                    <li class="{% is_active user_settings.view_name %}">
-                        <a href="{% url user_settings.view_name %}">
-                            <i class="{{ user_settings.icon }}"></i> {{ user_settings.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-                {% user_sources as us %}
-                {% if us %}
-                    <li class="nav-divider"></li>
-                {% endif %}
-                {% for user_settings in us %}
-                    <li class="{% if user_settings.view_name == request.get_full_path %} active {% endif %}">
-                        <a href="{{ user_settings.view_name }}">
-                            <i class="{{ user_settings.icon }}"></i> {{ user_settings.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
+<section class="pf-c-page__main-section">
+    <div class="pf-l-split pf-m-gutter">
+        <div class="pf-l-split__item">
+            <div class="pf-c-card">
+                <div class="pf-c-card__body">
+                    <nav class="pf-c-nav" aria-label="Global">
+                        <section class="pf-c-nav__section">
+                            <h2 class="pf-c-nav__section-title">{% trans 'General Settings' %}</h2>
+                            <ul class="pf-c-nav__list">
+                                <li class="pf-c-nav__item">
+                                    <a href="{% url 'passbook_core:user-settings' %}" class="pf-c-nav__link {% is_active 'passbook_core:user-settings' %}">{% trans 'User Details' %}</a>
+                                </li>
+                            </ul>
+                        </section>
+                        {% user_factors as user_factors_loc %}
+                        {% if user_factors_loc %}
+                        <section class="pf-c-nav__section">
+                            <h2 class="pf-c-nav__section-title">{% trans 'Factors' %}</h2>
+                            <ul class="pf-c-nav__list">
+                                {% for factor in user_factors_loc %}
+                                <li class="pf-c-nav__item">
+                                    <a href="{% url factor.view_name %}" class="pf-c-nav__link {% is_active factor.view_name %}">
+                                        <i class="{{ factor.icon }}"></i>
+                                    {{ factor.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+                        {% endif %}
+                        {% user_sources as user_sources_loc %}
+                        {% if user_sources_loc %}
+                        <section class="pf-c-nav__section">
+                            <h2 class="pf-c-nav__section-title">{% trans 'Sources' %}</h2>
+                            <ul class="pf-c-nav__list">
+                                {% for source in user_sources_loc %}
+                                <li class="pf-c-nav__item">
+                                    <a href="{{ source.view_name }}" class="pf-c-nav__link {% if user_settings.view_name == request.get_full_path %} pf-m-current {% endif %}">
+                                        <i class="{{ source.icon }}"></i>
+                                    {{ source.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="pf-l-split__item">
+            <div class="pf-c-card">
+                {% block page %}
+                {% endblock %}
+            </div>
         </div>
     </div>
-    <div class="col-md-9">
-        {% block page %}
-        {% endblock %}
-    </div>
-</div>
+</section>
 {% endblock %}

@@ -7,8 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views import View
+from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -19,7 +21,6 @@ from structlog import get_logger
 from passbook.audit.models import Event, EventAction
 from passbook.factors.otp.forms import OTPSetupForm
 from passbook.factors.otp.utils import otpauth_url
-from passbook.lib.boilerplate import NeverCacheMixin
 from passbook.lib.config import CONFIG
 
 OTP_SESSION_KEY = "passbook_factors_otp_key"
@@ -76,7 +77,6 @@ class EnableView(LoginRequiredMixin, FormView):
     # TODO: Check if OTP Factor exists and applies to user
     def get_context_data(self, **kwargs):
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["is_login"] = True
         kwargs["title"] = _("Configure OTP")
         kwargs["primary_action"] = _("Setup")
         return super().get_context_data(**kwargs)
@@ -146,7 +146,8 @@ class EnableView(LoginRequiredMixin, FormView):
         return redirect("passbook_factors_otp:otp-user-settings")
 
 
-class QRView(NeverCacheMixin, View):
+@method_decorator(never_cache, name="dispatch")
+class QRView(View):
     """View returns an SVG image with the OTP token information"""
 
     def get(self, request: HttpRequest) -> HttpResponse:

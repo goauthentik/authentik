@@ -18,7 +18,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        passbook.io/component: web
+        k8s.passbook.io/component: web
     spec:
       volumes:
         - name: config-volume
@@ -27,9 +27,12 @@ spec:
       initContainers:
         - name: passbook-database-migrations
           image: "beryju/passbook:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
           command:
             - ./manage.py
           args:
+            - bootstrap
+            - ./manage.py
             - migrate
           volumeMounts:
             - mountPath: /etc/passbook
@@ -57,10 +60,12 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "beryju/passbook:{{ .Values.image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command:
-            - uwsgi
+            - ./manage.py
           args:
+            - bootstrap
+            - uwsgi
             - uwsgi.ini
           volumeMounts:
             - mountPath: /etc/passbook

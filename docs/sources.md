@@ -36,4 +36,4 @@ This source allows you to import Users and Groups from an LDAP Server
 -   Object uniqueness field: Field which contains a unique Identifier.
 -   Sync groups: Enable/disable Group synchronization. Groups are synced in the background every 5 minutes.
 -   Sync parent group: Optionally set this Group as parent Group for all synced Groups (allows you to, for example, import AD Groups under a root `imported-from-ad` group.)
--   Property mappings: Define which LDAP Properties map to which passbook Properties. The default set of Property Mappings is generated for Active Directory. See also [LDAP Property Mappings](property-mappings.md#ldap-property-mapping)
+-   Property mappings: Define which LDAP Properties map to which passbook Properties. The default set of Property Mappings is generated for Active Directory. See also [LDAP Property Mappings](property-mappings/index.md#ldap-property-mapping)

@@ -2,7 +2,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.factors.forms import GENERAL_FIELDS
 from passbook.factors.password.models import PasswordFactor
@@ -48,4 +48,9 @@ class PasswordFactorForm(forms.ModelForm):
             ),
             "password_policies": FilteredSelectMultiple(_("password policies"), False),
             "reset_factors": FilteredSelectMultiple(_("reset factors"), False),
+        }
+        help_texts = {
+            "policies": _(
+                "Policies which determine if this factor applies to the current user."
+            )
         }

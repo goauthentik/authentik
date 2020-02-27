@@ -1,8 +1,6 @@
 """passbook oauth_client forms"""
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.translation import gettext as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.sources.oauth.models import OAuthSource
@@ -36,13 +34,6 @@ class OAuthSourceForm(forms.ModelForm):
             "consumer_key": forms.TextInput(),
             "consumer_secret": forms.TextInput(),
             "provider_type": forms.Select(choices=MANAGER.get_name_tuple()),
-            "policies": FilteredSelectMultiple(_("policies"), False),
-        }
-        labels = {
-            "request_token_url": _("Request Token URL"),
-            "authorization_url": _("Authorization URL"),
-            "access_token_url": _("Access Token URL"),
-            "profile_url": _("Profile URL"),
         }
 
 
@@ -56,7 +47,7 @@ class GitHubOAuthSourceForm(OAuthSourceForm):
             "request_token_url": "",
             "authorization_url": "https://github.com/login/oauth/authorize",
             "access_token_url": "https://github.com/login/oauth/access_token",
-            "profile_url": " https://api.github.com/user",
+            "profile_url": "https://api.github.com/user",
         }
 
 
@@ -70,7 +61,10 @@ class TwitterOAuthSourceForm(OAuthSourceForm):
             "request_token_url": "https://api.twitter.com/oauth/request_token",
             "authorization_url": "https://api.twitter.com/oauth/authenticate",
             "access_token_url": "https://api.twitter.com/oauth/access_token",
-            "profile_url": " https://api.twitter.com/1.1/account/verify_credentials.json",
+            "profile_url": (
+                "https://api.twitter.com/1.1/account/"
+                "verify_credentials.json?include_email=true"
+            ),
         }
 
 
@@ -84,7 +78,7 @@ class FacebookOAuthSourceForm(OAuthSourceForm):
             "request_token_url": "",
             "authorization_url": "https://www.facebook.com/v2.8/dialog/oauth",
             "access_token_url": "https://graph.facebook.com/v2.8/oauth/access_token",
-            "profile_url": " https://graph.facebook.com/v2.8/me?fields=name,email,short_name",
+            "profile_url": "https://graph.facebook.com/v2.8/me?fields=name,email,short_name",
         }
 
 
@@ -98,7 +92,7 @@ class DiscordOAuthSourceForm(OAuthSourceForm):
             "request_token_url": "",
             "authorization_url": "https://discordapp.com/api/oauth2/authorize",
             "access_token_url": "https://discordapp.com/api/oauth2/token",
-            "profile_url": " https://discordapp.com/api/users/@me",
+            "profile_url": "https://discordapp.com/api/users/@me",
         }
 
 
@@ -112,7 +106,7 @@ class GoogleOAuthSourceForm(OAuthSourceForm):
             "request_token_url": "",
             "authorization_url": "https://accounts.google.com/o/oauth2/auth",
             "access_token_url": "https://accounts.google.com/o/oauth2/token",
-            "profile_url": " https://www.googleapis.com/oauth2/v1/userinfo",
+            "profile_url": "https://www.googleapis.com/oauth2/v1/userinfo",
         }
 
 
@@ -122,9 +116,9 @@ class AzureADOAuthSourceForm(OAuthSourceForm):
     class Meta(OAuthSourceForm.Meta):
 
         overrides = {
-            "provider_type": "azure_ad",
+            "provider_type": "azure-ad",
             "request_token_url": "",
             "authorization_url": "https://login.microsoftonline.com/common/oauth2/authorize",
             "access_token_url": "https://login.microsoftonline.com/common/oauth2/token",
-            "profile_url": " https://graph.windows.net/myorganization/me?api-version=1.6",
+            "profile_url": "https://graph.windows.net/myorganization/me?api-version=1.6",
         }
