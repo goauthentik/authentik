@@ -24,6 +24,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = Policy
     permission_required = "passbook_core.view_policy"
+    paginate_by = 10
     ordering = "order"
     template_name = "administration/policy/list.html"
 
