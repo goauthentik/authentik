@@ -2,7 +2,7 @@
 from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from passbook.factors.captcha.models import CaptchaFactor
 from passbook.factors.forms import GENERAL_FIELDS
@@ -27,4 +27,9 @@ class CaptchaFactorForm(forms.ModelForm):
             "policies": FilteredSelectMultiple(_("policies"), False),
             "public_key": forms.TextInput(),
             "private_key": forms.TextInput(),
+        }
+        help_texts = {
+            "policies": _(
+                "Policies which determine if this factor applies to the current user."
+            )
         }

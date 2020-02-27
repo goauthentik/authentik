@@ -25,18 +25,6 @@ passbook:
   password_reset:
     # Enable password reset, passwords are reset in internal Database and in LDAP if ldap.reset_password is true
     enabled: true
-    # Verification the user has to provide in order to be able to reset passwords. Can be any combination of `email`, `2fa`, `security_questions`
-    verification:
-      - email
-  # Text used in title, on login page and multiple other places
-  branding: passbook
-  login:
-    # Override URL used for logo
-    logo_url: null
-    # Override URL used for Background on Login page
-    bg_url: null
-    # Optionally add a subtext, placed below logo on the login page
-    subtext: null
   footer:
     links:
       # Optionally add links to the footer on the login page
@@ -46,14 +34,3 @@ passbook:
   uid_fields:
     - username
     - email
-# Provider-specific settings
-ldap:
-  # Which field from `uid_fields` maps to which LDAP Attribute
-  login_field_map:
-    username: sAMAccountName
-    email: mail # or userPrincipalName
-  user_attribute_map:
-    active_directory:
-      username: "%(sAMAccountName)s"
-      email: "%(mail)s"
-      name: "%(displayName)"
