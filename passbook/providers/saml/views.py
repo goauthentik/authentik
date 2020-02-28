@@ -126,6 +126,10 @@ class LoginBeginView(AccessRequiredView):
         )
 
     @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    @method_decorator(csrf_exempt)
     def get(self, request: HttpRequest, application: str) -> HttpResponse:
         """Handle REDIRECT bindings"""
         return self.handler(request.GET, application)
