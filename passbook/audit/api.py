@@ -18,7 +18,7 @@ class EventSerializer(ModelSerializer):
             "date",
             "app",
             "context",
-            "request_ip",
+            "client_ip",
             "created",
         ]
 

@@ -7,7 +7,7 @@ from rest_framework import routers
 from structlog import get_logger
 
 from passbook.api.permissions import CustomObjectPermissions
-from passbook.audit.api.events import EventViewSet
+from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.factors import FactorViewSet
 from passbook.core.api.groups import GroupViewSet
