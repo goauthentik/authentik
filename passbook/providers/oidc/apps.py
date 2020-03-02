@@ -1,4 +1,6 @@
 """passbook auth oidc provider app config"""
+from importlib import import_module
+
 from django.apps import AppConfig
 from django.db.utils import InternalError, OperationalError, ProgrammingError
 from django.urls import include, path
@@ -34,3 +36,5 @@ class PassbookProviderOIDCConfig(AppConfig):
                 include("oidc_provider.urls", namespace="oidc_provider"),
             ),
         )
+
+        import_module("passbook.providers.oidc.signals")
