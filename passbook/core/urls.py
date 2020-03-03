@@ -3,7 +3,7 @@ from django.urls import path
 from structlog import get_logger
 
 from passbook.core.views import authentication, overview, user
-from passbook.factors import view
+from passbook.flows.executor.http import FactorPermissionDeniedView, HttpExecutorView
 
 LOGGER = get_logger()
 
@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path(
         "auth/process/denied/",
-        view.FactorPermissionDeniedView.as_view(),
+        FactorPermissionDeniedView.as_view(),
         name="auth-denied",
     ),
     path(
@@ -27,12 +27,7 @@ urlpatterns = [
         authentication.PasswordResetView.as_view(),
         name="auth-password-reset",
     ),
-    path("auth/process/", view.AuthenticationView.as_view(), name="auth-process"),
-    path(
-        "auth/process/<slug:factor>/",
-        view.AuthenticationView.as_view(),
-        name="auth-process",
-    ),
+    path("flows/execute/", HttpExecutorView.as_view(), name="flows-execute"),
     # User views
     path("_/user/", user.UserSettingsView.as_view(), name="user-settings"),
     path("_/user/delete/", user.UserDeleteView.as_view(), name="user-delete"),

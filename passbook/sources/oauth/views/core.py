@@ -13,7 +13,6 @@ from django.views.generic import RedirectView, View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.factors.view import AuthenticationView, _redirect_with_qs
 from passbook.sources.oauth.clients import get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 
@@ -165,10 +164,8 @@ class OAuthCallback(OAuthClientMixin, View):
         user = authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )
-        self.request.session[AuthenticationView.SESSION_PENDING_USER] = user.pk
-        self.request.session[AuthenticationView.SESSION_USER_BACKEND] = user.backend
-        self.request.session[AuthenticationView.SESSION_IS_SSO_LOGIN] = True
-        return _redirect_with_qs("passbook_core:auth-process", self.request.GET)
+        # TODO: Use flow http bootstrap
+        return redirect_with_qs("passbook_core:flows-execute", self.request.GET)
 
     # pylint: disable=unused-argument
     def handle_existing_user(self, source, user, access, info):

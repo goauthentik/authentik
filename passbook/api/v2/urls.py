@@ -22,6 +22,7 @@ from passbook.factors.dummy.api import DummyFactorViewSet
 from passbook.factors.email.api import EmailFactorViewSet
 from passbook.factors.otp.api import OTPFactorViewSet
 from passbook.factors.password.api import PasswordFactorViewSet
+from passbook.flows.api.execute import FlowsExecuteViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
@@ -35,7 +36,6 @@ from passbook.providers.oidc.api import OpenIDProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
-from passbook.flows.api.execute import FlowsExecuteViewSet
 
 LOGGER = get_logger()
 router = routers.DefaultRouter()

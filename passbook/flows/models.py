@@ -1,9 +1,12 @@
 from django.db import models
-from passbook.lib.models import UUIDModel
+from django.utils.translation import gettext_lazy as _
+
 from passbook.core.models import Factor
+from passbook.lib.models import UUIDModel
 
 
-class FlowToFactor(UUIDModel):
+# TODO: Add PolicyModel
+class FactorBinding(UUIDModel):
 
     flow = models.ForeignKey("Flow", on_delete=models.CASCADE)
     factor = models.ForeignKey(Factor, on_delete=models.CASCADE)
@@ -17,5 +20,12 @@ class FlowToFactor(UUIDModel):
 class Flow(UUIDModel):
 
     slug = models.SlugField(unique=True)
-    factors = models.ManyToManyField(Factor, through=FlowToFactor)
-    # TODO: requireed_policies to apply flows to authenticated users only?
+    factors = models.ManyToManyField(Factor, through=FactorBinding)
+    designation = models.CharField(
+        max_length=100,
+        choices=(
+            ("enroll", _("Enroll")),
+            ("auth", _("Authentication")),
+            ("recovery", _("Recovery")),
+        ),
+    )

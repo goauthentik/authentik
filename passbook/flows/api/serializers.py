@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from enum import IntFlag
+
+from rest_framework import serializers
 
 
 class ChallengeCapabilities(IntFlag):

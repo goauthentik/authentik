@@ -8,7 +8,6 @@ from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
-from passbook.factors.view import AuthenticationView
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
 
@@ -55,7 +54,7 @@ class Evaluator:
         kwargs["pb_logger"] = get_logger()
         if request.http_request:
             kwargs["pb_is_sso_flow"] = request.http_request.session.get(
-                AuthenticationView.SESSION_IS_SSO_LOGIN, False
+                "pb_is_sso_flow", False  # TODO: "pb_is_sso_flow" as Constant somewhere
             )
             kwargs["pb_client_ip"] = (
                 get_client_ip(request.http_request) or "255.255.255.255"

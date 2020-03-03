@@ -25,6 +25,7 @@ from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.types import PolicyRequest, PolicyResult
 
@@ -116,6 +117,14 @@ class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     objects = InheritanceManager()
     type = ""
     form = ""
+
+    _factor_class = None
+
+    @property
+    def factor_class(self):
+        if not self._factor_class:
+            self._factor_class = path_to_class(self.type)
+        return self._factor_class
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:

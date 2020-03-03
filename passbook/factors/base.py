@@ -5,21 +5,21 @@ from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from passbook.core.models import User
-from passbook.factors.view import AuthenticationView
+from passbook.flows.executor.http import HttpExecutorView
 from passbook.lib.config import CONFIG
 
 
-class AuthenticationFactor(TemplateView):
+class Factor(TemplateView):
     """Abstract Authentication factor, inherits TemplateView but can be combined with FormView"""
 
     form: ModelForm = None
     required: bool = True
-    authenticator: AuthenticationView
+    authenticator: HttpExecutorView
     pending_user: User
     request: HttpRequest = None
     template_name = "login/form_with_user.html"
 
-    def __init__(self, authenticator: AuthenticationView):
+    def __init__(self, authenticator: HttpExecutorView):
         self.authenticator = authenticator
         self.pending_user = None
 

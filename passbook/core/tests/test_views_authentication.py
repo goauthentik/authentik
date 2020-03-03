@@ -77,7 +77,7 @@ class TestAuthenticationViews(TestCase):
             reverse("passbook_core:auth-login"), data=self.login_data
         )
         self.assertEqual(login_response.status_code, 302)
-        self.assertEqual(login_response.url, reverse("passbook_core:auth-process"))
+        self.assertEqual(login_response.url, reverse("passbook_core:flows-execute"))
 
     def test_sign_up_view_post(self):
         """Test account.sign_up view POST (Anonymous)"""

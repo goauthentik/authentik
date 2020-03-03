@@ -10,7 +10,7 @@ from django.urls import reverse
 from passbook.core.models import User
 from passbook.factors.dummy.models import DummyFactor
 from passbook.factors.password.models import PasswordFactor
-from passbook.factors.view import AuthenticationView
+from passbook.flows.executor.http import HttpExecutorView
 
 
 class TestFactorAuthentication(TestCase):
@@ -36,31 +36,31 @@ class TestFactorAuthentication(TestCase):
         )
 
     def test_unauthenticated_raw(self):
-        """test direct call to AuthenticationView"""
-        response = self.client.get(reverse("passbook_core:auth-process"))
+        """test direct call to HttpExecutorView"""
+        response = self.client.get(reverse("passbook_core:flows-execute"))
         # Response should be 400 since no pending user is set
         self.assertEqual(response.status_code, 400)
 
     def test_unauthenticated_prepared(self):
         """test direct call but with pending_uesr in session"""
-        request = RequestFactory().get(reverse("passbook_core:auth-process"))
+        request = RequestFactory().get(reverse("passbook_core:flows-execute"))
         request.user = AnonymousUser()
         request.session = {}
-        request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
+        request.session[HttpExecutorView.SESSION_PENDING_USER] = self.user.pk
 
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 
     def test_no_factors(self):
         """Test with all factors disabled"""
         self.factor.enabled = False
         self.factor.save()
-        request = RequestFactory().get(reverse("passbook_core:auth-process"))
+        request = RequestFactory().get(reverse("passbook_core:flows-execute"))
         request.user = AnonymousUser()
         request.session = {}
-        request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
+        request.session[HttpExecutorView.SESSION_PENDING_USER] = self.user.pk
 
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("passbook_core:auth-denied"))
         self.factor.enabled = True
@@ -69,7 +69,7 @@ class TestFactorAuthentication(TestCase):
     def test_authenticated(self):
         """Test with already logged in user"""
         self.client.force_login(self.user)
-        response = self.client.get(reverse("passbook_core:auth-process"))
+        response = self.client.get(reverse("passbook_core:flows-execute"))
         # Response should be 400 since no pending user is set
         self.assertEqual(response.status_code, 400)
         self.client.logout()
@@ -77,15 +77,15 @@ class TestFactorAuthentication(TestCase):
     def test_unauthenticated_post(self):
         """Test post request as unauthenticated user"""
         request = RequestFactory().post(
-            reverse("passbook_core:auth-process"), data={"password": self.password}
+            reverse("passbook_core:flows-execute"), data={"password": self.password}
         )
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
         request.session.save()  # pylint: disable=no-member
-        request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
+        request.session[HttpExecutorView.SESSION_PENDING_USER] = self.user.pk
 
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("passbook_core:overview"))
         self.client.logout()
@@ -93,16 +93,16 @@ class TestFactorAuthentication(TestCase):
     def test_unauthenticated_post_invalid(self):
         """Test post request as unauthenticated user"""
         request = RequestFactory().post(
-            reverse("passbook_core:auth-process"),
+            reverse("passbook_core:flows-execute"),
             data={"password": self.password + "a"},
         )
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
         request.session.save()  # pylint: disable=no-member
-        request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
+        request.session[HttpExecutorView.SESSION_PENDING_USER] = self.user.pk
 
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.client.logout()
 
@@ -110,28 +110,28 @@ class TestFactorAuthentication(TestCase):
         """Test view with multiple active factors"""
         DummyFactor.objects.get_or_create(name="dummy", slug="dummy", order=1)
         request = RequestFactory().post(
-            reverse("passbook_core:auth-process"), data={"password": self.password}
+            reverse("passbook_core:flows-execute"), data={"password": self.password}
         )
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
         request.session.save()  # pylint: disable=no-member
-        request.session[AuthenticationView.SESSION_PENDING_USER] = self.user.pk
+        request.session[HttpExecutorView.SESSION_PENDING_USER] = self.user.pk
 
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         session_copy = request.session.items()
         self.assertEqual(response.status_code, 302)
         # Verify view redirects to itself after auth
-        self.assertEqual(response.url, reverse("passbook_core:auth-process"))
+        self.assertEqual(response.url, reverse("passbook_core:flows-execute"))
 
         # Run another request with same session which should result in a logged in user
-        request = RequestFactory().post(reverse("passbook_core:auth-process"))
+        request = RequestFactory().post(reverse("passbook_core:flows-execute"))
         request.user = AnonymousUser()
         middleware = SessionMiddleware()
         middleware.process_request(request)
         for key, value in session_copy:
             request.session[key] = value
         request.session.save()  # pylint: disable=no-member
-        response = AuthenticationView.as_view()(request)
+        response = HttpExecutorView.as_view()(request)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("passbook_core:overview"))

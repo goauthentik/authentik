@@ -1,23 +1,24 @@
 """Flow Execution API"""
-from typing import List, Tuple, Optional
-from rest_framework.viewsets import ViewSet
-from rest_framework.response import Response
-from rest_framework.request import Request
+from typing import List, Optional, Tuple
+
+from django.http import Http404
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
+from structlog import get_logger
+
+from passbook.core.models import Factor, User
 from passbook.flows.api.serializers import (
+    ChallengeCapabilities,
     ChallengeRequestSerializer,
     ChallengeResponseSerializer,
     InitiateFlowExecutionSerializer,
 )
 from passbook.flows.models import Flow
-from drf_yasg.utils import swagger_auto_schema
-from django.http import Http404
-from passbook.core.models import Factor
-from structlog import get_logger
-from django.shortcuts import get_object_or_404
-from passbook.core.models import User
 from passbook.lib.config import CONFIG
-from passbook.flows.api.serializers import ChallengeCapabilities
 
 LOGGER = get_logger()
 

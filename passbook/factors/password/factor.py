@@ -11,9 +11,9 @@ from django.views.generic import FormView
 from structlog import get_logger
 
 from passbook.core.models import User
-from passbook.factors.base import AuthenticationFactor
+from passbook.factors.base import Factor
 from passbook.factors.password.forms import PasswordForm
-from passbook.factors.view import AuthenticationView
+from passbook.flows.executor.http import HttpExecutorView
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 
@@ -52,7 +52,7 @@ def authenticate(request, backends, **credentials) -> Optional[User]:
     )
 
 
-class PasswordFactor(FormView, AuthenticationFactor):
+class PasswordFactor(FormView, Factor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
     form_class = PasswordForm
@@ -65,17 +65,16 @@ class PasswordFactor(FormView, AuthenticationFactor):
             "password": form.cleaned_data.get("password"),
         }
         for uid_field in uid_fields:
-            kwargs[uid_field] = getattr(self.authenticator.pending_user, uid_field)
+            kwargs[uid_field] = getattr(
+                self.authenticator.executor.pending_user, uid_field
+            )
         try:
             user = authenticate(
                 self.request, self.authenticator.current_factor.backends, **kwargs
             )
             if user:
                 # User instance returned from authenticate() has .backend property set
-                self.authenticator.pending_user = user
-                self.request.session[
-                    AuthenticationView.SESSION_USER_BACKEND
-                ] = user.backend
+                self.authenticator.executor.pending_user.backend = user.backend
                 return self.authenticator.user_ok()
             # No user was found -> invalid credentials
             LOGGER.debug("Invalid credentials")
