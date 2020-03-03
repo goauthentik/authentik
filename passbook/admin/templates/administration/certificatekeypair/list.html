@@ -1,0 +1,69 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-key"></i>
+            {% trans 'Certificate-Key Pairs' %}
+        </h1>
+        <p>{% trans "Import certificates of external providers or create certificates to sign requests with." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <a href="{% url 'passbook_admin:certificatekeypair-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Private Key available' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Fingerprint' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Provider Type' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for kp in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ kp.name }}</div>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {% if kp.key_data is not None %}
+                            {% trans 'Yes' %}
+                            {% else %}
+                            {% trans 'No' %}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ kp.fingerprint }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:certificatekeypair-update' pk=kp.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:certificatekeypair-delete' pk=kp.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
+{% endblock %}
