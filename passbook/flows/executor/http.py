@@ -52,32 +52,23 @@ def bootstrap_http_executor(request: HttpRequest, pending_user: User):
 
 class HttpExecutor(FlowExecutor):
 
-    _request: HttpRequest
-
-    def __init__(self, request: HttpRequest):
-        super().__init__()
-        self._request = request
+    request: HttpRequest
 
     def state_restore(self):
-        self._state = self._request.session[SESSION_STATE_KEY]
-        LOGGER.debug("state_restore", state=self._state)
+        self._state = self.request.session[SESSION_STATE_KEY]
+        LOGGER.debug("HTTP_EX(state): state_restore", state=self._state)
 
     def state_persist(self):
-        self._request.session[SESSION_STATE_KEY] = self._state
-        LOGGER.debug("state_persist", state=self._state)
+        self.request.session[SESSION_STATE_KEY] = self._state
+        LOGGER.debug("HTTP_EX(state): state_persist", state=self._state)
 
     def state_cleanup(self):
-        del self._request.session[SESSION_STATE_KEY]
+        del self.request.session[SESSION_STATE_KEY]
+        LOGGER.debug("HTTP_EX(state): state_clear")
 
 
-class HttpExecutorView(UserPassesTestMixin, View):
+class HttpExecutorView(HttpExecutor, View):
     """Wizard-like Multi-factor authenticator"""
-
-    executor: HttpExecutor
-
-    # Allow only not authenticated users to login
-    def test_func(self) -> bool:
-        return SESSION_STATE_KEY in self.request.session
 
     def _check_config_domain(self) -> Optional[HttpResponse]:
         """Checks if current request's domain matches configured Domain, and
@@ -95,8 +86,7 @@ class HttpExecutorView(UserPassesTestMixin, View):
             return bad_request_message(self.request, message)
         return None
 
-    def handle_no_permission(self) -> HttpResponse:
-        # Function from UserPassesTestMixin
+    def handle_no_state(self) -> HttpResponse:
         if NEXT_ARG_NAME in self.request.GET:
             return redirect_with_qs(self.request.GET.get(NEXT_ARG_NAME))
         if self.request.user.is_authenticated:
@@ -105,87 +95,63 @@ class HttpExecutorView(UserPassesTestMixin, View):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if user passes test (i.e. SESSION_PENDING_USER is set)
-        user_test_result = self.get_test_func()()
+        user_test_result = SESSION_STATE_KEY in self.request.session
         if not user_test_result:
             incorrect_domain_message = self._check_config_domain()
             if incorrect_domain_message:
                 return incorrect_domain_message
-            return self.handle_no_permission()
+            return self.handle_no_state()
 
-        self.executor = HttpExecutor(request)
-        self.executor.state_restore()
+        self.state_restore()
 
         # Lookup current factor object
-        self.current_factor = self.executor.get_next_factor()
+        self.current_factor = self.get_next_factor()
         if not self.current_factor:
-            return self._user_passed()
+            self.passed()
+            next_param = self.request.GET.get(NEXT_ARG_NAME, None)
+            if next_param and not is_url_absolute(next_param):
+                return redirect(next_param)
+            return redirect_with_qs("passbook_core:overview")
         # Instantiate Next Factor and pass request
         self._current_factor_class = self.current_factor.factor_class(self)
-        self._current_factor_class.pending_user = self.executor.pending_user
+        self._current_factor_class.pending_user = self.pending_user
         self._current_factor_class.request = request
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass get request to current factor"""
         LOGGER.debug(
-            "Passing GET",
-            view_class=class_to_path(self._current_factor_class.__class__),
+            "HTTP_EX: forwarding GET", factor=self._current_factor_class.__class__,
         )
         return self._current_factor_class.get(request, *args, **kwargs)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current factor"""
         LOGGER.debug(
-            "Passing POST",
-            view_class=class_to_path(self._current_factor_class.__class__),
+            "HTTP_EX: forwarding POST", factor=self._current_factor_class.__class__,
         )
         return self._current_factor_class.post(request, *args, **kwargs)
 
     def user_ok(self) -> HttpResponse:
         """Redirect to next Factor"""
-        LOGGER.debug(
-            "Factor passed",
-            factor_class=class_to_path(self._current_factor_class.__class__),
-        )
-        self.executor.factor_passed()
-        next_factor = self.executor.get_next_factor()
-        if next_factor:
-            LOGGER.debug("Rendering Factor", next_factor=next_factor)
-            return redirect_with_qs("passbook_core:flows-execute", self.request.GET)
-        # User passed all factors
-        LOGGER.debug(
-            "User passed all factors, logging in", user=self.executor.pending_user
-        )
-        return self._user_passed()
+        self.factor_passed()
+        LOGGER.debug("HTTP_EX: Redirecting to next factor")
+        return redirect_with_qs("passbook_core:flows-execute", self.request.GET)
 
     def user_invalid(self) -> HttpResponse:
         """Show error message, user cannot login.
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
-        LOGGER.debug("User invalid")
-        self.cleanup()
+        LOGGER.debug("HTTP_EX: User invalid")
+        self.factor_failed()
         return redirect_with_qs("passbook_core:auth-denied", self.request.GET)
 
-    def _user_passed(self) -> HttpResponse:
-        """User Successfully passed all factors"""
-        self.executor.passed()
-        # backend = self.request.session[AuthenticationView.SESSION_USER_BACKEND]
+    def passed(self):
+        super().passed()
         login(
             self.request,
-            self.executor.pending_user,
-            backend=self.executor._state.user_authentication_backend,
+            self.pending_user,
+            backend=self._state.user_authentication_backend,
         )
-        LOGGER.debug("Logged in", user=self.executor.pending_user)
-        # Cleanup
-        self.cleanup()
-        next_param = self.request.GET.get(NEXT_ARG_NAME, None)
-        if next_param and not is_url_absolute(next_param):
-            return redirect(next_param)
-        return redirect_with_qs("passbook_core:overview")
-
-    def cleanup(self):
-        """Remove temporary data from session"""
-        self.executor.state_cleanup()
-        LOGGER.debug("Cleaned up sessions")
 
 
 class FactorPermissionDeniedView(PermissionDeniedView):

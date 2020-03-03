@@ -111,8 +111,6 @@ class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
     slug = models.SlugField(
         unique=True, help_text=_("Internal factor name, used in URLs.")
     )
-    order = models.IntegerField()
-    enabled = models.BooleanField(default=True)
 
     objects = InheritanceManager()
     type = ""

@@ -29,3 +29,11 @@ class Flow(UUIDModel):
             ("recovery", _("Recovery")),
         ),
     )
+
+    def __str__(self):
+        return f"Flow {self.slug}"
+
+    class Meta:
+
+        verbose_name = _("Flow")
+        verbose_name_plural = _("Flows")

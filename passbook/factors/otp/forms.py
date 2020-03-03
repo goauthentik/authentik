@@ -77,7 +77,6 @@ class OTPFactorForm(forms.ModelForm):
         fields = GENERAL_FIELDS + ["enforced"]
         widgets = {
             "name": forms.TextInput(),
-            "order": forms.NumberInput(),
             "policies": FilteredSelectMultiple(_("policies"), False),
         }
         help_texts = {

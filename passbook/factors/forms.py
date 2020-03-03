@@ -1,3 +1,3 @@
 """factor forms"""
 
-GENERAL_FIELDS = ["name", "slug", "order", "policies", "enabled"]
+GENERAL_FIELDS = ["name", "slug", "policies"]

@@ -76,7 +76,7 @@ class FlowExecutor:
                 # There might not be any more factors left, return none in that case
                 popped_factor = self._pop_next_factor()
                 if not popped_factor:
-                    LOGGER.debug("No more factors left")
+                    LOGGER.debug("B_EX: factors exhausted")
                     return None
                 self._current_factor_binding = popped_factor
             # Make sure we have the correct subclass of the factor
@@ -86,7 +86,7 @@ class FlowExecutor:
         return self._current_factor
 
     def factor_passed(self):
-        LOGGER.debug("factor_passed", factor=self._current_factor_binding)
+        LOGGER.debug("B_EX: factor_passed", factor=self._current_factor_binding)
         self._state.factor_binding_last_order = self._current_factor_binding.order
         self._pop_next_factor()
         self.state_persist()
@@ -95,4 +95,5 @@ class FlowExecutor:
         self.state_cleanup()
 
     def passed(self):
-        pass
+        LOGGER.debug("B_EX: Logged in", user=self.pending_user)
+        self.state_cleanup()

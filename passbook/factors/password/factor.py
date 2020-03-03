@@ -65,16 +65,14 @@ class PasswordFactor(FormView, Factor):
             "password": form.cleaned_data.get("password"),
         }
         for uid_field in uid_fields:
-            kwargs[uid_field] = getattr(
-                self.authenticator.executor.pending_user, uid_field
-            )
+            kwargs[uid_field] = getattr(self.authenticator.pending_user, uid_field)
         try:
             user = authenticate(
                 self.request, self.authenticator.current_factor.backends, **kwargs
             )
             if user:
                 # User instance returned from authenticate() has .backend property set
-                self.authenticator.executor.pending_user.backend = user.backend
+                self.authenticator.pending_user.backend = user.backend
                 return self.authenticator.user_ok()
             # No user was found -> invalid credentials
             LOGGER.debug("Invalid credentials")

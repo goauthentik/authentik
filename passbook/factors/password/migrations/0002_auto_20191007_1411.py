@@ -10,7 +10,6 @@ def create_initial_factor(apps, schema_editor):
         PasswordFactor.objects.create(
             name="password",
             slug="password",
-            order=0,
             backends=["django.contrib.auth.backends.ModelBackend"],
         )
 

@@ -6,6 +6,7 @@ from passbook.admin.views import (
     audit,
     debug,
     factors,
+    flows,
     groups,
     invitations,
     overview,
@@ -36,6 +37,15 @@ urlpatterns = [
         "applications/<uuid:pk>/delete/",
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
+    ),
+    # Flows
+    path("flows/", flows.FlowListView.as_view(), name="flows"),
+    path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
+    path(
+        "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
+    ),
+    path(
+        "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
     ),
     # Sources
     path("sources/", sources.SourceListView.as_view(), name="sources"),
