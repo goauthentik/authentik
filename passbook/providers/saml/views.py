@@ -274,9 +274,9 @@ class DescriptorDownloadView(AccessRequiredView):
                 kwargs={"application": provider.application.slug},
             )
         )
-        pubkey = strip_pem_header(provider.signing_cert.replace("\r", "")).replace(
-            "\n", ""
-        )
+        pubkey = strip_pem_header(
+            provider.singing_kp.certificate_data.replace("\r", "")
+        ).replace("\n", "")
         subject_format = provider.processor.subject_format
         ctx = {
             "entity_id": entity_id,

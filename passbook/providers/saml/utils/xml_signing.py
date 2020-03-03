@@ -31,9 +31,12 @@ def sign_with_signxml(data: str, provider: "SAMLProvider", reference_uri=None) -
         digest_algorithm=provider.digest_algorithm,
     )
     signed = signer.sign(
-        root, key=key, cert=[provider.signing_cert], reference_uri=reference_uri
+        root,
+        key=key,
+        cert=[provider.singing_kp.certificate_data],
+        reference_uri=reference_uri,
     )
-    XMLVerifier().verify(signed, x509_cert=provider.signing_cert)
+    XMLVerifier().verify(signed, x509_cert=provider.singing_kp.certificate_data)
     return etree.tostring(signed).decode("utf-8")  # nosec
 
 
