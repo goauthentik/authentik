@@ -101,9 +101,9 @@ class MetadataView(View):
         """Replies with the XML Metadata SPSSODescriptor."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         issuer = get_issuer(request, source)
-        cert_stripped = strip_pem_header(source.signing_cert.replace("\r", "")).replace(
-            "\n", ""
-        )
+        cert_stripped = strip_pem_header(
+            source.signing_kp.certificate_data.replace("\r", "")
+        ).replace("\n", "")
         return render_xml(
             request,
             "saml/sp/xml/sp_sso_descriptor.xml",
