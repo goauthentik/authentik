@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -22,16 +19,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev
       - name: Lint with pylint
         run: pipenv run pylint passbook
   black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -39,16 +33,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev
       - name: Lint with black
         run: pipenv run black --check passbook
   prospector:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -56,16 +47,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev && pipenv install --dev prospector --skip-lock
+        run: pip install -U pip pipenv && pipenv install --dev && pipenv install --dev prospector --skip-lock
       - name: Lint with prospector
         run: pipenv run prospector
   bandit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -73,7 +61,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev
       - name: Lint with bandit
         run: pipenv run bandit -r passbook
   # Actual CI tests
@@ -98,9 +86,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -108,7 +93,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev
       - name: Run migrations
         run: pipenv run ./manage.py migrate
   coverage:
@@ -132,9 +117,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.8'
       - uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs/
@@ -142,7 +124,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pipenv-
       - name: Install dependencies
-        run: pip install -U pipenv && pipenv install --dev
+        run: pip install -U pip pipenv && pipenv install --dev
       - name: Run coverage
         run: pipenv run ./scripts/coverage.sh
   # Build
