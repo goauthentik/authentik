@@ -12,12 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Lint with pylint
@@ -26,12 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Lint with black
@@ -40,12 +34,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev && pipenv install --dev prospector --skip-lock
       - name: Lint with prospector
@@ -54,12 +45,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Lint with bandit
@@ -86,12 +74,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Run migrations
@@ -117,12 +102,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: actions/cache@v1
+      - uses: actions/setup-python@v1
         with:
-          path: ~/.local/share/virtualenvs/
-          key: ${{ runner.os }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pipenv-
+          python-version: '3.8'
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Run coverage
