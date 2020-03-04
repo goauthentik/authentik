@@ -9,7 +9,6 @@ from passbook.providers.saml.models import (
     SAMLProvider,
     get_provider_choices,
 )
-from passbook.providers.saml.utils.cert import CertificateBuilder
 
 
 class SAMLProviderForm(forms.ModelForm):
@@ -18,13 +17,6 @@ class SAMLProviderForm(forms.ModelForm):
     processor_path = forms.ChoiceField(
         choices=get_provider_choices(), label="Processor"
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        builder = CertificateBuilder()
-        builder.build()
-        self.fields["signing_cert"].initial = builder.certificate
-        self.fields["signing_key"].initial = builder.private_key
 
     class Meta:
 
@@ -41,9 +33,7 @@ class SAMLProviderForm(forms.ModelForm):
             "property_mappings",
             "digest_algorithm",
             "signature_algorithm",
-            "signing",
-            "signing_cert",
-            "signing_key",
+            "singing_kp",
         ]
         widgets = {
             "name": forms.TextInput(),

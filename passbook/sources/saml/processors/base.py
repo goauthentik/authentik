@@ -46,7 +46,7 @@ class Processor:
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
         verifier = XMLVerifier()
-        verifier.verify(self._root_xml, x509_cert=self._source.signing_cert)
+        verifier.verify(self._root_xml, x509_cert=self._source.signing_kp.certificate)
 
     def _get_email(self) -> Optional[str]:
         """

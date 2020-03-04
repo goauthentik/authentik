@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source
 from passbook.core.types import UILoginButton
+from passbook.crypto.models import CertificateKeyPair
 
 
 class SAMLSource(Source):
@@ -22,7 +23,16 @@ class SAMLSource(Source):
         default=None, blank=True, null=True, verbose_name=_("IDP Logout URL")
     )
     auto_logout = models.BooleanField(default=False)
-    signing_cert = models.TextField()
+
+    signing_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        help_text=_(
+            "Certificate Key Pair of the IdP which Assertions are validated against."
+        ),
+        on_delete=models.SET_NULL,
+    )
 
     form = "passbook.sources.saml.forms.SAMLSourceForm"
 

@@ -4,6 +4,7 @@ from django.urls import path
 from passbook.admin.views import (
     applications,
     audit,
+    certificate_key_pair,
     debug,
     factors,
     groups,
@@ -147,6 +148,27 @@ urlpatterns = [
     ),
     path(
         "group/<uuid:pk>/delete/", groups.GroupDeleteView.as_view(), name="group-delete"
+    ),
+    # Certificate-Key Pairs
+    path(
+        "crypto/certificates/",
+        certificate_key_pair.CertificateKeyPairListView.as_view(),
+        name="certificate_key_pair",
+    ),
+    path(
+        "crypto/certificates/create/",
+        certificate_key_pair.CertificateKeyPairCreateView.as_view(),
+        name="certificatekeypair-create",
+    ),
+    path(
+        "crypto/certificates/<uuid:pk>/update/",
+        certificate_key_pair.CertificateKeyPairUpdateView.as_view(),
+        name="certificatekeypair-update",
+    ),
+    path(
+        "crypto/certificates/<uuid:pk>/delete/",
+        certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
+        name="certificatekeypair-delete",
     ),
     # Audit Log
     path("audit/", audit.EventListView.as_view(), name="audit-log"),

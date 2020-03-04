@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
+from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.template import render_to_string
 from passbook.providers.saml.processors.base import Processor
@@ -74,9 +75,13 @@ class SAMLProvider(Provider):
         default="rsa-sha256",
     )
 
-    signing = models.BooleanField(default=True)
-    signing_cert = models.TextField(verbose_name=_("Singing Certificate"))
-    signing_key = models.TextField()
+    singing_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        help_text=_("Singing is enabled upon selection of a Key Pair."),
+        on_delete=models.SET_NULL,
+    )
 
     form = "passbook.providers.saml.forms.SAMLProviderForm"
     _processor = None

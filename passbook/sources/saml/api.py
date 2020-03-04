@@ -17,7 +17,7 @@ class SAMLSourceSerializer(ModelSerializer):
             "idp_url",
             "idp_logout_url",
             "auto_logout",
-            "signing_cert",
+            "signing_kp",
         ]
 
 

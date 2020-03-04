@@ -24,9 +24,7 @@ class SAMLProviderSerializer(ModelSerializer):
             "property_mappings",
             "digest_algorithm",
             "signature_algorithm",
-            "signing",
-            "signing_cert",
-            "signing_key",
+            "singing_kp",
         ]
 
 
