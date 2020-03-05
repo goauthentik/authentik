@@ -33,7 +33,7 @@ class SAMLProviderForm(forms.ModelForm):
             "property_mappings",
             "digest_algorithm",
             "signature_algorithm",
-            "singing_kp",
+            "signing_kp",
         ]
         widgets = {
             "name": forms.TextInput(),

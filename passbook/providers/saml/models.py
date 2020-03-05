@@ -75,7 +75,7 @@ class SAMLProvider(Provider):
         default="rsa-sha256",
     )
 
-    singing_kp = models.ForeignKey(
+    signing_kp = models.ForeignKey(
         CertificateKeyPair,
         default=None,
         null=True,

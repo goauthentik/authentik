@@ -275,7 +275,7 @@ class DescriptorDownloadView(AccessRequiredView):
             )
         )
         pubkey = strip_pem_header(
-            provider.singing_kp.certificate_data.replace("\r", "")
+            provider.signing_kp.certificate_data.replace("\r", "")
         ).replace("\n", "")
         subject_format = provider.processor.subject_format
         ctx = {
