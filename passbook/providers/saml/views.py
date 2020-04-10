@@ -274,19 +274,19 @@ class DescriptorDownloadView(AccessRequiredView):
                 kwargs={"application": provider.application.slug},
             )
         )
-        pubkey = strip_pem_header(
-            provider.signing_kp.certificate_data.replace("\r", "")
-        ).replace("\n", "")
         subject_format = provider.processor.subject_format
         ctx = {
             "entity_id": entity_id,
-            "cert_public_key": pubkey,
             "slo_url": slo_url,
             # Currently, the same endpoint accepts POST and REDIRECT
             "sso_post_url": sso_post_url,
             "sso_redirect_url": sso_post_url,
             "subject_format": subject_format,
         }
+        if provider.signing_kp:
+            ctx["cert_public_key"] = strip_pem_header(
+                provider.signing_kp.certificate_data.replace("\r", "")
+            ).replace("\n", "")
         return render_to_string("saml/xml/metadata.xml", ctx)
 
     # pylint: disable=unused-argument
