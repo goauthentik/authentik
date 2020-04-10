@@ -1,8 +1,6 @@
 """Signing code goes here."""
 from typing import TYPE_CHECKING
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
 from lxml import etree  # nosec
 from signxml import XMLSigner, XMLVerifier
 from structlog import get_logger
@@ -17,11 +15,6 @@ LOGGER = get_logger()
 
 def sign_with_signxml(data: str, provider: "SAMLProvider", reference_uri=None) -> str:
     """Sign Data with signxml"""
-    key = serialization.load_pem_private_key(
-        str.encode("\n".join([x.strip() for x in provider.signing_key.split("\n")])),
-        password=None,
-        backend=default_backend(),
-    )
     # defused XML is not used here because it messes up XML namespaces
     # Data is trusted, so lxml is ok
     root = etree.fromstring(data)  # nosec
@@ -32,7 +25,7 @@ def sign_with_signxml(data: str, provider: "SAMLProvider", reference_uri=None) -
     )
     signed = signer.sign(
         root,
-        key=key,
+        key=provider.signing_kp.private_key,
         cert=[provider.signing_kp.certificate_data],
         reference_uri=reference_uri,
     )

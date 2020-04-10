@@ -1,8 +1,8 @@
 """passbook management command to bootstrap"""
 from argparse import REMAINDER
 from subprocess import Popen  # nosec
-from sys import stderr, stdin, stdout
 from sys import exit as _exit
+from sys import stderr, stdin, stdout
 from time import sleep
 from typing import List
 

@@ -82,7 +82,7 @@ def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=""):
 
     raw_response = render_to_string("saml/xml/response.xml", params)
 
-    if not saml_provider.signing:
+    if not saml_provider.signing_kp:
         return raw_response
 
     signature_xml = get_signature_xml()
