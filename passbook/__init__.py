@@ -1,2 +1,2 @@
 """passbook"""
-__version__ = "0.8.12-beta"
+__version__ = "0.8.13-beta"
