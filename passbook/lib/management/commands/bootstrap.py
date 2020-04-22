@@ -1,10 +1,7 @@
 """passbook management command to bootstrap"""
 from argparse import REMAINDER
-from subprocess import Popen  # nosec
 from sys import exit as _exit
-from sys import stderr, stdin, stdout
 from time import sleep
-from typing import List
 
 from django.core.management.base import BaseCommand
 from django.db import connection
@@ -53,13 +50,5 @@ class Command(BaseCommand):
         while should_check:
             should_check = not (self.check_database() and self.check_cache())
             sleep(1)
-        LOGGER.info("Dependencies are up, starting command...")
-        commands: List[str] = options.get("command", ["exit", "1"])
-        proc = Popen(args=commands, stdout=stdout, stderr=stderr, stdin=stdin)  # nosec
-        try:
-            proc.wait()
-            _exit(proc.returncode)
-        except KeyboardInterrupt:
-            LOGGER.info("Killing process")
-            proc.kill()
-            _exit(254)
+        LOGGER.info("Dependencies are up, exiting...")
+        _exit(0)

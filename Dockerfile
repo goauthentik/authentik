@@ -25,7 +25,10 @@ RUN apt-get update && \
 COPY ./passbook/ /app/passbook
 COPY ./manage.py /app/
 COPY ./docker/uwsgi.ini /app/
+COPY ./docker/bootstrap.sh /bootstrap.sh
 
 WORKDIR /app/
 
 USER passbook
+
+ENTRYPOINT [ "/bootstrap.sh" ]
