@@ -23,8 +23,6 @@ services:
   server:
     image: beryju/passbook:${SERVER_TAG:-latest}
     command:
-      - ./manage.py
-      - bootstrap
       - uwsgi
       - uwsgi.ini
     environment:
@@ -44,8 +42,6 @@ services:
   worker:
     image: beryju/passbook:${SERVER_TAG:-latest}
     command:
-      - ./manage.py
-      - bootstrap
       - celery
       - worker
       - --autoscale=10,3
