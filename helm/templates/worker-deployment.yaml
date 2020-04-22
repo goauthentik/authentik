@@ -29,10 +29,8 @@ spec:
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           command:
-            - ./manage.py
-          args:
-            - bootstrap
             - celery
+          args:
             - worker
             - --autoscale=10,3
             - -E

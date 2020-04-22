@@ -31,8 +31,6 @@ spec:
           command:
             - ./manage.py
           args:
-            - bootstrap
-            - ./manage.py
             - migrate
           volumeMounts:
             - mountPath: /etc/passbook
@@ -62,10 +60,8 @@ spec:
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           command:
-            - ./manage.py
-          args:
-            - bootstrap
             - uwsgi
+          args:
             - uwsgi.ini
           volumeMounts:
             - mountPath: /etc/passbook
