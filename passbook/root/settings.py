@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
+    "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
     "passbook.factors.otp.apps.PassbookFactorOTPConfig",
     "passbook.factors.captcha.apps.PassbookFactorCaptchaConfig",
     "passbook.factors.password.apps.PassbookFactorPasswordConfig",
