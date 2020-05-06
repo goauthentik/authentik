@@ -1,8 +1,10 @@
 """Basic SAML Processor"""
 from typing import TYPE_CHECKING, Dict, List, Union
 
+from cryptography.exceptions import InvalidSignature
 from defusedxml import ElementTree
 from django.http import HttpRequest
+from signxml import XMLVerifier
 from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
@@ -145,6 +147,15 @@ class Processor:
     def _decode_and_parse_request(self):
         """Parses various parameters from _request_xml into _request_params."""
         decoded_xml = decode_base64_and_inflate(self._saml_request)
+
+        if self._remote.require_signing and self._remote.signing_kp:
+            self._logger.debug("Verifying Request signature")
+            try:
+                XMLVerifier().verify(
+                    decoded_xml, x509_cert=self._remote.signing_kp.certificate_data
+                )
+            except InvalidSignature as exc:
+                raise CannotHandleAssertion("Failed to verify signature") from exc
 
         root = ElementTree.fromstring(decoded_xml)
 

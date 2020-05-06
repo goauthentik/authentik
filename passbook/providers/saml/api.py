@@ -25,6 +25,7 @@ class SAMLProviderSerializer(ModelSerializer):
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",
+            "require_signing",
         ]
 
 

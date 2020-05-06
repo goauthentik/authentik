@@ -25,7 +25,7 @@ class SAMLProvider(Provider):
 
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(default="")
-    issuer = models.TextField()
+    issuer = models.TextField(help_text=_("Also known as EntityID"))
 
     assertion_valid_not_before = models.TextField(
         default="minutes=-5",
@@ -81,6 +81,15 @@ class SAMLProvider(Provider):
         null=True,
         help_text=_("Singing is enabled upon selection of a Key Pair."),
         on_delete=models.SET_NULL,
+        verbose_name=_("Signing Keypair"),
+    )
+
+    require_signing = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Require Requests to be signed by an X509 Certificate. "
+            "Must match the Certificate selected in `Singing Keypair`."
+        ),
     )
 
     form = "passbook.providers.saml.forms.SAMLProviderForm"

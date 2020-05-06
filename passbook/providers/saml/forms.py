@@ -32,6 +32,7 @@ class SAMLProviderForm(forms.ModelForm):
             "session_valid_not_on_or_after",
             "property_mappings",
             "digest_algorithm",
+            "require_signing",
             "signature_algorithm",
             "signing_kp",
         ]
