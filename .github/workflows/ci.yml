@@ -57,10 +57,15 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
       - name: Install pyright
         run: npm install -g pyright
-      - name: Run pyright
-        run: pyright
+      - name: Install dependencies
+        run: sudo pip install -U wheel pipenv && pipenv install --dev
+      - name: Lint with pyright
+        run: pipenv run pyright
   # Actual CI tests
   migrations:
     needs:
