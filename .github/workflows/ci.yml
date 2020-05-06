@@ -57,6 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+      - name: Install pyright
+        name: npm install -g pyright
       - name: Run pyright
         run: pyright
   # Actual CI tests
