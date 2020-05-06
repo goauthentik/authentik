@@ -79,7 +79,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "guardian",
     "django_prometheus",
-    "passbook.core.apps.PassbookCoreConfig",
     "passbook.static.apps.PassbookStaticConfig",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
@@ -384,3 +383,5 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+
+INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
