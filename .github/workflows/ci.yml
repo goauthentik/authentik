@@ -52,6 +52,13 @@ jobs:
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Lint with bandit
         run: pipenv run bandit -r passbook
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - name: Run pyright
+        run: pyright
   # Actual CI tests
   migrations:
     needs:

@@ -1,8 +1,11 @@
 """passbook OAuth2 Views"""
+from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import Form
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
@@ -36,7 +39,7 @@ class OAuthPermissionDenied(PermissionDeniedView):
 class PassbookAuthorizationView(AccessMixin, AuthorizationView):
     """Custom OAuth2 Authorization View which checks policies, etc"""
 
-    _application = None
+    _application: Optional[Application] = None
 
     def _inject_response_type(self):
         """Inject response_type into querystring if not set"""
@@ -47,7 +50,7 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
             reverse("passbook_providers_oauth:oauth2-ok-authorize") + "?" + querystring
         )
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Update OAuth2Provider's skip_authorization state"""
         # Get client_id to get provider, so we can update skip_authorization field
         client_id = request.GET.get("client_id")
@@ -69,12 +72,12 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         # Some clients don't pass response_type, so we default to code
         if "response_type" not in request.GET:
             return self._inject_response_type()
-        actual_response = super().dispatch(request, *args, **kwargs)
+        actual_response = AuthorizationView.dispatch(self, request, *args, **kwargs)
         if actual_response.status_code == 400:
-            LOGGER.debug(request.GET.get("redirect_uri"))
+            LOGGER.debug("Bad request", redirect_uri=request.GET.get("redirect_uri"))
         return actual_response
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form):
         # User has clicked on "Authorize"
         Event.new(
             EventAction.AUTHORIZE_APPLICATION, authorized_application=self._application,
@@ -84,4 +87,4 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
             user=self.request.user,
             application=self._application,
         )
-        return super().form_valid(form)
+        return AuthorizationView.form_valid(self, form)

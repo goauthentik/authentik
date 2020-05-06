@@ -100,7 +100,7 @@ class SAMLProvider(Provider):
         self._meta.get_field("processor_path").choices = get_provider_choices()
 
     @property
-    def processor(self) -> Processor:
+    def processor(self) -> Optional[Processor]:
         """Return selected processor as instance"""
         if not self._processor:
             try:
@@ -163,4 +163,6 @@ class SAMLPropertyMapping(PropertyMapping):
 
 def get_provider_choices():
     """Return tuple of class_path, class name of all providers."""
-    return [(class_to_path(x), x.__name__) for x in Processor.__subclasses__()]
+    return [
+        (class_to_path(x), x.__name__) for x in Processor.__dict__["__subclasses__"]()
+    ]

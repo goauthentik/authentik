@@ -66,7 +66,9 @@ class EventAction(Enum):
     @staticmethod
     def as_choices():
         """Generate choices of actions used for database"""
-        return tuple((x, y.value) for x, y in EventAction.__members__.items())
+        return tuple(
+            (x, y.value) for x, y in getattr(EventAction, "__members__").items()
+        )
 
 
 class Event(UUIDModel):

@@ -1,6 +1,6 @@
 """passbook expression policy evaluator"""
 import re
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from django.core.exceptions import ValidationError
 from jinja2 import Undefined
@@ -72,7 +72,7 @@ class Evaluator:
         except TemplateSyntaxError as exc:
             return PolicyResult(False, str(exc))
         try:
-            result = expression.render(
+            result: Optional[Any] = expression.render(
                 request=request, **self._get_expression_context(request)
             )
             if isinstance(result, Undefined):
