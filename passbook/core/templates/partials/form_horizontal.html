@@ -35,6 +35,9 @@
                 {{ field|css_class:"pf-c-check__input" }}
                 <label class="pf-c-check__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ field.label }}</label>
             </div>
+            {% if field.help_text %}
+            <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+            {% endif %}
         </div>
     {% else %}
         <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">

@@ -29,6 +29,11 @@
         <label class="checkbox-label">
             {{ field }} {{ field.label }}
         </label>
+        {% if field.help_text %}
+        <span>
+            {{ field.help_text }}
+        </span>
+        {% endif %}
     {% else %}
         <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
             <span class="pf-c-form__label-text">{{ field.label }}</span>
