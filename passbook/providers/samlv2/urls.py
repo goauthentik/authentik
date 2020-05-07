@@ -1,31 +1,34 @@
 """passbook samlv2 URLs"""
 from django.urls import path
 
-from passbook.providers.samlv2.views import idp_initiated, slo, sso
+from passbook.providers.samlv2.views import authorize, idp_initiated, slo, sso
 
 urlpatterns = [
     path(
-        "<slug:application>/sso/redirect/",
+        "<slug:app_slug>/authorize/",
+        authorize.AuthorizeView.as_view(),
+        name="authorize",
+    ),
+    path(
+        "<slug:app_slug>/sso/redirect/",
         sso.SAMLRedirectBindingView.as_view(),
         name="sso-redirect",
     ),
     path(
-        "<slug:application>/sso/post/",
-        sso.SAMLPostBindingView.as_view(),
-        name="sso-post",
+        "<slug:app_slug>/sso/post/", sso.SAMLPostBindingView.as_view(), name="sso-post",
     ),
     path(
-        "<slug:application>/slo/redirect/",
+        "<slug:app_slug>/slo/redirect/",
         slo.SAMLRedirectBindingView.as_view(),
         name="slo-redirect",
     ),
     path(
-        "<slug:application>/slo/redirect/",
+        "<slug:app_slug>/slo/redirect/",
         slo.SAMLPostBindingView.as_view(),
         name="slo-post",
     ),
     path(
-        "<slug:application>/initiate/",
+        "<slug:app_slug>/initiate/",
         idp_initiated.IDPInitiatedView.as_view(),
         name="initiate",
     ),
