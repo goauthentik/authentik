@@ -30,7 +30,11 @@ for _passbook_app in get_apps():
             ),
         )
         urlpatterns.append(_path)
-        LOGGER.debug("Mounted URLs", app_name=_passbook_app.name)
+        LOGGER.debug(
+            "Mounted URLs",
+            app_name=_passbook_app.name,
+            mountpoint=_passbook_app.mountpoint,
+        )
 
 urlpatterns += [
     # Administration
