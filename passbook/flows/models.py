@@ -59,6 +59,13 @@ class FlowFactorBinding(PolicyBindingModel, UUIDModel):
     flow = models.ForeignKey("Flow", on_delete=models.CASCADE)
     factor = models.ForeignKey(Factor, on_delete=models.CASCADE)
 
+    re_evaluate_policies = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When this option is enabled, the planner will re-evaluate policies bound to this."
+        ),
+    )
+
     order = models.IntegerField()
 
     def __str__(self) -> str:

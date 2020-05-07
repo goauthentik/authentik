@@ -6,9 +6,9 @@ from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.core.models import Nonce
-from passbook.factors.base import AuthenticationFactor
 from passbook.factors.email.tasks import send_mails
 from passbook.factors.email.utils import TemplateEmailMessage
+from passbook.flows.factor_base import AuthenticationFactor
 from passbook.lib.config import CONFIG
 
 LOGGER = get_logger()

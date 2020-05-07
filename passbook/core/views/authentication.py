@@ -16,7 +16,7 @@ from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
 from passbook.factors.password.exceptions import PasswordPolicyInvalid
-from passbook.factors.view import AuthenticationView, _redirect_with_qs
+from passbook.flows.view import AuthenticationView, _redirect_with_qs
 from passbook.lib.config import CONFIG
 
 LOGGER = get_logger()
@@ -72,7 +72,7 @@ class LoginView(UserPassesTestMixin, FormView):
             # No user found
             return self.invalid_login(self.request)
         self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
-        return _redirect_with_qs("passbook_core:auth-process", self.request.GET)
+        return _redirect_with_qs("passbook_flows:auth-process", self.request.GET)
 
     def invalid_login(
         self, request: HttpRequest, disabled_user: User = None

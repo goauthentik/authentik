@@ -1,11 +1,7 @@
 """passbook URL Configuration"""
 from django.urls import path
-from structlog import get_logger
 
 from passbook.core.views import authentication, overview, user
-from passbook.factors import view
-
-LOGGER = get_logger()
 
 urlpatterns = [
     # Authentication views
@@ -18,20 +14,9 @@ urlpatterns = [
         name="auth-sign-up-confirm",
     ),
     path(
-        "auth/process/denied/",
-        view.FactorPermissionDeniedView.as_view(),
-        name="auth-denied",
-    ),
-    path(
         "auth/password/reset/<uuid:nonce>/",
         authentication.PasswordResetView.as_view(),
         name="auth-password-reset",
-    ),
-    path("auth/process/", view.AuthenticationView.as_view(), name="auth-process"),
-    path(
-        "auth/process/<slug:factor>/",
-        view.AuthenticationView.as_view(),
-        name="auth-process",
     ),
     # User views
     path("_/user/", user.UserSettingsView.as_view(), name="user-settings"),

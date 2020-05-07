@@ -178,7 +178,7 @@ class AuthenticationView(UserPassesTestMixin, View):
             ] = self.pending_factors
             self.request.session[AuthenticationView.SESSION_FACTOR] = next_factor
             LOGGER.debug("Rendering Factor", next_factor=next_factor)
-            return _redirect_with_qs("passbook_core:auth-process", self.request.GET)
+            return _redirect_with_qs("passbook_flows:auth-process", self.request.GET)
         # User passed all factors
         LOGGER.debug("User passed all factors, logging in", user=self.pending_user)
         return self._user_passed()
@@ -188,7 +188,7 @@ class AuthenticationView(UserPassesTestMixin, View):
         This should only be shown if user authenticated successfully, but is disabled/locked/etc"""
         LOGGER.debug("User invalid")
         self.cleanup()
-        return _redirect_with_qs("passbook_core:auth-denied", self.request.GET)
+        return _redirect_with_qs("passbook_flows:auth-denied", self.request.GET)
 
     def _user_passed(self) -> HttpResponse:
         """User Successfully passed all factors"""

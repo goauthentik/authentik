@@ -2,8 +2,8 @@
 
 from django.views.generic import FormView
 
-from passbook.factors.base import AuthenticationFactor
 from passbook.factors.captcha.forms import CaptchaForm
+from passbook.flows.factor_base import AuthenticationFactor
 
 
 class CaptchaFactor(FormView, AuthenticationFactor):

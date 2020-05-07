@@ -5,7 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.factors.captcha.models import CaptchaFactor
-from passbook.factors.forms import GENERAL_FIELDS
+from passbook.flows.forms import GENERAL_FIELDS
 
 
 class CaptchaForm(forms.Form):

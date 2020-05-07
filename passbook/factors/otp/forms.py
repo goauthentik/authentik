@@ -7,8 +7,8 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 
-from passbook.factors.forms import GENERAL_FIELDS
 from passbook.factors.otp.models import OTPFactor
+from passbook.flows.forms import GENERAL_FIELDS
 
 OTP_CODE_VALIDATOR = RegexValidator(
     r"^[0-9a-z]{6,8}$", _("Only alpha-numeric characters are allowed.")

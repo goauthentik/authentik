@@ -4,7 +4,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
 from passbook.factors.dummy.models import DummyFactor
-from passbook.factors.forms import GENERAL_FIELDS
+from passbook.flows.forms import GENERAL_FIELDS
 
 
 class DummyFactorForm(forms.ModelForm):

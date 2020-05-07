@@ -5,9 +5,9 @@ from django.views.generic import FormView
 from django_otp import match_token, user_has_device
 from structlog import get_logger
 
-from passbook.factors.base import AuthenticationFactor
 from passbook.factors.otp.forms import OTPVerifyForm
 from passbook.factors.otp.views import OTP_SETTING_UP_KEY, EnableView
+from passbook.flows.factor_base import AuthenticationFactor
 
 LOGGER = get_logger()
 

@@ -4,8 +4,8 @@ from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
-from passbook.factors.forms import GENERAL_FIELDS
 from passbook.factors.password.models import PasswordFactor
+from passbook.flows.forms import GENERAL_FIELDS
 from passbook.lib.utils.reflection import path_to_class
 
 

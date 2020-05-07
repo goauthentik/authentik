@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from passbook.core.models import User
-from passbook.factors.view import AuthenticationView
+from passbook.flows.view import AuthenticationView
 from passbook.lib.config import CONFIG
 
 

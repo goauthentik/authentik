@@ -1,7 +1,7 @@
 """passbook multi-factor authentication engine"""
 from django.http import HttpRequest
 
-from passbook.factors.base import AuthenticationFactor
+from passbook.flows.factor_base import AuthenticationFactor
 
 
 class DummyFactor(AuthenticationFactor):
