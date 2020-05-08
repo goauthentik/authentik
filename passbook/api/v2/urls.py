@@ -22,6 +22,7 @@ from passbook.factors.dummy.api import DummyFactorViewSet
 from passbook.factors.email.api import EmailFactorViewSet
 from passbook.factors.otp.api import OTPFactorViewSet
 from passbook.factors.password.api import PasswordFactorViewSet
+from passbook.flows.api import FlowFactorBindingViewSet, FlowViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
@@ -74,12 +75,12 @@ router.register("factors/dummy", DummyFactorViewSet)
 router.register("factors/email", EmailFactorViewSet)
 router.register("factors/otp", OTPFactorViewSet)
 router.register("factors/password", PasswordFactorViewSet)
+router.register("flows", FlowViewSet)
+router.register("flows/bindings", FlowFactorBindingViewSet)
 
 info = openapi.Info(
     title="passbook API",
     default_version="v2",
-    # description="Test description",
-    # terms_of_service="https://www.google.com/policies/terms/",
     contact=openapi.Contact(email="hello@beryju.org"),
     license=openapi.License(name="MIT License"),
 )

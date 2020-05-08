@@ -80,7 +80,11 @@ class FlowExecutorView(View):
         # We don't save the Plan after getting the next factor
         # as it hasn't been successfully passed yet
         self.current_factor = self.plan.next()
-        LOGGER.debug("Current factor", current_factor=self.current_factor, flow_slug=self.flow.slug)
+        LOGGER.debug(
+            "Current factor",
+            current_factor=self.current_factor,
+            flow_slug=self.flow.slug,
+        )
         factor_cls = path_to_class(self.current_factor.type)
         self.current_factor_view = factor_cls(self)
         self.current_factor_view.request = request
