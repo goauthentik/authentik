@@ -49,7 +49,7 @@ class FlowExecutorView(View):
                 f"Current domain of '{current_domain}' doesn't "
                 f"match configured domain of '{config_domain}'."
             )
-            LOGGER.warning(message)
+            LOGGER.warning(message, flow_slug=self.flow.slug)
             return bad_request_message(self.request, message)
         return None
 
@@ -80,7 +80,7 @@ class FlowExecutorView(View):
         # We don't save the Plan after getting the next factor
         # as it hasn't been successfully passed yet
         self.current_factor = self.plan.next()
-        LOGGER.debug("Current factor", current_factor=self.current_factor)
+        LOGGER.debug("Current factor", current_factor=self.current_factor, flow_slug=self.flow.slug)
         factor_cls = path_to_class(self.current_factor.type)
         self.current_factor_view = factor_cls(self)
         self.current_factor_view.request = request
@@ -89,7 +89,9 @@ class FlowExecutorView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass get request to current factor"""
         LOGGER.debug(
-            "Passing GET", view_class=class_to_path(self.current_factor_view.__class__),
+            "Passing GET",
+            view_class=class_to_path(self.current_factor_view.__class__),
+            flow_slug=self.flow.slug,
         )
         return self.current_factor_view.get(request, *args, **kwargs)
 
@@ -98,6 +100,7 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "Passing POST",
             view_class=class_to_path(self.current_factor_view.__class__),
+            flow_slug=self.flow.slug,
         )
         return self.current_factor_view.post(request, *args, **kwargs)
 
@@ -113,7 +116,11 @@ class FlowExecutorView(View):
         login(
             self.request, self.plan.context[PLAN_CONTEXT_PENDING_USER], backend=backend
         )
-        LOGGER.debug("Logged in", user=self.plan.context[PLAN_CONTEXT_PENDING_USER])
+        LOGGER.debug(
+            "Logged in",
+            user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
+            flow_slug=self.flow.slug,
+        )
         self.cancel()
         next_param = self.request.GET.get(NEXT_ARG_NAME, None)
         if next_param and not is_url_absolute(next_param):
@@ -124,26 +131,32 @@ class FlowExecutorView(View):
         """Callback called by factors upon successful completion.
         Persists updated plan and context to session."""
         LOGGER.debug(
-            "Factor ok", factor_class=class_to_path(self.current_factor_view.__class__),
+            "Factor ok",
+            factor_class=class_to_path(self.current_factor_view.__class__),
+            flow_slug=self.flow.slug,
         )
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.factors:
             LOGGER.debug(
-                "Continuing with next factor", reamining=len(self.plan.factors)
+                "Continuing with next factor",
+                reamining=len(self.plan.factors),
+                flow_slug=self.flow.slug,
             )
             return redirect_with_qs(
                 "passbook_flows:flow-executor", self.request.GET, **self.kwargs
             )
         # User passed all factors
         LOGGER.debug(
-            "User passed all factors", user=self.plan.context[PLAN_CONTEXT_PENDING_USER]
+            "User passed all factors",
+            user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
+            flow_slug=self.flow.slug,
         )
         return self._flow_done()
 
     def factor_invalid(self) -> HttpResponse:
         """Callback used factor when data is correct but a policy denies access
         or the user account is disabled."""
-        LOGGER.debug("User invalid")
+        LOGGER.debug("User invalid", flow_slug=self.flow.slug)
         self.cancel()
         return redirect_with_qs("passbook_flows:denied", self.request.GET)
 
