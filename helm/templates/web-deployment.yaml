@@ -28,9 +28,8 @@ spec:
         - name: passbook-database-migrations
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          command:
-            - ./manage.py
           args:
+            - ./manage.py
             - migrate
           volumeMounts:
             - mountPath: /etc/passbook
@@ -59,9 +58,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          command:
-            - uwsgi
           args:
+            - uwsgi
             - uwsgi.ini
           volumeMounts:
             - mountPath: /etc/passbook

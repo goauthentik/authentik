@@ -28,9 +28,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "beryju/passbook:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          command:
-            - celery
           args:
+            - celery
             - worker
             - --autoscale=10,3
             - -E
