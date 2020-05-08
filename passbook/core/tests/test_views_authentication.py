@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import User
+from passbook.flows.models import Flow, FlowDesignation
 
 
 class TestAuthenticationViews(TestCase):
@@ -77,7 +78,11 @@ class TestAuthenticationViews(TestCase):
             reverse("passbook_core:auth-login"), data=self.login_data
         )
         self.assertEqual(login_response.status_code, 302)
-        self.assertEqual(login_response.url, reverse("passbook_flows:auth-process"))
+        flow = Flow.objects.get(designation=FlowDesignation.AUTHENTICATION)
+        expected = reverse(
+            "passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+        )
+        self.assertEqual(login_response.url, expected)
 
     def test_sign_up_view_post(self):
         """Test account.sign_up view POST (Anonymous)"""
