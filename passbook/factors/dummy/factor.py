@@ -9,4 +9,4 @@ class DummyFactor(AuthenticationFactor):
 
     def post(self, request: HttpRequest):
         """Just redirect to next factor"""
-        return self.authenticator.user_ok()
+        return self.executor.factor_ok()

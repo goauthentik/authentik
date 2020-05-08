@@ -8,6 +8,7 @@ from structlog import get_logger
 from passbook.factors.otp.forms import OTPVerifyForm
 from passbook.factors.otp.views import OTP_SETTING_UP_KEY, EnableView
 from passbook.flows.factor_base import AuthenticationFactor
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 
 LOGGER = get_logger()
 
@@ -25,31 +26,34 @@ class OTPFactor(FormView, AuthenticationFactor):
 
     def get(self, request, *args, **kwargs):
         """Check if User has OTP enabled and if OTP is enforced"""
-        if not user_has_device(self.pending_user):
+        pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        if not user_has_device(pending_user):
             LOGGER.debug("User doesn't have OTP Setup.")
-            if self.authenticator.current_factor.enforced:
+            if self.executor.current_factor.enforced:
                 # Redirect to setup view
                 LOGGER.debug("OTP is enforced, redirecting to setup")
-                request.user = self.pending_user
-                LOGGER.debug("Passing GET to EnableView")
+                request.user = pending_user
                 messages.info(request, _("OTP is enforced. Please setup OTP."))
                 return EnableView.as_view()(request)
             LOGGER.debug("OTP is not enforced, skipping form")
-            return self.authenticator.user_ok()
+            return self.executor.user_ok()
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         """Check if setup is in progress and redirect to EnableView"""
         if OTP_SETTING_UP_KEY in request.session:
             LOGGER.debug("Passing POST to EnableView")
-            request.user = self.pending_user
+            request.user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
             return EnableView.as_view()(request)
         return super().post(self, request, *args, **kwargs)
 
     def form_valid(self, form: OTPVerifyForm):
         """Verify OTP Token"""
-        device = match_token(self.pending_user, form.cleaned_data.get("code"))
+        device = match_token(
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
+            form.cleaned_data.get("code"),
+        )
         if device:
-            return self.authenticator.user_ok()
+            return self.executor.factor_ok()
         messages.error(self.request, _("Invalid OTP."))
         return self.form_invalid(form)

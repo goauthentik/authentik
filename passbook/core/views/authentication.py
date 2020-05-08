@@ -16,8 +16,11 @@ from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
 from passbook.factors.password.exceptions import PasswordPolicyInvalid
-from passbook.flows.views import AuthenticationView, _redirect_with_qs
+from passbook.flows.models import Flow, FlowDesignation
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.config import CONFIG
+from passbook.lib.utils.urls import redirect_with_qs
 
 LOGGER = get_logger()
 
@@ -71,8 +74,15 @@ class LoginView(UserPassesTestMixin, FormView):
         if not pre_user:
             # No user found
             return self.invalid_login(self.request)
-        self.request.session[AuthenticationView.SESSION_PENDING_USER] = pre_user.pk
-        return _redirect_with_qs("passbook_flows:auth-process", self.request.GET)
+        # We run the Flow planner here so we can pass the Pending user in the context
+        flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
+        planner = FlowPlanner(flow)
+        plan = planner.plan(self.request)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "passbook_flows:flow-executor", self.request.GET, flow_slug=flow.slug,
+        )
 
     def invalid_login(
         self, request: HttpRequest, disabled_user: User = None

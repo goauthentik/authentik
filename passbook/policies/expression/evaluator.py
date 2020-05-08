@@ -8,7 +8,7 @@ from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
-from passbook.flows.views import AuthenticationView
+from passbook.flows.planner import PLAN_CONTEXT_SSO
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
 
@@ -54,8 +54,9 @@ class Evaluator:
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
         if request.http_request:
+            # TODO: Get access to current plan
             kwargs["pb_is_sso_flow"] = request.http_request.session.get(
-                AuthenticationView.SESSION_IS_SSO_LOGIN, False
+                PLAN_CONTEXT_SSO, False
             )
             kwargs["pb_client_ip"] = (
                 get_client_ip(request.http_request) or "255.255.255.255"

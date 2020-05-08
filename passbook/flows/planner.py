@@ -1,7 +1,7 @@
 """Flows Planner"""
 from dataclasses import dataclass, field
 from time import time
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from django.http import HttpRequest
 from structlog import get_logger
@@ -12,6 +12,9 @@ from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
 
+PLAN_CONTEXT_PENDING_USER = "pending_user"
+PLAN_CONTEXT_SSO = "is_sso"
+
 
 @dataclass
 class FlowPlan:
@@ -19,6 +22,7 @@ class FlowPlan:
     of all Factors that should be run."""
 
     factors: List[Factor] = field(default_factory=list)
+    context: Dict[str, Any] = field(default_factory=dict)
 
     def next(self) -> Factor:
         """Return next pending factor from the bottom of the list"""

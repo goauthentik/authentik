@@ -13,11 +13,12 @@ from structlog import get_logger
 from passbook.core.models import User
 from passbook.factors.password.forms import PasswordForm
 from passbook.flows.factor_base import AuthenticationFactor
-from passbook.flows.views import AuthenticationView
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 
 LOGGER = get_logger()
+PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 
 
 def authenticate(request, backends, **credentials) -> Optional[User]:
@@ -56,7 +57,7 @@ class PasswordFactor(FormView, AuthenticationFactor):
     """Authentication factor which authenticates against django's AuthBackend"""
 
     form_class = PasswordForm
-    template_name = "login/factors/backend.html"
+    template_name = "factors/password/backend.html"
 
     def form_valid(self, form):
         """Authenticate against django's authentication backend"""
@@ -65,18 +66,20 @@ class PasswordFactor(FormView, AuthenticationFactor):
             "password": form.cleaned_data.get("password"),
         }
         for uid_field in uid_fields:
-            kwargs[uid_field] = getattr(self.authenticator.pending_user, uid_field)
+            kwargs[uid_field] = getattr(
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER], uid_field
+            )
         try:
             user = authenticate(
-                self.request, self.authenticator.current_factor.backends, **kwargs
+                self.request, self.executor.current_factor.backends, **kwargs
             )
             if user:
                 # User instance returned from authenticate() has .backend property set
-                self.authenticator.pending_user = user
-                self.request.session[
-                    AuthenticationView.SESSION_USER_BACKEND
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+                self.executor.plan.context[
+                    PLAN_CONTEXT_AUTHENTICATION_BACKEND
                 ] = user.backend
-                return self.authenticator.user_ok()
+                return self.executor.factor_ok()
             # No user was found -> invalid credentials
             LOGGER.debug("Invalid credentials")
             # Manually inject error into form
@@ -87,4 +90,4 @@ class PasswordFactor(FormView, AuthenticationFactor):
         except PermissionDenied:
             # User was found, but permission was denied (i.e. user is not active)
             LOGGER.debug("Denied access", **kwargs)
-            return self.authenticator.user_invalid()
+            return self.executor.factor_invalid()
