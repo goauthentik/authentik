@@ -15,12 +15,12 @@ from structlog import get_logger
 from passbook.core.forms.authentication import LoginForm, SignUpForm
 from passbook.core.models import Invitation, Nonce, Source, User
 from passbook.core.signals import invitation_used, user_signed_up
-from passbook.factors.password.exceptions import PasswordPolicyInvalid
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.urls import redirect_with_qs
+from passbook.stages.password.exceptions import PasswordPolicyInvalid
 
 LOGGER = get_logger()
 

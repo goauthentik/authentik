@@ -1,8 +1,8 @@
 """Flow API Views"""
-from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from passbook.flows.models import Flow, FlowFactorBinding
+from passbook.flows.models import Flow, FlowStageBinding, Stage
 
 
 class FlowSerializer(ModelSerializer):
@@ -11,7 +11,7 @@ class FlowSerializer(ModelSerializer):
     class Meta:
 
         model = Flow
-        fields = ["pk", "name", "slug", "designation", "factors", "policies"]
+        fields = ["pk", "name", "slug", "designation", "stages", "policies"]
 
 
 class FlowViewSet(ModelViewSet):
@@ -21,17 +21,42 @@ class FlowViewSet(ModelViewSet):
     serializer_class = FlowSerializer
 
 
-class FlowFactorBindingSerializer(ModelSerializer):
-    """FlowFactorBinding Serializer"""
+class FlowStageBindingSerializer(ModelSerializer):
+    """FlowStageBinding Serializer"""
 
     class Meta:
 
-        model = FlowFactorBinding
-        fields = ["pk", "flow", "factor", "re_evaluate_policies", "order", "policies"]
+        model = FlowStageBinding
+        fields = ["pk", "flow", "stage", "re_evaluate_policies", "order", "policies"]
 
 
-class FlowFactorBindingViewSet(ModelViewSet):
-    """FlowFactorBinding Viewset"""
+class FlowStageBindingViewSet(ModelViewSet):
+    """FlowStageBinding Viewset"""
 
-    queryset = FlowFactorBinding.objects.all()
-    serializer_class = FlowFactorBindingSerializer
+    queryset = FlowStageBinding.objects.all()
+    serializer_class = FlowStageBindingSerializer
+
+
+class StageSerializer(ModelSerializer):
+    """Stage Serializer"""
+
+    __type__ = SerializerMethodField(method_name="get_type")
+
+    def get_type(self, obj):
+        """Get object type so that we know which API Endpoint to use to get the full object"""
+        return obj._meta.object_name.lower().replace("stage", "")
+
+    class Meta:
+
+        model = Stage
+        fields = ["pk", "name", "__type__"]
+
+
+class StageViewSet(ReadOnlyModelViewSet):
+    """Stage Viewset"""
+
+    queryset = Stage.objects.all()
+    serializer_class = StageSerializer
+
+    def get_queryset(self):
+        return Stage.objects.select_subclasses()

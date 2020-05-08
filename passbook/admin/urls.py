@@ -6,7 +6,6 @@ from passbook.admin.views import (
     audit,
     certificate_key_pair,
     debug,
-    factors,
     flows,
     groups,
     invitations,
@@ -15,6 +14,7 @@ from passbook.admin.views import (
     property_mapping,
     providers,
     sources,
+    stages,
     users,
 )
 
@@ -85,18 +85,18 @@ urlpatterns = [
         providers.ProviderDeleteView.as_view(),
         name="provider-delete",
     ),
-    # Factors
-    path("factors/", factors.FactorListView.as_view(), name="factors"),
-    path("factors/create/", factors.FactorCreateView.as_view(), name="factor-create"),
+    # Stages
+    path("stages/", stages.StageListView.as_view(), name="stages"),
+    path("stages/create/", stages.StageCreateView.as_view(), name="stage-create"),
     path(
-        "factors/<uuid:pk>/update/",
-        factors.FactorUpdateView.as_view(),
-        name="factor-update",
+        "stages/<uuid:pk>/update/",
+        stages.StageUpdateView.as_view(),
+        name="stage-update",
     ),
     path(
-        "factors/<uuid:pk>/delete/",
-        factors.FactorDeleteView.as_view(),
-        name="factor-delete",
+        "stages/<uuid:pk>/delete/",
+        stages.StageDeleteView.as_view(),
+        name="stage-delete",
     ),
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),
@@ -107,7 +107,7 @@ urlpatterns = [
     path(
         "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
     ),
-    # Factors
+    # Property Mappings
     path(
         "property-mappings/",
         property_mapping.PropertyMappingListView.as_view(),

@@ -1,4 +1,4 @@
-"""passbook multi-factor authentication engine"""
+"""passbook multi-stage authentication engine"""
 from typing import Optional
 
 from django.contrib.auth import login
@@ -7,10 +7,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
 from structlog import get_logger
 
-from passbook.core.models import Factor
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import FlowNonApplicableError
-from passbook.flows.models import Flow
+from passbook.flows.models import Flow, Stage
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
@@ -24,13 +23,13 @@ SESSION_KEY_PLAN = "passbook_flows_plan"
 
 
 class FlowExecutorView(View):
-    """Stage 1 Flow executor, passing requests to Factor Views"""
+    """Stage 1 Flow executor, passing requests to Stage Views"""
 
     flow: Flow
 
     plan: FlowPlan
-    current_factor: Factor
-    current_factor_view: View
+    current_stage: Stage
+    current_stage_view: View
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
@@ -77,36 +76,34 @@ class FlowExecutorView(View):
         else:
             LOGGER.debug("Continuing existing plan", flow_slug=flow_slug)
             self.plan = self.request.session[SESSION_KEY_PLAN]
-        # We don't save the Plan after getting the next factor
+        # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
-        self.current_factor = self.plan.next()
+        self.current_stage = self.plan.next()
         LOGGER.debug(
-            "Current factor",
-            current_factor=self.current_factor,
-            flow_slug=self.flow.slug,
+            "Current stage", current_stage=self.current_stage, flow_slug=self.flow.slug,
         )
-        factor_cls = path_to_class(self.current_factor.type)
-        self.current_factor_view = factor_cls(self)
-        self.current_factor_view.request = request
+        stage_cls = path_to_class(self.current_stage.type)
+        self.current_stage_view = stage_cls(self)
+        self.current_stage_view.request = request
         return super().dispatch(request)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """pass get request to current factor"""
+        """pass get request to current stage"""
         LOGGER.debug(
             "Passing GET",
-            view_class=class_to_path(self.current_factor_view.__class__),
+            view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_factor_view.get(request, *args, **kwargs)
+        return self.current_stage_view.get(request, *args, **kwargs)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """pass post request to current factor"""
+        """pass post request to current stage"""
         LOGGER.debug(
             "Passing POST",
-            view_class=class_to_path(self.current_factor_view.__class__),
+            view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_factor_view.post(request, *args, **kwargs)
+        return self.current_stage_view.post(request, *args, **kwargs)
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -115,7 +112,7 @@ class FlowExecutorView(View):
         return plan
 
     def _flow_done(self) -> HttpResponse:
-        """User Successfully passed all factors"""
+        """User Successfully passed all stages"""
         backend = self.plan.context[PLAN_CONTEXT_PENDING_USER].backend
         login(
             self.request, self.plan.context[PLAN_CONTEXT_PENDING_USER], backend=backend
@@ -131,34 +128,34 @@ class FlowExecutorView(View):
             return redirect(next_param)
         return redirect_with_qs("passbook_core:overview")
 
-    def factor_ok(self) -> HttpResponse:
-        """Callback called by factors upon successful completion.
+    def stage_ok(self) -> HttpResponse:
+        """Callback called by stages upon successful completion.
         Persists updated plan and context to session."""
         LOGGER.debug(
-            "Factor ok",
-            factor_class=class_to_path(self.current_factor_view.__class__),
+            "Stage ok",
+            stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
         self.request.session[SESSION_KEY_PLAN] = self.plan
-        if self.plan.factors:
+        if self.plan.stages:
             LOGGER.debug(
-                "Continuing with next factor",
-                reamining=len(self.plan.factors),
+                "Continuing with next stage",
+                reamining=len(self.plan.stages),
                 flow_slug=self.flow.slug,
             )
             return redirect_with_qs(
                 "passbook_flows:flow-executor", self.request.GET, **self.kwargs
             )
-        # User passed all factors
+        # User passed all stages
         LOGGER.debug(
-            "User passed all factors",
+            "User passed all stages",
             user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
             flow_slug=self.flow.slug,
         )
         return self._flow_done()
 
-    def factor_invalid(self) -> HttpResponse:
-        """Callback used factor when data is correct but a policy denies access
+    def stage_invalid(self) -> HttpResponse:
+        """Callback used stage when data is correct but a policy denies access
         or the user account is disabled."""
         LOGGER.debug("User invalid", flow_slug=self.flow.slug)
         self.cancel()

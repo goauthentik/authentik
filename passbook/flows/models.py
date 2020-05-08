@@ -1,11 +1,12 @@
 """Flow models"""
 from enum import Enum
-from typing import Tuple
+from typing import Optional, Tuple
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from model_utils.managers import InheritanceManager
 
-from passbook.core.models import Factor
+from passbook.core.types import UIUserSettings
 from passbook.lib.models import UUIDModel
 from passbook.policies.models import PolicyBindingModel
 
@@ -17,6 +18,7 @@ class FlowDesignation(Enum):
     AUTHENTICATION = "authentication"
     ENROLLMENT = "enrollment"
     RECOVERY = "recovery"
+    PASSWORD_CHANGE = "password_change"  # nosec # noqa
 
     @staticmethod
     def as_choices() -> Tuple[Tuple[str, str]]:
@@ -26,8 +28,28 @@ class FlowDesignation(Enum):
         )
 
 
+class Stage(UUIDModel):
+    """Stage is an instance of a component used in a flow. This can verify the user,
+    enroll the user or offer a way of recovery"""
+
+    name = models.TextField()
+
+    objects = InheritanceManager()
+    type = ""
+    form = ""
+
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
+        """Entrypoint to integrate with User settings. Can either return None if no
+        user settings are available, or an instanace of UIUserSettings."""
+        return None
+
+    def __str__(self):
+        return f"Stage {self.name}"
+
+
 class Flow(PolicyBindingModel, UUIDModel):
-    """Flow describes how a series of Factors should be executed to authenticate/enroll/recover
+    """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
     have access to this flow."""
 
@@ -36,7 +58,7 @@ class Flow(PolicyBindingModel, UUIDModel):
 
     designation = models.CharField(max_length=100, choices=FlowDesignation.as_choices())
 
-    factors = models.ManyToManyField(Factor, through="FlowFactorBinding", blank=True)
+    stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
     pbm = models.OneToOneField(
         PolicyBindingModel, parent_link=True, on_delete=models.CASCADE, related_name="+"
@@ -51,13 +73,13 @@ class Flow(PolicyBindingModel, UUIDModel):
         verbose_name_plural = _("Flows")
 
 
-class FlowFactorBinding(PolicyBindingModel, UUIDModel):
-    """Relationship between Flow and Factor. Order is required and unique for
-    each flow-factor Binding. Additionally, policies can be specified, which determine if
+class FlowStageBinding(PolicyBindingModel, UUIDModel):
+    """Relationship between Flow and Stage. Order is required and unique for
+    each flow-stage Binding. Additionally, policies can be specified, which determine if
     this Binding applies to the current user"""
 
     flow = models.ForeignKey("Flow", on_delete=models.CASCADE)
-    factor = models.ForeignKey(Factor, on_delete=models.CASCADE)
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
 
     re_evaluate_policies = models.BooleanField(
         default=False,
@@ -69,12 +91,12 @@ class FlowFactorBinding(PolicyBindingModel, UUIDModel):
     order = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"Flow Factor Binding #{self.order} {self.flow} -> {self.factor}"
+        return f"Flow Stage Binding #{self.order} {self.flow} -> {self.stage}"
 
     class Meta:
 
         ordering = ["order", "flow"]
 
-        verbose_name = _("Flow Factor Binding")
-        verbose_name_plural = _("Flow Factor Bindings")
-        unique_together = (("flow", "factor", "order"),)
+        verbose_name = _("Flow Stage Binding")
+        verbose_name_plural = _("Flow Stage Bindings")
+        unique_together = (("flow", "stage", "order"),)

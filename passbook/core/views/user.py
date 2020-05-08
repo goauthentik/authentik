@@ -10,8 +10,8 @@ from django.utils.translation import gettext as _
 from django.views.generic import DeleteView, FormView, UpdateView
 
 from passbook.core.forms.users import PasswordChangeForm, UserDetailForm
-from passbook.factors.password.exceptions import PasswordPolicyInvalid
 from passbook.lib.config import CONFIG
+from passbook.stages.password.exceptions import PasswordPolicyInvalid
 
 
 class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):

@@ -1,12 +1,10 @@
-"""factor forms"""
+"""Flow and Stage forms"""
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
-from passbook.flows.models import Flow, FlowFactorBinding
-
-GENERAL_FIELDS = ["name", "slug", "order", "policies", "enabled"]
+from passbook.flows.models import Flow, FlowStageBinding
 
 
 class FlowForm(forms.ModelForm):
@@ -19,29 +17,30 @@ class FlowForm(forms.ModelForm):
             "name",
             "slug",
             "designation",
-            "factors",
+            "stages",
             "policies",
         ]
         widgets = {
             "name": forms.TextInput(),
-            "factors": FilteredSelectMultiple(_("policies"), False),
+            "stages": FilteredSelectMultiple(_("stages"), False),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }
 
 
-class FlowFactorBindingForm(forms.ModelForm):
-    """FlowFactorBinding Form"""
+class FlowStageBindingForm(forms.ModelForm):
+    """FlowStageBinding Form"""
 
     class Meta:
 
-        model = FlowFactorBinding
+        model = FlowStageBinding
         fields = [
             "flow",
-            "factor",
+            "stage",
             "re_evaluate_policies",
             "order",
             "policies",
         ]
         widgets = {
             "name": forms.TextInput(),
-            "factors": FilteredSelectMultiple(_("policies"), False),
+            "policies": FilteredSelectMultiple(_("policies"), False),
         }

@@ -18,16 +18,16 @@
                     </li>
                 </ul>
             </section>
-            {% user_factors as user_factors_loc %}
-            {% if user_factors_loc %}
+            {% user_stages as user_stages_loc %}
+            {% if user_stages_loc %}
             <section class="pf-c-nav__section">
                 <h2 class="pf-c-nav__section-title">{% trans 'Factors' %}</h2>
                 <ul class="pf-c-nav__list">
-                    {% for factor in user_factors_loc %}
+                    {% for stage in user_stages_loc %}
                     <li class="pf-c-nav__item">
-                        <a href="{% url factor.view_name %}" class="pf-c-nav__link {% is_active factor.view_name %}">
-                            <i class="{{ factor.icon }}"></i>
-                            {{ factor.name }}
+                        <a href="{% url stage.view_name %}" class="pf-c-nav__link {% is_active stage.view_name %}">
+                            <i class="{{ stage.icon }}"></i>
+                            {{ stage.name }}
                         </a>
                     </li>
                     {% endfor %}

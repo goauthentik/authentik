@@ -9,7 +9,6 @@ from structlog import get_logger
 from passbook.api.permissions import CustomObjectPermissions
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
-from passbook.core.api.factors import FactorViewSet
 from passbook.core.api.groups import GroupViewSet
 from passbook.core.api.invitations import InvitationViewSet
 from passbook.core.api.policies import PolicyViewSet
@@ -17,12 +16,7 @@ from passbook.core.api.propertymappings import PropertyMappingViewSet
 from passbook.core.api.providers import ProviderViewSet
 from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
-from passbook.factors.captcha.api import CaptchaFactorViewSet
-from passbook.factors.dummy.api import DummyFactorViewSet
-from passbook.factors.email.api import EmailFactorViewSet
-from passbook.factors.otp.api import OTPFactorViewSet
-from passbook.factors.password.api import PasswordFactorViewSet
-from passbook.flows.api import FlowFactorBindingViewSet, FlowViewSet
+from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
@@ -36,6 +30,11 @@ from passbook.providers.oidc.api import OpenIDProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
+from passbook.stages.captcha.api import CaptchaStageViewSet
+from passbook.stages.dummy.api import DummyStageViewSet
+from passbook.stages.email.api import EmailStageViewSet
+from passbook.stages.otp.api import OTPStageViewSet
+from passbook.stages.password.api import PasswordStageViewSet
 
 LOGGER = get_logger()
 router = routers.DefaultRouter()
@@ -69,14 +68,14 @@ router.register("providers/saml", SAMLProviderViewSet)
 router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
-router.register("factors/all", FactorViewSet)
-router.register("factors/captcha", CaptchaFactorViewSet)
-router.register("factors/dummy", DummyFactorViewSet)
-router.register("factors/email", EmailFactorViewSet)
-router.register("factors/otp", OTPFactorViewSet)
-router.register("factors/password", PasswordFactorViewSet)
+router.register("stages/all", StageViewSet)
+router.register("stages/captcha", CaptchaStageViewSet)
+router.register("stages/dummy", DummyStageViewSet)
+router.register("stages/email", EmailStageViewSet)
+router.register("stages/otp", OTPStageViewSet)
+router.register("stages/password", PasswordStageViewSet)
 router.register("flows", FlowViewSet)
-router.register("flows/bindings", FlowFactorBindingViewSet)
+router.register("flows/bindings", FlowStageBindingViewSet)
 
 info = openapi.Info(
     title="passbook API",

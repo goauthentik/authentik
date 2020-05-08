@@ -5,15 +5,8 @@ from django.views.generic import TemplateView
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import (
-    Application,
-    Factor,
-    Invitation,
-    Policy,
-    Provider,
-    Source,
-    User,
-)
+from passbook.core.models import Application, Invitation, Policy, Provider, Source, User
+from passbook.flows.models import Flow, Stage
 from passbook.root.celery import CELERY_APP
 
 
@@ -35,7 +28,8 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["user_count"] = len(User.objects.all())
         kwargs["provider_count"] = len(Provider.objects.all())
         kwargs["source_count"] = len(Source.objects.all())
-        kwargs["factor_count"] = len(Factor.objects.all())
+        kwargs["stage_count"] = len(Stage.objects.all())
+        kwargs["flow_count"] = len(Flow.objects.all())
         kwargs["invitation_count"] = len(Invitation.objects.all())
         kwargs["version"] = __version__
         kwargs["worker_count"] = len(CELERY_APP.control.ping(timeout=0.5))

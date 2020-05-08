@@ -13,7 +13,6 @@ from django.views.generic import RedirectView, View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.factors.password.factor import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
@@ -24,6 +23,7 @@ from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.sources.oauth.clients import get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
 
@@ -169,7 +169,7 @@ class OAuthCallback(OAuthClientMixin, View):
             return None
 
     def handle_login(self, user, source, access):
-        """Prepare AuthenticationView, redirect users to remaining Factors"""
+        """Prepare Authentication Plan, redirect user FlowExecutor"""
         user = authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )

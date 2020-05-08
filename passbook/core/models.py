@@ -103,30 +103,6 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
     policies = models.ManyToManyField("Policy", blank=True)
 
 
-class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
-    """Authentication factor, multiple instances of the same Factor can be used"""
-
-    name = models.TextField(help_text=_("Factor's display Name."))
-    slug = models.SlugField(
-        unique=True, help_text=_("Internal factor name, used in URLs.")
-    )
-    order = models.IntegerField()
-    enabled = models.BooleanField(default=True)
-
-    objects = InheritanceManager()
-    type = ""
-    form = ""
-
-    @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
-        """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UIUserSettings."""
-        return None
-
-    def __str__(self):
-        return f"Factor {self.slug}"
-
-
 class Application(ExportModelOperationsMixin("application"), PolicyModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
