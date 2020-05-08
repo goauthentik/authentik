@@ -7,6 +7,7 @@ from passbook.admin.views import (
     certificate_key_pair,
     debug,
     factors,
+    flows,
     groups,
     invitations,
     overview,
@@ -96,6 +97,15 @@ urlpatterns = [
         "factors/<uuid:pk>/delete/",
         factors.FactorDeleteView.as_view(),
         name="factor-delete",
+    ),
+    # Flows
+    path("flows/", flows.FlowListView.as_view(), name="flows"),
+    path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
+    path(
+        "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
+    ),
+    path(
+        "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
     ),
     # Factors
     path(

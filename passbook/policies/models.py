@@ -9,7 +9,9 @@ from passbook.lib.models import UUIDModel
 class PolicyBindingModel(models.Model):
     """Base Model for objects which have Policies applied to them"""
 
-    policies = models.ManyToManyField(Policy, through="PolicyBinding", related_name="+")
+    policies = models.ManyToManyField(
+        Policy, through="PolicyBinding", related_name="+", blank=True
+    )
 
     class Meta:
 

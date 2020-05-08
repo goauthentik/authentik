@@ -11,14 +11,7 @@ class FlowSerializer(ModelSerializer):
     class Meta:
 
         model = Flow
-        fields = [
-            "pk",
-            "name",
-            "slug",
-            "designation",
-            "factors",
-            "policies"
-        ]
+        fields = ["pk", "name", "slug", "designation", "factors", "policies"]
 
 
 class FlowViewSet(ModelViewSet):
@@ -34,14 +27,7 @@ class FlowFactorBindingSerializer(ModelSerializer):
     class Meta:
 
         model = FlowFactorBinding
-        fields = [
-            "pk",
-            "flow",
-            "factor",
-            "re_evaluate_policies",
-            "order",
-            "policies"
-        ]
+        fields = ["pk", "flow", "factor", "re_evaluate_policies", "order", "policies"]
 
 
 class FlowFactorBindingViewSet(ModelViewSet):

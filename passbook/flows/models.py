@@ -36,7 +36,7 @@ class Flow(PolicyBindingModel, UUIDModel):
 
     designation = models.CharField(max_length=100, choices=FlowDesignation.as_choices())
 
-    factors = models.ManyToManyField(Factor, through="FlowFactorBinding")
+    factors = models.ManyToManyField(Factor, through="FlowFactorBinding", blank=True)
 
     pbm = models.OneToOneField(
         PolicyBindingModel, parent_link=True, on_delete=models.CASCADE, related_name="+"
