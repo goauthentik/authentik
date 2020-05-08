@@ -1,6 +1,8 @@
 """passbook OAuth_Provider"""
+from django.conf import settings
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = settings.DEBUG
+
 REQUEST_APPROVAL_PROMPT = "auto"
 
 INSTALLED_APPS = [
