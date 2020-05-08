@@ -13,7 +13,7 @@ from structlog import get_logger
 from passbook.core.models import User
 from passbook.factors.password.forms import PasswordForm
 from passbook.flows.factor_base import AuthenticationFactor
-from passbook.flows.view import AuthenticationView
+from passbook.flows.views import AuthenticationView
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 

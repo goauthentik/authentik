@@ -69,9 +69,11 @@ class FlowFactorBinding(PolicyBindingModel, UUIDModel):
     order = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"Flow Factor Binding {self.flow} -> {self.factor}"
+        return f"Flow Factor Binding #{self.order} {self.flow} -> {self.factor}"
 
     class Meta:
+
+        ordering = ["order", "flow"]
 
         verbose_name = _("Flow Factor Binding")
         verbose_name_plural = _("Flow Factor Bindings")

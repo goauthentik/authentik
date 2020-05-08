@@ -11,6 +11,11 @@ class PolicyBindingModel(models.Model):
 
     policies = models.ManyToManyField(Policy, through="PolicyBinding", related_name="+")
 
+    class Meta:
+
+        verbose_name = _("Policy Binding Model")
+        verbose_name_plural = _("Policy Binding Models")
+
 
 class PolicyBinding(UUIDModel):
     """Relationship between a Policy and a PolicyBindingModel."""
@@ -24,6 +29,9 @@ class PolicyBinding(UUIDModel):
 
     # default value and non-unique for compatibility
     order = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f"PolicyBinding policy={self.policy} target={self.target} order={self.order}"
 
     class Meta:
 

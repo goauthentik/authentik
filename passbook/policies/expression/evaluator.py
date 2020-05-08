@@ -8,7 +8,7 @@ from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
-from passbook.flows.view import AuthenticationView
+from passbook.flows.views import AuthenticationView
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
 

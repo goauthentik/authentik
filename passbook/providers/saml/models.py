@@ -164,5 +164,5 @@ class SAMLPropertyMapping(PropertyMapping):
 def get_provider_choices():
     """Return tuple of class_path, class name of all providers."""
     return [
-        (class_to_path(x), x.__name__) for x in Processor.__dict__["__subclasses__"]()
+        (class_to_path(x), x.__name__) for x in getattr(Processor, "__subclasses__")()
     ]

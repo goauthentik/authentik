@@ -13,7 +13,7 @@ from django.views.generic import RedirectView, View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.flows.view import AuthenticationView, _redirect_with_qs
+from passbook.flows.views import AuthenticationView, _redirect_with_qs
 from passbook.sources.oauth.clients import get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 

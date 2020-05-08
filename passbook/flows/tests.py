@@ -10,7 +10,7 @@ from django.urls import reverse
 from passbook.core.models import User
 from passbook.factors.dummy.models import DummyFactor
 from passbook.factors.password.models import PasswordFactor
-from passbook.flows.view import AuthenticationView
+from passbook.flows.views import AuthenticationView
 
 
 class TestFactorAuthentication(TestCase):

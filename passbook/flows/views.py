@@ -11,6 +11,9 @@ from structlog import get_logger
 
 from passbook.core.models import Factor, User
 from passbook.core.views.utils import PermissionDeniedView
+from passbook.flows.exceptions import FlowNonApplicableError
+from passbook.flows.models import Flow
+from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute
@@ -218,3 +221,66 @@ class AuthenticationView(UserPassesTestMixin, View):
 
 class FactorPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
+
+
+SESSION_KEY_PLAN = "passbook_flows_plan"
+
+
+class FlowExecutorView(View):
+    """Stage 1 Flow executor, passing requests to Factor Views"""
+
+    flow: Flow
+
+    plan: FlowPlan
+    current_factor: Factor
+    current_factor_view: View
+
+    def setup(self, request: HttpRequest, flow_slug: str):
+        super().setup(request, flow_slug=flow_slug)
+        # TODO: Do we always need this?
+        self.flow = get_object_or_404(Flow, slug=flow_slug)
+
+    def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        # Early check if theres an active Plan for the current session
+        if SESSION_KEY_PLAN not in self.request.session:
+            LOGGER.debug(
+                "No active Plan found, initiating planner", flow_slug=flow_slug
+            )
+            try:
+                self.plan = self._initiate_plan()
+            except FlowNonApplicableError as exc:
+                LOGGER.warning("Flow not applicable to current user", exc=exc)
+                return redirect("passbook_core:index")
+        else:
+            LOGGER.debug("Continuing existing plan", flow_slug=flow_slug)
+            self.plan = self.request.session[SESSION_KEY_PLAN]
+        # We don't save the Plan after getting the next factor
+        # as it hasn't been successfully passed yet
+        self.current_factor = self.plan.next()
+        LOGGER.debug("Current factor", current_factor=self.current_factor)
+        factor_cls = path_to_class(self.current_factor.type)
+        self.current_factor_view = factor_cls(self)
+        # self.current_factor_view.pending_user = self.pending_user
+        self.current_factor_view.request = request
+        return super().dispatch(request)
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """pass get request to current factor"""
+        LOGGER.debug(
+            "Passing GET", view_class=class_to_path(self.current_factor_view.__class__),
+        )
+        return self.current_factor_view.get(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """pass post request to current factor"""
+        LOGGER.debug(
+            "Passing POST",
+            view_class=class_to_path(self.current_factor_view.__class__),
+        )
+        return self.current_factor_view.post(request, *args, **kwargs)
+
+    def _initiate_plan(self) -> FlowPlan:
+        planner = FlowPlanner(self.flow)
+        plan = planner.plan(self.request)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return plan
