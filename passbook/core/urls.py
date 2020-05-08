@@ -19,10 +19,10 @@ urlpatterns = [
         name="auth-password-reset",
     ),
     # User views
-    path("_/user/", user.UserSettingsView.as_view(), name="user-settings"),
-    path("_/user/delete/", user.UserDeleteView.as_view(), name="user-delete"),
+    path("-/user/", user.UserSettingsView.as_view(), name="user-settings"),
+    path("-/user/delete/", user.UserDeleteView.as_view(), name="user-delete"),
     path(
-        "_/user/change_password/",
+        "-/user/change_password/",
         user.UserChangePasswordView.as_view(),
         name="user-change-password",
     ),

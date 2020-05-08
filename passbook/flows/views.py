@@ -8,6 +8,7 @@ from django.views.generic import View
 from structlog import get_logger
 
 from passbook.core.models import Factor
+from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import FlowNonApplicableError
 from passbook.flows.models import Flow
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
@@ -144,9 +145,13 @@ class FlowExecutorView(View):
         or the user account is disabled."""
         LOGGER.debug("User invalid")
         self.cancel()
-        return redirect_with_qs("passbook_flows:auth-denied", self.request.GET)
+        return redirect_with_qs("passbook_flows:denied", self.request.GET)
 
     def cancel(self) -> HttpResponse:
         """Cancel current execution and return a redirect"""
         del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("passbook_flows:auth-denied", self.request.GET)
+        return redirect_with_qs("passbook_flows:denied", self.request.GET)
+
+
+class FlowPermissionDeniedView(PermissionDeniedView):
+    """User could not be authenticated"""
