@@ -41,8 +41,8 @@ document.querySelectorAll(".codemirror").forEach((cm) => {
 const convertToSlug = (text) => {
     return text
         .toLowerCase()
-        .replace(/[^\w ]+/g, '')
-        .replace(/ +/g, '-');
+        .replace(/ /g, '-')
+        .replace(/[^\w-]+/g, '');
 };
 
 document.querySelectorAll("input[name=name]").forEach((input) => {
