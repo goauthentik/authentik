@@ -5,23 +5,35 @@ from django.db import migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 from passbook.flows.models import FlowDesignation
+from passbook.stages.identification.models import Templates, UserFields
 
 
 def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("passbook_flows", "Flow")
     FlowStageBinding = apps.get_model("passbook_flows", "FlowStageBinding")
     PasswordStage = apps.get_model("passbook_stages_password", "PasswordStage")
+    IdentificationStage = apps.get_model(
+        "passbook_stages_identification", "IdentificationStage"
+    )
     db_alias = schema_editor.connection.alias
 
     if Flow.objects.using(db_alias).all().exists():
         # Only create default flow when none exist
         return
 
+    if not IdentificationStage.objects.using(db_alias).exists():
+        IdentificationStage.objects.using(db_alias).create(
+            name="identification",
+            user_fields=[UserFields.E_MAIL],
+            template=Templates.DEFAULT_LOGIN,
+        )
+
     if not PasswordStage.objects.using(db_alias).exists():
         PasswordStage.objects.using(db_alias).create(
             name="password", backends=["django.contrib.auth.backends.ModelBackend"],
         )
 
+    ident_stage = IdentificationStage.objects.using(db_alias).first()
     pw_stage = PasswordStage.objects.using(db_alias).first()
     flow = Flow.objects.using(db_alias).create(
         name="default-authentication-flow",
@@ -29,7 +41,10 @@ def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         designation=FlowDesignation.AUTHENTICATION,
     )
     FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=pw_stage, order=0,
+        flow=flow, stage=ident_stage, order=0,
+    )
+    FlowStageBinding.objects.using(db_alias).create(
+        flow=flow, stage=pw_stage, order=1,
     )
 
 
@@ -38,6 +53,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("passbook_flows", "0001_initial"),
         ("passbook_stages_password", "0001_initial"),
+        ("passbook_stages_identification", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(create_default_flow)]

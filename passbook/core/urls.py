@@ -2,10 +2,16 @@
 from django.urls import path
 
 from passbook.core.views import authentication, overview, user
+from passbook.flows.models import FlowDesignation
+from passbook.flows.views import ToDefaultFlow
 
 urlpatterns = [
     # Authentication views
-    path("auth/login/", authentication.LoginView.as_view(), name="auth-login"),
+    path(
+        "auth/login/",
+        ToDefaultFlow.as_view(designation=FlowDesignation.AUTHENTICATION),
+        name="auth-login",
+    ),
     path("auth/logout/", authentication.LogoutView.as_view(), name="auth-logout"),
     path("auth/sign_up/", authentication.SignUpView.as_view(), name="auth-sign-up"),
     path(

@@ -1,5 +1,5 @@
 """passbook core authentication views"""
-from typing import Dict, Optional
+from typing import Dict
 
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -12,85 +12,13 @@ from django.views import View
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.core.forms.authentication import LoginForm, SignUpForm
-from passbook.core.models import Invitation, Nonce, Source, User
+from passbook.core.forms.authentication import SignUpForm
+from passbook.core.models import Invitation, Nonce, User
 from passbook.core.signals import invitation_used, user_signed_up
-from passbook.flows.models import Flow, FlowDesignation
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.config import CONFIG
-from passbook.lib.utils.urls import redirect_with_qs
 from passbook.stages.password.exceptions import PasswordPolicyInvalid
 
 LOGGER = get_logger()
-
-
-class LoginView(UserPassesTestMixin, FormView):
-    """Allow users to sign in"""
-
-    template_name = "login/form.html"
-    form_class = LoginForm
-    success_url = "."
-
-    # Allow only not authenticated users to login
-    def test_func(self):
-        return self.request.user.is_authenticated is False
-
-    def handle_no_permission(self):
-        if "next" in self.request.GET:
-            return redirect(self.request.GET.get("next"))
-        return redirect(reverse("passbook_core:overview"))
-
-    def get_context_data(self, **kwargs):
-        kwargs["config"] = CONFIG.y("passbook")
-        kwargs["title"] = _("Log in to your account")
-        kwargs["primary_action"] = _("Log in")
-        kwargs["show_sign_up_notice"] = CONFIG.y("passbook.sign_up.enabled")
-        kwargs["sources"] = []
-        sources = (
-            Source.objects.filter(enabled=True).order_by("name").select_subclasses()
-        )
-        for source in sources:
-            ui_login_button = source.ui_login_button
-            if ui_login_button:
-                kwargs["sources"].append(ui_login_button)
-        return super().get_context_data(**kwargs)
-
-    def get_user(self, uid_value) -> Optional[User]:
-        """Find user instance. Returns None if no user was found."""
-        for search_field in CONFIG.y("passbook.uid_fields"):
-            # Workaround for E-Mail -> email
-            if search_field == "e-mail":
-                search_field = "email"
-            users = User.objects.filter(**{search_field: uid_value})
-            if users.exists():
-                LOGGER.debug("Found user", user=users.first(), uid_field=search_field)
-                return users.first()
-        return None
-
-    def form_valid(self, form: LoginForm) -> HttpResponse:
-        """Form data is valid"""
-        pre_user = self.get_user(form.cleaned_data.get("uid_field"))
-        if not pre_user:
-            # No user found
-            return self.invalid_login(self.request)
-        # We run the Flow planner here so we can pass the Pending user in the context
-        flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
-        planner = FlowPlanner(flow)
-        plan = planner.plan(self.request)
-        plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "passbook_flows:flow-executor", self.request.GET, flow_slug=flow.slug,
-        )
-
-    def invalid_login(
-        self, request: HttpRequest, disabled_user: User = None
-    ) -> HttpResponse:
-        """Handle login for disabled users/invalid login attempts"""
-        LOGGER.debug("invalid_login", user=disabled_user)
-        messages.error(request, _("Failed to authenticate."))
-        return self.render_to_response(self.get_context_data())
 
 
 class LogoutView(LoginRequiredMixin, View):

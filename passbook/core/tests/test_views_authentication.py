@@ -5,9 +5,8 @@ from random import SystemRandom
 from django.test import TestCase
 from django.urls import reverse
 
-from passbook.core.forms.authentication import LoginForm, SignUpForm
+from passbook.core.forms.authentication import SignUpForm
 from passbook.core.models import User
-from passbook.flows.models import Flow, FlowDesignation
 
 
 class TestAuthenticationViews(TestCase):
@@ -40,20 +39,6 @@ class TestAuthenticationViews(TestCase):
         response = self.client.get(reverse("passbook_core:auth-sign-up"))
         self.assertEqual(response.status_code, 200)
 
-    def test_login_view(self):
-        """Test account.login view (Anonymous)"""
-        self.client.logout()
-        response = self.client.get(reverse("passbook_core:auth-login"))
-        self.assertEqual(response.status_code, 200)
-        # test login with post
-        form = LoginForm(self.login_data)
-        self.assertTrue(form.is_valid())
-
-        response = self.client.post(
-            reverse("passbook_core:auth-login"), data=form.cleaned_data
-        )
-        self.assertEqual(response.status_code, 302)
-
     def test_logout_view(self):
         """Test account.logout view"""
         self.client.force_login(self.user)
@@ -65,24 +50,6 @@ class TestAuthenticationViews(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse("passbook_core:auth-logout"))
         self.assertEqual(response.status_code, 302)
-
-    def test_login_view_auth(self):
-        """Test account.login view (Authenticated)"""
-        self.client.force_login(self.user)
-        response = self.client.get(reverse("passbook_core:auth-login"))
-        self.assertEqual(response.status_code, 302)
-
-    def test_login_view_post(self):
-        """Test account.login view POST (Anonymous)"""
-        login_response = self.client.post(
-            reverse("passbook_core:auth-login"), data=self.login_data
-        )
-        self.assertEqual(login_response.status_code, 302)
-        flow = Flow.objects.get(designation=FlowDesignation.AUTHENTICATION)
-        expected = reverse(
-            "passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}
-        )
-        self.assertEqual(login_response.url, expected)
 
     def test_sign_up_view_post(self):
         """Test account.sign_up view POST (Anonymous)"""
