@@ -1,7 +1,6 @@
 """passbook multi-stage authentication engine"""
 from typing import Optional
 
-from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
@@ -27,7 +26,7 @@ class FlowExecutorView(View):
 
     flow: Flow
 
-    plan: FlowPlan
+    plan: Optional[FlowPlan] = None
     current_stage: Stage
     current_stage_view: View
 
@@ -116,15 +115,6 @@ class FlowExecutorView(View):
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
-        backend = self.plan.context[PLAN_CONTEXT_PENDING_USER].backend
-        login(
-            self.request, self.plan.context[PLAN_CONTEXT_PENDING_USER], backend=backend
-        )
-        LOGGER.debug(
-            "Logged in",
-            user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
-            flow_slug=self.flow.slug,
-        )
         self.cancel()
         next_param = self.request.GET.get(NEXT_ARG_NAME, None)
         if next_param and not is_url_absolute(next_param):
@@ -165,10 +155,9 @@ class FlowExecutorView(View):
         self.cancel()
         return redirect_with_qs("passbook_flows:denied", self.request.GET)
 
-    def cancel(self) -> HttpResponse:
+    def cancel(self):
         """Cancel current execution and return a redirect"""
         del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("passbook_flows:denied", self.request.GET)
 
 
 class FlowPermissionDeniedView(PermissionDeniedView):

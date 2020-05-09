@@ -33,6 +33,8 @@ from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
+from passbook.stages.identification.api import IdentificationStageViewSet
+from passbook.stages.login.api import LoginStageViewSet
 from passbook.stages.otp.api import OTPStageViewSet
 from passbook.stages.password.api import PasswordStageViewSet
 
@@ -49,10 +51,13 @@ router.register("core/applications", ApplicationViewSet)
 router.register("core/invitations", InvitationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
+
 router.register("audit/events", EventViewSet)
+
 router.register("sources/all", SourceViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
+
 router.register("policies/all", PolicyViewSet)
 router.register("policies/passwordexpiry", PasswordExpiryPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
@@ -60,20 +65,26 @@ router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 router.register("policies/webhook", WebhookPolicyViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
+
 router.register("providers/all", ProviderViewSet)
 router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)
 router.register("providers/oauth", OAuth2ProviderViewSet)
 router.register("providers/openid", OpenIDProviderViewSet)
 router.register("providers/saml", SAMLProviderViewSet)
+
 router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
+
 router.register("stages/all", StageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)
 router.register("stages/dummy", DummyStageViewSet)
 router.register("stages/email", EmailStageViewSet)
 router.register("stages/otp", OTPStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
+router.register("stages/identification", IdentificationStageViewSet)
+router.register("stages/login", LoginStageViewSet)
+
 router.register("flows", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
 
