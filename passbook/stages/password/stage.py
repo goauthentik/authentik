@@ -45,6 +45,7 @@ def authenticate(
             # This backend says to stop in our tracks - this user should not be allowed in at all.
             break
         if user is None:
+            LOGGER.debug("Backend returned nothing, continuing")
             continue
         # Annotate the user object with the path of the backend.
         user.backend = backend_path
@@ -64,8 +65,14 @@ class PasswordStage(FormView, AuthenticationStage):
 
     def form_valid(self, form: PasswordForm) -> HttpResponse:
         """Authenticate against django's authentication backend"""
+        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            return self.executor.stage_invalid()
+        # Get the pending user's username, which is used as
+        # an Identifier by most authentication backends
+        pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         auth_kwargs = {
-            "password": form.cleaned_data.get("password"),
+            "password": form.cleaned_data.get("password", None),
+            "username": pending_user.username,
         }
         try:
             user = authenticate(
