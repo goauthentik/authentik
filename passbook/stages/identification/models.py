@@ -7,7 +7,7 @@ from passbook.flows.models import Stage
 
 
 class UserFields(models.TextChoices):
-    """Fields which the user can identifiy themselves with"""
+    """Fields which the user can identify themselves with"""
 
     E_MAIL = "email"
     USERNAME = "username"

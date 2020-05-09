@@ -151,7 +151,7 @@ class FlowExecutorView(View):
     def stage_invalid(self) -> HttpResponse:
         """Callback used stage when data is correct but a policy denies access
         or the user account is disabled."""
-        LOGGER.debug("User invalid", flow_slug=self.flow.slug)
+        LOGGER.debug("Stage invalid", flow_slug=self.flow.slug)
         self.cancel()
         return redirect_with_qs("passbook_flows:denied", self.request.GET)
 

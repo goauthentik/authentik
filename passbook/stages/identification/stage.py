@@ -23,6 +23,11 @@ class IdentificationStageView(FormView, AuthenticationStage):
 
     form_class = IdentificationForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["stage"] = self.executor.current_stage
+        return kwargs
+
     def get_template_names(self) -> List[str]:
         current_stage: IdentificationStage = self.executor.current_stage
         return [current_stage.template]
@@ -61,6 +66,6 @@ class IdentificationStageView(FormView, AuthenticationStage):
         if not pre_user:
             LOGGER.debug("invalid_login")
             messages.error(self.request, _("Failed to authenticate."))
-            return self.executor.stage_invalid()
+            return self.form_invalid(form)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
         return self.executor.stage_ok()

@@ -4,9 +4,8 @@ from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
 
-from passbook.lib.config import CONFIG
 from passbook.lib.utils.ui import human_list
-from passbook.stages.identification.models import IdentificationStage
+from passbook.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
 
@@ -26,20 +25,22 @@ class IdentificationStageForm(forms.ModelForm):
 class IdentificationForm(forms.Form):
     """Allow users to login"""
 
+    stage: IdentificationStage
+
     title = _("Log in to your account")
     uid_field = forms.CharField(label=_(""))
 
     def __init__(self, *args, **kwargs):
+        self.stage = kwargs.pop("stage")
         super().__init__(*args, **kwargs)
-        # TODO: Get UID Fields from stage config
-        if CONFIG.y("passbook.uid_fields") == ["e-mail"]:
+        if self.stage.user_fields == [UserFields.E_MAIL]:
             self.fields["uid_field"] = forms.EmailField()
         self.fields["uid_field"].label = human_list(
-            [x.title() for x in CONFIG.y("passbook.uid_fields")]
+            [y.title() for x, y in UserFields.choices]
         )
 
     def clean_uid_field(self):
         """Validate uid_field after EmailValidator if 'email' is the only selected uid_fields"""
-        if CONFIG.y("passbook.uid_fields") == ["email"]:
+        if self.stage.user_fields == [UserFields.E_MAIL]:
             validate_email(self.cleaned_data.get("uid_field"))
         return self.cleaned_data.get("uid_field")
