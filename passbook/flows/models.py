@@ -11,7 +11,7 @@ from passbook.lib.models import UUIDModel
 from passbook.policies.models import PolicyBindingModel
 
 
-class FlowDesignation(Enum):
+class FlowDesignation(models.TextChoices):
     """Designation of what a Flow should be used for. At a later point, this
     should be replaced by a database entry."""
 
@@ -19,13 +19,6 @@ class FlowDesignation(Enum):
     ENROLLMENT = "enrollment"
     RECOVERY = "recovery"
     PASSWORD_CHANGE = "password_change"  # nosec # noqa
-
-    @staticmethod
-    def as_choices() -> Tuple[Tuple[str, str]]:
-        """Generate choices of actions used for database"""
-        return tuple(
-            (x, y.value) for x, y in getattr(FlowDesignation, "__members__").items()
-        )
 
 
 class Stage(UUIDModel):
@@ -56,7 +49,7 @@ class Flow(PolicyBindingModel, UUIDModel):
     name = models.TextField()
     slug = models.SlugField(unique=True)
 
-    designation = models.CharField(max_length=100, choices=FlowDesignation.as_choices())
+    designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

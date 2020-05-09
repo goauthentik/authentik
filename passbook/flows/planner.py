@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 from django.http import HttpRequest
 from structlog import get_logger
 
-from passbook.flows.exceptions import FlowNonApplicableError
+from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, Stage
 from passbook.policies.engine import PolicyEngine
 
@@ -26,8 +26,7 @@ class FlowPlan:
 
     def next(self) -> Stage:
         """Return next pending stage from the bottom of the list"""
-        stage_cls = self.stages.pop(0)
-        return stage_cls
+        return self.stages[0]
 
 
 class FlowPlanner:
@@ -54,7 +53,7 @@ class FlowPlanner:
         # to make sure the user even has access to the flow
         root_passing, root_passing_messages = self._check_flow_root_policies(request)
         if not root_passing:
-            raise FlowNonApplicableError(root_passing_messages)
+            raise FlowNonApplicableException(root_passing_messages)
         # Check Flow policies
         for stage in (
             self.flow.stages.order_by("flowstagebinding__order")
@@ -72,4 +71,6 @@ class FlowPlanner:
         LOGGER.debug(
             "Finished planning", flow=self.flow, duration_s=end_time - start_time
         )
+        if not plan.stages:
+            raise EmptyFlowException()
         return plan

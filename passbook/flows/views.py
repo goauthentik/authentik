@@ -8,8 +8,8 @@ from django.views.generic import View
 from structlog import get_logger
 
 from passbook.core.views.utils import PermissionDeniedView
-from passbook.flows.exceptions import FlowNonApplicableError
-from passbook.flows.models import Flow, Stage
+from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
+from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
@@ -52,15 +52,15 @@ class FlowExecutorView(View):
             return bad_request_message(self.request, message)
         return None
 
-    def handle_flow_non_applicable(self) -> HttpResponse:
+    def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if NEXT_ARG_NAME in self.request.GET:
+            LOGGER.debug("Redirecting to next on fail")
             return redirect(self.request.GET.get(NEXT_ARG_NAME))
         incorrect_domain_message = self._check_config_domain()
         if incorrect_domain_message:
             return incorrect_domain_message
-        # TODO: Add message
-        return redirect("passbook_core:index")
+        return bad_request_message(self.request, str(exc))
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
@@ -70,9 +70,12 @@ class FlowExecutorView(View):
             )
             try:
                 self.plan = self._initiate_plan()
-            except FlowNonApplicableError as exc:
+            except FlowNonApplicableException as exc:
                 LOGGER.warning("Flow not applicable to current user", exc=exc)
-                return self.handle_flow_non_applicable()
+                return self.handle_invalid_flow(exc)
+            except EmptyFlowException as exc:
+                LOGGER.warning("Flow is empty", exc=exc)
+                return self.handle_invalid_flow(exc)
         else:
             LOGGER.debug("Continuing existing plan", flow_slug=flow_slug)
             self.plan = self.request.session[SESSION_KEY_PLAN]
@@ -136,6 +139,7 @@ class FlowExecutorView(View):
             stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
+        self.plan.stages.pop(0)
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.stages:
             LOGGER.debug(
@@ -169,3 +173,16 @@ class FlowExecutorView(View):
 
 class FlowPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
+
+
+class ToDefaultFlow(View):
+    """Redirect to default flow matching by designation"""
+
+    designation: Optional[FlowDesignation] = None
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        flow = get_object_or_404(Flow, designation=self.designation)
+        # TODO: Get Flow depending on subdomain?
+        return redirect_with_qs(
+            "passbook_flows:flow-executor", request.GET, flow_slug=flow.slug
+        )
