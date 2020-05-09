@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
+    "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
     "passbook.stages.otp.apps.PassbookStageOTPConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
@@ -327,17 +328,19 @@ LOGGING = {
     },
     "loggers": {},
 }
+LOG_LEVEL = "DEBUG" if DEBUG else "WARNING"
 _LOGGING_HANDLER_MAP = {
-    "": "DEBUG",
-    "passbook": "DEBUG",
+    "": LOG_LEVEL,
+    "passbook": LOG_LEVEL,
     "django": "WARNING",
     "celery": "WARNING",
-    "grpc": "DEBUG",
-    "oauthlib": "DEBUG",
-    "oauth2_provider": "DEBUG",
-    "oidc_provider": "DEBUG",
+    "grpc": LOG_LEVEL,
+    "oauthlib": LOG_LEVEL,
+    "oauth2_provider": LOG_LEVEL,
+    "oidc_provider": LOG_LEVEL,
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
+    # pyright: reportGeneralTypeIssues=false
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
