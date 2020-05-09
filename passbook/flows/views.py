@@ -54,7 +54,7 @@ class FlowExecutorView(View):
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if NEXT_ARG_NAME in self.request.GET:
-            LOGGER.debug("Redirecting to next on fail")
+            LOGGER.debug("f(exec): Redirecting to next on fail")
             return redirect(self.request.GET.get(NEXT_ARG_NAME))
         incorrect_domain_message = self._check_config_domain()
         if incorrect_domain_message:
@@ -65,24 +65,26 @@ class FlowExecutorView(View):
         # Early check if theres an active Plan for the current session
         if SESSION_KEY_PLAN not in self.request.session:
             LOGGER.debug(
-                "No active Plan found, initiating planner", flow_slug=flow_slug
+                "f(exec): No active Plan found, initiating planner", flow_slug=flow_slug
             )
             try:
                 self.plan = self._initiate_plan()
             except FlowNonApplicableException as exc:
-                LOGGER.warning("Flow not applicable to current user", exc=exc)
+                LOGGER.warning("f(exec): Flow not applicable to current user", exc=exc)
                 return self.handle_invalid_flow(exc)
             except EmptyFlowException as exc:
-                LOGGER.warning("Flow is empty", exc=exc)
+                LOGGER.warning("f(exec): Flow is empty", exc=exc)
                 return self.handle_invalid_flow(exc)
         else:
-            LOGGER.debug("Continuing existing plan", flow_slug=flow_slug)
+            LOGGER.debug("f(exec): Continuing existing plan", flow_slug=flow_slug)
             self.plan = self.request.session[SESSION_KEY_PLAN]
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         self.current_stage = self.plan.next()
         LOGGER.debug(
-            "Current stage", current_stage=self.current_stage, flow_slug=self.flow.slug,
+            "f(exec): Current stage",
+            current_stage=self.current_stage,
+            flow_slug=self.flow.slug,
         )
         stage_cls = path_to_class(self.current_stage.type)
         self.current_stage_view = stage_cls(self)
@@ -92,7 +94,7 @@ class FlowExecutorView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass get request to current stage"""
         LOGGER.debug(
-            "Passing GET",
+            "f(exec): Passing GET",
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
@@ -101,7 +103,7 @@ class FlowExecutorView(View):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
         LOGGER.debug(
-            "Passing POST",
+            "f(exec): Passing POST",
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
@@ -125,7 +127,7 @@ class FlowExecutorView(View):
         """Callback called by stages upon successful completion.
         Persists updated plan and context to session."""
         LOGGER.debug(
-            "Stage ok",
+            "f(exec): Stage ok",
             stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
@@ -133,7 +135,7 @@ class FlowExecutorView(View):
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.stages:
             LOGGER.debug(
-                "Continuing with next stage",
+                "f(exec): Continuing with next stage",
                 reamining=len(self.plan.stages),
                 flow_slug=self.flow.slug,
             )
@@ -142,7 +144,7 @@ class FlowExecutorView(View):
             )
         # User passed all stages
         LOGGER.debug(
-            "User passed all stages",
+            "f(exec): User passed all stages",
             user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
             flow_slug=self.flow.slug,
         )
@@ -151,7 +153,7 @@ class FlowExecutorView(View):
     def stage_invalid(self) -> HttpResponse:
         """Callback used stage when data is correct but a policy denies access
         or the user account is disabled."""
-        LOGGER.debug("Stage invalid", flow_slug=self.flow.slug)
+        LOGGER.debug("f(exec): Stage invalid", flow_slug=self.flow.slug)
         self.cancel()
         return redirect_with_qs("passbook_flows:denied", self.request.GET)
 

@@ -10,7 +10,6 @@ from passbook.stages.identification.models import (
     Templates,
     UserFields,
 )
-from passbook.stages.login.models import LoginStage
 
 
 class TestIdentificationStage(TestCase):
@@ -26,17 +25,13 @@ class TestIdentificationStage(TestCase):
             slug="test-identification",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        FlowStageBinding.objects.create(
-            flow=self.flow,
-            stage=IdentificationStage.objects.create(
-                name="identification",
-                user_fields=[UserFields.E_MAIL],
-                template=Templates.DEFAULT_LOGIN,
-            ),
-            order=0,
+        self.stage = IdentificationStage.objects.create(
+            name="identification",
+            user_fields=[UserFields.E_MAIL],
+            template=Templates.DEFAULT_LOGIN,
         )
         FlowStageBinding.objects.create(
-            flow=self.flow, stage=LoginStage.objects.create(name="login",), order=1
+            flow=self.flow, stage=self.stage, order=0,
         )
 
         # OAuthSource for the login view
@@ -57,9 +52,9 @@ class TestIdentificationStage(TestCase):
         url = reverse(
             "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
-        response = self.client.post(url, form_data,)
+        response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, url)
+        self.assertEqual(response.url, reverse("passbook_core:overview"))
 
     def test_invalid_with_username(self):
         """Test invalid with username (user exists but stage only allows e-mail)"""
