@@ -2,6 +2,7 @@
 from typing import List, Optional
 
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
@@ -20,7 +21,6 @@ LOGGER = get_logger()
 class IdentificationStageView(FormView, AuthenticationStage):
     """Form to identify the user"""
 
-    template_name = "login/form.html"
     form_class = IdentificationForm
 
     def get_template_names(self) -> List[str]:
@@ -31,6 +31,7 @@ class IdentificationStageView(FormView, AuthenticationStage):
         kwargs["config"] = CONFIG.y("passbook")
         kwargs["title"] = _("Log in to your account")
         kwargs["primary_action"] = _("Log in")
+        # TODO: show this based on the existence of an enrollment flow
         kwargs["show_sign_up_notice"] = CONFIG.y("passbook.sign_up.enabled")
         kwargs["sources"] = []
         sources = (
@@ -42,14 +43,16 @@ class IdentificationStageView(FormView, AuthenticationStage):
                 kwargs["sources"].append(ui_login_button)
         return super().get_context_data(**kwargs)
 
-    def get_user(self, uid_value) -> Optional[User]:
+    def get_user(self, uid_value: str) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
+        query = Q()
         for search_field in current_stage.user_fields:
-            users = User.objects.filter(**{search_field: uid_value})
-            if users.exists():
-                LOGGER.debug("Found user", user=users.first(), uid_field=search_field)
-                return users.first()
+            query |= Q(**{search_field: uid_value})
+        users = User.objects.filter(query)
+        if users.exists():
+            LOGGER.debug("Found user", user=users.first(), query=query)
+            return users.first()
         return None
 
     def form_valid(self, form: IdentificationForm) -> HttpResponse:
