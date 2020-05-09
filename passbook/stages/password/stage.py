@@ -1,11 +1,13 @@
 """passbook password stage"""
 from inspect import Signature
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from django.contrib.auth import _clean_credentials
+from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.signals import user_login_failed
 from django.core.exceptions import PermissionDenied
 from django.forms.utils import ErrorList
+from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from structlog import get_logger
@@ -13,7 +15,6 @@ from structlog import get_logger
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
-from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import path_to_class
 from passbook.stages.password.forms import PasswordForm
 
@@ -21,7 +22,9 @@ LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 
 
-def authenticate(request, backends, **credentials) -> Optional[User]:
+def authenticate(
+    request: HttpRequest, backends: List[BaseBackend], **credentials: Dict[str, Any]
+) -> Optional[User]:
     """If the given credentials are valid, return a User object.
 
     Customized version of django's authenticate, which accepts a list of backends"""
@@ -59,19 +62,14 @@ class PasswordStage(FormView, AuthenticationStage):
     form_class = PasswordForm
     template_name = "stages/password/backend.html"
 
-    def form_valid(self, form):
+    def form_valid(self, form: PasswordForm) -> HttpResponse:
         """Authenticate against django's authentication backend"""
-        uid_fields = CONFIG.y("passbook.uid_fields")
-        kwargs = {
+        auth_kwargs = {
             "password": form.cleaned_data.get("password"),
         }
-        for uid_field in uid_fields:
-            kwargs[uid_field] = getattr(
-                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER], uid_field
-            )
         try:
             user = authenticate(
-                self.request, self.executor.current_stage.backends, **kwargs
+                self.request, self.executor.current_stage.backends, **auth_kwargs
             )
             if user:
                 # User instance returned from authenticate() has .backend property set
@@ -88,6 +86,7 @@ class PasswordStage(FormView, AuthenticationStage):
             errors.append(_("Invalid password"))
             return self.form_invalid(form)
         except PermissionDenied:
+            del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
-            LOGGER.debug("Denied access", **kwargs)
+            LOGGER.debug("Denied access", **auth_kwargs)
             return self.executor.stage_invalid()
