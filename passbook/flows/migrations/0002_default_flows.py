@@ -12,9 +12,7 @@ def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("passbook_flows", "Flow")
     FlowStageBinding = apps.get_model("passbook_flows", "FlowStageBinding")
     PasswordStage = apps.get_model("passbook_stages_password", "PasswordStage")
-    LoginStage = apps.get_model(
-        "passbook_stages_login", "LoginStage"
-    )
+    LoginStage = apps.get_model("passbook_stages_login", "LoginStage")
     IdentificationStage = apps.get_model(
         "passbook_stages_identification", "IdentificationStage"
     )

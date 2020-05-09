@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
+    "passbook.stages.login.apps.PassbookStageLoginConfig",
     "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
     "passbook.stages.otp.apps.PassbookStageOTPConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
