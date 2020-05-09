@@ -17,12 +17,16 @@ class LoginStageView(AuthenticationStage):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            messages.error(request, _("No Pending user to login."))
+            message = _("No Pending user to login.")
+            messages.error(request, message)
+            LOGGER.debug(message)
             return self.executor.stage_invalid()
         if PLAN_CONTEXT_AUTHENTICATION_BACKEND not in self.executor.plan.context:
-            messages.error(request, _("Pending user has no backend."))
+            message = _("Pending user has no backend.")
+            messages.error(request, message)
+            LOGGER.debug(message)
             return self.executor.stage_invalid()
-        backend = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER].backend
+        backend = self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND]
         login(
             self.request,
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
