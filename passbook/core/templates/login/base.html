@@ -63,12 +63,21 @@
                     </li>
                     {% endfor %}
                 </ul>
-                {% if enroll_url %}
+                {% if enroll_url or recovery_url %}
                 <div class="pf-c-login__main-footer-band">
+                    {% if enroll_url %}
                     <p class="pf-c-login__main-footer-band-item">
                         {% trans 'Need an account?' %}
                         <a href="{{ enroll_url }}">{% trans 'Sign up.' %}</a>
                     </p>
+                    {% endif %}
+                    {% if recovery_url %}
+                    <p class="pf-c-login__main-footer-band-item">
+                        <a href="{{ recovery_url }}">
+                            {% trans 'Forgot username or password?' %}
+                        </a>
+                    </p>
+                    {% endif %}
                 </div>
                 {% endif %}
             </footer>

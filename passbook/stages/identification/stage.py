@@ -34,14 +34,19 @@ class IdentificationStageView(FormView, AuthenticationStage):
         return [current_stage.template]
 
     def get_context_data(self, **kwargs):
-        # Check for related enrollment flow, add URL to view
+        # Check for related enrollment and recovery flow, add URL to view
         enrollment_flow = self.executor.flow.related_flow(FlowDesignation.ENROLLMENT)
         if enrollment_flow:
-            url = reverse(
+            kwargs["enroll_url"] = reverse(
                 "passbook_flows:flow-executor",
                 kwargs={"flow_slug": enrollment_flow.slug},
             )
-            kwargs["enroll_url"] = url
+        recovery_flow = self.executor.flow.related_flow(FlowDesignation.RECOVERY)
+        if recovery_flow:
+            kwargs["recovery_url"] = reverse(
+                "passbook_flows:flow-executor",
+                kwargs={"flow_slug": recovery_flow.slug},
+            )
 
         # Check all enabled source, add them if they have a UI Login button.
         kwargs["sources"] = []

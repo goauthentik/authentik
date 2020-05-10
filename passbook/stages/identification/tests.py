@@ -82,8 +82,24 @@ class TestIdentificationStage(TestCase):
         """Test that enrollment flow is linked correctly"""
         flow = Flow.objects.create(
             name="enroll-test",
-            slug="unique-string",
+            slug="unique-enrollment-string",
             designation=FlowDesignation.ENROLLMENT,
+        )
+
+        response = self.client.get(
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(flow.slug, response.rendered_content)
+
+    def test_recovery_flow(self):
+        """Test that recovery flow is linked correctly"""
+        flow = Flow.objects.create(
+            name="enroll-test",
+            slug="unique-recovery-string",
+            designation=FlowDesignation.RECOVERY,
         )
 
         response = self.client.get(
