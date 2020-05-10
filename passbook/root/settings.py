@@ -101,7 +101,6 @@ INSTALLED_APPS = [
     "passbook.stages.otp.apps.PassbookStageOTPConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
-    "passbook.stages.dummy.apps.PassbookStageDummyConfig",
     "passbook.stages.email.apps.PassbookStageEmailConfig",
     "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
@@ -390,5 +389,11 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+
+    # Load Dummy/Debug objects
+    INSTALLED_APPS += [
+        "passbook.stages.dummy.apps.PassbookStageDummyConfig",
+        "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
+    ]
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")

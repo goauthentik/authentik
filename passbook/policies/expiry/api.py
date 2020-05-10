@@ -1,4 +1,4 @@
-"""Source API Views"""
+"""Password Expiry Policy API Views"""
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -15,7 +15,7 @@ class PasswordExpiryPolicySerializer(ModelSerializer):
 
 
 class PasswordExpiryPolicyViewSet(ModelViewSet):
-    """Source Viewset"""
+    """Password Expiry Viewset"""
 
     queryset = PasswordExpiryPolicy.objects.all()
     serializer_class = PasswordExpiryPolicySerializer

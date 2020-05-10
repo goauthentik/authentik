@@ -1,7 +1,5 @@
 """passbook core models"""
 from datetime import timedelta
-from random import SystemRandom
-from time import sleep
 from typing import Any, Optional
 from uuid import uuid4
 
@@ -196,29 +194,6 @@ class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedMode
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
         raise PolicyException()
-
-
-class DebugPolicy(Policy):
-    """Policy used for debugging the PolicyEngine. Returns a fixed result,
-    but takes a random time to process."""
-
-    result = models.BooleanField(default=False)
-    wait_min = models.IntegerField(default=5)
-    wait_max = models.IntegerField(default=30)
-
-    form = "passbook.core.forms.policies.DebugPolicyForm"
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Wait random time then return result"""
-        wait = SystemRandom().randrange(self.wait_min, self.wait_max)
-        LOGGER.debug("Policy waiting", policy=self, delay=wait)
-        sleep(wait)
-        return PolicyResult(self.result, "Debugging")
-
-    class Meta:
-
-        verbose_name = _("Debug Policy")
-        verbose_name_plural = _("Debug Policies")
 
 
 class Invitation(ExportModelOperationsMixin("invitation"), UUIDModel):
