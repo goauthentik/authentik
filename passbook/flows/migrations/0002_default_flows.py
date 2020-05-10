@@ -12,7 +12,7 @@ def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("passbook_flows", "Flow")
     FlowStageBinding = apps.get_model("passbook_flows", "FlowStageBinding")
     PasswordStage = apps.get_model("passbook_stages_password", "PasswordStage")
-    LoginStage = apps.get_model("passbook_stages_login", "LoginStage")
+    UserLoginStage = apps.get_model("passbook_stages_user_login", "UserLoginStage")
     IdentificationStage = apps.get_model(
         "passbook_stages_identification", "IdentificationStage"
     )
@@ -34,12 +34,12 @@ def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             name="password", backends=["django.contrib.auth.backends.ModelBackend"],
         )
 
-    if not LoginStage.objects.using(db_alias).exists():
-        LoginStage.objects.using(db_alias).create(name="authentication")
+    if not UserLoginStage.objects.using(db_alias).exists():
+        UserLoginStage.objects.using(db_alias).create(name="authentication")
 
     ident_stage = IdentificationStage.objects.using(db_alias).first()
     pw_stage = PasswordStage.objects.using(db_alias).first()
-    login_stage = LoginStage.objects.using(db_alias).first()
+    login_stage = UserLoginStage.objects.using(db_alias).first()
     flow = Flow.objects.using(db_alias).create(
         name="default-authentication-flow",
         slug="default-authentication-flow",
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("passbook_flows", "0001_initial"),
-        ("passbook_stages_login", "0001_initial"),
+        ("passbook_stages_user_login", "0001_initial"),
         ("passbook_stages_password", "0001_initial"),
         ("passbook_stages_identification", "0001_initial"),
     ]

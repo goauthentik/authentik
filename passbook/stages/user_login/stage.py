@@ -12,7 +12,7 @@ from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 LOGGER = get_logger()
 
 
-class LoginStageView(AuthenticationStage):
+class UserLoginStageView(AuthenticationStage):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:

@@ -34,10 +34,10 @@ from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
-from passbook.stages.login.api import LoginStageViewSet
 from passbook.stages.otp.api import OTPStageViewSet
 from passbook.stages.password.api import PasswordStageViewSet
 from passbook.stages.prompt.api import PromptStageViewSet, PromptViewSet
+from passbook.stages.user_login.api import UserLoginStageViewSet
 
 LOGGER = get_logger()
 router = routers.DefaultRouter()
@@ -83,7 +83,7 @@ router.register("stages/email", EmailStageViewSet)
 router.register("stages/otp", OTPStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
-router.register("stages/login", LoginStageViewSet)
+router.register("stages/user_login", UserLoginStageViewSet)
 router.register("stages/prompt", PromptStageViewSet)
 router.register("stages/prompt/prompts", PromptViewSet)
 

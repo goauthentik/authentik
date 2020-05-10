@@ -6,11 +6,11 @@ from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
-from passbook.stages.login.models import LoginStage
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
+from passbook.stages.user_login.models import UserLoginStage
 
 
-class TestLoginStage(TestCase):
+class TestUserLoginStage(TestCase):
     """Login tests"""
 
     def setUp(self):
@@ -23,7 +23,7 @@ class TestLoginStage(TestCase):
             slug="test-login",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        self.stage = LoginStage.objects.create(name="login")
+        self.stage = UserLoginStage.objects.create(name="login")
         FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
 
     def test_valid_password(self):
