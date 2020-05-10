@@ -1,10 +1,10 @@
 """passbook multi-stage authentication engine"""
 from datetime import timedelta
-from urllib.parse import quote
 
 from django.contrib import messages
 from django.http import HttpRequest
 from django.shortcuts import reverse
+from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from structlog import get_logger
@@ -23,6 +23,15 @@ class EmailStageView(AuthenticationStage):
 
     template_name = "stages/email/waiting_message.html"
 
+    def get_full_url(self, **kwargs) -> str:
+        """Get full URL to be used in template"""
+        base_url = reverse(
+            "passbook_flows:flow-executor",
+            kwargs={"flow_slug": self.executor.flow.slug},
+        )
+        relative_url = f"{base_url}?{urlencode(kwargs)}"
+        return self.request.build_absolute_uri(relative_url)
+
     def get(self, request, *args, **kwargs):
         # TODO: Form to make sure email is only sent once
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
@@ -37,14 +46,7 @@ class EmailStageView(AuthenticationStage):
             template_name="stages/email/for_email/password_reset.html",
             to=[pending_user.email],
             template_context={
-                "url": self.request.build_absolute_uri(
-                    reverse(
-                        "passbook_flows:flow-executor",
-                        kwargs={"flow_slug": self.executor.flow.slug},
-                    )
-                    + "?token="
-                    + quote(nonce.uuid.hex)
-                ),
+                "url": self.get_full_url(token=nonce.pk.hex),
                 "user": pending_user,
                 "expires": nonce.expires,
             },

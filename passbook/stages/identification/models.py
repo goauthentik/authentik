@@ -16,7 +16,8 @@ class UserFields(models.TextChoices):
 class Templates(models.TextChoices):
     """Templates to be used for the stage"""
 
-    DEFAULT_LOGIN = "login/form.html"
+    DEFAULT_LOGIN = "stages/identification/login.html"
+    DEFAULT_RECOVERY = "stages/identification/recovery.html"
 
 
 class IdentificationStage(Stage):
