@@ -77,3 +77,19 @@ class TestIdentificationStage(TestCase):
             form_data,
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_enrollment_flow(self):
+        """Test that enrollment flow is linked correctly"""
+        flow = Flow.objects.create(
+            name="enroll-test",
+            slug="unique-string",
+            designation=FlowDesignation.ENROLLMENT,
+        )
+
+        response = self.client.get(
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(flow.slug, response.rendered_content)

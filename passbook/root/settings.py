@@ -358,7 +358,7 @@ TEST_OUTPUT_VERBOSE = 2
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
 if any("test" in arg for arg in sys.argv):
-    # LOGGING = None
+    LOGGING = None
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True
 
