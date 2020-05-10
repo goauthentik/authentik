@@ -36,7 +36,7 @@ class IdentificationForm(forms.Form):
         if self.stage.user_fields == [UserFields.E_MAIL]:
             self.fields["uid_field"] = forms.EmailField()
         self.fields["uid_field"].label = human_list(
-            [y.title() for x, y in UserFields.choices]
+            [x.title() for x in self.stage.user_fields]
         )
 
     def clean_uid_field(self):
