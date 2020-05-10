@@ -63,7 +63,20 @@ class FlowExecutorView(View):
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
-        if SESSION_KEY_PLAN not in self.request.session:
+        if SESSION_KEY_PLAN in self.request.session:
+            self.plan = self.request.session[SESSION_KEY_PLAN]
+            if self.plan.flow_pk != self.flow.pk.hex:
+                LOGGER.warning(
+                    "f(exec): Found existing plan for other flow, deleteing plan",
+                    flow_slug=flow_slug,
+                )
+                # Existing plan is deleted from session and instance
+                self.plan = None
+                self.cancel()
+            LOGGER.debug("f(exec): Continuing existing plan", flow_slug=flow_slug)
+
+        # Don't check session again as we've either already loaded the plan or we need to plan
+        if not self.plan:
             LOGGER.debug(
                 "f(exec): No active Plan found, initiating planner", flow_slug=flow_slug
             )
@@ -75,9 +88,6 @@ class FlowExecutorView(View):
             except EmptyFlowException as exc:
                 LOGGER.warning("f(exec): Flow is empty", exc=exc)
                 return self.handle_invalid_flow(exc)
-        else:
-            LOGGER.debug("f(exec): Continuing existing plan", flow_slug=flow_slug)
-            self.plan = self.request.session[SESSION_KEY_PLAN]
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         self.current_stage = self.plan.next()

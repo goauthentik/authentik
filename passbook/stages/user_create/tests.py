@@ -34,7 +34,7 @@ class TestUserCreateStage(TestCase):
 
     def test_valid_create(self):
         """Test creation of user"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user",
             "name": "name",
@@ -59,7 +59,7 @@ class TestUserCreateStage(TestCase):
 
     def test_without_data(self):
         """Test without data results in error"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

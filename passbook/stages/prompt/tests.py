@@ -97,7 +97,7 @@ class TestPromptStage(TestCase):
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -121,7 +121,7 @@ class TestPromptStage(TestCase):
 
     def test_valid_form_request(self):
         """Test a request with valid form data"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

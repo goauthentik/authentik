@@ -42,7 +42,7 @@ class TestPasswordStage(TestCase):
 
     def test_without_user(self):
         """Test without user"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -59,7 +59,7 @@ class TestPasswordStage(TestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -77,7 +77,7 @@ class TestPasswordStage(TestCase):
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -99,9 +99,7 @@ class TestPasswordStage(TestCase):
     def test_permission_denied(self):
         """Test with a valid pending user and valid password.
         Backend is patched to return PermissionError"""
-        # from django.contrib.auth.backends import ModelBackend
-        # ModelBackend().authenticate()
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

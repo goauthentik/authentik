@@ -21,6 +21,7 @@ class FlowPlan:
     """This data-class is the output of a FlowPlanner. It holds a flat list
     of all Stages that should be run."""
 
+    flow_pk: str
     stages: List[Stage] = field(default_factory=list)
     context: Dict[str, Any] = field(default_factory=dict)
 
@@ -46,9 +47,9 @@ class FlowPlanner:
     def plan(self, request: HttpRequest) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        LOGGER.debug("Starting planning process", flow=self.flow)
+        LOGGER.debug("f(plan): Starting planning process", flow=self.flow)
         start_time = time()
-        plan = FlowPlan()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex)
         # First off, check the flow's direct policy bindings
         # to make sure the user even has access to the flow
         root_passing, root_passing_messages = self._check_flow_root_policies(request)
@@ -65,11 +66,13 @@ class FlowPlanner:
             engine.build()
             passing, _ = engine.result
             if passing:
-                LOGGER.debug("Stage passing", stage=stage)
+                LOGGER.debug("f(plan): Stage passing", stage=stage)
                 plan.stages.append(stage)
         end_time = time()
         LOGGER.debug(
-            "Finished planning", flow=self.flow, duration_s=end_time - start_time
+            "f(plan): Finished planning",
+            flow=self.flow,
+            duration_s=end_time - start_time,
         )
         if not plan.stages:
             raise EmptyFlowException()

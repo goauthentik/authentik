@@ -29,7 +29,7 @@ class TestUserLoginStage(TestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and backend"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -48,7 +48,7 @@ class TestUserLoginStage(TestCase):
 
     def test_without_user(self):
         """Test a plan without any pending user, resulting in a denied"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -63,7 +63,7 @@ class TestUserLoginStage(TestCase):
 
     def test_without_backend(self):
         """Test a plan with pending user, without backend, resulting in a denied"""
-        plan = FlowPlan(stages=[self.stage])
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
