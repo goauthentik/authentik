@@ -14,6 +14,7 @@ class FieldTypes(models.TextChoices):
     EMAIL = "e-mail"
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
+    HIDDEN = "hidden"
 
 
 class Prompt(UUIDModel):
@@ -55,7 +56,26 @@ class Prompt(UUIDModel):
                 widget=forms.NumberInput(attrs=attrs),
                 required=self.required,
             )
-        raise ValueError
+        if self.type == FieldTypes.HIDDEN:
+            return forms.CharField(
+                widget=forms.HiddenInput(attrs=attrs),
+                required=False,
+                initial=self.placeholder,
+            )
+        raise ValueError("field_type is not valid, not one of FieldTypes.")
+
+    def save(self, *args, **kwargs):
+        if self.type not in FieldTypes:
+            raise ValueError
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Prompt '{self.field_key}' type={self.type}'"
+
+    class Meta:
+
+        verbose_name = _("Prompt")
+        verbose_name_plural = _("Prompts")
 
 
 class PromptStage(Stage):

@@ -1,4 +1,4 @@
-"""Enrollment Stage Logic"""
+"""Prompt Stage Logic"""
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
@@ -11,8 +11,8 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
-class EnrollmentStageView(FormView, AuthenticationStage):
-    """Enrollment Stage, save form data in plan context."""
+class PromptStageView(FormView, AuthenticationStage):
+    """Prompt Stage, save form data in plan context."""
 
     template_name = "login/form.html"
     form_class = PromptForm
