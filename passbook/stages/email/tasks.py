@@ -25,6 +25,7 @@ def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
 @CELERY_APP.task(
     bind=True, autoretry_for=(SMTPException, ConnectionError,), retry_backoff=True
 )
+# pylint: disable=unused-argument
 def _send_mail_task(self, email_stage_pk: int, message: Dict[Any, Any]):
     """Send E-Mail according to EmailStage parameters from background worker.
     Automatically retries if message couldn't be sent."""
@@ -38,6 +39,4 @@ def _send_mail_task(self, email_stage_pk: int, message: Dict[Any, Any]):
         setattr(message_object, key, value)
     message_object.from_email = stage.from_address
     LOGGER.debug("Sending mail", to=message_object.to)
-    num_sent = stage.backend.send_messages([message_object])
-    if num_sent != 1:
-        raise self.retry()
+    stage.backend.send_messages([message_object])

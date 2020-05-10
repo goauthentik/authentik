@@ -12,7 +12,7 @@ class EmailStageSendForm(forms.Form):
 
 
 class EmailStageForm(forms.ModelForm):
-    """Form to create/edit Dummy Stage"""
+    """Form to create/edit E-Mail Stage"""
 
     class Meta:
 

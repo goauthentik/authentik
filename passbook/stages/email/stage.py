@@ -65,9 +65,4 @@ class EmailStageView(FormView, AuthenticationStage):
         send_mails(self.executor.current_stage, message)
         # We can't call stage_ok yet, as we're still waiting
         # for the user to click the link in the email
-        # return self.executor.stage_ok()
         return super().form_invalid(form)
-
-    # def post(self, request: HttpRequest):
-    #     """Just redirect to next stage"""
-    #     return self.executor.()

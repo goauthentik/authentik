@@ -1,5 +1,6 @@
 """email stage models"""
-from django.core.mail.backends.smtp import EmailBackend
+from django.core.mail import get_connection
+from django.core.mail.backends.base import BaseEmailBackend
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -27,9 +28,9 @@ class EmailStage(Stage):
     form = "passbook.stages.email.forms.EmailStageForm"
 
     @property
-    def backend(self) -> EmailBackend:
+    def backend(self) -> BaseEmailBackend:
         """Get fully configured EMail Backend instance"""
-        return EmailBackend(
+        return get_connection(
             host=self.host,
             port=self.port,
             username=self.username,
