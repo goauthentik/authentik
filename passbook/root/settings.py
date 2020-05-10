@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     "passbook.stages.email.apps.PassbookStageEmailConfig",
     "passbook.stages.prompt.apps.PassbookStagPromptConfig",
     "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
+    "passbook.stages.user_create.apps.PassbookStageUserCreateConfig",
     "passbook.stages.user_login.apps.PassbookStageUserLoginConfig",
     "passbook.stages.otp.apps.PassbookStageOTPConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
@@ -357,7 +358,7 @@ TEST_OUTPUT_VERBOSE = 2
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
 if any("test" in arg for arg in sys.argv):
-    LOGGING = None
+    # LOGGING = None
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True
 
