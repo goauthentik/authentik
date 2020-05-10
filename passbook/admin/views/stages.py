@@ -24,12 +24,12 @@ def all_subclasses(cls):
 
 
 class StageListView(LoginRequiredMixin, PermissionListMixin, ListView):
-    """Show list of all flows"""
+    """Show list of all stages"""
 
     model = Stage
-    template_name = "administration/flow/list.html"
-    permission_required = "passbook_core.view_flow"
-    ordering = "order"
+    template_name = "administration/stage/list.html"
+    permission_required = "passbook_flows.view_stage"
+    ordering = "name"
     paginate_by = 40
 
     def get_context_data(self, **kwargs):
@@ -52,21 +52,21 @@ class StageCreateView(
 
     model = Stage
     template_name = "generic/create.html"
-    permission_required = "passbook_core.add_flow"
+    permission_required = "passbook_flows.add_stage"
 
-    success_url = reverse_lazy("passbook_admin:flows")
+    success_url = reverse_lazy("passbook_admin:stages")
     success_message = _("Successfully created Stage")
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        flow_type = self.request.GET.get("type")
-        model = next(x for x in all_subclasses(Stage) if x.__name__ == flow_type)
+        stage_type = self.request.GET.get("type")
+        model = next(x for x in all_subclasses(Stage) if x.__name__ == stage_type)
         kwargs["type"] = model._meta.verbose_name
         return kwargs
 
     def get_form_class(self):
-        flow_type = self.request.GET.get("type")
-        model = next(x for x in all_subclasses(Stage) if x.__name__ == flow_type)
+        stage_type = self.request.GET.get("type")
+        model = next(x for x in all_subclasses(Stage) if x.__name__ == stage_type)
         if not model:
             raise Http404
         return path_to_class(model.form)
@@ -75,12 +75,12 @@ class StageCreateView(
 class StageUpdateView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 ):
-    """Update flow"""
+    """Update stage"""
 
     model = Stage
-    permission_required = "passbook_core.update_application"
+    permission_required = "passbook_flows.update_application"
     template_name = "generic/update.html"
-    success_url = reverse_lazy("passbook_admin:flows")
+    success_url = reverse_lazy("passbook_admin:stages")
     success_message = _("Successfully updated Stage")
 
     def get_form_class(self):
@@ -97,12 +97,12 @@ class StageUpdateView(
 class StageDeleteView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
 ):
-    """Delete flow"""
+    """Delete stage"""
 
     model = Stage
     template_name = "generic/delete.html"
-    permission_required = "passbook_core.delete_flow"
-    success_url = reverse_lazy("passbook_admin:flows")
+    permission_required = "passbook_flows.delete_stage"
+    success_url = reverse_lazy("passbook_admin:stages")
     success_message = _("Successfully deleted Stage")
 
     def get_object(self, queryset=None):

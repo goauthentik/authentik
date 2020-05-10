@@ -26,7 +26,7 @@
                 <tr role="row">
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Designation' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Factors' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Stages' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Policies' %}</th>
                     <th role="cell"></th>
                 </tr>
@@ -47,7 +47,7 @@
                     </td>
                     <td role="cell">
                         <span>
-                            {{ flow.factors.all|length }}
+                            {{ flow.stages.all|length }}
                         </span>
                     </td>
                     <td role="cell">

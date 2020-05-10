@@ -9,9 +9,9 @@
     <div class="pf-c-content">
         <h1>
             <i class="pf-icon pf-icon-plugged"></i>
-            {% trans 'Factors' %}
+            {% trans 'Stages' %}
         </h1>
-        <p>{% trans "Factors required for a user to successfully authenticate." %}
+        <p>{% trans "Stages required for a user to successfully authenticate." %}
         </p>
     </div>
 </section>
@@ -27,7 +27,7 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:factor-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:stage-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -39,34 +39,36 @@
             <thead>
                 <tr role="row">
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Flows' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
             <tbody role="rowgroup">
-                {% for factor in object_list %}
+                {% for stage in object_list %}
                 <tr role="row">
                     <th role="columnheader">
                         <div>
-                            <div>{{ factor.name }} ({{ factor.slug }})</div>
-                            <small>{{ factor|verbose_name }}</small>
+                            <div>{{ stage.name }}</div>
+                            <small>{{ stage|verbose_name }}</small>
                         </div>
                     </th>
                     <td role="cell">
-                        <span>
-                            {{ factor.order }}
-                        </span>
+                        <ul>
+                            {% for flow in stage.flow_set.all %}
+                            <li><a href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">{{ flow.slug }}</a></li>
+                            {% endfor %}
+                        </ul>
                     </td>
                     <td role="cell">
                         <span>
-                            {{ factor.enabled }}
+                            {{ stage.enabled }}
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:factor-update' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:factor-delete' pk=factor.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                        {% get_links factor as links %}
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-update' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-delete' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        {% get_links stage as links %}
                         {% for name, href in links.items %}
                         <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
                         {% endfor %}
