@@ -16,6 +16,11 @@ urlpatterns = [
         name="default-auth",
     ),
     path(
+        "-/default/invalidation/",
+        ToDefaultFlow.as_view(designation=FlowDesignation.INVALIDATION),
+        name="default-invalidation",
+    ),
+    path(
         "-/default/recovery/",
         ToDefaultFlow.as_view(designation=FlowDesignation.RECOVERY),
         name="default-recovery",

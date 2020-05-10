@@ -18,6 +18,7 @@ class FlowDesignation(models.TextChoices):
     ENROLLMENT = "enrollment"
     RECOVERY = "recovery"
     PASSWORD_CHANGE = "password_change"  # nosec # noqa
+    INVALIDATION = "invalidation"
 
 
 class Stage(UUIDModel):
