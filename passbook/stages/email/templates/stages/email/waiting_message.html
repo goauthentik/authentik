@@ -1,1 +1,21 @@
-check your emails mate
+{% extends 'login/base.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block card %}
+<form method="POST" class="pf-c-form">
+    <p>
+        {% blocktrans %}
+        Check your E-Mails for a password reset link.
+        {% endblocktrans %}
+    </p>
+    {% csrf_token %}
+
+    {% block beneath_form %}
+    {% endblock %}
+    <div class="pf-c-form__group pf-m-action">
+        <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans "Send Recovery E-Mail." %}</button>
+    </div>
+</form>
+{% endblock %}

@@ -26,7 +26,7 @@ class AuthenticationStage(TemplateView):
 
     def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
         kwargs["config"] = CONFIG.y("passbook")
-        kwargs["title"] = _("Log in to your account")
+        kwargs["title"] = self.executor.flow.name
         kwargs["primary_action"] = _("Log in")
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             kwargs["user"] = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]

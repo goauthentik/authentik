@@ -5,6 +5,12 @@ from django.utils.translation import gettext_lazy as _
 from passbook.stages.email.models import EmailStage
 
 
+class EmailStageSendForm(forms.Form):
+    """Form used when sending the e-mail to prevent multiple emails being sent"""
+
+    invalid = forms.CharField(widget=forms.HiddenInput, required=True)
+
+
 class EmailStageForm(forms.ModelForm):
     """Form to create/edit Dummy Stage"""
 
@@ -21,20 +27,14 @@ class EmailStageForm(forms.ModelForm):
             "use_ssl",
             "timeout",
             "from_address",
-            "ssl_keyfile",
-            "ssl_certfile",
         ]
         widgets = {
             "name": forms.TextInput(),
             "host": forms.TextInput(),
             "username": forms.TextInput(),
             "password": forms.TextInput(),
-            "ssl_keyfile": forms.TextInput(),
-            "ssl_certfile": forms.TextInput(),
         }
         labels = {
             "use_tls": _("Use TLS"),
             "use_ssl": _("Use SSL"),
-            "ssl_keyfile": _("SSL Keyfile (optional)"),
-            "ssl_certfile": _("SSL Certfile (optional)"),
         }

@@ -17,8 +17,9 @@ class EmailStage(Stage):
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
 
-    ssl_keyfile = models.TextField(default=None, blank=True, null=True)
-    ssl_certfile = models.TextField(default=None, blank=True, null=True)
+    token_expiry = models.IntegerField(
+        default=30, help_text=_("Time in minutes the token sent is valid.")
+    )
 
     from_address = models.EmailField(default="system@passbook.local")
 
@@ -36,8 +37,6 @@ class EmailStage(Stage):
             use_tls=self.use_tls,
             use_ssl=self.use_ssl,
             timeout=self.timeout,
-            ssl_certfile=self.ssl_certfile,
-            ssl_keyfile=self.ssl_keyfile,
         )
 
     def __str__(self):
