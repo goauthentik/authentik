@@ -56,6 +56,11 @@ class Flow(PolicyBindingModel, UUIDModel):
         PolicyBindingModel, parent_link=True, on_delete=models.CASCADE, related_name="+"
     )
 
+    def related_flow(self, designation: str) -> Optional["Flow"]:
+        """Get a related flow with `designation`. Currently this only queries
+        Flows by `designation`, but will eventually use `self` for related lookups."""
+        return Flow.objects.filter(designation=designation).first()
+
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"
 

@@ -63,11 +63,11 @@
                     </li>
                     {% endfor %}
                 </ul>
-                {% if show_sign_up_notice %}
+                {% if enroll_url %}
                 <div class="pf-c-login__main-footer-band">
                     <p class="pf-c-login__main-footer-band-item">
                         {% trans 'Need an account?' %}
-                        <a href="{% url 'passbook_core:auth-sign-up' %}">{% trans 'Sign up.' %}</a>
+                        <a href="{{ enroll_url }}">{% trans 'Sign up.' %}</a>
                     </p>
                 </div>
                 {% endif %}

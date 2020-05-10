@@ -19,9 +19,6 @@ error_reporting: false
 domain: localhost
 
 passbook:
-  sign_up:
-    # Enables signup, created users are stored in internal Database and created in LDAP if ldap.create_users is true
-    enabled: true
   password_reset:
     # Enable password reset, passwords are reset in internal Database and in LDAP if ldap.reset_password is true
     enabled: true
@@ -30,7 +27,3 @@ passbook:
       # Optionally add links to the footer on the login page
       #  - name: test
       #    href: https://test
-  # Specify which fields can be used to authenticate. Can be any combination of `username` and `email`
-  uid_fields:
-    - username
-    - email

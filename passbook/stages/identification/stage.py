@@ -4,14 +4,15 @@ from typing import List, Optional
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
+from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from structlog import get_logger
 
 from passbook.core.models import Source, User
+from passbook.flows.models import FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
-from passbook.lib.config import CONFIG
 from passbook.stages.identification.forms import IdentificationForm
 from passbook.stages.identification.models import IdentificationStage
 
@@ -33,11 +34,16 @@ class IdentificationStageView(FormView, AuthenticationStage):
         return [current_stage.template]
 
     def get_context_data(self, **kwargs):
-        kwargs["config"] = CONFIG.y("passbook")
-        kwargs["title"] = _("Log in to your account")
-        kwargs["primary_action"] = _("Log in")
-        # TODO: show this based on the existence of an enrollment flow
-        kwargs["show_sign_up_notice"] = CONFIG.y("passbook.sign_up.enabled")
+        # Check for related enrollment flow, add URL to view
+        enrollment_flow = self.executor.flow.related_flow(FlowDesignation.ENROLLMENT)
+        if enrollment_flow:
+            url = reverse(
+                "passbook_flows:flow-executor",
+                kwargs={"flow_slug": enrollment_flow.slug},
+            )
+            kwargs["enroll_url"] = url
+
+        # Check all enabled source, add them if they have a UI Login button.
         kwargs["sources"] = []
         sources = (
             Source.objects.filter(enabled=True).order_by("name").select_subclasses()
