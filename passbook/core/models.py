@@ -208,9 +208,8 @@ class Invitation(ExportModelOperationsMixin("invitation"), UUIDModel):
     @property
     def link(self):
         """Get link to use invitation"""
-        return (
-            reverse_lazy("passbook_core:auth-sign-up") + f"?invitation={self.uuid.hex}"
-        )
+        qs = f"?invitation={self.uuid.hex}"
+        return reverse_lazy("passbook_flows:default-enrollment") + qs
 
     def __str__(self):
         return f"Invitation {self.uuid.hex} created by {self.created_by}"

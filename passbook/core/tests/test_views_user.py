@@ -5,7 +5,6 @@ from random import SystemRandom
 from django.shortcuts import reverse
 from django.test import TestCase
 
-from passbook.core.forms.users import PasswordChangeForm
 from passbook.core.models import User
 
 
@@ -37,21 +36,3 @@ class TestUserViews(TestCase):
         )
         self.assertEqual(User.objects.filter(username="unittest user").exists(), False)
         self.setUp()
-
-    def test_user_change_password(self):
-        """Test UserChangePasswordView"""
-        form_data = {"password": "test2", "password_repeat": "test2"}
-        form = PasswordChangeForm(data=form_data)
-        self.assertTrue(form.is_valid())
-        self.assertEqual(
-            self.client.get(reverse("passbook_core:user-change-password")).status_code,
-            200,
-        )
-        self.assertEqual(
-            self.client.post(
-                reverse("passbook_core:user-change-password"), data=form_data
-            ).status_code,
-            302,
-        )
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password("test2"))

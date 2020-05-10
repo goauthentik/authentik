@@ -11,7 +11,7 @@ from passbook.root.monitoring import MetricsView
 
 LOGGER = get_logger()
 admin.autodiscover()
-admin.site.login = RedirectView.as_view(pattern_name="passbook_core:auth-login")
+admin.site.login = RedirectView.as_view(pattern_name="passbook_flows:default-auth")
 
 handler400 = error.BadRequestView.as_view()
 handler403 = error.ForbiddenView.as_view()

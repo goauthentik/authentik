@@ -94,9 +94,10 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
     def get(self, request, *args, **kwargs):
         """Create nonce for user and return link"""
         super().get(request, *args, **kwargs)
+        # TODO: create plan for user, get token
         nonce = Nonce.objects.create(user=self.object)
         link = request.build_absolute_uri(
-            reverse("passbook_core:auth-password-reset", kwargs={"nonce": nonce.uuid})
+            reverse("passbook_flows:default-recovery", kwargs={"nonce": nonce.uuid})
         )
         messages.success(
             request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})
