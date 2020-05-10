@@ -9,7 +9,7 @@ from structlog import get_logger
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
+from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
@@ -145,8 +145,8 @@ class FlowExecutorView(View):
         # User passed all stages
         LOGGER.debug(
             "f(exec): User passed all stages",
-            user=self.plan.context[PLAN_CONTEXT_PENDING_USER],
             flow_slug=self.flow.slug,
+            context=self.plan.context,
         )
         return self._flow_done()
 
@@ -159,7 +159,8 @@ class FlowExecutorView(View):
 
     def cancel(self):
         """Cancel current execution and return a redirect"""
-        del self.request.session[SESSION_KEY_PLAN]
+        if SESSION_KEY_PLAN in self.request.session:
+            del self.request.session[SESSION_KEY_PLAN]
 
 
 class FlowPermissionDeniedView(PermissionDeniedView):
@@ -172,6 +173,8 @@ class ToDefaultFlow(View):
     designation: Optional[FlowDesignation] = None
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
+        if SESSION_KEY_PLAN in self.request.session:
+            del self.request.session[SESSION_KEY_PLAN]
         flow = get_object_or_404(Flow, designation=self.designation)
         # TODO: Get Flow depending on subdomain?
         return redirect_with_qs(
