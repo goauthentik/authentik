@@ -11,7 +11,6 @@ from django.views.generic import DeleteView, FormView, UpdateView
 
 from passbook.core.forms.users import PasswordChangeForm, UserDetailForm
 from passbook.lib.config import CONFIG
-from passbook.stages.password.exceptions import PasswordPolicyInvalid
 
 
 class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -48,20 +47,20 @@ class UserChangePasswordView(LoginRequiredMixin, FormView):
     template_name = "login/form_with_user.html"
 
     def form_valid(self, form: PasswordChangeForm):
+        # TODO: Rewrite to flow
         try:
             # user.set_password checks against Policies so we don't need to manually do it here
             self.request.user.set_password(form.cleaned_data.get("password"))
             self.request.user.save()
             update_session_auth_hash(self.request, self.request.user)
             messages.success(self.request, _("Successfully changed password"))
-        except PasswordPolicyInvalid as exc:
+        except ValueError:
             # Manually inject error into form
             # pylint: disable=protected-access
             errors = form._errors.setdefault("password_repeat", ErrorList(""))
             # pylint: disable=protected-access
             errors = form._errors.setdefault("password", ErrorList())
-            for error in exc.messages:
-                errors.append(error)
+            errors.append("foo")
             return self.form_invalid(form)
         return redirect("passbook_core:overview")
 

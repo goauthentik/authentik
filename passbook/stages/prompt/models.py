@@ -53,7 +53,7 @@ class Prompt(UUIDModel):
             return forms.IntegerField(
                 label=_(self.label),
                 widget=forms.NumberInput(attrs=attrs),
-                requred=self.required,
+                required=self.required,
             )
         raise ValueError
 

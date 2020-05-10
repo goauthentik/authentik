@@ -7,6 +7,7 @@ from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
+from passbook.stages.user_login.forms import UserLoginStageForm
 from passbook.stages.user_login.models import UserLoginStage
 
 
@@ -75,3 +76,8 @@ class TestUserLoginStage(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+    def test_form(self):
+        """Test Form"""
+        data = {"name": "test"}
+        self.assertEqual(UserLoginStageForm(data).is_valid(), True)
