@@ -96,12 +96,14 @@ INSTALLED_APPS = [
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
+    "passbook.stages.dummy.apps.PassbookStageDummyConfig",
     "passbook.stages.login.apps.PassbookStageLoginConfig",
     "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
     "passbook.stages.otp.apps.PassbookStageOTPConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
     "passbook.stages.email.apps.PassbookStageEmailConfig",
+    "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
     "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
@@ -353,7 +355,7 @@ TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
 if any("test" in arg for arg in sys.argv):
-    LOGGING["loggers"]["django"]["level"] = "DEBUG"
+    LOGGING = None
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True
 
@@ -388,11 +390,5 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
-
-    # Load Dummy/Debug objects
-    INSTALLED_APPS += [
-        "passbook.stages.dummy.apps.PassbookStageDummyConfig",
-        "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
-    ]
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
