@@ -32,7 +32,7 @@ NATIVE_ENVIRONMENT = NativeEnvironment()
 
 def default_nonce_duration():
     """Default duration a Nonce is valid"""
-    return now() + timedelta(hours=4)
+    return now() + timedelta(minutes=30)
 
 
 class Group(ExportModelOperationsMixin("group"), UUIDModel):
