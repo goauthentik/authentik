@@ -37,22 +37,19 @@ def create_default_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     if not UserLoginStage.objects.using(db_alias).exists():
         UserLoginStage.objects.using(db_alias).create(name="authentication")
 
-    ident_stage = IdentificationStage.objects.using(db_alias).first()
-    pw_stage = PasswordStage.objects.using(db_alias).first()
-    login_stage = UserLoginStage.objects.using(db_alias).first()
     flow = Flow.objects.using(db_alias).create(
         name="default-authentication-flow",
         slug="default-authentication-flow",
         designation=FlowDesignation.AUTHENTICATION,
     )
     FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=ident_stage, order=0,
+        flow=flow, stage=IdentificationStage.objects.using(db_alias).first(), order=0,
     )
     FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=pw_stage, order=1,
+        flow=flow, stage=PasswordStage.objects.using(db_alias).first(), order=1,
     )
     FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=login_stage, order=2,
+        flow=flow, stage=UserLoginStage.objects.using(db_alias).first(), order=2,
     )
 
 
