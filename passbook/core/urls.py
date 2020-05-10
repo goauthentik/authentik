@@ -13,14 +13,13 @@ urlpatterns = [
         name="auth-login",
     ),
     path("auth/logout/", authentication.LogoutView.as_view(), name="auth-logout"),
-    path("auth/sign_up/", authentication.SignUpView.as_view(), name="auth-sign-up"),
     path(
-        "auth/sign_up/<uuid:nonce>/confirm/",
-        authentication.SignUpConfirmView.as_view(),
-        name="auth-sign-up-confirm",
+        "auth/sign_up/",
+        ToDefaultFlow.as_view(designation=FlowDesignation.ENROLLMENT),
+        name="auth-sign-up",
     ),
     path(
-        "auth/password/reset/<uuid:nonce>/",
+        "auth/password/reset/<uuid:nonce_uuid>/",
         authentication.PasswordResetView.as_view(),
         name="auth-password-reset",
     ),

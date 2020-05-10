@@ -37,6 +37,7 @@ from passbook.stages.identification.api import IdentificationStageViewSet
 from passbook.stages.login.api import LoginStageViewSet
 from passbook.stages.otp.api import OTPStageViewSet
 from passbook.stages.password.api import PasswordStageViewSet
+from passbook.stages.prompt.api import PromptStageViewSet, PromptViewSet
 
 LOGGER = get_logger()
 router = routers.DefaultRouter()
@@ -83,6 +84,8 @@ router.register("stages/otp", OTPStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
 router.register("stages/login", LoginStageViewSet)
+router.register("stages/prompt", PromptStageViewSet)
+router.register("stages/prompt/prompts", PromptViewSet)
 
 router.register("flows", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
