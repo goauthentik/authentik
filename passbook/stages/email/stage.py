@@ -1,8 +1,9 @@
 """passbook multi-stage authentication engine"""
 from datetime import timedelta
 
-from django.http import HttpResponse
-from django.shortcuts import reverse
+from django.contrib import messages
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -17,6 +18,7 @@ from passbook.stages.email.tasks import send_mails
 from passbook.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+QS_KEY_TOKEN = "token"
 
 
 class EmailStageView(FormView, AuthenticationStage):
@@ -34,6 +36,15 @@ class EmailStageView(FormView, AuthenticationStage):
         relative_url = f"{base_url}?{urlencode(kwargs)}"
         return self.request.build_absolute_uri(relative_url)
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if QS_KEY_TOKEN in request.GET:
+            nonce = get_object_or_404(Nonce, pk=request.GET[QS_KEY_TOKEN])
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = nonce.user
+            nonce.delete()
+            messages.success(request, _("Successfully verified E-Mail."))
+            return self.executor.stage_ok()
+        return super().get(request, *args, **kwargs)
+
     def form_invalid(self, form: EmailStageSendForm) -> HttpResponse:
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         valid_delta = timedelta(
@@ -46,7 +57,7 @@ class EmailStageView(FormView, AuthenticationStage):
             template_name="stages/email/for_email/password_reset.html",
             to=[pending_user.email],
             template_context={
-                "url": self.get_full_url(token=nonce.pk.hex),
+                "url": self.get_full_url(**{QS_KEY_TOKEN: nonce.pk.hex}),
                 "user": pending_user,
                 "expires": nonce.expires,
             },
