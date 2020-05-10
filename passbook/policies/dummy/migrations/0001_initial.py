@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("passbook_policies", "0003_auto_20200508_1642"),
         ("passbook_core", "0013_delete_debugpolicy"),
     ]
 
