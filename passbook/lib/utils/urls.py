@@ -3,7 +3,11 @@ from urllib.parse import urlparse
 
 from django.http import HttpResponse
 from django.shortcuts import redirect, reverse
+from django.urls import NoReverseMatch
 from django.utils.http import urlencode
+from structlog import get_logger
+
+LOGGER = get_logger()
 
 
 def is_url_absolute(url):
@@ -13,7 +17,12 @@ def is_url_absolute(url):
 
 def redirect_with_qs(view: str, get_query_set=None, **kwargs) -> HttpResponse:
     """Wrapper to redirect whilst keeping GET Parameters"""
-    target = reverse(view, kwargs=kwargs)
-    if get_query_set:
-        target += "?" + urlencode(get_query_set.items())
-    return redirect(target)
+    try:
+        target = reverse(view, kwargs=kwargs)
+    except NoReverseMatch:
+        LOGGER.debug("redirect target is not a valid view", view=view)
+        raise
+    else:
+        if get_query_set:
+            target += "?" + urlencode(get_query_set.items())
+        return redirect(target)

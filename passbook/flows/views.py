@@ -12,7 +12,7 @@ from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
-from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
+from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
 
 LOGGER = get_logger()
@@ -59,7 +59,8 @@ class FlowExecutorView(View):
         incorrect_domain_message = self._check_config_domain()
         if incorrect_domain_message:
             return incorrect_domain_message
-        return bad_request_message(self.request, str(exc))
+        message = exc.__doc__ if exc.__doc__ else str(exc)
+        return bad_request_message(self.request, message)
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
@@ -128,10 +129,8 @@ class FlowExecutorView(View):
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
         self.cancel()
-        next_param = self.request.GET.get(NEXT_ARG_NAME, None)
-        if next_param and not is_url_absolute(next_param):
-            return redirect(next_param)
-        return redirect_with_qs("passbook_core:overview")
+        next_param = self.request.GET.get(NEXT_ARG_NAME, "passbook_core:overview")
+        return redirect_with_qs(next_param)
 
     def stage_ok(self) -> HttpResponse:
         """Callback called by stages upon successful completion.
@@ -183,9 +182,16 @@ class ToDefaultFlow(View):
     designation: Optional[FlowDesignation] = None
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        if SESSION_KEY_PLAN in self.request.session:
-            del self.request.session[SESSION_KEY_PLAN]
         flow = get_object_or_404(Flow, designation=self.designation)
+        # If user already has a pending plan, clear it so we don't have to later.
+        if SESSION_KEY_PLAN in self.request.session:
+            plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+            if plan.flow_pk != flow.pk.hex:
+                LOGGER.warning(
+                    "f(def): Found existing plan for other flow, deleteing plan",
+                    flow_slug=flow.slug,
+                )
+                del self.request.session[SESSION_KEY_PLAN]
         # TODO: Get Flow depending on subdomain?
         return redirect_with_qs(
             "passbook_flows:flow-executor", request.GET, flow_slug=flow.slug
