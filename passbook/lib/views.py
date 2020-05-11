@@ -1,6 +1,7 @@
 """passbook helper views"""
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.http import HttpRequest
+from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from guardian.shortcuts import assign_perm
 
@@ -25,11 +26,11 @@ class CreateAssignPermView(CreateView):
         return response
 
 
-def bad_request_message(request: HttpRequest, message: str) -> HttpResponse:
+def bad_request_message(request: HttpRequest, message: str) -> TemplateResponse:
     """Return generic error page with message, with status code set to 400"""
-    return render(
+    return TemplateResponse(
         request,
         "error/generic.html",
-        {"message": message, "card_title": "Bad Request",},
+        {"message": message, "card_title": _("Bad Request")},
         status=400,
     )
