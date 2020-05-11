@@ -20,6 +20,8 @@ def redirect_with_qs(view: str, get_query_set=None, **kwargs) -> HttpResponse:
     try:
         target = reverse(view, kwargs=kwargs)
     except NoReverseMatch:
+        if not is_url_absolute(view):
+            return redirect(view)
         LOGGER.debug("redirect target is not a valid view", view=view)
         raise
     else:

@@ -5,9 +5,10 @@ from django.views.generic import TemplateView
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import Application, Invitation, Policy, Provider, Source, User
+from passbook.core.models import Application, Policy, Provider, Source, User
 from passbook.flows.models import Flow, Stage
 from passbook.root.celery import CELERY_APP
+from passbook.stages.invitation.models import Invitation
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):

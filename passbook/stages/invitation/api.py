@@ -1,8 +1,28 @@
-"""Invitation API Views"""
+"""Invitation Stage API Views"""
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from passbook.core.models import Invitation
+from passbook.stages.invitation.models import Invitation, InvitationStage
+
+
+class InvitationStageSerializer(ModelSerializer):
+    """InvitationStage Serializer"""
+
+    class Meta:
+
+        model = InvitationStage
+        fields = [
+            "pk",
+            "name",
+            "continue_flow_without_invitation",
+        ]
+
+
+class InvitationStageViewSet(ModelViewSet):
+    """InvitationStage Viewset"""
+
+    queryset = InvitationStage.objects.all()
+    serializer_class = InvitationStageSerializer
 
 
 class InvitationSerializer(ModelSerializer):

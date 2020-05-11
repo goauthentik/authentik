@@ -11,7 +11,6 @@ from passbook.api.permissions import CustomObjectPermissions
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.groups import GroupViewSet
-from passbook.core.api.invitations import InvitationViewSet
 from passbook.core.api.policies import PolicyViewSet
 from passbook.core.api.propertymappings import PropertyMappingViewSet
 from passbook.core.api.providers import ProviderViewSet
@@ -34,6 +33,7 @@ from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
+from passbook.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
 from passbook.stages.otp.api import OTPStageViewSet
 from passbook.stages.password.api import PasswordStageViewSet
 from passbook.stages.prompt.api import PromptStageViewSet, PromptViewSet
@@ -51,7 +51,6 @@ for _passbook_app in get_apps():
         LOGGER.debug("Mounted API URLs", app_name=_passbook_app.name)
 
 router.register("core/applications", ApplicationViewSet)
-router.register("core/invitations", InvitationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
 
@@ -83,6 +82,8 @@ router.register("stages/all", StageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)
 router.register("stages/email", EmailStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
+router.register("stages/invitation", InvitationStageViewSet)
+router.register("stages/invitation/invitations", InvitationViewSet)
 router.register("stages/otp", OTPStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
 router.register("stages/prompt", PromptStageViewSet)

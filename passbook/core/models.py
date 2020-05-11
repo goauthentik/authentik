@@ -8,7 +8,6 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
-from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
@@ -194,30 +193,6 @@ class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedMode
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
         raise PolicyException()
-
-
-class Invitation(ExportModelOperationsMixin("invitation"), UUIDModel):
-    """Single-use invitation link"""
-
-    created_by = models.ForeignKey("User", on_delete=models.CASCADE)
-    expires = models.DateTimeField(default=None, blank=True, null=True)
-    fixed_username = models.TextField(blank=True, default=None)
-    fixed_email = models.TextField(blank=True, default=None)
-    needs_confirmation = models.BooleanField(default=True)
-
-    @property
-    def link(self):
-        """Get link to use invitation"""
-        qs = f"?invitation={self.uuid.hex}"
-        return reverse_lazy("passbook_flows:default-enrollment") + qs
-
-    def __str__(self):
-        return f"Invitation {self.uuid.hex} created by {self.created_by}"
-
-    class Meta:
-
-        verbose_name = _("Invitation")
-        verbose_name_plural = _("Invitations")
 
 
 class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):

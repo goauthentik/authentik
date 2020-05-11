@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "passbook.stages.email.apps.PassbookStageEmailConfig",
     "passbook.stages.prompt.apps.PassbookStagPromptConfig",
     "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
+    "passbook.stages.invitation.apps.PassbookStageUserInvitationConfig",
     "passbook.stages.user_login.apps.PassbookStageUserLoginConfig",
     "passbook.stages.user_logout.apps.PassbookStageUserLogoutConfig",
     "passbook.stages.user_write.apps.PassbookStageUserWriteConfig",
