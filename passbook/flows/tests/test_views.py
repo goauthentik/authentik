@@ -104,10 +104,8 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         dest = "/unique-string"
-        response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug})
-            + f"?{NEXT_ARG_NAME}={dest}"
-        )
+        url = reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, dest)
 
