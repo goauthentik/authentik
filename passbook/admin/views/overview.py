@@ -20,7 +20,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         """Handle post (clear cache from modal)"""
         if "clear" in self.request.POST:
             cache.clear()
-            return redirect(reverse("passbook_flows:default-auth"))
+            return redirect(reverse("passbook_flows:default-authentication"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

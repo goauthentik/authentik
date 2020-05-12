@@ -11,9 +11,9 @@ from passbook.flows.views import (
 urlpatterns = [
     path("-/denied/", FlowPermissionDeniedView.as_view(), name="denied"),
     path(
-        "-/default/auth/",
+        "-/default/authentication/",
         ToDefaultFlow.as_view(designation=FlowDesignation.AUTHENTICATION),
-        name="default-auth",
+        name="default-authentication",
     ),
     path(
         "-/default/invalidation/",

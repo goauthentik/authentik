@@ -44,7 +44,7 @@ INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-LOGIN_URL = "passbook_flows:default-auth"
+LOGIN_URL = "passbook_flows:default-authentication"
 # CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
 
 # Custom user model
