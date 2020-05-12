@@ -29,10 +29,3 @@ class TestUserViews(TestCase):
             self.client.get(reverse("passbook_core:user-settings")).status_code, 200
         )
 
-    def test_user_delete(self):
-        """Test UserDeleteView"""
-        self.assertEqual(
-            self.client.post(reverse("passbook_core:user-delete")).status_code, 302
-        )
-        self.assertEqual(User.objects.filter(username="unittest user").exists(), False)
-        self.setUp()

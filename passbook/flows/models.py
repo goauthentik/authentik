@@ -15,10 +15,11 @@ class FlowDesignation(models.TextChoices):
     should be replaced by a database entry."""
 
     AUTHENTICATION = "authentication"
+    INVALIDATION = "invalidation"
     ENROLLMENT = "enrollment"
+    UNRENOLLMENT = "unenrollment"
     RECOVERY = "recovery"
     PASSWORD_CHANGE = "password_change"  # nosec # noqa
-    INVALIDATION = "invalidation"
 
 
 class Stage(UUIDModel):

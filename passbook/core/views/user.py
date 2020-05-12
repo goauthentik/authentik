@@ -22,17 +22,3 @@ class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return self.request.user
-
-
-class UserDeleteView(LoginRequiredMixin, DeleteView):
-    """Delete user account"""
-
-    template_name = "generic/delete.html"
-
-    def get_object(self):
-        return self.request.user
-
-    def get_success_url(self):
-        messages.success(self.request, _("Successfully deleted user."))
-        logout(self.request)
-        return reverse("passbook_flows:default-auth")

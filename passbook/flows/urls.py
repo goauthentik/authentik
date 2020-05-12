@@ -31,6 +31,11 @@ urlpatterns = [
         name="default-enrollment",
     ),
     path(
+        "-/default/unenrollment/",
+        ToDefaultFlow.as_view(designation=FlowDesignation.UNRENOLLMENT),
+        name="default-unenrollment",
+    ),
+    path(
         "-/default/password_change/",
         ToDefaultFlow.as_view(designation=FlowDesignation.PASSWORD_CHANGE),
         name="default-password-change",

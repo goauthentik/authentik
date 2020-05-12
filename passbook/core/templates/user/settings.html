@@ -15,7 +15,7 @@
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
                     <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
-                    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_core:user-delete' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
+                    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_flows:default-unenrollment' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
                 </div>
             </div>
         </div>
