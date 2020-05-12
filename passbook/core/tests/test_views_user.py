@@ -28,4 +28,3 @@ class TestUserViews(TestCase):
         self.assertEqual(
             self.client.get(reverse("passbook_core:user-settings")).status_code, 200
         )
-

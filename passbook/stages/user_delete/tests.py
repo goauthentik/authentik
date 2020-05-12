@@ -1,7 +1,4 @@
 """delete tests"""
-import string
-from random import SystemRandom
-
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 
@@ -9,8 +6,6 @@ from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
-from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from passbook.stages.user_delete.forms import UserDeleteStageForm
 from passbook.stages.user_delete.models import UserDeleteStage
 
 
@@ -19,7 +14,7 @@ class TestUserDeleteStage(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.username = 'qerqwerqrwqwerwq'
+        self.username = "qerqwerqrwqwerwq"
         self.user = User.objects.create(username=self.username, email="test@beryju.org")
         self.client = Client()
 
@@ -58,7 +53,7 @@ class TestUserDeleteStage(TestCase):
             reverse(
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
-            {}
+            {},
         )
         self.assertEqual(response.status_code, 302)
         self.assertFalse(User.objects.filter(username=self.username).exists())

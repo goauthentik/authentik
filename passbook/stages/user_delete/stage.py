@@ -1,11 +1,10 @@
 """Delete stage logic"""
 from django.contrib import messages
-from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
+from django.views.generic import FormView
 from structlog import get_logger
 
-from django.views.generic import FormView
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
