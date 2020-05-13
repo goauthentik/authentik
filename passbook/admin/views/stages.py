@@ -12,15 +12,8 @@ from django.views.generic import DeleteView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.flows.models import Stage
-from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.utils.reflection import all_subclasses, path_to_class
 from passbook.lib.views import CreateAssignPermView
-
-
-def all_subclasses(cls):
-    """Recursively return all subclassess of cls"""
-    return set(cls.__subclasses__()).union(
-        [s for c in cls.__subclasses__() for s in all_subclasses(c)]
-    )
 
 
 class StageListView(LoginRequiredMixin, PermissionListMixin, ListView):
@@ -34,8 +27,7 @@ class StageListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
-            x.__name__: x._meta.verbose_name
-            for x in sorted(all_subclasses(Stage), key=lambda x: x.__name__)
+            x.__name__: x._meta.verbose_name for x in all_subclasses(Stage)
         }
         return super().get_context_data(**kwargs)
 

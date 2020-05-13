@@ -12,15 +12,8 @@ from django.views.generic import DeleteView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.core.models import Source
-from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.utils.reflection import all_subclasses, path_to_class
 from passbook.lib.views import CreateAssignPermView
-
-
-def all_subclasses(cls):
-    """Recursively return all subclassess of cls"""
-    return set(cls.__subclasses__()).union(
-        [s for c in cls.__subclasses__() for s in all_subclasses(c)]
-    )
 
 
 class SourceListView(LoginRequiredMixin, PermissionListMixin, ListView):
