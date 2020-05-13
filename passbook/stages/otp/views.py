@@ -31,7 +31,7 @@ LOGGER = get_logger()
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""
 
-    template_name = "otp/user_settings.html"
+    template_name = "stages/otp/user_settings.html"
 
     # TODO: Check if OTP Stage exists and applies to user
     def get_context_data(self, **kwargs):

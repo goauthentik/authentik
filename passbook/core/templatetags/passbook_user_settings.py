@@ -6,6 +6,7 @@ from django.template.context import RequestContext
 
 from passbook.core.models import Source
 from passbook.core.types import UIUserSettings
+from passbook.flows.models import Stage
 from passbook.policies.engine import PolicyEngine
 
 register = template.Library()
@@ -15,20 +16,14 @@ register = template.Library()
 # pylint: disable=unused-argument
 def user_stages(context: RequestContext) -> List[UIUserSettings]:
     """Return list of all stages which apply to user"""
-    # TODO: Rewrite this based on flows
-    # user = context.get("request").user
-    # _all_stages: Iterable[Stage] = (Stage.objects.all().select_subclasses())
+    _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()
     matching_stages: List[UIUserSettings] = []
-    # for stage in _all_stages:
-    #     user_settings = stage.ui_user_settings
-    #     if not user_settings:
-    #         continue
-    #     policy_engine = PolicyEngine(
-    #         stage.policies.all(), user, context.get("request")
-    #     )
-    #     policy_engine.build()
-    #     if policy_engine.passing:
-    #         matching_stages.append(user_settings)
+    for stage in _all_stages:
+        user_settings = stage.ui_user_settings
+        if not user_settings:
+            continue
+        matching_stages.append(user_settings)
+    print(matching_stages)
     return matching_stages
 
 

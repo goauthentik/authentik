@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django.contrib.humanize",
     "rest_framework",
+    "django_filters",
     "drf_yasg",
     "guardian",
     "django_prometheus",

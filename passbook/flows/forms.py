@@ -20,6 +20,16 @@ class FlowForm(forms.ModelForm):
             "stages",
             "policies",
         ]
+        help_texts = {
+            "name": _("Shown as the Title in Flow pages."),
+            "slug": _("Visible in the URL."),
+            "designation": _(
+                (
+                    "Decides what this Flow is used for. For example, the Authentication flow "
+                    "is redirect to when an un-authenticated user visits passbook."
+                )
+            ),
+        }
         widgets = {
             "name": forms.TextInput(),
             "stages": FilteredSelectMultiple(_("stages"), False),

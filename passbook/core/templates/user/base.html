@@ -57,12 +57,8 @@
 <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
     <section class="pf-c-page__main-section">
         <div class="pf-l-split pf-m-gutter">
-            <div class="pf-l-split__item">
-                <div class="pf-c-card">
-                    {% block page %}
-                    {% endblock %}
-                </div>
-            </div>
+            {% block page %}
+            {% endblock %}
         </div>
     </section>
 </main>
