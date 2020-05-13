@@ -1,6 +1,8 @@
 # passbook
 
 ![](https://github.com/BeryJu/passbook/workflows/passbook-ci/badge.svg)
+![](https://img.shields.io/docker/pulls/beryju/passbook.svg)
+![](https://img.shields.io/docker/v/beryju/passbook?sort=semver)
 
 ## Quick instance
 

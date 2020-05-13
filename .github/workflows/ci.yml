@@ -123,6 +123,10 @@ jobs:
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Run coverage
         run: pipenv run ./scripts/coverage.sh
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./unittest.xml
   # Build
   build-server:
     needs:
