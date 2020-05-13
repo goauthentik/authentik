@@ -13,4 +13,3 @@ def on_application_save(sender, instance: Application, **_):
     if isinstance(instance.provider, OpenIDProvider):
         instance.provider.oidc_client.require_consent = not instance.skip_authorization
         instance.provider.oidc_client.save()
-        print("updating skip_authz")

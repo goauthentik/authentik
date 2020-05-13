@@ -17,6 +17,7 @@ class TestFlowsMisc(TestCase):
         """Test that stage serializer returns the correct type"""
         obj = DummyStage()
         self.assertEqual(StageSerializer().get_type(obj), "dummy")
+        self.assertEqual(StageSerializer().get_verbose_name(obj), "Dummy Stage")
 
     def test_api_viewset(self):
         """Test that stage serializer returns the correct type"""

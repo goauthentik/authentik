@@ -23,7 +23,6 @@ def user_stages(context: RequestContext) -> List[UIUserSettings]:
         if not user_settings:
             continue
         matching_stages.append(user_settings)
-    print(matching_stages)
     return matching_stages
 
 

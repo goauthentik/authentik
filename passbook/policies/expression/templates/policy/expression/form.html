@@ -13,6 +13,7 @@
             <li><code>request.user</code>: Passbook User Object (<a href="https://beryju.github.io/passbook/property-mappings/reference/user-object/">Reference</a>)</li>
             <li><code>request.http_request</code>: Django HTTP Request Object (<a href="https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects">Reference</a>) </li>
             <li><code>request.obj</code>: Model the Policy is run against. </li>
+            <li><code>pb_flow_plan</code>: Current Plan if Policy is called while a flow is active.</li>
             <li><code>pb_is_sso_flow</code>: Boolean which is true if request was initiated by authenticating through an external Provider.</li>
             <li><code>pb_is_group_member(user, group_name)</code>: Function which checks if <code>user</code> is member of a Group with Name <code>group_name</code>.</li>
             <li><code>pb_logger</code>: Standard Python Logger Object, which can be used to debug expressions.</li>

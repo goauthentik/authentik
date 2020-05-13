@@ -9,6 +9,7 @@ from jinja2.nativetypes import NativeEnvironment
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_SSO
+from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
 
@@ -54,13 +55,14 @@ class Evaluator:
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
         if request.http_request:
-            # TODO: Get access to current plan
             kwargs["pb_is_sso_flow"] = request.http_request.session.get(
                 PLAN_CONTEXT_SSO, False
             )
             kwargs["pb_client_ip"] = (
                 get_client_ip(request.http_request) or "255.255.255.255"
             )
+            if SESSION_KEY_PLAN in request.http_request.session:
+                kwargs["pb_flow_plan"] = request.http_request.session[SESSION_KEY_PLAN]
         return kwargs
 
     def evaluate(self, expression_source: str, request: PolicyRequest) -> PolicyResult:
