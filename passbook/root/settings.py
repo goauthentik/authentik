@@ -45,20 +45,15 @@ ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 LOGIN_URL = "passbook_flows:default-authentication"
-# CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
 
 # Custom user model
 AUTH_USER_MODEL = "passbook_core.User"
 
-if DEBUG:
-    CSRF_COOKIE_NAME = "passbook_csrf_debug"
-    LANGUAGE_COOKIE_NAME = "passbook_language_debug"
-    SESSION_COOKIE_NAME = "passbook_session_debug"
-    SESSION_COOKIE_SAMESITE = None
-else:
-    CSRF_COOKIE_NAME = "passbook_csrf"
-    LANGUAGE_COOKIE_NAME = "passbook_language"
-    SESSION_COOKIE_NAME = "passbook_session"
+_cookie_suffix = "_debug" if DEBUG else ""
+CSRF_COOKIE_NAME = f"passbook_csrf{_cookie_suffix}"
+LANGUAGE_COOKIE_NAME = f"passbook_language{_cookie_suffix}"
+SESSION_COOKIE_NAME = f"passbook_session{_cookie_suffix}"
+
 SESSION_COOKIE_DOMAIN = CONFIG.y("domain", None)
 
 AUTHENTICATION_BACKENDS = [
@@ -396,6 +391,7 @@ for _app in INSTALLED_APPS:
             pass
 
 if DEBUG:
+    SESSION_COOKIE_SAMESITE = None
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
