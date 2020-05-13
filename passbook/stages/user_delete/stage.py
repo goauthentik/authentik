@@ -14,7 +14,7 @@ LOGGER = get_logger()
 
 
 class UserDeleteStageView(FormView, AuthenticationStage):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalise unenrollment flow by deleting the user object."""
 
     form_class = UserDeleteForm
 

@@ -26,6 +26,21 @@ class TestUserDeleteStage(TestCase):
         self.stage = UserDeleteStage.objects.create(name="delete")
         FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
 
+    def test_no_user(self):
+        """Test without user set"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            )
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
     def test_user_delete_get(self):
         """Test Form render"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
