@@ -15,7 +15,6 @@ class PasswordStageSerializer(ModelSerializer):
             "pk",
             "name",
             "backends",
-            "password_policies",
         ]
 
 

@@ -34,9 +34,7 @@ class InvitationSerializer(ModelSerializer):
         fields = [
             "pk",
             "expires",
-            "fixed_username",
-            "fixed_email",
-            "needs_confirmation",
+            "fixed_data",
         ]
 
 
