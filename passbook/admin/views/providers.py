@@ -12,7 +12,7 @@ from django.views.generic import DeleteView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.core.models import Provider
-from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.utils.reflection import all_subclasses, path_to_class
 from passbook.lib.views import CreateAssignPermView
 
 
@@ -27,7 +27,7 @@ class ProviderListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
-            x.__name__: x._meta.verbose_name for x in Provider.__subclasses__()
+            x.__name__: x._meta.verbose_name for x in all_subclasses(Provider)
         }
         return super().get_context_data(**kwargs)
 
@@ -52,9 +52,7 @@ class ProviderCreateView(
 
     def get_form_class(self):
         provider_type = self.request.GET.get("type")
-        model = next(
-            x for x in Provider.__subclasses__() if x.__name__ == provider_type
-        )
+        model = next(x for x in all_subclasses(Provider) if x.__name__ == provider_type)
         if not model:
             raise Http404
         return path_to_class(model.form)

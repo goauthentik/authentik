@@ -1,0 +1,10 @@
+{% extends 'login/form_with_user.html' %}
+
+{% load i18n %}
+
+{% block beneath_form %}
+{% if show_password_forget_notice %}
+{# TODO: Link to dedicated recovery flow #}
+<a href="{% url 'passbook_flows:auth-process' %}?password-forgotten">{% trans 'Forgot password?' %}</a>
+{% endif %}
+{% endblock %}

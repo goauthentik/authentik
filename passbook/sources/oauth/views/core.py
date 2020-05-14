@@ -13,9 +13,17 @@ from django.views.generic import RedirectView, View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.factors.view import AuthenticationView, _redirect_with_qs
+from passbook.flows.models import Flow, FlowDesignation
+from passbook.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_SSO,
+    FlowPlanner,
+)
+from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.lib.utils.urls import redirect_with_qs
 from passbook.sources.oauth.clients import get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
 
@@ -161,14 +169,21 @@ class OAuthCallback(OAuthClientMixin, View):
             return None
 
     def handle_login(self, user, source, access):
-        """Prepare AuthenticationView, redirect users to remaining Factors"""
+        """Prepare Authentication Plan, redirect user FlowExecutor"""
         user = authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )
-        self.request.session[AuthenticationView.SESSION_PENDING_USER] = user.pk
-        self.request.session[AuthenticationView.SESSION_USER_BACKEND] = user.backend
-        self.request.session[AuthenticationView.SESSION_IS_SSO_LOGIN] = True
-        return _redirect_with_qs("passbook_core:auth-process", self.request.GET)
+        # We run the Flow planner here so we can pass the Pending user in the context
+        flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
+        planner = FlowPlanner(flow)
+        plan = planner.plan(self.request)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
+        plan.context[PLAN_CONTEXT_SSO] = True
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "passbook_flows:flow-executor", self.request.GET, flow_slug=flow.slug,
+        )
 
     # pylint: disable=unused-argument
     def handle_existing_user(self, source, user, access, info):

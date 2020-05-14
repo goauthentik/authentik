@@ -5,7 +5,7 @@ from typing import Optional
 
 @dataclass
 class UIUserSettings:
-    """Dataclass for Factor and Source's user_settings"""
+    """Dataclass for Stage and Source's user_settings"""
 
     name: str
     icon: str

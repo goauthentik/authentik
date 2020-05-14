@@ -1,6 +1,7 @@
 """passbook policy task"""
 from multiprocessing import Process
 from multiprocessing.connection import Connection
+from typing import Optional
 
 from django.core.cache import cache
 from structlog import get_logger
@@ -12,7 +13,7 @@ from passbook.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 
-def cache_key(policy: Policy, user: User = None) -> str:
+def cache_key(policy: Policy, user: Optional[User] = None) -> str:
     """Generate Cache key for policy"""
     prefix = f"policy_{policy.pk}"
     if user:

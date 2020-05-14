@@ -27,7 +27,7 @@ class TestUtilViews(TestCase):
         request = self.factory.get("something")
         response = LoadingView.as_view(target_url="somestring")(request)
         response.render()
-        self.assertIn("somestring", response.content.decode("utf-8"))
+        self.assertIn("somestring", response.rendered_content)
 
     def test_permission_denied_view(self):
         """Test PermissionDeniedView"""

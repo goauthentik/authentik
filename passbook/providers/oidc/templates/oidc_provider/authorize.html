@@ -38,7 +38,7 @@
                 {% blocktrans with user=user %}
                 You are logged in as {{ user }}. Not you?
                 {% endblocktrans %}
-                <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Logout' %}</a>
+                <a href="{% url 'passbook_flows:default-invalidation' %}">{% trans 'Logout' %}</a>
             </p>
         </div>
         <div class="pf-c-form__group pf-m-action">

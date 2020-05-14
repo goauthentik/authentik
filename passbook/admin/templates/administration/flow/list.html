@@ -1,0 +1,71 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-process-automation"></i>
+            {% trans 'Flows' %}
+        </h1>
+        <p>{% trans "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
+            <div class="pf-c-toolbar__action-group">
+                <a href="{% url 'passbook_admin:flow-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+            </div>
+            {% include 'partials/pagination.html' %}
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Designation' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Stages' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Policies' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for flow in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ flow.name }}</div>
+                            <small>{{ flow.slug }}</small>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ flow.designation }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ flow.stages.all|length }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ flow.policies.all|length }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-update' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:flow-delete' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+    </div>
+</section>
+{% endblock %}

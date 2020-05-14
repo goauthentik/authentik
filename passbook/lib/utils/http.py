@@ -18,7 +18,9 @@ def _get_client_ip_from_meta(meta: Dict[str, Any]) -> Optional[str]:
     return None
 
 
-def get_client_ip(request: HttpRequest) -> Optional[str]:
+def get_client_ip(request: Optional[HttpRequest]) -> Optional[str]:
     """Attempt to get the client's IP by checking common HTTP Headers.
     Returns none if no IP Could be found"""
-    return _get_client_ip_from_meta(request.META)
+    if request:
+        return _get_client_ip_from_meta(request.META)
+    return ""

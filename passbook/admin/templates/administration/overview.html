@@ -48,16 +48,16 @@
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:factors' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__head">
                 <div class="pf-c-card__head-main">
-                    <i class="pf-icon pf-icon-plugged"></i> {% trans 'Factors' %}
+                    <i class="pf-icon pf-icon-plugged"></i> {% trans 'Stages' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
                 {% if factor_count < 1 %}
                 <i class="pficon-error-circle-o"></i> {{ factor_count }}
-                <p>{% trans 'No Factors configured. No Users will be able to login.' %}"></p>
+                <p>{% trans 'No Stages configured. No Users will be able to login.' %}"></p>
                 {% else %}
                 <i class="pf-icon pf-icon-ok"></i> {{ factor_count }}
                 {% endif %}

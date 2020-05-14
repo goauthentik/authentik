@@ -2,9 +2,19 @@
 from importlib import import_module
 
 
+def all_subclasses(cls, sort=True):
+    """Recursively return all subclassess of cls"""
+    classes = set(cls.__subclasses__()).union(
+        [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
+    )
+    if sort:
+        return sorted(classes, key=lambda x: x.__name__)
+    return classes
+
+
 def class_to_path(cls):
     """Turn Class (Class or instance) into module path"""
-    return "%s.%s" % (cls.__module__, cls.__name__)
+    return f"{cls.__module__}.{cls.__name__}"
 
 
 def path_to_class(path):

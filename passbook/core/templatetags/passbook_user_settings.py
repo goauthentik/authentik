@@ -4,32 +4,26 @@ from typing import Iterable, List
 from django import template
 from django.template.context import RequestContext
 
-from passbook.core.models import Factor, Source
+from passbook.core.models import Source
 from passbook.core.types import UIUserSettings
+from passbook.flows.models import Stage
 from passbook.policies.engine import PolicyEngine
 
 register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def user_factors(context: RequestContext) -> List[UIUserSettings]:
-    """Return list of all factors which apply to user"""
-    user = context.get("request").user
-    _all_factors: Iterable[Factor] = (
-        Factor.objects.filter(enabled=True).order_by("order").select_subclasses()
-    )
-    matching_factors: List[UIUserSettings] = []
-    for factor in _all_factors:
-        user_settings = factor.ui_user_settings
+# pylint: disable=unused-argument
+def user_stages(context: RequestContext) -> List[UIUserSettings]:
+    """Return list of all stages which apply to user"""
+    _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()
+    matching_stages: List[UIUserSettings] = []
+    for stage in _all_stages:
+        user_settings = stage.ui_user_settings
         if not user_settings:
             continue
-        policy_engine = PolicyEngine(
-            factor.policies.all(), user, context.get("request")
-        )
-        policy_engine.build()
-        if policy_engine.passing:
-            matching_factors.append(user_settings)
-    return matching_factors
+        matching_stages.append(user_settings)
+    return matching_stages
 
 
 @register.simple_tag(takes_context=True)
@@ -40,12 +34,12 @@ def user_sources(context: RequestContext) -> List[UIUserSettings]:
         Source.objects.filter(enabled=True).select_subclasses()
     )
     matching_sources: List[UIUserSettings] = []
-    for factor in _all_sources:
-        user_settings = factor.ui_user_settings
+    for source in _all_sources:
+        user_settings = source.ui_user_settings
         if not user_settings:
             continue
         policy_engine = PolicyEngine(
-            factor.policies.all(), user, context.get("request")
+            source.policies.all(), user, context.get("request")
         )
         policy_engine.build()
         if policy_engine.passing:

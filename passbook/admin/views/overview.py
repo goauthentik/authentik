@@ -5,16 +5,10 @@ from django.views.generic import TemplateView
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import (
-    Application,
-    Factor,
-    Invitation,
-    Policy,
-    Provider,
-    Source,
-    User,
-)
+from passbook.core.models import Application, Policy, Provider, Source, User
+from passbook.flows.models import Flow, Stage
 from passbook.root.celery import CELERY_APP
+from passbook.stages.invitation.models import Invitation
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
@@ -26,7 +20,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         """Handle post (clear cache from modal)"""
         if "clear" in self.request.POST:
             cache.clear()
-            return redirect(reverse("passbook_core:auth-login"))
+            return redirect(reverse("passbook_flows:default-authentication"))
         return self.get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -35,7 +29,8 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["user_count"] = len(User.objects.all())
         kwargs["provider_count"] = len(Provider.objects.all())
         kwargs["source_count"] = len(Source.objects.all())
-        kwargs["factor_count"] = len(Factor.objects.all())
+        kwargs["stage_count"] = len(Stage.objects.all())
+        kwargs["flow_count"] = len(Flow.objects.all())
         kwargs["invitation_count"] = len(Invitation.objects.all())
         kwargs["version"] = __version__
         kwargs["worker_count"] = len(CELERY_APP.control.ping(timeout=0.5))

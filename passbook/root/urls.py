@@ -11,7 +11,12 @@ from passbook.root.monitoring import MetricsView
 
 LOGGER = get_logger()
 admin.autodiscover()
-admin.site.login = RedirectView.as_view(pattern_name="passbook_core:auth-login")
+admin.site.login = RedirectView.as_view(
+    pattern_name="passbook_flows:default-authentication"
+)
+admin.site.logout = RedirectView.as_view(
+    pattern_name="passbook_flows:default-invalidate"
+)
 
 handler400 = error.BadRequestView.as_view()
 handler403 = error.ForbiddenView.as_view()
@@ -30,7 +35,11 @@ for _passbook_app in get_apps():
             ),
         )
         urlpatterns.append(_path)
-        LOGGER.debug("Mounted URLs", app_name=_passbook_app.name)
+        LOGGER.debug(
+            "Mounted URLs",
+            app_name=_passbook_app.name,
+            mountpoint=_passbook_app.mountpoint,
+        )
 
 urlpatterns += [
     # Administration
@@ -41,4 +50,4 @@ urlpatterns += [
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [path("__debug__/", include(debug_toolbar.urls)),] + urlpatterns
+    urlpatterns = [path("-/debug/", include(debug_toolbar.urls)),] + urlpatterns

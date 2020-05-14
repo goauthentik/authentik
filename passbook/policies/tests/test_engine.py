@@ -2,7 +2,8 @@
 from django.core.cache import cache
 from django.test import TestCase
 
-from passbook.core.models import DebugPolicy, Policy, User
+from passbook.core.models import Policy, User
+from passbook.policies.dummy.models import DummyPolicy
 from passbook.policies.engine import PolicyEngine
 
 
@@ -12,13 +13,13 @@ class PolicyTestEngine(TestCase):
     def setUp(self):
         cache.clear()
         self.user = User.objects.create_user(username="policyuser")
-        self.policy_false = DebugPolicy.objects.create(
+        self.policy_false = DummyPolicy.objects.create(
             result=False, wait_min=0, wait_max=1
         )
-        self.policy_true = DebugPolicy.objects.create(
+        self.policy_true = DummyPolicy.objects.create(
             result=True, wait_min=0, wait_max=1
         )
-        self.policy_negate = DebugPolicy.objects.create(
+        self.policy_negate = DummyPolicy.objects.create(
             negate=True, result=True, wait_min=0, wait_max=1
         )
         self.policy_raises = Policy.objects.create(name="raises")
@@ -31,13 +32,13 @@ class PolicyTestEngine(TestCase):
     def test_engine(self):
         """Ensure all policies passes (Mix of false and true -> false)"""
         engine = PolicyEngine(
-            DebugPolicy.objects.filter(negate__exact=False), self.user
+            DummyPolicy.objects.filter(negate__exact=False), self.user
         )
         self.assertEqual(engine.build().passing, False)
 
     def test_engine_negate(self):
         """Test negate flag"""
-        engine = PolicyEngine(DebugPolicy.objects.filter(negate__exact=True), self.user)
+        engine = PolicyEngine(DummyPolicy.objects.filter(negate__exact=True), self.user)
         self.assertEqual(engine.build().passing, False)
 
     def test_engine_policy_error(self):
@@ -48,7 +49,7 @@ class PolicyTestEngine(TestCase):
     def test_engine_cache(self):
         """Ensure empty policy list passes"""
         engine = PolicyEngine(
-            DebugPolicy.objects.filter(negate__exact=False), self.user
+            DummyPolicy.objects.filter(negate__exact=False), self.user
         )
         self.assertEqual(len(cache.keys("policy_*")), 0)
         self.assertEqual(engine.build().passing, False)

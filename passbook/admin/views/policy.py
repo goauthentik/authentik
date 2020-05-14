@@ -14,7 +14,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.forms.policies import PolicyTestForm
 from passbook.core.models import Policy
-from passbook.lib.utils.reflection import path_to_class
+from passbook.lib.utils.reflection import all_subclasses, path_to_class
 from passbook.lib.views import CreateAssignPermView
 from passbook.policies.engine import PolicyEngine
 
@@ -30,7 +30,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
-            x.__name__: x._meta.verbose_name for x in Policy.__subclasses__()
+            x.__name__: x._meta.verbose_name for x in all_subclasses(Policy)
         }
         return super().get_context_data(**kwargs)
 
@@ -62,7 +62,7 @@ class PolicyCreateView(
 
     def get_form_class(self):
         policy_type = self.request.GET.get("type")
-        model = next(x for x in Policy.__subclasses__() if x.__name__ == policy_type)
+        model = next(x for x in all_subclasses(Policy) if x.__name__ == policy_type)
         if not model:
             raise Http404
         return path_to_class(model.form)

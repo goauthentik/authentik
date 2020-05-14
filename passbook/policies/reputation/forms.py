@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.forms.policies import GENERAL_FIELDS
+from passbook.policies.forms import GENERAL_FIELDS
 from passbook.policies.reputation.models import ReputationPolicy
 
 

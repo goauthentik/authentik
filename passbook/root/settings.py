@@ -44,21 +44,16 @@ INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-LOGIN_URL = "passbook_core:auth-login"
-# CSRF_FAILURE_VIEW = 'passbook.core.views.errors.CSRFErrorView.as_view'
+LOGIN_URL = "passbook_flows:default-authentication"
 
 # Custom user model
 AUTH_USER_MODEL = "passbook_core.User"
 
-if DEBUG:
-    CSRF_COOKIE_NAME = "passbook_csrf_debug"
-    LANGUAGE_COOKIE_NAME = "passbook_language_debug"
-    SESSION_COOKIE_NAME = "passbook_session_debug"
-    SESSION_COOKIE_SAMESITE = None
-else:
-    CSRF_COOKIE_NAME = "passbook_csrf"
-    LANGUAGE_COOKIE_NAME = "passbook_language"
-    SESSION_COOKIE_NAME = "passbook_session"
+_cookie_suffix = "_debug" if DEBUG else ""
+CSRF_COOKIE_NAME = f"passbook_csrf{_cookie_suffix}"
+LANGUAGE_COOKIE_NAME = f"passbook_language{_cookie_suffix}"
+SESSION_COOKIE_NAME = f"passbook_session{_cookie_suffix}"
+
 SESSION_COOKIE_DOMAIN = CONFIG.y("domain", None)
 
 AUTHENTICATION_BACKENDS = [
@@ -75,36 +70,48 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "django.contrib.humanize",
     "rest_framework",
+    "django_filters",
     "drf_yasg",
     "guardian",
     "django_prometheus",
-    "passbook.static.apps.PassbookStaticConfig",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
-    "passbook.lib.apps.PassbookLibConfig",
     "passbook.audit.apps.PassbookAuditConfig",
     "passbook.crypto.apps.PassbookCryptoConfig",
-    "passbook.recovery.apps.PassbookRecoveryConfig",
-    "passbook.sources.saml.apps.PassbookSourceSAMLConfig",
-    "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
-    "passbook.sources.oauth.apps.PassbookSourceOAuthConfig",
+    "passbook.flows.apps.PassbookFlowsConfig",
+    "passbook.lib.apps.PassbookLibConfig",
+    "passbook.policies.apps.PassbookPoliciesConfig",
+    "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
+    "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
+    "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
+    "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
+    "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
+    "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
+    "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
     "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
     "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
-    "passbook.factors.otp.apps.PassbookFactorOTPConfig",
-    "passbook.factors.captcha.apps.PassbookFactorCaptchaConfig",
-    "passbook.factors.password.apps.PassbookFactorPasswordConfig",
-    "passbook.factors.dummy.apps.PassbookFactorDummyConfig",
-    "passbook.factors.email.apps.PassbookFactorEmailConfig",
-    "passbook.policies.expiry.apps.PassbookPolicyExpiryConfig",
-    "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
-    "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
-    "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
-    "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
-    "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
+    "passbook.recovery.apps.PassbookRecoveryConfig",
+    "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
+    "passbook.sources.oauth.apps.PassbookSourceOAuthConfig",
+    "passbook.sources.saml.apps.PassbookSourceSAMLConfig",
+    "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
+    "passbook.stages.dummy.apps.PassbookStageDummyConfig",
+    "passbook.stages.email.apps.PassbookStageEmailConfig",
+    "passbook.stages.prompt.apps.PassbookStagPromptConfig",
+    "passbook.stages.identification.apps.PassbookStageIdentificationConfig",
+    "passbook.stages.invitation.apps.PassbookStageUserInvitationConfig",
+    "passbook.stages.user_delete.apps.PassbookStageUserDeleteConfig",
+    "passbook.stages.user_login.apps.PassbookStageUserLoginConfig",
+    "passbook.stages.user_logout.apps.PassbookStageUserLogoutConfig",
+    "passbook.stages.user_write.apps.PassbookStageUserWriteConfig",
+    "passbook.stages.otp.apps.PassbookStageOTPConfig",
+    "passbook.stages.password.apps.PassbookStagePasswordConfig",
+    "passbook.static.apps.PassbookStaticConfig",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
@@ -325,17 +332,19 @@ LOGGING = {
     },
     "loggers": {},
 }
+LOG_LEVEL = "DEBUG" if DEBUG else "WARNING"
 _LOGGING_HANDLER_MAP = {
-    "": "DEBUG",
-    "passbook": "DEBUG",
+    "": LOG_LEVEL,
+    "passbook": LOG_LEVEL,
     "django": "WARNING",
     "celery": "WARNING",
-    "grpc": "DEBUG",
-    "oauthlib": "DEBUG",
-    "oauth2_provider": "DEBUG",
-    "oidc_provider": "DEBUG",
+    "grpc": LOG_LEVEL,
+    "oauthlib": LOG_LEVEL,
+    "oauth2_provider": LOG_LEVEL,
+    "oidc_provider": LOG_LEVEL,
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
+    # pyright: reportGeneralTypeIssues=false
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
@@ -382,6 +391,7 @@ for _app in INSTALLED_APPS:
             pass
 
 if DEBUG:
+    SESSION_COOKIE_SAMESITE = None
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 

@@ -1,5 +1,6 @@
 """Time utilities"""
 import datetime
+from typing import Optional
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -38,7 +39,7 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
     return datetime.timedelta(**kwargs)
 
 
-def get_time_string(delta: datetime.timedelta = None) -> str:
+def get_time_string(delta: Optional[datetime.timedelta] = None) -> str:
     """Get Data formatted in SAML format"""
     if delta is None:
         delta = datetime.timedelta()

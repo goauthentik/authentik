@@ -1,3 +1,10 @@
 {
-    "reportMissingTypeStubs": false
+    "reportMissingTypeStubs": false,
+    "ignore": [
+        "**/migrations/**",
+        "**/node_modules/**"
+    ],
+    "strictParameterNoneValue": true,
+    "strictDictionaryInference": true,
+    "strictListInference": true
 }

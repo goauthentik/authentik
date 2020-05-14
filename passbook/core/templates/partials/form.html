@@ -25,6 +25,11 @@
         <div class="select col-sm-10">
             {{ field }}
         </div>
+        {% if field.help_text %}
+        <span>
+            {{ field.help_text }}
+        </span>
+        {% endif %}
     {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
         <label class="checkbox-label">
             {{ field }} {{ field.label }}

@@ -1,0 +1,6319 @@
+swagger: '2.0'
+info:
+  title: passbook API
+  contact:
+    email: hello@beryju.org
+  license:
+    name: MIT License
+  version: v2
+basePath: /api/v2
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /audit/events/:
+    get:
+      operationId: audit_events_list
+      description: Event Read-Only Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Event'
+      tags:
+        - audit
+    parameters: []
+  /audit/events/{uuid}/:
+    get:
+      operationId: audit_events_read
+      description: Event Read-Only Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Event'
+      tags:
+        - audit
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Audit Event.
+        required: true
+        type: string
+        format: uuid
+  /core/applications/:
+    get:
+      operationId: core_applications_list
+      description: Application Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Application'
+      tags:
+        - core
+    post:
+      operationId: core_applications_create
+      description: Application Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Application'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - core
+    parameters: []
+  /core/applications/{uuid}/:
+    get:
+      operationId: core_applications_read
+      description: Application Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - core
+    put:
+      operationId: core_applications_update
+      description: Application Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Application'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - core
+    patch:
+      operationId: core_applications_partial_update
+      description: Application Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Application'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - core
+    delete:
+      operationId: core_applications_delete
+      description: Application Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - core
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this application.
+        required: true
+        type: string
+        format: uuid
+  /core/groups/:
+    get:
+      operationId: core_groups_list
+      description: Group Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Group'
+      tags:
+        - core
+    post:
+      operationId: core_groups_create
+      description: Group Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Group'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Group'
+      tags:
+        - core
+    parameters: []
+  /core/groups/{uuid}/:
+    get:
+      operationId: core_groups_read
+      description: Group Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Group'
+      tags:
+        - core
+    put:
+      operationId: core_groups_update
+      description: Group Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Group'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Group'
+      tags:
+        - core
+    patch:
+      operationId: core_groups_partial_update
+      description: Group Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Group'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Group'
+      tags:
+        - core
+    delete:
+      operationId: core_groups_delete
+      description: Group Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - core
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this group.
+        required: true
+        type: string
+        format: uuid
+  /core/users/:
+    get:
+      operationId: core_users_list
+      description: User Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+      tags:
+        - core
+    post:
+      operationId: core_users_create
+      description: User Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - core
+    parameters: []
+  /core/users/{id}/:
+    get:
+      operationId: core_users_read
+      description: User Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - core
+    put:
+      operationId: core_users_update
+      description: User Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - core
+    patch:
+      operationId: core_users_partial_update
+      description: User Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - core
+    delete:
+      operationId: core_users_delete
+      description: User Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - core
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this user.
+        required: true
+        type: integer
+  /flows/bindings/:
+    get:
+      operationId: flows_bindings_list
+      description: FlowStageBinding Viewset
+      parameters:
+        - name: uuid
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: policies
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: flow
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: stage
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: re_evaluate_policies
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: order
+          in: query
+          description: ''
+          required: false
+          type: number
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/FlowStageBinding'
+      tags:
+        - flows
+    post:
+      operationId: flows_bindings_create
+      description: FlowStageBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      tags:
+        - flows
+    parameters: []
+  /flows/bindings/{uuid}/:
+    get:
+      operationId: flows_bindings_read
+      description: FlowStageBinding Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      tags:
+        - flows
+    put:
+      operationId: flows_bindings_update
+      description: FlowStageBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      tags:
+        - flows
+    patch:
+      operationId: flows_bindings_partial_update
+      description: FlowStageBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/FlowStageBinding'
+      tags:
+        - flows
+    delete:
+      operationId: flows_bindings_delete
+      description: FlowStageBinding Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - flows
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+        type: string
+        format: uuid
+  /flows/instances/:
+    get:
+      operationId: flows_instances_list
+      description: Flow Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    post:
+      operationId: flows_instances_create
+      description: Flow Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Flow'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    parameters: []
+  /flows/instances/{uuid}/:
+    get:
+      operationId: flows_instances_read
+      description: Flow Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    put:
+      operationId: flows_instances_update
+      description: Flow Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Flow'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    patch:
+      operationId: flows_instances_partial_update
+      description: Flow Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Flow'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    delete:
+      operationId: flows_instances_delete
+      description: Flow Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - flows
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Flow.
+        required: true
+        type: string
+        format: uuid
+  /policies/all/:
+    get:
+      operationId: policies_all_list
+      description: Policy Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Policy'
+      tags:
+        - policies
+    parameters: []
+  /policies/all/{uuid}/:
+    get:
+      operationId: policies_all_read
+      description: Policy Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Policy'
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/bindings/:
+    get:
+      operationId: policies_bindings_list
+      description: PolicyBinding Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    post:
+      operationId: policies_bindings_create
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    parameters: []
+  /policies/bindings/{uuid}/:
+    get:
+      operationId: policies_bindings_read
+      description: PolicyBinding Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    put:
+      operationId: policies_bindings_update
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    patch:
+      operationId: policies_bindings_partial_update
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    delete:
+      operationId: policies_bindings_delete
+      description: PolicyBinding Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Policy Binding.
+        required: true
+        type: string
+        format: uuid
+  /policies/dummy/:
+    get:
+      operationId: policies_dummy_list
+      description: Dummy Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/DummyPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_dummy_create
+      description: Dummy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/dummy/{uuid}/:
+    get:
+      operationId: policies_dummy_read
+      description: Dummy Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_dummy_update
+      description: Dummy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_dummy_partial_update
+      description: Dummy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_dummy_delete
+      description: Dummy Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Dummy Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/expression/:
+    get:
+      operationId: policies_expression_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ExpressionPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_expression_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/expression/{uuid}/:
+    get:
+      operationId: policies_expression_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_expression_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_expression_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpressionPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_expression_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Expression Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/haveibeenpwned/:
+    get:
+      operationId: policies_haveibeenpwned_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/HaveIBeenPwendPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_haveibeenpwned_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/haveibeenpwned/{uuid}/:
+    get:
+      operationId: policies_haveibeenpwned_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_haveibeenpwned_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_haveibeenpwned_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/HaveIBeenPwendPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_haveibeenpwned_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Have I Been Pwned Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/password/:
+    get:
+      operationId: policies_password_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PasswordPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_password_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/password/{uuid}/:
+    get:
+      operationId: policies_password_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_password_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_password_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_password_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Password Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/passwordexpiry/:
+    get:
+      operationId: policies_passwordexpiry_list
+      description: Password Expiry Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PasswordExpiryPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_passwordexpiry_create
+      description: Password Expiry Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/passwordexpiry/{uuid}/:
+    get:
+      operationId: policies_passwordexpiry_read
+      description: Password Expiry Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_passwordexpiry_update
+      description: Password Expiry Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_passwordexpiry_partial_update
+      description: Password Expiry Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordExpiryPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_passwordexpiry_delete
+      description: Password Expiry Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Password Expiry Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/reputation/:
+    get:
+      operationId: policies_reputation_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ReputationPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_reputation_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/reputation/{uuid}/:
+    get:
+      operationId: policies_reputation_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_reputation_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_reputation_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ReputationPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_reputation_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Reputation Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/webhook/:
+    get:
+      operationId: policies_webhook_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/WebhookPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_webhook_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/webhook/{uuid}/:
+    get:
+      operationId: policies_webhook_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_webhook_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_webhook_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebhookPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_webhook_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Webhook Policy.
+        required: true
+        type: string
+        format: uuid
+  /propertymappings/all/:
+    get:
+      operationId: propertymappings_all_list
+      description: PropertyMapping Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PropertyMapping'
+      tags:
+        - propertymappings
+    parameters: []
+  /propertymappings/all/{uuid}/:
+    get:
+      operationId: propertymappings_all_read
+      description: PropertyMapping Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PropertyMapping'
+      tags:
+        - propertymappings
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Property Mapping.
+        required: true
+        type: string
+        format: uuid
+  /propertymappings/ldap/:
+    get:
+      operationId: propertymappings_ldap_list
+      description: LDAP PropertyMapping Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LDAPPropertyMapping'
+      tags:
+        - propertymappings
+    post:
+      operationId: propertymappings_ldap_create
+      description: LDAP PropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      tags:
+        - propertymappings
+    parameters: []
+  /propertymappings/ldap/{uuid}/:
+    get:
+      operationId: propertymappings_ldap_read
+      description: LDAP PropertyMapping Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      tags:
+        - propertymappings
+    put:
+      operationId: propertymappings_ldap_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      tags:
+        - propertymappings
+    patch:
+      operationId: propertymappings_ldap_partial_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPPropertyMapping'
+      tags:
+        - propertymappings
+    delete:
+      operationId: propertymappings_ldap_delete
+      description: LDAP PropertyMapping Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - propertymappings
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this LDAP Property Mapping.
+        required: true
+        type: string
+        format: uuid
+  /propertymappings/saml/:
+    get:
+      operationId: propertymappings_saml_list
+      description: SAMLPropertyMapping Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/SAMLPropertyMapping'
+      tags:
+        - propertymappings
+    post:
+      operationId: propertymappings_saml_create
+      description: SAMLPropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      tags:
+        - propertymappings
+    parameters: []
+  /propertymappings/saml/{uuid}/:
+    get:
+      operationId: propertymappings_saml_read
+      description: SAMLPropertyMapping Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      tags:
+        - propertymappings
+    put:
+      operationId: propertymappings_saml_update
+      description: SAMLPropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      tags:
+        - propertymappings
+    patch:
+      operationId: propertymappings_saml_partial_update
+      description: SAMLPropertyMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLPropertyMapping'
+      tags:
+        - propertymappings
+    delete:
+      operationId: propertymappings_saml_delete
+      description: SAMLPropertyMapping Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - propertymappings
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this SAML Property Mapping.
+        required: true
+        type: string
+        format: uuid
+  /providers/all/:
+    get:
+      operationId: providers_all_list
+      description: Provider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    parameters: []
+  /providers/all/{id}/:
+    get:
+      operationId: providers_all_read
+      description: Provider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this provider.
+        required: true
+        type: integer
+  /providers/applicationgateway/:
+    get:
+      operationId: providers_applicationgateway_list
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_applicationgateway_create
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/applicationgateway/{id}/:
+    get:
+      operationId: providers_applicationgateway_read
+      description: ApplicationGatewayProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_applicationgateway_update
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_applicationgateway_partial_update
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_applicationgateway_delete
+      description: ApplicationGatewayProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Application Gateway Provider.
+        required: true
+        type: integer
+  /providers/oauth/:
+    get:
+      operationId: providers_oauth_list
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    post:
+      operationId: providers_oauth_create
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    parameters: []
+  /providers/oauth/{id}/:
+    get:
+      operationId: providers_oauth_read
+      description: OAuth2Provider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    put:
+      operationId: providers_oauth_update
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_oauth_partial_update
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_oauth_delete
+      description: OAuth2Provider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this OAuth2 Provider.
+        required: true
+        type: integer
+  /providers/openid/:
+    get:
+      operationId: providers_openid_list
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_openid_create
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/openid/{id}/:
+    get:
+      operationId: providers_openid_read
+      description: OpenIDProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_openid_update
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_openid_partial_update
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_openid_delete
+      description: OpenIDProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Client.
+        required: true
+        type: integer
+  /providers/saml/:
+    get:
+      operationId: providers_saml_list
+      description: SAMLProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_saml_create
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/saml/{id}/:
+    get:
+      operationId: providers_saml_read
+      description: SAMLProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_saml_update
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_saml_partial_update
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_saml_delete
+      description: SAMLProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this SAML Provider.
+        required: true
+        type: integer
+  /sources/all/:
+    get:
+      operationId: sources_all_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Source'
+      tags:
+        - sources
+    parameters: []
+  /sources/all/{uuid}/:
+    get:
+      operationId: sources_all_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Source'
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this source.
+        required: true
+        type: string
+        format: uuid
+  /sources/ldap/:
+    get:
+      operationId: sources_ldap_list
+      description: LDAP Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_ldap_create
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/ldap/{uuid}/:
+    get:
+      operationId: sources_ldap_read
+      description: LDAP Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_ldap_update
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_ldap_partial_update
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_ldap_delete
+      description: LDAP Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this LDAP Source.
+        required: true
+        type: string
+        format: uuid
+  /sources/oauth/:
+    get:
+      operationId: sources_oauth_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_oauth_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/oauth/{uuid}/:
+    get:
+      operationId: sources_oauth_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_oauth_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_oauth_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_oauth_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Generic OAuth Source.
+        required: true
+        type: string
+        format: uuid
+  /stages/all/:
+    get:
+      operationId: stages_all_list
+      description: Stage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Stage'
+      tags:
+        - stages
+    parameters: []
+  /stages/all/{uuid}/:
+    get:
+      operationId: stages_all_read
+      description: Stage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Stage'
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/captcha/:
+    get:
+      operationId: stages_captcha_list
+      description: CaptchaStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CaptchaStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_captcha_create
+      description: CaptchaStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/captcha/{uuid}/:
+    get:
+      operationId: stages_captcha_read
+      description: CaptchaStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_captcha_update
+      description: CaptchaStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_captcha_partial_update
+      description: CaptchaStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CaptchaStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_captcha_delete
+      description: CaptchaStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Captcha Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/dummy/:
+    get:
+      operationId: stages_dummy_list
+      description: DummyStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/DummyStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_dummy_create
+      description: DummyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/dummy/{uuid}/:
+    get:
+      operationId: stages_dummy_read
+      description: DummyStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_dummy_update
+      description: DummyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_dummy_partial_update
+      description: DummyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DummyStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DummyStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_dummy_delete
+      description: DummyStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Dummy Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/email/:
+    get:
+      operationId: stages_email_list
+      description: EmailStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/EmailStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_email_create
+      description: EmailStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EmailStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/EmailStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/email/{uuid}/:
+    get:
+      operationId: stages_email_read
+      description: EmailStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EmailStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_email_update
+      description: EmailStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EmailStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EmailStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_email_partial_update
+      description: EmailStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EmailStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EmailStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_email_delete
+      description: EmailStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Email Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/identification/:
+    get:
+      operationId: stages_identification_list
+      description: IdentificationStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/IdentificationStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_identification_create
+      description: IdentificationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/identification/{uuid}/:
+    get:
+      operationId: stages_identification_read
+      description: IdentificationStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_identification_update
+      description: IdentificationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_identification_partial_update
+      description: IdentificationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IdentificationStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_identification_delete
+      description: IdentificationStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Identification Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/invitation/:
+    get:
+      operationId: stages_invitation_list
+      description: InvitationStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_invitation_create
+      description: InvitationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/invitation/invitations/:
+    get:
+      operationId: stages_invitation_invitations_list
+      description: Invitation Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Invitation'
+      tags:
+        - stages
+    post:
+      operationId: stages_invitation_invitations_create
+      description: Invitation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Invitation'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Invitation'
+      tags:
+        - stages
+    parameters: []
+  /stages/invitation/invitations/{uuid}/:
+    get:
+      operationId: stages_invitation_invitations_read
+      description: Invitation Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Invitation'
+      tags:
+        - stages
+    put:
+      operationId: stages_invitation_invitations_update
+      description: Invitation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Invitation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Invitation'
+      tags:
+        - stages
+    patch:
+      operationId: stages_invitation_invitations_partial_update
+      description: Invitation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Invitation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Invitation'
+      tags:
+        - stages
+    delete:
+      operationId: stages_invitation_invitations_delete
+      description: Invitation Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Invitation.
+        required: true
+        type: string
+        format: uuid
+  /stages/invitation/{uuid}/:
+    get:
+      operationId: stages_invitation_read
+      description: InvitationStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_invitation_update
+      description: InvitationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_invitation_partial_update
+      description: InvitationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_invitation_delete
+      description: InvitationStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Invitation Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/otp/:
+    get:
+      operationId: stages_otp_list
+      description: OTPStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OTPStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_otp_create
+      description: OTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/otp/{uuid}/:
+    get:
+      operationId: stages_otp_read
+      description: OTPStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_otp_update
+      description: OTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_otp_partial_update
+      description: OTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_otp_delete
+      description: OTPStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this OTP Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/password/:
+    get:
+      operationId: stages_password_list
+      description: PasswordStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PasswordStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_password_create
+      description: PasswordStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/password/{uuid}/:
+    get:
+      operationId: stages_password_read
+      description: PasswordStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_password_update
+      description: PasswordStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_password_partial_update
+      description: PasswordStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PasswordStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_password_delete
+      description: PasswordStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Password Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/prompt/prompts/:
+    get:
+      operationId: stages_prompt_prompts_list
+      description: Prompt Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Prompt'
+      tags:
+        - stages
+    post:
+      operationId: stages_prompt_prompts_create
+      description: Prompt Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Prompt'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Prompt'
+      tags:
+        - stages
+    parameters: []
+  /stages/prompt/prompts/{uuid}/:
+    get:
+      operationId: stages_prompt_prompts_read
+      description: Prompt Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Prompt'
+      tags:
+        - stages
+    put:
+      operationId: stages_prompt_prompts_update
+      description: Prompt Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Prompt'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Prompt'
+      tags:
+        - stages
+    patch:
+      operationId: stages_prompt_prompts_partial_update
+      description: Prompt Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Prompt'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Prompt'
+      tags:
+        - stages
+    delete:
+      operationId: stages_prompt_prompts_delete
+      description: Prompt Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Prompt.
+        required: true
+        type: string
+        format: uuid
+  /stages/prompt/stages/:
+    get:
+      operationId: stages_prompt_stages_list
+      description: PromptStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PromptStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_prompt_stages_create
+      description: PromptStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PromptStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PromptStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/prompt/stages/{id}/:
+    get:
+      operationId: stages_prompt_stages_read
+      description: PromptStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PromptStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_prompt_stages_update
+      description: PromptStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PromptStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PromptStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_prompt_stages_partial_update
+      description: PromptStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PromptStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PromptStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_prompt_stages_delete
+      description: PromptStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Prompt Stage.
+        required: true
+        type: integer
+  /stages/user_delete/:
+    get:
+      operationId: stages_user_delete_list
+      description: UserDeleteStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserDeleteStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_user_delete_create
+      description: UserDeleteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/user_delete/{uuid}/:
+    get:
+      operationId: stages_user_delete_read
+      description: UserDeleteStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_user_delete_update
+      description: UserDeleteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_user_delete_partial_update
+      description: UserDeleteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserDeleteStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_user_delete_delete
+      description: UserDeleteStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this User Delete Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/user_login/:
+    get:
+      operationId: stages_user_login_list
+      description: UserLoginStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserLoginStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_user_login_create
+      description: UserLoginStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/user_login/{uuid}/:
+    get:
+      operationId: stages_user_login_read
+      description: UserLoginStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_user_login_update
+      description: UserLoginStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_user_login_partial_update
+      description: UserLoginStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLoginStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_user_login_delete
+      description: UserLoginStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this User Login Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/user_logout/:
+    get:
+      operationId: stages_user_logout_list
+      description: UserLogoutStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserLogoutStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_user_logout_create
+      description: UserLogoutStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/user_logout/{uuid}/:
+    get:
+      operationId: stages_user_logout_read
+      description: UserLogoutStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_user_logout_update
+      description: UserLogoutStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_user_logout_partial_update
+      description: UserLogoutStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserLogoutStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_user_logout_delete
+      description: UserLogoutStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this User Logout Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/user_write/:
+    get:
+      operationId: stages_user_write_list
+      description: UserWriteStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserWriteStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_user_write_create
+      description: UserWriteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/user_write/{uuid}/:
+    get:
+      operationId: stages_user_write_read
+      description: UserWriteStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_user_write_update
+      description: UserWriteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_user_write_partial_update
+      description: UserWriteStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserWriteStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_user_write_delete
+      description: UserWriteStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this User Write Stage.
+        required: true
+        type: string
+        format: uuid
+definitions:
+  Event:
+    required:
+      - action
+      - app
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      user:
+        title: User
+        type: integer
+        x-nullable: true
+      action:
+        title: Action
+        type: string
+        enum:
+          - LOGIN
+          - LOGIN_FAILED
+          - LOGOUT
+          - AUTHORIZE_APPLICATION
+          - SUSPICIOUS_REQUEST
+          - SIGN_UP
+          - PASSWORD_RESET
+          - INVITE_CREATED
+          - INVITE_USED
+          - CUSTOM
+      date:
+        title: Date
+        type: string
+        format: date-time
+        readOnly: true
+      app:
+        title: App
+        type: string
+        minLength: 1
+      context:
+        title: Context
+        type: object
+      client_ip:
+        title: Client ip
+        type: string
+        minLength: 1
+        x-nullable: true
+      created:
+        title: Created
+        type: string
+        format: date-time
+        readOnly: true
+  Application:
+    required:
+      - name
+      - slug
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Application's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal application name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      skip_authorization:
+        title: Skip authorization
+        type: boolean
+      provider:
+        title: Provider
+        type: integer
+        x-nullable: true
+      meta_launch_url:
+        title: Meta launch url
+        type: string
+        format: uri
+        maxLength: 200
+      meta_icon_url:
+        title: Meta icon url
+        type: string
+      meta_description:
+        title: Meta description
+        type: string
+      meta_publisher:
+        title: Meta publisher
+        type: string
+      policies:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+  Group:
+    required:
+      - name
+      - parent
+      - user_set
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 80
+        minLength: 1
+      parent:
+        title: Parent
+        type: string
+        format: uuid
+      user_set:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      attributes:
+        title: Attributes
+        type: object
+  User:
+    required:
+      - username
+      - name
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      name:
+        title: Name
+        description: User's display name.
+        type: string
+        minLength: 1
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+  FlowStageBinding:
+    required:
+      - flow
+      - stage
+      - order
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      flow:
+        title: Flow
+        type: string
+        format: uuid
+      stage:
+        title: Stage
+        type: string
+        format: uuid
+      re_evaluate_policies:
+        title: Re evaluate policies
+        description: When this option is enabled, the planner will re-evaluate policies
+          bound to this.
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      policies:
+        type: array
+        items:
+          type: integer
+        readOnly: true
+        uniqueItems: true
+  Flow:
+    required:
+      - name
+      - slug
+      - designation
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      designation:
+        title: Designation
+        type: string
+        enum:
+          - authentication
+          - invalidation
+          - enrollment
+          - unenrollment
+          - recovery
+          - password_change
+      stages:
+        type: array
+        items:
+          type: string
+          format: uuid
+        readOnly: true
+        uniqueItems: true
+      policies:
+        type: array
+        items:
+          type: integer
+        readOnly: true
+        uniqueItems: true
+  Policy:
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  PolicyBinding:
+    required:
+      - policy
+      - target
+    type: object
+    properties:
+      policy:
+        title: Policy
+        type: string
+        format: uuid
+      target:
+        title: Target
+        type: integer
+      enabled:
+        title: Enabled
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  DummyPolicy:
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      result:
+        title: Result
+        type: boolean
+      wait_min:
+        title: Wait min
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      wait_max:
+        title: Wait max
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  ExpressionPolicy:
+    required:
+      - expression
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+  HaveIBeenPwendPolicy:
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      allowed_count:
+        title: Allowed count
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  PasswordPolicy:
+    required:
+      - error_message
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      amount_uppercase:
+        title: Amount uppercase
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      amount_lowercase:
+        title: Amount lowercase
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      amount_symbols:
+        title: Amount symbols
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      length_min:
+        title: Length min
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      symbol_charset:
+        title: Symbol charset
+        type: string
+        minLength: 1
+      error_message:
+        title: Error message
+        type: string
+        minLength: 1
+  PasswordExpiryPolicy:
+    required:
+      - days
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      days:
+        title: Days
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      deny_only:
+        title: Deny only
+        type: boolean
+  ReputationPolicy:
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      check_ip:
+        title: Check ip
+        type: boolean
+      check_username:
+        title: Check username
+        type: boolean
+      threshold:
+        title: Threshold
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  WebhookPolicy:
+    required:
+      - url
+      - method
+      - json_body
+      - json_headers
+      - result_jsonpath
+      - result_json_value
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      negate:
+        title: Negate
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      url:
+        title: Url
+        type: string
+        format: uri
+        maxLength: 200
+        minLength: 1
+      method:
+        title: Method
+        type: string
+        enum:
+          - GET
+          - POST
+          - PATCH
+          - DELETE
+          - PUT
+      json_body:
+        title: Json body
+        type: string
+        minLength: 1
+      json_headers:
+        title: Json headers
+        type: string
+        minLength: 1
+      result_jsonpath:
+        title: Result jsonpath
+        type: string
+        minLength: 1
+      result_json_value:
+        title: Result json value
+        type: string
+        minLength: 1
+  PropertyMapping:
+    required:
+      - name
+      - expression
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  LDAPPropertyMapping:
+    required:
+      - name
+      - expression
+      - object_field
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+      object_field:
+        title: Object field
+        type: string
+        minLength: 1
+  SAMLPropertyMapping:
+    required:
+      - name
+      - saml_name
+      - expression
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      saml_name:
+        title: SAML Name
+        type: string
+        minLength: 1
+      friendly_name:
+        title: Friendly name
+        type: string
+        x-nullable: true
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
+  Provider:
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  OpenIDProvider:
+    title: Client
+    required:
+      - client_id
+      - response_types
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 100
+        minLength: 1
+      client_type:
+        title: Client Type
+        description: <b>Confidential</b> clients are capable of maintaining the confidentiality
+          of their credentials. <b>Public</b> clients are incapable.
+        type: string
+        enum:
+          - confidential
+          - public
+      client_id:
+        title: Client ID
+        type: string
+        maxLength: 255
+        minLength: 1
+      client_secret:
+        title: Client SECRET
+        type: string
+        maxLength: 255
+      response_types:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      jwt_alg:
+        title: JWT Algorithm
+        description: Algorithm used to encode ID Tokens.
+        type: string
+        enum:
+          - HS256
+          - RS256
+      reuse_consent:
+        title: Reuse Consent?
+        description: If enabled, server will save the user consent given to a specific
+          client, so that user won't be prompted for the same authorization multiple
+          times.
+        type: boolean
+      require_consent:
+        title: Require Consent?
+        description: If disabled, the Server will NEVER ask the user for consent.
+        type: boolean
+      _redirect_uris:
+        title: Redirect URIs
+        description: Enter each URI on a new line.
+        type: string
+        minLength: 1
+      _scope:
+        title: Scopes
+        description: Specifies the authorized scope values for the client app.
+        type: string
+  ApplicationGatewayProvider:
+    required:
+      - name
+      - internal_host
+      - external_host
+      - client
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      internal_host:
+        title: Internal host
+        type: string
+        minLength: 1
+      external_host:
+        title: External host
+        type: string
+        minLength: 1
+      client:
+        $ref: '#/definitions/OpenIDProvider'
+  OAuth2Provider:
+    required:
+      - client_type
+      - authorization_grant_type
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 255
+      redirect_uris:
+        title: Redirect uris
+        description: Allowed URIs list, space separated
+        type: string
+      client_type:
+        title: Client type
+        type: string
+        enum:
+          - confidential
+          - public
+      authorization_grant_type:
+        title: Authorization grant type
+        type: string
+        enum:
+          - authorization-code
+          - implicit
+          - password
+          - client-credentials
+      client_id:
+        title: Client id
+        type: string
+        maxLength: 100
+        minLength: 1
+      client_secret:
+        title: Client secret
+        type: string
+        maxLength: 255
+  SAMLProvider:
+    required:
+      - name
+      - processor_path
+      - acs_url
+      - issuer
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      processor_path:
+        title: Processor path
+        type: string
+        maxLength: 255
+        minLength: 1
+      acs_url:
+        title: ACS URL
+        type: string
+        format: uri
+        maxLength: 200
+        minLength: 1
+      audience:
+        title: Audience
+        type: string
+        minLength: 1
+      issuer:
+        title: Issuer
+        description: Also known as EntityID
+        type: string
+        minLength: 1
+      assertion_valid_not_before:
+        title: Assertion valid not before
+        description: 'Assertion valid not before current time + this value (Format:
+          hours=-1;minutes=-2;seconds=-3).'
+        type: string
+        minLength: 1
+      assertion_valid_not_on_or_after:
+        title: Assertion valid not on or after
+        description: 'Assertion not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
+      session_valid_not_on_or_after:
+        title: Session valid not on or after
+        description: 'Session not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      digest_algorithm:
+        title: Digest algorithm
+        type: string
+        enum:
+          - sha1
+          - sha256
+      signature_algorithm:
+        title: Signature algorithm
+        type: string
+        enum:
+          - rsa-sha1
+          - rsa-sha256
+          - ecdsa-sha256
+          - dsa-sha1
+      signing_kp:
+        title: Signing Keypair
+        description: Singing is enabled upon selection of a Key Pair.
+        type: string
+        format: uuid
+        x-nullable: true
+      require_signing:
+        title: Require signing
+        description: Require Requests to be signed by an X509 Certificate. Must match
+          the Certificate selected in `Singing Keypair`.
+        type: boolean
+  Source:
+    required:
+      - name
+      - slug
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  LDAPSource:
+    required:
+      - name
+      - slug
+      - server_uri
+      - bind_cn
+      - bind_password
+      - base_dn
+      - additional_user_dn
+      - additional_group_dn
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      server_uri:
+        title: Server URI
+        type: string
+        minLength: 1
+      bind_cn:
+        title: Bind CN
+        type: string
+        minLength: 1
+      bind_password:
+        title: Bind password
+        type: string
+        minLength: 1
+      start_tls:
+        title: Enable Start TLS
+        type: boolean
+      base_dn:
+        title: Base DN
+        type: string
+        minLength: 1
+      additional_user_dn:
+        title: Addition User DN
+        description: Prepended to Base DN for User-queries.
+        type: string
+        minLength: 1
+      additional_group_dn:
+        title: Addition Group DN
+        description: Prepended to Base DN for Group-queries.
+        type: string
+        minLength: 1
+      user_object_filter:
+        title: User object filter
+        description: Consider Objects matching this filter to be Users.
+        type: string
+        minLength: 1
+      group_object_filter:
+        title: Group object filter
+        description: Consider Objects matching this filter to be Groups.
+        type: string
+        minLength: 1
+      user_group_membership_field:
+        title: User group membership field
+        description: Field which contains Groups of user.
+        type: string
+        minLength: 1
+      object_uniqueness_field:
+        title: Object uniqueness field
+        description: Field which contains a unique Identifier.
+        type: string
+        minLength: 1
+      sync_groups:
+        title: Sync groups
+        type: boolean
+      sync_parent_group:
+        title: Sync parent group
+        type: string
+        format: uuid
+        x-nullable: true
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+  OAuthSource:
+    required:
+      - name
+      - slug
+      - provider_type
+      - authorization_url
+      - access_token_url
+      - profile_url
+      - consumer_key
+      - consumer_secret
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      provider_type:
+        title: Provider type
+        type: string
+        maxLength: 255
+        minLength: 1
+      request_token_url:
+        title: Request Token URL
+        type: string
+        maxLength: 255
+      authorization_url:
+        title: Authorization URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      access_token_url:
+        title: Access Token URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      profile_url:
+        title: Profile URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      consumer_key:
+        title: Consumer key
+        type: string
+        minLength: 1
+      consumer_secret:
+        title: Consumer secret
+        type: string
+        minLength: 1
+  Stage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+  CaptchaStage:
+    required:
+      - name
+      - public_key
+      - private_key
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      public_key:
+        title: Public key
+        description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
+        type: string
+        minLength: 1
+      private_key:
+        title: Private key
+        description: Private key, acquired from https://www.google.com/recaptcha/intro/v3.html
+        type: string
+        minLength: 1
+  DummyStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  EmailStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      host:
+        title: Host
+        type: string
+        minLength: 1
+      port:
+        title: Port
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      username:
+        title: Username
+        type: string
+      password:
+        title: Password
+        type: string
+      use_tls:
+        title: Use tls
+        type: boolean
+      use_ssl:
+        title: Use ssl
+        type: boolean
+      timeout:
+        title: Timeout
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      from_address:
+        title: From address
+        type: string
+        format: email
+        maxLength: 254
+        minLength: 1
+  IdentificationStage:
+    required:
+      - name
+      - user_fields
+      - template
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      user_fields:
+        description: Fields of the user object to match against.
+        type: array
+        items:
+          title: User fields
+          type: string
+          enum:
+            - email
+            - username
+      template:
+        title: Template
+        type: string
+        enum:
+          - stages/identification/login.html
+          - stages/identification/recovery.html
+  InvitationStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      continue_flow_without_invitation:
+        title: Continue flow without invitation
+        description: If this flag is set, this Stage will jump to the next Stage when
+          no Invitation is given. By default this Stage will cancel the Flow when
+          no invitation is given.
+        type: boolean
+  Invitation:
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+        x-nullable: true
+      fixed_data:
+        title: Fixed data
+        type: object
+  OTPStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      enforced:
+        title: Enforced
+        description: Enforce enabled OTP for Users this stage applies to.
+        type: boolean
+  PasswordStage:
+    required:
+      - name
+      - backends
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      backends:
+        description: Selection of backends to test the password against.
+        type: array
+        items:
+          title: Backends
+          type: string
+          minLength: 1
+  Prompt:
+    required:
+      - field_key
+      - label
+      - type
+      - placeholder
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      field_key:
+        title: Field key
+        description: Name of the form field, also used to store the value
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      label:
+        title: Label
+        type: string
+        minLength: 1
+      type:
+        title: Type
+        type: string
+        enum:
+          - text
+          - e-mail
+          - password
+          - number
+          - hidden
+      required:
+        title: Required
+        type: boolean
+      placeholder:
+        title: Placeholder
+        type: string
+        minLength: 1
+  PromptStage:
+    required:
+      - name
+      - fields
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      fields:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+  UserDeleteStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  UserLoginStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  UserLogoutStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  UserWriteStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1

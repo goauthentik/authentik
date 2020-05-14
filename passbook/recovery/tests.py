@@ -6,6 +6,7 @@ from django.shortcuts import reverse
 from django.test import TestCase
 
 from passbook.core.models import Nonce, User
+from passbook.lib.config import CONFIG
 
 
 class TestRecovery(TestCase):
@@ -16,10 +17,11 @@ class TestRecovery(TestCase):
 
     def test_create_key(self):
         """Test creation of a new key"""
+        CONFIG.update_from_dict({"domain": "testserver"})
         out = StringIO()
         self.assertEqual(len(Nonce.objects.all()), 0)
         call_command("create_recovery_key", "1", self.user.username, stdout=out)
-        self.assertIn("https://localhost/recovery/use-nonce/", out.getvalue())
+        self.assertIn("https://testserver/recovery/use-nonce/", out.getvalue())
         self.assertEqual(len(Nonce.objects.all()), 1)
 
     def test_recovery_view(self):

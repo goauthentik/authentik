@@ -1,7 +1,5 @@
 """passbook core models"""
 from datetime import timedelta
-from random import SystemRandom
-from time import sleep
 from typing import Any, Optional
 from uuid import uuid4
 
@@ -10,7 +8,6 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
-from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_prometheus.models import ExportModelOperationsMixin
@@ -34,7 +31,7 @@ NATIVE_ENVIRONMENT = NativeEnvironment()
 
 def default_nonce_duration():
     """Default duration a Nonce is valid"""
-    return now() + timedelta(hours=4)
+    return now() + timedelta(minutes=30)
 
 
 class Group(ExportModelOperationsMixin("group"), UUIDModel):
@@ -101,30 +98,6 @@ class PolicyModel(UUIDModel, CreatedUpdatedModel):
     """Base model which can have policies applied to it"""
 
     policies = models.ManyToManyField("Policy", blank=True)
-
-
-class Factor(ExportModelOperationsMixin("factor"), PolicyModel):
-    """Authentication factor, multiple instances of the same Factor can be used"""
-
-    name = models.TextField(help_text=_("Factor's display Name."))
-    slug = models.SlugField(
-        unique=True, help_text=_("Internal factor name, used in URLs.")
-    )
-    order = models.IntegerField()
-    enabled = models.BooleanField(default=True)
-
-    objects = InheritanceManager()
-    type = ""
-    form = ""
-
-    @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
-        """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UIUserSettings."""
-        return None
-
-    def __str__(self):
-        return f"Factor {self.slug}"
 
 
 class Application(ExportModelOperationsMixin("application"), PolicyModel):
@@ -220,54 +193,6 @@ class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedMode
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
         raise PolicyException()
-
-
-class DebugPolicy(Policy):
-    """Policy used for debugging the PolicyEngine. Returns a fixed result,
-    but takes a random time to process."""
-
-    result = models.BooleanField(default=False)
-    wait_min = models.IntegerField(default=5)
-    wait_max = models.IntegerField(default=30)
-
-    form = "passbook.core.forms.policies.DebugPolicyForm"
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Wait random time then return result"""
-        wait = SystemRandom().randrange(self.wait_min, self.wait_max)
-        LOGGER.debug("Policy waiting", policy=self, delay=wait)
-        sleep(wait)
-        return PolicyResult(self.result, "Debugging")
-
-    class Meta:
-
-        verbose_name = _("Debug Policy")
-        verbose_name_plural = _("Debug Policies")
-
-
-class Invitation(ExportModelOperationsMixin("invitation"), UUIDModel):
-    """Single-use invitation link"""
-
-    created_by = models.ForeignKey("User", on_delete=models.CASCADE)
-    expires = models.DateTimeField(default=None, blank=True, null=True)
-    fixed_username = models.TextField(blank=True, default=None)
-    fixed_email = models.TextField(blank=True, default=None)
-    needs_confirmation = models.BooleanField(default=True)
-
-    @property
-    def link(self):
-        """Get link to use invitation"""
-        return (
-            reverse_lazy("passbook_core:auth-sign-up") + f"?invitation={self.uuid.hex}"
-        )
-
-    def __str__(self):
-        return f"Invitation {self.uuid.hex} created by {self.created_by}"
-
-    class Meta:
-
-        verbose_name = _("Invitation")
-        verbose_name_plural = _("Invitations")
 
 
 class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):

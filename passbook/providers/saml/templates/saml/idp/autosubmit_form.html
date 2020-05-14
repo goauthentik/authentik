@@ -18,7 +18,7 @@
             {% blocktrans with user=user %}
             You are logged in as {{ user }}.
             {% endblocktrans %}
-            <a href="{% url 'passbook_core:auth-logout' %}">{% trans 'Not you?' %}</a>
+            <a href="{% url 'passbook_flows:default-invalidation' %}">{% trans 'Not you?' %}</a>
         </p>
         <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
     </div>

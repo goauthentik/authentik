@@ -3,22 +3,55 @@
 {% load i18n %}
 
 {% block page %}
-<div class="pf-c-card__header pf-c-title pf-m-md">
-    <h1>{% trans 'Update details' %}</h1>
-</div>
-<div class="pf-c-card__body">
-    <form action="" method="post" class="pf-c-form pf-m-horizontal">
-        {% include 'partials/form_horizontal.html' with form=form %}
-        {% block beneath_form %}
-        {% endblock %}
-        <div class="pf-c-form__group pf-m-action">
-            <div class="pf-c-form__horizontal-group">
-                <div class="pf-c-form__actions">
-                    <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
-                    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_core:user-delete' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
-                </div>
-            </div>
+<div class="pf-l-split__item">
+    <div class="pf-c-card">
+        <div class="pf-c-card__header pf-c-title pf-m-md">
+            <h1>{% trans 'Update details' %}</h1>
         </div>
-    </form>
+        <div class="pf-c-card__body">
+            <form action="" method="post" class="pf-c-form pf-m-horizontal">
+                {% include 'partials/form_horizontal.html' with form=form %}
+                {% block beneath_form %}
+                {% endblock %}
+                <div class="pf-c-form__group pf-m-action">
+                    <div class="pf-c-form__horizontal-group">
+                        <div class="pf-c-form__actions">
+                            <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
+                            <a class="pf-c-button pf-m-danger" href="{% url 'passbook_flows:default-unenrollment' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="pf-l-split__item">
+    <div class="pf-c-card">
+        <div class="pf-c-card__header pf-c-title pf-m-md">
+            <h1>{% trans 'Sessions' %}</h1>
+        </div>
+        <div class="pf-c-card__body">
+            <table class="pf-c-table pf-m-grid-md" role="grid" aria-label="This is a simple table example" id="table-basic">
+                <thead>
+                    <tr role="row">
+                        <th role="columnheader" scope="col">Repositories</th>
+                        <th role="columnheader" scope="col">Branches</th>
+                        <th role="columnheader" scope="col">Pull requests</th>
+                        <th role="columnheader" scope="col">Workspaces</th>
+                        <th role="columnheader" scope="col">Last commit</th>
+                    </tr>
+                </thead>
+                <tbody role="rowgroup">
+                    <tr role="row">
+                        <td role="cell" data-label="Repository name">Repository 1</td>
+                        <td role="cell" data-label="Branches">10</td>
+                        <td role="cell" data-label="Pull requests">25</td>
+                        <td role="cell" data-label="Workspaces">5</td>
+                        <td role="cell" data-label="Last commit">2 days ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
