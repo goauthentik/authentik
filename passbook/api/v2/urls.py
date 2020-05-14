@@ -18,6 +18,7 @@ from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.lib.utils.reflection import get_apps
+from passbook.policies.api import PolicyBindingViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
@@ -62,6 +63,7 @@ router.register("sources/ldap", LDAPSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
 
 router.register("policies/all", PolicyViewSet)
+router.register("policies/bindings", PolicyBindingViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
