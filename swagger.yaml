@@ -821,6 +821,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /policies/bindings/:
+    get:
+      operationId: policies_bindings_list
+      description: PolicyBinding Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    post:
+      operationId: policies_bindings_create
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    parameters: []
+  /policies/bindings/{uuid}/:
+    get:
+      operationId: policies_bindings_read
+      description: PolicyBinding Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    put:
+      operationId: policies_bindings_update
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    patch:
+      operationId: policies_bindings_partial_update
+      description: PolicyBinding Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyBinding'
+      tags:
+        - policies
+    delete:
+      operationId: policies_bindings_delete
+      description: PolicyBinding Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Policy Binding.
+        required: true
+        type: string
+        format: uuid
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -4211,7 +4338,7 @@ paths:
       tags:
         - stages
     parameters: []
-  /stages/prompt/stages/{uuid}/:
+  /stages/prompt/stages/{id}/:
     get:
       operationId: stages_prompt_stages_read
       description: PromptStage Viewset
@@ -4265,12 +4392,11 @@ paths:
       tags:
         - stages
     parameters:
-      - name: uuid
+      - name: id
         in: path
-        description: A UUID string identifying this Prompt Stage.
+        description: A unique integer value identifying this Prompt Stage.
         required: true
-        type: string
-        format: uuid
+        type: integer
   /stages/user_delete/:
     get:
       operationId: stages_user_delete_list
@@ -5050,6 +5176,27 @@ definitions:
         title: 'type  '
         type: string
         readOnly: true
+  PolicyBinding:
+    required:
+      - policy
+      - target
+    type: object
+    properties:
+      policy:
+        title: Policy
+        type: string
+        format: uuid
+      target:
+        title: Target
+        type: integer
+      enabled:
+        title: Enabled
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   DummyPolicy:
     type: object
     properties:
@@ -6101,9 +6248,8 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
-        type: string
-        format: uuid
+        title: ID
+        type: integer
         readOnly: true
       name:
         title: Name

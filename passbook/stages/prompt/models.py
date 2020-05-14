@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Stage
 from passbook.lib.models import UUIDModel
+from passbook.policies.models import PolicyBindingModel
 
 
 class FieldTypes(models.TextChoices):
@@ -78,7 +79,7 @@ class Prompt(UUIDModel):
         verbose_name_plural = _("Prompts")
 
 
-class PromptStage(Stage):
+class PromptStage(PolicyBindingModel, Stage):
     """Prompt Stage, pointing to multiple prompts"""
 
     fields = models.ManyToManyField(Prompt)
