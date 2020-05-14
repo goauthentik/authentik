@@ -25,6 +25,7 @@ class PromptStageView(FormView, AuthenticationStage):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["stage"] = self.executor.current_stage
+        kwargs["plan"] = self.executor.plan
         return kwargs
 
     def form_valid(self, form: PromptForm) -> HttpResponse:

@@ -8,6 +8,8 @@ from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.policies.expression.models import ExpressionPolicy
+from passbook.policies.models import PolicyBinding
 from passbook.stages.prompt.forms import PromptForm
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -47,6 +49,13 @@ class TestPromptStage(TestCase):
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
         )
+        password2_prompt = Prompt.objects.create(
+            field_key="password2_prompt",
+            label="PASSWORD_LABEL",
+            type=FieldTypes.PASSWORD,
+            required=True,
+            placeholder="PASSWORD_PLACEHOLDER",
+        )
         number_prompt = Prompt.objects.create(
             field_key="number_prompt",
             label="NUMBER_LABEL",
@@ -62,7 +71,14 @@ class TestPromptStage(TestCase):
         )
         self.stage = PromptStage.objects.create(name="prompt-stage")
         self.stage.fields.set(
-            [text_prompt, email_prompt, password_prompt, number_prompt, hidden_prompt,]
+            [
+                text_prompt,
+                email_prompt,
+                password_prompt,
+                password2_prompt,
+                number_prompt,
+                hidden_prompt,
+            ]
         )
         self.stage.save()
 
@@ -70,6 +86,7 @@ class TestPromptStage(TestCase):
             text_prompt.field_key: "test-input",
             email_prompt.field_key: "test@test.test",
             password_prompt.field_key: "test",
+            password2_prompt.field_key: "test",
             number_prompt.field_key: 3,
             hidden_prompt.field_key: hidden_prompt.placeholder,
         }
@@ -115,8 +132,28 @@ class TestPromptStage(TestCase):
 
     def test_valid_form(self) -> PromptForm:
         """Test form validation"""
-        form = PromptForm(stage=self.stage, data=self.prompt_data)
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        expr = (
+            "{{ request.context.password_prompt == request.context.password2_prompt }}"
+        )
+        expr_policy = ExpressionPolicy.objects.create(
+            name="validate-form", expression=expr
+        )
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), True)
+        return form
+
+    def test_invalid_form(self) -> PromptForm:
+        """Test form validation"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        expr = "False"
+        expr_policy = ExpressionPolicy.objects.create(
+            name="validate-form", expression=expr
+        )
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
+        self.assertEqual(form.is_valid(), False)
         return form
 
     def test_valid_form_request(self):
