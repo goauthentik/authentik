@@ -2,8 +2,8 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from passbook.core.models import Policy
 from passbook.policies.forms import GENERAL_FIELDS
+from passbook.policies.models import Policy
 
 
 class PolicySerializer(ModelSerializer):

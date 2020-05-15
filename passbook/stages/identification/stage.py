@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.core.models import Source, User
+from passbook.core.models import Inlet, User
 from passbook.flows.models import FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
@@ -49,14 +49,12 @@ class IdentificationStageView(FormView, AuthenticationStage):
             )
 
         # Check all enabled source, add them if they have a UI Login button.
-        kwargs["sources"] = []
-        sources = (
-            Source.objects.filter(enabled=True).order_by("name").select_subclasses()
-        )
-        for source in sources:
+        kwargs["inlets"] = []
+        inlets = Inlet.objects.filter(enabled=True).order_by("name").select_subclasses()
+        for source in inlets:
             ui_login_button = source.ui_login_button
             if ui_login_button:
-                kwargs["sources"].append(ui_login_button)
+                kwargs["inlets"].append(ui_login_button)
         return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value: str) -> Optional[User]:

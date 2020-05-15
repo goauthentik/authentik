@@ -2,9 +2,9 @@
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 
+from passbook.channels.in_oauth.models import OAuthInlet
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.sources.oauth.models import OAuthSource
 from passbook.stages.identification.models import (
     IdentificationStage,
     Templates,
@@ -34,8 +34,8 @@ class TestIdentificationStage(TestCase):
             flow=self.flow, stage=self.stage, order=0,
         )
 
-        # OAuthSource for the login view
-        OAuthSource.objects.create(name="test", slug="test")
+        # OAuthInlet for the login view
+        OAuthInlet.objects.create(name="test", slug="test")
 
     def test_valid_render(self):
         """Test that View renders correctly"""

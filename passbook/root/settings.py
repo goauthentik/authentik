@@ -89,15 +89,15 @@ INSTALLED_APPS = [
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
-    "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
-    "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
-    "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
-    "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
-    "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
+    "passbook.channels.out_app_gw.apps.PassbookApplicationApplicationGatewayConfig",
+    "passbook.channels.out_oauth.apps.PassbookOutletOAuthConfig",
+    "passbook.channels.out_oidc.apps.PassbookOutletOIDCConfig",
+    "passbook.channels.out_saml.apps.PassbookOutletSAMLConfig",
+    "passbook.channels.out_samlv2.apps.PassbookOutletSAMLv2Config",
     "passbook.recovery.apps.PassbookRecoveryConfig",
-    "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
-    "passbook.sources.oauth.apps.PassbookSourceOAuthConfig",
-    "passbook.sources.saml.apps.PassbookSourceSAMLConfig",
+    "passbook.channels.in_ldap.apps.PassbookInletLDAPConfig",
+    "passbook.channels.in_oauth.apps.PassbookInletOAuthConfig",
+    "passbook.channels.in_saml.apps.PassbookInletSAMLConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
     "passbook.stages.dummy.apps.PassbookStageDummyConfig",
     "passbook.stages.email.apps.PassbookStageEmailConfig",
@@ -228,8 +228,8 @@ USE_TZ = True
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
 CELERY_BEAT_SCHEDULE = {
-    "clean_nonces": {
-        "task": "passbook.core.tasks.clean_nonces",
+    "clean_tokens": {
+        "task": "passbook.core.tasks.clean_tokens",
         "schedule": crontab(minute="*/5"),  # Run every 5 minutes
     }
 }

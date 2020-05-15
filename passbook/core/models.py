@@ -10,7 +10,6 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
 from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
@@ -22,19 +21,18 @@ from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
-from passbook.policies.exceptions import PolicyException
-from passbook.policies.types import PolicyRequest, PolicyResult
+from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
 NATIVE_ENVIRONMENT = NativeEnvironment()
 
 
-def default_nonce_duration():
-    """Default duration a Nonce is valid"""
+def default_token_duration():
+    """Default duration a Token is valid"""
     return now() + timedelta(minutes=30)
 
 
-class Group(ExportModelOperationsMixin("group"), UUIDModel):
+class Group(UUIDModel):
     """Custom Group model which supports a basic hierarchy"""
 
     name = models.CharField(_("name"), max_length=80)
@@ -55,13 +53,13 @@ class Group(ExportModelOperationsMixin("group"), UUIDModel):
         unique_together = (("name", "parent",),)
 
 
-class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
+class User(GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField(help_text=_("User's display name."))
 
-    sources = models.ManyToManyField("Source", through="UserSourceConnection")
+    inlets = models.ManyToManyField("Inlet", through="UserInletConnection")
     groups = models.ManyToManyField("Group")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
@@ -78,29 +76,7 @@ class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
         permissions = (("reset_user_password", "Reset Password"),)
 
 
-class Provider(ExportModelOperationsMixin("provider"), models.Model):
-    """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
-
-    property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True
-    )
-
-    objects = InheritanceManager()
-
-    # This class defines no field for easier inheritance
-    def __str__(self):
-        if hasattr(self, "name"):
-            return getattr(self, "name")
-        return super().__str__()
-
-
-class PolicyModel(UUIDModel, CreatedUpdatedModel):
-    """Base model which can have policies applied to it"""
-
-    policies = models.ManyToManyField("Policy", blank=True)
-
-
-class Application(ExportModelOperationsMixin("application"), PolicyModel):
+class Application(PolicyBindingModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -108,8 +84,8 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
     name = models.TextField(help_text=_("Application's display Name."))
     slug = models.SlugField(help_text=_("Internal application name, used in URLs."))
     skip_authorization = models.BooleanField(default=False)
-    provider = models.OneToOneField(
-        "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
+    outlet = models.OneToOneField(
+        "Outlet", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
 
     meta_launch_url = models.URLField(default="", blank=True)
@@ -119,20 +95,20 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
 
     objects = InheritanceManager()
 
-    def get_provider(self) -> Optional[Provider]:
-        """Get casted provider instance"""
-        if not self.provider:
+    def get_outlet(self) -> Optional["Outlet"]:
+        """Get casted outlet instance"""
+        if not self.outlet:
             return None
-        return Provider.objects.get_subclass(pk=self.provider.pk)
+        return Outlet.objects.get_subclass(pk=self.outlet.pk)
 
     def __str__(self):
         return self.name
 
 
-class Source(ExportModelOperationsMixin("source"), PolicyModel):
+class Inlet(PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
-    name = models.TextField(help_text=_("Source's display Name."))
+    name = models.TextField(help_text=_("Inlet's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."))
 
     enabled = models.BooleanField(default=True)
@@ -165,56 +141,69 @@ class Source(ExportModelOperationsMixin("source"), PolicyModel):
         return self.name
 
 
-class UserSourceConnection(CreatedUpdatedModel):
-    """Connection between User and Source."""
+class UserInletConnection(CreatedUpdatedModel):
+    """Connection between User and Inlet."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    inlet = models.ForeignKey(Inlet, on_delete=models.CASCADE)
 
     class Meta:
 
-        unique_together = (("user", "source"),)
+        unique_together = (("user", "inlet"),)
 
 
-class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedModel):
-    """Policies which specify if a user is authorized to use an Application. Can be overridden by
-    other types to add other fields, more logic, etc."""
-
-    name = models.TextField(blank=True, null=True)
-    negate = models.BooleanField(default=False)
-    order = models.IntegerField(default=0)
-    timeout = models.IntegerField(default=30)
-
-    objects = InheritanceManager()
-
-    def __str__(self):
-        return f"Policy {self.name}"
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Check if user instance passes this policy"""
-        raise PolicyException()
-
-
-class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):
+class Token(UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
-    expires = models.DateTimeField(default=default_nonce_duration)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    expires = models.DateTimeField(default=default_token_duration)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     expiring = models.BooleanField(default=True)
     description = models.TextField(default="", blank=True)
 
     @property
     def is_expired(self) -> bool:
-        """Check if nonce is expired yet."""
+        """Check if token is expired yet."""
         return now() > self.expires
 
     def __str__(self):
-        return f"Nonce f{self.uuid.hex} {self.description} (expires={self.expires})"
+        return f"Token f{self.uuid.hex} {self.description} (expires={self.expires})"
 
     class Meta:
 
-        verbose_name = _("Nonce")
-        verbose_name_plural = _("Nonces")
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
+
+
+class Outlet(models.Model):
+    """Application-independent Outlet instance. For example SAML2 Remote, OAuth2 Application"""
+
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True
+    )
+
+    objects = InheritanceManager()
+
+    # This class defines no field for easier inheritance
+    def __str__(self):
+        if hasattr(self, "name"):
+            return getattr(self, "name")
+        return super().__str__()
+
+
+class PropertyMappingBinding(UUIDModel):
+    """Binds a PropertyMapping instance to an outlet"""
+
+    property_mapping = models.ForeignKey("PropertyMapping", on_delete=models.CASCADE)
+    outlet = models.ForeignKey("Outlet", on_delete=models.CASCADE)
+
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"PropertyMapping Binding p={self.property_mapping} outlet={self.outlet}"
+
+    class Meta:
+
+        unique_together = (("property_mapping", "outlet", "order"),)
 
 
 class PropertyMapping(UUIDModel):

@@ -17,7 +17,7 @@ password_changed = Signal(providing_args=["user", "password"])
 # pylint: disable=unused-argument
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
-    from passbook.core.models import Policy
+    from passbook.policies.models import Policy
     from passbook.policies.process import cache_key
 
     if isinstance(instance, Policy):

@@ -5,7 +5,7 @@ from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.audit.models import Event, EventAction
-from passbook.core.models import Policy
+from passbook.policies.models import Policy
 
 
 class TestAuditEvent(TestCase):

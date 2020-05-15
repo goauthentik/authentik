@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.shortcuts import reverse
 from django.test import TestCase
 
-from passbook.core.models import Nonce, User
+from passbook.core.models import Token, User
 from passbook.lib.config import CONFIG
 
 
@@ -19,17 +19,17 @@ class TestRecovery(TestCase):
         """Test creation of a new key"""
         CONFIG.update_from_dict({"domain": "testserver"})
         out = StringIO()
-        self.assertEqual(len(Nonce.objects.all()), 0)
+        self.assertEqual(len(Token.objects.all()), 0)
         call_command("create_recovery_key", "1", self.user.username, stdout=out)
-        self.assertIn("https://testserver/recovery/use-nonce/", out.getvalue())
-        self.assertEqual(len(Nonce.objects.all()), 1)
+        self.assertIn("https://testserver/recovery/use-token/", out.getvalue())
+        self.assertEqual(len(Token.objects.all()), 1)
 
     def test_recovery_view(self):
         """Test recovery view"""
         out = StringIO()
         call_command("create_recovery_key", "1", self.user.username, stdout=out)
-        nonce = Nonce.objects.first()
+        token = Token.objects.first()
         self.client.get(
-            reverse("passbook_recovery:use-nonce", kwargs={"uuid": str(nonce.uuid)})
+            reverse("passbook_recovery:use-token", kwargs={"uuid": str(token.uuid)})
         )
-        self.assertEqual(int(self.client.session["_auth_user_id"]), nonce.user.pk)
+        self.assertEqual(int(self.client.session["_auth_user_id"]), token.user.pk)

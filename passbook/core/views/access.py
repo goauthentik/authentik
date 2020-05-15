@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
-from passbook.core.models import Application, Provider, User
+from passbook.core.models import Application, Outlet, User
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -14,22 +14,19 @@ LOGGER = get_logger()
 
 class AccessMixin:
     """Mixin class for usage in Authorization views.
-    Provider functions to check application access, etc"""
+    Outlet functions to check application access, etc"""
 
     # request is set by view but since this Mixin has no base class
     request: HttpRequest = None
 
-    def provider_to_application(self, provider: Provider) -> Application:
-        """Lookup application assigned to provider, throw error if no application assigned"""
+    def outlet_to_application(self, outlet: Outlet) -> Application:
+        """Lookup application assigned to outlet, throw error if no application assigned"""
         try:
-            return provider.application
+            return outlet.application
         except Application.DoesNotExist as exc:
             messages.error(
                 self.request,
-                _(
-                    'Provider "%(name)s" has no application assigned'
-                    % {"name": provider}
-                ),
+                _('Outlet "%(name)s" has no application assigned' % {"name": outlet}),
             )
             raise exc
 
