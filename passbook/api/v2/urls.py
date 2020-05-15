@@ -24,7 +24,6 @@ from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
-from passbook.policies.webhook.api import WebhookPolicyViewSet
 from passbook.providers.app_gw.api import ApplicationGatewayProviderViewSet
 from passbook.providers.oauth.api import OAuth2ProviderViewSet
 from passbook.providers.oidc.api import OpenIDProviderViewSet
@@ -69,7 +68,6 @@ router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/passwordexpiry", PasswordExpiryPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
-router.register("policies/webhook", WebhookPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)
 router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)

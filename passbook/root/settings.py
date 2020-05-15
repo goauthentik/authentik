@@ -89,7 +89,6 @@ INSTALLED_APPS = [
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
-    "passbook.policies.webhook.apps.PassbookPoliciesWebhookConfig",
     "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
     "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",

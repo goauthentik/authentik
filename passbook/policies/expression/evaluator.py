@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from jinja2.nativetypes import NativeEnvironment
+from requests import Session
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_SSO
@@ -46,11 +47,6 @@ class Evaluator:
         """Check if `user` is member of group with name `group_name`"""
         return user.groups.filter(name=group_name).exists()
 
-    @staticmethod
-    def jinja2_log(message, **kwargs):
-        """Output debug log to console"""
-        return LOGGER.debug("Expression log", _m=message, **kwargs)
-
     def _get_expression_context(
         self, request: PolicyRequest, **kwargs
     ) -> Dict[str, Any]:
@@ -58,8 +54,8 @@ class Evaluator:
         # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
-        kwargs["pb_log"] = Evaluator.jinja2_log
         kwargs["pb_logger"] = get_logger()
+        kwargs["requests"] = Session()
         if request.http_request:
             kwargs["pb_is_sso_flow"] = request.http_request.session.get(
                 PLAN_CONTEXT_SSO, False
