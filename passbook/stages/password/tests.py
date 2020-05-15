@@ -57,6 +57,25 @@ class TestPasswordStage(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("passbook_flows:denied"))
 
+    def test_recovery_flow_link(self):
+        """Test link to the default recovery flow"""
+        flow = Flow.objects.create(
+            designation=FlowDesignation.RECOVERY, slug="qewrqerqr"
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(flow.slug, response.rendered_content)
+
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])

@@ -12,6 +12,7 @@ from django.views.generic import FormView
 from structlog import get_logger
 
 from passbook.core.models import User
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
 from passbook.lib.utils.reflection import path_to_class
@@ -50,6 +51,13 @@ class PasswordStage(FormView, AuthenticationStage):
 
     form_class = PasswordForm
     template_name = "stages/password/backend.html"
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
+        if recovery_flow.exists():
+            kwargs["recovery_flow"] = recovery_flow.first()
+        return kwargs
 
     def form_valid(self, form: PasswordForm) -> HttpResponse:
         """Authenticate against django's authentication backend"""

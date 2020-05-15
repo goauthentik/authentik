@@ -3,8 +3,7 @@
 {% load i18n %}
 
 {% block beneath_form %}
-{% if show_password_forget_notice %}
-{# TODO: Link to dedicated recovery flow #}
-<a href="{% url 'passbook_flows:auth-process' %}?password-forgotten">{% trans 'Forgot password?' %}</a>
+{% if recovery_flow %}
+<a href="{% url 'passbook_flows:flow-executor' flow_slug=recovery_flow.slug %}">{% trans 'Forgot password?' %}</a>
 {% endif %}
 {% endblock %}

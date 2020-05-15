@@ -59,7 +59,12 @@
                 <li>
                     <a href="https://beryju.github.io/passbook/">{% trans 'Documentation' %}</a>
                 </li>
-                <!-- TODO: load config.passbook.footer.links -->
+                {% config 'passbook.footer_links' as footer_links %}
+                {% for link in footer_links %}
+                <li>
+                    <a href="{{ link.href }}">{{ link.name }}</a>
+                </li>
+                {% endfor %}
             </ul>
         </footer>
     </div>
