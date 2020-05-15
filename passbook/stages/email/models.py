@@ -7,6 +7,19 @@ from django.utils.translation import gettext as _
 from passbook.flows.models import Stage
 
 
+class EmailTemplates(models.TextChoices):
+    """Templates used for rendering the E-Mail"""
+
+    PASSWORD_RESET = (
+        "stages/email/for_email/password_reset.html",
+        _("Password Reset"),
+    )  # nosec
+    ACCOUNT_CONFIRM = (
+        "stages/email/for_email/account_confirmation.html",
+        _("Account Confirmation"),
+    )
+
+
 class EmailStage(Stage):
     """email stage"""
 
@@ -17,12 +30,15 @@ class EmailStage(Stage):
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
+    from_address = models.EmailField(default="system@passbook.local")
 
     token_expiry = models.IntegerField(
         default=30, help_text=_("Time in minutes the token sent is valid.")
     )
-
-    from_address = models.EmailField(default="system@passbook.local")
+    subject = models.TextField(default="passbook")
+    template = models.TextField(
+        choices=EmailTemplates.choices, default=EmailTemplates.PASSWORD_RESET
+    )
 
     type = "passbook.stages.email.stage.EmailStageView"
     form = "passbook.stages.email.forms.EmailStageForm"

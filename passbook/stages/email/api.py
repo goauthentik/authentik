@@ -22,6 +22,9 @@ class EmailStageSerializer(ModelSerializer):
             "use_ssl",
             "timeout",
             "from_address",
+            "token_expiry",
+            "subject",
+            "template",
         ]
         extra_kwargs = {"password": {"write_only": True}}
 

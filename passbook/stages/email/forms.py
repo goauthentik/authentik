@@ -27,6 +27,9 @@ class EmailStageForm(forms.ModelForm):
             "use_ssl",
             "timeout",
             "from_address",
+            "token_expiry",
+            "subject",
+            "template",
         ]
         widgets = {
             "name": forms.TextInput(),

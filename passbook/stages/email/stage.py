@@ -54,7 +54,7 @@ class EmailStageView(FormView, AuthenticationStage):
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_("passbook - Password Recovery"),
-            template_name="stages/email/for_email/password_reset.html",
+            template_name=self.executor.current_stage.template,
             to=[pending_user.email],
             template_context={
                 "url": self.get_full_url(**{QS_KEY_TOKEN: nonce.pk.hex}),
