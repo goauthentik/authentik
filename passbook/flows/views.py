@@ -192,7 +192,6 @@ class ToDefaultFlow(View):
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]
-        # TODO: Get Flow depending on subdomain?
         return redirect_with_qs(
             "passbook_flows:flow-executor", request.GET, flow_slug=flow.slug
         )

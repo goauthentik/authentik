@@ -33,8 +33,6 @@ def is_active(context, *args, **kwargs):
 @register.simple_tag(takes_context=True)
 def is_active_url(context, view):
     """Return whether a navbar link is active or not."""
-
-    # matching_url = reverse(view, args=args, kwargs=kwargs)
     request = context.get("request")
     current_full_url = (
         f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
@@ -44,8 +42,6 @@ def is_active_url(context, view):
         return ""
     if current_full_url == view:
         return ACTIVE_STRING
-    # if matching_url == request.path:
-    #     return 'active'
     return ""
 
 
