@@ -39,7 +39,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
             application=None
         )
         kwargs["policies_without_binding"] = len(
-            Policy.objects.filter(policymodel__isnull=True)
+            Policy.objects.filter(bindings__isnull=True)
         )
         kwargs["cached_policies"] = len(cache.keys("policy_*"))
         return super().get_context_data(**kwargs)

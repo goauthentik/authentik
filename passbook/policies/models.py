@@ -12,7 +12,7 @@ class PolicyBindingModel(models.Model):
     """Base Model for objects that have policies applied to them."""
 
     policies = models.ManyToManyField(
-        "Policy", through="PolicyBinding", related_name="+", blank=True
+        "Policy", through="PolicyBinding", related_name="bindings", blank=True
     )
 
     class Meta:

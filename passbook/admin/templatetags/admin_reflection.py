@@ -1,6 +1,4 @@
 """passbook admin templatetags"""
-import inspect
-
 from django import template
 from django.db.models import Model
 from django.utils.html import mark_safe
@@ -21,14 +19,16 @@ def get_links(model_instance):
         return links
 
     try:
-        for name, method in inspect.getmembers(
-            model_instance, predicate=inspect.ismethod
-        ):
-            if name.startswith(prefix):
-                human_name = name.replace(prefix, "").replace("_", " ").capitalize()
-                link = method()
-                if link:
-                    links[human_name] = link
+        for name in dir(model_instance):
+            if not name.startswith(prefix):
+                continue
+            value = getattr(model_instance, name)
+            if not callable(value):
+                continue
+            human_name = name.replace(prefix, "").replace("_", " ").capitalize()
+            link = value()
+            if link:
+                links[human_name] = link
     except NotImplementedError:
         pass
 
@@ -46,11 +46,14 @@ def get_htmls(context, model_instance):
         return htmls
 
     try:
-        for name, method in inspect.getmembers(
-            model_instance, predicate=inspect.ismethod
-        ):
+        for name in dir(model_instance):
+            if not name.startswith(prefix):
+                continue
+            value = getattr(model_instance, name)
+            if not callable(value):
+                continue
             if name.startswith(prefix):
-                html = method(context.get("request"))
+                html = value(context.get("request"))
                 if html:
                     htmls.append(mark_safe(html))
     except NotImplementedError:

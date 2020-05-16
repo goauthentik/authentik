@@ -47,12 +47,12 @@
                     <th role="columnheader">
                         <div>
                             <div>{{ policy.name }}</div>
-                            {% if not policy.policymodel_set.exists %}
+                            {% if not policy.bindings.exists %}
                             <i class="pf-icon pf-icon-warning-triangle"></i>
                             <small>{% trans 'Warning: Policy is not assigned.' %}</small>
                             {% else %}
                             <i class="pf-icon pf-icon-ok"></i>
-                            <small>{% blocktrans with object_count=policy.policymodel_set.all|length %}Assigned to {{ object_count }} objects.{% endblocktrans %}</small>
+                            <small>{% blocktrans with object_count=policy.bindings.all|length %}Assigned to {{ object_count }} objects.{% endblocktrans %}</small>
                             {% endif %}
                         </div>
                     </th>
