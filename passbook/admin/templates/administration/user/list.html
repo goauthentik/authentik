@@ -15,7 +15,7 @@
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
-            <div class="pf-c-toolbar__action-group">
+            <div class="pf-c-toolbar__bulk-select">
                 <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
             </div>
             {% include 'partials/pagination.html' %}
