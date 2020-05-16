@@ -154,7 +154,7 @@ paths:
       tags:
         - core
     parameters: []
-  /core/applications/{uuid}/:
+  /core/applications/{id}/:
     get:
       operationId: core_applications_read
       description: Application Viewset
@@ -208,12 +208,11 @@ paths:
       tags:
         - core
     parameters:
-      - name: uuid
+      - name: id
         in: path
-        description: A UUID string identifying this application.
+        description: A unique integer value identifying this application.
         required: true
-        type: string
-        format: uuid
+        type: integer
   /core/groups/:
     get:
       operationId: core_groups_list
@@ -2658,7 +2657,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/all/{uuid}/:
+  /sources/all/{id}/:
     get:
       operationId: sources_all_read
       description: Source Viewset
@@ -2671,12 +2670,11 @@ paths:
       tags:
         - sources
     parameters:
-      - name: uuid
+      - name: id
         in: path
-        description: A UUID string identifying this source.
+        description: A unique integer value identifying this source.
         required: true
-        type: string
-        format: uuid
+        type: integer
   /sources/ldap/:
     get:
       operationId: sources_ldap_list
@@ -2744,7 +2742,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/ldap/{uuid}/:
+  /sources/ldap/{id}/:
     get:
       operationId: sources_ldap_read
       description: LDAP Source Viewset
@@ -2798,12 +2796,11 @@ paths:
       tags:
         - sources
     parameters:
-      - name: uuid
+      - name: id
         in: path
-        description: A UUID string identifying this LDAP Source.
+        description: A unique integer value identifying this LDAP Source.
         required: true
-        type: string
-        format: uuid
+        type: integer
   /sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -2871,7 +2868,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/oauth/{uuid}/:
+  /sources/oauth/{id}/:
     get:
       operationId: sources_oauth_read
       description: Source Viewset
@@ -2925,12 +2922,11 @@ paths:
       tags:
         - sources
     parameters:
-      - name: uuid
+      - name: id
         in: path
-        description: A UUID string identifying this Generic OAuth Source.
+        description: A unique integer value identifying this Generic OAuth Source.
         required: true
-        type: string
-        format: uuid
+        type: integer
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -4837,9 +4833,8 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
-        type: string
-        format: uuid
+        title: ID
+        type: integer
         readOnly: true
       name:
         title: Name
@@ -4878,8 +4873,8 @@ definitions:
       policies:
         type: array
         items:
-          type: string
-          format: uuid
+          type: integer
+        readOnly: true
         uniqueItems: true
   Group:
     required:
@@ -5610,9 +5605,8 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
-        type: string
-        format: uuid
+        title: ID
+        type: integer
         readOnly: true
       name:
         title: Name
@@ -5647,9 +5641,8 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
-        type: string
-        format: uuid
+        title: ID
+        type: integer
         readOnly: true
       name:
         title: Name
@@ -5743,9 +5736,8 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
-        type: string
-        format: uuid
+        title: ID
+        type: integer
         readOnly: true
       name:
         title: Name

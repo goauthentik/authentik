@@ -5,7 +5,7 @@ from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.audit.models import Event, EventAction
-from passbook.core.models import Policy
+from passbook.policies.dummy.models import DummyPolicy
 
 
 class TestAuditEvent(TestCase):
@@ -23,7 +23,7 @@ class TestAuditEvent(TestCase):
 
     def test_new_with_uuid_model(self):
         """Create a new Event passing a model (with UUID PK) as kwarg"""
-        temp_model = Policy.objects.create()
+        temp_model = DummyPolicy.objects.create(name="test", result=True)
         event = Event.new(EventAction.CUSTOM, model=temp_model)
         event.save()  # We save to ensure nothing is un-saveable
         model_content_type = ContentType.objects.get_for_model(temp_model)

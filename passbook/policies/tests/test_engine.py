@@ -2,9 +2,10 @@
 from django.core.cache import cache
 from django.test import TestCase
 
-from passbook.core.models import Policy, User
+from passbook.core.models import User
 from passbook.policies.dummy.models import DummyPolicy
 from passbook.policies.engine import PolicyEngine
+from passbook.policies.models import Policy
 
 
 class PolicyTestEngine(TestCase):

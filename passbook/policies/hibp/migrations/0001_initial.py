@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("passbook_core", "0001_initial"),
+        ("passbook_policies", "0001_initial"),
     ]
 
     operations = [
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.Policy",
+                        to="passbook_policies.Policy",
                     ),
                 ),
                 ("allowed_count", models.IntegerField(default=0)),
@@ -33,6 +33,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Have I Been Pwned Policy",
                 "verbose_name_plural": "Have I Been Pwned Policies",
             },
-            bases=("passbook_core.policy",),
+            bases=("passbook_policies.policy",),
         ),
     ]

@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("passbook_core", "0007_auto_20200217_1934"),
+        ("passbook_policies", "0001_initial"),
     ]
 
     operations = [
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.Policy",
+                        to="passbook_policies.Policy",
                     ),
                 ),
                 ("expression", models.TextField()),
@@ -33,6 +33,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Expression Policy",
                 "verbose_name_plural": "Expression Policies",
             },
-            bases=("passbook_core.policy",),
+            bases=("passbook_policies.policy",),
         ),
     ]

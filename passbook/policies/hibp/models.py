@@ -6,7 +6,8 @@ from django.utils.translation import gettext as _
 from requests import get
 from structlog import get_logger
 
-from passbook.core.models import Policy, PolicyResult, User
+from passbook.core.models import User
+from passbook.policies.models import Policy, PolicyResult
 
 LOGGER = get_logger()
 
