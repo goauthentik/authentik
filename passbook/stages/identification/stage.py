@@ -12,14 +12,14 @@ from structlog import get_logger
 from passbook.core.models import Source, User
 from passbook.flows.models import FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.identification.forms import IdentificationForm
 from passbook.stages.identification.models import IdentificationStage
 
 LOGGER = get_logger()
 
 
-class IdentificationStageView(FormView, AuthenticationStage):
+class IdentificationStageView(FormView, StageView):
     """Form to identify the user"""
 
     form_class = IdentificationForm
@@ -47,6 +47,7 @@ class IdentificationStageView(FormView, AuthenticationStage):
                 "passbook_flows:flow-executor",
                 kwargs={"flow_slug": recovery_flow.slug},
             )
+        kwargs["primary_action"] = _("Log in")
 
         # Check all enabled source, add them if they have a UI Login button.
         kwargs["sources"] = []

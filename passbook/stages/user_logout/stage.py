@@ -3,12 +3,12 @@ from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponse
 from structlog import get_logger
 
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 
 LOGGER = get_logger()
 
 
-class UserLogoutStageView(AuthenticationStage):
+class UserLogoutStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:

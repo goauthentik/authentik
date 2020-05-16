@@ -6,14 +6,14 @@ from django_otp import match_token, user_has_device
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.otp.forms import OTPVerifyForm
 from passbook.stages.otp.views import OTP_SETTING_UP_KEY, EnableView
 
 LOGGER = get_logger()
 
 
-class OTPStage(FormView, AuthenticationStage):
+class OTPStage(FormView, StageView):
     """OTP Stage View"""
 
     template_name = "stages/otp/stage.html"

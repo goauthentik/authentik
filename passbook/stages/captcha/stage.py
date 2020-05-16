@@ -2,11 +2,11 @@
 
 from django.views.generic import FormView
 
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.captcha.forms import CaptchaForm
 
 
-class CaptchaStage(FormView, AuthenticationStage):
+class CaptchaStage(FormView, StageView):
     """Simple captcha checker, logic is handeled in django-captcha module"""
 
     form_class = CaptchaForm

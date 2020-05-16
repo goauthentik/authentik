@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.lib.utils.reflection import class_to_path
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -15,7 +15,7 @@ from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 LOGGER = get_logger()
 
 
-class UserWriteStageView(AuthenticationStage):
+class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
 
     def get(self, request: HttpRequest) -> HttpResponse:

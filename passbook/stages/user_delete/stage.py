@@ -7,13 +7,13 @@ from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.user_delete.forms import UserDeleteForm
 
 LOGGER = get_logger()
 
 
-class UserDeleteStageView(FormView, AuthenticationStage):
+class UserDeleteStageView(FormView, StageView):
     """Finalise unenrollment flow by deleting the user object."""
 
     form_class = UserDeleteForm

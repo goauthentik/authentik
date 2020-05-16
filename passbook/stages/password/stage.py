@@ -14,7 +14,7 @@ from structlog import get_logger
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.lib.utils.reflection import path_to_class
 from passbook.stages.password.forms import PasswordForm
 
@@ -46,7 +46,7 @@ def authenticate(
     )
 
 
-class PasswordStage(FormView, AuthenticationStage):
+class PasswordStage(FormView, StageView):
     """Authentication stage which authenticates against django's AuthBackend"""
 
     form_class = PasswordForm

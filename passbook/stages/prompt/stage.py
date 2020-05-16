@@ -4,14 +4,14 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.prompt.forms import PromptForm
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
-class PromptStageView(FormView, AuthenticationStage):
+class PromptStageView(FormView, StageView):
     """Prompt Stage, save form data in plan context."""
 
     template_name = "login/form.html"

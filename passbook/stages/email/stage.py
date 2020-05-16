@@ -12,7 +12,7 @@ from structlog import get_logger
 
 from passbook.core.models import Token
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.email.forms import EmailStageSendForm
 from passbook.stages.email.tasks import send_mails
 from passbook.stages.email.utils import TemplateEmailMessage
@@ -21,7 +21,7 @@ LOGGER = get_logger()
 QS_KEY_TOKEN = "token"
 
 
-class EmailStageView(FormView, AuthenticationStage):
+class EmailStageView(FormView, StageView):
     """E-Mail stage which sends E-Mail for verification"""
 
     form_class = EmailStageSendForm

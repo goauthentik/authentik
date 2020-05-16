@@ -1,10 +1,10 @@
 """passbook multi-stage authentication engine"""
 from django.http import HttpRequest
 
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 
 
-class DummyStage(AuthenticationStage):
+class DummyStage(StageView):
     """Dummy stage for testing with multiple stages"""
 
     def post(self, request: HttpRequest):

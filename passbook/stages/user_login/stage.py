@@ -6,13 +6,13 @@ from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
 
 
-class UserLoginStageView(AuthenticationStage):
+class UserLoginStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:

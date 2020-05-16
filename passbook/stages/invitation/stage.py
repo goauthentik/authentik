@@ -2,14 +2,14 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 
-from passbook.flows.stage import AuthenticationStage
+from passbook.flows.stage import StageView
 from passbook.stages.invitation.models import Invitation, InvitationStage
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 INVITATION_TOKEN_KEY = "token"
 
 
-class InvitationStageView(AuthenticationStage):
+class InvitationStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
