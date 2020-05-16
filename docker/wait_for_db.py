@@ -2,11 +2,13 @@
 """This file needs to be run from the root of the project to correctly
 import passbook. This is done by the dockerfile."""
 from time import sleep
-from psycopg2 import connect, OperationalError
-from passbook.lib.config import CONFIG
-from structlog import get_logger
+
+from psycopg2 import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
+from structlog import get_logger
+
+from passbook.lib.config import CONFIG
 
 LOGGER = get_logger()
 
