@@ -1,5 +1,4 @@
 """api v2 urls"""
-from django.conf import settings
 from django.conf.urls import url
 from django.urls import path
 from drf_yasg import openapi
@@ -19,6 +18,7 @@ from passbook.core.api.users import UserViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.lib.utils.reflection import get_apps
 from passbook.policies.api import PolicyBindingViewSet
+from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
@@ -31,6 +31,7 @@ from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProvider
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
+from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
 from passbook.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
@@ -97,12 +98,8 @@ router.register("stages/user_write", UserWriteStageViewSet)
 router.register("flows/instances", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
 
-if settings.DEBUG:
-    from passbook.stages.dummy.api import DummyStageViewSet
-    from passbook.policies.dummy.api import DummyPolicyViewSet
-
-    router.register("stages/dummy", DummyStageViewSet)
-    router.register("policies/dummy", DummyPolicyViewSet)
+router.register("stages/dummy", DummyStageViewSet)
+router.register("policies/dummy", DummyPolicyViewSet)
 
 info = openapi.Info(
     title="passbook API",

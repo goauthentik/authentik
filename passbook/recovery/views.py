@@ -6,19 +6,19 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django.views import View
 
-from passbook.core.models import Nonce
+from passbook.core.models import Token
 
 
-class UseNonceView(View):
-    """Use nonce to login"""
+class UseTokenView(View):
+    """Use token to login"""
 
     def get(self, request: HttpRequest, uuid: str) -> HttpResponse:
-        """Check if nonce exists, log user in and delete nonce."""
-        nonce: Nonce = get_object_or_404(Nonce, pk=uuid)
-        if nonce.is_expired:
-            nonce.delete()
+        """Check if token exists, log user in and delete token."""
+        token: Token = get_object_or_404(Token, pk=uuid)
+        if token.is_expired:
+            token.delete()
             raise Http404
-        login(request, nonce.user, backend="django.contrib.auth.backends.ModelBackend")
-        nonce.delete()
+        login(request, token.user, backend="django.contrib.auth.backends.ModelBackend")
+        token.delete()
         messages.warning(request, _("Used recovery-link to authenticate."))
         return redirect("passbook_core:overview")

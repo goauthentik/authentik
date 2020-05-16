@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("passbook_core", "0001_initial"),
+        ("passbook_policies", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.Policy",
+                        to="passbook_policies.Policy",
                     ),
                 ),
                 ("check_ip", models.BooleanField(default=True)),
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 "verbose_name": "Reputation Policy",
                 "verbose_name_plural": "Reputation Policies",
             },
-            bases=("passbook_core.policy",),
+            bases=("passbook_policies.policy",),
         ),
         migrations.CreateModel(
             name="UserReputation",

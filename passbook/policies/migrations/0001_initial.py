@@ -10,11 +10,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ("passbook_core", "0011_auto_20200222_1822"),
-    ]
-
     operations = [
+        migrations.CreateModel(
+            name="Policy",
+            fields=[
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("last_updated", models.DateTimeField(auto_now=True)),
+                (
+                    "uuid",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("name", models.TextField(blank=True, null=True)),
+                ("negate", models.BooleanField(default=False)),
+                ("order", models.IntegerField(default=0)),
+                ("timeout", models.IntegerField(default=30)),
+            ],
+            options={"abstract": False,},
+        ),
         migrations.CreateModel(
             name="PolicyBinding",
             fields=[
@@ -34,7 +51,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="+",
-                        to="passbook_core.Policy",
+                        to="passbook_policies.Policy",
                     ),
                 ),
             ],
@@ -60,7 +77,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         related_name="_policybindingmodel_policies_+",
                         through="passbook_policies.PolicyBinding",
-                        to="passbook_core.Policy",
+                        to="passbook_policies.Policy",
                     ),
                 ),
             ],

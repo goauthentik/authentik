@@ -22,15 +22,14 @@ from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
 from passbook.lib.models import CreatedUpdatedModel, UUIDModel
-from passbook.policies.exceptions import PolicyException
-from passbook.policies.types import PolicyRequest, PolicyResult
+from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
 NATIVE_ENVIRONMENT = NativeEnvironment()
 
 
-def default_nonce_duration():
-    """Default duration a Nonce is valid"""
+def default_token_duration():
+    """Default duration a Token is valid"""
     return now() + timedelta(minutes=30)
 
 
@@ -94,13 +93,7 @@ class Provider(ExportModelOperationsMixin("provider"), models.Model):
         return super().__str__()
 
 
-class PolicyModel(UUIDModel, CreatedUpdatedModel):
-    """Base model which can have policies applied to it"""
-
-    policies = models.ManyToManyField("Policy", blank=True)
-
-
-class Application(ExportModelOperationsMixin("application"), PolicyModel):
+class Application(ExportModelOperationsMixin("application"), PolicyBindingModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -129,7 +122,7 @@ class Application(ExportModelOperationsMixin("application"), PolicyModel):
         return self.name
 
 
-class Source(ExportModelOperationsMixin("source"), PolicyModel):
+class Source(ExportModelOperationsMixin("source"), PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
@@ -176,45 +169,26 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
-class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedModel):
-    """Policies which specify if a user is authorized to use an Application. Can be overridden by
-    other types to add other fields, more logic, etc."""
-
-    name = models.TextField(blank=True, null=True)
-    negate = models.BooleanField(default=False)
-    order = models.IntegerField(default=0)
-    timeout = models.IntegerField(default=30)
-
-    objects = InheritanceManager()
-
-    def __str__(self):
-        return f"Policy {self.name}"
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Check if user instance passes this policy"""
-        raise PolicyException()
-
-
-class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):
+class Token(ExportModelOperationsMixin("token"), UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
-    expires = models.DateTimeField(default=default_nonce_duration)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    expires = models.DateTimeField(default=default_token_duration)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     expiring = models.BooleanField(default=True)
     description = models.TextField(default="", blank=True)
 
     @property
     def is_expired(self) -> bool:
-        """Check if nonce is expired yet."""
+        """Check if token is expired yet."""
         return now() > self.expires
 
     def __str__(self):
-        return f"Nonce f{self.uuid.hex} {self.description} (expires={self.expires})"
+        return f"Token f{self.uuid.hex} {self.description} (expires={self.expires})"
 
     class Meta:
 
-        verbose_name = _("Nonce")
-        verbose_name_plural = _("Nonces")
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
 
 
 class PropertyMapping(UUIDModel):

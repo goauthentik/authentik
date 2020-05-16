@@ -6,8 +6,9 @@ from typing import Optional
 from django.core.cache import cache
 from structlog import get_logger
 
-from passbook.core.models import Policy, User
+from passbook.core.models import User
 from passbook.policies.exceptions import PolicyException
+from passbook.policies.models import Policy
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()

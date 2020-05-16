@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("auth", "0011_update_proxy_permissions"),
+        ("passbook_policies", "0001_initial"),
     ]
 
     operations = [
@@ -158,7 +159,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "policies",
-                    models.ManyToManyField(blank=True, to="passbook_core.Policy"),
+                    models.ManyToManyField(blank=True, to="passbook_policies.Policy"),
                 ),
             ],
             options={"abstract": False,},
@@ -183,30 +184,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name="DebugPolicy",
-            fields=[
-                (
-                    "policy_ptr",
-                    models.OneToOneField(
-                        auto_created=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        parent_link=True,
-                        primary_key=True,
-                        serialize=False,
-                        to="passbook_core.Policy",
-                    ),
-                ),
-                ("result", models.BooleanField(default=False)),
-                ("wait_min", models.IntegerField(default=5)),
-                ("wait_max", models.IntegerField(default=30)),
-            ],
-            options={
-                "verbose_name": "Debug Policy",
-                "verbose_name_plural": "Debug Policies",
-            },
-            bases=("passbook_core.policy",),
-        ),
-        migrations.CreateModel(
             name="Factor",
             fields=[
                 (
@@ -217,7 +194,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.PolicyModel",
+                        to="passbook_policies.PolicyBindingModel",
                     ),
                 ),
                 ("name", models.TextField()),
@@ -226,7 +203,7 @@ class Migration(migrations.Migration):
                 ("enabled", models.BooleanField(default=True)),
             ],
             options={"abstract": False,},
-            bases=("passbook_core.policymodel",),
+            bases=("passbook_policies.policybindingmodel",),
         ),
         migrations.CreateModel(
             name="Source",
@@ -239,7 +216,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.PolicyModel",
+                        to="passbook_policies.PolicyBindingModel",
                     ),
                 ),
                 ("name", models.TextField()),
@@ -247,7 +224,7 @@ class Migration(migrations.Migration):
                 ("enabled", models.BooleanField(default=True)),
             ],
             options={"abstract": False,},
-            bases=("passbook_core.policymodel",),
+            bases=("passbook_policies.policybindingmodel",),
         ),
         migrations.CreateModel(
             name="Provider",
@@ -284,7 +261,7 @@ class Migration(migrations.Migration):
                 (
                     "expires",
                     models.DateTimeField(
-                        default=passbook.core.models.default_nonce_duration
+                        default=passbook.core.models.default_token_duration
                     ),
                 ),
                 ("expiring", models.BooleanField(default=True)),
@@ -418,7 +395,7 @@ class Migration(migrations.Migration):
                         parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="passbook_core.PolicyModel",
+                        to="passbook_policies.PolicyBindingModel",
                     ),
                 ),
                 ("name", models.TextField()),
@@ -438,7 +415,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={"abstract": False,},
-            bases=("passbook_core.policymodel",),
+            bases=("passbook_policies.policybindingmodel",),
         ),
         migrations.AddField(
             model_name="user",

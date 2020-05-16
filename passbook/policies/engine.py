@@ -7,7 +7,8 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from structlog import get_logger
 
-from passbook.core.models import Policy, User
+from passbook.core.models import User
+from passbook.policies.models import Policy
 from passbook.policies.process import PolicyProcess, cache_key
 from passbook.policies.types import PolicyRequest, PolicyResult
 

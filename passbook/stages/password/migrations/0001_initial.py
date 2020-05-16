@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("passbook_flows", "0001_initial"),
-        ("passbook_core", "0012_delete_factor"),
+        ("passbook_policies", "0001_initial"),
     ]
 
     operations = [
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "password_policies",
-                    models.ManyToManyField(blank=True, to="passbook_core.Policy"),
+                    models.ManyToManyField(blank=True, to="passbook_policies.Policy"),
                 ),
             ],
             options={

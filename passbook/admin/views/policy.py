@@ -13,10 +13,10 @@ from django.views.generic.detail import DetailView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.forms.policies import PolicyTestForm
-from passbook.core.models import Policy
 from passbook.lib.utils.reflection import all_subclasses, path_to_class
 from passbook.lib.views import CreateAssignPermView
 from passbook.policies.engine import PolicyEngine
+from passbook.policies.models import Policy
 
 
 class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
