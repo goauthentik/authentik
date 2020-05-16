@@ -1,3 +1,3 @@
 #!/bin/bash -ex
-/app/manage.py bootstrap
-$@
+/app/wait_for_db.py
+"$@"

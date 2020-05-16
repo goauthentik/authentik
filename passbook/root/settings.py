@@ -329,7 +329,8 @@ LOGGING = {
     },
     "loggers": {},
 }
-LOG_LEVEL = "DEBUG" if DEBUG else "WARNING"
+LOG_LEVEL = CONFIG.y("log_level").upper()
+
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "passbook": LOG_LEVEL,
@@ -355,6 +356,7 @@ TEST_OUTPUT_VERBOSE = 2
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
 if any("test" in arg for arg in sys.argv):
+    LOGGER.warning("Testing mode enabled, no logging from now on...")
     LOGGING = None
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True

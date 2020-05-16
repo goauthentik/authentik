@@ -26,6 +26,7 @@ COPY ./passbook/ /app/passbook
 COPY ./manage.py /app/
 COPY ./docker/uwsgi.ini /app/
 COPY ./docker/bootstrap.sh /bootstrap.sh
+COPY ./docker/wait_for_db.py /app/wait_for_db.py
 
 WORKDIR /app/
 
