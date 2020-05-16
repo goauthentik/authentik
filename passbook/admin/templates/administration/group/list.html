@@ -16,6 +16,7 @@
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
+        {% if object_list %}
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
             <div class="pf-c-toolbar__bulk-select">
                 <a href="{% url 'passbook_admin:group-create' %}?back={{ request.get_full_path }}"
@@ -61,6 +62,18 @@
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
             {% include 'partials/pagination.html' %}
         </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+            <h1 class="pf-c-title pf-m-lg">
+                {% trans 'No Groups.' %}
+            </h1>
+            <div class="pf-c-empty-state__body">
+                {% trans 'Currently no group exist. Click the button below to create one.' %}
+            </div>
+            <a href="{% url 'passbook_admin:group-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

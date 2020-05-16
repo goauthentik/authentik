@@ -11,11 +11,12 @@
             <i class="pf-icon pf-icon-plugged"></i>
             {% trans 'Prompts' %}
         </h1>
-        <p>{% trans "Prompts that can be used for Prompt Stages." %}</p>
+        <p>{% trans "Single Prompts that can be used for Prompt Stages." %}</p>
     </div>
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
+        {% if object_list %}
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
             <div class="pf-c-toolbar__bulk-select">
                 <a href="{% url 'passbook_admin:stage-prompt-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
@@ -61,6 +62,18 @@
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
             {% include 'partials/pagination.html' %}
         </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+            <h1 class="pf-c-title pf-m-lg">
+                {% trans 'No Stage Prompts.' %}
+            </h1>
+            <div class="pf-c-empty-state__body">
+                {% trans 'Currently no stage prompts exist. Click the button below to create one.' %}
+            </div>
+            <a href="{% url 'passbook_admin:stage-prompt-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

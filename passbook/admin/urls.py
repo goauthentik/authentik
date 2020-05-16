@@ -8,7 +8,6 @@ from passbook.admin.views import (
     debug,
     flows,
     groups,
-    invitations,
     overview,
     policies,
     policies_bindings,
@@ -17,6 +16,7 @@ from passbook.admin.views import (
     sources,
     stages,
     stages_bindings,
+    stages_invitations,
     stages_prompts,
     users,
 )
@@ -166,6 +166,22 @@ urlpatterns = [
         stages_prompts.PromptDeleteView.as_view(),
         name="stage-prompt-delete",
     ),
+    # Invitations
+    path(
+        "stages/invitations/",
+        stages_invitations.InvitationListView.as_view(),
+        name="stage-invitations",
+    ),
+    path(
+        "stages/invitations/create/",
+        stages_invitations.InvitationCreateView.as_view(),
+        name="stage-invitation-create",
+    ),
+    path(
+        "stages/invitations/<uuid:pk>/delete/",
+        stages_invitations.InvitationDeleteView.as_view(),
+        name="stage-invitation-delete",
+    ),
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),
     path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
@@ -195,18 +211,6 @@ urlpatterns = [
         "property-mappings/<uuid:pk>/delete/",
         property_mapping.PropertyMappingDeleteView.as_view(),
         name="property-mapping-delete",
-    ),
-    # Invitations
-    path("invitations/", invitations.InvitationListView.as_view(), name="invitations"),
-    path(
-        "invitations/create/",
-        invitations.InvitationCreateView.as_view(),
-        name="invitation-create",
-    ),
-    path(
-        "invitations/<uuid:pk>/delete/",
-        invitations.InvitationDeleteView.as_view(),
-        name="invitation-delete",
     ),
     # Users
     path("users/", users.UserListView.as_view(), name="users"),

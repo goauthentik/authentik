@@ -66,3 +66,10 @@ document.querySelector(".pf-c-page__header-brand-toggle>button").addEventListene
         sidebar.style.zIndex = 200;
     }
 });
+
+// Collapsable Menus in Sidebar
+document.querySelectorAll(".pf-m-expandable").forEach((menu) => {
+    menu.addEventListener("click", (e) => {
+        menu.classList.toggle("pf-m-expanded");
+    });
+});

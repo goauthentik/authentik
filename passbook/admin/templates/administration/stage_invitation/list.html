@@ -10,15 +10,16 @@
             <i class="pf-icon pf-icon-migration"></i>
             {% trans 'Invitations' %}
         </h1>
-        <p>{% trans "Create Invitation Links to enroll Users, and optionally force a username or expire on a set date." %}
+        <p>{% trans "Create Invitation Links to enroll Users, and optionally force specific attributes of their account." %}
         </p>
     </div>
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
+        {% if object_list %}
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
             <div class="pf-c-toolbar__bulk-select">
-                <a href="{% url 'passbook_admin:invitation-create' %}?back={{ request.get_full_path }}"
+                <a href="{% url 'passbook_admin:stage-invitation-create' %}?back={{ request.get_full_path }}"
                     class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
             </div>
             {% include 'partials/pagination.html' %}
@@ -45,7 +46,7 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:invitation-delete' pk=invitation.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-invitation-delete' pk=invitation.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -54,6 +55,18 @@
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
             {% include 'partials/pagination.html' %}
         </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+            <h1 class="pf-c-title pf-m-lg">
+                {% trans 'No Invitations.' %}
+            </h1>
+            <div class="pf-c-empty-state__body">
+                {% trans 'Currently no invitations exist. Click the button below to create one.' %}
+            </div>
+            <a href="{% url 'passbook_admin:stage-invitation-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

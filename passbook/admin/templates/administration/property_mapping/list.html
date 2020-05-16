@@ -16,6 +16,7 @@
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
+        {% if object_list %}
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
             <div class="pf-c-toolbar__bulk-select">
                 <div class="pf-c-dropdown">
@@ -67,6 +68,31 @@
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
             {% include 'partials/pagination.html' %}
         </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+            <h1 class="pf-c-title pf-m-lg">
+                {% trans 'No Property Mappings.' %}
+            </h1>
+            <div class="pf-c-empty-state__body">
+                {% trans 'Currently no property mappings exist. Click the button below to create one.' %}
+            </div>
+            <div class="pf-c-dropdown">
+                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                    <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="pf-c-dropdown__menu" hidden>
+                    {% for type, name in types.items %}
+                    <li>
+                        <a class="pf-c-dropdown__menu-item"
+                            href="{% url 'passbook_admin:property-mapping-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}
