@@ -10,11 +10,14 @@ from passbook.admin.views import (
     groups,
     invitations,
     overview,
-    policy,
+    policies,
+    policies_bindings,
     property_mapping,
     providers,
     sources,
     stages,
+    stages_bindings,
+    stages_prompts,
     users,
 )
 
@@ -53,20 +56,43 @@ urlpatterns = [
         name="source-delete",
     ),
     # Policies
-    path("policies/", policy.PolicyListView.as_view(), name="policies"),
-    path("policies/create/", policy.PolicyCreateView.as_view(), name="policy-create"),
+    path("policies/", policies.PolicyListView.as_view(), name="policies"),
+    path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
     path(
         "policies/<uuid:pk>/update/",
-        policy.PolicyUpdateView.as_view(),
+        policies.PolicyUpdateView.as_view(),
         name="policy-update",
     ),
     path(
         "policies/<uuid:pk>/delete/",
-        policy.PolicyDeleteView.as_view(),
+        policies.PolicyDeleteView.as_view(),
         name="policy-delete",
     ),
     path(
-        "policies/<uuid:pk>/test/", policy.PolicyTestView.as_view(), name="policy-test"
+        "policies/<uuid:pk>/test/",
+        policies.PolicyTestView.as_view(),
+        name="policy-test",
+    ),
+    # Policy bindings
+    path(
+        "policies/bindings/",
+        policies_bindings.PolicyBindingListView.as_view(),
+        name="policies-bindings",
+    ),
+    path(
+        "policies/bindings/create/",
+        policies_bindings.PolicyBindingCreateView.as_view(),
+        name="policy-binding-create",
+    ),
+    path(
+        "policies/bindings/<uuid:pk>/update/",
+        policies_bindings.PolicyBindingUpdateView.as_view(),
+        name="policy-binding-update",
+    ),
+    path(
+        "policies/bindings/<uuid:pk>/delete/",
+        policies_bindings.PolicyBindingDeleteView.as_view(),
+        name="policy-binding-delete",
     ),
     # Providers
     path("providers/", providers.ProviderListView.as_view(), name="providers"),
@@ -97,6 +123,48 @@ urlpatterns = [
         "stages/<uuid:pk>/delete/",
         stages.StageDeleteView.as_view(),
         name="stage-delete",
+    ),
+    # Stage bindings
+    path(
+        "stages/bindings/",
+        stages_bindings.StageBindingListView.as_view(),
+        name="stage-bindings",
+    ),
+    path(
+        "stages/bindings/create/",
+        stages_bindings.StageBindingCreateView.as_view(),
+        name="stage-binding-create",
+    ),
+    path(
+        "stages/bindings/<uuid:pk>/update/",
+        stages_bindings.StageBindingUpdateView.as_view(),
+        name="stage-binding-update",
+    ),
+    path(
+        "stages/bindings/<uuid:pk>/delete/",
+        stages_bindings.StageBindingDeleteView.as_view(),
+        name="stage-binding-delete",
+    ),
+    # Stage Prompts
+    path(
+        "stages/prompts/",
+        stages_prompts.PromptListView.as_view(),
+        name="stage-prompts",
+    ),
+    path(
+        "stages/prompts/create/",
+        stages_prompts.PromptCreateView.as_view(),
+        name="stage-prompt-create",
+    ),
+    path(
+        "stages/prompts/<uuid:pk>/update/",
+        stages_prompts.PromptUpdateView.as_view(),
+        name="stage-prompt-update",
+    ),
+    path(
+        "stages/prompts/<uuid:pk>/delete/",
+        stages_prompts.PromptDeleteView.as_view(),
+        name="stage-prompt-delete",
     ),
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),

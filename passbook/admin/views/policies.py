@@ -23,7 +23,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
     """Show list of all policies"""
 
     model = Policy
-    permission_required = "passbook_core.view_policy"
+    permission_required = "passbook_policies.view_policy"
     paginate_by = 10
     ordering = "order"
     template_name = "administration/policy/list.html"
@@ -47,7 +47,7 @@ class PolicyCreateView(
     """Create new Policy"""
 
     model = Policy
-    permission_required = "passbook_core.add_policy"
+    permission_required = "passbook_policies.add_policy"
 
     template_name = "generic/create.html"
     success_url = reverse_lazy("passbook_admin:policies")
@@ -74,7 +74,7 @@ class PolicyUpdateView(
     """Update policy"""
 
     model = Policy
-    permission_required = "passbook_core.change_policy"
+    permission_required = "passbook_policies.change_policy"
 
     template_name = "generic/update.html"
     success_url = reverse_lazy("passbook_admin:policies")
@@ -104,7 +104,7 @@ class PolicyDeleteView(
     """Delete policy"""
 
     model = Policy
-    permission_required = "passbook_core.delete_policy"
+    permission_required = "passbook_policies.delete_policy"
 
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:policies")
@@ -125,7 +125,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
 
     model = Policy
     form_class = PolicyTestForm
-    permission_required = "passbook_core.view_policy"
+    permission_required = "passbook_policies.view_policy"
     template_name = "administration/policy/test.html"
     object = None
 

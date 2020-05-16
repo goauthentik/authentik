@@ -15,6 +15,8 @@ class PolicyBindingModel(models.Model):
         "Policy", through="PolicyBinding", related_name="bindings", blank=True
     )
 
+    objects = InheritanceManager()
+
     class Meta:
 
         verbose_name = _("Policy Binding Model")

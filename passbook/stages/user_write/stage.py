@@ -29,12 +29,17 @@ class UserWriteStageView(AuthenticationStage):
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
             for key, value in data.items():
                 setter_name = f"set_{key}"
+                # Check if user has a setter for this key, like set_password
                 if hasattr(user, setter_name):
                     setter = getattr(user, setter_name)
                     if callable(setter):
                         setter(value)
-                else:
+                # User has this key already
+                elif hasattr(user, key):
                     setattr(user, key, value)
+                # Otherwise we just save it as custom attribute
+                else:
+                    user.attributes[key] = value
             user.save()
             LOGGER.debug(
                 "Updated existing user", user=user, flow_slug=self.executor.flow.slug,

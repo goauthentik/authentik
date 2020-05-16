@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        # ("passbook_policies", "0001_initial"),
+        ("passbook_policies", "0001_initial"),
     ]
 
     operations = [

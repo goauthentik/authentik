@@ -89,6 +89,8 @@ class FlowStageBinding(PolicyBindingModel, UUIDModel):
 
     order = models.IntegerField()
 
+    objects = InheritanceManager()
+
     def __str__(self) -> str:
         return f"Flow Stage Binding #{self.order} {self.flow} -> {self.stage}"
 

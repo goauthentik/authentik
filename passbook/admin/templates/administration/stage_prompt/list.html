@@ -9,29 +9,16 @@
     <div class="pf-c-content">
         <h1>
             <i class="pf-icon pf-icon-plugged"></i>
-            {% trans 'Stages' %}
+            {% trans 'Prompts' %}
         </h1>
-        <p>{% trans "Stages required for a user to successfully authenticate." %}
-        </p>
+        <p>{% trans "Prompts that can be used for Prompt Stages." %}</p>
     </div>
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
         <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
             <div class="pf-c-toolbar__action-group">
-                <div class="pf-c-dropdown">
-                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
-                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                    </button>
-                    <ul class="pf-c-dropdown__menu" hidden>
-                        {% for type, name in types.items %}
-                        <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:stage-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                <a href="{% url 'passbook_admin:stage-prompt-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
             </div>
             {% include 'partials/pagination.html' %}
         </div>
@@ -44,25 +31,25 @@
                 </tr>
             </thead>
             <tbody role="rowgroup">
-                {% for stage in object_list %}
+                {% for prompt in object_list %}
                 <tr role="row">
                     <th role="columnheader">
                         <div>
-                            <div>{{ stage.name }}</div>
-                            <small>{{ stage|verbose_name }}</small>
+                            <div>{{ prompt.field_key }}</div>
+                            <small>{{ prompt|verbose_name }}</small>
                         </div>
                     </th>
                     <td role="cell">
                         <ul>
-                            {% for flow in stage.flow_set.all %}
+                            {% for flow in prompt.flow_set.all %}
                             <li><a href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">{{ flow.slug }}</a></li>
                             {% endfor %}
                         </ul>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-update' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-delete' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                        {% get_links stage as links %}
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:prompt-update' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:prompt-delete' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        {% get_links prompt as links %}
                         {% for name, href in links.items %}
                         <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
                         {% endfor %}

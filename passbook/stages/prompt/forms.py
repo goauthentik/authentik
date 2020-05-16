@@ -19,6 +19,25 @@ class PromptStageForm(forms.ModelForm):
         }
 
 
+class PromptAdminForm(forms.ModelForm):
+    """Form to edit Prompt instances for admins"""
+
+    class Meta:
+
+        model = Prompt
+        fields = [
+            "field_key",
+            "label",
+            "type",
+            "required",
+            "placeholder",
+        ]
+        widgets = {
+            "label": forms.TextInput(),
+            "placeholder": forms.TextInput(),
+        }
+
+
 class PromptForm(forms.Form):
     """Dynamically created form based on PromptStage"""
 

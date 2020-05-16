@@ -76,7 +76,7 @@ def create_default_invalidation_flow(
         return
 
     if not UserLogoutStage.objects.using(db_alias).exists():
-        UserLogoutStage.objects.using(db_alias).create(name="authentication")
+        UserLogoutStage.objects.using(db_alias).create(name="logout")
 
     flow = Flow.objects.using(db_alias).create(
         name="default-invalidation-flow",
