@@ -65,7 +65,7 @@ services:
       - internal
     labels:
       - traefik.frontend.rule=PathPrefix:/static, /robots.txt
-      - traefik.port=8080
+      - traefik.port=80
       - traefik.docker.network=internal
   traefik:
     image: traefik:1.7

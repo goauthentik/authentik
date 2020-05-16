@@ -54,8 +54,6 @@ CSRF_COOKIE_NAME = f"passbook_csrf{_cookie_suffix}"
 LANGUAGE_COOKIE_NAME = f"passbook_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"passbook_session{_cookie_suffix}"
 
-SESSION_COOKIE_DOMAIN = CONFIG.y("domain", None)
-
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "guardian.backends.ObjectPermissionBackend",

@@ -1,5 +1,4 @@
 """passbook management command to bootstrap"""
-from argparse import REMAINDER
 from sys import exit as _exit
 from time import sleep
 
@@ -19,9 +18,6 @@ class Command(BaseCommand):
 
     help = """Bootstrap passbook, ensure Database and Cache are
     reachable, and directories are writeable"""
-
-    def add_arguments(self, parser):
-        parser.add_argument("command", nargs=REMAINDER)
 
     def check_database(self) -> bool:
         """Return true if database is reachable, false otherwise"""
