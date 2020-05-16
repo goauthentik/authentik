@@ -33,12 +33,12 @@ urlpatterns = [
         name="application-create",
     ),
     path(
-        "applications/<uuid:pk>/update/",
+        "applications/<int:pk>/update/",
         applications.ApplicationUpdateView.as_view(),
         name="application-update",
     ),
     path(
-        "applications/<uuid:pk>/delete/",
+        "applications/<int:pk>/delete/",
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
     ),
@@ -46,12 +46,12 @@ urlpatterns = [
     path("sources/", sources.SourceListView.as_view(), name="sources"),
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
-        "sources/<uuid:pk>/update/",
+        "sources/<int:pk>/update/",
         sources.SourceUpdateView.as_view(),
         name="source-update",
     ),
     path(
-        "sources/<uuid:pk>/delete/",
+        "sources/<int:pk>/delete/",
         sources.SourceDeleteView.as_view(),
         name="source-delete",
     ),
