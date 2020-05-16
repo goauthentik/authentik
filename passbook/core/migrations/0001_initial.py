@@ -284,7 +284,7 @@ class Migration(migrations.Migration):
                 (
                     "expires",
                     models.DateTimeField(
-                        default=passbook.core.models.default_nonce_duration
+                        default=passbook.core.models.default_token_duration
                     ),
                 ),
                 ("expiring", models.BooleanField(default=True)),

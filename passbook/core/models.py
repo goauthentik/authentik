@@ -29,8 +29,8 @@ LOGGER = get_logger()
 NATIVE_ENVIRONMENT = NativeEnvironment()
 
 
-def default_nonce_duration():
-    """Default duration a Nonce is valid"""
+def default_token_duration():
+    """Default duration a Token is valid"""
     return now() + timedelta(minutes=30)
 
 
@@ -195,26 +195,26 @@ class Policy(ExportModelOperationsMixin("policy"), UUIDModel, CreatedUpdatedMode
         raise PolicyException()
 
 
-class Nonce(ExportModelOperationsMixin("nonce"), UUIDModel):
+class Token(ExportModelOperationsMixin("token"), UUIDModel):
     """One-time link for password resets/sign-up-confirmations"""
 
-    expires = models.DateTimeField(default=default_nonce_duration)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    expires = models.DateTimeField(default=default_token_duration)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     expiring = models.BooleanField(default=True)
     description = models.TextField(default="", blank=True)
 
     @property
     def is_expired(self) -> bool:
-        """Check if nonce is expired yet."""
+        """Check if token is expired yet."""
         return now() > self.expires
 
     def __str__(self):
-        return f"Nonce f{self.uuid.hex} {self.description} (expires={self.expires})"
+        return f"Token f{self.uuid.hex} {self.description} (expires={self.expires})"
 
     class Meta:
 
-        verbose_name = _("Nonce")
-        verbose_name_plural = _("Nonces")
+        verbose_name = _("Token")
+        verbose_name_plural = _("Tokens")
 
 
 class PropertyMapping(UUIDModel):

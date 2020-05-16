@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from structlog import get_logger
 
-from passbook.core.models import Nonce
+from passbook.core.models import Token
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import AuthenticationStage
 from passbook.stages.email.forms import EmailStageSendForm
@@ -38,9 +38,9 @@ class EmailStageView(FormView, AuthenticationStage):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if QS_KEY_TOKEN in request.GET:
-            nonce = get_object_or_404(Nonce, pk=request.GET[QS_KEY_TOKEN])
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = nonce.user
-            nonce.delete()
+            token = get_object_or_404(Token, pk=request.GET[QS_KEY_TOKEN])
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
+            token.delete()
             messages.success(request, _("Successfully verified E-Mail."))
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
@@ -50,16 +50,16 @@ class EmailStageView(FormView, AuthenticationStage):
         valid_delta = timedelta(
             minutes=self.executor.current_stage.token_expiry + 1
         )  # + 1 because django timesince always rounds down
-        nonce = Nonce.objects.create(user=pending_user, expires=now() + valid_delta)
+        token = Token.objects.create(user=pending_user, expires=now() + valid_delta)
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_("passbook - Password Recovery"),
             template_name=self.executor.current_stage.template,
             to=[pending_user.email],
             template_context={
-                "url": self.get_full_url(**{QS_KEY_TOKEN: nonce.pk.hex}),
+                "url": self.get_full_url(**{QS_KEY_TOKEN: token.pk.hex}),
                 "user": pending_user,
-                "expires": nonce.expires,
+                "expires": token.expires,
             },
         )
         send_mails(self.executor.current_stage, message)
