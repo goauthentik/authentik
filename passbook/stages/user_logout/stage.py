@@ -13,9 +13,7 @@ class UserLogoutStageView(AuthenticationStage):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         LOGGER.debug(
-            "Logged out",
-            user=request.user,
-            flow_slug=self.executor.flow.slug,
+            "Logged out", user=request.user, flow_slug=self.executor.flow.slug,
         )
         logout(self.request)
         return self.executor.stage_ok()
