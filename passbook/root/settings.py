@@ -248,8 +248,8 @@ CELERY_RESULT_BACKEND = (
 if CONFIG.y("postgresql.backup"):
     INSTALLED_APPS += ["dbbackup"]
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    DBBACKUP_CONNECTORS = {
-        "default": {"CONNECTOR": "dbbackup.db.postgresql.PgDumpConnector"}
+    DBBACKUP_CONNECTOR_MAPPING = {
+        "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
     }
     AWS_ACCESS_KEY_ID = CONFIG.y("postgresql.backup.access_key")
     AWS_SECRET_ACCESS_KEY = CONFIG.y("postgresql.backup.secret_key")
