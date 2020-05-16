@@ -5,27 +5,28 @@ copyright: "Copyright &copy; 2019 - 2020 BeryJu.org"
 nav:
   - Home: index.md
   - Installation:
-      - Installation: installation/install.md
-      - docker-compose: installation/docker-compose.md
-      - Kubernetes: installation/kubernetes.md
+    - Installation: installation/install.md
+    - docker-compose: installation/docker-compose.md
+    - Kubernetes: installation/kubernetes.md
   - Sources: sources.md
   - Providers: providers.md
   - Property Mappings:
-      - Overview: property-mappings/index.md
-      - Reference:
-          - User Object: property-mappings/reference/user-object.md
+    - Overview: property-mappings/index.md
+    - Reference:
+      - User Object: property-mappings/reference/user-object.md
   - Factors: factors.md
   - Policies:
-      - Overview: policies/index.md
-      - Expression: policies/expression/index.md
+    - Overview: policies/index.md
+    - Expression: policies/expression/index.md
   - Integrations:
-      - as Provider:
-          - Amazon Web Services: integrations/services/aws/index.md
-          - GitLab: integrations/services/gitlab/index.md
-          - Rancher: integrations/services/rancher/index.md
-          - Harbor: integrations/services/harbor/index.md
-          - Sentry: integrations/services/sentry/index.md
-          - Ansible Tower/AWX: integrations/services/tower-awx/index.md
+    - as Provider:
+        - Amazon Web Services: integrations/services/aws/index.md
+        - GitLab: integrations/services/gitlab/index.md
+        - Rancher: integrations/services/rancher/index.md
+        - Harbor: integrations/services/harbor/index.md
+        - Sentry: integrations/services/sentry/index.md
+        - Ansible Tower/AWX: integrations/services/tower-awx/index.md
+  - Upgrading from v0.8.x: upgrading-from-0.8.x.md
 
 repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook
