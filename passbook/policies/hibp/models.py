@@ -6,8 +6,7 @@ from django.utils.translation import gettext as _
 from requests import get
 from structlog import get_logger
 
-from passbook.policies.models import Policy
-from passbook.policies.types import PolicyRequest, PolicyResult
+from passbook.core.models import Policy, PolicyResult, User
 
 LOGGER = get_logger()
 
@@ -20,14 +19,14 @@ class HaveIBeenPwendPolicy(Policy):
 
     form = "passbook.policies.hibp.forms.HaveIBeenPwnedPolicyForm"
 
-    def passes(self, request: PolicyRequest) -> PolicyResult:
+    def passes(self, user: User) -> PolicyResult:
         """Check if password is in HIBP DB. Hashes given Password with SHA1, uses the first 5
         characters of Password in request and checks if full hash is in response. Returns 0
         if Password is not in result otherwise the count of how many times it was used."""
         # Only check if password is being set
-        if not hasattr(request.user, "__password__"):
+        if not hasattr(user, "__password__"):
             return PolicyResult(True)
-        password = getattr(request.user, "__password__")
+        password = getattr(user, "__password__")
         pw_hash = sha1(password.encode("utf-8")).hexdigest()  # nosec
         url = "https://api.pwnedpasswords.com/range/%s" % pw_hash[:5]
         result = get(url).text

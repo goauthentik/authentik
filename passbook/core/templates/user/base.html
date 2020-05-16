@@ -34,17 +34,17 @@
                 </ul>
             </section>
             {% endif %}
-            {% user_inlets as user_inlets_loc %}
-            {% if user_inlets_loc %}
+            {% user_sources as user_sources_loc %}
+            {% if user_sources_loc %}
             <section class="pf-c-nav__section">
                 <h2 class="pf-c-nav__section-title">{% trans 'Sources' %}</h2>
                 <ul class="pf-c-nav__list">
-                    {% for inlet in user_inlets_loc %}
+                    {% for source in user_sources_loc %}
                     <li class="pf-c-nav__item">
-                        <a href="{{ inlet.view_name }}"
+                        <a href="{{ source.view_name }}"
                             class="pf-c-nav__link {% if user_settings.view_name == request.get_full_path %} pf-m-current {% endif %}">
-                            <i class="{{ inlet.icon }}"></i>
-                            {{ inlet.name }}
+                            <i class="{{ source.icon }}"></i>
+                            {{ source.name }}
                         </a>
                     </li>
                     {% endfor %}

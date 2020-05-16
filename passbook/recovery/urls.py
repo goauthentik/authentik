@@ -2,8 +2,8 @@
 
 from django.urls import path
 
-from passbook.recovery.views import UseTokenView
+from passbook.recovery.views import UseNonceView
 
 urlpatterns = [
-    path("use-token/<uuid:uuid>/", UseTokenView.as_view(), name="use-token"),
+    path("use-nonce/<uuid:uuid>/", UseNonceView.as_view(), name="use-nonce"),
 ]

@@ -16,7 +16,7 @@ from guardian.mixins import (
 )
 
 from passbook.admin.forms.users import UserForm
-from passbook.core.models import Token, User
+from passbook.core.models import Nonce, User
 from passbook.lib.views import CreateAssignPermView
 
 
@@ -92,12 +92,12 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
     permission_required = "passbook_core.reset_user_password"
 
     def get(self, request, *args, **kwargs):
-        """Create token for user and return link"""
+        """Create nonce for user and return link"""
         super().get(request, *args, **kwargs)
         # TODO: create plan for user, get token
-        token = Token.objects.create(user=self.object)
+        nonce = Nonce.objects.create(user=self.object)
         link = request.build_absolute_uri(
-            reverse("passbook_flows:default-recovery", kwargs={"token": token.uuid})
+            reverse("passbook_flows:default-recovery", kwargs={"nonce": nonce.uuid})
         )
         messages.success(
             request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})

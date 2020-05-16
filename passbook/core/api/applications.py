@@ -16,7 +16,7 @@ class ApplicationSerializer(ModelSerializer):
             "name",
             "slug",
             "skip_authorization",
-            "outlet",
+            "provider",
             "meta_launch_url",
             "meta_icon_url",
             "meta_description",

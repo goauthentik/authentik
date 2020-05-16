@@ -8,12 +8,12 @@ from passbook.admin.views import (
     debug,
     flows,
     groups,
-    inlets,
     invitations,
-    outlets,
     overview,
-    policies,
+    policy,
     property_mapping,
+    providers,
+    sources,
     stages,
     users,
 )
@@ -39,49 +39,51 @@ urlpatterns = [
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
     ),
-    # Inlets
-    path("inlets/", inlets.InletListView.as_view(), name="inlets"),
-    path("inlets/create/", inlets.InletCreateView.as_view(), name="inlet-create"),
+    # Sources
+    path("sources/", sources.SourceListView.as_view(), name="sources"),
+    path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
-        "inlets/<uuid:pk>/update/",
-        inlets.InletUpdateView.as_view(),
-        name="inlet-update",
+        "sources/<uuid:pk>/update/",
+        sources.SourceUpdateView.as_view(),
+        name="source-update",
     ),
     path(
-        "inlets/<uuid:pk>/delete/",
-        inlets.InletDeleteView.as_view(),
-        name="inlet-delete",
+        "sources/<uuid:pk>/delete/",
+        sources.SourceDeleteView.as_view(),
+        name="source-delete",
     ),
     # Policies
-    path("policies/", policies.PolicyListView.as_view(), name="policies"),
-    path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
+    path("policies/", policy.PolicyListView.as_view(), name="policies"),
+    path("policies/create/", policy.PolicyCreateView.as_view(), name="policy-create"),
     path(
         "policies/<uuid:pk>/update/",
-        policies.PolicyUpdateView.as_view(),
+        policy.PolicyUpdateView.as_view(),
         name="policy-update",
     ),
     path(
         "policies/<uuid:pk>/delete/",
-        policies.PolicyDeleteView.as_view(),
+        policy.PolicyDeleteView.as_view(),
         name="policy-delete",
     ),
     path(
-        "policies/<uuid:pk>/test/",
-        policies.PolicyTestView.as_view(),
-        name="policy-test",
+        "policies/<uuid:pk>/test/", policy.PolicyTestView.as_view(), name="policy-test"
     ),
-    # Outlets
-    path("outlets/", outlets.OutletListView.as_view(), name="outlets"),
-    path("outlets/create/", outlets.OutletCreateView.as_view(), name="outlet-create",),
+    # Providers
+    path("providers/", providers.ProviderListView.as_view(), name="providers"),
     path(
-        "outlets/<int:pk>/update/",
-        outlets.OutletUpdateView.as_view(),
-        name="outlet-update",
+        "providers/create/",
+        providers.ProviderCreateView.as_view(),
+        name="provider-create",
     ),
     path(
-        "outlets/<int:pk>/delete/",
-        outlets.OutletDeleteView.as_view(),
-        name="outlet-delete",
+        "providers/<int:pk>/update/",
+        providers.ProviderUpdateView.as_view(),
+        name="provider-update",
+    ),
+    path(
+        "providers/<int:pk>/delete/",
+        providers.ProviderDeleteView.as_view(),
+        name="provider-delete",
     ),
     # Stages
     path("stages/", stages.StageListView.as_view(), name="stages"),

@@ -3,14 +3,14 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
-from passbook.core.models import Application, Outlet
+from passbook.core.models import Application, Provider
 
 
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
-    outlet = forms.ModelChoiceField(
-        queryset=Outlet.objects.all().order_by("pk").select_subclasses(),
+    provider = forms.ModelChoiceField(
+        queryset=Provider.objects.all().order_by("pk").select_subclasses(),
         required=False,
     )
 
@@ -21,7 +21,7 @@ class ApplicationForm(forms.ModelForm):
             "name",
             "slug",
             "skip_authorization",
-            "outlet",
+            "provider",
             "meta_launch_url",
             "meta_icon_url",
             "meta_description",

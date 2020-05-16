@@ -1,8 +1,8 @@
 """permission classes for django restframework"""
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 
+from passbook.core.models import PolicyModel
 from passbook.policies.engine import PolicyEngine
-from passbook.policies.models import PolicyBindingModel
 
 
 class CustomObjectPermissions(DjangoObjectPermissions):
@@ -24,7 +24,8 @@ class PolicyPermissions(BasePermission):
 
     policy_engine: PolicyEngine
 
-    def has_object_permission(self, request, view, obj: PolicyBindingModel) -> bool:
-        self.policy_engine = PolicyEngine(obj.policies.all(), request.user, request)
+    def has_object_permission(self, request, view, obj: PolicyModel) -> bool:
+        # if not obj.po
+        self.policy_engine = PolicyEngine(obj.policies, request.user, request)
         self.policy_engine.request.obj = obj
         return self.policy_engine.build().passing

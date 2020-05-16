@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
-from passbook.policies.models import Policy
+from passbook.core.models import Policy
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()

@@ -4,7 +4,7 @@ from typing import Iterable, List
 from django import template
 from django.template.context import RequestContext
 
-from passbook.core.models import Inlet
+from passbook.core.models import Source
 from passbook.core.types import UIUserSettings
 from passbook.flows.models import Stage
 from passbook.policies.engine import PolicyEngine
@@ -27,14 +27,14 @@ def user_stages(context: RequestContext) -> List[UIUserSettings]:
 
 
 @register.simple_tag(takes_context=True)
-def user_inlets(context: RequestContext) -> List[UIUserSettings]:
-    """Return a list of all inlets which are enabled for the user"""
+def user_sources(context: RequestContext) -> List[UIUserSettings]:
+    """Return a list of all sources which are enabled for the user"""
     user = context.get("request").user
-    _all_inlets: Iterable[(Inlet)] = (
-        (Inlet).objects.filter(enabled=True).select_subclasses()
+    _all_sources: Iterable[Source] = (
+        Source.objects.filter(enabled=True).select_subclasses()
     )
-    matching_inlets: List[UIUserSettings] = []
-    for source in _all_inlets:
+    matching_sources: List[UIUserSettings] = []
+    for source in _all_sources:
         user_settings = source.ui_user_settings
         if not user_settings:
             continue
@@ -43,5 +43,5 @@ def user_inlets(context: RequestContext) -> List[UIUserSettings]:
         )
         policy_engine.build()
         if policy_engine.passing:
-            matching_inlets.append(user_settings)
-    return matching_inlets
+            matching_sources.append(user_settings)
+    return matching_sources

@@ -5,7 +5,7 @@ from django.core import mail
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 
-from passbook.core.models import Token, User
+from passbook.core.models import Nonce, User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -77,7 +77,7 @@ class TestEmailStage(TestCase):
             url = reverse(
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
-            token = Token.objects.get(user=self.user)
+            token = Nonce.objects.get(user=self.user)
             url += f"?{QS_KEY_TOKEN}={token.pk.hex}"
             response = self.client.get(url)
             self.assertEqual(response.status_code, 302)

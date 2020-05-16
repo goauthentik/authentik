@@ -9,18 +9,12 @@ from structlog import get_logger
 
 from passbook.api.permissions import CustomObjectPermissions
 from passbook.audit.api import EventViewSet
-from passbook.channels.in_ldap.api import LDAPInletViewSet, LDAPPropertyMappingViewSet
-from passbook.channels.in_oauth.api import OAuthInletViewSet
-from passbook.channels.out_app_gw.api import ApplicationGatewayOutletViewSet
-from passbook.channels.out_oauth.api import OAuth2OutletViewSet
-from passbook.channels.out_oidc.api import OpenIDOutletViewSet
-from passbook.channels.out_saml.api import SAMLOutletViewSet, SAMLPropertyMappingViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.groups import GroupViewSet
-from passbook.core.api.inlets import InletViewSet
-from passbook.core.api.outlets import OutletViewSet
 from passbook.core.api.policies import PolicyViewSet
 from passbook.core.api.propertymappings import PropertyMappingViewSet
+from passbook.core.api.providers import ProviderViewSet
+from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.lib.utils.reflection import get_apps
@@ -30,6 +24,12 @@ from passbook.policies.expression.api import ExpressionPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
+from passbook.providers.app_gw.api import ApplicationGatewayProviderViewSet
+from passbook.providers.oauth.api import OAuth2ProviderViewSet
+from passbook.providers.oidc.api import OpenIDProviderViewSet
+from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
+from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
+from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
@@ -57,15 +57,9 @@ router.register("core/users", UserViewSet)
 
 router.register("audit/events", EventViewSet)
 
-router.register("inlets/all", InletViewSet)
-router.register("inlets/ldap", LDAPInletViewSet)
-router.register("inlets/oauth", OAuthInletViewSet)
-
-router.register("outlets/all", OutletViewSet)
-router.register("outlets/applicationgateway", ApplicationGatewayOutletViewSet)
-router.register("outlets/oauth", OAuth2OutletViewSet)
-router.register("outlets/openid", OpenIDOutletViewSet)
-router.register("outlets/saml", SAMLOutletViewSet)
+router.register("sources/all", SourceViewSet)
+router.register("sources/ldap", LDAPSourceViewSet)
+router.register("sources/oauth", OAuthSourceViewSet)
 
 router.register("policies/all", PolicyViewSet)
 router.register("policies/bindings", PolicyBindingViewSet)
@@ -74,6 +68,12 @@ router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/passwordexpiry", PasswordExpiryPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
+
+router.register("providers/all", ProviderViewSet)
+router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)
+router.register("providers/oauth", OAuth2ProviderViewSet)
+router.register("providers/openid", OpenIDProviderViewSet)
+router.register("providers/saml", SAMLProviderViewSet)
 
 router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)

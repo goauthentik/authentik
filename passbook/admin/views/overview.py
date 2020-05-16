@@ -5,9 +5,8 @@ from django.views.generic import TemplateView
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
-from passbook.core.models import Application, Inlet, Outlet, User
+from passbook.core.models import Application, Policy, Provider, Source, User
 from passbook.flows.models import Flow, Stage
-from passbook.policies.models import Policy
 from passbook.root.celery import CELERY_APP
 from passbook.stages.invitation.models import Invitation
 
@@ -28,14 +27,16 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["application_count"] = len(Application.objects.all())
         kwargs["policy_count"] = len(Policy.objects.all())
         kwargs["user_count"] = len(User.objects.all())
-        kwargs["outlet_count"] = len(Outlet.objects.all())
-        kwargs["inlet_count"] = len(Inlet.objects.all())
+        kwargs["provider_count"] = len(Provider.objects.all())
+        kwargs["source_count"] = len(Source.objects.all())
         kwargs["stage_count"] = len(Stage.objects.all())
         kwargs["flow_count"] = len(Flow.objects.all())
         kwargs["invitation_count"] = len(Invitation.objects.all())
         kwargs["version"] = __version__
         kwargs["worker_count"] = len(CELERY_APP.control.ping(timeout=0.5))
-        kwargs["outlets_without_application"] = Outlet.objects.filter(application=None)
+        kwargs["providers_without_application"] = Provider.objects.filter(
+            application=None
+        )
         kwargs["policies_without_binding"] = len(
             Policy.objects.filter(policymodel__isnull=True)
         )

@@ -1,30 +1,9 @@
 """Policy base models"""
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from model_utils.managers import InheritanceManager
 
-from passbook.lib.models import CreatedUpdatedModel, UUIDModel
-from passbook.policies.exceptions import PolicyException
-from passbook.policies.types import PolicyRequest, PolicyResult
-
-
-class Policy(UUIDModel, CreatedUpdatedModel):
-    """Policies which specify if a user is authorized to use an Application. Can be overridden by
-    other types to add other fields, more logic, etc."""
-
-    name = models.TextField(blank=True, null=True)
-    negate = models.BooleanField(default=False)
-    order = models.IntegerField(default=0)
-    timeout = models.IntegerField(default=30)
-
-    objects = InheritanceManager()
-
-    def __str__(self):
-        return f"Policy {self.name}"
-
-    def passes(self, request: PolicyRequest) -> PolicyResult:
-        """Check if user instance passes this policy"""
-        raise PolicyException()
+from passbook.core.models import Policy
+from passbook.lib.models import UUIDModel
 
 
 class PolicyBindingModel(models.Model):

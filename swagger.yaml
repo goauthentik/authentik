@@ -154,7 +154,7 @@ paths:
       tags:
         - core
     parameters: []
-  /core/applications/{id}/:
+  /core/applications/{uuid}/:
     get:
       operationId: core_applications_read
       description: Application Viewset
@@ -208,11 +208,12 @@ paths:
       tags:
         - core
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this application.
+        description: A UUID string identifying this application.
         required: true
-        type: integer
+        type: string
+        format: uuid
   /core/groups/:
     get:
       operationId: core_groups_list
@@ -750,900 +751,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /inlets/all/:
-    get:
-      operationId: inlets_all_list
-      description: Inlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/Inlet'
-      tags:
-        - inlets
-    parameters: []
-  /inlets/all/{id}/:
-    get:
-      operationId: inlets_all_read
-      description: Inlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/Inlet'
-      tags:
-        - inlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this inlet.
-        required: true
-        type: integer
-  /inlets/ldap/:
-    get:
-      operationId: inlets_ldap_list
-      description: LDAP Inlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/LDAPInlet'
-      tags:
-        - inlets
-    post:
-      operationId: inlets_ldap_create
-      description: LDAP Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      tags:
-        - inlets
-    parameters: []
-  /inlets/ldap/{id}/:
-    get:
-      operationId: inlets_ldap_read
-      description: LDAP Inlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      tags:
-        - inlets
-    put:
-      operationId: inlets_ldap_update
-      description: LDAP Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      tags:
-        - inlets
-    patch:
-      operationId: inlets_ldap_partial_update
-      description: LDAP Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/LDAPInlet'
-      tags:
-        - inlets
-    delete:
-      operationId: inlets_ldap_delete
-      description: LDAP Inlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - inlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this LDAP Inlet.
-        required: true
-        type: integer
-  /inlets/oauth/:
-    get:
-      operationId: inlets_oauth_list
-      description: Inlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OAuthInlet'
-      tags:
-        - inlets
-    post:
-      operationId: inlets_oauth_create
-      description: Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      tags:
-        - inlets
-    parameters: []
-  /inlets/oauth/{id}/:
-    get:
-      operationId: inlets_oauth_read
-      description: Inlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      tags:
-        - inlets
-    put:
-      operationId: inlets_oauth_update
-      description: Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      tags:
-        - inlets
-    patch:
-      operationId: inlets_oauth_partial_update
-      description: Inlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuthInlet'
-      tags:
-        - inlets
-    delete:
-      operationId: inlets_oauth_delete
-      description: Inlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - inlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Generic OAuth Inlet.
-        required: true
-        type: integer
-  /outlets/all/:
-    get:
-      operationId: outlets_all_list
-      description: Outlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/Outlet'
-      tags:
-        - outlets
-    parameters: []
-  /outlets/all/{id}/:
-    get:
-      operationId: outlets_all_read
-      description: Outlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/Outlet'
-      tags:
-        - outlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this outlet.
-        required: true
-        type: integer
-  /outlets/applicationgateway/:
-    get:
-      operationId: outlets_applicationgateway_list
-      description: ApplicationGatewayOutlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/ApplicationGatewayOutlet'
-      tags:
-        - outlets
-    post:
-      operationId: outlets_applicationgateway_create
-      description: ApplicationGatewayOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      tags:
-        - outlets
-    parameters: []
-  /outlets/applicationgateway/{id}/:
-    get:
-      operationId: outlets_applicationgateway_read
-      description: ApplicationGatewayOutlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      tags:
-        - outlets
-    put:
-      operationId: outlets_applicationgateway_update
-      description: ApplicationGatewayOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      tags:
-        - outlets
-    patch:
-      operationId: outlets_applicationgateway_partial_update
-      description: ApplicationGatewayOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayOutlet'
-      tags:
-        - outlets
-    delete:
-      operationId: outlets_applicationgateway_delete
-      description: ApplicationGatewayOutlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - outlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Application Gateway Outlet.
-        required: true
-        type: integer
-  /outlets/oauth/:
-    get:
-      operationId: outlets_oauth_list
-      description: OAuth2Outlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OAuth2Outlet'
-      tags:
-        - outlets
-    post:
-      operationId: outlets_oauth_create
-      description: OAuth2Outlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      tags:
-        - outlets
-    parameters: []
-  /outlets/oauth/{id}/:
-    get:
-      operationId: outlets_oauth_read
-      description: OAuth2Outlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      tags:
-        - outlets
-    put:
-      operationId: outlets_oauth_update
-      description: OAuth2Outlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      tags:
-        - outlets
-    patch:
-      operationId: outlets_oauth_partial_update
-      description: OAuth2Outlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OAuth2Outlet'
-      tags:
-        - outlets
-    delete:
-      operationId: outlets_oauth_delete
-      description: OAuth2Outlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - outlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this OAuth2 Outlet.
-        required: true
-        type: integer
-  /outlets/openid/:
-    get:
-      operationId: outlets_openid_list
-      description: OpenIDOutlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OpenIDOutlet'
-      tags:
-        - outlets
-    post:
-      operationId: outlets_openid_create
-      description: OpenIDOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      tags:
-        - outlets
-    parameters: []
-  /outlets/openid/{id}/:
-    get:
-      operationId: outlets_openid_read
-      description: OpenIDOutlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      tags:
-        - outlets
-    put:
-      operationId: outlets_openid_update
-      description: OpenIDOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      tags:
-        - outlets
-    patch:
-      operationId: outlets_openid_partial_update
-      description: OpenIDOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OpenIDOutlet'
-      tags:
-        - outlets
-    delete:
-      operationId: outlets_openid_delete
-      description: OpenIDOutlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - outlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Client.
-        required: true
-        type: integer
-  /outlets/saml/:
-    get:
-      operationId: outlets_saml_list
-      description: SAMLOutlet Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/SAMLOutlet'
-      tags:
-        - outlets
-    post:
-      operationId: outlets_saml_create
-      description: SAMLOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      tags:
-        - outlets
-    parameters: []
-  /outlets/saml/{id}/:
-    get:
-      operationId: outlets_saml_read
-      description: SAMLOutlet Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      tags:
-        - outlets
-    put:
-      operationId: outlets_saml_update
-      description: SAMLOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      tags:
-        - outlets
-    patch:
-      operationId: outlets_saml_partial_update
-      description: SAMLOutlet Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/SAMLOutlet'
-      tags:
-        - outlets
-    delete:
-      operationId: outlets_saml_delete
-      description: SAMLOutlet Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - outlets
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this SAML Outlet.
-        required: true
-        type: integer
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -2924,6 +2031,903 @@ paths:
       - name: uuid
         in: path
         description: A UUID string identifying this SAML Property Mapping.
+        required: true
+        type: string
+        format: uuid
+  /providers/all/:
+    get:
+      operationId: providers_all_list
+      description: Provider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    parameters: []
+  /providers/all/{id}/:
+    get:
+      operationId: providers_all_read
+      description: Provider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this provider.
+        required: true
+        type: integer
+  /providers/applicationgateway/:
+    get:
+      operationId: providers_applicationgateway_list
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_applicationgateway_create
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/applicationgateway/{id}/:
+    get:
+      operationId: providers_applicationgateway_read
+      description: ApplicationGatewayProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_applicationgateway_update
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_applicationgateway_partial_update
+      description: ApplicationGatewayProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ApplicationGatewayProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_applicationgateway_delete
+      description: ApplicationGatewayProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Application Gateway Provider.
+        required: true
+        type: integer
+  /providers/oauth/:
+    get:
+      operationId: providers_oauth_list
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    post:
+      operationId: providers_oauth_create
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    parameters: []
+  /providers/oauth/{id}/:
+    get:
+      operationId: providers_oauth_read
+      description: OAuth2Provider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    put:
+      operationId: providers_oauth_update
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_oauth_partial_update
+      description: OAuth2Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuth2Provider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_oauth_delete
+      description: OAuth2Provider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this OAuth2 Provider.
+        required: true
+        type: integer
+  /providers/openid/:
+    get:
+      operationId: providers_openid_list
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_openid_create
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/openid/{id}/:
+    get:
+      operationId: providers_openid_read
+      description: OpenIDProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_openid_update
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_openid_partial_update
+      description: OpenIDProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OpenIDProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_openid_delete
+      description: OpenIDProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Client.
+        required: true
+        type: integer
+  /providers/saml/:
+    get:
+      operationId: providers_saml_list
+      description: SAMLProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    post:
+      operationId: providers_saml_create
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    parameters: []
+  /providers/saml/{id}/:
+    get:
+      operationId: providers_saml_read
+      description: SAMLProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    put:
+      operationId: providers_saml_update
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_saml_partial_update
+      description: SAMLProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLProvider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_saml_delete
+      description: SAMLProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this SAML Provider.
+        required: true
+        type: integer
+  /sources/all/:
+    get:
+      operationId: sources_all_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Source'
+      tags:
+        - sources
+    parameters: []
+  /sources/all/{uuid}/:
+    get:
+      operationId: sources_all_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Source'
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this source.
+        required: true
+        type: string
+        format: uuid
+  /sources/ldap/:
+    get:
+      operationId: sources_ldap_list
+      description: LDAP Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_ldap_create
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/ldap/{uuid}/:
+    get:
+      operationId: sources_ldap_read
+      description: LDAP Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_ldap_update
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_ldap_partial_update
+      description: LDAP Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/LDAPSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_ldap_delete
+      description: LDAP Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this LDAP Source.
+        required: true
+        type: string
+        format: uuid
+  /sources/oauth/:
+    get:
+      operationId: sources_oauth_list
+      description: Source Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_oauth_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/oauth/{uuid}/:
+    get:
+      operationId: sources_oauth_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_oauth_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_oauth_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OAuthSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_oauth_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Generic OAuth Source.
         required: true
         type: string
         format: uuid
@@ -4833,8 +4837,9 @@ definitions:
     type: object
     properties:
       pk:
-        title: ID
-        type: integer
+        title: Uuid
+        type: string
+        format: uuid
         readOnly: true
       name:
         title: Name
@@ -4852,8 +4857,8 @@ definitions:
       skip_authorization:
         title: Skip authorization
         type: boolean
-      outlet:
-        title: Outlet
+      provider:
+        title: Provider
         type: integer
         x-nullable: true
       meta_launch_url:
@@ -4873,8 +4878,8 @@ definitions:
       policies:
         type: array
         items:
-          type: integer
-        readOnly: true
+          type: string
+          format: uuid
         uniqueItems: true
   Group:
     required:
@@ -5015,428 +5020,6 @@ definitions:
           type: integer
         readOnly: true
         uniqueItems: true
-  Inlet:
-    required:
-      - name
-      - slug
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        description: Inlet's display Name.
-        type: string
-        minLength: 1
-      slug:
-        title: Slug
-        description: Internal source name, used in URLs.
-        type: string
-        format: slug
-        pattern: ^[-a-zA-Z0-9_]+$
-        maxLength: 50
-        minLength: 1
-      enabled:
-        title: Enabled
-        type: boolean
-      __type__:
-        title: 'type  '
-        type: string
-        readOnly: true
-  LDAPInlet:
-    required:
-      - name
-      - slug
-      - server_uri
-      - bind_cn
-      - bind_password
-      - base_dn
-      - additional_user_dn
-      - additional_group_dn
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        description: Inlet's display Name.
-        type: string
-        minLength: 1
-      slug:
-        title: Slug
-        description: Internal source name, used in URLs.
-        type: string
-        format: slug
-        pattern: ^[-a-zA-Z0-9_]+$
-        maxLength: 50
-        minLength: 1
-      enabled:
-        title: Enabled
-        type: boolean
-      server_uri:
-        title: Server URI
-        type: string
-        minLength: 1
-      bind_cn:
-        title: Bind CN
-        type: string
-        minLength: 1
-      bind_password:
-        title: Bind password
-        type: string
-        minLength: 1
-      start_tls:
-        title: Enable Start TLS
-        type: boolean
-      base_dn:
-        title: Base DN
-        type: string
-        minLength: 1
-      additional_user_dn:
-        title: Addition User DN
-        description: Prepended to Base DN for User-queries.
-        type: string
-        minLength: 1
-      additional_group_dn:
-        title: Addition Group DN
-        description: Prepended to Base DN for Group-queries.
-        type: string
-        minLength: 1
-      user_object_filter:
-        title: User object filter
-        description: Consider Objects matching this filter to be Users.
-        type: string
-        minLength: 1
-      group_object_filter:
-        title: Group object filter
-        description: Consider Objects matching this filter to be Groups.
-        type: string
-        minLength: 1
-      user_group_membership_field:
-        title: User group membership field
-        description: Field which contains Groups of user.
-        type: string
-        minLength: 1
-      object_uniqueness_field:
-        title: Object uniqueness field
-        description: Field which contains a unique Identifier.
-        type: string
-        minLength: 1
-      sync_groups:
-        title: Sync groups
-        type: boolean
-      sync_parent_group:
-        title: Sync parent group
-        type: string
-        format: uuid
-        x-nullable: true
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-  OAuthInlet:
-    required:
-      - name
-      - slug
-      - inlet_type
-      - authorization_url
-      - access_token_url
-      - profile_url
-      - consumer_key
-      - consumer_secret
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        description: Inlet's display Name.
-        type: string
-        minLength: 1
-      slug:
-        title: Slug
-        description: Internal source name, used in URLs.
-        type: string
-        format: slug
-        pattern: ^[-a-zA-Z0-9_]+$
-        maxLength: 50
-        minLength: 1
-      enabled:
-        title: Enabled
-        type: boolean
-      inlet_type:
-        title: Inlet type
-        type: string
-        maxLength: 255
-        minLength: 1
-      request_token_url:
-        title: Request Token URL
-        type: string
-        maxLength: 255
-      authorization_url:
-        title: Authorization URL
-        type: string
-        maxLength: 255
-        minLength: 1
-      access_token_url:
-        title: Access Token URL
-        type: string
-        maxLength: 255
-        minLength: 1
-      profile_url:
-        title: Profile URL
-        type: string
-        maxLength: 255
-        minLength: 1
-      consumer_key:
-        title: Consumer key
-        type: string
-        minLength: 1
-      consumer_secret:
-        title: Consumer secret
-        type: string
-        minLength: 1
-  Outlet:
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-      __type__:
-        title: 'type  '
-        type: string
-        readOnly: true
-  OpenIDOutlet:
-    title: Client
-    required:
-      - client_id
-      - response_types
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        maxLength: 100
-        minLength: 1
-      client_type:
-        title: Client Type
-        description: <b>Confidential</b> clients are capable of maintaining the confidentiality
-          of their credentials. <b>Public</b> clients are incapable.
-        type: string
-        enum:
-          - confidential
-          - public
-      client_id:
-        title: Client ID
-        type: string
-        maxLength: 255
-        minLength: 1
-      client_secret:
-        title: Client SECRET
-        type: string
-        maxLength: 255
-      response_types:
-        type: array
-        items:
-          type: integer
-        uniqueItems: true
-      jwt_alg:
-        title: JWT Algorithm
-        description: Algorithm used to encode ID Tokens.
-        type: string
-        enum:
-          - HS256
-          - RS256
-      reuse_consent:
-        title: Reuse Consent?
-        description: If enabled, server will save the user consent given to a specific
-          client, so that user won't be prompted for the same authorization multiple
-          times.
-        type: boolean
-      require_consent:
-        title: Require Consent?
-        description: If disabled, the Server will NEVER ask the user for consent.
-        type: boolean
-      _redirect_uris:
-        title: Redirect URIs
-        description: Enter each URI on a new line.
-        type: string
-        minLength: 1
-      _scope:
-        title: Scopes
-        description: Specifies the authorized scope values for the client app.
-        type: string
-  ApplicationGatewayOutlet:
-    required:
-      - name
-      - internal_host
-      - external_host
-      - client
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      internal_host:
-        title: Internal host
-        type: string
-        minLength: 1
-      external_host:
-        title: External host
-        type: string
-        minLength: 1
-      client:
-        $ref: '#/definitions/OpenIDOutlet'
-  OAuth2Outlet:
-    required:
-      - client_type
-      - authorization_grant_type
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        maxLength: 255
-      redirect_uris:
-        title: Redirect uris
-        description: Allowed URIs list, space separated
-        type: string
-      client_type:
-        title: Client type
-        type: string
-        enum:
-          - confidential
-          - public
-      authorization_grant_type:
-        title: Authorization grant type
-        type: string
-        enum:
-          - authorization-code
-          - implicit
-          - password
-          - client-credentials
-      client_id:
-        title: Client id
-        type: string
-        maxLength: 100
-        minLength: 1
-      client_secret:
-        title: Client secret
-        type: string
-        maxLength: 255
-  SAMLOutlet:
-    required:
-      - name
-      - processor_path
-      - acs_url
-      - issuer
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      processor_path:
-        title: Processor path
-        type: string
-        maxLength: 255
-        minLength: 1
-      acs_url:
-        title: ACS URL
-        type: string
-        format: uri
-        maxLength: 200
-        minLength: 1
-      audience:
-        title: Audience
-        type: string
-        minLength: 1
-      issuer:
-        title: Issuer
-        description: Also known as EntityID
-        type: string
-        minLength: 1
-      assertion_valid_not_before:
-        title: Assertion valid not before
-        description: 'Assertion valid not before current time + this value (Format:
-          hours=-1;minutes=-2;seconds=-3).'
-        type: string
-        minLength: 1
-      assertion_valid_not_on_or_after:
-        title: Assertion valid not on or after
-        description: 'Assertion not valid on or after current time + this value (Format:
-          hours=1;minutes=2;seconds=3).'
-        type: string
-        minLength: 1
-      session_valid_not_on_or_after:
-        title: Session valid not on or after
-        description: 'Session not valid on or after current time + this value (Format:
-          hours=1;minutes=2;seconds=3).'
-        type: string
-        minLength: 1
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-      digest_algorithm:
-        title: Digest algorithm
-        type: string
-        enum:
-          - sha1
-          - sha256
-      signature_algorithm:
-        title: Signature algorithm
-        type: string
-        enum:
-          - rsa-sha1
-          - rsa-sha256
-          - ecdsa-sha256
-          - dsa-sha1
-      signing_kp:
-        title: Signing Keypair
-        description: Singing is enabled upon selection of a Key Pair.
-        type: string
-        format: uuid
-        x-nullable: true
-      require_signing:
-        title: Require signing
-        description: Require Requests to be signed by an X509 Certificate. Must match
-          the Certificate selected in `Singing Keypair`.
-        type: boolean
   Policy:
     type: object
     properties:
@@ -5785,6 +5368,431 @@ definitions:
         x-nullable: true
       expression:
         title: Expression
+        type: string
+        minLength: 1
+  Provider:
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  OpenIDProvider:
+    title: Client
+    required:
+      - client_id
+      - response_types
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 100
+        minLength: 1
+      client_type:
+        title: Client Type
+        description: <b>Confidential</b> clients are capable of maintaining the confidentiality
+          of their credentials. <b>Public</b> clients are incapable.
+        type: string
+        enum:
+          - confidential
+          - public
+      client_id:
+        title: Client ID
+        type: string
+        maxLength: 255
+        minLength: 1
+      client_secret:
+        title: Client SECRET
+        type: string
+        maxLength: 255
+      response_types:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      jwt_alg:
+        title: JWT Algorithm
+        description: Algorithm used to encode ID Tokens.
+        type: string
+        enum:
+          - HS256
+          - RS256
+      reuse_consent:
+        title: Reuse Consent?
+        description: If enabled, server will save the user consent given to a specific
+          client, so that user won't be prompted for the same authorization multiple
+          times.
+        type: boolean
+      require_consent:
+        title: Require Consent?
+        description: If disabled, the Server will NEVER ask the user for consent.
+        type: boolean
+      _redirect_uris:
+        title: Redirect URIs
+        description: Enter each URI on a new line.
+        type: string
+        minLength: 1
+      _scope:
+        title: Scopes
+        description: Specifies the authorized scope values for the client app.
+        type: string
+  ApplicationGatewayProvider:
+    required:
+      - name
+      - internal_host
+      - external_host
+      - client
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      internal_host:
+        title: Internal host
+        type: string
+        minLength: 1
+      external_host:
+        title: External host
+        type: string
+        minLength: 1
+      client:
+        $ref: '#/definitions/OpenIDProvider'
+  OAuth2Provider:
+    required:
+      - client_type
+      - authorization_grant_type
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 255
+      redirect_uris:
+        title: Redirect uris
+        description: Allowed URIs list, space separated
+        type: string
+      client_type:
+        title: Client type
+        type: string
+        enum:
+          - confidential
+          - public
+      authorization_grant_type:
+        title: Authorization grant type
+        type: string
+        enum:
+          - authorization-code
+          - implicit
+          - password
+          - client-credentials
+      client_id:
+        title: Client id
+        type: string
+        maxLength: 100
+        minLength: 1
+      client_secret:
+        title: Client secret
+        type: string
+        maxLength: 255
+  SAMLProvider:
+    required:
+      - name
+      - processor_path
+      - acs_url
+      - issuer
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      processor_path:
+        title: Processor path
+        type: string
+        maxLength: 255
+        minLength: 1
+      acs_url:
+        title: ACS URL
+        type: string
+        format: uri
+        maxLength: 200
+        minLength: 1
+      audience:
+        title: Audience
+        type: string
+        minLength: 1
+      issuer:
+        title: Issuer
+        description: Also known as EntityID
+        type: string
+        minLength: 1
+      assertion_valid_not_before:
+        title: Assertion valid not before
+        description: 'Assertion valid not before current time + this value (Format:
+          hours=-1;minutes=-2;seconds=-3).'
+        type: string
+        minLength: 1
+      assertion_valid_not_on_or_after:
+        title: Assertion valid not on or after
+        description: 'Assertion not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
+      session_valid_not_on_or_after:
+        title: Session valid not on or after
+        description: 'Session not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      digest_algorithm:
+        title: Digest algorithm
+        type: string
+        enum:
+          - sha1
+          - sha256
+      signature_algorithm:
+        title: Signature algorithm
+        type: string
+        enum:
+          - rsa-sha1
+          - rsa-sha256
+          - ecdsa-sha256
+          - dsa-sha1
+      signing_kp:
+        title: Signing Keypair
+        description: Singing is enabled upon selection of a Key Pair.
+        type: string
+        format: uuid
+        x-nullable: true
+      require_signing:
+        title: Require signing
+        description: Require Requests to be signed by an X509 Certificate. Must match
+          the Certificate selected in `Singing Keypair`.
+        type: boolean
+  Source:
+    required:
+      - name
+      - slug
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+  LDAPSource:
+    required:
+      - name
+      - slug
+      - server_uri
+      - bind_cn
+      - bind_password
+      - base_dn
+      - additional_user_dn
+      - additional_group_dn
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      server_uri:
+        title: Server URI
+        type: string
+        minLength: 1
+      bind_cn:
+        title: Bind CN
+        type: string
+        minLength: 1
+      bind_password:
+        title: Bind password
+        type: string
+        minLength: 1
+      start_tls:
+        title: Enable Start TLS
+        type: boolean
+      base_dn:
+        title: Base DN
+        type: string
+        minLength: 1
+      additional_user_dn:
+        title: Addition User DN
+        description: Prepended to Base DN for User-queries.
+        type: string
+        minLength: 1
+      additional_group_dn:
+        title: Addition Group DN
+        description: Prepended to Base DN for Group-queries.
+        type: string
+        minLength: 1
+      user_object_filter:
+        title: User object filter
+        description: Consider Objects matching this filter to be Users.
+        type: string
+        minLength: 1
+      group_object_filter:
+        title: Group object filter
+        description: Consider Objects matching this filter to be Groups.
+        type: string
+        minLength: 1
+      user_group_membership_field:
+        title: User group membership field
+        description: Field which contains Groups of user.
+        type: string
+        minLength: 1
+      object_uniqueness_field:
+        title: Object uniqueness field
+        description: Field which contains a unique Identifier.
+        type: string
+        minLength: 1
+      sync_groups:
+        title: Sync groups
+        type: boolean
+      sync_parent_group:
+        title: Sync parent group
+        type: string
+        format: uuid
+        x-nullable: true
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+  OAuthSource:
+    required:
+      - name
+      - slug
+      - provider_type
+      - authorization_url
+      - access_token_url
+      - profile_url
+      - consumer_key
+      - consumer_secret
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      provider_type:
+        title: Provider type
+        type: string
+        maxLength: 255
+        minLength: 1
+      request_token_url:
+        title: Request Token URL
+        type: string
+        maxLength: 255
+      authorization_url:
+        title: Authorization URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      access_token_url:
+        title: Access Token URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      profile_url:
+        title: Profile URL
+        type: string
+        maxLength: 255
+        minLength: 1
+      consumer_key:
+        title: Consumer key
+        type: string
+        minLength: 1
+      consumer_secret:
+        title: Consumer secret
         type: string
         minLength: 1
   Stage:
