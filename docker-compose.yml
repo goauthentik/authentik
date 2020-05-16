@@ -26,7 +26,6 @@ services:
       - uwsgi
       - uwsgi.ini
     environment:
-      - PASSBOOK_DOMAIN=${PASSBOOK_DOMAIN}
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_ERROR_REPORTING=${PASSBOOK_ERROR_REPORTING:-false}
       - PASSBOOK_POSTGRESQL__HOST=postgresql
@@ -54,7 +53,6 @@ services:
     labels:
       - traefik.enable=false
     environment:
-      - PASSBOOK_DOMAIN=${PASSBOOK_DOMAIN}
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_ERROR_REPORTING=${PASSBOOK_ERROR_REPORTING:-false}
       - PASSBOOK_POSTGRESQL__HOST=postgresql

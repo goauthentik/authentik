@@ -8,7 +8,6 @@
 ## Quick instance
 
 ```
-export PASSBOOK_DOMAIN=localhost
 # Optionally enable Error-reporting
 # export PASSBOOK_ERROR_REPORTING=true
 docker-compose pull
