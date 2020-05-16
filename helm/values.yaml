@@ -19,6 +19,13 @@ config:
 monitoring:
   enabled: false
 
+# Enable Database Backups to S3
+# backup:
+#   access_key: access-key
+#   secret_key: secret-key
+#   bucket: s3-bucket
+#   host: s3-host
+
 ingress:
   enabled: false
   annotations: {}

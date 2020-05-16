@@ -8,6 +8,13 @@ data:
       host: "{{ .Release.Name }}-postgresql"
       name: "{{ .Values.postgresql.postgresqlDatabase }}"
       user: postgres
+      {{- if .Values.backup }}
+      backup:
+        access_key: "{{ .Values.backup.access_key }}"
+        secret_key: "{{ .Values.backup.secret_key }}"
+        bucket: "{{ .Values.backup.bucket }}"
+        host: "{{ .Values.backup.host }}"
+      {{- end}}
     redis:
       host: "{{ .Release.Name }}-redis-master"
       cache_db: 0
