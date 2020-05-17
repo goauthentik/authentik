@@ -54,6 +54,7 @@ class PasswordStage(FormView, StageView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
+        kwargs["primary_action"] = _("Log in")
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
             kwargs["recovery_flow"] = recovery_flow.first()
