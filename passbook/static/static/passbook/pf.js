@@ -68,8 +68,9 @@ document.querySelector(".pf-c-page__header-brand-toggle>button").addEventListene
 });
 
 // Collapsable Menus in Sidebar
-document.querySelectorAll(".pf-m-expandable").forEach((menu) => {
+document.querySelectorAll(".pf-m-expandable>.pf-c-nav__link").forEach((menu) => {
     menu.addEventListener("click", (e) => {
-        menu.classList.toggle("pf-m-expanded");
+        e.preventDefault();
+        menu.parentElement.classList.toggle("pf-m-expanded");
     });
 });
