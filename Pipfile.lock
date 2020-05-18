@@ -231,11 +231,11 @@
         },
         "django-otp": {
             "hashes": [
-                "sha256:523a87f8d0c52ce9a9f0a5e248c59dab3e85cdda5bbcd106cf49138a8f3f3209",
-                "sha256:ad3206e4a6f461c8968a2366a7cccfb340b93294e604b278aa9ab8b26f1017a1"
+                "sha256:0c67cf6f4bd6fca84027879ace9049309213b6ac81f88e954376a6b5535d96c4",
+                "sha256:f456639addace8b6d1eb77f9edaada1a53dbb4d6f3c19f17c476c4e3e4beb73f"
             ],
             "index": "pypi",
-            "version": "==0.8.1"
+            "version": "==0.9.1"
         },
         "django-prometheus": {
             "hashes": [
