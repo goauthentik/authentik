@@ -7,12 +7,14 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    k8s.passbook.io/component: web
 spec:
   replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "passbook.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
+      k8s.passbook.io/component: web
   template:
     metadata:
       labels:
