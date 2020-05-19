@@ -26,31 +26,24 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Policy' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Target' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
-            <tbody role="rowgroup">
+            <tbody role="rowgroup" class="pf-m-expanded">
                 {% for binding in object_list %}
-                <tr role="row">
-                    <th role="columnheader">
-                        <div>
-                            <div>{{ binding.name }}</div>
-                            {% if not binding.bindings.exists %}
-                            <i class="pf-icon pf-icon-warning-triangle"></i>
-                            <small>{% trans 'Warning: Policy is not assigned.' %}</small>
-                            {% else %}
-                            <i class="pf-icon pf-icon-ok"></i>
-                            <small>{% blocktrans with object_count=binding.bindings.all|length %}Assigned to {{ object_count }} objects.{% endblocktrans %}</small>
-                            {% endif %}
-                        </div>
+                <tr role="row pf-c-table__expandable-row pf-m-expanded">
+                    <th role="cell">
+                        <div>{{ binding.enabled }}</div>
                     </th>
-                    <td role="cell">
-                        <span>
-                            {{ binding|verbose_name }}
-                        </span>
-                    </td>
+                    <th role="cell">
+                        <div>{{ binding.policy }}</div>
+                    </th>
+                    <th role="cell">
+                        <div>{{ binding.target|verbose_name }}</div>
+                    </th>
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:policy-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
                         <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:policy-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>

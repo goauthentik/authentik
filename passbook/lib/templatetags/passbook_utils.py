@@ -6,11 +6,13 @@ from django import template
 from django.db.models import Model
 from django.template import Context
 from django.utils.html import escape
+from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.urls import is_url_absolute
 
 register = template.Library()
+LOGGER = get_logger()
 
 
 @register.simple_tag(takes_context=True)
@@ -78,7 +80,7 @@ def gravatar(email, size=None, rating=None):
 
 
 @register.filter
-def verbose_name(obj):
+def verbose_name(obj) -> str:
     """Return Object's Verbose Name"""
     if not obj:
         return ""
@@ -86,8 +88,15 @@ def verbose_name(obj):
 
 
 @register.filter
-def form_verbose_name(obj):
+def form_verbose_name(obj) -> str:
     """Return ModelForm's Object's Verbose Name"""
     if not obj:
         return ""
     return obj._meta.model._meta.verbose_name
+
+
+@register.filter
+def debug(obj) -> str:
+    """Output object to logger"""
+    LOGGER.debug(obj)
+    return ""

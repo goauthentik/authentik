@@ -1,5 +1,6 @@
 """passbook lib navbar Templatetag"""
 from django import template
+from django.http import HttpRequest
 from structlog import get_logger
 
 register = template.Library()
@@ -9,47 +10,43 @@ ACTIVE_STRING = "pf-m-current"
 
 
 @register.simple_tag(takes_context=True)
-def is_active(context, *args, **kwargs):
+def is_active(context, *args: str, **_) -> str:
     """Return whether a navbar link is active or not."""
-    request = context.get("request")
-    app_name = kwargs.get("app_name", None)
+    request: HttpRequest = context.get("request")
     if not request.resolver_match:
         return ""
+    match = request.resolver_match
     for url in args:
-        short_url = url.split(":")[1] if ":" in url else url
-        # Check if resolver_match matches
-        if request.resolver_match.url_name.startswith(
-            url
-        ) or request.resolver_match.url_name.startswith(short_url):
-            # Monkeypatch app_name: urls from core have app_name == ''
-            # since the root urlpatterns have no namespace
-            if app_name and request.resolver_match.app_name == app_name:
+        if ":" in url:
+            app_name, url = url.split(":")
+            if match.app_name == app_name and match.url_name == url:
                 return ACTIVE_STRING
-            if app_name is None:
+        else:
+            if match.url_name == url:
                 return ACTIVE_STRING
     return ""
 
 
 @register.simple_tag(takes_context=True)
-def is_active_url(context, view):
+def is_active_url(context, view: str) -> str:
     """Return whether a navbar link is active or not."""
-    request = context.get("request")
-    current_full_url = (
-        f"{request.resolver_match.app_name}:{request.resolver_match.url_name}"
-    )
-
+    request: HttpRequest = context.get("request")
     if not request.resolver_match:
         return ""
+
+    match = request.resolver_match
+    current_full_url = f"{match.app_name}:{match.url_name}"
+
     if current_full_url == view:
         return ACTIVE_STRING
     return ""
 
 
 @register.simple_tag(takes_context=True)
-def is_active_app(context, *args):
+def is_active_app(context, *args: str) -> str:
     """Return True if current link is from app"""
 
-    request = context.get("request")
+    request: HttpRequest = context.get("request")
     if not request.resolver_match:
         return ""
     for app_name in args:

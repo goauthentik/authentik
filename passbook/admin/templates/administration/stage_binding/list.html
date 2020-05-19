@@ -33,33 +33,49 @@
                 </tr>
             </thead>
             <tbody role="rowgroup">
-                {% for binding in object_list %}
-                <tr role="row">
-                    <td role="cell">
-                        <span>
-                            {{ binding.order }}
-                        </span>
-                    </td>
-                    <th role="columnheader">
-                        <div>
-                            <div>{{ binding.stage.name }}</div>
-                            <small>
-                                {% blocktrans with flow=binding.flow %}
-                                Bound to {{ flow }}.
-                                {% endblocktrans %}
-                            </small>
-                        </div>
-                    </th>
-                    <td role="cell">
-                        <span>
-                            {{ binding.stage }}
-                        </span>
-                    </td>
-                    <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                    </td>
-                </tr>
+                {% regroup object_list by flow as grouped_bindings %}
+                {% for flow in grouped_bindings %}
+                    <tr role="role">
+                        <td>
+                            {% blocktrans with name=flow.grouper.name %}
+                            Flow {{ name }}
+                            {% endblocktrans %}
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% for binding in flow.list %}
+                    <tr class="pf-c-table__expandable-row pf-m-expanded" role="row">
+                        <td role="cell">
+                            <span>
+                                {{ binding.order }}
+                            </span>
+                        </td>
+                        <th role="columnheader">
+                            <div>
+                                <div>{{ binding.flow.name }}</div>
+                                <small>
+                                    {{ binding.flow }}
+                                </small>
+                            </div>
+                        </th>
+                        <td role="cell">
+                            <div>
+                                <div>
+                                    {{ binding.stage.name }}
+                                </div>
+                                <small>
+                                    {{ binding.stage }}
+                                </small>
+                            </div>
+                        </td>
+                        <td>
+                            <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                            <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
