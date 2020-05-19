@@ -2,9 +2,12 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
+from structlog import get_logger
 
 from passbook.sources.oauth.models import OAuthSource
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
+
+LOGGER = get_logger()
 
 
 class DispatcherView(View):
@@ -19,4 +22,5 @@ class DispatcherView(View):
             raise Http404
         source = get_object_or_404(OAuthSource, slug=slug)
         view = MANAGER.find(source, kind=RequestKind(self.kind))
+        LOGGER.debug("dispatching OAuth2 request to", view=view, kind=self.kind)
         return view.as_view()(*args, **kwargs)

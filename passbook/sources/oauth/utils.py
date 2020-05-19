@@ -1,11 +1,10 @@
 """OAuth Client User Creation Utils"""
-
 from django.db.utils import IntegrityError
 
 from passbook.core.models import User
 
 
-def user_get_or_create(**kwargs):
+def user_get_or_create(**kwargs: str) -> User:
     """Create user or return existing user"""
     try:
         new_user = User.objects.create_user(**kwargs)
