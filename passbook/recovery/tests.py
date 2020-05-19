@@ -30,6 +30,8 @@ class TestRecovery(TestCase):
         call_command("create_recovery_key", "1", self.user.username, stdout=out)
         token = Token.objects.first()
         self.client.get(
-            reverse("passbook_recovery:use-token", kwargs={"uuid": str(token.uuid)})
+            reverse(
+                "passbook_recovery:use-token", kwargs={"uuid": str(token.token_uuid)}
+            )
         )
         self.assertEqual(int(self.client.session["_auth_user_id"]), token.user.pk)

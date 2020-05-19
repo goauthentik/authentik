@@ -1,7 +1,7 @@
 """passbook crypto models"""
-from uuid import uuid4
 from binascii import hexlify
 from typing import Optional
+from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes

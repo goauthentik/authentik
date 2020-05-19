@@ -1,11 +1,12 @@
 """invitation stage models"""
+from uuid import uuid4
+
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import User
 from passbook.flows.models import Stage
-from uuid import uuid4
 
 
 class InvitationStage(Stage):
@@ -44,7 +45,7 @@ class Invitation(models.Model):
     fixed_data = JSONField(default=dict)
 
     def __str__(self):
-        return f"Invitation {self.uuid.hex} created by {self.created_by}"
+        return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"
 
     class Meta:
 

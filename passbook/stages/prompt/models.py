@@ -1,10 +1,11 @@
 """prompt models"""
+from uuid import uuid4
+
 from django import forms
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Stage
-from uuid import uuid4
 from passbook.policies.models import PolicyBindingModel
 
 

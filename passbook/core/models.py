@@ -184,7 +184,9 @@ class Token(models.Model):
         return now() > self.expires
 
     def __str__(self):
-        return f"Token f{self.uuid.hex} {self.description} (expires={self.expires})"
+        return (
+            f"Token f{self.token_uuid.hex} {self.description} (expires={self.expires})"
+        )
 
     class Meta:
 

@@ -68,7 +68,7 @@ paths:
       tags:
         - audit
     parameters: []
-  /audit/events/{uuid}/:
+  /audit/events/{event_uuid}/:
     get:
       operationId: audit_events_read
       description: Event Read-Only Viewset
@@ -81,7 +81,7 @@ paths:
       tags:
         - audit
     parameters:
-      - name: uuid
+      - name: event_uuid
         in: path
         description: A UUID string identifying this Audit Event.
         required: true
@@ -281,7 +281,7 @@ paths:
       tags:
         - core
     parameters: []
-  /core/groups/{uuid}/:
+  /core/groups/{group_uuid}/:
     get:
       operationId: core_groups_read
       description: Group Viewset
@@ -335,7 +335,7 @@ paths:
       tags:
         - core
     parameters:
-      - name: uuid
+      - name: group_uuid
         in: path
         description: A UUID string identifying this group.
         required: true
@@ -472,17 +472,17 @@ paths:
       operationId: flows_bindings_list
       description: FlowStageBinding Viewset
       parameters:
-        - name: uuid
-          in: query
-          description: ''
-          required: false
-          type: string
         - name: pbm_uuid
           in: query
           description: ''
           required: false
           type: string
         - name: policies
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: fsb_uuid
           in: query
           description: ''
           required: false
@@ -569,7 +569,7 @@ paths:
       tags:
         - flows
     parameters: []
-  /flows/bindings/{uuid}/:
+  /flows/bindings/{fsb_uuid}/:
     get:
       operationId: flows_bindings_read
       description: FlowStageBinding Viewset
@@ -623,7 +623,7 @@ paths:
       tags:
         - flows
     parameters:
-      - name: uuid
+      - name: fsb_uuid
         in: path
         description: A UUID string identifying this Flow Stage Binding.
         required: true
@@ -696,7 +696,7 @@ paths:
       tags:
         - flows
     parameters: []
-  /flows/instances/{uuid}/:
+  /flows/instances/{flow_uuid}/:
     get:
       operationId: flows_instances_read
       description: Flow Viewset
@@ -750,7 +750,7 @@ paths:
       tags:
         - flows
     parameters:
-      - name: uuid
+      - name: flow_uuid
         in: path
         description: A UUID string identifying this Flow.
         required: true
@@ -1766,7 +1766,7 @@ paths:
       tags:
         - propertymappings
     parameters: []
-  /propertymappings/all/{uuid}/:
+  /propertymappings/all/{pm_uuid}/:
     get:
       operationId: propertymappings_all_read
       description: PropertyMapping Viewset
@@ -1779,7 +1779,7 @@ paths:
       tags:
         - propertymappings
     parameters:
-      - name: uuid
+      - name: pm_uuid
         in: path
         description: A UUID string identifying this Property Mapping.
         required: true
@@ -1852,7 +1852,7 @@ paths:
       tags:
         - propertymappings
     parameters: []
-  /propertymappings/ldap/{uuid}/:
+  /propertymappings/ldap/{pm_uuid}/:
     get:
       operationId: propertymappings_ldap_read
       description: LDAP PropertyMapping Viewset
@@ -1906,7 +1906,7 @@ paths:
       tags:
         - propertymappings
     parameters:
-      - name: uuid
+      - name: pm_uuid
         in: path
         description: A UUID string identifying this LDAP Property Mapping.
         required: true
@@ -1979,7 +1979,7 @@ paths:
       tags:
         - propertymappings
     parameters: []
-  /propertymappings/saml/{uuid}/:
+  /propertymappings/saml/{pm_uuid}/:
     get:
       operationId: propertymappings_saml_read
       description: SAMLPropertyMapping Viewset
@@ -2033,7 +2033,7 @@ paths:
       tags:
         - propertymappings
     parameters:
-      - name: uuid
+      - name: pm_uuid
         in: path
         description: A UUID string identifying this SAML Property Mapping.
         required: true
@@ -3648,7 +3648,7 @@ paths:
       tags:
         - stages
     parameters: []
-  /stages/invitation/invitations/{uuid}/:
+  /stages/invitation/invitations/{invite_uuid}/:
     get:
       operationId: stages_invitation_invitations_read
       description: Invitation Viewset
@@ -3702,7 +3702,7 @@ paths:
       tags:
         - stages
     parameters:
-      - name: uuid
+      - name: invite_uuid
         in: path
         description: A UUID string identifying this Invitation.
         required: true
@@ -4089,7 +4089,7 @@ paths:
       tags:
         - stages
     parameters: []
-  /stages/prompt/prompts/{uuid}/:
+  /stages/prompt/prompts/{prompt_uuid}/:
     get:
       operationId: stages_prompt_prompts_read
       description: Prompt Viewset
@@ -4143,7 +4143,7 @@ paths:
       tags:
         - stages
     parameters:
-      - name: uuid
+      - name: prompt_uuid
         in: path
         description: A UUID string identifying this Prompt.
         required: true
@@ -4792,7 +4792,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Event uuid
         type: string
         format: uuid
         readOnly: true
@@ -4896,7 +4896,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Group uuid
         type: string
         format: uuid
         readOnly: true
@@ -4953,7 +4953,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Fsb uuid
         type: string
         format: uuid
         readOnly: true
@@ -4990,7 +4990,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Flow uuid
         type: string
         format: uuid
         readOnly: true
@@ -5312,7 +5312,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Pm uuid
         type: string
         format: uuid
         readOnly: true
@@ -5336,7 +5336,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Pm uuid
         type: string
         format: uuid
         readOnly: true
@@ -5360,7 +5360,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Pm uuid
         type: string
         format: uuid
         readOnly: true
@@ -5984,7 +5984,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Invite uuid
         type: string
         format: uuid
         readOnly: true
@@ -6045,7 +6045,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Uuid
+        title: Prompt uuid
         type: string
         format: uuid
         readOnly: true
