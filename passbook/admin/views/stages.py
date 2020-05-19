@@ -59,9 +59,10 @@ class StageCreateView(
 
     def get_form_class(self):
         stage_type = self.request.GET.get("type")
-        model = next(x for x in all_subclasses(Stage) if x.__name__ == stage_type)
-        if not model:
-            raise Http404
+        try:
+            model = next(x for x in all_subclasses(Stage) if x.__name__ == stage_type)
+        except StopIteration as exc:
+            raise Http404 from exc
         return path_to_class(model.form)
 
 

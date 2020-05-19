@@ -53,11 +53,14 @@ class PropertyMappingCreateView(
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         property_mapping_type = self.request.GET.get("type")
-        model = next(
-            x
-            for x in all_subclasses(PropertyMapping)
-            if x.__name__ == property_mapping_type
-        )
+        try:
+            model = next(
+                x
+                for x in all_subclasses(PropertyMapping)
+                if x.__name__ == property_mapping_type
+            )
+        except StopIteration as exc:
+            raise Http404 from exc
         kwargs["type"] = model._meta.verbose_name
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):
@@ -66,13 +69,14 @@ class PropertyMappingCreateView(
 
     def get_form_class(self):
         property_mapping_type = self.request.GET.get("type")
-        model = next(
-            x
-            for x in all_subclasses(PropertyMapping)
-            if x.__name__ == property_mapping_type
-        )
-        if not model:
-            raise Http404
+        try:
+            model = next(
+                x
+                for x in all_subclasses(PropertyMapping)
+                if x.__name__ == property_mapping_type
+            )
+        except StopIteration as exc:
+            raise Http404 from exc
         return path_to_class(model.form)
 
 

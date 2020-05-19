@@ -62,9 +62,10 @@ class PolicyCreateView(
 
     def get_form_class(self):
         policy_type = self.request.GET.get("type")
-        model = next(x for x in all_subclasses(Policy) if x.__name__ == policy_type)
-        if not model:
-            raise Http404
+        try:
+            model = next(x for x in all_subclasses(Policy) if x.__name__ == policy_type)
+        except StopIteration as exc:
+            raise Http404 from exc
         return path_to_class(model.form)
 
 

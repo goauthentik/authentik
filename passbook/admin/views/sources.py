@@ -52,9 +52,10 @@ class SourceCreateView(
 
     def get_form_class(self):
         source_type = self.request.GET.get("type")
-        model = next(x for x in all_subclasses(Source) if x.__name__ == source_type)
-        if not model:
-            raise Http404
+        try:
+            model = next(x for x in all_subclasses(Source) if x.__name__ == source_type)
+        except StopIteration as exc:
+            raise Http404 from exc
         return path_to_class(model.form)
 
 
