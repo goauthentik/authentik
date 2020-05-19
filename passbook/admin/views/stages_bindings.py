@@ -38,7 +38,7 @@ class StageBindingCreateView(
     form_class = FlowStageBindingForm
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("passbook_admin:flows")
+    success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully created StageBinding")
 
     def get_context_data(self, **kwargs):
@@ -59,7 +59,7 @@ class StageBindingUpdateView(
     form_class = FlowStageBindingForm
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("passbook_admin:flows")
+    success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully updated StageBinding")
 
     def get_context_data(self, **kwargs):
@@ -79,7 +79,7 @@ class StageBindingDeleteView(
     permission_required = "passbook_flows.delete_flowstagebinding"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("passbook_admin:flows")
+    success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully deleted FlowStageBinding")
 
     def delete(self, request, *args, **kwargs):

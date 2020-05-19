@@ -1,4 +1,5 @@
 """passbook crypto models"""
+from uuid import uuid4
 from binascii import hexlify
 from typing import Optional
 
@@ -10,12 +11,14 @@ from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.lib.models import CreatedUpdatedModel
 
 
-class CertificateKeyPair(UUIDModel, CreatedUpdatedModel):
+class CertificateKeyPair(CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
+
+    kp_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
     certificate_data = models.TextField(help_text=_("PEM-encoded Certificate data"))

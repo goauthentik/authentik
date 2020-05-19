@@ -13,7 +13,7 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):
         return {
-            "scope": "openid email",
+            "scope": "openid email profile",
         }
 
 
@@ -26,9 +26,9 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
 
     def get_or_create_user(self, source: OAuthSource, access, info: Dict[str, str]):
         user_data = {
-            "username": info.get("username"),
+            "username": info.get("nickname"),
             "email": info.get("email"),
-            "name": info.get("username"),
+            "name": info.get("name"),
             "password": None,
         }
         return user_get_or_create(**user_data)

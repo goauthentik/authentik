@@ -60,6 +60,9 @@ class OAuthSource(Source):
             view_name=reverse((view_name), kwargs={"source_slug": self.slug}),
         )
 
+    def __str__(self) -> str:
+        return f"OAuth Source {self.name}"
+
     class Meta:
 
         verbose_name = _("Generic OAuth Source")

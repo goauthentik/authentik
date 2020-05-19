@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import User
 from passbook.flows.models import Stage
-from passbook.lib.models import UUIDModel
+from uuid import uuid4
 
 
 class InvitationStage(Stage):
@@ -34,8 +34,10 @@ class InvitationStage(Stage):
         verbose_name_plural = _("Invitation Stages")
 
 
-class Invitation(UUIDModel):
+class Invitation(models.Model):
     """Single-use invitation link"""
+
+    invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     expires = models.DateTimeField(default=None, blank=True, null=True)

@@ -2,7 +2,7 @@
 from enum import Enum
 from inspect import getmodule, stack
 from typing import Any, Dict, Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -15,7 +15,6 @@ from django.utils.translation import gettext as _
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
-from passbook.lib.models import UUIDModel
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
@@ -71,9 +70,10 @@ class EventAction(Enum):
         )
 
 
-class Event(UUIDModel):
+class Event(models.Model):
     """An individual audit log event"""
 
+    event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
     )

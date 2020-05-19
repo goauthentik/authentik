@@ -1,15 +1,19 @@
 """Policy base models"""
+from uuid import uuid4
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 
-from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class PolicyBindingModel(models.Model):
     """Base Model for objects that have policies applied to them."""
+
+    pbm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     policies = models.ManyToManyField(
         "Policy", through="PolicyBinding", related_name="bindings", blank=True
@@ -23,8 +27,12 @@ class PolicyBindingModel(models.Model):
         verbose_name_plural = _("Policy Binding Models")
 
 
-class PolicyBinding(UUIDModel):
+class PolicyBinding(models.Model):
     """Relationship between a Policy and a PolicyBindingModel."""
+
+    policy_binding_uuid = models.UUIDField(
+        primary_key=True, editable=False, default=uuid4
+    )
 
     enabled = models.BooleanField(default=True)
 
@@ -45,9 +53,11 @@ class PolicyBinding(UUIDModel):
         verbose_name_plural = _("Policy Bindings")
 
 
-class Policy(UUIDModel, CreatedUpdatedModel):
+class Policy(CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
+
+    policy_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField(blank=True, null=True)
     negate = models.BooleanField(default=False)

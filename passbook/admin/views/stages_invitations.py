@@ -40,7 +40,7 @@ class InvitationCreateView(
     permission_required = "passbook_stages_invitation.add_invitation"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("passbook_admin:invitations")
+    success_url = reverse_lazy("passbook_admin:stage-invitations")
     success_message = _("Successfully created Invitation")
 
     def get_context_data(self, **kwargs):
@@ -64,7 +64,7 @@ class InvitationDeleteView(
     permission_required = "passbook_stages_invitation.delete_invitation"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("passbook_admin:invitations")
+    success_url = reverse_lazy("passbook_admin:stage-invitations")
     success_message = _("Successfully deleted Invitation")
 
     def delete(self, request, *args, **kwargs):
