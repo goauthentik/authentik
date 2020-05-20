@@ -46,12 +46,12 @@ urlpatterns = [
     path("sources/", sources.SourceListView.as_view(), name="sources"),
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
-        "sources/<int:pk>/update/",
+        "sources/<uuid:pk>/update/",
         sources.SourceUpdateView.as_view(),
         name="source-update",
     ),
     path(
-        "sources/<int:pk>/delete/",
+        "sources/<uuid:pk>/delete/",
         sources.SourceDeleteView.as_view(),
         name="source-delete",
     ),

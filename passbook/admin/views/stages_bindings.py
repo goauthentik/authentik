@@ -21,7 +21,7 @@ class StageBindingListView(LoginRequiredMixin, PermissionListMixin, ListView):
     model = FlowStageBinding
     permission_required = "passbook_flows.view_flowstagebinding"
     paginate_by = 10
-    ordering = ["order", "flow"]
+    ordering = ["flow", "order"]
     template_name = "administration/stage_binding/list.html"
 
 
