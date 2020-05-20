@@ -27,7 +27,7 @@ class ProviderListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
-            x.__name__: x._meta.verbose_name for x in all_subclasses(Provider)
+            x.__name__: x for x in all_subclasses(Provider)
         }
         return super().get_context_data(**kwargs)
 

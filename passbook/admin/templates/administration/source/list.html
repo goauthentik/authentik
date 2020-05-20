@@ -28,7 +28,12 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">
+                                {{ name|verbose_name }}<br>
+                                <small>
+                                    {{ trans|doc }}
+                                </small>
+                            </a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -98,7 +103,12 @@
                 <ul class="pf-c-dropdown__menu" hidden>
                     {% for type, name in types.items %}
                     <li>
-                        <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">{{ name }}</a>
+                        <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:source-create' %}?type={{ type }}&back={{ request.get_full_path }}">
+                            {{ name|verbose_name }}<br>
+                            <small>
+                                {{ trans|doc }}
+                            </small>
+                        </a>
                     </li>
                     {% endfor %}
                 </ul>

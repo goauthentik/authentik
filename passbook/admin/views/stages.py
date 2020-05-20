@@ -27,7 +27,7 @@ class StageListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     def get_context_data(self, **kwargs):
         kwargs["types"] = {
-            x.__name__: x._meta.verbose_name for x in all_subclasses(Stage)
+            x.__name__: x for x in all_subclasses(Stage)
         }
         return super().get_context_data(**kwargs)
 

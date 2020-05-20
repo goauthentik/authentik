@@ -13,7 +13,7 @@ LOGGER = get_logger()
 
 
 class PasswordExpiryPolicy(Policy):
-    """If password change date is more than x days in the past, call set_unusable_password
+    """If password change date is more than x days in the past, invalidate the user's password
     and show a notice"""
 
     deny_only = models.BooleanField(default=False)
