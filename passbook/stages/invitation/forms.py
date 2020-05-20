@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import gettext as _
 
+from passbook.admin.fields import CodeMirrorWidget, YAMLField
 from passbook.stages.invitation.models import Invitation, InvitationStage
 
 
@@ -27,7 +28,5 @@ class InvitationForm(forms.ModelForm):
         labels = {
             "fixed_data": _("Optional fixed data to enforce on user enrollment."),
         }
-        widgets = {
-            "fixed_username": forms.TextInput(),
-            "fixed_email": forms.TextInput(),
-        }
+        widgets = {"fixed_data": CodeMirrorWidget}
+        field_classes = {"fixed_data": YAMLField}

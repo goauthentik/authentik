@@ -2,6 +2,7 @@
 
 from django import forms
 
+from passbook.admin.fields import CodeMirrorWidget
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.forms import GENERAL_FIELDS
 
@@ -19,4 +20,5 @@ class ExpressionPolicyForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(),
+            "expression": CodeMirrorWidget(mode="jinja2"),
         }

@@ -28,6 +28,8 @@ document.querySelectorAll(".codemirror").forEach((cm) => {
     if ('data-cm-mode' in cm.attributes) {
         cmMode = cm.attributes['data-cm-mode'].value;
     }
+    // https://github.com/codemirror/CodeMirror/issues/5092
+    cm.removeAttribute("required");
     CodeMirror.fromTextArea(cm, {
         mode: cmMode,
         theme: 'monokai',

@@ -48,28 +48,6 @@
         </div>
     </div>
 </section>
-<script>
-    const attributes = document.getElementsByName('attributes');
-    if (attributes.length > 0) {
-        // https://github.com/codemirror/CodeMirror/issues/5092
-        attributes[0].removeAttribute("required");
-        const attributesCM = CodeMirror.fromTextArea(attributes[0], {
-            mode: 'yaml',
-            theme: 'monokai',
-            lineNumbers: true,
-        });
-    }
-    const expressions = document.getElementsByName('expression');
-    if (expressions.length > 0) {
-        // https://github.com/codemirror/CodeMirror/issues/5092
-        expressions[0].removeAttribute("required");
-        const expressionCM = CodeMirror.fromTextArea(expressions[0], {
-            mode: 'jinja2',
-            theme: 'monokai',
-            lineNumbers: true,
-        });
-    }
-</script>
 {% endblock %}
 
 {% block scripts %}

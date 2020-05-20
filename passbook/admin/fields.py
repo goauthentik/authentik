@@ -4,6 +4,27 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 
+class CodeMirrorWidget(forms.Textarea):
+    """Custom Textarea-based Widget that triggers a CodeMirror editor"""
+
+    # CodeMirror mode to enable
+    mode: str
+
+    def __init__(self, *args, mode="yaml", **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mode = mode
+
+    def render(self, *args, **kwargs):
+        if "attrs" not in kwargs:
+            kwargs["attrs"] = {}
+        attrs = kwargs["attrs"]
+        if "class" not in attrs:
+            attrs["class"] = ""
+        attrs["class"] += " codemirror"
+        attrs["data-cm-mode"] = self.mode
+        return super().render(*args, **kwargs)
+
+
 class InvalidYAMLInput(str):
     """Invalid YAML String type"""
 

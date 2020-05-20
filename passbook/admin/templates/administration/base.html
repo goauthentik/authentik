@@ -67,6 +67,12 @@
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
+                                <a href="{% url 'passbook_admin:stage-bindings' %}"
+                                    class="pf-c-nav__link {% is_active 'passbook_admin:stage-bindings' 'passbook_admin:stage-binding-create' 'passbook_admin:stage-binding-update' 'passbook_admin:stage-binding-delete' %}">
+                                    {% trans 'Bindings' %}
+                                </a>
+                            </li>
+                            <li class="pf-c-nav__item">
                                 <a href="{% url 'passbook_admin:stages' %}"
                                     class="pf-c-nav__link {% is_active 'passbook_admin:stages' 'passbook_admin:stage-create' 'passbook_admin:stage-update' 'passbook_admin:stage-delete' %}">
                                     {% trans 'Stages' %}
@@ -82,12 +88,6 @@
                                 <a href="{% url 'passbook_admin:stage-invitations' %}"
                                     class="pf-c-nav__link {% is_active 'passbook_admin:stage-invitations' 'passbook_admin:stage-invitation-create' 'passbook_admin:stage-invitation-delete' %}">
                                     {% trans 'Invitations' %}
-                                </a>
-                            </li>
-                            <li class="pf-c-nav__item">
-                                <a href="{% url 'passbook_admin:stage-bindings' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:stage-bindings' 'passbook_admin:stage-binding-create' 'passbook_admin:stage-binding-update' 'passbook_admin:stage-binding-delete' %}">
-                                    {% trans 'Bindings' %}
                                 </a>
                             </li>
                         </ul>
