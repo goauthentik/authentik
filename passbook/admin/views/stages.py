@@ -26,9 +26,7 @@ class StageListView(LoginRequiredMixin, PermissionListMixin, ListView):
     paginate_by = 40
 
     def get_context_data(self, **kwargs):
-        kwargs["types"] = {
-            x.__name__: x for x in all_subclasses(Stage)
-        }
+        kwargs["types"] = {x.__name__: x for x in all_subclasses(Stage)}
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):

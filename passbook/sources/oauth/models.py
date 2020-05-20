@@ -14,20 +14,28 @@ class OAuthSource(Source):
 
     provider_type = models.CharField(max_length=255)
     request_token_url = models.CharField(
-        blank=True, max_length=255, verbose_name=_("Request Token URL"),
-        help_text=_("URL used to request the initial token. This URL is only required for OAuth 1.")
+        blank=True,
+        max_length=255,
+        verbose_name=_("Request Token URL"),
+        help_text=_(
+            "URL used to request the initial token. This URL is only required for OAuth 1."
+        ),
     )
     authorization_url = models.CharField(
-        max_length=255, verbose_name=_("Authorization URL"),
-        help_text=_("URL the user is redirect to to conest the flow.")
+        max_length=255,
+        verbose_name=_("Authorization URL"),
+        help_text=_("URL the user is redirect to to conest the flow."),
     )
     access_token_url = models.CharField(
-        max_length=255, verbose_name=_("Access Token URL"),
-        help_text=_("URL used by passbook to retrive tokens.")
+        max_length=255,
+        verbose_name=_("Access Token URL"),
+        help_text=_("URL used by passbook to retrive tokens."),
     )
     profile_url = models.CharField(
-        max_length=255, verbose_name=_("Profile URL"),
-        help_text=_("URL used by passbook to get user information."))
+        max_length=255,
+        verbose_name=_("Profile URL"),
+        help_text=_("URL used by passbook to get user information."),
+    )
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
@@ -144,6 +152,7 @@ class AzureADOAuthSource(OAuthSource):
         abstract = True
         verbose_name = _("Azure AD OAuth Source")
         verbose_name_plural = _("Azure AD OAuth Sources")
+
 
 class OpenIDOAuthSource(OAuthSource):
     """Abstract subclass of OAuthSource to specify OpenID Form"""

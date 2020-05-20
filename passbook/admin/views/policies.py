@@ -29,9 +29,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, ListView):
     template_name = "administration/policy/list.html"
 
     def get_context_data(self, **kwargs):
-        kwargs["types"] = {
-            x.__name__: x for x in all_subclasses(Policy)
-        }
+        kwargs["types"] = {x.__name__: x for x in all_subclasses(Policy)}
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):

@@ -26,9 +26,7 @@ class ProviderListView(LoginRequiredMixin, PermissionListMixin, ListView):
     ordering = "id"
 
     def get_context_data(self, **kwargs):
-        kwargs["types"] = {
-            x.__name__: x for x in all_subclasses(Provider)
-        }
+        kwargs["types"] = {x.__name__: x for x in all_subclasses(Provider)}
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):

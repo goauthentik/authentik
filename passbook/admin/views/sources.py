@@ -26,9 +26,7 @@ class SourceListView(LoginRequiredMixin, PermissionListMixin, ListView):
     template_name = "administration/source/list.html"
 
     def get_context_data(self, **kwargs):
-        kwargs["types"] = {
-            x.__name__: x for x in all_subclasses(Source)
-        }
+        kwargs["types"] = {x.__name__: x for x in all_subclasses(Source)}
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):

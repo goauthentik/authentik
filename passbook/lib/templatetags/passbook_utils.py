@@ -101,6 +101,7 @@ def debug(obj) -> str:
     LOGGER.debug(obj)
     return ""
 
+
 @register.filter
 def doc(obj) -> str:
     """Return docstring of object"""
