@@ -20,13 +20,14 @@ class CertificateKeyPairForm(forms.ModelForm):
             )
         except ValueError:
             raise forms.ValidationError("Unable to load certificate.")
+        return certificate_data
 
     def clean_key_data(self):
         """Verify that input is a valid PEM RSA Key"""
         key_data = self.cleaned_data["key_data"]
         # Since this field is optional, data can be empty.
         if key_data == "":
-            return
+            return key_data
         try:
             load_pem_private_key(
                 str.encode("\n".join([x.strip() for x in key_data.split("\n")])),
@@ -36,6 +37,7 @@ class CertificateKeyPairForm(forms.ModelForm):
             load_pem_x509_certificate(key_data.encode("utf-8"), default_backend())
         except ValueError:
             raise forms.ValidationError("Unable to load private key.")
+        return key_data
 
     class Meta:
 
