@@ -31,7 +31,7 @@
                                 href="{% url 'passbook_admin:property-mapping-create' %}?type={{ type }}&back={{ request.get_full_path }}">
                                 {{ name|verbose_name }}<br>
                                 <small>
-                                    {{ trans|doc }}
+                                    {{ name|doc }}
                                 </small>
                             </a>
                         </li>
@@ -94,7 +94,7 @@
                             href="{% url 'passbook_admin:property-mapping-create' %}?type={{ type }}&back={{ request.get_full_path }}">
                             {{ name|verbose_name }}<br>
                             <small>
-                                {{ trans|doc }}
+                                {{ name|doc }}
                             </small>
                         </a>
                     </li>

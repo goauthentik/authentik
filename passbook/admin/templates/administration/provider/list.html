@@ -31,7 +31,7 @@
                             <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
                                 {{ name|verbose_name }}
                                 <small>
-                                    {{ trans|doc }}
+                                    {{ name|doc }}
                                 </small>
                             </a>
                         </li>
@@ -112,7 +112,7 @@
                         <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
                             {{ name|verbose_name }}<br>
                             <small>
-                                {{ trans|doc }}
+                                {{ name|doc }}
                             </small>
                         </a>
                     </li>
