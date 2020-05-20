@@ -176,10 +176,14 @@ class OAuthCallback(OAuthClientMixin, View):
         # We run the Flow planner here so we can pass the Pending user in the context
         flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
         planner = FlowPlanner(flow)
-        plan = planner.plan(self.request)
-        plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
-        plan.context[PLAN_CONTEXT_SSO] = True
+        plan = planner.plan(
+            self.request,
+            {
+                PLAN_CONTEXT_PENDING_USER: user,
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: user.backend,
+                PLAN_CONTEXT_SSO: True,
+            },
+        )
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor", self.request.GET, flow_slug=flow.slug,
