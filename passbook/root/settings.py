@@ -16,6 +16,7 @@ import sys
 
 import structlog
 from celery.schedules import crontab
+from django.core.cache import cache
 from sentry_sdk import init as sentry_init
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -393,5 +394,6 @@ if DEBUG:
     SESSION_COOKIE_SAMESITE = None
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    cache.clear()
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
