@@ -10,7 +10,6 @@ from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
-from passbook.lib.config import CONFIG
 from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
@@ -32,33 +31,13 @@ class FlowExecutorView(View):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        # TODO: Do we always need this?
         self.flow = get_object_or_404(Flow, slug=flow_slug)
-
-    def _check_config_domain(self) -> Optional[HttpResponse]:
-        """Checks if current request's domain matches configured Domain, and
-        adds a warning if not."""
-        current_domain = self.request.get_host()
-        if ":" in current_domain:
-            current_domain, _ = current_domain.split(":")
-        config_domain = CONFIG.y("domain")
-        if current_domain != config_domain:
-            message = (
-                f"Current domain of '{current_domain}' doesn't "
-                f"match configured domain of '{config_domain}'."
-            )
-            LOGGER.warning(message, flow_slug=self.flow.slug)
-            return bad_request_message(self.request, message)
-        return None
 
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if NEXT_ARG_NAME in self.request.GET:
             LOGGER.debug("f(exec): Redirecting to next on fail")
             return redirect(self.request.GET.get(NEXT_ARG_NAME))
-        incorrect_domain_message = self._check_config_domain()
-        if incorrect_domain_message:
-            return incorrect_domain_message
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return bad_request_message(self.request, message)
 

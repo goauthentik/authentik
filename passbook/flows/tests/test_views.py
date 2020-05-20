@@ -20,23 +20,6 @@ class TestFlowExecutor(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_invalid_domain(self):
-        """Check that an invalid domain triggers the correct message"""
-        flow = Flow.objects.create(
-            name="test-empty",
-            slug="test-empty",
-            designation=FlowDesignation.AUTHENTICATION,
-        )
-        wrong_domain = CONFIG.y("domain") + "-invalid:8000"
-        response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
-            HTTP_HOST=wrong_domain,
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("match", response.rendered_content)
-        self.assertIn(CONFIG.y("domain"), response.rendered_content)
-        self.assertIn(wrong_domain.split(":")[0], response.rendered_content)
-
     def test_existing_plan_diff_flow(self):
         """Check that a plan for a different flow cancels the current plan"""
         flow = Flow.objects.create(
