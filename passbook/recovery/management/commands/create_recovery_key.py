@@ -32,7 +32,9 @@ class Command(BaseCommand):
 
     def get_url(self, token: Token) -> str:
         """Get full recovery link"""
-        path = reverse("passbook_recovery:use-token", kwargs={"uuid": str(token.uuid)})
+        path = reverse(
+            "passbook_recovery:use-token", kwargs={"uuid": str(token.token_uuid)}
+        )
         return f"https://{CONFIG.y('domain')}{path}"
 
     def handle(self, *args, **options):

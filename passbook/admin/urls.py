@@ -166,7 +166,7 @@ urlpatterns = [
         stages_prompts.PromptDeleteView.as_view(),
         name="stage-prompt-delete",
     ),
-    # Invitations
+    # Stage Invitations
     path(
         "stages/invitations/",
         stages_invitations.InvitationListView.as_view(),

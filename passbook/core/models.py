@@ -10,7 +10,6 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_prometheus.models import ExportModelOperationsMixin
 from guardian.mixins import GuardianUserMixin
 from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
@@ -21,7 +20,7 @@ from structlog import get_logger
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
-from passbook.lib.models import CreatedUpdatedModel, UUIDModel
+from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -33,9 +32,10 @@ def default_token_duration():
     return now() + timedelta(minutes=30)
 
 
-class Group(ExportModelOperationsMixin("group"), UUIDModel):
+class Group(models.Model):
     """Custom Group model which supports a basic hierarchy"""
 
+    group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.CharField(_("name"), max_length=80)
     parent = models.ForeignKey(
         "Group",
@@ -54,7 +54,7 @@ class Group(ExportModelOperationsMixin("group"), UUIDModel):
         unique_together = (("name", "parent",),)
 
 
-class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
+class User(GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
@@ -77,7 +77,7 @@ class User(ExportModelOperationsMixin("user"), GuardianUserMixin, AbstractUser):
         permissions = (("reset_user_password", "Reset Password"),)
 
 
-class Provider(ExportModelOperationsMixin("provider"), models.Model):
+class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     property_mappings = models.ManyToManyField(
@@ -93,7 +93,7 @@ class Provider(ExportModelOperationsMixin("provider"), models.Model):
         return super().__str__()
 
 
-class Application(ExportModelOperationsMixin("application"), PolicyBindingModel):
+class Application(PolicyBindingModel):
     """Every Application which uses passbook for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -122,7 +122,7 @@ class Application(ExportModelOperationsMixin("application"), PolicyBindingModel)
         return self.name
 
 
-class Source(ExportModelOperationsMixin("source"), PolicyBindingModel):
+class Source(PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
@@ -169,9 +169,10 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
-class Token(ExportModelOperationsMixin("token"), UUIDModel):
+class Token(models.Model):
     """One-time link for password resets/sign-up-confirmations"""
 
+    token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     expires = models.DateTimeField(default=default_token_duration)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     expiring = models.BooleanField(default=True)
@@ -183,7 +184,9 @@ class Token(ExportModelOperationsMixin("token"), UUIDModel):
         return now() > self.expires
 
     def __str__(self):
-        return f"Token f{self.uuid.hex} {self.description} (expires={self.expires})"
+        return (
+            f"Token f{self.token_uuid.hex} {self.description} (expires={self.expires})"
+        )
 
     class Meta:
 
@@ -191,9 +194,10 @@ class Token(ExportModelOperationsMixin("token"), UUIDModel):
         verbose_name_plural = _("Tokens")
 
 
-class PropertyMapping(UUIDModel):
+class PropertyMapping(models.Model):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
+    pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField()
     expression = models.TextField()
 

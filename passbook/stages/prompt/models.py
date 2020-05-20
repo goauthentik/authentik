@@ -1,10 +1,11 @@
 """prompt models"""
+from uuid import uuid4
+
 from django import forms
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Stage
-from passbook.lib.models import UUIDModel
 from passbook.policies.models import PolicyBindingModel
 
 
@@ -18,8 +19,10 @@ class FieldTypes(models.TextChoices):
     HIDDEN = "hidden"
 
 
-class Prompt(UUIDModel):
+class Prompt(models.Model):
     """Single Prompt, part of a prompt stage."""
+
+    prompt_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     field_key = models.SlugField(
         help_text=_("Name of the form field, also used to store the value")

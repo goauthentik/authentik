@@ -1,12 +1,12 @@
 """Flow models"""
 from typing import Optional
+from uuid import uuid4
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 
 from passbook.core.types import UIUserSettings
-from passbook.lib.models import UUIDModel
 from passbook.policies.models import PolicyBindingModel
 
 
@@ -22,9 +22,11 @@ class FlowDesignation(models.TextChoices):
     PASSWORD_CHANGE = "password_change"  # nosec # noqa
 
 
-class Stage(UUIDModel):
+class Stage(models.Model):
     """Stage is an instance of a component used in a flow. This can verify the user,
     enroll the user or offer a way of recovery"""
+
+    stage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
 
@@ -42,10 +44,12 @@ class Stage(UUIDModel):
         return f"Stage {self.name}"
 
 
-class Flow(PolicyBindingModel, UUIDModel):
+class Flow(PolicyBindingModel):
     """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
     have access to this flow."""
+
+    flow_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
     slug = models.SlugField(unique=True)
@@ -72,10 +76,12 @@ class Flow(PolicyBindingModel, UUIDModel):
         verbose_name_plural = _("Flows")
 
 
-class FlowStageBinding(PolicyBindingModel, UUIDModel):
+class FlowStageBinding(PolicyBindingModel):
     """Relationship between Flow and Stage. Order is required and unique for
     each flow-stage Binding. Additionally, policies can be specified, which determine if
     this Binding applies to the current user"""
+
+    fsb_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     flow = models.ForeignKey("Flow", on_delete=models.CASCADE)
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)

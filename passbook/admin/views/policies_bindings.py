@@ -38,7 +38,7 @@ class PolicyBindingCreateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("passbook_admin:policies")
+    success_url = reverse_lazy("passbook_admin:policies-bindings")
     success_message = _("Successfully created PolicyBinding")
 
 
@@ -52,7 +52,7 @@ class PolicyBindingUpdateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("passbook_admin:policies")
+    success_url = reverse_lazy("passbook_admin:policies-bindings")
     success_message = _("Successfully updated PolicyBinding")
 
     def get_context_data(self, **kwargs):
@@ -72,7 +72,7 @@ class PolicyBindingDeleteView(
     permission_required = "passbook_policies.delete_policybinding"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("passbook_admin:policies")
+    success_url = reverse_lazy("passbook_admin:policies-bindings")
     success_message = _("Successfully deleted PolicyBinding")
 
     def delete(self, request, *args, **kwargs):
