@@ -56,10 +56,8 @@ class Evaluator:
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
         kwargs["requests"] = Session()
+        kwargs["pb_is_sso_flow"] = request.context.get(PLAN_CONTEXT_SSO, False)
         if request.http_request:
-            kwargs["pb_is_sso_flow"] = request.http_request.session.get(
-                PLAN_CONTEXT_SSO, False
-            )
             kwargs["pb_client_ip"] = (
                 get_client_ip(request.http_request) or "255.255.255.255"
             )
