@@ -794,11 +794,10 @@
         },
         "swagger-spec-validator": {
             "hashes": [
-                "sha256:61f2d2a732b886cf33c2c24886565be9692e5814cacc17fd973e095b72b33e4f",
-                "sha256:8eb82682871f8d63067b455e2e055c8dd953ca260e791635b58dfe0b73ba1f43"
+                "sha256:ba4e636d89bf547a6f41a6945bb503cf06dde13664ad978a7407aaed772ae75f"
             ],
             "index": "pypi",
-            "version": "==2.5.0"
+            "version": "==2.6.0"
         },
         "uritemplate": {
             "hashes": [
