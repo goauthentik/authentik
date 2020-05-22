@@ -33,12 +33,12 @@ urlpatterns = [
         name="application-create",
     ),
     path(
-        "applications/<int:pk>/update/",
+        "applications/<uuid:pk>/update/",
         applications.ApplicationUpdateView.as_view(),
         name="application-update",
     ),
     path(
-        "applications/<int:pk>/delete/",
+        "applications/<uuid:pk>/delete/",
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
     ),
