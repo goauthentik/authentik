@@ -1,5 +1,5 @@
 """flow planner tests"""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core.cache import cache
 from django.shortcuts import reverse
@@ -13,7 +13,7 @@ from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache
 from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
-POLICY_RESULT_MOCK = MagicMock(return_value=PolicyResult(False))
+POLICY_RESULT_MOCK = PropertyMock(return_value=PolicyResult(False))
 TIME_NOW_MOCK = MagicMock(return_value=3)
 
 
@@ -40,8 +40,7 @@ class TestFlowPlanner(TestCase):
             planner.plan(request)
 
     @patch(
-        "passbook.flows.planner.FlowPlanner._check_flow_root_policies",
-        POLICY_RESULT_MOCK,
+        "passbook.policies.engine.PolicyEngine.result", POLICY_RESULT_MOCK,
     )
     def test_non_applicable_plan(self):
         """Test that empty plan raises exception"""

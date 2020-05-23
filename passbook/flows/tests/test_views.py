@@ -1,5 +1,5 @@
 """flow views tests"""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
@@ -12,7 +12,7 @@ from passbook.lib.config import CONFIG
 from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
-POLICY_RESULT_MOCK = MagicMock(return_value=PolicyResult(False))
+POLICY_RESULT_MOCK = PropertyMock(return_value=PolicyResult(False))
 
 
 class TestFlowExecutor(TestCase):
@@ -45,8 +45,7 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(cancel_mock.call_count, 1)
 
     @patch(
-        "passbook.flows.planner.FlowPlanner._check_flow_root_policies",
-        POLICY_RESULT_MOCK,
+        "passbook.policies.engine.PolicyEngine.result", POLICY_RESULT_MOCK,
     )
     def test_invalid_non_applicable_flow(self):
         """Tests that a non-applicable flow returns the correct error message"""

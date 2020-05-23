@@ -20,7 +20,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_core", "0002_auto_20200523_1133"),
+        ("passbook_core", "0001_initial"),
     ]
 
     operations = [
