@@ -14,7 +14,7 @@ from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import User
-from passbook.flows.models import Flow, FlowDesignation
+from passbook.flows.models import Flow
 from passbook.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_SSO,
@@ -171,10 +171,11 @@ class OAuthCallback(OAuthClientMixin, View):
             return info["id"]
         return None
 
-    def handle_login_flow(self, user: User) -> HttpResponse:
+    def handle_login_flow(self, flow: Optional[Flow], user: User) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
+        if not flow:
+            raise Http404
         # We run the Flow planner here so we can pass the Pending user in the context
-        flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
         planner = FlowPlanner(flow)
         plan = planner.plan(
             self.request,
@@ -208,7 +209,7 @@ class OAuthCallback(OAuthClientMixin, View):
         user = authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )
-        return self.handle_login_flow(user)
+        return self.handle_login_flow(source.authentication_flow, user)
 
     def handle_login_failure(self, source: OAuthSource, reason: str) -> HttpResponse:
         "Message user and redirect on error."
@@ -258,7 +259,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        return self.handle_login_flow(user)
+        return self.handle_login_flow(source.enrollment_flow, user)
 
 
 class DisconnectView(LoginRequiredMixin, View):
