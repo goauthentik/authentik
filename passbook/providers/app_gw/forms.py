@@ -32,7 +32,7 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
     class Meta:
 
         model = ApplicationGatewayProvider
-        fields = ["name", "internal_host", "external_host"]
+        fields = ["name", "authorization_flow", "internal_host", "external_host"]
         widgets = {
             "name": forms.TextInput(),
             "internal_host": forms.TextInput(),

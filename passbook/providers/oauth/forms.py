@@ -13,6 +13,7 @@ class OAuth2ProviderForm(forms.ModelForm):
         model = OAuth2Provider
         fields = [
             "name",
+            "authorization_flow",
             "redirect_uris",
             "client_type",
             "authorization_grant_type",

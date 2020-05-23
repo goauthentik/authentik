@@ -23,6 +23,7 @@ class SAMLProviderForm(forms.ModelForm):
         model = SAMLProvider
         fields = [
             "name",
+            "authorization_flow",
             "processor_path",
             "acs_url",
             "audience",

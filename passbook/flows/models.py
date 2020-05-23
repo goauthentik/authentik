@@ -15,6 +15,7 @@ class FlowDesignation(models.TextChoices):
     should be replaced by a database entry."""
 
     AUTHENTICATION = "authentication"
+    AUTHORIZATION = "authorization"
     INVALIDATION = "invalidation"
     ENROLLMENT = "enrollment"
     UNRENOLLMENT = "unenrollment"

@@ -28,6 +28,9 @@
         </label>
         <div class="pf-c-form__horizontal-group">
             {{ field|css_class:"pf-c-form-control" }}
+            {% if field.help_text %}
+            <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+            {% endif %}
         </div>
     {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
         <div class="pf-c-form__horizontal-group">

@@ -4860,9 +4860,6 @@ definitions:
         pattern: ^[-a-zA-Z0-9_]+$
         maxLength: 50
         minLength: 1
-      skip_authorization:
-        title: Skip authorization
-        type: boolean
       provider:
         title: Provider
         type: integer
@@ -5010,6 +5007,7 @@ definitions:
         type: string
         enum:
           - authentication
+          - authorization
           - invalidation
           - enrollment
           - unenrollment
@@ -5387,6 +5385,12 @@ definitions:
         title: ID
         type: integer
         readOnly: true
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+        x-nullable: true
       property_mappings:
         type: array
         items:
@@ -5640,6 +5644,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       __type__:
         title: 'type  '
         type: string
@@ -5677,6 +5693,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       server_uri:
         title: Server URI
         type: string
@@ -5773,6 +5801,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       provider_type:
         title: Provider type
         type: string

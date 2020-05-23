@@ -20,6 +20,7 @@ from structlog import get_logger
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
+from passbook.flows.models import Flow
 from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
 
@@ -80,6 +81,16 @@ class User(GuardianUserMixin, AbstractUser):
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
+    authorization_flow = models.ForeignKey(
+        Flow,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Flow used when authorizing this provider."),
+        related_name="provider_authorization",
+    )
+
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
     )
@@ -100,7 +111,6 @@ class Application(PolicyBindingModel):
 
     name = models.TextField(help_text=_("Application's display Name."))
     slug = models.SlugField(help_text=_("Internal application name, used in URLs."))
-    skip_authorization = models.BooleanField(default=False)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
@@ -131,6 +141,25 @@ class Source(PolicyBindingModel):
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
+    )
+
+    authentication_flow = models.ForeignKey(
+        Flow,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Flow to use when authenticating existing users."),
+        related_name="source_authentication",
+    )
+    enrollment_flow = models.ForeignKey(
+        Flow,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Flow to use when enrolling new users."),
+        related_name="source_enrollment",
     )
 
     form = ""  # ModelForm-based class ued to create/edit instance

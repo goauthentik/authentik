@@ -31,6 +31,7 @@ class OIDCProviderForm(forms.ModelForm):
         model = Client
         fields = [
             "name",
+            "authorization_flow",
             "client_type",
             "client_id",
             "client_secret",
