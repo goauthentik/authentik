@@ -55,12 +55,23 @@
                 </div>
             </div>
             <div class="pf-c-card__body">
-                {% if factor_count < 1 %}
-                <i class="pficon-error-circle-o"></i> {{ factor_count }}
+                {% if stage_count < 1 %}
+                <i class="pficon-error-circle-o"></i> {{ stage_count }}
                 <p>{% trans 'No Stages configured. No Users will be able to login.' %}"></p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ factor_count }}
+                <i class="pf-icon pf-icon-ok"></i> {{ stage_count }}
                 {% endif %}
+            </div>
+        </a>
+
+        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__head">
+                <div class="pf-c-card__head-main">
+                    <i class="pf-icon pf-icon-topology"></i> {% trans 'Flows' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                <i class="pf-icon pf-icon-ok"></i> {{ flow_count }}
             </div>
         </a>
 
