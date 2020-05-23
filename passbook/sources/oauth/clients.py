@@ -19,7 +19,7 @@ LOGGER = get_logger()
 class BaseOAuthClient:
     """Base OAuth Client"""
 
-    session: Session = None
+    session: Session
 
     def __init__(self, source, token=""):  # nosec
         self.source = source

@@ -3,29 +3,6 @@
 {% load i18n %}
 {% load passbook_utils %}
 
-{% block head %}
-{{ block.super }}
-<style>
-.form-control-static {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.form-control-static .left {
-    display: flex;
-    align-items: center;
-}
-.form-control-static img {
-    margin-right: 5px;
-}
-.form-control-static a {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    line-height: 32px;
-}
-</style>
-{% endblock %}
-
 {% block above_form %}
 <div class="pf-c-form__group">
     <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">

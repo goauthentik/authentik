@@ -2,6 +2,7 @@
 from typing import Any, Dict
 
 from django.http import HttpRequest
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -24,4 +25,5 @@ class StageView(TemplateView):
         kwargs["title"] = self.executor.flow.name
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             kwargs["user"] = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        kwargs["primary_action"] = _("Continue")
         return super().get_context_data(**kwargs)
