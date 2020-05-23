@@ -3,12 +3,20 @@
 from django import forms
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.sources.oauth.models import OAuthSource
 from passbook.sources.oauth.types.manager import MANAGER
 
 
 class OAuthSourceForm(forms.ModelForm):
     """OAuthSource Form"""
+
+    authentication_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
+    )
+    enrollment_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

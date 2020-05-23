@@ -21,8 +21,8 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 
-    def get_user_id(self, source: OAuthSource, info: Dict[str, str]):
-        return info.get("sub")
+    def get_user_id(self, source: OAuthSource, info: Dict[str, str]) -> str:
+        return info.get("sub", "")
 
     def get_or_create_user(self, source: OAuthSource, access, info: Dict[str, str]):
         user_data = {
