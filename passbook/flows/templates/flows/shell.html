@@ -34,8 +34,8 @@
         </filter>
     </svg>
 </div>
-{# TODO: Load messages dynamically via API #}
-{% include 'partials/messages.html' %}
+<ul class="pf-c-alert-group pf-m-toast">
+</ul>
 <div class="pf-c-login">
     <div class="pf-c-login__container">
         <header class="pf-c-login__header">
@@ -66,9 +66,53 @@
 </div>
 <script>
 const flowBodyUrl = "{{ exec_url }}";
+const messagesUrl = "{{ msg_url }}";
 const flowBody = document.querySelector("#flow-body");
 const spinner = document.querySelector(".pb-loading");
 
+const updateMessages = () => {
+    let messageContainer = document.querySelector(".pf-c-alert-group");
+    fetch(messagesUrl).then(response => {
+        messageContainer.innerHTML = "";
+        response.json().then(data => {
+            data.forEach(msg => {
+                let icon = "";
+                switch (msg.level_tag) {
+                    case 'error':
+                        icon = 'fas fa-exclamation-circle'
+                        break;
+                    case 'warning':
+                        icon = 'fas fa-exclamation-triangle'
+                        break;
+                    case 'success':
+                        icon = 'fas fa-check-circle'
+                        break;
+                    case 'info':
+                        icon = 'fas fa-info'
+                        break;
+                    default:
+                        break;
+                }
+                if (msg.level_tag === "error") {
+                    msg.extra_tags = "pf-m-danger";
+                }
+                let item = `<li class="pf-c-alert-group__item">
+                    <div class="pf-c-alert pf-m-${msg.level_tag} ${msg.extra_tags}">
+                        <div class="pf-c-alert__icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <h4 class="pf-c-alert__title">
+                            ${msg.message}
+                        </h4>
+                    </div>
+                </li>`;
+                var template = document.createElement('template');
+                template.innerHTML = item;
+                messageContainer.appendChild(template.content.firstChild);
+            });
+        });
+    });
+};
 const updateCard = (response) => {
     if (!response.ok) {
         console.log("well");
@@ -78,6 +122,7 @@ const updateCard = (response) => {
     } else {
         response.text().then(text => {
             flowBody.innerHTML = text;
+            updateMessages();
             loadFormCode();
             setFormSubmitHandlers();
         });
