@@ -56,17 +56,19 @@ document.querySelectorAll("input[name=name]").forEach((input) => {
 });
 
 // Hamburger Menu
-document.querySelector(".pf-c-page__header-brand-toggle>button").addEventListener("click", (e) => {
-    const sidebar = document.querySelector(".pf-c-page__sidebar");
-    if (sidebar.classList.contains("pf-m-expanded")) {
-        // Sidebar already expanded
-        sidebar.classList.remove("pf-m-expanded");
-        sidebar.style.zIndex = 0;
-    } else {
-        // Sidebar not expanded yet
-        sidebar.classList.add("pf-m-expanded");
-        sidebar.style.zIndex = 200;
-    }
+document.querySelectorAll(".pf-c-page__header-brand-toggle>button").forEach((toggle) => {
+    toggle.addEventListener("click", (e) => {
+        const sidebar = document.querySelector(".pf-c-page__sidebar");
+        if (sidebar.classList.contains("pf-m-expanded")) {
+            // Sidebar already expanded
+            sidebar.classList.remove("pf-m-expanded");
+            sidebar.style.zIndex = 0;
+        } else {
+            // Sidebar not expanded yet
+            sidebar.classList.add("pf-m-expanded");
+            sidebar.style.zIndex = 200;
+        }
+    });
 });
 
 // Collapsable Menus in Sidebar

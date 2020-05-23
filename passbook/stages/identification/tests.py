@@ -110,4 +110,4 @@ class TestIdentificationStage(TestCase):
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, response.rendered_content)
+        self.assertIn(flow.name, response.rendered_content)

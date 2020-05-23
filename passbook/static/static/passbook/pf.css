@@ -311,3 +311,22 @@ input[data-is-monospace] {
         visibility: visible
     }
 }
+
+/* Form with user */
+.form-control-static {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-control-static .left {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: 5px;
+}
+.form-control-static a {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    line-height: 32px;
+}

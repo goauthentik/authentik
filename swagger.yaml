@@ -341,6 +341,21 @@ paths:
         required: true
         type: string
         format: uuid
+  /core/messages/:
+    get:
+      operationId: core_messages_list
+      description: List current messages and pass into Serializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Message'
+      tags:
+        - core
+    parameters: []
   /core/users/:
     get:
       operationId: core_users_list
@@ -4914,6 +4929,29 @@ definitions:
       attributes:
         title: Attributes
         type: object
+  Message:
+    type: object
+    properties:
+      message:
+        title: Message
+        type: string
+        readOnly: true
+      level:
+        title: Level
+        type: string
+        readOnly: true
+      tags:
+        title: Tags
+        type: string
+        readOnly: true
+      extra_tags:
+        title: Extra tags
+        type: string
+        readOnly: true
+      level_tag:
+        title: Level tag
+        type: string
+        readOnly: true
   User:
     required:
       - username

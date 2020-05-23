@@ -18,7 +18,6 @@ class FlowForm(forms.ModelForm):
             "slug",
             "designation",
             "stages",
-            "policies",
         ]
         help_texts = {
             "name": _("Shown as the Title in Flow pages."),
@@ -33,7 +32,6 @@ class FlowForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(),
             "stages": FilteredSelectMultiple(_("stages"), False),
-            "policies": FilteredSelectMultiple(_("policies"), False),
         }
 
 
@@ -48,9 +46,7 @@ class FlowStageBindingForm(forms.ModelForm):
             "stage",
             "re_evaluate_policies",
             "order",
-            "policies",
         ]
         widgets = {
             "name": forms.TextInput(),
-            "policies": FilteredSelectMultiple(_("policies"), False),
         }

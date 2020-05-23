@@ -18,7 +18,7 @@ class TestHelperView(TestCase):
         flow = Flow.objects.filter(designation=FlowDesignation.INVALIDATION,).first()
         response = self.client.get(reverse("passbook_flows:default-invalidation"),)
         expected_url = reverse(
-            "passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+            "passbook_flows:flow-executor-shell", kwargs={"flow_slug": flow.slug}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)
@@ -33,7 +33,7 @@ class TestHelperView(TestCase):
 
         response = self.client.get(reverse("passbook_flows:default-invalidation"),)
         expected_url = reverse(
-            "passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+            "passbook_flows:flow-executor-shell", kwargs={"flow_slug": flow.slug}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)

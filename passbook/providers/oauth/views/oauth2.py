@@ -3,33 +3,19 @@ from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import Form
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
-from django.utils.translation import ugettext as _
 from oauth2_provider.views.base import AuthorizationView
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application
 from passbook.core.views.access import AccessMixin
-from passbook.core.views.utils import LoadingView, PermissionDeniedView
+from passbook.core.views.utils import PermissionDeniedView
 from passbook.providers.oauth.models import OAuth2Provider
 
 LOGGER = get_logger()
-
-
-class PassbookAuthorizationLoadingView(LoginRequiredMixin, LoadingView):
-    """Show loading view for permission checks"""
-
-    title = _("Checking permissions...")
-
-    def get_url(self):
-        querystring = urlencode(self.request.GET)
-        return (
-            reverse("passbook_providers_oauth:oauth2-ok-authorize") + "?" + querystring
-        )
 
 
 class OAuthPermissionDenied(PermissionDeniedView):

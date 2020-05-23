@@ -10,14 +10,14 @@ from passbook.api.permissions import CustomObjectPermissions
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.groups import GroupViewSet
-from passbook.core.api.policies import PolicyViewSet
+from passbook.core.api.messages import MessagesViewSet
 from passbook.core.api.propertymappings import PropertyMappingViewSet
 from passbook.core.api.providers import ProviderViewSet
 from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.lib.utils.reflection import get_apps
-from passbook.policies.api import PolicyBindingViewSet
+from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
@@ -55,6 +55,7 @@ for _passbook_app in get_apps():
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
+router.register("core/messages", MessagesViewSet, basename="messages")
 
 router.register("audit/events", EventViewSet)
 
