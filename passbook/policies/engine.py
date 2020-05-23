@@ -76,7 +76,11 @@ class PolicyEngine:
             key = cache_key(binding, self.request)
             cached_policy = cache.get(key, None)
             if cached_policy and self.use_cache:
-                LOGGER.debug("P_ENG: Taking result from cache", policy=binding.policy, cache_key=key)
+                LOGGER.debug(
+                    "P_ENG: Taking result from cache",
+                    policy=binding.policy,
+                    cache_key=key,
+                )
                 self.__cached_policies.append(cached_policy)
                 continue
             LOGGER.debug("P_ENG: Evaluating policy", policy=binding.policy)
@@ -103,7 +107,9 @@ class PolicyEngine:
             x.result for x in self.__processes if x.result
         ]
         for result in process_results + self.__cached_policies:
-            LOGGER.debug("P_ENG: result", passing=result.passing, messages=result.messages)
+            LOGGER.debug(
+                "P_ENG: result", passing=result.passing, messages=result.messages
+            )
             if result.messages:
                 messages += result.messages
             if not result.passing:

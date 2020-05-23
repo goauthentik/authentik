@@ -12,13 +12,14 @@ LOGGER = get_logger()
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
     from passbook.policies.models import Policy, PolicyBinding
-    from passbook.policies.process import cache_key
 
     if isinstance(instance, Policy):
         LOGGER.debug("Invalidating policy cache", policy=instance)
         total = 0
         for binding in PolicyBinding.objects.filter(policy=instance):
-            prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}" + "*"
+            prefix = (
+                f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
+            )
             keys = cache.keys(prefix)
             total += len(keys)
             cache.delete_many(keys)
