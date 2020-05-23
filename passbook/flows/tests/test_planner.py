@@ -7,7 +7,9 @@ from guardian.shortcuts import get_anonymous_user
 
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import FlowPlanner
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from passbook.policies.expression.models import ExpressionPolicy
+from passbook.policies.models import PolicyBinding
 from passbook.stages.dummy.models import DummyStage
 
 POLICY_RESULT_MOCK = PropertyMock(return_value=(False, [""],))
@@ -79,3 +81,21 @@ class TestFlowPlanner(TestCase):
         self.assertEqual(
             TIME_NOW_MOCK.call_count, 2
         )  # When taking from cache, time is not measured
+
+    def test_planner_default_context(self):
+        """Test planner with default_context"""
+        flow = Flow.objects.create(
+            name="test-default-context",
+            slug="test-default-context",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        FlowStageBinding.objects.create(
+            flow=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+        )
+        request = self.request_factory.get(
+            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        default_context = {PLAN_CONTEXT_PENDING_USER: get_anonymous_user()}
+        planner = FlowPlanner(flow)
+        planner.plan(request, default_context)

@@ -56,6 +56,7 @@ class Evaluator:
         kwargs["pb_is_group_member"] = Evaluator.jinja2_func_is_group_member
         kwargs["pb_logger"] = get_logger()
         kwargs["requests"] = Session()
+        kwargs["request"] = request
         kwargs["pb_is_sso_flow"] = request.context.get(PLAN_CONTEXT_SSO, False)
         if request.http_request:
             kwargs["pb_client_ip"] = (
@@ -77,7 +78,7 @@ class Evaluator:
         try:
             context = self._get_expression_context(request)
             LOGGER.debug("expression context", **context)
-            result: Optional[Any] = expression.render(request=request, **context)
+            result: Optional[Any] = expression.render(**context)
             if isinstance(result, Undefined):
                 LOGGER.warning(
                     "Expression policy returned undefined",
