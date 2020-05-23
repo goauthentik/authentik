@@ -5668,8 +5668,6 @@ definitions:
       - bind_cn
       - bind_password
       - base_dn
-      - additional_user_dn
-      - additional_group_dn
     type: object
     properties:
       pk:
@@ -5728,12 +5726,10 @@ definitions:
         title: Addition User DN
         description: Prepended to Base DN for User-queries.
         type: string
-        minLength: 1
       additional_group_dn:
         title: Addition Group DN
         description: Prepended to Base DN for Group-queries.
         type: string
-        minLength: 1
       user_object_filter:
         title: User object filter
         description: Consider Objects matching this filter to be Users.
@@ -5754,6 +5750,9 @@ definitions:
         description: Field which contains a unique Identifier.
         type: string
         minLength: 1
+      sync_users:
+        title: Sync users
+        type: boolean
       sync_groups:
         title: Sync groups
         type: boolean

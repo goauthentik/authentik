@@ -8,8 +8,6 @@ from guardian.shortcuts import get_anonymous_user
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
 from passbook.stages.dummy.models import DummyStage
 
 POLICY_RESULT_MOCK = PropertyMock(return_value=(False, [""],))

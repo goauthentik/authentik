@@ -12,7 +12,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     pbadmin = User.objects.create(
         username="pbadmin", email="root@localhost",  # password="pbadmin"
     )
-    pbadmin.set_password("pbadmin")  # nosec
+    pbadmin.set_password("pbadmin")  # noqa # nosec
     pbadmin.is_superuser = True
     pbadmin.save()
 
