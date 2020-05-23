@@ -1,9 +1,11 @@
 """passbook multi-stage authentication engine"""
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import View
+from django.shortcuts import get_object_or_404, redirect, reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_sameorigin
+from django.views.generic import TemplateView, View
 from structlog import get_logger
 
 from passbook.core.views.utils import PermissionDeniedView
@@ -20,6 +22,7 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(View):
     """Stage 1 Flow executor, passing requests to Stage Views"""
 
@@ -172,5 +175,16 @@ class ToDefaultFlow(View):
                 )
                 del self.request.session[SESSION_KEY_PLAN]
         return redirect_with_qs(
-            "passbook_flows:flow-executor", request.GET, flow_slug=flow.slug
+            "passbook_flows:flow-executor-shell", request.GET, flow_slug=flow.slug
         )
+
+
+class FlowExecutorShellView(TemplateView):
+    """Executor Shell view, loads a dummy card with a spinner
+    that loads the next stage in the background."""
+
+    template_name = "flows/shell.html"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
+        return kwargs

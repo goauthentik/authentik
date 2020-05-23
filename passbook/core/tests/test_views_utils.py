@@ -5,7 +5,7 @@ from random import SystemRandom
 from django.test import RequestFactory, TestCase
 
 from passbook.core.models import User
-from passbook.core.views.utils import LoadingView, PermissionDeniedView
+from passbook.core.views.utils import PermissionDeniedView
 
 
 class TestUtilViews(TestCase):
@@ -21,13 +21,6 @@ class TestUtilViews(TestCase):
             ),
         )
         self.factory = RequestFactory()
-
-    def test_loading_view(self):
-        """Test loading view"""
-        request = self.factory.get("something")
-        response = LoadingView.as_view(target_url="somestring")(request)
-        response.render()
-        self.assertIn("somestring", response.rendered_content)
 
     def test_permission_denied_view(self):
         """Test PermissionDeniedView"""

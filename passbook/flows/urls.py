@@ -3,6 +3,7 @@ from django.urls import path
 
 from passbook.flows.models import FlowDesignation
 from passbook.flows.views import (
+    FlowExecutorShellView,
     FlowExecutorView,
     FlowPermissionDeniedView,
     ToDefaultFlow,
@@ -40,5 +41,8 @@ urlpatterns = [
         ToDefaultFlow.as_view(designation=FlowDesignation.PASSWORD_CHANGE),
         name="default-password-change",
     ),
-    path("<slug:flow_slug>/", FlowExecutorView.as_view(), name="flow-executor"),
+    path("b/<slug:flow_slug>/", FlowExecutorView.as_view(), name="flow-executor"),
+    path(
+        "<slug:flow_slug>/", FlowExecutorShellView.as_view(), name="flow-executor-shell"
+    ),
 ]
