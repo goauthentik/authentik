@@ -75,9 +75,9 @@ class Evaluator:
         except TemplateSyntaxError as exc:
             return PolicyResult(False, str(exc))
         try:
-            result: Optional[Any] = expression.render(
-                request=request, **self._get_expression_context(request)
-            )
+            context = self._get_expression_context(request)
+            LOGGER.debug("expression context", **context)
+            result: Optional[Any] = expression.render(request=request, **context)
             if isinstance(result, Undefined):
                 LOGGER.warning(
                     "Expression policy returned undefined",
