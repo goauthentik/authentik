@@ -81,6 +81,8 @@ class FlowExecutorView(View):
         )
         stage_cls = path_to_class(self.current_stage.type)
         self.current_stage_view = stage_cls(self)
+        self.current_stage_view.args = self.args
+        self.current_stage_view.kwargs = self.kwargs
         self.current_stage_view.request = request
         return super().dispatch(request)
 

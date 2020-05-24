@@ -29,7 +29,7 @@
                         {% for type, name in types.items %}
                         <li>
                             <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                {{ name|verbose_name }}
+                                {{ name|verbose_name }}<br>
                                 <small>
                                     {{ name|doc }}
                                 </small>

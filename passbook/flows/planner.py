@@ -16,6 +16,7 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
+PLAN_CONTEXT_APPLICATION = "application"
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
@@ -46,10 +47,23 @@ class FlowPlanner:
 
     use_cache: bool
     flow: Flow
+    pre_stages: List[Stage]
+    post_stages: List[Stage]
 
     def __init__(self, flow: Flow):
         self.use_cache = True
         self.flow = flow
+        self.pre_stages = []
+        self.post_stages = []
+        self.check_unauthenticated = False
+
+    def inject_pre_stage(self, stage: Stage):
+        """Dynamically add a stage to be executed before any of the flow's stages"""
+        self.pre_stages.append(stage)
+
+    def inject_post_stage(self, stage: Stage):
+        """Dynamically add a stage to be executed after the last stage of the flow."""
+        self.post_stages.append(stage)
 
     def plan(
         self, request: HttpRequest, default_context: Optional[Dict[str, Any]] = None
@@ -98,6 +112,7 @@ class FlowPlanner:
         plan = FlowPlan(flow_pk=self.flow.pk.hex)
         if default_context:
             plan.context = default_context
+        plan.stages = self.pre_stages.copy()
         # Check Flow policies
         for stage in (
             self.flow.stages.order_by("flowstagebinding__order")
@@ -112,6 +127,7 @@ class FlowPlanner:
             if passing:
                 LOGGER.debug("f(plan): Stage passing", stage=stage, flow=self.flow)
                 plan.stages.append(stage)
+        plan.stages += self.post_stages
         end_time = time()
         LOGGER.debug(
             "f(plan): Finished building",
