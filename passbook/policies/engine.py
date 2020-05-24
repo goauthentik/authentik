@@ -62,7 +62,7 @@ class PolicyEngine:
     def build(self) -> "PolicyEngine":
         """Build task group"""
         for policy in self._select_subclasses():
-            key = cache_key(policy, self.request.user)
+            key = cache_key(policy, self.request)
             cached_policy = cache.get(key, None)
             if cached_policy and self.use_cache:
                 LOGGER.debug(
