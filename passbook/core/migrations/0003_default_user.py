@@ -10,10 +10,11 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from passbook.core.models import User
 
     pbadmin = User.objects.create(
-        username="pbadmin", email="root@localhost",  # password="pbadmin"
+        username="pbadmin", email="root@localhost", name="passbook Default Admin"
     )
     pbadmin.set_password("pbadmin")  # noqa # nosec
     pbadmin.is_superuser = True
+    pbadmin.is_staff = True
     pbadmin.save()
 
 
