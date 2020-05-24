@@ -20,9 +20,7 @@ def create_self_signed(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_crypto', '0001_initial'),
+        ("passbook_crypto", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RunPython(create_self_signed)
-    ]
+    operations = [migrations.RunPython(create_self_signed)]

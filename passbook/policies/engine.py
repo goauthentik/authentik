@@ -73,17 +73,16 @@ class PolicyEngine:
         """Build task group"""
         for binding in self._iter_bindings():
             self._check_policy_type(binding.policy)
-            policy = binding.policy
-            key = cache_key(binding, self.request.user)
+            key = cache_key(binding, self.request)
             cached_policy = cache.get(key, None)
             if cached_policy and self.use_cache:
-                LOGGER.debug("P_ENG: Taking result from cache", policy=policy, cache_key=key)
+                LOGGER.debug("P_ENG: Taking result from cache", policy=binding.policy, cache_key=key)
                 self.__cached_policies.append(cached_policy)
                 continue
-            LOGGER.debug("P_ENG: Evaluating policy", policy=policy)
+            LOGGER.debug("P_ENG: Evaluating policy", policy=binding.policy)
             our_end, task_end = Pipe(False)
             task = PolicyProcess(binding, self.request, task_end)
-            LOGGER.debug("P_ENG: Starting Process", policy=policy)
+            LOGGER.debug("P_ENG: Starting Process", policy=binding.policy)
             task.start()
             self.__processes.append(
                 PolicyProcessInfo(process=task, connection=our_end, binding=binding)
