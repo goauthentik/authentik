@@ -21,7 +21,7 @@ services:
     labels:
       - traefik.enable=false
   server:
-    image: beryju/passbook:${SERVER_TAG:-latest}
+    image: beryju/passbook:${PASSBOOK_TAG:-latest}
     command:
       - uwsgi
       - uwsgi.ini
@@ -39,7 +39,7 @@ services:
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
   worker:
-    image: beryju/passbook:${SERVER_TAG:-latest}
+    image: beryju/passbook:${PASSBOOK_TAG:-latest}
     command:
       - celery
       - worker
