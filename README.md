@@ -2,12 +2,14 @@
 
 ![](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
 ![](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
+![](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
+![](https://img.shields.io/docker/pulls/beryju/passbook-static.svg?style=flat-square)
 ![](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
 ![](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)
 
 ## What is passbook?
 
-passbook is an open-source Identity Provider. It is focused on flexibility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+passbook is an open-source Identity Provider focused on flexibility and versatility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
 
 ## Installation
 
