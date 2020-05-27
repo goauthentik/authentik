@@ -133,7 +133,7 @@ class SAMLProvider(Provider):
             metadata = DescriptorDownloadView.get_metadata(request, self)
             return render_to_string(
                 "saml/idp/admin_metadata_modal.html",
-                {"provider": self, "metadata": metadata,},
+                {"provider": self, "metadata": metadata},
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return None

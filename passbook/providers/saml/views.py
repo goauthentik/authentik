@@ -74,7 +74,7 @@ class AccessRequiredView(AccessMixin, View):
             return render(
                 request,
                 "login/denied.html",
-                {"title": _("You don't have access to this application"),},
+                {"title": _("You don't have access to this application")},
             )
         return super().dispatch(request, *args, **kwargs)
 
@@ -175,7 +175,7 @@ class AuthorizeView(AccessRequiredView):
             return render(
                 request,
                 "saml/idp/login.html",
-                {"provider": self.provider, "title": "Authorize Application",},
+                {"provider": self.provider, "title": "Authorize Application"},
             )
 
         except KeyError:

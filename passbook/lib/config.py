@@ -10,7 +10,7 @@ import yaml
 from django.conf import ImproperlyConfigured
 from structlog import get_logger
 
-SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", "",] + glob(
+SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", ""] + glob(
     "/etc/passbook/config.d/*.yml", recursive=True
 )
 LOGGER = get_logger()
