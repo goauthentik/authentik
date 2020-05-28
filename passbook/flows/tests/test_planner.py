@@ -8,9 +8,10 @@ from guardian.shortcuts import get_anonymous_user
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlanner
+from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
-POLICY_RESULT_MOCK = MagicMock(return_value=(False, [""],))
+POLICY_RESULT_MOCK = MagicMock(return_value=PolicyResult(False))
 TIME_NOW_MOCK = MagicMock(return_value=3)
 
 

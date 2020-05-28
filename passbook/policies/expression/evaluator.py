@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from django.core.exceptions import ValidationError
 from jinja2 import Undefined
-from jinja2.exceptions import TemplateSyntaxError, UndefinedError
+from jinja2.exceptions import TemplateSyntaxError
 from jinja2.nativetypes import NativeEnvironment
 from requests import Session
 from structlog import get_logger
@@ -90,7 +90,8 @@ class Evaluator:
             if result:
                 return PolicyResult(bool(result))
             return PolicyResult(False)
-        except UndefinedError as exc:
+        except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))
 
     def validate(self, expression: str):

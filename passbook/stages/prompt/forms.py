@@ -55,9 +55,9 @@ class PromptForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
-        engine = PolicyEngine(self.stage.policies.all(), user)
+        engine = PolicyEngine(self.stage, user)
         engine.request.context = cleaned_data
         engine.build()
-        passing, messages = engine.result
-        if not passing:
-            raise forms.ValidationError(messages)
+        result = engine.result
+        if not result.passing:
+            raise forms.ValidationError(result.messages)
