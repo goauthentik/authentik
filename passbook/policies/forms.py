@@ -3,8 +3,8 @@ from django import forms
 
 from passbook.policies.models import PolicyBinding, PolicyBindingModel
 
-GENERAL_FIELDS = ["name", "negate", "order", "timeout"]
-GENERAL_SERIALIZER_FIELDS = ["pk", "name", "negate", "order", "timeout"]
+GENERAL_FIELDS = ["name"]
+GENERAL_SERIALIZER_FIELDS = ["pk", "name"]
 
 
 class PolicyBindingForm(forms.ModelForm):
@@ -18,9 +18,4 @@ class PolicyBindingForm(forms.ModelForm):
     class Meta:
 
         model = PolicyBinding
-        fields = [
-            "enabled",
-            "policy",
-            "target",
-            "order",
-        ]
+        fields = ["enabled", "policy", "target", "order", "timeout"]

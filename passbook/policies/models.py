@@ -5,7 +5,11 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 
-from passbook.lib.models import CreatedUpdatedModel
+from passbook.lib.models import (
+    CreatedUpdatedModel,
+    InheritanceAutoManager,
+    InheritanceForeignKey,
+)
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.types import PolicyRequest, PolicyResult
 
@@ -22,7 +26,6 @@ class PolicyBindingModel(models.Model):
     objects = InheritanceManager()
 
     class Meta:
-
         verbose_name = _("Policy Binding Model")
         verbose_name_plural = _("Policy Binding Models")
 
@@ -36,13 +39,19 @@ class PolicyBinding(models.Model):
 
     enabled = models.BooleanField(default=True)
 
-    policy = models.ForeignKey("Policy", on_delete=models.CASCADE, related_name="+")
+    policy = InheritanceForeignKey("Policy", on_delete=models.CASCADE, related_name="+")
     target = models.ForeignKey(
         PolicyBindingModel, on_delete=models.CASCADE, related_name="+"
     )
+    negate = models.BooleanField(
+        default=False,
+        help_text=_("Negates the outcome of the policy. Messages are unaffected."),
+    )
+    timeout = models.IntegerField(
+        default=30, help_text=_("Timeout after which Policy execution is terminated.")
+    )
 
-    # default value and non-unique for compatibility
-    order = models.IntegerField(default=0)
+    order = models.IntegerField()
 
     def __str__(self) -> str:
         return f"PolicyBinding policy={self.policy} target={self.target} order={self.order}"
@@ -51,6 +60,7 @@ class PolicyBinding(models.Model):
 
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
+        unique_together = ("policy", "target", "order")
 
 
 class Policy(CreatedUpdatedModel):
@@ -60,11 +70,8 @@ class Policy(CreatedUpdatedModel):
     policy_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField(blank=True, null=True)
-    negate = models.BooleanField(default=False)
-    order = models.IntegerField(default=0)
-    timeout = models.IntegerField(default=30)
 
-    objects = InheritanceManager()
+    objects = InheritanceAutoManager()
 
     def __str__(self):
         return f"Policy {self.name}"
@@ -72,3 +79,9 @@ class Policy(CreatedUpdatedModel):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if user instance passes this policy"""
         raise PolicyException()
+
+    class Meta:
+        base_manager_name = "objects"
+
+        verbose_name = _("Policy")
+        verbose_name_plural = _("Policies")

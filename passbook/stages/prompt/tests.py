@@ -139,7 +139,7 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), True)
         return form
@@ -151,7 +151,7 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), False)
         return form

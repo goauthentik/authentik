@@ -837,7 +837,7 @@ paths:
     parameters:
       - name: policy_uuid
         in: path
-        description: A UUID string identifying this policy.
+        description: A UUID string identifying this Policy.
         required: true
         type: string
         format: uuid
@@ -5079,19 +5079,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       __type__:
         title: 'type  '
         type: string
@@ -5100,6 +5087,7 @@ definitions:
     required:
       - policy
       - target
+      - order
     type: object
     properties:
       policy:
@@ -5118,6 +5106,12 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+      timeout:
+        title: Timeout
+        description: Timeout after which Policy execution is terminated.
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   DummyPolicy:
     type: object
     properties:
@@ -5130,19 +5124,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       result:
         title: Result
         type: boolean
@@ -5170,19 +5151,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       expression:
         title: Expression
         type: string
@@ -5199,19 +5167,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       allowed_count:
         title: Allowed count
         type: integer
@@ -5231,19 +5186,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       amount_uppercase:
         title: Amount uppercase
         type: integer
@@ -5286,19 +5228,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       days:
         title: Days
         type: integer
@@ -5319,19 +5248,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       check_ip:
         title: Check ip
         type: boolean
