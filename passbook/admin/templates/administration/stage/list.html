@@ -66,8 +66,8 @@
                         </ul>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-update' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-delete' pk=stage.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-update' pk=stage.stage_uuid %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-delete' pk=stage.stage_uuid %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
                         {% get_links stage as links %}
                         {% for name, href in links.items %}
                         <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>

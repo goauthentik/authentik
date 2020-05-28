@@ -1,6 +1,4 @@
 """passbook access helper classes"""
-from typing import List, Tuple
-
 from django.contrib import messages
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -8,6 +6,7 @@ from structlog import get_logger
 
 from passbook.core.models import Application, Provider, User
 from passbook.policies.engine import PolicyEngine
+from passbook.policies.types import PolicyResult
 
 LOGGER = get_logger()
 
@@ -33,9 +32,7 @@ class AccessMixin:
             )
             raise exc
 
-    def user_has_access(
-        self, application: Application, user: User
-    ) -> Tuple[bool, List[str]]:
+    def user_has_access(self, application: Application, user: User) -> PolicyResult:
         """Check if user has access to application."""
         LOGGER.debug("Checking permissions", user=user, application=application)
         policy_engine = PolicyEngine(application.policies.all(), user, self.request)

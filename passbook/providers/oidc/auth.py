@@ -18,7 +18,7 @@ LOGGER = get_logger()
 def client_related_provider(client: Client) -> Optional[Provider]:
     """Lookup related Application from Client"""
     # because oidc_provider is also used by app_gw, we can't be
-    # sure an OpenIDPRovider instance exists. hence we look through all related models
+    # sure an OpenIDProvider instance exists. hence we look through all related models
     # and choose the one that inherits from Provider, which is guaranteed to
     # have the application property
     collector = Collector(using="default")
@@ -50,9 +50,9 @@ def check_permissions(
     policy_engine.build()
 
     # Check permissions
-    passing, policy_messages = policy_engine.result
-    if not passing:
-        for policy_message in policy_messages:
+    result = policy_engine.result
+    if not result.passing:
+        for policy_message in result.messages:
             messages.error(request, policy_message)
         return redirect("passbook_providers_oauth:oauth2-permission-denied")
 
