@@ -144,7 +144,7 @@ stages:
               script: bash <(curl -s https://codecov.io/bash)
   - stage: Build
     jobs:
-      - job: build-server
+      - job: build_server
         pool:
           vmImage: 'ubuntu-latest'
           steps:
@@ -155,7 +155,7 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'Dockerfile'
               tags: '$(Build.SourceBranchName)'
-      - job: build-gatekeeper
+      - job: build_gatekeeper
         pool:
           vmImage: 'ubuntu-latest'
           steps:
@@ -169,7 +169,7 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'Dockerfile'
               tags: '$(Build.SourceBranchName)'
-      - job: build-static
+      - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
           steps:
