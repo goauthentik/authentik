@@ -74,7 +74,7 @@ class Prompt(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Prompt '{self.field_key}' type={self.type}'"
+        return f"Prompt '{self.field_key}' type={self.type}"
 
     class Meta:
 
