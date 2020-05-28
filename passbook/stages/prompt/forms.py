@@ -31,6 +31,7 @@ class PromptAdminForm(forms.ModelForm):
             "type",
             "required",
             "placeholder",
+            "order",
         ]
         widgets = {
             "label": forms.TextInput(),
@@ -48,9 +49,12 @@ class PromptForm(forms.Form):
         self.stage = stage
         self.plan = plan
         super().__init__(*args, **kwargs)
-        for field in self.stage.fields.all():
+        # list() is called so we only load the fields once
+        fields = list(self.stage.fields.all())
+        for field in fields:
             field: Prompt
             self.fields[field.field_key] = field.field
+        self.field_order = sorted(fields, key=lambda x: x.order)
 
     def clean(self):
         cleaned_data = super().clean()

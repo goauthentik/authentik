@@ -25,33 +25,30 @@ class UserWriteStageView(StageView):
             LOGGER.debug(message)
             return self.executor.stage_invalid()
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-            for key, value in data.items():
-                setter_name = f"set_{key}"
-                # Check if user has a setter for this key, like set_password
-                if hasattr(user, setter_name):
-                    setter = getattr(user, setter_name)
-                    if callable(setter):
-                        setter(value)
-                # User has this key already
-                elif hasattr(user, key):
-                    setattr(user, key, value)
-                # Otherwise we just save it as custom attribute
-                else:
-                    user.attributes[key] = value
-            user.save()
-            LOGGER.debug(
-                "Updated existing user", user=user, flow_slug=self.executor.flow.slug,
-            )
-        else:
-            user = User.objects.create_user(**data)
-            # Set created user as pending_user, so this can be chained with user_login
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User()
             self.executor.plan.context[
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND
             ] = class_to_path(ModelBackend)
             LOGGER.debug(
-                "Created new user", user=user, flow_slug=self.executor.flow.slug,
+                "Created new user", flow_slug=self.executor.flow.slug,
             )
+        user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        for key, value in data.items():
+            setter_name = f"set_{key}"
+            # Check if user has a setter for this key, like set_password
+            if hasattr(user, setter_name):
+                setter = getattr(user, setter_name)
+                if callable(setter):
+                    setter(value)
+            # User has this key already
+            elif hasattr(user, key):
+                setattr(user, key, value)
+            # Otherwise we just save it as custom attribute
+            else:
+                user.attributes[key] = value
+        user.save()
+        LOGGER.debug(
+            "Updated existing user", user=user, flow_slug=self.executor.flow.slug,
+        )
         return self.executor.stage_ok()

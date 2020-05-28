@@ -138,7 +138,7 @@ const loadFormCode = () => {
         newScript.src = script.src;
         document.head.appendChild(newScript);
     });
-}
+};
 const setFormSubmitHandlers = () => {
     document.querySelectorAll("#flow-body form").forEach(form => {
         console.log(`Setting action for form ${form}`);
