@@ -1,29 +1,94 @@
-# Docker
-# Build a Docker image 
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
-- master
+  - master
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  POSTGRES_DB: passbook
+  POSTGRES_USER: passbook
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+  - stage: Lint
+    jobs:
+      - job: pylint
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run pylint passbook
+      - job: black
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run black --check passbook
+      - job: prospector
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+                pipenv install --dev prospector --skip-lock
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run prospector --check passbook
+      - job: bandit
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run bandit -r passbook
+      - job: pyright
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UseNode@1
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: npm install -g pyright
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run pyright
