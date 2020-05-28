@@ -43,7 +43,7 @@
         {% if enroll_url %}
         <p class="pf-c-login__main-footer-band-item">
             {% trans 'Need an account?' %}
-            <a href="https://www.patternfly.org/">{% trans 'Sign up.' %}</a>
+            <a href="{{ enroll_url }}">{% trans 'Sign up.' %}</a>
         </p>
         {% endif %}
         {% if recovery_url %}
