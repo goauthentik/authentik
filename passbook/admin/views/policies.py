@@ -155,7 +155,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         result = proc.execute()
-        if result:
+        if result.passing:
             messages.success(self.request, _("User successfully passed policy."))
         else:
             messages.error(self.request, _("User didn't pass policy."))

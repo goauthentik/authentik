@@ -9,4 +9,4 @@ class PolicyTestForm(forms.Form):
     """Form to test policies against user"""
 
     user = forms.ModelChoiceField(queryset=User.objects.all())
-    context = YAMLField(widget=CodeMirrorWidget())
+    context = YAMLField(widget=CodeMirrorWidget(), required=False, initial=dict)
