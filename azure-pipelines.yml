@@ -57,7 +57,7 @@ stages:
                 pipenv install --dev prospector --skip-lock
           - task: CmdLine@2
             inputs:
-              script: pipenv run prospector --check passbook
+              script: pipenv run prospector passbook
       - job: bandit
         pool:
           vmImage: 'ubuntu-latest'
@@ -92,3 +92,53 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run pyright
+  - stage: Test
+    jobs:
+      - job: migrations
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run ./manage.py migrate
+      - job: coverage
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run ./scripts/coverage.sh
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run coverage xml
+          - task: CmdLine@2
+            inputs:
+              script: bash <(curl -s https://codecov.io/bash)
