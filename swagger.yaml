@@ -6028,7 +6028,12 @@ definitions:
           - e-mail
           - password
           - number
+          - checkbox
+          - data
+          - data-time
+          - separator
           - hidden
+          - static
       required:
         title: Required
         type: boolean
@@ -6036,6 +6041,11 @@ definitions:
         title: Placeholder
         type: string
         minLength: 1
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   PromptStage:
     required:
       - name
