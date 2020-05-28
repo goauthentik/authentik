@@ -81,7 +81,6 @@ class FlowPlanner:
             LOGGER.debug(
                 "f(plan): Taking plan from cache", flow=self.flow, key=cached_plan_key
             )
-            LOGGER.debug(cached_plan)
             return cached_plan
         plan = self._build_plan(user, request, default_context)
         cache.set(cache_key(self.flow, user), plan)

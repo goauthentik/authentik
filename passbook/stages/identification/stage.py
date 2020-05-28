@@ -38,13 +38,13 @@ class IdentificationStageView(FormView, StageView):
         enrollment_flow = self.executor.flow.related_flow(FlowDesignation.ENROLLMENT)
         if enrollment_flow:
             kwargs["enroll_url"] = reverse(
-                "passbook_flows:flow-executor",
+                "passbook_flows:flow-executor-shell",
                 kwargs={"flow_slug": enrollment_flow.slug},
             )
         recovery_flow = self.executor.flow.related_flow(FlowDesignation.RECOVERY)
         if recovery_flow:
             kwargs["recovery_url"] = reverse(
-                "passbook_flows:flow-executor",
+                "passbook_flows:flow-executor-shell",
                 kwargs={"flow_slug": recovery_flow.slug},
             )
         kwargs["primary_action"] = _("Log in")
