@@ -169,7 +169,7 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'Dockerfile'
               tags: '$(Build.SourceBranchName)'
-      - job: build-gatekeeper
+      - job: build-static
         pool:
           vmImage: 'ubuntu-latest'
           steps:
