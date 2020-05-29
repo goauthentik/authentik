@@ -1,6 +1,6 @@
 # passbook
 
-![](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
+![](https://img.shields.io/azure-devops/build/beryjuorg/5d94b893-6dea-4f68-a8fe-10f1674fc3a9/1?style=flat-square)
 ![](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
 ![](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
 ![](https://img.shields.io/docker/pulls/beryju/passbook-static.svg?style=flat-square)
