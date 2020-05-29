@@ -140,7 +140,8 @@ stages:
             inputs:
               script: pipenv run coverage xml
           - task: CmdLine@2
-          
+            env:
+              CODECOV_TOKEN: $(CODECOV_TOKEN)
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
   - stage: Build
