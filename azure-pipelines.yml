@@ -140,6 +140,7 @@ stages:
             inputs:
               script: pipenv run coverage xml
           - task: CmdLine@2
+          
             inputs:
               script: bash <(curl -s https://codecov.io/bash)
   - stage: Build
