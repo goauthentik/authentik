@@ -181,9 +181,6 @@ stages:
             dockerComposeFile: 'scripts/docker-compose.yml'
             action: 'Run services'
             buildImages: false
-        - task: CmdLine@2
-          inputs:
-            script: docker network ls
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
@@ -191,7 +188,7 @@ stages:
             command: 'build'
             Dockerfile: 'static.Dockerfile'
             tags: '$(Build.SourceBranchName)'
-            arguments: "--network=$(docker network ls | grep github | awk '{print $1}')"
+            arguments: "--network=beryjupassbook_default"
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
