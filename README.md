@@ -1,4 +1,4 @@
-# passbook
+<img src="passbook/static/static/passbook/logo.svg" height="50" alt="passbook logo"><img src="passbook/static/static/passbook/brand_inverted.svg" height="50" alt="passbook">
 
 ![](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
 ![](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)

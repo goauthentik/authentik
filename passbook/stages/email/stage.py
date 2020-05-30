@@ -46,6 +46,9 @@ class EmailStageView(FormView, StageView):
         return super().get(request, *args, **kwargs)
 
     def form_invalid(self, form: EmailStageSendForm) -> HttpResponse:
+        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            messages.error(self.request, _("No pending user."))
+            return super().form_invalid(form)
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         valid_delta = timedelta(
             minutes=self.executor.current_stage.token_expiry + 1

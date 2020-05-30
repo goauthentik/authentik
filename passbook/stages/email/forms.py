@@ -34,6 +34,7 @@ class EmailStageForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(),
             "host": forms.TextInput(),
+            "subject": forms.TextInput(),
             "username": forms.TextInput(),
             "password": forms.TextInput(),
         }
