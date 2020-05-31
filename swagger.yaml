@@ -5919,6 +5919,20 @@ definitions:
         enum:
           - stages/identification/login.html
           - stages/identification/recovery.html
+      enrollment_flow:
+        title: Enrollment flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
+      recovery_flow:
+        title: Recovery flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
   InvitationStage:
     required:
       - name
