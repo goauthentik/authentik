@@ -39,4 +39,6 @@ class PolicyResult:
         self.messages = messages
 
     def __str__(self):
-        return f"<PolicyResult passing={self.passing}>"
+        if self.messages:
+            return f"PolicyResult passing={self.passing} messages={self.messages}"
+        return f"PolicyResult passing={self.passing}"

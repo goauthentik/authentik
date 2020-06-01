@@ -1,6 +1,6 @@
 """passbook expression policy evaluator"""
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
@@ -10,13 +10,11 @@ from jinja2.nativetypes import NativeEnvironment
 from requests import Session
 from structlog import get_logger
 
+from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_SSO
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
-
-if TYPE_CHECKING:
-    from passbook.core.models import User
 
 LOGGER = get_logger()
 
@@ -43,6 +41,7 @@ class Evaluator:
         self._env.globals["pb_message"] = self.jinja2_func_message
         self._context = {
             "pb_is_group_member": Evaluator.jinja2_func_is_group_member,
+            "pb_user_by": Evaluator.jinja2_func_user_by,
             "pb_logger": get_logger(),
             "requests": Session(),
         }
@@ -64,7 +63,15 @@ class Evaluator:
         return re.sub(regex, repl, value)
 
     @staticmethod
-    def jinja2_func_is_group_member(user: "User", group_name: str) -> bool:
+    def jinja2_func_user_by(**filters) -> Optional[User]:
+        """Get user by filters"""
+        users = User.objects.filter(**filters)
+        if users:
+            return users.first()
+        return None
+
+    @staticmethod
+    def jinja2_func_is_group_member(user: User, group_name: str) -> bool:
         """Check if `user` is member of group with name `group_name`"""
         return user.groups.filter(name=group_name).exists()
 
@@ -126,4 +133,4 @@ class Evaluator:
             self._env.from_string(expression)
             return True
         except TemplateSyntaxError as exc:
-            raise ValidationError("Expression Syntax Error") from exc
+            raise ValidationError(f"Expression Syntax Error: {str(exc)}") from exc

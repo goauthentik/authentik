@@ -64,4 +64,4 @@ class PromptForm(forms.Form):
         engine.build()
         result = engine.result
         if not result.passing:
-            raise forms.ValidationError(result.messages)
+            raise forms.ValidationError(list(result.messages))
