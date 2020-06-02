@@ -1,7 +1,6 @@
 """Flow and Stage forms"""
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Flow, FlowStageBinding
@@ -17,7 +16,6 @@ class FlowForm(forms.ModelForm):
             "name",
             "slug",
             "designation",
-            "stages",
         ]
         help_texts = {
             "name": _("Shown as the Title in Flow pages."),
@@ -31,7 +29,6 @@ class FlowForm(forms.ModelForm):
         }
         widgets = {
             "name": forms.TextInput(),
-            "stages": FilteredSelectMultiple(_("stages"), False),
         }
 
 

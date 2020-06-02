@@ -11,11 +11,16 @@ LOGGER = get_logger()
 # pylint: disable=unused-argument
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
-    from passbook.policies.models import Policy
+    from passbook.policies.models import Policy, PolicyBinding
 
     if isinstance(instance, Policy):
         LOGGER.debug("Invalidating policy cache", policy=instance)
-        prefix = f"policy_{instance.pk}_*"
-        keys = cache.keys(prefix)
-        cache.delete_many(keys)
-        LOGGER.debug("Deleted %d keys", len(keys))
+        total = 0
+        for binding in PolicyBinding.objects.filter(policy=instance):
+            prefix = (
+                f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}*"
+            )
+            keys = cache.keys(prefix)
+            total += len(keys)
+            cache.delete_many(keys)
+        LOGGER.debug("Deleted keys", len=total)

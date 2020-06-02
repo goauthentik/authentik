@@ -8,4 +8,4 @@ ignore-paths:
   - node_modules
 
 uses:
- - django
+  - django

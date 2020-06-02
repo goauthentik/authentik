@@ -20,7 +20,7 @@ class PromptListView(LoginRequiredMixin, PermissionListMixin, ListView):
 
     model = Prompt
     permission_required = "passbook_stages_prompt.view_prompt"
-    ordering = "field_key"
+    ordering = "order"
     paginate_by = 40
     template_name = "administration/stage_prompt/list.html"
 

@@ -34,7 +34,7 @@ class FlowExecutorView(View):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow, slug=flow_slug)
+        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
 
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""

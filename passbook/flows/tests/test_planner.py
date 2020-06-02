@@ -1,16 +1,19 @@
 """flow planner tests"""
 from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.core.cache import cache
 from django.shortcuts import reverse
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from passbook.core.models import User
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
-POLICY_RESULT_MOCK = PropertyMock(return_value=(False, [""],))
+POLICY_RESULT_MOCK = PropertyMock(return_value=PolicyResult(False))
 TIME_NOW_MOCK = MagicMock(return_value=3)
 
 
@@ -90,10 +93,13 @@ class TestFlowPlanner(TestCase):
         FlowStageBinding.objects.create(
             flow=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
+
+        user = User.objects.create(username="test-user")
         request = self.request_factory.get(
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-
-        default_context = {PLAN_CONTEXT_PENDING_USER: get_anonymous_user()}
+        request.user = user
         planner = FlowPlanner(flow)
-        planner.plan(request, default_context)
+        planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER: user})
+        key = cache_key(flow, user)
+        self.assertTrue(cache.get(key) is not None)

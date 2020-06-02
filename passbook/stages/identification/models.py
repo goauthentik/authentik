@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from passbook.flows.models import Stage
+from passbook.flows.models import Flow, Stage
 
 
 class UserFields(models.TextChoices):
@@ -28,6 +28,29 @@ class IdentificationStage(Stage):
         help_text=_("Fields of the user object to match against."),
     )
     template = models.TextField(choices=Templates.choices)
+
+    enrollment_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        blank=True,
+        related_name="+",
+        default=None,
+        help_text=_(
+            "Optional enrollment flow, which is linked at the bottom of the page."
+        ),
+    )
+    recovery_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        blank=True,
+        related_name="+",
+        default=None,
+        help_text=_(
+            "Optional enrollment flow, which is linked at the bottom of the page."
+        ),
+    )
 
     type = "passbook.stages.identification.stage.IdentificationStageView"
     form = "passbook.stages.identification.forms.IdentificationStageForm"

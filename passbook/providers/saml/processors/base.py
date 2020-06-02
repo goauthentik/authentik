@@ -18,6 +18,7 @@ from passbook.providers.saml.utils.xml_render import get_assertion_xml, get_resp
 if TYPE_CHECKING:
     from passbook.providers.saml.models import SAMLProvider
 
+
 # pylint: disable=too-many-instance-attributes
 class Processor:
     """Base SAML 2.0 AuthnRequest to Response Processor.

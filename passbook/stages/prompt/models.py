@@ -16,7 +16,13 @@ class FieldTypes(models.TextChoices):
     EMAIL = "e-mail"
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
+    CHECKBOX = "checkbox"
+    DATE = "data"
+    DATE_TIME = "data-time"
+
+    SEPARATOR = "separator"
     HIDDEN = "hidden"
+    STATIC = "static"
 
 
 class Prompt(models.Model):
@@ -32,41 +38,37 @@ class Prompt(models.Model):
     required = models.BooleanField(default=True)
     placeholder = models.TextField()
 
+    order = models.IntegerField(default=0)
+
     @property
     def field(self):
         """Return instantiated form input field"""
         attrs = {"placeholder": _(self.placeholder)}
-        if self.type == FieldTypes.TEXT:
-            return forms.CharField(
-                label=_(self.label),
-                widget=forms.TextInput(attrs=attrs),
-                required=self.required,
-            )
+        field_class = forms.CharField
+        widget = forms.TextInput(attrs=attrs)
+        kwargs = {
+            "label": _(self.label),
+            "required": self.required,
+        }
         if self.type == FieldTypes.EMAIL:
-            return forms.EmailField(
-                label=_(self.label),
-                widget=forms.TextInput(attrs=attrs),
-                required=self.required,
-            )
+            field_class = forms.EmailField
         if self.type == FieldTypes.PASSWORD:
-            return forms.CharField(
-                label=_(self.label),
-                widget=forms.PasswordInput(attrs=attrs),
-                required=self.required,
-            )
+            widget = forms.PasswordInput(attrs=attrs)
         if self.type == FieldTypes.NUMBER:
-            return forms.IntegerField(
-                label=_(self.label),
-                widget=forms.NumberInput(attrs=attrs),
-                required=self.required,
-            )
+            field_class = forms.IntegerField
+            widget = forms.NumberInput(attrs=attrs)
         if self.type == FieldTypes.HIDDEN:
-            return forms.CharField(
-                widget=forms.HiddenInput(attrs=attrs),
-                required=False,
-                initial=self.placeholder,
-            )
-        raise ValueError("field_type is not valid, not one of FieldTypes.")
+            widget = forms.HiddenInput(attrs=attrs)
+            kwargs["required"] = False
+            kwargs["initial"] = self.placeholder
+        if self.type == FieldTypes.CHECKBOX:
+            field_class = forms.CheckboxInput
+            kwargs["required"] = False
+
+        # TODO: Implement static
+        # TODO: Implement separator
+        kwargs["widget"] = widget
+        return field_class(**kwargs)
 
     def save(self, *args, **kwargs):
         if self.type not in FieldTypes:
@@ -74,7 +76,7 @@ class Prompt(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Prompt '{self.field_key}' type={self.type}'"
+        return f"Prompt '{self.field_key}' type={self.type}"
 
     class Meta:
 

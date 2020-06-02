@@ -74,14 +74,14 @@ class Flow(PolicyBindingModel):
 
         flows = Flow.objects.filter(**flow_filter)
         for flow in flows:
-            engine = PolicyEngine(flow.policies.all(), request.user, request)
+            engine = PolicyEngine(flow, request.user, request)
             engine.build()
-            passing, messages = engine.result
-            if passing:
+            result = engine.result
+            if result.passing:
                 LOGGER.debug("with_policy: flow passing", flow=flow)
                 return flow
             LOGGER.warning(
-                "with_policy: flow not passing", flow=flow, messages=messages
+                "with_policy: flow not passing", flow=flow, messages=result.messages
             )
         LOGGER.debug("with_policy: no flow found", filters=flow_filter)
         return None

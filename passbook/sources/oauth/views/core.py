@@ -299,7 +299,7 @@ class DisconnectView(LoginRequiredMixin, View):
                 "object": self.source,
                 "delete_url": reverse(
                     "passbook_sources_oauth:oauth-client-disconnect",
-                    kwargs={"source_slug": self.source.slug,},
+                    kwargs={"source_slug": self.source.slug},
                 ),
             },
         )

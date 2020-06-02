@@ -38,6 +38,7 @@ class PromptSerializer(ModelSerializer):
             "type",
             "required",
             "placeholder",
+            "order",
         ]
 
 

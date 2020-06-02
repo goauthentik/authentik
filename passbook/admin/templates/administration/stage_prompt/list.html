@@ -26,7 +26,10 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Field' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Label' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Flows' %}</th>
                     <th role="cell"></th>
                 </tr>
@@ -37,19 +40,35 @@
                     <th role="columnheader">
                         <div>
                             <div>{{ prompt.field_key }}</div>
-                            <small>{{ prompt|verbose_name }}</small>
                         </div>
                     </th>
+                    <td role="cell">
+                        <div>
+                            {{ prompt.label }}
+                        </div>
+                    </td>
+                    <td role="cell">
+                        <div>
+                            {{ prompt.type }}
+                        </div>
+                    </td>
+                    <td role="cell">
+                        <div>
+                            {{ prompt.order }}
+                        </div>
+                    </td>
                     <td role="cell">
                         <ul>
                             {% for flow in prompt.flow_set.all %}
                             <li><a href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">{{ flow.slug }}</a></li>
+                            {% empty %}
+                            <li>-</li>
                             {% endfor %}
                         </ul>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:prompt-update' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:prompt-delete' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-prompt-update' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-prompt-delete' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
                         {% get_links prompt as links %}
                         {% for name, href in links.items %}
                         <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
