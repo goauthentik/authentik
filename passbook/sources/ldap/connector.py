@@ -16,26 +16,10 @@ LOGGER = get_logger()
 class Connector:
     """Wrapper for ldap3 to easily manage user authentication and creation"""
 
-    _server: ldap3.Server
-    _connection = ldap3.Connection
     _source: LDAPSource
 
     def __init__(self, source: LDAPSource):
         self._source = source
-        self._server = ldap3.Server(source.server_uri)  # Implement URI parsing
-
-    def bind(self):
-        """Bind using Source's Credentials"""
-        self._connection = ldap3.Connection(
-            self._server,
-            raise_exceptions=True,
-            user=self._source.bind_cn,
-            password=self._source.bind_password,
-        )
-
-        self._connection.bind()
-        if self._source.start_tls:
-            self._connection.start_tls()
 
     @staticmethod
     def encode_pass(password: str) -> bytes:
@@ -45,19 +29,23 @@ class Connector:
     @property
     def base_dn_users(self) -> str:
         """Shortcut to get full base_dn for user lookups"""
-        return ",".join([self._source.additional_user_dn, self._source.base_dn])
+        if self._source.additional_user_dn:
+            return f"{self._source.additional_user_dn},{self._source.base_dn}"
+        return self._source.base_dn
 
     @property
     def base_dn_groups(self) -> str:
         """Shortcut to get full base_dn for group lookups"""
-        return ",".join([self._source.additional_group_dn, self._source.base_dn])
+        if self._source.additional_group_dn:
+            return f"{self._source.additional_group_dn},{self._source.base_dn}"
+        return self._source.base_dn
 
     def sync_groups(self):
         """Iterate over all LDAP Groups and create passbook_core.Group instances"""
         if not self._source.sync_groups:
-            LOGGER.debug("Group syncing is disabled for this Source")
+            LOGGER.warning("Group syncing is disabled for this Source")
             return
-        groups = self._connection.extend.standard.paged_search(
+        groups = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=ldap3.SUBTREE,
@@ -87,7 +75,10 @@ class Connector:
 
     def sync_users(self):
         """Iterate over all LDAP Users and create passbook_core.User instances"""
-        users = self._connection.extend.standard.paged_search(
+        if not self._source.sync_users:
+            LOGGER.warning("User syncing is disabled for this Source")
+            return
+        users = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=ldap3.SUBTREE,
@@ -101,9 +92,9 @@ class Connector:
                 LOGGER.warning("Cannot find uniqueness Field in attributes")
                 continue
             try:
+                defaults = self._build_object_properties(attributes)
                 user, created = User.objects.update_or_create(
-                    attributes__ldap_uniq=uniq,
-                    defaults=self._build_object_properties(attributes),
+                    attributes__ldap_uniq=uniq, defaults=defaults,
                 )
             except IntegrityError as exc:
                 LOGGER.warning("Failed to create user", exc=exc)
@@ -123,7 +114,7 @@ class Connector:
 
     def sync_membership(self):
         """Iterate over all Users and assign Groups using memberOf Field"""
-        users = self._connection.extend.standard.paged_search(
+        users = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=ldap3.SUBTREE,
@@ -220,7 +211,7 @@ class Connector:
         LOGGER.debug("Attempting Binding as user", user=user)
         try:
             temp_connection = ldap3.Connection(
-                self._server,
+                self._source.connection.server,
                 user=user.attributes.get("distinguishedName"),
                 password=password,
                 raise_exceptions=True,

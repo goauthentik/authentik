@@ -1,8 +1,10 @@
 """passbook LDAP Models"""
+from typing import Optional
 
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from ldap3 import Connection, Server
 
 from passbook.core.models import Group, PropertyMapping, Source
 
@@ -22,10 +24,12 @@ class LDAPSource(Source):
     additional_user_dn = models.TextField(
         help_text=_("Prepended to Base DN for User-queries."),
         verbose_name=_("Addition User DN"),
+        blank=True,
     )
     additional_group_dn = models.TextField(
         help_text=_("Prepended to Base DN for Group-queries."),
         verbose_name=_("Addition Group DN"),
+        blank=True,
     )
 
     user_object_filter = models.TextField(
@@ -43,12 +47,32 @@ class LDAPSource(Source):
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
     )
 
+    sync_users = models.BooleanField(default=True)
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
     form = "passbook.sources.ldap.forms.LDAPSourceForm"
+
+    _connection: Optional[Connection]
+
+    @property
+    def connection(self) -> Connection:
+        """Get a fully connected and bound LDAP Connection"""
+        if not self._connection:
+            server = Server(self.server_uri)
+            self._connection = Connection(
+                server,
+                raise_exceptions=True,
+                user=self.bind_cn,
+                password=self.bind_password,
+            )
+
+            self._connection.bind()
+            if self.start_tls:
+                self._connection.start_tls()
+        return self._connection
 
     class Meta:
 

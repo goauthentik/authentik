@@ -34,7 +34,6 @@ class CertificateKeyPairForm(forms.ModelForm):
                 password=None,
                 backend=default_backend(),
             )
-            load_pem_x509_certificate(key_data.encode("utf-8"), default_backend())
         except ValueError:
             raise forms.ValidationError("Unable to load private key.")
         return key_data

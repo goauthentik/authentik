@@ -62,6 +62,8 @@ jobs:
           python-version: '3.8'
       - name: Install pyright
         run: npm install -g pyright
+      - name: Show pyright version
+        run: pyright --version
       - name: Install dependencies
         run: sudo pip install -U wheel pipenv && pipenv install --dev
       - name: Lint with pyright
