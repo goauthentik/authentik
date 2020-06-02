@@ -53,18 +53,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:2e58368d32171f42100353007fb48fe583ea9deafd0ec556aa2bc1ce1582d06d",
-                "sha256:c774003dc13d6de74b5e19d2b84d625da4456e64bd97f44baa1fcf40d808d29a"
+                "sha256:26f8564b46d009b8f4c6470a6d6cde147b282a197339c7e31cbb0fe9fd9e5f5d",
+                "sha256:f59d0bd230ed3a4b932c5c4e497a0e0ff3c93b46b7e8cde54efb6fe10c8266ba"
             ],
             "index": "pypi",
-            "version": "==1.13.19"
+            "version": "==1.13.20"
         },
         "botocore": {
             "hashes": [
-                "sha256:5cb537e7a4cf2d59a2a8dfbbc8e14ec3bc5b640eb81a1bf3bb0523c0a75e6b1b",
-                "sha256:7b8b1f082665c8670b9aa70143ee527c5d04939fe027a63ac5958359be20ccb0"
+                "sha256:990f3fc33dec746829740b1a9e1fe86183cdc96aedba6a632ccfcbae03e097cc",
+                "sha256:d4cc47ac989a7f1d2992ef7679fb423a7966f687becf623a291a555a2d7ce1c0"
             ],
-            "version": "==1.16.19"
+            "version": "==1.16.20"
         },
         "celery": {
             "hashes": [
@@ -688,10 +688,10 @@
         },
         "redis": {
             "hashes": [
-                "sha256:2ef11f489003f151777c064c5dbc6653dfb9f3eade159bcadc524619fddc2242",
-                "sha256:6d65e84bc58091140081ee9d9c187aab0480097750fac44239307a3bdf0b1251"
+                "sha256:0e7e0cfca8660dea8b7d5cd8c4f6c5e29e11f31158c0b0ae91a397f00e5a05a2",
+                "sha256:432b788c4530cfe16d8d943a09d40ca6c16149727e4afe8c2c9d5580c59d9f24"
             ],
-            "version": "==3.5.2"
+            "version": "==3.5.3"
         },
         "requests": {
             "hashes": [
