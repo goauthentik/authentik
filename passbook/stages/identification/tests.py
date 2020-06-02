@@ -85,15 +85,19 @@ class TestIdentificationStage(TestCase):
             slug="unique-enrollment-string",
             designation=FlowDesignation.ENROLLMENT,
         )
+        self.stage.enrollment_flow = flow
+        self.stage.save()
         FlowStageBinding.objects.create(
             flow=flow, stage=self.stage, order=0,
         )
 
         response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.name, response.rendered_content)
+        self.assertIn(flow.slug, response.rendered_content)
 
     def test_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
@@ -102,12 +106,16 @@ class TestIdentificationStage(TestCase):
             slug="unique-recovery-string",
             designation=FlowDesignation.RECOVERY,
         )
+        self.stage.recovery_flow = flow
+        self.stage.save()
         FlowStageBinding.objects.create(
             flow=flow, stage=self.stage, order=0,
         )
 
         response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.name, response.rendered_content)
+        self.assertIn(flow.slug, response.rendered_content)

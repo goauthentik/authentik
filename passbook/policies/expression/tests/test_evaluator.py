@@ -17,13 +17,15 @@ class TestEvaluator(TestCase):
         """test simple value expression"""
         template = "True"
         evaluator = Evaluator()
-        self.assertEqual(evaluator.evaluate(template, self.request).passing, True)
+        evaluator.set_policy_request(self.request)
+        self.assertEqual(evaluator.evaluate(template).passing, True)
 
     def test_messages(self):
         """test expression with message return"""
-        template = "False, 'some message'"
+        template = '{% do pb_message("some message") %}False'
         evaluator = Evaluator()
-        result = evaluator.evaluate(template, self.request)
+        evaluator.set_policy_request(self.request)
+        result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("some message",))
 
@@ -31,7 +33,8 @@ class TestEvaluator(TestCase):
         """test invalid syntax"""
         template = "{%"
         evaluator = Evaluator()
-        result = evaluator.evaluate(template, self.request)
+        evaluator.set_policy_request(self.request)
+        result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("tag name expected",))
 
@@ -39,7 +42,8 @@ class TestEvaluator(TestCase):
         """test undefined result"""
         template = "{{ foo.bar }}"
         evaluator = Evaluator()
-        result = evaluator.evaluate(template, self.request)
+        evaluator.set_policy_request(self.request)
+        result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("'foo' is undefined",))
 

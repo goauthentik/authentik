@@ -2,6 +2,13 @@
 {% load i18n %}
 
 {% csrf_token %}
+{% if form.non_field_errors %}
+<div class="pf-c-form__group has-error">
+    <p class="pf-c-form__helper-text pf-m-error">
+        {{ form.non_field_errors }}
+    </p>
+</div>
+{% endif %}
 {% for field in form %}
 <div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
     {% if field.field.widget|fieldtype == 'RadioSelect' %}
