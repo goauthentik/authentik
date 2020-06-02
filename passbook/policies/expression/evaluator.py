@@ -29,7 +29,7 @@ class Evaluator:
 
     def __init__(self):
         self._env = NativeEnvironment(
-            extensions=["jinja2.ext.do",],
+            extensions=["jinja2.ext.do"],
             trim_blocks=True,
             lstrip_blocks=True,
             line_statement_prefix=">",
