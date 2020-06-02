@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 <header class="pf-c-login__main-header">
     <h1 class="pf-c-title pf-m-3xl">
@@ -21,3 +22,35 @@
         </div>
     </form>
 </div>
+<footer class="pf-c-login__main-footer">
+    <ul class="pf-c-login__main-footer-links">
+        {% for source in sources %}
+        <li class="pf-c-login__main-footer-links-item">
+            <a href="{{ source.url }}" class="pf-c-login__main-footer-links-item-link">
+                {% if source.icon_path %}
+                <img src="{% static source.icon_path %}" alt="{{ source.name }}">
+                {% elif source.icon_url %}
+                <img src="icon_url" alt="{{ source.name }}">
+                {% else %}
+                <i class="pf-icon pf-icon-arrow" title="{{ source.name }}"></i>
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% if enroll_url or recovery_url %}
+    <div class="pf-c-login__main-footer-band">
+        {% if enroll_url %}
+        <p class="pf-c-login__main-footer-band-item">
+            {% trans 'Need an account?' %}
+            <a href="{{ enroll_url }}">{% trans 'Sign up.' %}</a>
+        </p>
+        {% endif %}
+        {% if recovery_url %}
+        <p class="pf-c-login__main-footer-band-item">
+            <a href="{{ recovery_url }}">{% trans 'Forgot username or password?' %}</a>
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+</footer>

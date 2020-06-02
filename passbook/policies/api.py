@@ -12,7 +12,7 @@ class PolicyBindingSerializer(ModelSerializer):
     class Meta:
 
         model = PolicyBinding
-        fields = ["policy", "target", "enabled", "order"]
+        fields = ["policy", "target", "enabled", "order", "timeout"]
 
 
 class PolicyBindingViewSet(ModelViewSet):

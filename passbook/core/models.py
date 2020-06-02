@@ -13,7 +13,6 @@ from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from jinja2 import Undefined
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
-from jinja2.nativetypes import NativeEnvironment
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
@@ -24,7 +23,6 @@ from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
-NATIVE_ENVIRONMENT = NativeEnvironment()
 
 
 def default_token_duration():
@@ -208,8 +206,11 @@ class PropertyMapping(models.Model):
         self, user: Optional[User], request: Optional[HttpRequest], **kwargs
     ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
+        from passbook.policies.expression.evaluator import Evaluator
+
+        evaluator = Evaluator()
         try:
-            expression = NATIVE_ENVIRONMENT.from_string(self.expression)
+            expression = evaluator.env.from_string(self.expression)
         except TemplateSyntaxError as exc:
             raise PropertyMappingExpressionException from exc
         try:
@@ -221,8 +222,11 @@ class PropertyMapping(models.Model):
             raise PropertyMappingExpressionException from exc
 
     def save(self, *args, **kwargs):
+        from passbook.policies.expression.evaluator import Evaluator
+
+        evaluator = Evaluator()
         try:
-            NATIVE_ENVIRONMENT.from_string(self.expression)
+            evaluator.env.from_string(self.expression)
         except TemplateSyntaxError as exc:
             raise ValidationError("Expression Syntax Error") from exc
         return super().save(*args, **kwargs)

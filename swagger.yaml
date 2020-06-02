@@ -837,7 +837,7 @@ paths:
     parameters:
       - name: policy_uuid
         in: path
-        description: A UUID string identifying this policy.
+        description: A UUID string identifying this Policy.
         required: true
         type: string
         format: uuid
@@ -5079,19 +5079,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       __type__:
         title: 'type  '
         type: string
@@ -5100,6 +5087,7 @@ definitions:
     required:
       - policy
       - target
+      - order
     type: object
     properties:
       policy:
@@ -5118,6 +5106,12 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+      timeout:
+        title: Timeout
+        description: Timeout after which Policy execution is terminated.
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   DummyPolicy:
     type: object
     properties:
@@ -5130,19 +5124,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       result:
         title: Result
         type: boolean
@@ -5170,19 +5151,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       expression:
         title: Expression
         type: string
@@ -5199,19 +5167,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       allowed_count:
         title: Allowed count
         type: integer
@@ -5231,19 +5186,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       amount_uppercase:
         title: Amount uppercase
         type: integer
@@ -5286,19 +5228,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       days:
         title: Days
         type: integer
@@ -5319,19 +5248,6 @@ definitions:
         title: Name
         type: string
         x-nullable: true
-      negate:
-        title: Negate
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      timeout:
-        title: Timeout
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
       check_ip:
         title: Check ip
         type: boolean
@@ -5690,8 +5606,6 @@ definitions:
       - bind_cn
       - bind_password
       - base_dn
-      - additional_user_dn
-      - additional_group_dn
     type: object
     properties:
       pk:
@@ -5738,12 +5652,10 @@ definitions:
         title: Addition User DN
         description: Prepended to Base DN for User-queries.
         type: string
-        minLength: 1
       additional_group_dn:
         title: Addition Group DN
         description: Prepended to Base DN for Group-queries.
         type: string
-        minLength: 1
       user_object_filter:
         title: User object filter
         description: Consider Objects matching this filter to be Users.
@@ -5764,6 +5676,9 @@ definitions:
         description: Field which contains a unique Identifier.
         type: string
         minLength: 1
+      sync_users:
+        title: Sync users
+        type: boolean
       sync_groups:
         title: Sync groups
         type: boolean
@@ -6003,6 +5918,20 @@ definitions:
         enum:
           - stages/identification/login.html
           - stages/identification/recovery.html
+      enrollment_flow:
+        title: Enrollment flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
+      recovery_flow:
+        title: Recovery flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
   InvitationStage:
     required:
       - name
@@ -6112,7 +6041,12 @@ definitions:
           - e-mail
           - password
           - number
+          - checkbox
+          - data
+          - data-time
+          - separator
           - hidden
+          - static
       required:
         title: Required
         type: boolean
@@ -6120,6 +6054,11 @@ definitions:
         title: Placeholder
         type: string
         minLength: 1
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   PromptStage:
     required:
       - name

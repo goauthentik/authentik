@@ -29,6 +29,7 @@
                     <th role="columnheader" scope="col">{% trans 'Field' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Label' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Flows' %}</th>
                     <th role="cell"></th>
                 </tr>
@@ -49,6 +50,11 @@
                     <td role="cell">
                         <div>
                             {{ prompt.type }}
+                        </div>
+                    </td>
+                    <td role="cell">
+                        <div>
+                            {{ prompt.order }}
                         </div>
                     </td>
                     <td role="cell">

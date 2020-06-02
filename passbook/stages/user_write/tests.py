@@ -72,6 +72,7 @@ class TestUserWriteStage(TestCase):
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
+            "some-custom-attribute": "test",
         }
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -88,6 +89,7 @@ class TestUserWriteStage(TestCase):
         )
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
+        self.assertEqual(user_qs.first().attributes["some-custom-attribute"], "test")
 
     def test_without_data(self):
         """Test without data results in error"""

@@ -1,7 +1,7 @@
 """passbook multi-stage authentication engine"""
 from typing import Any, Dict, Optional
 
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -34,7 +34,7 @@ class FlowExecutorView(View):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow, slug=flow_slug)
+        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
 
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
@@ -164,7 +164,9 @@ class ToDefaultFlow(View):
     designation: Optional[FlowDesignation] = None
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        flow = get_object_or_404(Flow, designation=self.designation)
+        flow = Flow.with_policy(request, designation=self.designation)
+        if not flow:
+            raise Http404
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]

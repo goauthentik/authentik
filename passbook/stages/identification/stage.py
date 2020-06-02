@@ -10,7 +10,6 @@ from django.views.generic import FormView
 from structlog import get_logger
 
 from passbook.core.models import Source, User
-from passbook.flows.models import FlowDesignation
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
 from passbook.stages.identification.forms import IdentificationForm
@@ -34,18 +33,17 @@ class IdentificationStageView(FormView, StageView):
         return [current_stage.template]
 
     def get_context_data(self, **kwargs):
+        current_stage: IdentificationStage = self.executor.current_stage
         # Check for related enrollment and recovery flow, add URL to view
-        enrollment_flow = self.executor.flow.related_flow(FlowDesignation.ENROLLMENT)
-        if enrollment_flow:
+        if current_stage.enrollment_flow:
             kwargs["enroll_url"] = reverse(
-                "passbook_flows:flow-executor",
-                kwargs={"flow_slug": enrollment_flow.slug},
+                "passbook_flows:flow-executor-shell",
+                kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
-        recovery_flow = self.executor.flow.related_flow(FlowDesignation.RECOVERY)
-        if recovery_flow:
+        if current_stage.recovery_flow:
             kwargs["recovery_url"] = reverse(
-                "passbook_flows:flow-executor",
-                kwargs={"flow_slug": recovery_flow.slug},
+                "passbook_flows:flow-executor-shell",
+                kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
         kwargs["primary_action"] = _("Log in")
 

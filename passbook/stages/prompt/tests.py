@@ -93,25 +93,6 @@ class TestPromptStage(TestCase):
 
         FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
 
-    def test_invalid_type(self):
-        """Test that invalid form type raises an error"""
-        with self.assertRaises(ValueError):
-            _ = Prompt.objects.create(
-                field_key="hidden_prompt",
-                type="invalid",
-                required=True,
-                placeholder="HIDDEN_PLACEHOLDER",
-            )
-        with self.assertRaises(ValueError):
-            prompt = Prompt.objects.create(
-                field_key="hidden_prompt",
-                type=FieldTypes.HIDDEN,
-                required=True,
-                placeholder="HIDDEN_PLACEHOLDER",
-            )
-            with patch.object(prompt, "type", MagicMock(return_value="invalid")):
-                _ = prompt.field
-
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
@@ -139,7 +120,7 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), True)
         return form
@@ -151,7 +132,7 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage)
+        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), False)
         return form

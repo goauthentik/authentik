@@ -1,5 +1,6 @@
 """Generic models"""
 from django.db import models
+from model_utils.managers import InheritanceManager
 
 
 class CreatedUpdatedModel(models.Model):
@@ -10,3 +11,27 @@ class CreatedUpdatedModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class InheritanceAutoManager(InheritanceManager):
+    """Object manager which automatically selects the subclass"""
+
+    def get_queryset(self):
+        return super().get_queryset().select_subclasses()
+
+
+class InheritanceForwardManyToOneDescriptor(
+    models.fields.related.ForwardManyToOneDescriptor
+):
+    """Forward ManyToOne Descriptor that selects subclass. Requires InheritanceAutoManager."""
+
+    def get_queryset(self, **hints):
+        return self.field.remote_field.model.objects.db_manager(
+            hints=hints
+        ).select_subclasses()
+
+
+class InheritanceForeignKey(models.ForeignKey):
+    """Custom ForeignKey that uses InheritanceForwardManyToOneDescriptor"""
+
+    forward_related_accessor_class = InheritanceForwardManyToOneDescriptor

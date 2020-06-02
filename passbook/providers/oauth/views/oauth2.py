@@ -50,9 +50,9 @@ class PassbookAuthorizationView(AccessMixin, AuthorizationView):
         provider.save()
         self._application = application
         # Check permissions
-        passing, policy_messages = self.user_has_access(self._application, request.user)
-        if not passing:
-            for policy_message in policy_messages:
+        result = self.user_has_access(self._application, request.user)
+        if not result.passing:
+            for policy_message in result.messages:
                 messages.error(request, policy_message)
             return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Some clients don't pass response_type, so we default to code

@@ -1,7 +1,7 @@
 """Flows Planner"""
 from dataclasses import dataclass, field
 from time import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -51,22 +51,12 @@ class FlowPlanner:
         self.use_cache = True
         self.flow = flow
 
-    def _check_flow_root_policies(self, request: HttpRequest) -> Tuple[bool, List[str]]:
-        engine = PolicyEngine(self.flow.policies.all(), request.user, request)
-        engine.build()
-        return engine.result
-
     def plan(
         self, request: HttpRequest, default_context: Optional[Dict[str, Any]] = None
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
         LOGGER.debug("f(plan): Starting planning process", flow=self.flow)
-        # First off, check the flow's direct policy bindings
-        # to make sure the user even has access to the flow
-        root_passing, root_passing_messages = self._check_flow_root_policies(request)
-        if not root_passing:
-            raise FlowNonApplicableException(root_passing_messages)
         # Bit of a workaround here, if there is a pending user set in the default context
         # we use that user for our cache key
         # to make sure they don't get the generic response
@@ -74,14 +64,24 @@ class FlowPlanner:
             user = default_context[PLAN_CONTEXT_PENDING_USER]
         else:
             user = request.user
+        # First off, check the flow's direct policy bindings
+        # to make sure the user even has access to the flow
+        engine = PolicyEngine(self.flow, user, request)
+        if default_context:
+            engine.request.context = default_context
+        engine.build()
+        result = engine.result
+        if not result.passing:
+            raise FlowNonApplicableException(result.messages)
+        # User is passing so far, check if we have a cached plan
         cached_plan_key = cache_key(self.flow, user)
         cached_plan = cache.get(cached_plan_key, None)
         if cached_plan and self.use_cache:
             LOGGER.debug(
                 "f(plan): Taking plan from cache", flow=self.flow, key=cached_plan_key
             )
-            LOGGER.debug(cached_plan)
             return cached_plan
+        LOGGER.debug("f(plan): building plan", flow=self.flow)
         plan = self._build_plan(user, request, default_context)
         cache.set(cache_key(self.flow, user), plan)
         if not plan.stages:
@@ -106,11 +106,10 @@ class FlowPlanner:
             .select_related()
         ):
             binding = stage.flowstagebinding_set.get(flow__pk=self.flow.pk)
-            engine = PolicyEngine(binding.policies.all(), user, request)
+            engine = PolicyEngine(binding, user, request)
             engine.request.context = plan.context
             engine.build()
-            passing, _ = engine.result
-            if passing:
+            if engine.passing:
                 LOGGER.debug("f(plan): Stage passing", stage=stage, flow=self.flow)
                 plan.stages.append(stage)
         end_time = time()

@@ -21,7 +21,7 @@ from passbook.flows.planner import (
 )
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
-from passbook.sources.oauth.clients import get_client
+from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
@@ -34,7 +34,7 @@ class OAuthClientMixin:
 
     client_class: Optional[Callable] = None
 
-    def get_client(self, source):
+    def get_client(self, source: OAuthSource) -> BaseOAuthClient:
         "Get instance of the OAuth client for this source."
         if self.client_class is not None:
             # pylint: disable=not-callable

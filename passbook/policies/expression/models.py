@@ -16,7 +16,9 @@ class ExpressionPolicy(Policy):
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Evaluate and render expression. Returns PolicyResult(false) on error."""
-        return Evaluator().evaluate(self.expression, request)
+        evaluator = Evaluator()
+        evaluator.set_policy_request(request)
+        return evaluator.evaluate(self.expression)
 
     def save(self, *args, **kwargs):
         Evaluator().validate(self.expression)

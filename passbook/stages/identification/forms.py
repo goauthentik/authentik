@@ -16,7 +16,7 @@ class IdentificationStageForm(forms.ModelForm):
     class Meta:
 
         model = IdentificationStage
-        fields = ["name", "user_fields", "template"]
+        fields = ["name", "user_fields", "template", "enrollment_flow", "recovery_flow"]
         widgets = {
             "name": forms.TextInput(),
         }
