@@ -45,6 +45,19 @@ class TestEmailStage(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_without_user(self):
+        """Test without pending user"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse(
+            "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
     def test_pending_user(self):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
