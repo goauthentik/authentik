@@ -8,7 +8,7 @@ from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class ExpressionPolicy(Policy):
-    """Jinja2-based Expression policy that allows Admins to write their own logic"""
+    """Implement custom logic using python."""
 
     expression = models.TextField()
 

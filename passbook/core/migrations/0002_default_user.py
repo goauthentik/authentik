@@ -14,6 +14,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     )
     pbadmin.set_password("pbadmin")  # nosec
     pbadmin.is_superuser = True
+    pbadmin.is_staff = True
     pbadmin.save()
 
 

@@ -15,14 +15,14 @@ class TestEvaluator(TestCase):
 
     def test_valid(self):
         """test simple value expression"""
-        template = "True"
+        template = "return True"
         evaluator = Evaluator()
         evaluator.set_policy_request(self.request)
         self.assertEqual(evaluator.evaluate(template).passing, True)
 
     def test_messages(self):
         """test expression with message return"""
-        template = '{% do pb_message("some message") %}False'
+        template = 'pb_message("some message");return False'
         evaluator = Evaluator()
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
@@ -31,12 +31,12 @@ class TestEvaluator(TestCase):
 
     def test_invalid_syntax(self):
         """test invalid syntax"""
-        template = "{%"
+        template = ";"
         evaluator = Evaluator()
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
-        self.assertEqual(result.messages, ("tag name expected",))
+        self.assertEqual(result.messages, ("invalid syntax (<string>, line 2)",))
 
     def test_undefined(self):
         """test undefined result"""
@@ -45,7 +45,7 @@ class TestEvaluator(TestCase):
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
-        self.assertEqual(result.messages, ("'foo' is undefined",))
+        self.assertEqual(result.messages, ("name 'foo' is not defined",))
 
     def test_validate(self):
         """test validate"""
@@ -56,7 +56,7 @@ class TestEvaluator(TestCase):
 
     def test_validate_invalid(self):
         """test validate"""
-        template = "{%"
+        template = ";"
         evaluator = Evaluator()
         with self.assertRaises(ValidationError):
             evaluator.validate(template)

@@ -14,7 +14,7 @@ class ExpressionPolicyForm(forms.ModelForm):
     template_name = "policy/expression/form.html"
 
     def clean_expression(self):
-        """Test Jinja2 Syntax"""
+        """Test Syntax"""
         expression = self.cleaned_data.get("expression")
         Evaluator().validate(expression)
         return expression
@@ -27,5 +27,5 @@ class ExpressionPolicyForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(),
-            "expression": CodeMirrorWidget(mode="jinja2"),
+            "expression": CodeMirrorWidget(mode="python"),
         }
