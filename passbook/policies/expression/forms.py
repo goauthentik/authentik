@@ -3,7 +3,7 @@
 from django import forms
 
 from passbook.admin.fields import CodeMirrorWidget
-from passbook.policies.expression.evaluator import Evaluator
+from passbook.policies.expression.evaluator import PolicyEvaluator
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.forms import GENERAL_FIELDS
 
@@ -16,7 +16,7 @@ class ExpressionPolicyForm(forms.ModelForm):
     def clean_expression(self):
         """Test Syntax"""
         expression = self.cleaned_data.get("expression")
-        Evaluator().validate(expression)
+        PolicyEvaluator(self.instance.name).validate(expression)
         return expression
 
     class Meta:
