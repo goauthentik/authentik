@@ -40,7 +40,6 @@ signxml = "*"
 structlog = "*"
 swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
-jinja2 = "*"
 
 [requires]
 python_version = "3.8"
