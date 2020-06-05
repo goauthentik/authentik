@@ -178,7 +178,6 @@ class Connector:
         properties["attributes"]["distinguishedName"] = attributes.get(
             "distinguishedName"
         )
-        print(properties)
         return properties
 
     def auth_user(self, password: str, **filters: Dict[str, str]) -> Optional[User]:
