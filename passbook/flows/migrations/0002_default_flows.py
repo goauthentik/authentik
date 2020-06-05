@@ -31,7 +31,7 @@ def create_default_authentication_flow(
     if not IdentificationStage.objects.using(db_alias).exists():
         IdentificationStage.objects.using(db_alias).create(
             name="identification",
-            user_fields=[UserFields.E_MAIL],
+            user_fields=[UserFields.E_MAIL, UserFields.USERNAME],
             template=Templates.DEFAULT_LOGIN,
         )
 
@@ -44,7 +44,7 @@ def create_default_authentication_flow(
         UserLoginStage.objects.using(db_alias).create(name="authentication")
 
     flow = Flow.objects.using(db_alias).create(
-        name="default-authentication-flow",
+        name="Welcome to passbook!",
         slug="default-authentication-flow",
         designation=FlowDesignation.AUTHENTICATION,
     )
