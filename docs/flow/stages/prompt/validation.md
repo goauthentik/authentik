@@ -4,13 +4,12 @@ Further validation of prompts can be done using policies.
 
 To validate that two password fields are identical, create the following expression policy:
 
-```jinja2
-{% if request.context.prompt_data.password == request.context.prompt_data.password_repeat %}
-True
-{% else %}
-{% do pb_message("Passwords don't match.") %}
-False
-{% endif %}
+```python
+if request.context.get('prompt_data').get('password') == request.context.get('prompt_data').get('password_repeat'):
+    return True
+
+pb_message("Passwords don't match.")
+return False
 ```
 This policy expects you two have two password fields with `field_key` set to `password` and `password_repeat`.
 

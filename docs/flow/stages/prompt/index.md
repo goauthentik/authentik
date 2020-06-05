@@ -21,8 +21,8 @@ A Prompt has the following attributes:
 
 HTML name used for the prompt. This key is also used to later retrieve the data in expression policies:
 
-```jinja2
-{{ request.context.prompt_data.<field_key> }}
+```python
+request.context.get('prompt_data').get('<field_key>')
 ```
 
 ### `label`
