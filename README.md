@@ -28,7 +28,7 @@ docker-compose up -d
 docker-compose exec server ./manage.py migrate
 ```
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://beryju.github.io/passbook/installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org//installation/kubernetes/)
 
 ## Screenshots
 
