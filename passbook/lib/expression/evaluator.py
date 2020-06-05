@@ -69,8 +69,9 @@ class BaseEvaluator:
         return full_expression
 
     def evaluate(self, expression_source: str) -> Any:
-        """Parse and evaluate expression. Policy is expected to return a truthy object.
-        Messages can be added using 'do pb_message()'."""
+        """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
+        If any exception is raised during execution, it is raised.
+        The result is returned without any type-checking."""
         param_keys = self._context.keys()
         ast_obj = compile(
             self.wrap_expression(expression_source, param_keys), self._filename, "exec",
