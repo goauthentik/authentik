@@ -32,8 +32,8 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Screenshots
 
-![](.github/screen_apps.png)
-![](.github/screen_admin.png)
+![](docs/images/screen_apps.png)
+![](docs/images/screen_admin.png)
 
 ## Development
 

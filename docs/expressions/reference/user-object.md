@@ -15,6 +15,7 @@ The User object has the following attributes:
 
 List all the User's Group Names
 
-```jinja2
-[{% for group in user.groups.all() %}'{{ group.name }}',{% endfor %}]
+```python
+for group in user.groups.all():
+    yield group.name
 ```

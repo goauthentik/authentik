@@ -4,6 +4,7 @@ copyright: "Copyright &copy; 2019 - 2020 BeryJu.org"
 
 nav:
   - Home: index.md
+  - Terminology: terminology.md
   - Installation:
     - docker-compose: installation/docker-compose.md
     - Kubernetes: installation/kubernetes.md
@@ -24,13 +25,16 @@ nav:
       - User Write Stage: flow/stages/user_write.md
   - Sources: sources.md
   - Providers: providers.md
+  - Expressions:
+    - Overview: expressions/index.md
+    - Reference:
+      - User Object: expressions/reference/user-object.md
   - Property Mappings:
     - Overview: property-mappings/index.md
-    - Reference:
-      - User Object: property-mappings/reference/user-object.md
+    - Expressions: property-mappings/expression.md
   - Policies:
     - Overview: policies/index.md
-    - Expression: policies/expression/index.md
+    - Expression: policies/expression.md
   - Integrations:
     - as Provider:
         - Amazon Web Services: integrations/services/aws/index.md
@@ -44,10 +48,23 @@ nav:
 repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook
 theme:
-  name: "material"
-  logo: "images/logo.svg"
+  name: material
+  logo: images/logo.svg
+  favicon: images/logo.svg
+  palette:
+    scheme: slate
+    primary: white
 
 markdown_extensions:
   - toc:
       permalink: "¶"
   - admonition
+  - codehilite
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - attr_list
+
+plugins:
+  - search

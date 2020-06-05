@@ -39,6 +39,8 @@ class PolicyProcess(Process):
         super().__init__()
         self.binding = binding
         self.request = request
+        if not isinstance(self.request, PolicyRequest):
+            raise ValueError(f"{self.request} is not a Policy Request.")
         if connection:
             self.connection = connection
 
