@@ -7,11 +7,11 @@ from django.db import migrations
 def create_default_ad_property_mappings(apps: Apps, schema_editor):
     LDAPPropertyMapping = apps.get_model("passbook_sources_ldap", "LDAPPropertyMapping")
     mapping = {
-        "name": "{{ ldap.name }}",
-        "first_name": "{{ ldap.givenName }}",
-        "last_name": "{{ ldap.sn }}",
-        "username": "{{ ldap.sAMAccountName }}",
-        "email": "{{ ldap.mail }}",
+        "name": "return ldap.get('name')",
+        "first_name": "return ldap.get('givenName')",
+        "last_name": "return ldap.get('sn')",
+        "username": "return ldap.get('sAMAccountName')",
+        "email": "return ldap.get('mail')",
     }
     db_alias = schema_editor.connection.alias
     for object_field, expression in mapping.items():

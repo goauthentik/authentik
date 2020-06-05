@@ -10,14 +10,17 @@ nav:
     - Kubernetes: installation/kubernetes.md
   - Sources: sources.md
   - Providers: providers.md
+  - Expressions:
+    - Overview: expressions/index.md
+    - Reference:
+      - User Object: expressions/reference/user-object.md
   - Property Mappings:
     - Overview: property-mappings/index.md
-    - Reference:
-      - User Object: property-mappings/reference/user-object.md
+    - Expressions: property-mappings/expression.md
   - Factors: factors.md
   - Policies:
     - Overview: policies/index.md
-    - Expression: policies/expression/index.md
+    - Expression: policies/expression.md
   - Integrations:
     - as Provider:
         - Amazon Web Services: integrations/services/aws/index.md
@@ -38,3 +41,11 @@ markdown_extensions:
   - toc:
       permalink: "¶"
   - admonition
+  - codehilite
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+
+plugins:
+  - search

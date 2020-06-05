@@ -1,4 +1,5 @@
 """Basic SAML Processor"""
+from types import GeneratorType
 from typing import TYPE_CHECKING, Dict, List, Union
 
 from cryptography.exceptions import InvalidSignature
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 
 # pylint: disable=too-many-instance-attributes
 class Processor:
-    """Base SAML 2.0 AuthnRequest to Response Processor.
+    """Base SAML 2.0 Auth-N-Request to Response Processor.
     Sub-classes should provide Service Provider-specific functionality."""
 
     is_idp_initiated = False
@@ -111,6 +112,8 @@ class Processor:
                     request=self._http_request,
                     provider=self._remote,
                 )
+                if value is None:
+                    continue
                 mapping_payload = {
                     "Name": mapping.saml_name,
                     "FriendlyName": mapping.friendly_name,
@@ -119,6 +122,8 @@ class Processor:
                 # differently in the template
                 if isinstance(value, list):
                     mapping_payload["ValueArray"] = value
+                elif isinstance(value, GeneratorType):
+                    mapping_payload["ValueArray"] = list(value)
                 else:
                     mapping_payload["Value"] = value
                 attributes.append(mapping_payload)
