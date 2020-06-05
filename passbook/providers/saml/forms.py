@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
+from passbook.core.expression import PropertyMappingEvaluator
 from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
@@ -51,6 +52,13 @@ class SAMLPropertyMappingForm(forms.ModelForm):
     """SAML Property Mapping form"""
 
     template_name = "saml/idp/property_mapping_form.html"
+
+    def clean_expression(self):
+        """Test Syntax"""
+        expression = self.cleaned_data.get("expression")
+        evaluator = PropertyMappingEvaluator()
+        evaluator.validate(expression)
+        return expression
 
     class Meta:
 
