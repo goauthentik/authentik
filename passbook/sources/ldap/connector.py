@@ -164,9 +164,10 @@ class Connector:
                 continue
             mapping: LDAPPropertyMapping
             try:
-                properties[mapping.object_field] = mapping.evaluate(
-                    user=None, request=None, ldap=attributes
-                )
+                value = mapping.evaluate(user=None, request=None, ldap=attributes)
+                if value is None:
+                    continue
+                properties[mapping.object_field] = value
             except PropertyMappingExpressionException as exc:
                 LOGGER.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
@@ -177,6 +178,7 @@ class Connector:
         properties["attributes"]["distinguishedName"] = attributes.get(
             "distinguishedName"
         )
+        print(properties)
         return properties
 
     def auth_user(self, password: str, **filters: Dict[str, str]) -> Optional[User]:
