@@ -1,5 +1,6 @@
 """passbook flows identification forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
@@ -19,6 +20,9 @@ class IdentificationStageForm(forms.ModelForm):
         fields = ["name", "user_fields", "template", "enrollment_flow", "recovery_flow"]
         widgets = {
             "name": forms.TextInput(),
+            "user_fields": FilteredSelectMultiple(
+                _("fields"), False, choices=UserFields.choices
+            ),
         }
 
 

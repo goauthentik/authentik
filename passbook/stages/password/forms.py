@@ -1,20 +1,23 @@
 """passbook administration forms"""
 from django import forms
-from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
-from passbook.lib.utils.reflection import path_to_class
 from passbook.stages.password.models import PasswordStage
 
 
 def get_authentication_backends():
     """Return all available authentication backends as tuple set"""
-    for backend in settings.AUTHENTICATION_BACKENDS:
-        klass = path_to_class(backend)
-        yield backend, getattr(
-            klass(), "name", "%s (%s)" % (klass.__name__, klass.__module__)
-        )
+    return [
+        (
+            "django.contrib.auth.backends.ModelBackend",
+            _("passbook-internal Userdatabase"),
+        ),
+        (
+            "passbook.sources.ldap.auth.LDAPBackend",
+            _("passbook LDAP (Only needed when User-Sync is not enabled."),
+        ),
+    ]
 
 
 class PasswordForm(forms.Form):
