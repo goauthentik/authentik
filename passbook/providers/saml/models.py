@@ -17,6 +17,13 @@ from passbook.providers.saml.utils.time import timedelta_string_validator
 LOGGER = get_logger()
 
 
+class SAMLBindings(models.TextChoices):
+    """SAML Bindings supported by passbook"""
+
+    REDIRECT = "redirect"
+    POST = "post"
+
+
 class SAMLProvider(Provider):
     """Model to save information about a Remote SAML Endpoint"""
 
@@ -26,6 +33,9 @@ class SAMLProvider(Provider):
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(default="")
     issuer = models.TextField(help_text=_("Also known as EntityID"))
+    sp_binding = models.TextField(
+        choices=SAMLBindings.choices, default=SAMLBindings.REDIRECT
+    )
 
     assertion_valid_not_before = models.TextField(
         default="minutes=-5",
@@ -118,8 +128,8 @@ class SAMLProvider(Provider):
         try:
             # pylint: disable=no-member
             return reverse(
-                "passbook_providers_saml:saml-metadata",
-                kwargs={"application": self.application.slug},
+                "passbook_providers_saml:metadata",
+                kwargs={"application_slug": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return None

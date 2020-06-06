@@ -5,6 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
 from passbook.core.expression import PropertyMappingEvaluator
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
@@ -15,6 +16,9 @@ from passbook.providers.saml.models import (
 class SAMLProviderForm(forms.ModelForm):
     """SAML Provider form"""
 
+    authorization_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
+    )
     processor_path = forms.ChoiceField(
         choices=get_provider_choices(), label="Processor"
     )
@@ -29,6 +33,7 @@ class SAMLProviderForm(forms.ModelForm):
             "acs_url",
             "audience",
             "issuer",
+            "sp_binding",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",

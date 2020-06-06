@@ -13,32 +13,32 @@ def create_default_property_mappings(apps, schema_editor):
         {
             "FriendlyName": "eduPersonPrincipalName",
             "Name": "urn:oid:1.3.6.1.4.1.5923.1.1.1.6",
-            "Expression": "return user.get('email')",
+            "Expression": "return user.email",
         },
         {
             "FriendlyName": "cn",
             "Name": "urn:oid:2.5.4.3",
-            "Expression": "return user.get('name')",
+            "Expression": "return user.name",
         },
         {
             "FriendlyName": "mail",
             "Name": "urn:oid:0.9.2342.19200300.100.1.3",
-            "Expression": "return user.get('email')",
+            "Expression": "return user.email",
         },
         {
             "FriendlyName": "displayName",
             "Name": "urn:oid:2.16.840.1.113730.3.1.241",
-            "Expression": "return user.get('username')",
+            "Expression": "return user.username",
         },
         {
             "FriendlyName": "uid",
             "Name": "urn:oid:0.9.2342.19200300.100.1.1",
-            "Expression": "return user.get('pk')",
+            "Expression": "return user.pk",
         },
         {
             "FriendlyName": "member-of",
             "Name": "member-of",
-            "Expression": "[{% for group in user.groups.all() %}'{{ group.name }}',{% endfor %}]",
+            "Expression": "for group in user.groups.all():\n    yield group.name",
         },
     ]
     for default in defaults:
