@@ -1,21 +1,32 @@
 """passbook pretend GitHub Views"""
-from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
 from oauth2_provider.models import AccessToken
 
+from passbook.core.models import User
 
-class GitHubUserView(View):
+
+class GitHubPretendView(View):
+    """Emulate GitHub's API Endpoints"""
+
+    def verify_access_token(self) -> User:
+        """Verify access token manually since github uses /user?access_token=..."""
+        if "HTTP_AUTHORIZATION" in self.request.META:
+            full_token = self.request.META.get("HTTP_AUTHORIZATION")
+            _, token = full_token.split(" ")
+        elif "access_token" in self.request.GET:
+            token = self.request.GET.get("access_token", "")
+        else:
+            raise PermissionDenied("No access token passed.")
+        return get_object_or_404(AccessToken, token=token).user
+
+
+class GitHubUserView(GitHubPretendView):
     """Emulate GitHub's /user API Endpoint"""
 
-    def verify_access_token(self):
-        """Verify access token manually since github uses /user?access_token=..."""
-        token = get_object_or_404(
-            AccessToken, token=self.request.GET.get("access_token", "")
-        )
-        return token.user
-
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
         """Emulate GitHub's /user API Endpoint"""
         user = self.verify_access_token()
         return JsonResponse(
@@ -65,3 +76,11 @@ class GitHubUserView(View):
                 },
             }
         )
+
+
+class GitHubUserTeamsView(GitHubPretendView):
+    """Emulate GitHub's /user/teams API Endpoint"""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """Emulate GitHub's /user/teams API Endpoint"""
+        return JsonResponse([], safe=False)
