@@ -1,8 +1,15 @@
 """passbook multi-stage authentication engine"""
 from typing import Any, Dict, Optional
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
@@ -93,7 +100,8 @@ class FlowExecutorView(View):
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.get(request, *args, **kwargs)
+        stage_response = self.current_stage_view.get(request, *args, **kwargs)
+        return to_stage_response(request, stage_response)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
@@ -102,7 +110,8 @@ class FlowExecutorView(View):
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.post(request, *args, **kwargs)
+        stage_response = self.current_stage_view.post(request, *args, **kwargs)
+        return to_stage_response(request, stage_response)
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -193,3 +202,21 @@ class FlowExecutorShellView(TemplateView):
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
         kwargs["msg_url"] = reverse("passbook_api:messages-list")
         return kwargs
+
+
+def to_stage_response(
+    request: HttpRequest, from_response: HttpResponse
+) -> HttpResponse:
+    """Convert normal HttpResponse into JSON Response"""
+    if isinstance(from_response, HttpResponseRedirect):
+        if request.path != from_response.url:
+            return JsonResponse({"type": "redirect", "to": from_response.url})
+        return from_response
+    if isinstance(from_response, TemplateResponse):
+        return JsonResponse(
+            {
+                "type": "template",
+                "body": from_response.render().content.decode("utf-8"),
+            }
+        )
+    return from_response

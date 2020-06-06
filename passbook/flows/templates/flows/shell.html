@@ -113,19 +113,18 @@ const updateMessages = () => {
         });
     });
 };
-const updateCard = (response) => {
-    if (!response.ok) {
-        console.log("well");
-    }
-    if (response.redirected && !response.url.endsWith(flowBodyUrl)) {
-        window.location = response.url;
-    } else {
-        response.text().then(text => {
-            flowBody.innerHTML = text;
+const updateCard = (data) => {
+    switch (data.type) {
+        case "redirect":
+            window.location = data.to
+            break;
+        case "template":
+            flowBody.innerHTML = data.body;
             updateMessages();
             loadFormCode();
             setFormSubmitHandlers();
-        });
+        default:
+            break;
     }
 };
 const showSpinner = () => {
@@ -168,19 +167,13 @@ const setFormSubmitHandlers = () => {
             fetch(flowBodyUrl, {
                 method: 'post',
                 body: formData,
-            }).then((response) => {
-                showSpinner();
-                if (!response.url.endsWith(flowBodyUrl)) {
-                    window.location = response.url;
-                } else {
-                    updateCard(response);
-                }
+            }).then(response => response.json()).then(data => {
+                updateCard(data);
             });
         });
     });
 };
 
-fetch(flowBodyUrl).then(updateCard);
-
+fetch(flowBodyUrl).then(response => response.json()).then(data => updateCard(data));
 </script>
 {% endblock %}
