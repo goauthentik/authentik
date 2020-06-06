@@ -5333,6 +5333,8 @@ definitions:
         type: string
         minLength: 1
   Provider:
+    required:
+      - authorization_flow
     type: object
     properties:
       pk:
@@ -5344,7 +5346,6 @@ definitions:
         description: Flow used when authorizing this provider.
         type: string
         format: uuid
-        x-nullable: true
       property_mappings:
         type: array
         items:

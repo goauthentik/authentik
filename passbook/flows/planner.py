@@ -16,6 +16,7 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
+PLAN_CONTEXT_APPLICATION = "application"
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:
@@ -45,10 +46,13 @@ class FlowPlanner:
     that should be applied."""
 
     use_cache: bool
+    allow_empty_flows: bool
+
     flow: Flow
 
     def __init__(self, flow: Flow):
         self.use_cache = True
+        self.allow_empty_flows = False
         self.flow = flow
 
     def plan(
@@ -84,7 +88,7 @@ class FlowPlanner:
         LOGGER.debug("f(plan): building plan", flow=self.flow)
         plan = self._build_plan(user, request, default_context)
         cache.set(cache_key(self.flow, user), plan)
-        if not plan.stages:
+        if not plan.stages and not self.allow_empty_flows:
             raise EmptyFlowException()
         return plan
 
