@@ -1,5 +1,5 @@
 """Flow models"""
-from typing import Optional
+from typing import Callable, Optional
 from uuid import uuid4
 
 from django.db import models
@@ -9,6 +9,7 @@ from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
+from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -47,6 +48,15 @@ class Stage(models.Model):
 
     def __str__(self):
         return f"Stage {self.name}"
+
+
+# pylint: disable=invalid-name
+def InMemoryStage(_type: Callable) -> Stage:
+    """Creates an in-memory stage instance, based on a `_type` as view."""
+    class_path = class_to_path(_type)
+    stage = Stage()
+    stage.type = class_path
+    return stage
 
 
 class Flow(PolicyBindingModel):
