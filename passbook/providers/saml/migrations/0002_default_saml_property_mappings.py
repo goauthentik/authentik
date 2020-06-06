@@ -13,27 +13,27 @@ def create_default_property_mappings(apps, schema_editor):
         {
             "FriendlyName": "eduPersonPrincipalName",
             "Name": "urn:oid:1.3.6.1.4.1.5923.1.1.1.6",
-            "Expression": "{{ user.email }}",
+            "Expression": "return user.get('email')",
         },
         {
             "FriendlyName": "cn",
             "Name": "urn:oid:2.5.4.3",
-            "Expression": "{{ user.name }}",
+            "Expression": "return user.get('name')",
         },
         {
             "FriendlyName": "mail",
             "Name": "urn:oid:0.9.2342.19200300.100.1.3",
-            "Expression": "{{ user.email }}",
+            "Expression": "return user.get('email')",
         },
         {
             "FriendlyName": "displayName",
             "Name": "urn:oid:2.16.840.1.113730.3.1.241",
-            "Expression": "{{ user.username }}",
+            "Expression": "return user.get('username')",
         },
         {
             "FriendlyName": "uid",
             "Name": "urn:oid:0.9.2342.19200300.100.1.1",
-            "Expression": "{{ user.pk }}",
+            "Expression": "return user.get('pk')",
         },
         {
             "FriendlyName": "member-of",

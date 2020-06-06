@@ -111,12 +111,10 @@ class TestPromptStage(TestCase):
             self.assertIn(prompt.label, response.rendered_content)
             self.assertIn(prompt.placeholder, response.rendered_content)
 
-    def test_valid_form(self) -> PromptForm:
+    def test_valid_form_with_policy(self) -> PromptForm:
         """Test form validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
-        expr = (
-            "{{ request.context.password_prompt == request.context.password2_prompt }}"
-        )
+        expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
@@ -144,7 +142,7 @@ class TestPromptStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        form = self.test_valid_form()
+        form = self.test_valid_form_with_policy()
 
         with patch("passbook.flows.views.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
