@@ -108,5 +108,5 @@ class Processor:
                 },
             )
         return redirect_with_qs(
-            "passbook_flows:flow-executor", request.GET, flow_slug=flow.slug,
+            "passbook_flows:flow-executor-shell", request.GET, flow_slug=flow.slug,
         )
