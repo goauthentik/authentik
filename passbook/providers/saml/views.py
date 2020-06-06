@@ -17,7 +17,7 @@ from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application, Provider
-from passbook.flows.models import InMemoryStage
+from passbook.flows.models import in_memory_stage
 from passbook.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
     PLAN_CONTEXT_SSO,
@@ -89,7 +89,7 @@ class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
             self.request,
             {PLAN_CONTEXT_SSO: True, PLAN_CONTEXT_APPLICATION: self.application},
         )
-        plan.stages.append(InMemoryStage(SAMLFlowFinalView))
+        plan.stages.append(in_memory_stage(SAMLFlowFinalView))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",

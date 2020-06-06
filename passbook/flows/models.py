@@ -50,8 +50,7 @@ class Stage(models.Model):
         return f"Stage {self.name}"
 
 
-# pylint: disable=invalid-name
-def InMemoryStage(_type: Callable) -> Stage:
+def in_memory_stage(_type: Callable) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
     class_path = class_to_path(_type)
     stage = Stage()
