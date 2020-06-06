@@ -78,10 +78,7 @@ class Provider(models.Model):
 
     authorization_flow = models.ForeignKey(
         Flow,
-        blank=True,
-        null=True,
-        default=None,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
     )

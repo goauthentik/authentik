@@ -43,11 +43,8 @@ class Migration(migrations.Migration):
             model_name="provider",
             name="authorization_flow",
             field=models.ForeignKey(
-                blank=True,
-                default=None,
                 help_text="Flow used when authorizing this provider.",
-                null=True,
-                on_delete=django.db.models.deletion.SET_NULL,
+                on_delete=django.db.models.deletion.CASCADE,
                 related_name="provider_authorization",
                 to="passbook_flows.Flow",
             ),
