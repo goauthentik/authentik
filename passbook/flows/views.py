@@ -204,19 +204,20 @@ class FlowExecutorShellView(TemplateView):
         return kwargs
 
 
-def to_stage_response(
-    request: HttpRequest, from_response: HttpResponse
-) -> HttpResponse:
+def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
-    if isinstance(from_response, HttpResponseRedirect):
-        if request.path != from_response.url:
-            return JsonResponse({"type": "redirect", "to": from_response.url})
-        return from_response
-    if isinstance(from_response, TemplateResponse):
+    if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
+        redirect_url = source["Location"]
+        if request.path != redirect_url:
+            return JsonResponse({"type": "redirect", "to": redirect_url})
+        return source
+    if isinstance(source, TemplateResponse):
         return JsonResponse(
-            {
-                "type": "template",
-                "body": from_response.render().content.decode("utf-8"),
-            }
+            {"type": "template", "body": source.render().content.decode("utf-8"),}
         )
-    return from_response
+    # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
+    if source.__class__ == HttpResponse:
+        return JsonResponse(
+            {"type": "template", "body": source.content.decode("utf-8")}
+        )
+    return source
