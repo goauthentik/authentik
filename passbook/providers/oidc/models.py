@@ -12,7 +12,7 @@ from passbook.lib.utils.template import render_to_string
 
 
 class OpenIDProvider(Provider):
-    """Proxy model for OIDC Client"""
+    """OpenID Connect Provider for applications that support OIDC."""
 
     # Since oidc_provider doesn't currently support swappable models
     # (https://github.com/juanifioren/django-oidc-provider/pull/305)
@@ -28,7 +28,7 @@ class OpenIDProvider(Provider):
         return self.oidc_client.name
 
     def __str__(self):
-        return "OpenID Connect Provider %s" % self.oidc_client.__str__()
+        return f"OpenID Connect Provider {self.oidc_client.__str__()}"
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
@@ -37,14 +37,14 @@ class OpenIDProvider(Provider):
             {
                 "provider": self,
                 "authorize": request.build_absolute_uri(
-                    reverse("oidc_provider:authorize")
+                    reverse("passbook_providers_oidc:authorize")
                 ),
                 "token": request.build_absolute_uri(reverse("oidc_provider:token")),
                 "userinfo": request.build_absolute_uri(
                     reverse("oidc_provider:userinfo")
                 ),
                 "provider_info": request.build_absolute_uri(
-                    reverse("oidc_provider:provider-info")
+                    reverse("passbook_providers_oidc:provider-info")
                 ),
             },
         )
