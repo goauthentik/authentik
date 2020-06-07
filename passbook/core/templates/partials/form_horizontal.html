@@ -29,7 +29,7 @@
         <div class="pf-c-form__horizontal-group">
             {{ field|css_class:"pf-c-form-control" }}
             {% if field.help_text %}
-            <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+            <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
             {% endif %}
         </div>
     {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
@@ -39,7 +39,7 @@
                 <label class="pf-c-check__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ field.label }}</label>
             </div>
             {% if field.help_text %}
-            <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+            <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
             {% endif %}
         </div>
     {% else %}
@@ -52,7 +52,7 @@
         <div class="c-form__horizontal-group">
             {{ field|css_class:'pf-c-form-control' }}
             {% if field.help_text %}
-                <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+                <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
             {% endif %}
         </div>
     {% endif %}
