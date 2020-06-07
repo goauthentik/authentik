@@ -143,10 +143,10 @@ jobs:
           cd e2e
           docker-compose pull
           docker-compose up -d
-          docker-compose exec passbook pip install -r /app/requirements-dev.txt
+          docker-compose exec passbook bash -c "pip install -r /app/requirements-dev.txt"
       - name: Run e2e tests
         run: |
-          docker-compose exec passbook ./manage.py test e2e
+          docker-compose exec passbook bash -c "./manage.py test e2e"
   # Build
   build-server:
     needs:
