@@ -40,7 +40,6 @@ class AuthorizationFlowInitView(AccessMixin, View):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check access to application, start FlowPLanner, return to flow executor shell"""
-        # Get client_id to get provider, so we can update skip_authorization field
         client_id = request.GET.get("client_id")
         provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         try:
