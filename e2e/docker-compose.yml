@@ -12,3 +12,21 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/videos:/home/seluser/videos
     privileged: true
+  postgresql:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: passbook
+  redis:
+    image: redis
+    restart: always
+  passbook:
+    image: beryju/passbook
+    command: /bin/bash -c "sleep infinity"
+    volumes:
+      - ../:/testing
+    environment:
+      PASSBOOK_ENV: docker
+    user: root
+    working_dir: /testing

@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Pre-release test
         run: |
-          export PASSBOOK_DOMAIN=localhost
           docker-compose pull
           docker build \
             --no-cache \

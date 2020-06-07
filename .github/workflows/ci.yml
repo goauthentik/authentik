@@ -130,6 +130,23 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+  e2e:
+    needs:
+      - pylint
+      - black
+      - prospector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup test containers
+        run: |
+          cd e2e
+          docker-compose pull
+          docker-compose up -d
+          docker-compose exec passbook pip install -r /app/requirements-dev.txt
+      - name: Run e2e tests
+        run: |
+          docker-compose exec passbook ./manage.py test e2e
   # Build
   build-server:
     needs:

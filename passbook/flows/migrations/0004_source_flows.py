@@ -7,15 +7,10 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from passbook.flows.models import FlowDesignation
 from passbook.stages.prompt.models import FieldTypes
 
-FLOW_POLICY_EXPRESSION = """{{ pb_is_sso_flow }}"""
-
-PROMPT_POLICY_EXPRESSION = """
-{% if pb_flow_plan.context.prompt_data.username %}
-False
-{% else %}
-True
-{% endif %}
-"""
+FLOW_POLICY_EXPRESSION = """return pb_is_sso_flow"""
+PROMPT_POLICY_EXPRESSION = (
+    """return 'username' in pb_flow_plan.context['prompt_data']"""
+)
 
 
 def create_default_source_enrollment_flow(

@@ -10,20 +10,21 @@ from passbook.policies.models import PolicyBinding
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
-
+from passbook.stages.identification.models import IdentificationStage
+from e2e.utils import apply_default_data
 
 class TestEnroll2Step(StaticLiveServerTestCase):
     """Test 2-step enroll flow"""
 
-    host = "0.0.0.0"
-    port = 8001
+    host = "passbook"
 
     def setUp(self):
         self.driver = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
+            command_executor="http://hub:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.CHROME,
         )
-        self.driver.implicitly_wait(2)
+        self.driver.implicitly_wait(5)
+        apply_default_data()
 
     def tearDown(self):
         super().tearDown()
@@ -66,7 +67,7 @@ class TestEnroll2Step(StaticLiveServerTestCase):
         # Password checking policy
         password_policy = ExpressionPolicy.objects.create(
             name="policy-enrollment-password-equals",
-            expression="{{ request.context.password == request.context.password_repeat }}",
+            expression="return request.context['password'] == request.context['password_repeat']",
         )
         PolicyBinding.objects.create(
             target=first_stage, policy=password_policy, order=0
@@ -78,11 +79,16 @@ class TestEnroll2Step(StaticLiveServerTestCase):
             designation=FlowDesignation.ENROLLMENT,
         )
 
+        # Attach enrollment flow to identification stage
+        ident_stage: IdentificationStage = IdentificationStage.objects.first()
+        ident_stage.enrollment_flow = flow
+        ident_stage.save()
+
         FlowStageBinding.objects.create(flow=flow, stage=first_stage, order=0)
         FlowStageBinding.objects.create(flow=flow, stage=second_stage, order=1)
         FlowStageBinding.objects.create(flow=flow, stage=user_write, order=2)
         FlowStageBinding.objects.create(flow=flow, stage=user_login, order=3)
-        self.driver.get(f"http://host.docker.internal:{self.port}")
+        self.driver.get(self.live_server_url)
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
         self.driver.find_element(By.ID, "id_password").send_keys("pbadmin")
