@@ -14,7 +14,8 @@ from passbook.lib.utils.template import render_to_string
 
 
 class ApplicationGatewayProvider(Provider):
-    """This provider uses oauth2_proxy with the OIDC Provider."""
+    """Protect applications that don't support any of the other
+    Protocols by using a Reverse-Proxy."""
 
     name = models.TextField()
     internal_host = models.TextField()

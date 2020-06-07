@@ -5,6 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.core.expression import PropertyMappingEvaluator
 from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
@@ -26,6 +27,7 @@ class LDAPSourceForm(forms.ModelForm):
             "group_object_filter",
             "user_group_membership_field",
             "object_uniqueness_field",
+            "sync_users",
             "sync_groups",
             "sync_parent_group",
             "property_mappings",
@@ -50,6 +52,13 @@ class LDAPPropertyMappingForm(forms.ModelForm):
     """LDAP Property Mapping form"""
 
     template_name = "ldap/property_mapping_form.html"
+
+    def clean_expression(self):
+        """Test Syntax"""
+        expression = self.cleaned_data.get("expression")
+        evaluator = PropertyMappingEvaluator()
+        evaluator.validate(expression)
+        return expression
 
     class Meta:
 

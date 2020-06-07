@@ -38,5 +38,10 @@ class PolicyResult:
         self.passing = passing
         self.messages = messages
 
+    def __repr__(self):
+        return self.__str__()
+
     def __str__(self):
-        return f"<PolicyResult passing={self.passing}>"
+        if self.messages:
+            return f"PolicyResult passing={self.passing} messages={self.messages}"
+        return f"PolicyResult passing={self.passing}"

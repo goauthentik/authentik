@@ -4,31 +4,26 @@ from django.urls import path
 from passbook.providers.saml import views
 
 urlpatterns = [
-    # This view is used to initiate a Login-flow from the IDP
+    # SSO Bindings
     path(
-        "<slug:application>/login/initiate/",
-        views.InitiateLoginView.as_view(),
-        name="saml-login-initiate",
-    ),
-    # This view is the endpoint a SP would redirect to, and saves data into the session
-    # this is required as the process view which it redirects to might have to login first.
-    path(
-        "<slug:application>/login/", views.LoginBeginView.as_view(), name="saml-login"
+        "<slug:application_slug>/sso/binding/redirect/",
+        views.SAMLSSOBindingRedirectView.as_view(),
+        name="sso-redirect",
     ),
     path(
-        "<slug:application>/login/authorize/",
-        views.AuthorizeView.as_view(),
-        name="saml-login-authorize",
+        "<slug:application_slug>/sso/binding/post/",
+        views.SAMLSSOBindingPOSTView.as_view(),
+        name="sso-post",
     ),
-    path("<slug:application>/logout/", views.LogoutView.as_view(), name="saml-logout"),
+    # SSO IdP Initiated
     path(
-        "<slug:application>/logout/slo/",
-        views.SLOLogout.as_view(),
-        name="saml-logout-slo",
+        "<slug:application_slug>/sso/binding/init/",
+        views.SAMLSSOBindingInitView.as_view(),
+        name="sso-init",
     ),
     path(
-        "<slug:application>/metadata/",
+        "<slug:application_slug>/metadata/",
         views.DescriptorDownloadView.as_view(),
-        name="saml-metadata",
+        name="metadata",
     ),
 ]

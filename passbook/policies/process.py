@@ -6,7 +6,6 @@ from typing import Optional
 from django.core.cache import cache
 from structlog import get_logger
 
-from passbook.core.models import User
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.models import PolicyBinding
 from passbook.policies.types import PolicyRequest, PolicyResult
@@ -14,11 +13,13 @@ from passbook.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 
-def cache_key(binding: PolicyBinding, user: Optional[User] = None) -> str:
+def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
     prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}"
-    if user:
-        prefix += f"#{user.pk}"
+    if request.http_request:
+        prefix += f"_{request.http_request.session.session_key}"
+    if request.user:
+        prefix += f"#{request.user.pk}"
     return prefix
 
 
@@ -38,6 +39,8 @@ class PolicyProcess(Process):
         super().__init__()
         self.binding = binding
         self.request = request
+        if not isinstance(self.request, PolicyRequest):
+            raise ValueError(f"{self.request} is not a Policy Request.")
         if connection:
             self.connection = connection
 
@@ -65,7 +68,7 @@ class PolicyProcess(Process):
             passing=policy_result.passing,
             user=self.request.user,
         )
-        key = cache_key(self.binding, self.request.user)
+        key = cache_key(self.binding, self.request)
         cache.set(key, policy_result)
         LOGGER.debug("P_ENG(proc): Cached policy evaluation", key=key)
         return policy_result

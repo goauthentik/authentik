@@ -1,17 +1,19 @@
 """flow planner tests"""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.core.cache import cache
 from django.shortcuts import reverse
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from passbook.core.models import User
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import FlowPlanner
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
-POLICY_RESULT_MOCK = MagicMock(return_value=PolicyResult(False))
+POLICY_RESULT_MOCK = PropertyMock(return_value=PolicyResult(False))
 TIME_NOW_MOCK = MagicMock(return_value=3)
 
 
@@ -38,8 +40,7 @@ class TestFlowPlanner(TestCase):
             planner.plan(request)
 
     @patch(
-        "passbook.flows.planner.FlowPlanner._check_flow_root_policies",
-        POLICY_RESULT_MOCK,
+        "passbook.policies.engine.PolicyEngine.result", POLICY_RESULT_MOCK,
     )
     def test_non_applicable_plan(self):
         """Test that empty plan raises exception"""
@@ -81,3 +82,24 @@ class TestFlowPlanner(TestCase):
         self.assertEqual(
             TIME_NOW_MOCK.call_count, 2
         )  # When taking from cache, time is not measured
+
+    def test_planner_default_context(self):
+        """Test planner with default_context"""
+        flow = Flow.objects.create(
+            name="test-default-context",
+            slug="test-default-context",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        FlowStageBinding.objects.create(
+            flow=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+        )
+
+        user = User.objects.create(username="test-user")
+        request = self.request_factory.get(
+            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = user
+        planner = FlowPlanner(flow)
+        planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER: user})
+        key = cache_key(flow, user)
+        self.assertTrue(cache.get(key) is not None)

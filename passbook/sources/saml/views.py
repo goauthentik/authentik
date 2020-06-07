@@ -1,8 +1,9 @@
 """saml sp views"""
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
+from django.utils.http import urlencode
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
@@ -15,7 +16,7 @@ from passbook.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
-from passbook.sources.saml.models import SAMLSource
+from passbook.sources.saml.models import SAMLBindingTypes, SAMLSource
 from passbook.sources.saml.processors.base import Processor
 from passbook.sources.saml.utils import build_full_url, get_issuer
 from passbook.sources.saml.xml_render import get_authnrequest_xml
@@ -40,16 +41,20 @@ class InitiateView(View):
         }
         authn_req = get_authnrequest_xml(parameters, signed=False)
         _request = nice64(str.encode(authn_req))
-        return render(
-            request,
-            "saml/sp/login.html",
-            {
-                "request_url": source.idp_url,
-                "request": _request,
-                "token": sso_destination,
-                "source": source,
-            },
-        )
+        if source.binding_type == SAMLBindingTypes.Redirect:
+            return redirect(source.idp_url + "?" + urlencode({"SAMLRequest": _request}))
+        if source.binding_type == SAMLBindingTypes.POST:
+            return render(
+                request,
+                "saml/sp/login.html",
+                {
+                    "request_url": source.idp_url,
+                    "request": _request,
+                    "token": sso_destination,
+                    "source": source,
+                },
+            )
+        raise Http404
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -68,9 +73,7 @@ class ACSView(View):
             return bad_request_message(request, str(exc))
 
         try:
-            user = processor.get_user()
-            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-            return redirect(reverse("passbook_core:overview"))
+            return processor.prepare_flow(request)
         except UnsupportedNameIDFormat as exc:
             return bad_request_message(request, str(exc))
 

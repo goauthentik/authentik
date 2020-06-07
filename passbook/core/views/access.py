@@ -35,6 +35,6 @@ class AccessMixin:
     def user_has_access(self, application: Application, user: User) -> PolicyResult:
         """Check if user has access to application."""
         LOGGER.debug("Checking permissions", user=user, application=application)
-        policy_engine = PolicyEngine(application.policies.all(), user, self.request)
+        policy_engine = PolicyEngine(application, user, self.request)
         policy_engine.build()
         return policy_engine.result

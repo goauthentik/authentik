@@ -1,6 +1,7 @@
 """delete tests"""
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -38,8 +39,11 @@ class TestUserDeleteStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_user_delete_get(self):
         """Test Form render"""
@@ -70,5 +74,10 @@ class TestUserDeleteStage(TestCase):
             ),
             {},
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
+
         self.assertFalse(User.objects.filter(username=self.username).exists())

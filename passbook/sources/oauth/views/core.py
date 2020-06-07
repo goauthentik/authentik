@@ -1,11 +1,11 @@
 """Core OAauth Views"""
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -13,7 +13,8 @@ from django.views.generic import RedirectView, View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
-from passbook.flows.models import Flow, FlowDesignation
+from passbook.core.models import User
+from passbook.flows.models import Flow
 from passbook.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_SSO,
@@ -21,7 +22,7 @@ from passbook.flows.planner import (
 )
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
-from passbook.sources.oauth.clients import get_client
+from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
@@ -34,7 +35,7 @@ class OAuthClientMixin:
 
     client_class: Optional[Callable] = None
 
-    def get_client(self, source):
+    def get_client(self, source: OAuthSource) -> BaseOAuthClient:
         "Get instance of the OAuth client for this source."
         if self.client_class is not None:
             # pylint: disable=not-callable
@@ -49,18 +50,18 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
     params = None
 
     # pylint: disable=unused-argument
-    def get_additional_parameters(self, source):
+    def get_additional_parameters(self, source: OAuthSource) -> Dict[str, Any]:
         "Return additional redirect parameters for this source."
         return self.params or {}
 
-    def get_callback_url(self, source):
+    def get_callback_url(self, source: OAuthSource) -> str:
         "Return the callback url for this source."
         return reverse(
             "passbook_sources_oauth:oauth-client-callback",
             kwargs={"source_slug": source.slug},
         )
 
-    def get_redirect_url(self, **kwargs):
+    def get_redirect_url(self, **kwargs) -> str:
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
         try:
@@ -84,7 +85,7 @@ class OAuthCallback(OAuthClientMixin, View):
     source_id = None
     source = None
 
-    def get(self, request, *_, **kwargs):
+    def get(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
         """View Get handler"""
         slug = kwargs.get("source_slug", "")
         try:
@@ -143,38 +144,38 @@ class OAuthCallback(OAuthClientMixin, View):
             return self.handle_existing_user(self.source, user, connection, info)
 
     # pylint: disable=unused-argument
-    def get_callback_url(self, source):
+    def get_callback_url(self, source: OAuthSource) -> str:
         "Return callback url if different than the current url."
-        return False
+        return ""
 
     # pylint: disable=unused-argument
-    def get_error_redirect(self, source, reason):
+    def get_error_redirect(self, source: OAuthSource, reason: str) -> str:
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
 
-    def get_or_create_user(self, source, access, info):
+    def get_or_create_user(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> User:
         "Create a shell auth.User."
         raise NotImplementedError()
 
     # pylint: disable=unused-argument
-    def get_user_id(self, source, info):
-        "Return unique identifier from the profile info."
-        id_key = self.source_id or "id"
-        result = info
-        try:
-            for key in id_key.split("."):
-                result = result[key]
-            return result
-        except KeyError:
-            return None
+    def get_user_id(
+        self, source: UserOAuthSourceConnection, info: Dict[str, Any]
+    ) -> Optional[str]:
+        """Return unique identifier from the profile info."""
+        if "id" in info:
+            return info["id"]
+        return None
 
-    def handle_login(self, user, source, access):
+    def handle_login_flow(self, flow: Optional[Flow], user: User) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
-        user = authenticate(
-            source=access.source, identifier=access.identifier, request=self.request
-        )
+        if not flow:
+            raise Http404
         # We run the Flow planner here so we can pass the Pending user in the context
-        flow = get_object_or_404(Flow, designation=FlowDesignation.AUTHENTICATION)
         planner = FlowPlanner(flow)
         plan = planner.plan(
             self.request,
@@ -186,11 +187,17 @@ class OAuthCallback(OAuthClientMixin, View):
         )
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
-            "passbook_flows:flow-executor", self.request.GET, flow_slug=flow.slug,
+            "passbook_flows:flow-executor-shell", self.request.GET, flow_slug=flow.slug,
         )
 
     # pylint: disable=unused-argument
-    def handle_existing_user(self, source, user, access, info):
+    def handle_existing_user(
+        self,
+        source: OAuthSource,
+        user: User,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> HttpResponse:
         "Login user and redirect."
         messages.success(
             self.request,
@@ -199,15 +206,23 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        return self.handle_login(user, source, access)
+        user = authenticate(
+            source=access.source, identifier=access.identifier, request=self.request
+        )
+        return self.handle_login_flow(source.authentication_flow, user)
 
-    def handle_login_failure(self, source, reason):
+    def handle_login_failure(self, source: OAuthSource, reason: str) -> HttpResponse:
         "Message user and redirect on error."
         LOGGER.warning("Authentication Failure", reason=reason)
         messages.error(self.request, _("Authentication Failed."))
         return redirect(self.get_error_redirect(source, reason))
 
-    def handle_new_user(self, source, access, info):
+    def handle_new_user(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> HttpResponse:
         "Create a shell auth.User and redirect."
         was_authenticated = False
         if self.request.user.is_authenticated:
@@ -244,7 +259,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        return self.handle_login(user, source, access)
+        return self.handle_login_flow(source.enrollment_flow, user)
 
 
 class DisconnectView(LoginRequiredMixin, View):

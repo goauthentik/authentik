@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     "passbook.sources.oauth.apps.PassbookSourceOAuthConfig",
     "passbook.sources.saml.apps.PassbookSourceSAMLConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
+    "passbook.stages.consent.apps.PassbookStageConsentConfig",
     "passbook.stages.dummy.apps.PassbookStageDummyConfig",
     "passbook.stages.email.apps.PassbookStageEmailConfig",
     "passbook.stages.prompt.apps.PassbookStagPromptConfig",

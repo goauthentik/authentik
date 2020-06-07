@@ -1,6 +1,7 @@
 """identification tests"""
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -53,8 +54,11 @@ class TestIdentificationStage(TestCase):
             "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         response = self.client.post(url, form_data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
 
     def test_invalid_with_username(self):
         """Test invalid with username (user exists but stage only allows e-mail)"""
@@ -85,15 +89,19 @@ class TestIdentificationStage(TestCase):
             slug="unique-enrollment-string",
             designation=FlowDesignation.ENROLLMENT,
         )
+        self.stage.enrollment_flow = flow
+        self.stage.save()
         FlowStageBinding.objects.create(
             flow=flow, stage=self.stage, order=0,
         )
 
         response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.name, response.rendered_content)
+        self.assertIn(flow.slug, force_text(response.content))
 
     def test_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
@@ -102,12 +110,16 @@ class TestIdentificationStage(TestCase):
             slug="unique-recovery-string",
             designation=FlowDesignation.RECOVERY,
         )
+        self.stage.recovery_flow = flow
+        self.stage.save()
         FlowStageBinding.objects.create(
             flow=flow, stage=self.stage, order=0,
         )
 
         response = self.client.get(
-            reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.name, response.rendered_content)
+        self.assertIn(flow.slug, force_text(response.content))

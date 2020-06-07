@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
@@ -52,8 +53,12 @@ class TestUserLoginStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_without_invitation_continue(self):
         """Test without any invitation, continue_flow_without_invitation is set."""
@@ -73,8 +78,13 @@ class TestUserLoginStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
+
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
 
@@ -106,5 +116,8 @@ class TestUserLoginStage(TestCase):
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )

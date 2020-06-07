@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 from django.core import mail
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import Token, User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -35,6 +36,19 @@ class TestEmailStage(TestCase):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse(
+            "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_without_user(self):
+        """Test without pending user"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -80,8 +94,12 @@ class TestEmailStage(TestCase):
             token = Token.objects.get(user=self.user)
             url += f"?{QS_KEY_TOKEN}={token.pk.hex}"
             response = self.client.get(url)
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, reverse("passbook_core:overview"))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertJSONEqual(
+                force_text(response.content),
+                {"type": "redirect", "to": reverse("passbook_core:overview")},
+            )
 
             session = self.client.session
             plan: FlowPlan = session[SESSION_KEY_PLAN]

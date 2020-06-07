@@ -8,10 +8,6 @@ There are two different Kind of policies, a Standard Policy and a Password Polic
 
 ---
 
-### Group-Membership Policy
-
-This policy evaluates to True if the current user is a Member of the selected group.
-
 ### Reputation Policy
 
 passbook keeps track of failed login attempts by Source IP and Attempted Username. These values are saved as scores. Each failed login decreases the Score for the Client IP as well as the targeted Username by one.
@@ -20,11 +16,7 @@ This policy can be used to for example prompt Clients with a low score to pass a
 
 ## Expression Policy
 
-See [Expression Policy](expression/index.md).
-
-### Webhook Policy
-
-This policy allows you to send an arbitrary HTTP Request to any URL. You can then use JSONPath to extract the result you need.
+See [Expression Policy](expression.md).
 
 ## Password Policies
 

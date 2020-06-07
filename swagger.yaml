@@ -4875,9 +4875,6 @@ definitions:
         pattern: ^[-a-zA-Z0-9_]+$
         maxLength: 50
         minLength: 1
-      skip_authorization:
-        title: Skip authorization
-        type: boolean
       provider:
         title: Provider
         type: integer
@@ -5048,6 +5045,7 @@ definitions:
         type: string
         enum:
           - authentication
+          - authorization
           - invalidation
           - enrollment
           - unenrollment
@@ -5335,12 +5333,19 @@ definitions:
         type: string
         minLength: 1
   Provider:
+    required:
+      - authorization_flow
     type: object
     properties:
       pk:
         title: ID
         type: integer
         readOnly: true
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
       property_mappings:
         type: array
         items:
@@ -5594,6 +5599,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       __type__:
         title: 'type  '
         type: string
@@ -5606,8 +5623,6 @@ definitions:
       - bind_cn
       - bind_password
       - base_dn
-      - additional_user_dn
-      - additional_group_dn
     type: object
     properties:
       pk:
@@ -5631,6 +5646,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       server_uri:
         title: Server URI
         type: string
@@ -5654,12 +5681,10 @@ definitions:
         title: Addition User DN
         description: Prepended to Base DN for User-queries.
         type: string
-        minLength: 1
       additional_group_dn:
         title: Addition Group DN
         description: Prepended to Base DN for Group-queries.
         type: string
-        minLength: 1
       user_object_filter:
         title: User object filter
         description: Consider Objects matching this filter to be Users.
@@ -5680,6 +5705,9 @@ definitions:
         description: Field which contains a unique Identifier.
         type: string
         minLength: 1
+      sync_users:
+        title: Sync users
+        type: boolean
       sync_groups:
         title: Sync groups
         type: boolean
@@ -5727,6 +5755,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       provider_type:
         title: Provider type
         type: string
@@ -5919,6 +5959,20 @@ definitions:
         enum:
           - stages/identification/login.html
           - stages/identification/recovery.html
+      enrollment_flow:
+        title: Enrollment flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
+      recovery_flow:
+        title: Recovery flow
+        description: Optional enrollment flow, which is linked at the bottom of the
+          page.
+        type: string
+        format: uuid
+        x-nullable: true
   InvitationStage:
     required:
       - name

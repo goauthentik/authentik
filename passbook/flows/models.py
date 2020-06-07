@@ -1,13 +1,18 @@
 """Flow models"""
-from typing import Optional
+from typing import Callable, Optional
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
+from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
+from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.models import PolicyBindingModel
+
+LOGGER = get_logger()
 
 
 class FlowDesignation(models.TextChoices):
@@ -15,6 +20,7 @@ class FlowDesignation(models.TextChoices):
     should be replaced by a database entry."""
 
     AUTHENTICATION = "authentication"
+    AUTHORIZATION = "authorization"
     INVALIDATION = "invalidation"
     ENROLLMENT = "enrollment"
     UNRENOLLMENT = "unenrollment"
@@ -44,6 +50,14 @@ class Stage(models.Model):
         return f"Stage {self.name}"
 
 
+def in_memory_stage(_type: Callable) -> Stage:
+    """Creates an in-memory stage instance, based on a `_type` as view."""
+    class_path = class_to_path(_type)
+    stage = Stage()
+    stage.type = class_path
+    return stage
+
+
 class Flow(PolicyBindingModel):
     """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
@@ -62,10 +76,29 @@ class Flow(PolicyBindingModel):
         PolicyBindingModel, parent_link=True, on_delete=models.CASCADE, related_name="+"
     )
 
-    def related_flow(self, designation: str) -> Optional["Flow"]:
+    @staticmethod
+    def with_policy(request: HttpRequest, **flow_filter) -> Optional["Flow"]:
+        """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
+        from passbook.policies.engine import PolicyEngine
+
+        flows = Flow.objects.filter(**flow_filter)
+        for flow in flows:
+            engine = PolicyEngine(flow, request.user, request)
+            engine.build()
+            result = engine.result
+            if result.passing:
+                LOGGER.debug("with_policy: flow passing", flow=flow)
+                return flow
+            LOGGER.warning(
+                "with_policy: flow not passing", flow=flow, messages=result.messages
+            )
+        LOGGER.debug("with_policy: no flow found", filters=flow_filter)
+        return None
+
+    def related_flow(self, designation: str, request: HttpRequest) -> Optional["Flow"]:
         """Get a related flow with `designation`. Currently this only queries
         Flows by `designation`, but will eventually use `self` for related lookups."""
-        return Flow.objects.filter(designation=designation).first()
+        return Flow.with_policy(request, designation=designation)
 
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"
