@@ -13,6 +13,7 @@ from passbook.stages.user_write.models import UserWriteStage
 from passbook.stages.identification.models import IdentificationStage
 from e2e.utils import apply_default_data
 
+
 class TestEnroll2Step(StaticLiveServerTestCase):
     """Test 2-step enroll flow"""
 
