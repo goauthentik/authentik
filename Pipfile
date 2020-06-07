@@ -55,6 +55,7 @@ pylint = "*"
 pylint-django = "*"
 unittest-xml-reporting = "*"
 black = "*"
+selenium = "*"
 
 [pipenv]
 allow_prereleases = true

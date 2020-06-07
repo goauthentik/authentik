@@ -7,6 +7,7 @@ from django.apps import apps
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
 
+
 def apply_default_data():
     """apply objects created by migrations after tables have been truncated"""
     # Find all migration files
