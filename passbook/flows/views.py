@@ -213,7 +213,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         return source
     if isinstance(source, TemplateResponse):
         return JsonResponse(
-            {"type": "template", "body": source.render().content.decode("utf-8"),}
+            {"type": "template", "body": source.render().content.decode("utf-8")}
         )
     # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
     if source.__class__ == HttpResponse:
