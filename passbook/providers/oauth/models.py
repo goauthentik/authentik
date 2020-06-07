@@ -12,7 +12,8 @@ from passbook.lib.utils.template import render_to_string
 
 
 class OAuth2Provider(Provider, AbstractApplication):
-    """Associate an OAuth2 Application with a Product"""
+    """Generic OAuth2 Provider for applications not using OpenID-Connect. This Provider
+    also supports the GitHub-pretend mode."""
 
     form = "passbook.providers.oauth.forms.OAuth2ProviderForm"
 

@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -44,5 +45,8 @@ class TestCaptchaStage(TestCase):
             ),
             {"g-recaptcha-response": "PASSED"},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )

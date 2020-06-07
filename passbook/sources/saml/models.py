@@ -8,6 +8,13 @@ from passbook.core.types import UILoginButton
 from passbook.crypto.models import CertificateKeyPair
 
 
+class SAMLBindingTypes(models.TextChoices):
+    """SAML Binding types"""
+
+    Redirect = "REDIRECT"
+    POST = "POST"
+
+
 class SAMLSource(Source):
     """SAML Source"""
 
@@ -18,7 +25,18 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
     )
 
-    idp_url = models.URLField(verbose_name=_("IDP URL"))
+    idp_url = models.URLField(
+        verbose_name=_("IDP URL"),
+        help_text=_(
+            "URL that the initial SAML Request is sent to. Also known as a Binding."
+        ),
+    )
+    binding_type = models.CharField(
+        max_length=100,
+        choices=SAMLBindingTypes.choices,
+        default=SAMLBindingTypes.Redirect,
+    )
+
     idp_logout_url = models.URLField(
         default=None, blank=True, null=True, verbose_name=_("IDP Logout URL")
     )

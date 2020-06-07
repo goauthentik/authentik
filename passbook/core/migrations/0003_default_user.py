@@ -12,7 +12,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     pbadmin = User.objects.create(
         username="pbadmin", email="root@localhost", name="passbook Default Admin"
     )
-    pbadmin.set_password("pbadmin")  # nosec
+    pbadmin.set_password("pbadmin")  # noqa # nosec
     pbadmin.is_superuser = True
     pbadmin.is_staff = True
     pbadmin.save()
@@ -21,7 +21,7 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_core", "0001_initial"),
+        ("passbook_core", "0002_auto_20200523_1133"),
     ]
 
     operations = [

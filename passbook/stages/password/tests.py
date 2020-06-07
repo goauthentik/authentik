@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -54,8 +55,12 @@ class TestPasswordStage(TestCase):
             # Still have to send the password so the form is valid
             {"password": self.password},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
@@ -74,7 +79,7 @@ class TestPasswordStage(TestCase):
             ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, response.rendered_content)
+        self.assertIn(flow.slug, force_text(response.content))
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
@@ -91,8 +96,12 @@ class TestPasswordStage(TestCase):
             # Form data
             {"password": self.password},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
@@ -131,5 +140,9 @@ class TestPasswordStage(TestCase):
             # Form data
             {"password": self.password + "test"},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )

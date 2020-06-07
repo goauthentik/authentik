@@ -28,3 +28,4 @@ class SAMLSourceForm(forms.ModelForm):
             "idp_url": forms.TextInput(),
             "idp_logout_url": forms.TextInput(),
         }
+        labels = {"signing_kp": _("Singing Keypair")}

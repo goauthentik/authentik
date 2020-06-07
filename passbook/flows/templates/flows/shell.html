@@ -113,19 +113,18 @@ const updateMessages = () => {
         });
     });
 };
-const updateCard = (response) => {
-    if (!response.ok) {
-        console.log("well");
-    }
-    if (response.redirected && !response.url.endsWith(flowBodyUrl)) {
-        window.location = response.url;
-    } else {
-        response.text().then(text => {
-            flowBody.innerHTML = text;
+const updateCard = (data) => {
+    switch (data.type) {
+        case "redirect":
+            window.location = data.to
+            break;
+        case "template":
+            flowBody.innerHTML = data.body;
             updateMessages();
             loadFormCode();
             setFormSubmitHandlers();
-        });
+        default:
+            break;
     }
 };
 const showSpinner = () => {
@@ -139,10 +138,28 @@ const loadFormCode = () => {
         document.head.appendChild(newScript);
     });
 };
+const updateFormAction = (form) => {
+    for (let index = 0; index < form.elements.length; index++) {
+        const element = form.elements[index];
+        if (element.value === form.action) {
+            console.log("Found Form action URL in form elements, not changing form action.");
+            return false;
+        }
+    }
+    form.action = flowBodyUrl;
+    return true;
+};
+const checkAutosubmit = (form) => {
+    if ("autosubmit" in form.attributes) {
+        return form.submit();
+    }
+};
 const setFormSubmitHandlers = () => {
     document.querySelectorAll("#flow-body form").forEach(form => {
+        console.log(`Checking for autosubmit attribute ${form}`);
+        checkAutosubmit(form);
         console.log(`Setting action for form ${form}`);
-        form.action = flowBodyUrl;
+        updateFormAction(form);
         console.log(`Adding handler for form ${form}`);
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -150,19 +167,13 @@ const setFormSubmitHandlers = () => {
             fetch(flowBodyUrl, {
                 method: 'post',
                 body: formData,
-            }).then((response) => {
-                showSpinner();
-                if (!response.url.endsWith(flowBodyUrl)) {
-                    window.location = response.url;
-                } else {
-                    updateCard(response);
-                }
+            }).then(response => response.json()).then(data => {
+                updateCard(data);
             });
         });
     });
 };
 
-fetch(flowBodyUrl).then(updateCard);
-
+fetch(flowBodyUrl).then(response => response.json()).then(data => updateCard(data));
 </script>
 {% endblock %}

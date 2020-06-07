@@ -6,16 +6,11 @@ from oauth2_provider import views
 from passbook.providers.oauth.views import github, oauth2
 
 oauth_urlpatterns = [
-    # Custom OAuth 2 Authorize View
+    # Custom OAuth2 Authorize View
     path(
         "authorize/",
-        oauth2.PassbookAuthorizationView.as_view(),
+        oauth2.AuthorizationFlowInitView.as_view(),
         name="oauth2-authorize",
-    ),
-    path(
-        "authorize/permission_denied/",
-        oauth2.OAuthPermissionDenied.as_view(),
-        name="oauth2-permission-denied",
     ),
     # OAuth API
     path("token/", views.TokenView.as_view(), name="token"),
@@ -26,7 +21,7 @@ oauth_urlpatterns = [
 github_urlpatterns = [
     path(
         "login/oauth/authorize",
-        oauth2.PassbookAuthorizationView.as_view(),
+        oauth2.AuthorizationFlowInitView.as_view(),
         name="github-authorize",
     ),
     path(
@@ -35,6 +30,7 @@ github_urlpatterns = [
         name="github-access-token",
     ),
     path("user", github.GitHubUserView.as_view(), name="github-user"),
+    path("user/teams", github.GitHubUserTeamsView.as_view(), name="github-user-teams"),
 ]
 
 urlpatterns = [

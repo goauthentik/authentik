@@ -1,8 +1,15 @@
 """passbook multi-stage authentication engine"""
 from typing import Any, Dict, Optional
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect, reverse
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
@@ -81,6 +88,8 @@ class FlowExecutorView(View):
         )
         stage_cls = path_to_class(self.current_stage.type)
         self.current_stage_view = stage_cls(self)
+        self.current_stage_view.args = self.args
+        self.current_stage_view.kwargs = self.kwargs
         self.current_stage_view.request = request
         return super().dispatch(request)
 
@@ -91,7 +100,8 @@ class FlowExecutorView(View):
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.get(request, *args, **kwargs)
+        stage_response = self.current_stage_view.get(request, *args, **kwargs)
+        return to_stage_response(request, stage_response)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
@@ -100,7 +110,8 @@ class FlowExecutorView(View):
             view_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.post(request, *args, **kwargs)
+        stage_response = self.current_stage_view.post(request, *args, **kwargs)
+        return to_stage_response(request, stage_response)
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -191,3 +202,22 @@ class FlowExecutorShellView(TemplateView):
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
         kwargs["msg_url"] = reverse("passbook_api:messages-list")
         return kwargs
+
+
+def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+    """Convert normal HttpResponse into JSON Response"""
+    if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
+        redirect_url = source["Location"]
+        if request.path != redirect_url:
+            return JsonResponse({"type": "redirect", "to": redirect_url})
+        return source
+    if isinstance(source, TemplateResponse):
+        return JsonResponse(
+            {"type": "template", "body": source.render().content.decode("utf-8")}
+        )
+    # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
+    if source.__class__ == HttpResponse:
+        return JsonResponse(
+            {"type": "template", "body": source.content.decode("utf-8")}
+        )
+    return source
