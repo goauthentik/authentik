@@ -141,7 +141,7 @@ jobs:
       - name: Setup test containers and run tests
         run: |
           cd e2e
-          docker-compose pull
+          docker-compose pull -q
           docker-compose up -d
           docker-compose exec -T passbook bash -c "pip install -r /app/requirements-dev.txt"
           # This is temporary as we don't have selenium as a dependency yet
