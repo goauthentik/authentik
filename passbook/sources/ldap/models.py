@@ -55,7 +55,7 @@ class LDAPSource(Source):
 
     form = "passbook.sources.ldap.forms.LDAPSourceForm"
 
-    _connection: Optional[Connection]
+    _connection: Optional[Connection] = None
 
     @property
     def connection(self) -> Connection:
