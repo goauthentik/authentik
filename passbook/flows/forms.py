@@ -44,6 +44,9 @@ class FlowStageBindingForm(forms.ModelForm):
             "re_evaluate_policies",
             "order",
         ]
+        labels = {
+            "re_evaluate_policies": _("Re-evaluate Policies"),
+        }
         widgets = {
             "name": forms.TextInput(),
         }

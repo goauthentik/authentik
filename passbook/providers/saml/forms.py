@@ -2,8 +2,10 @@
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.html import mark_safe
 from django.utils.translation import gettext as _
 
+from passbook.admin.fields import CodeMirrorWidget
 from passbook.core.expression import PropertyMappingEvaluator
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.providers.saml.models import (
@@ -74,4 +76,13 @@ class SAMLPropertyMappingForm(forms.ModelForm):
             "name": forms.TextInput(),
             "saml_name": forms.TextInput(),
             "friendly_name": forms.TextInput(),
+            "expression": CodeMirrorWidget(mode="python"),
+        }
+        help_texts = {
+            "saml_name": mark_safe(
+                _(
+                    "URN OID used by SAML. This is optional. "
+                    '<a href="https://www.rfc-editor.org/rfc/rfc2798.html#section-2">Reference</a>'
+                )
+            ),
         }

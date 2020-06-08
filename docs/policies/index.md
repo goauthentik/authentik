@@ -27,11 +27,11 @@ See [Expression Policy](expression.md).
 This Policy allows you to specify Password rules, like Length and required Characters.
 The following rules can be set:
 
--   Minimum amount of Uppercase Characters
--   Minimum amount of Lowercase Characters
--   Minimum amount of Symbols Characters
--   Minimum Length
--   Symbol charset (define which characters are counted as symbols)
+- Minimum amount of Uppercase Characters
+- Minimum amount of Lowercase Characters
+- Minimum amount of Symbols Characters
+- Minimum Length
+- Symbol charset (define which characters are counted as symbols)
 
 ### Have I Been Pwned Policy
 

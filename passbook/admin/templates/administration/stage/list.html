@@ -62,6 +62,8 @@
                         <ul>
                             {% for flow in stage.flow_set.all %}
                             <li><a href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">{{ flow.slug }}</a></li>
+                            {% empty %}
+                            <li>-</li>
                             {% endfor %}
                         </ul>
                     </td>

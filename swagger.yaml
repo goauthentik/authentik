@@ -5968,7 +5968,7 @@ definitions:
         x-nullable: true
       recovery_flow:
         title: Recovery flow
-        description: Optional enrollment flow, which is linked at the bottom of the
+        description: Optional recovery flow, which is linked at the bottom of the
           page.
         type: string
         format: uuid

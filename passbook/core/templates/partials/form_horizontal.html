@@ -18,6 +18,9 @@
                 {% if c.data.selected %} checked {% endif %}>
             <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
         </div>
+        {% if field.help_text %}
+        <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
+        {% endif %}
         {% endfor %}
     {% elif field.field.widget|fieldtype == 'Select' %}
         <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">

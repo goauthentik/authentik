@@ -1,5 +1,8 @@
 # Expression Policies
 
+!!! notice
+    These variables are available in addition to the common variables/functions defined in [**Expressions**](../expressions/index.md)
+
 The passing of the policy is determined by the return value of the code. Use `return True` to pass a policy and `return False` to fail it.
 
 ### Available Functions
