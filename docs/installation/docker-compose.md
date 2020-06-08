@@ -21,3 +21,5 @@ docker-compose pull
 docker-compose up -d
 docker-compose exec server ./manage.py migrate
 ```
+
+Afterwards, you can log in using `pbadmin` as username and password.
