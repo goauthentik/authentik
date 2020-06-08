@@ -20,12 +20,15 @@ services:
       - hub
     environment:
       HUB_HOST: hub
+    networks:
+      - e2e
 
   hub:
     image: selenium/hub:3.14.0-gallium
     ports:
       - "4444:4444"
-
+    networks:
+      - e2e
 
   postgresql:
     image: postgres:11
@@ -33,9 +36,13 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: passbook
+    networks:
+      - e2e
   redis:
     image: redis
     restart: always
+    networks:
+      - e2e
   passbook:
     image: beryju/passbook
     command: /bin/bash -c "sleep infinity"
@@ -45,3 +52,8 @@ services:
       PASSBOOK_ENV: docker
     user: root
     working_dir: /testing
+    networks:
+      - e2e
+
+networks:
+  e2e:
