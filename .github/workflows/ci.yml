@@ -144,6 +144,8 @@ jobs:
           docker-compose pull
           docker-compose up -d
           docker-compose exec -T passbook bash -c "pip install -r /app/requirements-dev.txt"
+          # This is temporary as we don't have selenium as a dependency yet
+          docker-compose exec -T passbook bash -c "pip install selenium"
           docker-compose exec -T passbook bash -c "./manage.py test e2e"
   # Build
   build-server:
