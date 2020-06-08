@@ -794,11 +794,11 @@
         },
         "swagger-spec-validator": {
             "hashes": [
-                "sha256:b7c74f216a5af686e446ace8dc46a47b21ae2e677fd05825d7c2da0b1193b195",
-                "sha256:ba4e636d89bf547a6f41a6945bb503cf06dde13664ad978a7407aaed772ae75f"
+                "sha256:78c5165b0686788344f0c9f137f0e23e9b2b2b7d1947b1c10061c0984d008af1",
+                "sha256:ee12f97b058aadd276a53f69fb2ac4d10014d382ae70ce4722562a6fbdecb6ed"
             ],
             "index": "pypi",
-            "version": "==2.6.0"
+            "version": "==2.7.0"
         },
         "uritemplate": {
             "hashes": [
@@ -844,10 +844,10 @@
         },
         "astroid": {
             "hashes": [
-                "sha256:4c17cea3e592c21b6e222f673868961bad77e1f985cb1694ed077475a89229c1",
-                "sha256:d8506842a3faf734b81599c8b98dcc423de863adcc1999248480b18bd31a0f38"
+                "sha256:2f4078c2a41bf377eea06d71c9d2ba4eb8f6b1af2135bec27bbbb7d8f12bb703",
+                "sha256:bc58d83eb610252fd8de6363e39d4f1d0619c894b0ed24603b881c02e64c7386"
             ],
-            "version": "==2.4.1"
+            "version": "==2.4.2"
         },
         "attrs": {
             "hashes": [
