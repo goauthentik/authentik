@@ -18,28 +18,30 @@
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
         {% if object_list %}
-        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
-            <div class="pf-c-toolbar__bulk-select">
-                <div class="pf-c-dropdown">
-                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
-                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
-                    </button>
-                    <ul class="pf-c-dropdown__menu" hidden>
-                        {% for type, name in types.items %}
-                        <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                {{ name|verbose_name }}<br>
-                                <small>
-                                    {{ name|doc }}
-                                </small>
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-c-toolbar__bulk-select">
+                    <div class="pf-c-dropdown">
+                        <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                            <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                            <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                        </button>
+                        <ul class="pf-c-dropdown__menu" hidden>
+                            {% for type, name in types.items %}
+                            <li>
+                                <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
+                                    {{ name|verbose_name }}<br>
+                                    <small>
+                                        {{ name|doc }}
+                                    </small>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
+                {% include 'partials/pagination.html' %}
             </div>
-            {% include 'partials/pagination.html' %}
         </div>
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>

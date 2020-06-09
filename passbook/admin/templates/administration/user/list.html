@@ -15,11 +15,13 @@
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
         {% if object_list %}
-        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
-            <div class="pf-c-toolbar__bulk-select">
-                <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-c-toolbar__bulk-select">
+                    <a href="{% url 'passbook_admin:user-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                </div>
+                {% include 'partials/pagination.html' %}
             </div>
-            {% include 'partials/pagination.html' %}
         </div>
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
