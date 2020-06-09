@@ -35,10 +35,12 @@
                         {% block beneath_form %}
                         {% endblock %}
                         <div class="pf-c-form__group pf-m-action">
-                            <div class="pf-c-form__horizontal-group">
-                                <div class="pf-c-form__actions">
-                                    <input class="pf-c-button pf-m-primary" type="submit" value="{% block action %}{% endblock %}" />
-                                    <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Cancel" %}</a>
+                            <div class="pf-c-form__group-control">
+                                <div class="pf-c-form__horizontal-group">
+                                    <div class="pf-c-form__actions">
+                                        <input class="pf-c-button pf-m-primary" type="submit" value="{% block action %}{% endblock %}" />
+                                        <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Cancel" %}</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
