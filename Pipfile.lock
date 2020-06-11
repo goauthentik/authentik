@@ -787,11 +787,11 @@
         },
         "swagger-spec-validator": {
             "hashes": [
-                "sha256:78c5165b0686788344f0c9f137f0e23e9b2b2b7d1947b1c10061c0984d008af1",
-                "sha256:ee12f97b058aadd276a53f69fb2ac4d10014d382ae70ce4722562a6fbdecb6ed"
+                "sha256:3bc18877a2f3f55dd8c4f3456d0dd9080ca248d8a5a07f8896868385e0d4b8fb",
+                "sha256:e7c928ffe676054358699f2559d665257b40f0165e7bd5f7d17f278148871115"
             ],
             "index": "pypi",
-            "version": "==2.7.0"
+            "version": "==2.7.1"
         },
         "uritemplate": {
             "hashes": [
