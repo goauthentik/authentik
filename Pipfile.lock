@@ -30,13 +30,6 @@
             ],
             "version": "==3.2.7"
         },
-        "asn1crypto": {
-            "hashes": [
-                "sha256:5a215cb8dc12f892244e3a113fe05397ee23c5c4ca7a69cd6e69811755efc42d",
-                "sha256:831d2710d3274c8a74befdddaf9f17fcbf6e350534565074818722d6d615b315"
-            ],
-            "version": "==1.3.0"
-        },
         "attrs": {
             "hashes": [
                 "sha256:08a96c641c3a74e44eb59afb61a24f2cb9f4d7188748e76ba4bb5edfa3cb7d1c",
@@ -764,11 +757,11 @@
         },
         "signxml": {
             "hashes": [
-                "sha256:2e186c117284fe5a0c543f5bcdde68f5a2341eeae219af9eb7e512dacf4bfce7",
-                "sha256:7d6af724542cae915bbb9000d333a52ce495d0b3cdcb4dc590c3c4a149b079ed"
+                "sha256:3b78b57e374d5517b4eddbbb27519208ccfbedbcabcf47ee322161f53482f174",
+                "sha256:e362b5eedbc785aec9ac1867f790ecf958d9640a95a34400a830350ba5bb1cc2"
             ],
             "index": "pypi",
-            "version": "==2.7.2"
+            "version": "==2.7.3"
         },
         "six": {
             "hashes": [
