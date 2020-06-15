@@ -102,7 +102,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
     """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
 
     # pylint: disable=unused-argument
-    def get(
+    def get(  # lgtm [py/similar-function]
         self, request: HttpRequest, application_slug: str
     ) -> Optional[HttpResponse]:
         """Handle REDIRECT bindings"""
