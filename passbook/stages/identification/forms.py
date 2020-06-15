@@ -39,8 +39,16 @@ class IdentificationForm(forms.Form):
         super().__init__(*args, **kwargs)
         if self.stage.user_fields == [UserFields.E_MAIL]:
             self.fields["uid_field"] = forms.EmailField()
-        self.fields["uid_field"].label = human_list(
-            [x.title() for x in self.stage.user_fields]
+        label = human_list([x.title() for x in self.stage.user_fields])
+        self.fields["uid_field"].label = label
+        self.fields["uid_field"].widget.attrs.update(
+            {
+                "placeholder": _(label),
+                "autofocus": "autofocus",
+                # Autocomplete according to
+                # https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
+                "autocomplete": "username",
+            }
         )
 
     def clean_uid_field(self):
