@@ -188,7 +188,7 @@ WSGI_APPLICATION = "passbook.root.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
+        "ENGINE": "django.db.backends.postgresql",
         "HOST": CONFIG.y("postgresql.host"),
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
