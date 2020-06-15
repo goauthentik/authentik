@@ -6079,6 +6079,7 @@ definitions:
         type: string
         enum:
           - text
+          - username
           - e-mail
           - password
           - number
