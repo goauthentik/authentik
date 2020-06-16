@@ -25,10 +25,10 @@
         },
         "asgiref": {
             "hashes": [
-                "sha256:8036f90603c54e93521e5777b2b9a39ba1bad05773fcf2d208f0299d1df58ce5",
-                "sha256:9ca8b952a0a9afa61d30aa6d3d9b570bb3fd6bafcf7ec9e6bed43b936133db1c"
+                "sha256:783254c9ec6f914f671919bbcef4346d4e57866bd7ed988ae79f881bbc0a9be8",
+                "sha256:a46c83b7d46212ec937e9ddb571cda2b1384b3d02f7edde9372e2778d1782d38"
             ],
-            "version": "==3.2.7"
+            "version": "==3.2.8"
         },
         "attrs": {
             "hashes": [
@@ -46,18 +46,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:a33e465831fb95af2e57576927f33746be620ba236252f8e1291c1c31cf63625",
-                "sha256:caa4fbb9de8d8c229a183a551cb314fe208ec264545d4d825022d863d33e9b7b"
+                "sha256:1ba870c6be35ac31758af95e0666d6311242774c7528e64f3721c8b5e09057e1",
+                "sha256:522f7db49c77e7be41ce2517bc762c19b25ba4fb2ef970e03a1927c73ccd449e"
             ],
             "index": "pypi",
-            "version": "==1.14.2"
+            "version": "==1.14.3"
         },
         "botocore": {
             "hashes": [
-                "sha256:01788bfa280397ba96991cd74e706628620310c7d8b8b43b0818df3bad3daaeb",
-                "sha256:4e347b77e17c5a619afd59a5209b251107c3d7d5f842ec169694492f3820f75b"
+                "sha256:0ad4fb7b731e924490305584f7dcfd3e9fe955b307392b054a3d132a902a2528",
+                "sha256:13f4d92589ae9bd8c2c5ce8ea2f59d01a0ac4c14e9f99772ee4d1eb6cf9a3357"
             ],
-            "version": "==1.17.2"
+            "version": "==1.17.3"
         },
         "celery": {
             "hashes": [
@@ -830,10 +830,10 @@
         },
         "asgiref": {
             "hashes": [
-                "sha256:8036f90603c54e93521e5777b2b9a39ba1bad05773fcf2d208f0299d1df58ce5",
-                "sha256:9ca8b952a0a9afa61d30aa6d3d9b570bb3fd6bafcf7ec9e6bed43b936133db1c"
+                "sha256:783254c9ec6f914f671919bbcef4346d4e57866bd7ed988ae79f881bbc0a9be8",
+                "sha256:a46c83b7d46212ec937e9ddb571cda2b1384b3d02f7edde9372e2778d1782d38"
             ],
-            "version": "==3.2.7"
+            "version": "==3.2.8"
         },
         "astroid": {
             "hashes": [
