@@ -1,7 +1,7 @@
 # Invitation Stage
 
-This stage can be used to invite users. You can use this enroll users with preset values.
+This stage can be used to invite users. You can use this to enroll users with preset values.
 
-If the option `Continue Flow without Invitation`, this stage will continue when no invitation token is present.
+If the option `Continue Flow without Invitation` is enabled, this stage will continue even when no invitation token is present.
 
-If you want to check if a user has used an invitation within a policy, you can check `request.context.invitation_in_effect`.
+To check if a user has used an invitation within a policy, you can check `request.context.invitation_in_effect`.
