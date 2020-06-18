@@ -1,6 +1,6 @@
 # Kubernetes
 
-For a mid to high-load Installation, Kubernetes is recommended. passbook is installed using a helm-chart.
+For a mid to high-load installation, Kubernetes is recommended. passbook is installed using a helm-chart.
 
 ```
 # Default values for passbook.
