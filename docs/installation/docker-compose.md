@@ -32,4 +32,4 @@ Now you can pull the Docker images needed by running `docker-compose pull`. Afte
 
 passbook will then be reachable via HTTP on port 80, and HTTPS on port 443. You can optionally configure the packaged traefik to use Let's Encrypt certificates for TLS Encryption.
 
-The initial setup also creates a default admin user called `pbadmin` with the same password. It is highly recommended to change this password as soon as you log in.
+The initial setup process also creates a default admin user, the username and password for which is `pbadmin`. It is highly recommended to change this password as soon as you log in.
