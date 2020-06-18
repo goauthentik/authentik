@@ -8,7 +8,7 @@ from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, StageMarker
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from passbook.stages.user_write.forms import UserWriteStageForm
@@ -37,7 +37,9 @@ class TestUserWriteStage(TestCase):
             for _ in range(8)
         )
 
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user",
             "name": "name",
@@ -71,7 +73,9 @@ class TestUserWriteStage(TestCase):
             SystemRandom().choice(string.ascii_uppercase + string.digits)
             for _ in range(8)
         )
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
             username="unittest", email="test@beryju.org"
         )
@@ -104,7 +108,9 @@ class TestUserWriteStage(TestCase):
 
     def test_without_data(self):
         """Test without data results in error"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

@@ -86,6 +86,9 @@ class FlowExecutorView(View):
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
+        if not self.current_stage:
+            LOGGER.debug("f(exec): no more stages, flow is done.")
+            return self._flow_done()
         stage_cls = path_to_class(self.current_stage.type)
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
@@ -98,6 +101,7 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "f(exec): Passing GET",
             view_class=class_to_path(self.current_stage_view.__class__),
+            stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
         stage_response = self.current_stage_view.get(request, *args, **kwargs)
@@ -108,6 +112,7 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "f(exec): Passing POST",
             view_class=class_to_path(self.current_stage_view.__class__),
+            stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
         stage_response = self.current_stage_view.post(request, *args, **kwargs)
@@ -133,7 +138,7 @@ class FlowExecutorView(View):
             stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        self.plan.stages.pop(0)
+        self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.stages:
             LOGGER.debug(

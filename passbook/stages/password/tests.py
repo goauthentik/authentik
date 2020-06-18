@@ -10,7 +10,7 @@ from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, StageMarker
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.password.models import PasswordStage
 
@@ -43,7 +43,9 @@ class TestPasswordStage(TestCase):
 
     def test_without_user(self):
         """Test without user"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -68,7 +70,9 @@ class TestPasswordStage(TestCase):
             designation=FlowDesignation.RECOVERY, slug="qewrqerqr"
         )
 
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -83,7 +87,9 @@ class TestPasswordStage(TestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -105,7 +111,9 @@ class TestPasswordStage(TestCase):
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -127,7 +135,9 @@ class TestPasswordStage(TestCase):
     def test_permission_denied(self):
         """Test with a valid pending user and valid password.
         Backend is patched to return PermissionError"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

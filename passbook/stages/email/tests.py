@@ -8,7 +8,7 @@ from django.utils.encoding import force_text
 
 from passbook.core.models import Token, User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, StageMarker
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.email.models import EmailStage
 from passbook.stages.email.stage import QS_KEY_TOKEN
@@ -34,7 +34,9 @@ class TestEmailStage(TestCase):
 
     def test_rendering(self):
         """Test with pending user"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -48,7 +50,9 @@ class TestEmailStage(TestCase):
 
     def test_without_user(self):
         """Test without pending user"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -61,7 +65,9 @@ class TestEmailStage(TestCase):
 
     def test_pending_user(self):
         """Test with pending user"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -82,7 +88,9 @@ class TestEmailStage(TestCase):
         """Test with token"""
         # Make sure token exists
         self.test_pending_user()
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

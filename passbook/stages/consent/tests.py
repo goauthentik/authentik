@@ -5,7 +5,7 @@ from django.utils.encoding import force_text
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import FlowPlan
+from passbook.flows.planner import FlowPlan, StageMarker
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.consent.models import ConsentStage
 
@@ -30,7 +30,9 @@ class TestConsentStage(TestCase):
 
     def test_valid(self):
         """Test valid consent"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
