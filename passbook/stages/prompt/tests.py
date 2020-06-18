@@ -6,8 +6,9 @@ from django.test import Client, TestCase
 from django.utils.encoding import force_text
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import FlowPlan, StageMarker
+from passbook.flows.planner import FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding

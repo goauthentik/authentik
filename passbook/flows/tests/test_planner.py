@@ -9,14 +9,9 @@ from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
+from passbook.flows.markers import ReevaluateMarker, StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import (
-    PLAN_CONTEXT_PENDING_USER,
-    FlowPlanner,
-    ReevaluateMarker,
-    StageMarker,
-    cache_key,
-)
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from passbook.policies.dummy.models import DummyPolicy
 from passbook.policies.models import PolicyBinding
 from passbook.policies.types import PolicyResult

@@ -9,9 +9,9 @@ from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
+from passbook.flows.markers import ReevaluateMarker, StageMarker
 from passbook.flows.models import Flow, FlowStageBinding, Stage
 from passbook.policies.engine import PolicyEngine
-from passbook.policies.models import PolicyBinding
 
 LOGGER = get_logger()
 
@@ -29,21 +29,6 @@ def cache_key(flow: Flow, user: Optional[User] = None) -> str:
 
 
 @dataclass
-class StageMarker:
-    """Base stage marker class, no extra attributes, and has no special handler."""
-
-    pass
-
-
-@dataclass
-class ReevaluateMarker(StageMarker):
-    """Reevaluate Marker, forces stage's policies to be evaluated again."""
-
-    binding: PolicyBinding
-    user: User
-
-
-@dataclass
 class FlowPlan:
     """This data-class is the output of a FlowPlanner. It holds a flat list
     of all Stages that should be run."""
@@ -54,21 +39,6 @@ class FlowPlan:
     context: Dict[str, Any] = field(default_factory=dict)
     markers: List[StageMarker] = field(default_factory=list)
 
-    def _re_evaluate(self, stage: Stage, marker: ReevaluateMarker) -> Optional[Stage]:
-        """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
-        engine = PolicyEngine(marker.binding, marker.user)
-        engine.request.context = self.context
-        engine.build()
-        result = engine.result
-        if result.passing:
-            return stage
-        LOGGER.warning(
-            "f(plan_inst): stage failed re-evaluation",
-            stage=stage,
-            messages=result.messages,
-        )
-        return None
-
     def next(self) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
@@ -76,19 +46,16 @@ class FlowPlan:
         stage = self.stages[0]
         marker = self.markers[0]
 
-        if isinstance(marker, ReevaluateMarker):
-            LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
-            marked_stage = self._re_evaluate(stage, marker)
-            if not marked_stage:
-                LOGGER.debug(
-                    "f(plan_inst): marker returned none, next stage", stage=stage
-                )
-                self.stages.remove(stage)
-                self.markers.remove(marker)
-                if not self.has_stages:
-                    return None
-                return self.next()
-        return stage
+        LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
+        marked_stage = marker.process(self, stage)
+        if not marked_stage:
+            LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
+            self.stages.remove(stage)
+            self.markers.remove(marker)
+            if not self.has_stages:
+                return None
+            return self.next()
+        return marked_stage
 
     def pop(self):
         """Pop next pending stage from bottom of list"""
@@ -97,6 +64,7 @@ class FlowPlan:
 
     @property
     def has_stages(self) -> bool:
+        """Check if there are any stages left in this plan"""
         return len(self.markers) + len(self.stages) > 0
 
 

@@ -7,8 +7,9 @@ from django.test import Client, TestCase
 from django.utils.encoding import force_text
 
 from passbook.core.models import Token, User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, StageMarker
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.stages.email.models import EmailStage
 from passbook.stages.email.stage import QS_KEY_TOKEN

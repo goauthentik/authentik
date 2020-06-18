@@ -1,15 +1,14 @@
 """flow views tests"""
 from unittest.mock import MagicMock, PropertyMock, patch
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.utils.encoding import force_text
-from guardian.shortcuts import get_anonymous_user
 
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
-from passbook.flows.planner import FlowPlan, ReevaluateMarker, StageMarker
+from passbook.flows.markers import ReevaluateMarker, StageMarker
+from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
+from passbook.flows.planner import FlowPlan
 from passbook.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from passbook.lib.config import CONFIG
 from passbook.policies.dummy.models import DummyPolicy
