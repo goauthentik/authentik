@@ -2,7 +2,7 @@
 
 ## Kinds
 
-There are two different Kind of policies, a Standard Policy and a Password Policy. Normal Policies just evaluate to True or False, and can be used everywhere. Password Policies apply when a Password is set (during User enrollment, Recovery or anywhere else). These policies can be used to apply Password Rules like length, etc. The can also be used to expire passwords after a certain amount of time.
+There are two different kinds of policies; Standard Policy and Password Policy. Normal policies evaluate to True or False, and can be used everywhere. Password policies apply when a password is set (during user enrollment, recovery or anywhere else). These policies can be used to apply password rules such as length, complexity, etc. They can also be used to expire passwords after a certain amount of time.
 
 ## Standard Policies
 
@@ -10,9 +10,9 @@ There are two different Kind of policies, a Standard Policy and a Password Polic
 
 ### Reputation Policy
 
-passbook keeps track of failed login attempts by Source IP and Attempted Username. These values are saved as scores. Each failed login decreases the Score for the Client IP as well as the targeted Username by one.
+passbook keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
 
-This policy can be used to for example prompt Clients with a low score to pass a Captcha before they can continue.
+This policy can be used, for example, to prompt clients with a low score to pass a captcha before they can continue.
 
 ## Expression Policy
 
@@ -24,19 +24,19 @@ See [Expression Policy](expression.md).
 
 ### Password Policy
 
-This Policy allows you to specify Password rules, like Length and required Characters.
+This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
-- Minimum amount of Uppercase Characters
-- Minimum amount of Lowercase Characters
-- Minimum amount of Symbols Characters
-- Minimum Length
-- Symbol charset (define which characters are counted as symbols)
+- Minimum amount of uppercase characters.
+- Minimum amount of lowercase characters.
+- Minimum amount of symbols characters.
+- Minimum length.
+- Symbol charset (define which characters are counted as symbols).
 
 ### Have I Been Pwned Policy
 
-This Policy checks the hashed Password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within passbook.
+This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within passbook.
 
 ### Password-Expiry Policy
 
-This policy can enforce regular password rotation by expiring set Passwords after a finite amount of time. This forces users to set a new password.
+This policy can enforce regular password rotation by expiring set passwords after a finite amount of time. This forces users to set a new password.

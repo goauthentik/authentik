@@ -14,7 +14,7 @@ Valid choices:
 
 ### Template
 
-This specifies which template is rendered. Currently there are two templates.
+This specifies which template is rendered. Currently there are two templates:
 
 The `Login` template shows configured Sources below the login form, as well as linking to the defined Enrollment and Recovery flows.
 

@@ -2,17 +2,17 @@
 
 Flows are a method of describing a sequence of stages. A stage represents a single verification or logic step. They are used to authenticate users, enroll them, and more.
 
-Upon Flow execution, a plan is generated, which contains all stages. This means upon execution, all attached policies are evaluated. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
+Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
 
-To determine which flow is linked, passbook searches all Flows with the required designation and chooses the first instance the current user has access to.
+To determine which flow is linked, passbook searches all flows with the required designation and chooses the first instance the current user has access to.
 
 ## Permissions
 
-Flows can have policies assigned to them, which determines if the current user is allowed to see and use this flow.
+Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
 ## Designation
 
-Flows are designated for a single Purpose. This designation changes when a Flow is used. The following designations are available:
+Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
 ### Authentication
 
@@ -22,24 +22,24 @@ The authentication flow should always contain a [**User Login**](stages/user_log
 
 ### Invalidation
 
-This designates a flow to be used for the invalidation of a session.
+This designates a flow to be used to invalidate a session.
 
 This stage should always contain a [**User Logout**](stages/user_logout.md) stage, which resets the current session.
 
 ### Enrollment
 
-This designates a flow for enrollment. This flow can contain any amount of Prompt stages, E-Mail verification or Captchas. At the end to create the user, you can use the [**User Write**](stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
+This designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md). At the end, to create the user, you can use the [**user_write**](stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
 
 ### Unenrollment
 
-This designates a flow for unenrollment. This flow can contain any amount of verification, like [**E-Mail**](stages/email/index.md) or [**Captcha**](stages/captcha/index.md). To finally delete the account, use the [**User Delete**](stages/user_delete.md) stage.
+This designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md). As a final stage, to delete the account, use the [**user_delete**](stages/user_delete.md) stage.
 
 ### Recovery
 
-This designates a flow for recovery. This flow normally contains an [**Identification**](stages/identification/index.md) stage to find the user. Then it can contain any amount of verification, like [**E-Mail**](stages/email/index.md) or [**Captcha**](stages/captcha/index.md).
-Afterwards, use the [**Prompt**](stages/prompt/index.md) stage to ask the user for a new password and use [**User Write**](stages/user_write.md) to update the password.
+This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md).
+Afterwards, use the [**prompt**](stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
 ### Change Password
 
-This designates a flow for password changing. This flow can contain any amount of verification, like [**E-Mail**](stages/email/index.md) or [**Captcha**](stages/captcha/index.md).
-Afterwards, use the [**Prompt**](stages/prompt/index.md) stage to ask the user for a new password and use [**User Write**](stages/user_write.md) to update the password.
+This designates a flow for password changes. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md).
+Afterwards, use the [**prompt**](stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.

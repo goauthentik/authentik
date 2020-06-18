@@ -6,20 +6,20 @@ This stage is used to show the user arbitrary prompts.
 
 The prompt can be any of the following types:
 
-|          |                                                                  |
+| Type     | Description                                                      |
 |----------|------------------------------------------------------------------|
-| text     | Arbitrary text, no client-side validation is done.               |
-| email    | E-Mail input, requires a valid E-Mail adress                     |
-| password | Password Input                                                   |
-| number   | Number Input, any number is allowed                              |
-| checkbox | Simple Checkbox                                                  |
-| hidden   | Hidden Input field, allows for the pre-setting of default values |
+| text     | Arbitrary text. No client-side validation is done.               |
+| email    | Email input. Requires a valid email adress.                      |
+| password | Password input.                                                  |
+| number   | Number input. Any number is allowed.                             |
+| checkbox | Simple checkbox.                                                 |
+| hidden   | Hidden input field. Allows for the pre-setting of default values.|
 
-A Prompt has the following attributes:
+A prompt has the following attributes:
 
 ### `field_key`
 
-HTML name used for the prompt. This key is also used to later retrieve the data in expression policies:
+The HTML name used for the prompt. This key is also used to later retrieve the data in expression policies:
 
 ```python
 request.context.get('prompt_data').get('<field_key>')
@@ -27,16 +27,16 @@ request.context.get('prompt_data').get('<field_key>')
 
 ### `label`
 
-Label used to describe the Field. This might not be shown depending on the template selected.
+The label used to describe the field. Depending on the selected template, this may not be shown.
 
 ### `required`
 
-Flag that decides whether or not this field is required.
+A flag which decides whether or not this field is required.
 
 ### `placeholder`
 
-Field placeholder, shown within the input field. This field is also used by the `hidden` type as the actual value.
+A field placeholder, shown within the input field. This field is also used by the `hidden` type as the actual value.
 
 ### `order`
 
-Numerical index of the prompt. This applies to all stages this prompt is a part of.
+The numerical index of the prompt. This applies to all stages which this prompt is a part of.

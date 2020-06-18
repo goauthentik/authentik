@@ -9,19 +9,19 @@
 
 The following placeholders will be used:
 
--   `passbook.company` is the FQDN of the passbook Install
+-   `passbook.company` is the FQDN of the passbook install.
 
-Create an application in passbook and note the slug, as this will be used later. Create a SAML Provider with the following Parameters:
+Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://signin.aws.amazon.com/saml`
 -   Audience: `urn:amazon:webservices`
 -   Issuer: `passbook`
 
-You can of course use a custom Signing Certificate, and adjust durations.
+You can of course use a custom signing certificate, and adjust durations.
 
 ## AWS
 
-Create a Role with the Permissions you desire, and note the ARN.
+Create a role with the permissions you desire, and note the ARN.
 
 AWS requires two custom PropertyMappings; `Role` and `RoleSessionName`. Create them as following:
 
@@ -29,4 +29,4 @@ AWS requires two custom PropertyMappings; `Role` and `RoleSessionName`. Create t
 
 ![](./property-mapping-role-session-name.png)
 
-Afterwards export the Metadata from passbook, and create an Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
+Afterwards export the metadata from passbook, and create an Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
