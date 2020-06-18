@@ -120,6 +120,7 @@ const updateCard = (data) => {
             break;
         case "template":
             flowBody.innerHTML = data.body;
+            checkAutofocus();
             updateMessages();
             loadFormCode();
             setFormSubmitHandlers();
@@ -137,6 +138,12 @@ const loadFormCode = () => {
         newScript.src = script.src;
         document.head.appendChild(newScript);
     });
+};
+const checkAutofocus = () => {
+    const autofocusElement = document.querySelector("#flow-body [autofocus]");
+    if (autofocusElement !== null) {
+        autofocusElement.focus();
+    }
 };
 const updateFormAction = (form) => {
     for (let index = 0; index < form.elements.length; index++) {
