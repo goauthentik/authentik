@@ -1,5 +1,5 @@
-# E-Mail
+# Email
 
-This stage can be used for E-Mail verification. passbook's background worker will send an E-Mail using the specified connection details. When an E-Mail can't be delivered, it is automatically periodically retried.
+This stage can be used for email verification. passbook's background worker will send an email using the specified connection details. When an email can't be delivered, delivery is automatically retried periodically.
 
 ![](email-recovery.png)
