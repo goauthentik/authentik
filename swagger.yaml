@@ -6080,7 +6080,7 @@ definitions:
         enum:
           - text
           - username
-          - e-mail
+          - email
           - password
           - number
           - checkbox

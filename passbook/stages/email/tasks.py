@@ -27,7 +27,7 @@ def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
 )
 # pylint: disable=unused-argument
 def _send_mail_task(self, email_stage_pk: int, message: Dict[Any, Any]):
-    """Send E-Mail according to EmailStage parameters from background worker.
+    """Send Email according to EmailStage parameters from background worker.
     Automatically retries if message couldn't be sent."""
     stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
     backend = stage.backend

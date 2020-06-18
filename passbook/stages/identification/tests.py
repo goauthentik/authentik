@@ -61,7 +61,7 @@ class TestIdentificationStage(TestCase):
         )
 
     def test_invalid_with_username(self):
-        """Test invalid with username (user exists but stage only allows e-mail)"""
+        """Test invalid with username (user exists but stage only allows email)"""
         form_data = {"uid_field": self.user.username}
         response = self.client.post(
             reverse(
@@ -72,7 +72,7 @@ class TestIdentificationStage(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_with_invalid_email(self):
-        """Test with invalid e-mail (user doesn't exist) -> Will return to login form"""
+        """Test with invalid email (user doesn't exist) -> Will return to login form"""
         form_data = {"uid_field": self.user.email + "test"}
         response = self.client.post(
             reverse(

@@ -16,7 +16,7 @@ class FieldTypes(models.TextChoices):
     TEXT = "text"
     # Same as text, but has autocomplete for password managers
     USERNAME = "username"
-    EMAIL = "e-mail"
+    EMAIL = "email"
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
     CHECKBOX = "checkbox"
