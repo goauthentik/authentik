@@ -23,7 +23,7 @@ OAUTH2_PROVIDER = {
     # this is the list of available scopes
     "SCOPES": {
         "openid": "Access OpenID Userinfo",
-        "openid:userinfo": "Access OpenID Userinfo",
+        "userinfo": "Access OpenID Userinfo",
         "email": "Access OpenID Email",
         "user:email": "GitHub Compatibility: User Email",
         "read:org": "GitHub Compatibility: User Groups",

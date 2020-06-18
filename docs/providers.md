@@ -10,6 +10,13 @@ This provider uses the commonly used OpenID Connect variation of OAuth2.
 
 This provider is slightly different than the OpenID Provider. While it uses the same basic OAuth2 Protocol, it provides a GitHub-compatible Endpoint. This allows you to integrate Applications, which don't support Custom OpenID Providers.
 The API exposes Username, E-Mail, Name and Groups in a GitHub-compatible format.
+This provider currently supports the following scopes:
+
+- `openid`: Access OpenID Userinfo
+- `userinfo`: Access OpenID Userinfo
+- `email`: Access OpenID Email
+- `user:email`: GitHub Compatibility: User Email
+- `read:org`: GitHub Compatibility: User Groups
 
 ## SAML Provider
 
