@@ -9,7 +9,8 @@ from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from passbook.flows.models import Flow, Stage
+from passbook.flows.markers import ReevaluateMarker, StageMarker
+from passbook.flows.models import Flow, FlowStageBinding, Stage
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -33,12 +34,39 @@ class FlowPlan:
     of all Stages that should be run."""
 
     flow_pk: str
+
     stages: List[Stage] = field(default_factory=list)
     context: Dict[str, Any] = field(default_factory=dict)
+    markers: List[StageMarker] = field(default_factory=list)
 
-    def next(self) -> Stage:
+    def next(self) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
-        return self.stages[0]
+        if not self.has_stages:
+            return None
+        stage = self.stages[0]
+        marker = self.markers[0]
+
+        LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
+        marked_stage = marker.process(self, stage)
+        if not marked_stage:
+            LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
+            self.stages.remove(stage)
+            self.markers.remove(marker)
+            if not self.has_stages:
+                return None
+            # pylint: disable=not-callable
+            return self.next()
+        return marked_stage
+
+    def pop(self):
+        """Pop next pending stage from bottom of list"""
+        self.markers.pop(0)
+        self.stages.pop(0)
+
+    @property
+    def has_stages(self) -> bool:
+        """Check if there are any stages left in this plan"""
+        return len(self.markers) + len(self.stages) > 0
 
 
 class FlowPlanner:
@@ -100,7 +128,8 @@ class FlowPlanner:
         request: HttpRequest,
         default_context: Optional[Dict[str, Any]],
     ) -> FlowPlan:
-        """Actually build flow plan"""
+        """Build flow plan by checking each stage in their respective
+        order and checking the applied policies"""
         start_time = time()
         plan = FlowPlan(flow_pk=self.flow.pk.hex)
         if default_context:
@@ -111,13 +140,24 @@ class FlowPlanner:
             .select_subclasses()
             .select_related()
         ):
-            binding = stage.flowstagebinding_set.get(flow__pk=self.flow.pk)
+            binding: FlowStageBinding = stage.flowstagebinding_set.get(
+                flow__pk=self.flow.pk
+            )
             engine = PolicyEngine(binding, user, request)
             engine.request.context = plan.context
             engine.build()
             if engine.passing:
                 LOGGER.debug("f(plan): Stage passing", stage=stage, flow=self.flow)
                 plan.stages.append(stage)
+                marker = StageMarker()
+                if binding.re_evaluate_policies:
+                    LOGGER.debug(
+                        "f(plan): Stage has re-evaluate marker",
+                        stage=stage,
+                        flow=self.flow,
+                    )
+                    marker = ReevaluateMarker(binding=binding, user=user)
+                plan.markers.append(marker)
         end_time = time()
         LOGGER.debug(
             "f(plan): Finished building",

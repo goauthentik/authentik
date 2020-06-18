@@ -6,6 +6,7 @@ from django.test import Client, TestCase
 from django.utils.encoding import force_text
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -96,7 +97,9 @@ class TestPromptStage(TestCase):
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -114,7 +117,9 @@ class TestPromptStage(TestCase):
 
     def test_valid_form_with_policy(self) -> PromptForm:
         """Test form validation"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
@@ -126,7 +131,9 @@ class TestPromptStage(TestCase):
 
     def test_invalid_form(self) -> PromptForm:
         """Test form validation"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         expr = "False"
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
@@ -138,7 +145,9 @@ class TestPromptStage(TestCase):
 
     def test_valid_form_request(self):
         """Test a request with valid form data"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

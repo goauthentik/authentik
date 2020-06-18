@@ -4,6 +4,7 @@ from django.test import Client, TestCase
 from django.utils.encoding import force_text
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -30,7 +31,9 @@ class TestUserLogoutStage(TestCase):
 
     def test_valid_password(self):
         """Test with a valid pending user and backend"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
