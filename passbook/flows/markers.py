@@ -36,6 +36,7 @@ class ReevaluateMarker(StageMarker):
     def process(self, plan: "FlowPlan", stage: Stage) -> Optional[Stage]:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
         engine = PolicyEngine(self.binding, self.user)
+        engine.use_cache = False
         engine.request.context = plan.context
         engine.build()
         result = engine.result
