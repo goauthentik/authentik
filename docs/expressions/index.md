@@ -1,6 +1,6 @@
 # Expressions
 
-Expressions allow you to write custom Logic using Python code.
+Expressions allow you to write custom logic using Python code.
 
 Expressions are used in different places throughout passbook, and can do different things.
 
@@ -46,7 +46,7 @@ return pb_is_group_member(request.user, name="test_group")
 
 ### `pb_user_by(**filters) -> Optional[User]`
 
-Fetch a user matching `**filters`. Returns None if no user was found.
+Fetch a user matching `**filters`. Returns "None" if no user was found.
 
 Example:
 
