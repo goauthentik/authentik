@@ -131,7 +131,7 @@ jobs:
           docker-compose pull -q chrome
           docker-compose up -d chrome
       - name: Run coverage
-        run: pipenv run ./scripts/coverage.sh
+        run: pipenv run coverage run ./manage.py test --failfast
       - name: Create XML Report
         run: pipenv run coverage xml
       - uses: codecov/codecov-action@v1
