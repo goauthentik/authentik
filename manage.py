@@ -2,6 +2,7 @@
 """Django manage.py"""
 import os
 import sys
+
 from defusedxml import defuse_stdlib
 
 defuse_stdlib()

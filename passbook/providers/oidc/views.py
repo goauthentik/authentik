@@ -61,7 +61,7 @@ class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
                 PLAN_CONTEXT_PARAMS: endpoint.params,
             },
         )
-        plan.stages.append(in_memory_stage(OIDCStage))
+        plan.append(in_memory_stage(OIDCStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",

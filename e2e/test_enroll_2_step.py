@@ -4,14 +4,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from e2e.utils import apply_default_data
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
+from passbook.stages.identification.models import IdentificationStage
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
-from passbook.stages.identification.models import IdentificationStage
-from e2e.utils import apply_default_data
 
 
 class TestEnroll2Step(StaticLiveServerTestCase):
