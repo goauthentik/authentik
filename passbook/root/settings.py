@@ -356,9 +356,7 @@ TEST_OUTPUT_VERBOSE = 2
 
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
-if any("test" in arg for arg in sys.argv):
-    LOGGER.warning("Testing mode enabled, no logging from now on...")
-    LOGGING = None
+if len(sys.argv) >= 2 and sys.argv[1] == "test":
     TEST = True
     CELERY_TASK_ALWAYS_EAGER = True
 
