@@ -16,5 +16,4 @@ cd e2e
 sudo docker-compose up -d
 cd ..
 pipenv sync --dev
-pipenv run pip install -r e2e/requirements.txt
 pipenv shell

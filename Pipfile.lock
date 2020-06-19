@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "541f26a45f249fb2e61a597af7be7dee51eb8b40aa1035ae4081a455168128cc"
+            "sha256": "e1e229f3276f2f76787b55050506f86e65579bc5aab5c7fca8caa319adb7f3d8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -913,6 +913,13 @@
             ],
             "version": "==1.14.0"
         },
+        "chardet": {
+            "hashes": [
+                "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae",
+                "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
+            ],
+            "version": "==3.0.4"
+        },
         "click": {
             "hashes": [
                 "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a",
@@ -1004,6 +1011,14 @@
             ],
             "index": "pypi",
             "version": "==2.2"
+        },
+        "docker": {
+            "hashes": [
+                "sha256:380a20d38fbfaa872e96ee4d0d23ad9beb0f9ed57ff1c30653cbeb0c9c0964f2",
+                "sha256:672f51aead26d90d1cfce84a87e6f71fca401bbc2a6287be18603583620a28ba"
+            ],
+            "index": "pypi",
+            "version": "==4.2.1"
         },
         "gitdb": {
             "hashes": [
@@ -1174,6 +1189,14 @@
             ],
             "version": "==2020.6.8"
         },
+        "selenium": {
+            "hashes": [
+                "sha256:5f5489a0c5fe2f09cc6bc3f32a0d53441ab36882c987269f2afe805979633ac1",
+                "sha256:a9779ddc69cf03b75d94062c5e948f763919cf3341c77272f94cd05e6b4c7b32"
+            ],
+            "index": "pypi",
+            "version": "==4.0.0a6.post2"
+        },
         "six": {
             "hashes": [
                 "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
@@ -1254,6 +1277,13 @@
             "index": "pypi",
             "markers": null,
             "version": "==1.25.9"
+        },
+        "websocket-client": {
+            "hashes": [
+                "sha256:0fc45c961324d79c781bab301359d5a1b00b13ad1b10415a4780229ef71a5549",
+                "sha256:d735b91d6d1692a6a181f2a8c9e0238e5f6373356f561bb9dc4c7af36f452010"
+            ],
+            "version": "==0.57.0"
         },
         "wrapt": {
             "hashes": [

@@ -125,7 +125,6 @@ jobs:
         run: |
           sudo pip install -U wheel pipenv
           pipenv install --dev
-          pipenv run pip install -r e2e/requirements.txt
       - name: Prepare Chrome node
         run: |
           cd e2e
