@@ -122,7 +122,15 @@ jobs:
         with:
           python-version: '3.8'
       - name: Install dependencies
-        run: sudo pip install -U wheel pipenv && pipenv install --dev
+        run: |
+          sudo pip install -U wheel pipenv
+          pipenv install --dev
+          pipenv run pip install -r e2e/requirements.txt
+      - name: Prepare Chrome node
+        run: |
+          cd e2e
+          docker-compose pull -q chrome
+          docker-compose up -d chrome
       - name: Run coverage
         run: pipenv run ./scripts/coverage.sh
       - name: Create XML Report
@@ -130,23 +138,6 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-  e2e:
-    needs:
-      - pylint
-      - black
-      - prospector
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Setup test containers and run tests
-        run: |
-          cd e2e
-          docker-compose pull -q
-          docker-compose up -d
-          docker-compose exec -T passbook bash -c "pip install -r /app/requirements-dev.txt"
-          # This is temporary as we don't have selenium as a dependency yet
-          docker-compose exec -T passbook bash -c "pip install selenium"
-          docker-compose exec -T passbook bash -c "./manage.py test e2e"
   # Build
   build-server:
     needs:
