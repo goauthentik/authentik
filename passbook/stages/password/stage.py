@@ -52,9 +52,20 @@ class PasswordStage(FormView, StageView):
     form_class = PasswordForm
     template_name = "stages/password/backend.html"
 
+    def get_form(self, form_class=None) -> PasswordForm:
+        form = super().get_form(form_class=form_class)
+
+        # If there's a pending user, update the `username` field
+        # this field is only used by password managers.
+        # If there's no user set, an error is raised later.
+        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
+            pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+            form.fields["username"].initial = pending_user.username
+
+        return form
+
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        kwargs["primary_action"] = _("Log in")
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
             kwargs["recovery_flow"] = recovery_flow.first()

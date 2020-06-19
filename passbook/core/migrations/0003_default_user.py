@@ -6,10 +6,10 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    # User = apps.get_model("passbook_core", "User")
+    # We have to use a direct import here, otherwise we get an object manager error
     from passbook.core.models import User
 
-    pbadmin = User.objects.create(
+    pbadmin, _ = User.objects.get_or_create(
         username="pbadmin", email="root@localhost", name="passbook Default Admin"
     )
     pbadmin.set_password("pbadmin")  # noqa # nosec

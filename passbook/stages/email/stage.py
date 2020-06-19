@@ -22,7 +22,7 @@ QS_KEY_TOKEN = "token"
 
 
 class EmailStageView(FormView, StageView):
-    """E-Mail stage which sends E-Mail for verification"""
+    """Email stage which sends Email for verification"""
 
     form_class = EmailStageSendForm
     template_name = "stages/email/waiting_message.html"
@@ -41,11 +41,14 @@ class EmailStageView(FormView, StageView):
             token = get_object_or_404(Token, pk=request.GET[QS_KEY_TOKEN])
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()
-            messages.success(request, _("Successfully verified E-Mail."))
+            messages.success(request, _("Successfully verified Email."))
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
     def form_invalid(self, form: EmailStageSendForm) -> HttpResponse:
+        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            messages.error(self.request, _("No pending user."))
+            return super().form_invalid(form)
         pending_user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         valid_delta = timedelta(
             minutes=self.executor.current_stage.token_expiry + 1

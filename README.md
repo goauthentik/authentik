@@ -1,11 +1,11 @@
-# passbook
+<img src="passbook/static/static/passbook/logo.svg" height="50" alt="passbook logo"><img src="passbook/static/static/passbook/brand_inverted.svg" height="50" alt="passbook">
 
-![](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
-![](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
-![](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
-![](https://img.shields.io/docker/pulls/beryju/passbook-static.svg?style=flat-square)
-![](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
-![](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)
+![CI Build status](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
+![Docker pulls](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
+![Docker pulls (gatekeeper)](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
+![Latest version](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
+![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/BeryJu/passbook?style=flat-square)
+![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)
 
 ## What is passbook?
 
@@ -28,12 +28,12 @@ docker-compose up -d
 docker-compose exec server ./manage.py migrate
 ```
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://beryju.github.io/passbook/installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org//installation/kubernetes/)
 
 ## Screenshots
 
-![](.github/screen_apps.png)
-![](.github/screen_admin.png)
+![](docs/images/screen_apps.png)
+![](docs/images/screen_admin.png)
 
 ## Development
 

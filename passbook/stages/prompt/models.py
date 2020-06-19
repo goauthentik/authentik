@@ -12,8 +12,11 @@ from passbook.policies.models import PolicyBindingModel
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
+    # Simple text field
     TEXT = "text"
-    EMAIL = "e-mail"
+    # Same as text, but has autocomplete for password managers
+    USERNAME = "username"
+    EMAIL = "email"
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
     CHECKBOX = "checkbox"
@@ -52,8 +55,11 @@ class Prompt(models.Model):
         }
         if self.type == FieldTypes.EMAIL:
             field_class = forms.EmailField
+        if self.type == FieldTypes.USERNAME:
+            attrs["autocomplete"] = "username"
         if self.type == FieldTypes.PASSWORD:
             widget = forms.PasswordInput(attrs=attrs)
+            attrs["autocomplete"] = "new-password"
         if self.type == FieldTypes.NUMBER:
             field_class = forms.IntegerField
             widget = forms.NumberInput(attrs=attrs)
@@ -64,6 +70,10 @@ class Prompt(models.Model):
         if self.type == FieldTypes.CHECKBOX:
             field_class = forms.CheckboxInput
             kwargs["required"] = False
+        if self.type == FieldTypes.DATE:
+            field_class = forms.DateInput
+        if self.type == FieldTypes.DATE_TIME:
+            field_class = forms.DateTimeInput
 
         # TODO: Implement static
         # TODO: Implement separator

@@ -16,12 +16,14 @@
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
         {% if object_list %}
-        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-top">
-            <div class="pf-c-toolbar__bulk-select">
-                <a href="{% url 'passbook_admin:policy-binding-create' %}?back={{ request.get_full_path }}"
-                    class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-c-toolbar__bulk-select">
+                    <a href="{% url 'passbook_admin:policy-binding-create' %}?back={{ request.get_full_path }}"
+                        class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                </div>
+                {% include 'partials/pagination.html' %}
             </div>
-            {% include 'partials/pagination.html' %}
         </div>
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
@@ -57,14 +59,16 @@
         </div>
         {% else %}
         <div class="pf-c-empty-state">
-            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-            <h1 class="pf-c-title pf-m-lg">
-                {% trans 'No Policy Bindings.' %}
-            </h1>
-            <div class="pf-c-empty-state__body">
-                {% trans 'Currently no policy bindings exist. Click the button below to create one.' %}
+            <div class="pf-c-empty-state__content">
+                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Policy Bindings.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                    {% trans 'Currently no policy bindings exist. Click the button below to create one.' %}
+                </div>
+                <a href="{% url 'passbook_admin:policy-binding-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
             </div>
-            <a href="{% url 'passbook_admin:policy-binding-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
         </div>
         {% endif %}
     </div>

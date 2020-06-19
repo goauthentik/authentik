@@ -48,7 +48,7 @@ class IdentificationStage(Stage):
         related_name="+",
         default=None,
         help_text=_(
-            "Optional enrollment flow, which is linked at the bottom of the page."
+            "Optional recovery flow, which is linked at the bottom of the page."
         ),
     )
 

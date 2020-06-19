@@ -5,55 +5,72 @@
 {% for field in form %}
 <div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
     {% if field.field.widget|fieldtype == 'RadioSelect' %}
-        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
-            <span class="pf-c-form__label-text">{{ field.label }}</span>
-            {% if field.field.required %}
-            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
-            {% endif %}
-        </label>
-        {% for c in field %}
-        <div class="radio col-sm-10">
-            <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
-                name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}"
-                {% if c.data.selected %} checked {% endif %}>
-            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
+        <div class="pf-c-form__group-label">
+            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+                <span class="pf-c-form__label-text">{{ field.label }}</span>
+                {% if field.field.required %}
+                <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                {% endif %}
+            </label>
         </div>
-        {% endfor %}
-    {% elif field.field.widget|fieldtype == 'Select' %}
-        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
-            <span class="pf-c-form__label-text">{{ field.label }}</span>
-            {% if field.field.required %}
-            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
-            {% endif %}
-        </label>
-        <div class="pf-c-form__horizontal-group">
-            {{ field|css_class:"pf-c-form-control" }}
-            {% if field.help_text %}
-            <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
-            {% endif %}
-        </div>
-    {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
-        <div class="pf-c-form__horizontal-group">
-            <div class="pf-c-check">
-                {{ field|css_class:"pf-c-check__input" }}
-                <label class="pf-c-check__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ field.label }}</label>
+        <div class="pf-c-form__group-control">
+            {% for c in field %}
+            <div class="radio col-sm-10">
+                <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
+                    name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}"
+                    {% if c.data.selected %} checked {% endif %}>
+                <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
             </div>
             {% if field.help_text %}
-            <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
+            <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
             {% endif %}
+            {% endfor %}
+        </div>
+    {% elif field.field.widget|fieldtype == 'Select' %}
+        <div class="pf-c-form__group-label">
+            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+                <span class="pf-c-form__label-text">{{ field.label }}</span>
+                {% if field.field.required %}
+                <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                {% endif %}
+            </label>
+        </div>
+        <div class="pf-c-form__group-control">
+            <div class="pf-c-form__horizontal-group">
+                {{ field|css_class:"pf-c-form-control" }}
+                {% if field.help_text %}
+                <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% elif field.field.widget|fieldtype == 'CheckboxInput' %}
+        <div class="pf-c-form__group-control">
+            <div class="pf-c-form__horizontal-group">
+                <div class="pf-c-check">
+                    {{ field|css_class:"pf-c-check__input" }}
+                    <label class="pf-c-check__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ field.label }}</label>
+                </div>
+                {% if field.help_text %}
+                <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
         </div>
     {% else %}
-        <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
-            <span class="pf-c-form__label-text">{{ field.label }}</span>
-            {% if field.field.required %}
-            <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
-            {% endif %}
-        </label>
-        <div class="c-form__horizontal-group">
-            {{ field|css_class:'pf-c-form-control' }}
-            {% if field.help_text %}
-                <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
-            {% endif %}
+        <div class="pf-c-form__group-label">
+            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+                <span class="pf-c-form__label-text">{{ field.label }}</span>
+                {% if field.field.required %}
+                <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                {% endif %}
+            </label>
+        </div>
+        <div class="pf-c-form__group-control">
+            <div class="c-form__horizontal-group">
+                {{ field|css_class:'pf-c-form-control' }}
+                {% if field.help_text %}
+                    <p class="pf-c-form__helper-text">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
         </div>
     {% endif %}
     {% for error in field.errors %}

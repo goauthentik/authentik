@@ -4,13 +4,13 @@ Due to some database changes that had to be rather sooner than later, there is n
 
 To export data from your old instance, run this command:
 
-(with docker-compose)
+- docker-compose
 ```
 docker-compose exec server ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event
 docker cp passbook_server_1:/tmp/passbook_dump.json passbook_dump.json
 ```
 
-(with kubernetes)
+- kubernetes
 ```
 kubectl exec -it passbook-web-... -- ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event
 kubectl cp passbook-web-...:/tmp/passbook_dump.json passbook_dump.json
@@ -18,13 +18,13 @@ kubectl cp passbook-web-...:/tmp/passbook_dump.json passbook_dump.json
 
 After that, create a new passbook instance in a different namespace (kubernetes) or in a different folder (docker-compose). Once this instance is running, you can use the following commands to restore the data. On docker-compose, you still have to run the `migrate` command, to create all database structures.
 
-(docker-compose)
+- docker-compose
 ```
 docker cp passbook_dump.json new_passbook_server_1:/tmp/passbook_dump.json
 docker-compose exec server ./manage.py loaddata /tmp/passbook_dump.json
 ```
 
-(with kubernetes)
+- kubernetes
 ```
 kubectl cp passbook_dump.json passbook-web-...:/tmp/passbook_dump.json
 kubectl exec -it passbook-web-... -- ./manage.py loaddata /tmp/passbook_dump.json

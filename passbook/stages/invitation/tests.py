@@ -7,6 +7,7 @@ from django.utils.encoding import force_text
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -39,7 +40,9 @@ class TestUserLoginStage(TestCase):
 
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -64,7 +67,9 @@ class TestUserLoginStage(TestCase):
         """Test without any invitation, continue_flow_without_invitation is set."""
         self.stage.continue_flow_without_invitation = True
         self.stage.save()
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -90,7 +95,9 @@ class TestUserLoginStage(TestCase):
 
     def test_with_invitation(self):
         """Test with invitation, check data in session"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND

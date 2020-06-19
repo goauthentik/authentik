@@ -163,10 +163,10 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/passbook:${GITHUB_REF##*/}
+          -t beryju/passbook:gh-${GITHUB_REF##*/}
           -f Dockerfile .
       - name: Push Docker Container to Registry
-        run: docker push beryju/passbook:${GITHUB_REF##*/}
+        run: docker push beryju/passbook:gh-${GITHUB_REF##*/}
   build-gatekeeper:
     needs:
       - migrations
@@ -184,10 +184,10 @@ jobs:
           cd gatekeeper
           docker build \
           --no-cache \
-          -t beryju/passbook-gatekeeper:${GITHUB_REF##*/} \
+          -t beryju/passbook-gatekeeper:gh-${GITHUB_REF##*/} \
           -f Dockerfile .
       - name: Push Docker Container to Registry
-        run: docker push beryju/passbook-gatekeeper:${GITHUB_REF##*/}
+        run: docker push beryju/passbook-gatekeeper:gh-${GITHUB_REF##*/}
   build-static:
     needs:
       - migrations
@@ -213,7 +213,7 @@ jobs:
         run: docker build
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
-          -t beryju/passbook-static:${GITHUB_REF##*/}
+          -t beryju/passbook-static:gh-${GITHUB_REF##*/}
           -f static.Dockerfile .
       - name: Push Docker Container to Registry
-        run: docker push beryju/passbook-static:${GITHUB_REF##*/}
+        run: docker push beryju/passbook-static:gh-${GITHUB_REF##*/}

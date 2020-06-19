@@ -25,8 +25,8 @@
             </a>
         </div>
         <div class="pf-c-page__header-nav">
-            <nav class="pf-c-nav" aria-label="Nav">
-                <ul class="pf-c-nav__horizontal-list ws-top-nav">
+            <nav class="pf-c-nav pf-m-horizontal" aria-label="Nav">
+                <ul class="pf-c-nav__list ws-top-nav">
                     <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_url 'passbook_core:overview' %}"
                             href="{% url 'passbook_core:overview' %}">{% trans 'Access' %}</a></li>
                     {% if user.is_superuser %}

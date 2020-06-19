@@ -1,5 +1,6 @@
 """passbook flows identification forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
@@ -19,6 +20,9 @@ class IdentificationStageForm(forms.ModelForm):
         fields = ["name", "user_fields", "template", "enrollment_flow", "recovery_flow"]
         widgets = {
             "name": forms.TextInput(),
+            "user_fields": FilteredSelectMultiple(
+                _("fields"), False, choices=UserFields.choices
+            ),
         }
 
 
@@ -35,8 +39,16 @@ class IdentificationForm(forms.Form):
         super().__init__(*args, **kwargs)
         if self.stage.user_fields == [UserFields.E_MAIL]:
             self.fields["uid_field"] = forms.EmailField()
-        self.fields["uid_field"].label = human_list(
-            [x.title() for x in self.stage.user_fields]
+        label = human_list([x.title() for x in self.stage.user_fields])
+        self.fields["uid_field"].label = label
+        self.fields["uid_field"].widget.attrs.update(
+            {
+                "placeholder": _(label),
+                "autofocus": "autofocus",
+                # Autocomplete according to
+                # https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
+                "autocomplete": "username",
+            }
         )
 
     def clean_uid_field(self):
