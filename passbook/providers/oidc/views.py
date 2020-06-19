@@ -1,4 +1,5 @@
 """passbook OIDC Views"""
+from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -27,7 +28,7 @@ from passbook.providers.oidc.models import OpenIDProvider
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
-
+PLAN_CONTEXT_SCOPES = "scopes"
 
 class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
     """OIDC Flow initializer, checks access to application and starts flow"""
@@ -59,6 +60,8 @@ class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_APPLICATION: application,
                 PLAN_CONTEXT_PARAMS: endpoint.params,
+                PLAN_CONTEXT_SCOPES: endpoint.get_scopes_information(),
+                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/oidc/consent.html"
             },
         )
         plan.append(in_memory_stage(OIDCStage))
