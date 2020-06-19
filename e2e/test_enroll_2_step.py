@@ -3,6 +3,8 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from e2e.utils import apply_default_data
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -22,6 +24,7 @@ class TestEnroll2Step(StaticLiveServerTestCase):
             command_executor="http://localhost:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.CHROME,
         )
+        self.wait = WebDriverWait(self.driver, 10)
         self.driver.implicitly_wait(5)
         apply_default_data()
 
@@ -97,6 +100,8 @@ class TestEnroll2Step(StaticLiveServerTestCase):
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
         self.driver.find_element(By.LINK_TEXT, "foo").click()
+
+        self.wait.until(EC.presence_of_element_located((By.ID, "id_username")))
         self.assertEqual(
             self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
             "foo",
