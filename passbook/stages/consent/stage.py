@@ -1,25 +1,30 @@
 """passbook consent stage"""
-from typing import Any, Dict
+from typing import List, Dict, Any
 
 from django.views.generic import FormView
 
 from passbook.flows.stage import StageView
-from passbook.lib.utils.template import render_to_string
 from passbook.stages.consent.forms import ConsentForm
+
+PLAN_CONTEXT_CONSENT_TEMPLATE = "consent_template"
 
 
 class ConsentStage(FormView, StageView):
     """Simple consent checker."""
 
-    body_template_name: str
-
     form_class = ConsentForm
 
     def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
-        if self.body_template_name:
-            kwargs["body"] = render_to_string(self.body_template_name, kwargs)
+        kwargs['current_stage'] = self.executor.current_stage
+        kwargs['context'] = self.executor.plan.context
         return kwargs
+
+    def get_template_names(self) -> List[str]:
+        if PLAN_CONTEXT_CONSENT_TEMPLATE in self.executor.plan.context:
+            template_name = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TEMPLATE]
+            return [template_name]
+        return super().get_template_names()
 
     def form_valid(self, form):
         return self.executor.stage_ok()
