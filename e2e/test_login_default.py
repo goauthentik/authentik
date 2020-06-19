@@ -10,11 +10,9 @@ from e2e.utils import apply_default_data
 class TestLogin(StaticLiveServerTestCase):
     """test default login flow"""
 
-    host = "passbook"
-
     def setUp(self):
         self.driver = webdriver.Remote(
-            command_executor="http://hub:4444/wd/hub",
+            command_executor="http://localhost:4444/wd/hub",
             desired_capabilities=DesiredCapabilities.CHROME,
         )
         self.driver.implicitly_wait(5)

@@ -1,34 +1,11 @@
 version: '3.7'
 
 services:
-  # hub:
-  #   image: dosel/zalenium
-  #   command: start
-  #   ports:
-  #     - 4444:4444
-  #   environment:
-  #     PULL_SELENIUM_IMAGE: 'true'
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - /tmp/videos:/home/seluser/videos
-  #   privileged: true
   chrome:
-    image: selenium/node-chrome:3.14.0-gallium
+    image: selenium/standalone-chrome-debug:3.141.59-20200525
     volumes:
       - /dev/shm:/dev/shm
-    depends_on:
-      - hub
-    environment:
-      HUB_HOST: hub
-    networks:
-      - e2e
-
-  hub:
-    image: selenium/hub:3.14.0-gallium
-    ports:
-      - "4444:4444"
-    networks:
-      - e2e
+    network_mode: host
 
   postgresql:
     image: postgres:11
@@ -36,24 +13,8 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: passbook
-    networks:
-      - e2e
+    network_mode: host
   redis:
     image: redis
     restart: always
-    networks:
-      - e2e
-  passbook:
-    image: beryju/passbook
-    command: /bin/bash -c "sleep infinity"
-    volumes:
-      - ../:/testing
-    environment:
-      PASSBOOK_ENV: docker
-    user: root
-    working_dir: /testing
-    networks:
-      - e2e
-
-networks:
-  e2e:
+    network_mode: host
