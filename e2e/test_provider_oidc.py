@@ -77,6 +77,7 @@ class TestProviderOIDC(StaticLiveServerTestCase):
 
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
+        sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(slug="default-provider-authorization")
         client = Client.objects.create(
@@ -113,10 +114,13 @@ class TestProviderOIDC(StaticLiveServerTestCase):
             "Redirect URI Error",
         )
 
-    def test_authorization_no_consent(self):
-        """test OpenID Provider flow (default authorization flow without consent)"""
+    def test_authorization_consent_implied(self):
+        """test OpenID Provider flow (default authorization flow with implied consent)"""
+        sleep(1)
         # Bootstrap all needed objects
-        authorization_flow = Flow.objects.get(slug="default-provider-authorization")
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
         client = Client.objects.create(
             name="grafana",
             client_type="confidential",
@@ -174,11 +178,12 @@ class TestProviderOIDC(StaticLiveServerTestCase):
             "root@localhost",
         )
 
-    def test_authorization_consent(self):
-        """test OpenID Provider flow (default authorization flow with consent)"""
+    def test_authorization_consent_explicit(self):
+        """test OpenID Provider flow (default authorization flow with explicit consent)"""
+        sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(
-            slug="default-provider-authorization-consent"
+            slug="default-provider-authorization-explicit-consent"
         )
         client = Client.objects.create(
             name="grafana",

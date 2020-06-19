@@ -1,5 +1,5 @@
 """passbook consent stage"""
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 from django.views.generic import FormView
 
@@ -16,8 +16,8 @@ class ConsentStage(FormView, StageView):
 
     def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
-        kwargs['current_stage'] = self.executor.current_stage
-        kwargs['context'] = self.executor.plan.context
+        kwargs["current_stage"] = self.executor.current_stage
+        kwargs["context"] = self.executor.plan.context
         return kwargs
 
     def get_template_names(self) -> List[str]:
