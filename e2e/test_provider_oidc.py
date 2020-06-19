@@ -79,7 +79,9 @@ class TestProviderOIDC(StaticLiveServerTestCase):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
         sleep(1)
         # Bootstrap all needed objects
-        authorization_flow = Flow.objects.get(slug="default-provider-authorization")
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
         client = Client.objects.create(
             name="grafana",
             client_type="confidential",

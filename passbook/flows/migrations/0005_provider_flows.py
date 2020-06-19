@@ -18,20 +18,22 @@ def create_default_provider_authz_flow(
     db_alias = schema_editor.connection.alias
 
     # Empty flow for providers where consent is implicitly given
-    Flow.objects.create(
+    Flow.objects.using(db_alias).create(
         name="Authorize Application",
         slug="default-provider-authorization-implicit-consent",
         designation=FlowDesignation.AUTHORIZATION,
     )
 
     # Flow with consent form to obtain explicit user consent
-    flow = Flow.objects.create(
+    flow = Flow.objects.using(db_alias).create(
         name="Authorize Application",
         slug="default-provider-authorization-explicit-consent",
         designation=FlowDesignation.AUTHORIZATION,
     )
-    stage = ConsentStage.objects.create(name="default-provider-authorization-consent")
-    FlowStageBinding.objects.create(flow=flow, stage=stage, order=0)
+    stage = ConsentStage.objects.using(db_alias).create(
+        name="default-provider-authorization-consent"
+    )
+    FlowStageBinding.objects.using(db_alias).create(flow=flow, stage=stage, order=0)
 
 
 class Migration(migrations.Migration):

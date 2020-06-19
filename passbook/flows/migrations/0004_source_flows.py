@@ -32,25 +32,27 @@ def create_default_source_enrollment_flow(
     db_alias = schema_editor.connection.alias
 
     # Create a policy that only allows this flow when doing an SSO Request
-    flow_policy = ExpressionPolicy.objects.create(
+    flow_policy = ExpressionPolicy.objects.using(db_alias).create(
         name="default-source-enrollment-if-sso", expression=FLOW_POLICY_EXPRESSION
     )
 
     # This creates a Flow used by sources to enroll users
     # It makes sure that a username is set, and if not, prompts the user for a Username
-    flow = Flow.objects.create(
+    flow = Flow.objects.using(db_alias).create(
         name="default-source-enrollment",
         slug="default-source-enrollment",
         designation=FlowDesignation.ENROLLMENT,
     )
-    PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
+    PolicyBinding.objects.using(db_alias).create(
+        policy=flow_policy, target=flow, order=0
+    )
 
     # PromptStage to ask user for their username
-    prompt_stage = PromptStage.objects.create(
+    prompt_stage = PromptStage.objects.using(db_alias).create(
         name="default-source-enrollment-username-prompt",
     )
     prompt_stage.fields.add(
-        Prompt.objects.create(
+        Prompt.objects.using(db_alias).create(
             field_key="username",
             label="Username",
             type=FieldTypes.TEXT,
@@ -59,20 +61,30 @@ def create_default_source_enrollment_flow(
         )
     )
     # Policy to only trigger prompt when no username is given
-    prompt_policy = ExpressionPolicy.objects.create(
+    prompt_policy = ExpressionPolicy.objects.using(db_alias).create(
         name="default-source-enrollment-if-username",
         expression=PROMPT_POLICY_EXPRESSION,
     )
 
     # UserWrite stage to create the user, and login stage to log user in
-    user_write = UserWriteStage.objects.create(name="default-source-enrollment-write")
-    user_login = UserLoginStage.objects.create(name="default-source-enrollment-login")
+    user_write = UserWriteStage.objects.using(db_alias).create(
+        name="default-source-enrollment-write"
+    )
+    user_login = UserLoginStage.objects.using(db_alias).create(
+        name="default-source-enrollment-login"
+    )
 
-    binding = FlowStageBinding.objects.create(flow=flow, stage=prompt_stage, order=0)
-    PolicyBinding.objects.create(policy=prompt_policy, target=binding)
+    binding = FlowStageBinding.objects.using(db_alias).create(
+        flow=flow, stage=prompt_stage, order=0
+    )
+    PolicyBinding.objects.using(db_alias).create(policy=prompt_policy, target=binding)
 
-    FlowStageBinding.objects.create(flow=flow, stage=user_write, order=1)
-    FlowStageBinding.objects.create(flow=flow, stage=user_login, order=2)
+    FlowStageBinding.objects.using(db_alias).create(
+        flow=flow, stage=user_write, order=1
+    )
+    FlowStageBinding.objects.using(db_alias).create(
+        flow=flow, stage=user_login, order=2
+    )
 
 
 def create_default_source_authentication_flow(
@@ -91,22 +103,26 @@ def create_default_source_authentication_flow(
     db_alias = schema_editor.connection.alias
 
     # Create a policy that only allows this flow when doing an SSO Request
-    flow_policy = ExpressionPolicy.objects.create(
+    flow_policy = ExpressionPolicy.objects.using(db_alias).create(
         name="default-source-authentication-if-sso", expression=FLOW_POLICY_EXPRESSION
     )
 
     # This creates a Flow used by sources to authenticate users
-    flow = Flow.objects.create(
+    flow = Flow.objects.using(db_alias).create(
         name="default-source-authentication",
         slug="default-source-authentication",
         designation=FlowDesignation.AUTHENTICATION,
     )
-    PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
+    PolicyBinding.objects.using(db_alias).create(
+        policy=flow_policy, target=flow, order=0
+    )
 
-    user_login = UserLoginStage.objects.create(
+    user_login = UserLoginStage.objects.using(db_alias).create(
         name="default-source-authentication-login"
     )
-    FlowStageBinding.objects.create(flow=flow, stage=user_login, order=0)
+    FlowStageBinding.objects.using(db_alias).create(
+        flow=flow, stage=user_login, order=0
+    )
 
 
 class Migration(migrations.Migration):
