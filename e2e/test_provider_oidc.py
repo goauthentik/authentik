@@ -12,22 +12,17 @@ from selenium.webdriver.common.keys import Keys
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types import Healthcheck
-from e2e.utils import apply_default_data, ensure_rsa_key
+from e2e.utils import SeleniumTestCase, ensure_rsa_key
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.providers.oidc.models import OpenIDProvider
 
 
-class TestProviderOIDC(StaticLiveServerTestCase):
+class TestProviderOIDC(SeleniumTestCase):
     """test OpenID Provider flow"""
 
     def setUp(self):
-        self.driver = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
-        )
-        self.driver.implicitly_wait(5)
-        apply_default_data()
+        super().setUp()
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
         self.container = self.setup_client()

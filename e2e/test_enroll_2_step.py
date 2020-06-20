@@ -6,7 +6,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from e2e.utils import apply_default_data
+from e2e.utils import SeleniumTestCase
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
@@ -16,21 +16,8 @@ from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
 
 
-class TestEnroll2Step(StaticLiveServerTestCase):
+class TestEnroll2Step(SeleniumTestCase):
     """Test 2-step enroll flow"""
-
-    def setUp(self):
-        self.driver = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
-            desired_capabilities=DesiredCapabilities.CHROME,
-        )
-        self.wait = WebDriverWait(self.driver, 10)
-        self.driver.implicitly_wait(5)
-        apply_default_data()
-
-    def tearDown(self):
-        super().tearDown()
-        self.driver.quit()
 
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""

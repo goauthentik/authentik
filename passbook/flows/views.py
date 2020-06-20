@@ -215,7 +215,9 @@ class FlowExecutorShellView(TemplateView):
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
         kwargs["msg_url"] = reverse("passbook_api:messages-list")
         if NEXT_ARG_NAME in self.request.GET:
-            self.request.session[SESSION_KEY_NEXT] = self.request.GET[NEXT_ARG_NAME]
+            next_arg = self.request.GET[NEXT_ARG_NAME]
+            LOGGER.debug("f(exec/shell): Saved next param", next=next_arg)
+            self.request.session[SESSION_KEY_NEXT] = next_arg
         return kwargs
 
 
