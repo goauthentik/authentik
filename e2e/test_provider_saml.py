@@ -1,7 +1,6 @@
 """test SAML Provider flow"""
 from time import sleep
 
-from django.shortcuts import reverse
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -43,10 +42,9 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_ENTITY_ID": provider.issuer,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": (
-                    self.live_server_url
-                    + reverse(
+                    self.url(
                         "passbook_providers_saml:metadata",
-                        kwargs={"application_slug": provider.application.slug},
+                        application_slug=provider.application.slug,
                     )
                 ),
             },
@@ -158,10 +156,9 @@ class TestProviderSAML(SeleniumTestCase):
         )
         self.container = self.setup_client(provider)
         self.driver.get(
-            self.live_server_url
-            + reverse(
+            self.url(
                 "passbook_providers_saml:sso-init",
-                kwargs={"application_slug": provider.application.slug},
+                application_slug=provider.application.slug,
             )
         )
         self.driver.find_element(By.ID, "id_uid_field").click()

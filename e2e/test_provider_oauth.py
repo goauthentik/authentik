@@ -1,7 +1,6 @@
 """test OAuth Provider flow"""
 from time import sleep
 
-from django.shortcuts import reverse
 from oauth2_provider.generators import generate_client_id, generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -43,17 +42,14 @@ class TestProviderOAuth(SeleniumTestCase):
                 "GF_AUTH_GITHUB_CLIENT_ID": self.client_id,
                 "GF_AUTH_GITHUB_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GITHUB_SCOPES": "user:email,read:org",
-                "GF_AUTH_GITHUB_AUTH_URL": (
-                    self.live_server_url
-                    + reverse("passbook_providers_oauth:github-authorize")
+                "GF_AUTH_GITHUB_AUTH_URL": self.url(
+                    "passbook_providers_oauth:github-authorize"
                 ),
-                "GF_AUTH_GITHUB_TOKEN_URL": (
-                    self.live_server_url
-                    + reverse("passbook_providers_oauth:github-access-token")
+                "GF_AUTH_GITHUB_TOKEN_URL": self.url(
+                    "passbook_providers_oauth:github-access-token"
                 ),
-                "GF_AUTH_GITHUB_API_URL": (
-                    self.live_server_url
-                    + reverse("passbook_providers_oauth:github-user")
+                "GF_AUTH_GITHUB_API_URL": self.url(
+                    "passbook_providers_oauth:github-user"
                 ),
                 "GF_LOG_LEVEL": "debug",
             },

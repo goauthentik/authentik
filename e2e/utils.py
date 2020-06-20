@@ -9,6 +9,7 @@ from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
+from django.shortcuts import reverse
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -53,6 +54,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         self.driver.quit()
         super().tearDown()
+
+    def url(self, view, **kwargs) -> str:
+        """reverse `view` with `**kwargs` into full URL using live_server_url"""
+        return self.live_server_url + reverse(view, kwargs=kwargs)
 
     def apply_default_data(self):
         """apply objects created by migrations after tables have been truncated"""
