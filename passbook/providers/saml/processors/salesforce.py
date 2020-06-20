@@ -10,5 +10,5 @@ class SalesForceProcessor(GenericProcessor):
     def _format_assertion(self):
         super()._format_assertion()
         self._assertion_xml = get_assertion_xml(
-            "saml/xml/assertions/salesforce.xml", self._assertion_params, signed=True
+            "providers/saml/xml/assertions/salesforce.xml", self._assertion_params, signed=True
         )

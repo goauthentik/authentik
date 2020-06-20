@@ -205,7 +205,7 @@ class SAMLFlowFinalView(StageView):
         if provider.sp_binding == SAMLBindings.POST:
             return render(
                 self.request,
-                "saml/idp/autosubmit_form.html",
+                "providers/saml/autosubmit_form.html",
                 {
                     "url": response.acs_url,
                     "application": application,
@@ -257,7 +257,7 @@ class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
             ctx["cert_public_key"] = strip_pem_header(
                 provider.signing_kp.certificate_data.replace("\r", "")
             ).replace("\n", "")
-        return render_to_string("saml/xml/metadata.xml", ctx)
+        return render_to_string("providers/saml/xml/metadata.xml", ctx)
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""

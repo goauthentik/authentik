@@ -59,7 +59,7 @@ class SAMLProviderForm(forms.ModelForm):
 class SAMLPropertyMappingForm(forms.ModelForm):
     """SAML Property Mapping form"""
 
-    template_name = "saml/idp/property_mapping_form.html"
+    template_name = "providers/saml/property_mapping_form.html"
 
     def clean_expression(self):
         """Test Syntax"""

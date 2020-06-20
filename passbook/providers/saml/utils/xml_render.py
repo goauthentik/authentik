@@ -28,7 +28,7 @@ def _get_attribute_statement(params):
         return
     # Build complete AttributeStatement.
     params["ATTRIBUTE_STATEMENT"] = render_to_string(
-        "saml/xml/attributes.xml", {"attributes": attributes}
+        "providers/saml/xml/attributes.xml", {"attributes": attributes}
     )
 
 
@@ -48,7 +48,7 @@ def _get_in_response_to(params):
 
 def _get_subject(params):
     """Insert Subject. Modifies the params dict."""
-    params["SUBJECT_STATEMENT"] = render_to_string("saml/xml/subject.xml", params)
+    params["SUBJECT_STATEMENT"] = render_to_string("providers/saml/xml/subject.xml", params)
 
 
 def get_assertion_xml(template, parameters, signed=False):
@@ -80,7 +80,7 @@ def get_response_xml(parameters, saml_provider: SAMLProvider, assertion_id=""):
     params["RESPONSE_SIGNATURE"] = ""
     _get_in_response_to(params)
 
-    raw_response = render_to_string("saml/xml/response.xml", params)
+    raw_response = render_to_string("providers/saml/xml/response.xml", params)
 
     if not saml_provider.signing_kp:
         return raw_response

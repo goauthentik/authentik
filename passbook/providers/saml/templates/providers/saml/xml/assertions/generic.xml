@@ -3,7 +3,7 @@
         IssueInstant="{{ ISSUE_INSTANT }}"
         Version="2.0">
     <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">{{ ISSUER }}</saml:Issuer>
-    {% include 'saml/xml/signature.xml' %}
+    {% include 'providers/saml/xml/signature.xml' %}
     {{ SUBJECT_STATEMENT }}
     <saml:Conditions NotBefore="{{ NOT_BEFORE }}" NotOnOrAfter="{{ NOT_ON_OR_AFTER }}">
       <saml:AudienceRestriction>

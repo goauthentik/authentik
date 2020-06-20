@@ -132,7 +132,7 @@ class Processor:
                 continue
         self._assertion_params["ATTRIBUTES"] = attributes
         self._assertion_xml = get_assertion_xml(
-            "saml/xml/assertions/generic.xml", self._assertion_params, signed=True
+            "providers/saml/xml/assertions/generic.xml", self._assertion_params, signed=True
         )
 
     def _format_response(self):
