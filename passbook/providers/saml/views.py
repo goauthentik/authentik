@@ -229,7 +229,7 @@ class SAMLFlowFinalView(StageView):
         return bad_request_message(request, "Invalid sp_binding specified")
 
 
-class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
+class DescriptorDownloadView(View):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     @staticmethod
@@ -263,14 +263,12 @@ class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
-        self.application = get_object_or_404(Application, slug=application_slug)
-        self.provider: SAMLProvider = get_object_or_404(
-            SAMLProvider, pk=self.application.provider_id
+        application = get_object_or_404(Application, slug=application_slug)
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
         )
-        if not self._has_access():
-            raise PermissionDenied()
         try:
-            metadata = DescriptorDownloadView.get_metadata(request, self.provider)
+            metadata = DescriptorDownloadView.get_metadata(request, provider)
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             return bad_request_message(
                 request, "Provider is not assigned to an application."
@@ -279,5 +277,5 @@ class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
             response = HttpResponse(metadata, content_type="application/xml")
             response[
                 "Content-Disposition"
-            ] = f'attachment; filename="{self.provider.name}_passbook_meta.xml"'
+            ] = f'attachment; filename="{provider.name}_passbook_meta.xml"'
             return response

@@ -34,7 +34,9 @@ class SAMLProvider(Provider):
     audience = models.TextField(default="")
     issuer = models.TextField(help_text=_("Also known as EntityID"))
     sp_binding = models.TextField(
-        choices=SAMLBindings.choices, default=SAMLBindings.REDIRECT
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        verbose_name=_("Service Prodier Binding"),
     )
 
     assertion_valid_not_before = models.TextField(
@@ -142,7 +144,7 @@ class SAMLProvider(Provider):
             # pylint: disable=no-member
             metadata = DescriptorDownloadView.get_metadata(request, self)
             return render_to_string(
-                "saml/idp/admin_metadata_modal.html",
+                "providers/saml/admin_metadata_modal.html",
                 {"provider": self, "metadata": metadata},
             )
         except Provider.application.RelatedObjectDoesNotExist:

@@ -48,7 +48,9 @@ def _get_in_response_to(params):
 
 def _get_subject(params):
     """Insert Subject. Modifies the params dict."""
-    params["SUBJECT_STATEMENT"] = render_to_string("providers/saml/xml/subject.xml", params)
+    params["SUBJECT_STATEMENT"] = render_to_string(
+        "providers/saml/xml/subject.xml", params
+    )
 
 
 def get_assertion_xml(template, parameters, signed=False):
