@@ -89,7 +89,7 @@ class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
             self.request,
             {PLAN_CONTEXT_SSO: True, PLAN_CONTEXT_APPLICATION: self.application},
         )
-        plan.stages.append(in_memory_stage(SAMLFlowFinalView))
+        plan.append(in_memory_stage(SAMLFlowFinalView))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",
