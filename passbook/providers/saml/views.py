@@ -188,7 +188,9 @@ class SAMLFlowFinalView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
-        provider: SAMLProvider = application.provider
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
+        )
         # Log Application Authorization
         Event.new(
             EventAction.AUTHORIZE_APPLICATION,
