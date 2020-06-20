@@ -39,8 +39,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        super().tearDown()
         self.driver.quit()
+        super().tearDown()
 
     def apply_default_data(self):
         """apply objects created by migrations after tables have been truncated"""

@@ -2,6 +2,7 @@
 from time import sleep
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.shortcuts import reverse
 from oauth2_provider.generators import generate_client_id, generate_client_secret
 from oidc_provider.models import Client, ResponseType
 from selenium import webdriver
@@ -33,7 +34,7 @@ class TestProviderOIDC(SeleniumTestCase):
         container = client.containers.run(
             image="grafana/grafana:latest",
             detach=True,
-            name=f"passbook-e2e-grafana-client_{self.port}",
+            name="passbook-e2e-grafana-client",
             network_mode="host",
             auto_remove=True,
             healthcheck=Healthcheck(
@@ -47,13 +48,13 @@ class TestProviderOIDC(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GENERIC_OAUTH_SCOPES": "openid email profile",
                 "GF_AUTH_GENERIC_OAUTH_AUTH_URL": (
-                    f"{self.live_server_url}/application/oidc/authorize"
+                    self.live_server_url + reverse("passbook_providers_oidc:authorize")
                 ),
                 "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (
-                    f"{self.live_server_url}/application/oidc/token"
+                    self.live_server_url + reverse("oidc_provider:token")
                 ),
                 "GF_AUTH_GENERIC_OAUTH_API_URL": (
-                    f"{self.live_server_url}/application/oidc/userinfo"
+                    self.live_server_url + reverse("oidc_provider:userinfo")
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
@@ -66,9 +67,8 @@ class TestProviderOIDC(SeleniumTestCase):
             sleep(1)
 
     def tearDown(self):
-        super().tearDown()
-        self.driver.quit()
         self.container.kill()
+        super().tearDown()
 
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
