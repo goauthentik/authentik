@@ -330,7 +330,18 @@ LOGGING = {
     },
     "loggers": {},
 }
+
+TEST = False
+TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
+TEST_OUTPUT_VERBOSE = 2
 LOG_LEVEL = CONFIG.y("log_level").upper()
+
+TEST_OUTPUT_FILE_NAME = "unittest.xml"
+
+if len(sys.argv) >= 2 and sys.argv[1] == "test":
+    LOG_LEVEL = "DEBUG"
+    TEST = True
+    CELERY_TASK_ALWAYS_EAGER = True
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
@@ -349,16 +360,6 @@ for handler_name, level in _LOGGING_HANDLER_MAP.items():
         "level": level,
         "propagate": False,
     }
-
-TEST = False
-TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
-TEST_OUTPUT_VERBOSE = 2
-
-TEST_OUTPUT_FILE_NAME = "unittest.xml"
-
-if len(sys.argv) >= 2 and sys.argv[1] == "test":
-    TEST = True
-    CELERY_TASK_ALWAYS_EAGER = True
 
 
 _DISALLOWED_ITEMS = [
