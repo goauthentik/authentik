@@ -32,6 +32,7 @@ from passbook.policies.engine import PolicyEngine
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLBindings, SAMLProvider
 from passbook.providers.saml.processors.types import SAMLResponseParams
+from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -87,7 +88,11 @@ class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
         planner.allow_empty_flows = True
         plan = planner.plan(
             self.request,
-            {PLAN_CONTEXT_SSO: True, PLAN_CONTEXT_APPLICATION: self.application},
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/saml/consent.html",
+            },
         )
         plan.append(in_memory_stage(SAMLFlowFinalView))
         self.request.session[SESSION_KEY_PLAN] = plan
