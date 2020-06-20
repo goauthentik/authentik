@@ -20,7 +20,7 @@ from passbook.core.models import User
 
 @lru_cache
 # pylint: disable=invalid-name
-def USER() -> User:
+def USER() -> User:  # noqa
     """Cached function that always returns pbadmin"""
     return User.objects.get(username="pbadmin")
 
@@ -41,6 +41,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def setUp(self):
         super().setUp()
         self.driver = self._get_driver()
+        self.driver.maximize_window()
         self.driver.implicitly_wait(5)
         self.wait = WebDriverWait(self.driver, 10)
         self.apply_default_data()
