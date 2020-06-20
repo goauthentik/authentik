@@ -1,4 +1,5 @@
 """passbook e2e testing utilities"""
+from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
@@ -13,6 +14,15 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 
+from passbook.core.models import User
+
+
+@lru_cache
+# pylint: disable=invalid-name
+def USER() -> User:
+    """Cached function that always returns pbadmin"""
+    return User.objects.get(username="pbadmin")
+
 
 def ensure_rsa_key():
     """Ensure that at least one RSAKey Object exists, create one if none exist"""
@@ -25,6 +35,8 @@ def ensure_rsa_key():
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):
+    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+
     def setUp(self):
         super().setUp()
         self.driver = self._get_driver()

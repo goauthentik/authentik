@@ -1,12 +1,8 @@
 """Test 2-step enroll flow"""
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait
 
-from e2e.utils import SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
@@ -80,8 +76,8 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.get(self.live_server_url)
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
-        self.driver.find_element(By.ID, "id_password").send_keys("pbadmin")
-        self.driver.find_element(By.ID, "id_password_repeat").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_password_repeat").send_keys(USER().username)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
         self.driver.find_element(By.ID, "id_name").send_keys("some name")
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")

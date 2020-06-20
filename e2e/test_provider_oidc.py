@@ -1,19 +1,16 @@
 """test OpenID Provider flow"""
 from time import sleep
 
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.shortcuts import reverse
 from oauth2_provider.generators import generate_client_id, generate_client_secret
 from oidc_provider.models import Client, ResponseType
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types import Healthcheck
-from e2e.utils import SeleniumTestCase, ensure_rsa_key
+from e2e.utils import USER, SeleniumTestCase, ensure_rsa_key
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.providers.oidc.models import OpenIDProvider
@@ -34,7 +31,6 @@ class TestProviderOIDC(SeleniumTestCase):
         container = client.containers.run(
             image="grafana/grafana:latest",
             detach=True,
-            name="passbook-e2e-grafana-client",
             network_mode="host",
             auto_remove=True,
             healthcheck=Healthcheck(
@@ -101,9 +97,9 @@ class TestProviderOIDC(SeleniumTestCase):
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         sleep(2)
         self.assertEqual(
@@ -144,35 +140,35 @@ class TestProviderOIDC(SeleniumTestCase):
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            "passbook Default Admin",
+            USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[1]/div/input",
             ).get_attribute("value"),
-            "passbook Default Admin",
+            USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[2]/div/input",
             ).get_attribute("value"),
-            "root@localhost",
+            USER().email,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
             ).get_attribute("value"),
-            "root@localhost",
+            USER().email,
         )
 
     def test_authorization_consent_explicit(self):
@@ -208,9 +204,9 @@ class TestProviderOIDC(SeleniumTestCase):
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys("pbadmin")
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
         self.assertIn(
@@ -224,26 +220,26 @@ class TestProviderOIDC(SeleniumTestCase):
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
-            "passbook Default Admin",
+            USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[1]/div/input",
             ).get_attribute("value"),
-            "passbook Default Admin",
+            USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[2]/div/input",
             ).get_attribute("value"),
-            "root@localhost",
+            USER().email,
         )
         self.assertEqual(
             self.driver.find_element(
                 By.XPATH,
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
             ).get_attribute("value"),
-            "root@localhost",
+            USER().email,
         )
