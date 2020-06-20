@@ -11,7 +11,7 @@
     </md:KeyDescriptor>
     {% endif %}
     <md:NameIDFormat>{{ subject_format }}</md:NameIDFormat>
-    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{{ sso_binding_post }}"/>
-    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ sso_binding_redirect }}"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{{ saml_sso_binding_post }}"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="{{ saml_sso_binding_redirect }}"/>
   </md:IDPSSODescriptor>
 </md:EntityDescriptor>

@@ -25,7 +25,7 @@ class SAMLBindings(models.TextChoices):
 
 
 class SAMLProvider(Provider):
-    """Model to save information about a Remote SAML Endpoint"""
+    """SAML 2.0-based authentication protocol."""
 
     name = models.TextField()
     processor_path = models.CharField(max_length=255, choices=[])
