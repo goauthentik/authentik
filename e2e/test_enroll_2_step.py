@@ -286,7 +286,7 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.get(self.live_server_url)
         self.setup_test_enroll_2_step()
         self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "[role=enroll]"))
+            ec.presence_of_element_located(By.CSS_SELECTOR, "[role=enroll]")
         )
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
 

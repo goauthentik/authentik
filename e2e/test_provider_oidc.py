@@ -6,6 +6,7 @@ from oauth2_provider.generators import generate_client_id, generate_client_secre
 from oidc_provider.models import Client, ResponseType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as ec
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -217,6 +218,9 @@ class TestProviderOIDC(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
+        self.wait.until(
+            ec.presence_of_element_located(By.XPATH, "//a[contains(@href, '/profile')]")
+        )
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
