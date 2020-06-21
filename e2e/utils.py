@@ -1,5 +1,6 @@
 """passbook e2e testing utilities"""
 from functools import lru_cache
+from os import makedirs
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
@@ -40,6 +41,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        makedirs("out", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(5)
@@ -53,6 +55,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
+        if self.failureException:
+            self.driver.save_screenshot("out/{self.__class__.__name__}.png")
         self.driver.quit()
         super().tearDown()
 

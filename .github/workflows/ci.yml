@@ -139,6 +139,10 @@ jobs:
           yarn
       - name: Run coverage
         run: pipenv run coverage run ./manage.py test --failfast
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          path: out/
       - name: Create XML Report
         run: pipenv run coverage xml
       - uses: codecov/codecov-action@v1
