@@ -216,6 +216,9 @@ class TestProviderOIDC(SeleniumTestCase):
                 By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
             ).text,
         )
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
+        )
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
         self.wait.until(
