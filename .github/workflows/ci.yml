@@ -121,6 +121,9 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: '3.8'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
       - name: Install dependencies
         run: |
           sudo pip install -U wheel pipenv
@@ -130,6 +133,10 @@ jobs:
           cd e2e
           docker-compose pull -q chrome
           docker-compose up -d chrome
+      - name: Build static files for e2e test
+        run: |
+          cd passbook/static/static
+          yarn
       - name: Run coverage
         run: pipenv run coverage run ./manage.py test --failfast
       - name: Create XML Report

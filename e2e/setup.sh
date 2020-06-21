@@ -1,6 +1,12 @@
 #!/bin/bash -x
 sudo apt update
+# Setup python
 sudo apt install -y python3.8 python3-pip apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+# Setup nodejs
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo npm install -g yarn
+# Setup docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
