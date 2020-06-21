@@ -1,4 +1,5 @@
 """passbook e2e testing utilities"""
+from time import time
 from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
@@ -55,7 +56,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        self.driver.save_screenshot(f"out/{self.__class__.__name__}.png")
+        self.driver.save_screenshot(f"out/{time()}.png")
         self.driver.quit()
         super().tearDown()
 

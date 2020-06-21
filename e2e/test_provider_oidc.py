@@ -219,7 +219,7 @@ class TestProviderOIDC(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
         self.wait.until(
-            ec.presence_of_element_located(By.XPATH, "//a[contains(@href, '/profile')]")
+            ec.presence_of_element_located((By.XPATH, "//a[contains(@href, '/profile')]"))
         )
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
