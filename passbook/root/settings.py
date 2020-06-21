@@ -347,6 +347,7 @@ _LOGGING_HANDLER_MAP = {
     "passbook": LOG_LEVEL,
     "django": "WARNING",
     "celery": "WARNING",
+    "selenium": "WARNING",
     "grpc": LOG_LEVEL,
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
