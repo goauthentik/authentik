@@ -141,6 +141,7 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_name").send_keys(
             "policy-enrollment-password-equals"
         )
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".CodeMirror-scroll")))
         self.driver.find_element(By.CSS_SELECTOR, ".CodeMirror-scroll").click()
         self.driver.find_element(By.CSS_SELECTOR, ".CodeMirror textarea").send_keys(
             "return request.context['password'] == request.context['password_repeat']"
