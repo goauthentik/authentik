@@ -141,7 +141,9 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_name").send_keys(
             "policy-enrollment-password-equals"
         )
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".CodeMirror-scroll")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, ".CodeMirror-scroll"))
+        )
         self.driver.find_element(By.CSS_SELECTOR, ".CodeMirror-scroll").click()
         self.driver.find_element(By.CSS_SELECTOR, ".CodeMirror textarea").send_keys(
             "return request.context['password'] == request.context['password_repeat']"
@@ -264,32 +266,28 @@ class TestEnroll2Step(SeleniumTestCase):
 
         # Create Stage binding for user login stage
         self.driver.find_element(By.LINK_TEXT, "Create").click()
-        self.driver.find_element(By.ID, "id_flow").click()
         dropdown = self.driver.find_element(By.ID, "id_flow")
         dropdown.find_element(
             By.XPATH, '//option[. = "Flow Welcome (default-enrollment-flow)"]'
         ).click()
-        self.driver.find_element(By.ID, "id_stage").click()
         dropdown = self.driver.find_element(By.ID, "id_stage")
         dropdown.find_element(
             By.XPATH, '//option[. = "Stage enroll-user-login"]'
         ).click()
-        self.driver.find_element(By.ID, "id_order").click()
         self.driver.find_element(By.ID, "id_order").send_keys("3")
         self.driver.find_element(
             By.CSS_SELECTOR, ".pf-c-form__actions > .pf-m-primary"
         ).click()
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, "#page-default-nav-example div.pf-m-icons > a"
-        ).click()
+        self.driver.find_element(By.CSS_SELECTOR, "[aria-label=logout]").click()
 
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         self.driver.get(self.live_server_url)
         self.setup_test_enroll_2_step()
-        self.driver.get(self.live_server_url)
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "[role=enroll]")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[role=enroll]"))
+        )
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
 
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
