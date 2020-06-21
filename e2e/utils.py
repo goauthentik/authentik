@@ -1,10 +1,10 @@
 """passbook e2e testing utilities"""
-from time import time
 from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
 from os import makedirs
+from time import time
 
 from Cryptodome.PublicKey import RSA
 from django.apps import apps
