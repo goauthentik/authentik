@@ -299,7 +299,6 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
         self.driver.find_element(By.LINK_TEXT, "foo").click()
 
-        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.assertEqual(
             self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
             "foo",

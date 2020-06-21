@@ -56,7 +56,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        self.driver.save_screenshot(f"out/{time()}.png")
+        self.driver.save_screenshot(f"out/{self.__class__.__name__}_{time()}.png")
         self.driver.quit()
         super().tearDown()
 
