@@ -46,18 +46,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:6a9cdab2db28330ffa3e6f08bb2bc07bc757d2019e4acf0c8376b72c63e7cc6b",
-                "sha256:f02c0c02f632285da124e560934145de64690000bf6348df8f1eb45239f0e9df"
+                "sha256:4856c8cb4150b900cc7dccbdf16f542fb8c12e97b17639979e58760847f7cf35",
+                "sha256:fe6f7f58fa53c4dd86432315717c989a65a5a8748e6219a53725be1041c4a113"
             ],
             "index": "pypi",
-            "version": "==1.14.6"
+            "version": "==1.14.7"
         },
         "botocore": {
             "hashes": [
-                "sha256:a5737a5215f9db23344752a4d2a43646c104e6d500a2d6f9409624d2e58c92f1",
-                "sha256:c8b5143e2eaac20ce0d7238fd8ef33f7969139ccd616edb54fd3a482cdfd0e6c"
+                "sha256:cce790e65368d28dfd715558daea6890922716efa69d3a4c76d80348a71ad460",
+                "sha256:e582e3ba61d812e8dd0939c0455c6f68cf41587506a3a30deafc54825087de01"
             ],
-            "version": "==1.17.6"
+            "version": "==1.17.7"
         },
         "celery": {
             "hashes": [
@@ -69,10 +69,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:5ad7e9a056d25ffa5082862e36f119f7f7cec6457fa07ee2f8c339814b80c9b1",
-                "sha256:9cd41137dc19af6a5e03b630eefe7d1f458d964d406342dd3edf625839b944cc"
+                "sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3",
+                "sha256:8fc0819f1f30ba15bdb34cceffb9ef04d99f420f68eb75d901e9560b8749fc41"
             ],
-            "version": "==2020.4.5.2"
+            "version": "==2020.6.20"
         },
         "cffi": {
             "hashes": [
