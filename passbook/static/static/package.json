@@ -3,6 +3,6 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@patternfly/patternfly": "^4.10.31",
-    "codemirror": "^5.54.0"
+    "codemirror": "^5.55.0"
   }
 }
