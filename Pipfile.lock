@@ -54,10 +54,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:a5737a5215f9db23344752a4d2a43646c104e6d500a2d6f9409624d2e58c92f1",
-                "sha256:c8b5143e2eaac20ce0d7238fd8ef33f7969139ccd616edb54fd3a482cdfd0e6c"
+                "sha256:cce790e65368d28dfd715558daea6890922716efa69d3a4c76d80348a71ad460",
+                "sha256:e582e3ba61d812e8dd0939c0455c6f68cf41587506a3a30deafc54825087de01"
             ],
-            "version": "==1.17.6"
+            "version": "==1.17.7"
         },
         "celery": {
             "hashes": [
@@ -69,10 +69,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:5ad7e9a056d25ffa5082862e36f119f7f7cec6457fa07ee2f8c339814b80c9b1",
-                "sha256:9cd41137dc19af6a5e03b630eefe7d1f458d964d406342dd3edf625839b944cc"
+                "sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3",
+                "sha256:8fc0819f1f30ba15bdb34cceffb9ef04d99f420f68eb75d901e9560b8749fc41"
             ],
-            "version": "==2020.4.5.2"
+            "version": "==2020.6.20"
         },
         "cffi": {
             "hashes": [
@@ -232,11 +232,11 @@
         },
         "django-prometheus": {
             "hashes": [
-                "sha256:6b7434da37d3898a9f051cabe477a163667214c811ef4331923c8e7efcb95f97",
-                "sha256:d94a4f17cdc2bb27c64e402d556a5b1a0f6f4c931b7f6ef0339288a0fc950bcc"
+                "sha256:0091a2778060cd984b99cbac1a4b786cdff611c027618986fbba66a81b4ac249",
+                "sha256:a1447a8be141f105b3bb56eba1b8baecfc7f49b6476482f7908167bedd02cf7b"
             ],
             "index": "pypi",
-            "version": "==2.1.0.dev36"
+            "version": "==2.1.0.dev38"
         },
         "django-recaptcha": {
             "hashes": [
