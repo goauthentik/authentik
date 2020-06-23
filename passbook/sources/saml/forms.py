@@ -16,6 +16,7 @@ class SAMLSourceForm(forms.ModelForm):
         model = SAMLSource
         fields = SOURCE_FORM_FIELDS + [
             "issuer",
+            "binding_type",
             "idp_url",
             "idp_logout_url",
             "auto_logout",

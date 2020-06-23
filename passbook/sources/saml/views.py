@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from signxml import InvalidSignature
 from signxml.util import strip_pem_header
 
 from passbook.lib.views import bad_request_message
@@ -70,6 +71,8 @@ class ACSView(View):
         try:
             processor.parse(request)
         except MissingSAMLResponse as exc:
+            return bad_request_message(request, str(exc))
+        except InvalidSignature as exc:
             return bad_request_message(request, str(exc))
 
         try:

@@ -68,8 +68,9 @@ class Processor:
 
         <saml:Subject>
                 <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-                            SPNameQualifier=""
-                            >email@example.com</saml:NameID>
+                            SPNameQualifier="">
+                    email@example.com
+                </saml:NameID>
         """
         assertion = self._root.find("{urn:oasis:names:tc:SAML:2.0:assertion}Assertion")
         subject = assertion.find("{urn:oasis:names:tc:SAML:2.0:assertion}Subject")
