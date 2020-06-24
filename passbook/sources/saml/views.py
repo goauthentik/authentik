@@ -1,5 +1,6 @@
 """saml sp views"""
 from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
@@ -35,7 +36,7 @@ class InitiateView(View):
         request.session["sso_destination"] = relay_state
         parameters = {
             "ACS_URL": build_full_url("acs", request, source),
-            "DESTINATION": source.idp_url,
+            "DESTINATION": source.sso_url,
             "AUTHN_REQUEST_ID": get_random_id(),
             "ISSUE_INSTANT": get_time_string(),
             "ISSUER": get_issuer(request, source),
@@ -44,14 +45,14 @@ class InitiateView(View):
         if source.binding_type == SAMLBindingTypes.Redirect:
             _request = deflate_and_base64_encode(authn_req.encode())
             url_args = urlencode({"SAMLRequest": _request, "RelayState": relay_state})
-            return redirect(f"{source.idp_url}?{url_args}")
+            return redirect(f"{source.sso_url}?{url_args}")
         if source.binding_type == SAMLBindingTypes.POST:
             _request = nice64(authn_req.encode())
             return render(
                 request,
                 "saml/sp/login.html",
                 {
-                    "request_url": source.idp_url,
+                    "request_url": source.sso_url,
                     "request": _request,
                     "relay_state": relay_state,
                     "source": source,
@@ -83,11 +84,12 @@ class ACSView(View):
             return bad_request_message(request, str(exc))
 
 
-class SLOView(View):
+class SLOView(LoginRequiredMixin, View):
     """Single-Logout-View"""
 
     def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
+        # TODO: Replace with flows
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
@@ -95,10 +97,7 @@ class SLOView(View):
         return render(
             request,
             "saml/sp/sso_single_logout.html",
-            {
-                "idp_logout_url": source.idp_logout_url,
-                "autosubmit": source.auto_logout,
-            },
+            {"idp_logout_url": source.slo_url,},
         )
 
 

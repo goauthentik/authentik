@@ -1,5 +1,5 @@
 """passbook saml source processor"""
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict
 
 from defusedxml import ElementTree
 from django.http import HttpRequest, HttpResponse
@@ -21,6 +21,13 @@ from passbook.sources.saml.exceptions import (
     UnsupportedNameIDFormat,
 )
 from passbook.sources.saml.models import SAMLSource
+from passbook.sources.saml.processors.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_WINDOWS,
+    SAML_NAME_ID_FORMAT_X509,
+)
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
@@ -100,19 +107,16 @@ class Processor:
         name_id_el = self._get_name_id()
         name_id = name_id_el.text
         if not name_id:
-            raise UnsupportedNameIDFormat(f"Subject's NameID is empty.")
+            raise UnsupportedNameIDFormat("Subject's NameID is empty.")
         _format = name_id_el.attrib["Format"]
-        if _format == "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress":
+        if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
-        if _format == "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent":
+        if _format == SAML_NAME_ID_FORMAT_PRESISTENT:
             return {"username": name_id}
-        if _format == "urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName":
+        if _format == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             return {"attributes__distinguishedName": name_id}
-        if (
-            _format
-            == "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName"
-        ):
+        if _format == SAML_NAME_ID_FORMAT_WINDOWS:
             if "\\" in name_id:
                 name_id = name_id.split("\\")[1]
             return {"username": name_id}
@@ -124,10 +128,7 @@ class Processor:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
         # transient NameIDs are handeled seperately as they don't have to go through flows.
-        if (
-            name_id.attrib["Format"]
-            == "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
-        ):
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient(request)
 
         name_id_filter = self._get_name_id_filter()

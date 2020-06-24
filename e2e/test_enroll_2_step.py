@@ -290,6 +290,7 @@ class TestEnroll2Step(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
 
+        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(USER().username)
