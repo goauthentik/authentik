@@ -31,7 +31,7 @@ class InitiateView(View):
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
-        relay_state = request.GET.get("next", None)
+        relay_state = request.GET.get("next", "")
         request.session["sso_destination"] = relay_state
         parameters = {
             "ACS_URL": build_full_url("acs", request, source),
