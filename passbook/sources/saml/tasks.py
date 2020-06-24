@@ -28,4 +28,5 @@ def clean_temporary_users():
             LOGGER.debug(
                 "User is expired and will be deleted.", user=user, delta=source_delta
             )
+            # TODO: Check if user is signed in anywhere?
             user.delete()

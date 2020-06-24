@@ -97,7 +97,7 @@ class SLOView(LoginRequiredMixin, View):
         return render(
             request,
             "saml/sp/sso_single_logout.html",
-            {"idp_logout_url": source.slo_url,},
+            {"idp_logout_url": source.slo_url},
         )
 
 

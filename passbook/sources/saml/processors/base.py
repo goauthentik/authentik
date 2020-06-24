@@ -146,7 +146,7 @@ class Processor:
         return self._flow_response(
             request,
             self._source.enrollment_flow,
-            **{PLAN_CONTEXT_PROMPT: name_id_filter,},
+            **{PLAN_CONTEXT_PROMPT: name_id_filter},
         )
 
     def _flow_response(
