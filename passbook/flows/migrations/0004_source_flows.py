@@ -77,7 +77,9 @@ def create_default_source_enrollment_flow(
     binding = FlowStageBinding.objects.using(db_alias).create(
         flow=flow, stage=prompt_stage, order=0
     )
-    PolicyBinding.objects.using(db_alias).create(policy=prompt_policy, target=binding)
+    PolicyBinding.objects.using(db_alias).create(
+        policy=prompt_policy, target=binding, order=0
+    )
 
     FlowStageBinding.objects.using(db_alias).create(
         flow=flow, stage=user_write, order=1

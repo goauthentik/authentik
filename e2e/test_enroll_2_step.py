@@ -298,6 +298,8 @@ class TestEnroll2Step(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_name").send_keys("some name")
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+
+        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
         self.driver.find_element(By.LINK_TEXT, "foo").click()
 
         self.assertEqual(
