@@ -30,6 +30,7 @@ from passbook.providers.oidc.api import OpenIDProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
+from passbook.sources.saml.api import SAMLSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
@@ -61,6 +62,7 @@ router.register("audit/events", EventViewSet)
 
 router.register("sources/all", SourceViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)
+router.register("sources/saml", SAMLSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
 
 router.register("policies/all", PolicyViewSet)
