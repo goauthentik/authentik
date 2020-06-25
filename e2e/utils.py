@@ -46,7 +46,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(5)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 60)
         self.apply_default_data()
 
     def _get_driver(self) -> WebDriver:
