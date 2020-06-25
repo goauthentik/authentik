@@ -40,6 +40,7 @@ signxml = "*"
 structlog = "*"
 swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
+facebook-sdk = "*"
 
 [requires]
 python_version = "3.8"
@@ -55,6 +56,8 @@ pylint = "*"
 pylint-django = "*"
 unittest-xml-reporting = "*"
 black = "*"
+selenium = "*"
+docker = "*"
 
 [pipenv]
 allow_prereleases = true

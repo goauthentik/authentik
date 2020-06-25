@@ -2,6 +2,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.sources.saml.models import SAMLSource
 
 
@@ -11,12 +12,12 @@ class SAMLSourceSerializer(ModelSerializer):
     class Meta:
 
         model = SAMLSource
-        fields = [
-            "pk",
+        fields = SOURCE_FORM_FIELDS + [
             "issuer",
-            "idp_url",
-            "idp_logout_url",
-            "auto_logout",
+            "sso_url",
+            "binding_type",
+            "slo_url",
+            "temporary_user_delete_after",
             "signing_kp",
         ]
 

@@ -2951,6 +2951,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /sources/saml/:
+    get:
+      operationId: sources_saml_list
+      description: SAMLSource Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_saml_create
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/saml/{pbm_uuid}/:
+    get:
+      operationId: sources_saml_read
+      description: SAMLSource Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_saml_update
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_saml_partial_update
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_saml_delete
+      description: SAMLSource Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this SAML Source.
+        required: true
+        type: string
+        format: uuid
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -5804,6 +5931,79 @@ definitions:
         title: Consumer secret
         type: string
         minLength: 1
+  SAMLSource:
+    required:
+      - name
+      - slug
+      - sso_url
+      - signing_kp
+    type: object
+    properties:
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
+      issuer:
+        title: Issuer
+        description: Also known as Entity ID. Defaults the Metadata URL.
+        type: string
+      sso_url:
+        title: SSO URL
+        description: URL that the initial Login request is sent to.
+        type: string
+        format: uri
+        maxLength: 200
+        minLength: 1
+      binding_type:
+        title: Binding type
+        type: string
+        enum:
+          - REDIRECT
+          - POST
+      slo_url:
+        title: SLO URL
+        description: Optional URL if your IDP supports Single-Logout.
+        type: string
+        format: uri
+        maxLength: 200
+        x-nullable: true
+      temporary_user_delete_after:
+        title: Delete temporary users after
+        description: "Time offset when temporary users should be deleted. This only\
+          \ applies if your IDP uses the NameID Format 'transient', and the user doesn't\
+          \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
+        type: string
+        minLength: 1
+      signing_kp:
+        title: Singing Keypair
+        description: Certificate Key Pair of the IdP which Assertion's Signature is
+          validated against.
+        type: string
+        format: uuid
   Stage:
     required:
       - name

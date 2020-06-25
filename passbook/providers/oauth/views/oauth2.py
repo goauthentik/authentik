@@ -1,9 +1,11 @@
 """passbook OAuth2 Views"""
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from oauth2_provider.exceptions import OAuthToolkitError
+from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.views.base import AuthorizationView
 from structlog import get_logger
 
@@ -20,6 +22,7 @@ from passbook.flows.stage import StageView
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.providers.oauth.models import OAuth2Provider
+from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
 
@@ -32,9 +35,10 @@ PLAN_CONTEXT_CODE_CHALLENGE = "code_challenge"
 PLAN_CONTEXT_CODE_CHALLENGE_METHOD = "code_challenge_method"
 PLAN_CONTEXT_SCOPE = "scope"
 PLAN_CONTEXT_NONCE = "nonce"
+PLAN_CONTEXT_SCOPE_DESCRIPTION = "scope_descriptions"
 
 
-class AuthorizationFlowInitView(AccessMixin, View):
+class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     # pylint: disable=unused-argument
@@ -54,8 +58,11 @@ class AuthorizationFlowInitView(AccessMixin, View):
             return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(provider.authorization_flow)
-        # planner.use_cache = False
         planner.allow_empty_flows = True
+        # Save scope descriptions
+        scopes = request.GET.get(PLAN_CONTEXT_SCOPE)
+        all_scopes = get_scopes_backend().get_all_scopes()
+
         plan = planner.plan(
             self.request,
             {
@@ -65,11 +72,16 @@ class AuthorizationFlowInitView(AccessMixin, View):
                 PLAN_CONTEXT_REDIRECT_URI: request.GET.get(PLAN_CONTEXT_REDIRECT_URI),
                 PLAN_CONTEXT_RESPONSE_TYPE: request.GET.get(PLAN_CONTEXT_RESPONSE_TYPE),
                 PLAN_CONTEXT_STATE: request.GET.get(PLAN_CONTEXT_STATE),
-                PLAN_CONTEXT_SCOPE: request.GET.get(PLAN_CONTEXT_SCOPE),
+                PLAN_CONTEXT_SCOPE: scopes,
                 PLAN_CONTEXT_NONCE: request.GET.get(PLAN_CONTEXT_NONCE),
+                PLAN_CONTEXT_SCOPE_DESCRIPTION: [
+                    all_scopes[scope] for scope in scopes.split(" ")
+                ],
+                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/oauth/consent.html",
             },
         )
-        plan.stages.append(in_memory_stage(OAuth2Stage))
+
+        plan.append(in_memory_stage(OAuth2Stage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",

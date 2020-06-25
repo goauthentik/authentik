@@ -1,16 +1,18 @@
 """saml sp views"""
 from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from signxml import InvalidSignature
 from signxml.util import strip_pem_header
 
 from passbook.lib.views import bad_request_message
 from passbook.providers.saml.utils import get_random_id, render_xml
-from passbook.providers.saml.utils.encoding import nice64
+from passbook.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.exceptions import (
     MissingSAMLResponse,
@@ -30,27 +32,29 @@ class InitiateView(View):
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
-        sso_destination = request.GET.get("next", None)
-        request.session["sso_destination"] = sso_destination
+        relay_state = request.GET.get("next", "")
+        request.session["sso_destination"] = relay_state
         parameters = {
             "ACS_URL": build_full_url("acs", request, source),
-            "DESTINATION": source.idp_url,
+            "DESTINATION": source.sso_url,
             "AUTHN_REQUEST_ID": get_random_id(),
             "ISSUE_INSTANT": get_time_string(),
             "ISSUER": get_issuer(request, source),
         }
         authn_req = get_authnrequest_xml(parameters, signed=False)
-        _request = nice64(str.encode(authn_req))
         if source.binding_type == SAMLBindingTypes.Redirect:
-            return redirect(source.idp_url + "?" + urlencode({"SAMLRequest": _request}))
+            _request = deflate_and_base64_encode(authn_req.encode())
+            url_args = urlencode({"SAMLRequest": _request, "RelayState": relay_state})
+            return redirect(f"{source.sso_url}?{url_args}")
         if source.binding_type == SAMLBindingTypes.POST:
+            _request = nice64(authn_req.encode())
             return render(
                 request,
                 "saml/sp/login.html",
                 {
-                    "request_url": source.idp_url,
+                    "request_url": source.sso_url,
                     "request": _request,
-                    "token": sso_destination,
+                    "relay_state": relay_state,
                     "source": source,
                 },
             )
@@ -71,6 +75,8 @@ class ACSView(View):
             processor.parse(request)
         except MissingSAMLResponse as exc:
             return bad_request_message(request, str(exc))
+        except InvalidSignature as exc:
+            return bad_request_message(request, str(exc))
 
         try:
             return processor.prepare_flow(request)
@@ -78,11 +84,12 @@ class ACSView(View):
             return bad_request_message(request, str(exc))
 
 
-class SLOView(View):
+class SLOView(LoginRequiredMixin, View):
     """Single-Logout-View"""
 
     def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
+        # TODO: Replace with flows
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
@@ -90,10 +97,7 @@ class SLOView(View):
         return render(
             request,
             "saml/sp/sso_single_logout.html",
-            {
-                "idp_logout_url": source.idp_logout_url,
-                "autosubmit": source.auto_logout,
-            },
+            {"idp_logout_url": source.slo_url},
         )
 
 

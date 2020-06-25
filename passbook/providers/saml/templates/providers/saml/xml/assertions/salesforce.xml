@@ -4,7 +4,7 @@
         Version="2.0">
     <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">{{ ISSUER }}</saml:Issuer>
     {{ ASSERTION_SIGNATURE|safe }}
-    {% include 'saml/xml/subject.xml' %}
+    {% include 'providers/saml/xml/subject.xml' %}
     <saml:Conditions NotBefore="{{ NOT_BEFORE }}" NotOnOrAfter="{{ NOT_ON_OR_AFTER }}">
         <saml:AudienceRestriction>
             <saml:Audience>{{ AUDIENCE }}</saml:Audience>

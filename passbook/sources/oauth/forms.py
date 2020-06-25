@@ -84,9 +84,9 @@ class FacebookOAuthSourceForm(OAuthSourceForm):
         overrides = {
             "provider_type": "facebook",
             "request_token_url": "",
-            "authorization_url": "https://www.facebook.com/v2.8/dialog/oauth",
-            "access_token_url": "https://graph.facebook.com/v2.8/oauth/access_token",
-            "profile_url": "https://graph.facebook.com/v2.8/me?fields=name,email,short_name",
+            "authorization_url": "https://www.facebook.com/v7.0/dialog/oauth",
+            "access_token_url": "https://graph.facebook.com/v7.0/oauth/access_token",
+            "profile_url": "https://graph.facebook.com/v7.0/me?fields=id,name,email",
         }
 
 

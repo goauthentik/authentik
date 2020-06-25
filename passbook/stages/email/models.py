@@ -21,7 +21,7 @@ class EmailTemplates(models.TextChoices):
 
 
 class EmailStage(Stage):
-    """email stage"""
+    """Email-based verification."""
 
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)

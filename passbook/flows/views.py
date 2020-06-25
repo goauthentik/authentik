@@ -27,6 +27,7 @@ LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
+SESSION_KEY_GET = "passbook_flows_get"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -127,7 +128,10 @@ class FlowExecutorView(View):
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
         self.cancel()
-        next_param = self.request.GET.get(NEXT_ARG_NAME, "passbook_core:overview")
+        # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
+        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "passbook_core:overview"
+        )
         return redirect_with_qs(next_param)
 
     def stage_ok(self) -> HttpResponse:
@@ -210,6 +214,7 @@ class FlowExecutorShellView(TemplateView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
         kwargs["msg_url"] = reverse("passbook_api:messages-list")
+        self.request.session[SESSION_KEY_GET] = self.request.GET
         return kwargs
 
 

@@ -83,7 +83,7 @@ class TestEmailStage(TestCase):
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(mail.outbox), 1)
-            self.assertEqual(mail.outbox[0].subject, "passbook - Password Recovery")
+            self.assertEqual(mail.outbox[0].subject, "passbook")
 
     def test_token(self):
         """Test with token"""
@@ -97,12 +97,20 @@ class TestEmailStage(TestCase):
         session.save()
 
         with patch("passbook.flows.views.FlowExecutorView.cancel", MagicMock()):
+            # Call the executor shell to preseed the session
             url = reverse(
-                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "passbook_flows:flow-executor-shell",
+                kwargs={"flow_slug": self.flow.slug},
             )
             token = Token.objects.get(user=self.user)
             url += f"?{QS_KEY_TOKEN}={token.pk.hex}"
-            response = self.client.get(url)
+            self.client.get(url)
+            # Call the actual executor to get the JSON Response
+            response = self.client.get(
+                reverse(
+                    "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                )
+            )
 
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(

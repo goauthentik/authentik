@@ -39,6 +39,11 @@ class FlowPlan:
     context: Dict[str, Any] = field(default_factory=dict)
     markers: List[StageMarker] = field(default_factory=list)
 
+    def append(self, stage: Stage, marker: Optional[StageMarker] = None):
+        """Append `stage` to all stages, optionall with stage marker"""
+        self.stages.append(stage)
+        self.markers.append(marker or StageMarker())
+
     def next(self) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:

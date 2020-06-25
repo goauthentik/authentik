@@ -22,7 +22,7 @@ class PolicyEvaluator(BaseEvaluator):
         super().__init__()
         self._messages = []
         self._context["pb_message"] = self.expr_func_message
-        self._filename = policy_name
+        self._filename = policy_name or "PolicyEvaluator"
 
     def expr_func_message(self, message: str):
         """Wrapper to append to messages list, which is returned with PolicyResult"""

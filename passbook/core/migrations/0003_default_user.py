@@ -9,7 +9,9 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     # We have to use a direct import here, otherwise we get an object manager error
     from passbook.core.models import User
 
-    pbadmin, _ = User.objects.get_or_create(
+    db_alias = schema_editor.connection.alias
+
+    pbadmin, _ = User.objects.using(db_alias).get_or_create(
         username="pbadmin", email="root@localhost", name="passbook Default Admin"
     )
     pbadmin.set_password("pbadmin")  # noqa # nosec

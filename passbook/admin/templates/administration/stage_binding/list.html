@@ -39,8 +39,8 @@
                 {% for flow in grouped_bindings %}
                     <tr role="role">
                         <td>
-                            {% blocktrans with name=flow.grouper.name %}
-                            Flow {{ name }}
+                            {% blocktrans with slug=flow.grouper.slug %}
+                            Flow {{ slug }}
                             {% endblocktrans %}
                         </td>
                         <td></td>
@@ -56,9 +56,9 @@
                         </td>
                         <th role="columnheader">
                             <div>
-                                <div>{{ binding.flow.name }}</div>
+                                <div>{{ binding.flow.slug }}</div>
                                 <small>
-                                    {{ binding.flow }}
+                                    {{ binding.flow.name }}
                                 </small>
                             </div>
                         </th>

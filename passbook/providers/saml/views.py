@@ -32,6 +32,7 @@ from passbook.policies.engine import PolicyEngine
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLBindings, SAMLProvider
 from passbook.providers.saml.processors.types import SAMLResponseParams
+from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -87,9 +88,13 @@ class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
         planner.allow_empty_flows = True
         plan = planner.plan(
             self.request,
-            {PLAN_CONTEXT_SSO: True, PLAN_CONTEXT_APPLICATION: self.application},
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/saml/consent.html",
+            },
         )
-        plan.stages.append(in_memory_stage(SAMLFlowFinalView))
+        plan.append(in_memory_stage(SAMLFlowFinalView))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",
@@ -188,7 +193,9 @@ class SAMLFlowFinalView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
-        provider: SAMLProvider = application.provider
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
+        )
         # Log Application Authorization
         Event.new(
             EventAction.AUTHORIZE_APPLICATION,
@@ -205,7 +212,7 @@ class SAMLFlowFinalView(StageView):
         if provider.sp_binding == SAMLBindings.POST:
             return render(
                 self.request,
-                "saml/idp/autosubmit_form.html",
+                "providers/saml/autosubmit_form.html",
                 {
                     "url": response.acs_url,
                     "application": application,
@@ -227,7 +234,7 @@ class SAMLFlowFinalView(StageView):
         return bad_request_message(request, "Invalid sp_binding specified")
 
 
-class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
+class DescriptorDownloadView(View):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     @staticmethod
@@ -257,18 +264,16 @@ class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
             ctx["cert_public_key"] = strip_pem_header(
                 provider.signing_kp.certificate_data.replace("\r", "")
             ).replace("\n", "")
-        return render_to_string("saml/xml/metadata.xml", ctx)
+        return render_to_string("providers/saml/xml/metadata.xml", ctx)
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
-        self.application = get_object_or_404(Application, slug=application_slug)
-        self.provider: SAMLProvider = get_object_or_404(
-            SAMLProvider, pk=self.application.provider_id
+        application = get_object_or_404(Application, slug=application_slug)
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
         )
-        if not self._has_access():
-            raise PermissionDenied()
         try:
-            metadata = DescriptorDownloadView.get_metadata(request, self.provider)
+            metadata = DescriptorDownloadView.get_metadata(request, provider)
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             return bad_request_message(
                 request, "Provider is not assigned to an application."
@@ -277,5 +282,5 @@ class DescriptorDownloadView(LoginRequiredMixin, SAMLAccessMixin, View):
             response = HttpResponse(metadata, content_type="application/xml")
             response[
                 "Content-Disposition"
-            ] = f'attachment; filename="{self.provider.name}_passbook_meta.xml"'
+            ] = f'attachment; filename="{provider.name}_passbook_meta.xml"'
             return response

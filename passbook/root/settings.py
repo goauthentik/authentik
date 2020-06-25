@@ -330,13 +330,24 @@ LOGGING = {
     },
     "loggers": {},
 }
+
+TEST = False
+TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
 LOG_LEVEL = CONFIG.y("log_level").upper()
+
+TEST_OUTPUT_FILE_NAME = "unittest.xml"
+
+if len(sys.argv) >= 2 and sys.argv[1] == "test":
+    LOG_LEVEL = "DEBUG"
+    TEST = True
+    CELERY_TASK_ALWAYS_EAGER = True
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "passbook": LOG_LEVEL,
     "django": "WARNING",
     "celery": "WARNING",
+    "selenium": "WARNING",
     "grpc": LOG_LEVEL,
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
@@ -349,18 +360,6 @@ for handler_name, level in _LOGGING_HANDLER_MAP.items():
         "level": level,
         "propagate": False,
     }
-
-TEST = False
-TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
-TEST_OUTPUT_VERBOSE = 2
-
-TEST_OUTPUT_FILE_NAME = "unittest.xml"
-
-if any("test" in arg for arg in sys.argv):
-    LOGGER.warning("Testing mode enabled, no logging from now on...")
-    LOGGING = None
-    TEST = True
-    CELERY_TASK_ALWAYS_EAGER = True
 
 
 _DISALLOWED_ITEMS = [

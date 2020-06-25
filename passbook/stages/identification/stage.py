@@ -49,7 +49,7 @@ class IdentificationStageView(FormView, StageView):
 
         # Check all enabled source, add them if they have a UI Login button.
         kwargs["sources"] = []
-        sources = (
+        sources: List[Source] = (
             Source.objects.filter(enabled=True).order_by("name").select_subclasses()
         )
         for source in sources:
