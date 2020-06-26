@@ -66,6 +66,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.driver.quit()
         super().tearDown()
 
+    def wait_for_url(self, desired_url):
+        """Wait until URL is `desired_url`."""
+        self.wait.until(lambda driver: driver.current_url == desired_url)
+
     def url(self, view, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)

@@ -345,6 +345,7 @@ class TestEnroll(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
         self.driver.find_element(By.LINK_TEXT, "foo").click()
 
+        self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
             self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
             "foo",
