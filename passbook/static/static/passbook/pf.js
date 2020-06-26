@@ -50,6 +50,9 @@ const convertToSlug = (text) => {
 document.querySelectorAll("input[name=name]").forEach((input) => {
     input.addEventListener("input", (e) => {
         const form = e.target.closest("form");
+        if (form === null) {
+            return;
+        }
         const slugField = form.querySelector("input[name=slug]");
         slugField.value = convertToSlug(e.target.value);
     });

@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
+from structlog import get_logger
 
 from passbook.core.models import User
 
@@ -48,6 +49,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.driver.implicitly_wait(5)
         self.wait = WebDriverWait(self.driver, 60)
         self.apply_default_data()
+        self.logger = get_logger()
 
     def _get_driver(self) -> WebDriver:
         return webdriver.Remote(
@@ -57,6 +59,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def tearDown(self):
         self.driver.save_screenshot(f"out/{self.__class__.__name__}_{time()}.png")
+        for line in self.driver.get_log("browser"):
+            self.logger.warning(
+                line["message"], source=line["source"], level=line["level"]
+            )
         self.driver.quit()
         super().tearDown()
 
