@@ -57,6 +57,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
       - uses: actions/setup-python@v1
         with:
           python-version: '3.8'
