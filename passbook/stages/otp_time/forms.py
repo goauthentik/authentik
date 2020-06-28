@@ -1,16 +1,10 @@
-"""passbook OTP Forms"""
-
 from django import forms
-from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 
-from passbook.stages.otp.models import OTPStage
-
-OTP_CODE_VALIDATOR = RegexValidator(
-    r"^[0-9a-z]{6,8}$", _("Only alpha-numeric characters are allowed.")
-)
+from passbook.stages.otp_time.models import OTPTimeStage
+from passbook.stages.otp_validate.forms import OTP_CODE_VALIDATOR
 
 
 class PictureWidget(forms.widgets.Widget):
@@ -20,30 +14,11 @@ class PictureWidget(forms.widgets.Widget):
         return mark_safe(f'<img src="{value}" />')  # nosec
 
 
-class OTPVerifyForm(forms.Form):
-    """Simple Form to verify OTP Code"""
-
-    order = ["code"]
-
-    code = forms.CharField(
-        label=_("Code"),
-        validators=[OTP_CODE_VALIDATOR],
-        widget=forms.TextInput(attrs={"autocomplete": "off", "placeholder": "Code"}),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # This is a little helper so the field is focused by default
-        self.fields["code"].widget.attrs.update(
-            {"autofocus": "autofocus", "autocomplete": "off"}
-        )
-
-
-class OTPSetupForm(forms.Form):
-    """OTP Setup form"""
+class SetupForm(forms.Form):
 
     title = _("Set up OTP")
     device: Device = None
+
     qr_code = forms.CharField(
         widget=PictureWidget,
         disabled=True,
@@ -56,8 +31,6 @@ class OTPSetupForm(forms.Form):
         widget=forms.TextInput(attrs={"placeholder": _("One-Time Password")}),
     )
 
-    tokens = forms.MultipleChoiceField(disabled=True, required=False)
-
     def clean_code(self):
         """Check code with new otp device"""
         if self.device is not None:
@@ -66,13 +39,12 @@ class OTPSetupForm(forms.Form):
         return self.cleaned_data.get("code")
 
 
-class OTPStageForm(forms.ModelForm):
-    """Form to edit OTPStage instances"""
-
+class OTPTimeStageForm(forms.ModelForm):
     class Meta:
 
-        model = OTPStage
-        fields = ["name", "enforced"]
+        model = OTPTimeStage
+        fields = ["name", "digits"]
+
         widgets = {
             "name": forms.TextInput(),
         }

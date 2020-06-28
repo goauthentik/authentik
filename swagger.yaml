@@ -3910,10 +3910,10 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/otp/:
+  /stages/otp_validate/:
     get:
-      operationId: stages_otp_list
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_list
+      description: OTPValidateStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -3957,73 +3957,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OTPStage'
+                  $ref: '#/definitions/OTPValidateStage'
       tags:
         - stages
     post:
-      operationId: stages_otp_create
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_create
+      description: OTPValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       tags:
         - stages
     parameters: []
-  /stages/otp/{stage_uuid}/:
+  /stages/otp_validate/{stage_uuid}/:
     get:
-      operationId: stages_otp_read
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_read
+      description: OTPValidateStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       tags:
         - stages
     put:
-      operationId: stages_otp_update
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_update
+      description: OTPValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       tags:
         - stages
     patch:
-      operationId: stages_otp_partial_update
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_partial_update
+      description: OTPValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPValidateStage'
       tags:
         - stages
     delete:
-      operationId: stages_otp_delete
-      description: OTPStage Viewset
+      operationId: stages_otp_validate_delete
+      description: OTPValidateStage Viewset
       parameters: []
       responses:
         '204':
@@ -4033,7 +4033,7 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this OTP Stage.
+        description: A UUID string identifying this OTP Validation Stage.
         required: true
         type: string
         format: uuid
@@ -5177,7 +5177,7 @@ definitions:
           - enrollment
           - unenrollment
           - recovery
-          - password_change
+          - user_settings
       stages:
         type: array
         items:
@@ -6209,7 +6209,7 @@ definitions:
       fixed_data:
         title: Fixed data
         type: object
-  OTPStage:
+  OTPValidateStage:
     required:
       - name
     type: object
@@ -6223,10 +6223,6 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      enforced:
-        title: Enforced
-        description: Enforce enabled OTP for Users this stage applies to.
-        type: boolean
   PasswordStage:
     required:
       - name

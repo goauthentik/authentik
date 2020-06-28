@@ -107,7 +107,8 @@ INSTALLED_APPS = [
     "passbook.stages.user_login.apps.PassbookStageUserLoginConfig",
     "passbook.stages.user_logout.apps.PassbookStageUserLogoutConfig",
     "passbook.stages.user_write.apps.PassbookStageUserWriteConfig",
-    "passbook.stages.otp.apps.PassbookStageOTPConfig",
+    "passbook.stages.otp_time.apps.PassbookStageOTPTimeConfig",
+    "passbook.stages.otp_validate.apps.PassbookStageOTPValidateConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
     "passbook.static.apps.PassbookStaticConfig",
 ]
