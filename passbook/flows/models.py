@@ -7,12 +7,20 @@ from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
+from django.template.context import RequestContext
 
 from passbook.core.types import UIUserSettings
 from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
+
+
+class NotConfiguredAction(models.TextChoices):
+    """Decides how the FlowExecutor should proceed when a stage isn't configured"""
+
+    SKIP = "skip"
+    # CONFIGURE = "configure"
 
 
 class FlowDesignation(models.TextChoices):
@@ -25,7 +33,7 @@ class FlowDesignation(models.TextChoices):
     ENROLLMENT = "enrollment"
     UNRENOLLMENT = "unenrollment"
     RECOVERY = "recovery"
-    PASSWORD_CHANGE = "password_change"  # nosec # noqa
+    USER_SETTINGS = "user_settings"
 
 
 class Stage(models.Model):
@@ -40,8 +48,8 @@ class Stage(models.Model):
     type = ""
     form = ""
 
-    @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
+    @staticmethod
+    def ui_user_settings(context: RequestContext) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or an instanace of UIUserSettings."""
         return None

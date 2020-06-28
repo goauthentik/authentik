@@ -7,6 +7,12 @@ from structlog import get_logger
 LOGGER = get_logger()
 
 
+def delete_cache_prefix(prefix: str) -> int:
+    """Delete keys prefixed with `prefix` and return count of deleted keys."""
+    keys = cache.keys(prefix)
+    cache.delete_many(keys)
+    return len(keys)
+
 @receiver(post_save)
 # pylint: disable=unused-argument
 def invalidate_flow_cache(sender, instance, **_):
@@ -15,17 +21,14 @@ def invalidate_flow_cache(sender, instance, **_):
     from passbook.flows.planner import cache_key
 
     if isinstance(instance, Flow):
-        LOGGER.debug("Invalidating Flow cache", flow=instance)
-        cache.delete(f"{cache_key(instance)}*")
+        total = delete_cache_prefix(f"{cache_key(instance)}*")
+        LOGGER.debug("Invalidating Flow cache", flow=instance, len=total)
     if isinstance(instance, FlowStageBinding):
-        LOGGER.debug("Invalidating Flow cache from FlowStageBinding", binding=instance)
-        cache.delete(f"{cache_key(instance.flow)}*")
+        total = delete_cache_prefix(f"{cache_key(instance.flow)}*")
+        LOGGER.debug("Invalidating Flow cache from FlowStageBinding", binding=instance, len=total)
     if isinstance(instance, Stage):
-        LOGGER.debug("Invalidating Flow cache from Stage", stage=instance)
         total = 0
         for binding in FlowStageBinding.objects.filter(stage=instance):
             prefix = cache_key(binding.flow)
-            keys = cache.keys(f"{prefix}*")
-            total += len(keys)
-            cache.delete_many(keys)
-        LOGGER.debug("Deleted keys", len=total)
+            total += delete_cache_prefix(f"{prefix}*")
+        LOGGER.debug("Invalidating Flow cache from Stage", stage=instance, len=total)
