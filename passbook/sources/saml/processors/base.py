@@ -153,7 +153,7 @@ class Processor:
         self, request: HttpRequest, flow: Flow, **kwargs
     ) -> HttpResponse:
         kwargs[PLAN_CONTEXT_SSO] = True
-        request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs,)
+        request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs)
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell", request.GET, flow_slug=flow.slug,
         )

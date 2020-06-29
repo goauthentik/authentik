@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.stages.password.models import PasswordStage
 
 
@@ -40,14 +41,19 @@ class PasswordForm(forms.Form):
 class PasswordStageForm(forms.ModelForm):
     """Form to create/edit Password Stages"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["change_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.STAGE_SETUP
+        )
+
     class Meta:
 
         model = PasswordStage
-        fields = ["name", "backends"]
+        fields = ["name", "backends", "change_flow"]
         widgets = {
             "name": forms.TextInput(),
             "backends": FilteredSelectMultiple(
                 _("backends"), False, choices=get_authentication_backends()
             ),
-            "password_policies": FilteredSelectMultiple(_("password policies"), False),
         }

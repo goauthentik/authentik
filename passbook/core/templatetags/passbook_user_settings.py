@@ -38,9 +38,7 @@ def user_sources(context: RequestContext) -> List[UIUserSettings]:
         user_settings = source.ui_user_settings
         if not user_settings:
             continue
-        policy_engine = PolicyEngine(
-            source.policies.all(), user, context.get("request")
-        )
+        policy_engine = PolicyEngine(source, user, context.get("request"))
         policy_engine.build()
         if policy_engine.passing:
             matching_sources.append(user_settings)

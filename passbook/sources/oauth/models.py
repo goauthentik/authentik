@@ -62,15 +62,9 @@ class OAuthSource(Source):
 
     @property
     def ui_user_settings(self) -> UIUserSettings:
-        icon_type = self.provider_type
-        if icon_type == "azure ad":
-            icon_type = "windows"
-        icon_class = f"fab fa-{icon_type}"
         view_name = "passbook_sources_oauth:oauth-client-user"
         return UIUserSettings(
-            name=self.name,
-            icon=icon_class,
-            view_name=reverse((view_name), kwargs={"source_slug": self.slug}),
+            name=self.name, url=reverse(view_name, kwargs={"source_slug": self.slug}),
         )
 
     def __str__(self) -> str:

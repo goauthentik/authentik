@@ -25,8 +25,7 @@
                 <ul class="pf-c-nav__list">
                     {% for stage in user_stages_loc %}
                     <li class="pf-c-nav__item">
-                        <a href="{% url stage.view_name %}" class="pf-c-nav__link {% is_active stage.view_name %}">
-                            <i class="{{ stage.icon }}"></i>
+                        <a href="{{ stage.url }}" class="pf-c-nav__link {% is_active stage.view_name %}">
                             {{ stage.name }}
                         </a>
                     </li>
@@ -43,7 +42,6 @@
                     <li class="pf-c-nav__item">
                         <a href="{{ source.view_name }}"
                             class="pf-c-nav__link {% if user_settings.view_name == request.get_full_path %} pf-m-current {% endif %}">
-                            <i class="{{ source.icon }}"></i>
                             {{ source.name }}
                         </a>
                     </li>

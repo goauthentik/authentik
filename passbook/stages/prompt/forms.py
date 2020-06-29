@@ -1,5 +1,7 @@
 """Prompt forms"""
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -16,6 +18,7 @@ class PromptStageForm(forms.ModelForm):
         fields = ["name", "fields"]
         widgets = {
             "name": forms.TextInput(),
+            "fields": FilteredSelectMultiple(_("prompts"), False),
         }
 
 

@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from e2e.utils import USER, SeleniumTestCase
 
 
-class TestLogin(SeleniumTestCase):
+class TestFlowsLogin(SeleniumTestCase):
     """test default login flow"""
 
     def test_login(self):

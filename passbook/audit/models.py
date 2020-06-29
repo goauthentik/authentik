@@ -12,12 +12,29 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from django.views.debug import CLEANSED_SUBSTITUTE, HIDDEN_SETTINGS
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
+
+
+def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
+    """Cleanse a dictionary, recursively"""
+    final_dict = {}
+    for key, value in source.items():
+        try:
+            if HIDDEN_SETTINGS.search(key):
+                final_dict[key] = CLEANSED_SUBSTITUTE
+            else:
+                final_dict[key] = value
+        except TypeError:
+            final_dict[key] = value
+        if isinstance(value, dict):
+            final_dict[key] = cleanse_dict(value)
+    return final_dict
 
 
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -27,15 +44,16 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
         name: str,
         pk: Any
     }"""
+    final_dict = {}
     for key, value in source.items():
         if isinstance(value, dict):
-            source[key] = sanitize_dict(value)
+            final_dict[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
             model_content_type = ContentType.objects.get_for_model(value)
             name = str(value)
             if hasattr(value, "name"):
                 name = value.name
-            source[key] = sanitize_dict(
+            final_dict[key] = sanitize_dict(
                 {
                     "app": model_content_type.app_label,
                     "model_name": model_content_type.model,
@@ -44,8 +62,10 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
                 }
             )
         elif isinstance(value, UUID):
-            source[key] = value.hex
-    return source
+            final_dict[key] = value.hex
+        else:
+            final_dict[key] = value
+    return final_dict
 
 
 class EventAction(Enum):
@@ -104,7 +124,7 @@ class Event(models.Model):
             )
         if not app:
             app = getmodule(stack()[_inspect_offset][0]).__name__
-        cleaned_kwargs = sanitize_dict(kwargs)
+        cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action.value, app=app, context=cleaned_kwargs)
         return event
 
