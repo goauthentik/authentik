@@ -22,7 +22,7 @@ class ChangeFlowInitView(LoginRequiredMixin, View):
             raise Http404
 
         plan = FlowPlanner(stage.change_flow).plan(
-            request, {PLAN_CONTEXT_PENDING_USER: request.user,}
+            request, {PLAN_CONTEXT_PENDING_USER: request.user}
         )
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(

@@ -12,12 +12,29 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from django.views.debug import CLEANSED_SUBSTITUTE, HIDDEN_SETTINGS
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
+
+
+def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
+    """Cleanse a dictionary, recursively"""
+    final_dict = {}
+    for key, value in source.items():
+        try:
+            if HIDDEN_SETTINGS.search(key):
+                final_dict[key] = CLEANSED_SUBSTITUTE
+            else:
+                final_dict[key] = value
+        except TypeError:
+            final_dict[key] = value
+        if isinstance(value, dict):
+            final_dict[key] = cleanse_dict(value)
+    return final_dict
 
 
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -107,7 +124,7 @@ class Event(models.Model):
             )
         if not app:
             app = getmodule(stack()[_inspect_offset][0]).__name__
-        cleaned_kwargs = sanitize_dict(kwargs)
+        cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action.value, app=app, context=cleaned_kwargs)
         return event
 
