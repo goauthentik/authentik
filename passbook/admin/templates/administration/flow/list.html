@@ -27,7 +27,7 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Identifier' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Designation' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Stages' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Policies' %}</th>
@@ -39,8 +39,8 @@
                 <tr role="row">
                     <th role="columnheader">
                         <div>
-                            <div>{{ flow.name }}</div>
-                            <small>{{ flow.slug }}</small>
+                            <div>{{ flow.slug }}</div>
+                            <small>{{ flow.name }}</small>
                         </div>
                     </th>
                     <td role="cell">

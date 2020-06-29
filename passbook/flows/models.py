@@ -7,7 +7,6 @@ from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
-from django.template.context import RequestContext
 
 from passbook.core.types import UIUserSettings
 from passbook.lib.utils.reflection import class_to_path
@@ -33,7 +32,7 @@ class FlowDesignation(models.TextChoices):
     ENROLLMENT = "enrollment"
     UNRENOLLMENT = "unenrollment"
     RECOVERY = "recovery"
-    USER_SETTINGS = "user_settings"
+    STAGE_SETUP = "stage_setup"
 
 
 class Stage(models.Model):
@@ -48,8 +47,8 @@ class Stage(models.Model):
     type = ""
     form = ""
 
-    @staticmethod
-    def ui_user_settings(context: RequestContext) -> Optional[UIUserSettings]:
+    @property
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or an instanace of UIUserSettings."""
         return None

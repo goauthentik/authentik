@@ -19,7 +19,7 @@ def user_stages(context: RequestContext) -> List[UIUserSettings]:
     _all_stages: Iterable[Stage] = Stage.__subclasses__()
     matching_stages: List[UIUserSettings] = []
     for stage in _all_stages:
-        user_settings = stage.ui_user_settings(context)
+        user_settings = stage.ui_user_settings
         if not user_settings:
             continue
         matching_stages.append(user_settings)
@@ -38,9 +38,7 @@ def user_sources(context: RequestContext) -> List[UIUserSettings]:
         user_settings = source.ui_user_settings
         if not user_settings:
             continue
-        policy_engine = PolicyEngine(
-            source.policies.all(), user, context.get("request")
-        )
+        policy_engine = PolicyEngine(source, user, context.get("request"))
         policy_engine.build()
         if policy_engine.passing:
             matching_sources.append(user_settings)

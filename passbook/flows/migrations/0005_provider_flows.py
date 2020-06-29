@@ -7,7 +7,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from passbook.flows.models import FlowDesignation
 
 
-def create_default_provider_authz_flow(
+def create_default_provider_authorization_flow(
     apps: Apps, schema_editor: BaseDatabaseSchemaEditor
 ):
     Flow = apps.get_model("passbook_flows", "Flow")
@@ -18,22 +18,24 @@ def create_default_provider_authz_flow(
     db_alias = schema_editor.connection.alias
 
     # Empty flow for providers where consent is implicitly given
-    Flow.objects.using(db_alias).create(
-        name="Authorize Application",
+    Flow.objects.using(db_alias).update_or_create(
         slug="default-provider-authorization-implicit-consent",
         designation=FlowDesignation.AUTHORIZATION,
+        defaults={"name": "Authorize Application"},
     )
 
     # Flow with consent form to obtain explicit user consent
-    flow = Flow.objects.using(db_alias).create(
-        name="Authorize Application",
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-provider-authorization-explicit-consent",
         designation=FlowDesignation.AUTHORIZATION,
+        defaults={"name": "Authorize Application"},
     )
-    stage = ConsentStage.objects.using(db_alias).create(
+    stage, _ = ConsentStage.objects.using(db_alias).update_or_create(
         name="default-provider-authorization-consent"
     )
-    FlowStageBinding.objects.using(db_alias).create(flow=flow, stage=stage, order=0)
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=stage, defaults={"order": 0}
+    )
 
 
 class Migration(migrations.Migration):
@@ -43,4 +45,4 @@ class Migration(migrations.Migration):
         ("passbook_stages_consent", "0001_initial"),
     ]
 
-    operations = [migrations.RunPython(create_default_provider_authz_flow)]
+    operations = [migrations.RunPython(create_default_provider_authorization_flow)]

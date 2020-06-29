@@ -5177,7 +5177,7 @@ definitions:
           - enrollment
           - unenrollment
           - recovery
-          - user_settings
+          - stage_setup
       stages:
         type: array
         items:
