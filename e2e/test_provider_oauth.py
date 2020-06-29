@@ -93,6 +93,8 @@ class TestProviderOAuth(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+
+        self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
@@ -163,6 +165,7 @@ class TestProviderOAuth(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
+        self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
