@@ -183,6 +183,30 @@ class FlowPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
 
 
+class FlowExecutorShellView(TemplateView):
+    """Executor Shell view, loads a dummy card with a spinner
+    that loads the next stage in the background."""
+
+    template_name = "flows/shell.html"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
+        kwargs["msg_url"] = reverse("passbook_api:messages-list")
+        self.request.session[SESSION_KEY_GET] = self.request.GET
+        return kwargs
+
+
+class CancelView(View):
+    """View which canels the currently active plan"""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """View which canels the currently active plan"""
+        if SESSION_KEY_PLAN in request.session:
+            del request.session[SESSION_KEY_PLAN]
+            LOGGER.debug("Canceled current plan")
+        return redirect("passbook_core:overview")
+
+
 class ToDefaultFlow(View):
     """Redirect to default flow matching by designation"""
 
@@ -204,19 +228,6 @@ class ToDefaultFlow(View):
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell", request.GET, flow_slug=flow.slug
         )
-
-
-class FlowExecutorShellView(TemplateView):
-    """Executor Shell view, loads a dummy card with a spinner
-    that loads the next stage in the background."""
-
-    template_name = "flows/shell.html"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
-        kwargs["msg_url"] = reverse("passbook_api:messages-list")
-        self.request.session[SESSION_KEY_GET] = self.request.GET
-        return kwargs
 
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
