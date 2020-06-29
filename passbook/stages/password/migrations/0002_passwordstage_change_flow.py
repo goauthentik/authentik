@@ -82,6 +82,22 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
     )
 
 
+def update_default_stage_change(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    PasswordStage = apps.get_model("passbook_stages_password", "PasswordStage")
+    Flow = apps.get_model("passbook_flows", "Flow")
+
+    flow = Flow.objects.get(
+        slug="default-password-change", designation=FlowDesignation.STAGE_SETUP,
+    )
+
+    stages = PasswordStage.objects.filter(name="default-authentication-password")
+    if not stages.exists():
+        return
+    stage = stages.first()
+    stage.change_flow = flow
+    stage.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -106,4 +122,5 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(create_default_password_change),
+        migrations.RunPython(update_default_stage_change),
     ]

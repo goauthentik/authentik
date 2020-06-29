@@ -44,7 +44,7 @@ class PasswordStage(Stage):
             "passbook_stages_password:change", kwargs={"stage_uuid": self.pk}
         )
         args = urlencode({NEXT_ARG_NAME: reverse("passbook_core:user-settings")})
-        return UIUserSettings(name=self.name, url=f"{base_url}?{args}")
+        return UIUserSettings(name=_("Change password"), url=f"{base_url}?{args}")
 
     def __str__(self):
         return f"Password Stage {self.name}"
