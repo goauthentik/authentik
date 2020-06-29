@@ -8,8 +8,7 @@ class UIUserSettings:
     """Dataclass for Stage and Source's user_settings"""
 
     name: str
-    icon: str
-    view_name: str
+    url: str
 
 
 @dataclass

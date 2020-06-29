@@ -1,5 +1,6 @@
 """OTP Stage"""
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from passbook.core.types import UIUserSettings
@@ -20,9 +21,7 @@ class OTPStage(Stage):
     @property
     def ui_user_settings(self) -> UIUserSettings:
         return UIUserSettings(
-            name="OTP",
-            icon="pficon-locked",
-            view_name="passbook_stages_otp:otp-user-settings",
+            name="OTP", url=reverse("passbook_stages_otp:otp-user-settings"),
         )
 
     def __str__(self):

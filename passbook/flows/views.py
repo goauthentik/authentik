@@ -15,6 +15,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from structlog import get_logger
 
+from passbook.audit.models import sanitize_dict
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
@@ -161,7 +162,7 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "f(exec): User passed all stages",
             flow_slug=self.flow.slug,
-            context=self.plan.context,
+            context=sanitize_dict(self.plan.context),
         )
         return self._flow_done()
 
