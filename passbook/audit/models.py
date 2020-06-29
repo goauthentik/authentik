@@ -27,15 +27,16 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
         name: str,
         pk: Any
     }"""
+    final_dict = {}
     for key, value in source.items():
         if isinstance(value, dict):
-            source[key] = sanitize_dict(value)
+            final_dict[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
             model_content_type = ContentType.objects.get_for_model(value)
             name = str(value)
             if hasattr(value, "name"):
                 name = value.name
-            source[key] = sanitize_dict(
+            final_dict[key] = sanitize_dict(
                 {
                     "app": model_content_type.app_label,
                     "model_name": model_content_type.model,
@@ -44,8 +45,10 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
                 }
             )
         elif isinstance(value, UUID):
-            source[key] = value.hex
-    return source
+            final_dict[key] = value.hex
+        else:
+            final_dict[key] = value
+    return final_dict
 
 
 class EventAction(Enum):
