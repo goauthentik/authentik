@@ -5,6 +5,7 @@ from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
 
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.lib.utils.ui import human_list
 from passbook.stages.identification.models import IdentificationStage, UserFields
 
@@ -13,6 +14,15 @@ LOGGER = get_logger()
 
 class IdentificationStageForm(forms.ModelForm):
     """Form to create/edit IdentificationStage instances"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["enrollment_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.ENROLLMENT
+        )
+        self.fields["recovery_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.RECOVERY
+        )
 
     class Meta:
 

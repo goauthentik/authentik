@@ -34,60 +34,63 @@ def create_default_source_enrollment_flow(
     db_alias = schema_editor.connection.alias
 
     # Create a policy that only allows this flow when doing an SSO Request
-    flow_policy = ExpressionPolicy.objects.using(db_alias).create(
-        name="default-source-enrollment-if-sso", expression=FLOW_POLICY_EXPRESSION
+    flow_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
+        name="default-source-enrollment-if-sso",
+        defaults={"expression": FLOW_POLICY_EXPRESSION},
     )
 
     # This creates a Flow used by sources to enroll users
     # It makes sure that a username is set, and if not, prompts the user for a Username
-    flow = Flow.objects.using(db_alias).create(
-        name="default-source-enrollment",
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-source-enrollment",
         designation=FlowDesignation.ENROLLMENT,
+        defaults={"name": "Welcome to passbook!",},
     )
-    PolicyBinding.objects.using(db_alias).create(
-        policy=flow_policy, target=flow, order=0
+    PolicyBinding.objects.using(db_alias).update_or_create(
+        policy=flow_policy, target=flow, defaults={"order": 0}
     )
 
     # PromptStage to ask user for their username
-    prompt_stage = PromptStage.objects.using(db_alias).create(
+    prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
         name="default-source-enrollment-username-prompt",
     )
-    prompt_stage.fields.add(
-        Prompt.objects.using(db_alias).create(
-            field_key="username",
-            label="Username",
-            type=FieldTypes.TEXT,
-            required=True,
-            placeholder="Username",
-        )
+    prompt, _ = Prompt.objects.using(db_alias).update_or_create(
+        field_key="username",
+        defaults={
+            "label": "Username",
+            "type": FieldTypes.TEXT,
+            "required": True,
+            "placeholder": "Username",
+        },
     )
+    prompt_stage.fields.add(prompt)
+
     # Policy to only trigger prompt when no username is given
-    prompt_policy = ExpressionPolicy.objects.using(db_alias).create(
+    prompt_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
         name="default-source-enrollment-if-username",
-        expression=PROMPT_POLICY_EXPRESSION,
+        defaults={"expression": PROMPT_POLICY_EXPRESSION},
     )
 
     # UserWrite stage to create the user, and login stage to log user in
-    user_write = UserWriteStage.objects.using(db_alias).create(
+    user_write, _ = UserWriteStage.objects.using(db_alias).update_or_create(
         name="default-source-enrollment-write"
     )
-    user_login = UserLoginStage.objects.using(db_alias).create(
+    user_login, _ = UserLoginStage.objects.using(db_alias).update_or_create(
         name="default-source-enrollment-login"
     )
 
-    binding = FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=prompt_stage, order=0
+    binding, _ = FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=prompt_stage, defaults={"order": 0}
     )
-    PolicyBinding.objects.using(db_alias).create(
-        policy=prompt_policy, target=binding, order=0
+    PolicyBinding.objects.using(db_alias).update_or_create(
+        policy=prompt_policy, target=binding, defaults={"order": 0}
     )
 
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=user_write, order=1
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=user_write, defaults={"order": 1}
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=user_login, order=2
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=user_login, defaults={"order": 2}
     )
 
 
@@ -107,25 +110,26 @@ def create_default_source_authentication_flow(
     db_alias = schema_editor.connection.alias
 
     # Create a policy that only allows this flow when doing an SSO Request
-    flow_policy = ExpressionPolicy.objects.using(db_alias).create(
-        name="default-source-authentication-if-sso", expression=FLOW_POLICY_EXPRESSION
+    flow_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
+        name="default-source-authentication-if-sso",
+        defaults={"expression": FLOW_POLICY_EXPRESSION,},
     )
 
     # This creates a Flow used by sources to authenticate users
-    flow = Flow.objects.using(db_alias).create(
-        name="default-source-authentication",
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-source-authentication",
         designation=FlowDesignation.AUTHENTICATION,
+        defaults={"name": "Welcome to passbook!",},
     )
-    PolicyBinding.objects.using(db_alias).create(
-        policy=flow_policy, target=flow, order=0
+    PolicyBinding.objects.using(db_alias).update_or_create(
+        policy=flow_policy, target=flow, defaults={"order": 0}
     )
 
-    user_login = UserLoginStage.objects.using(db_alias).create(
+    user_login, _ = UserLoginStage.objects.using(db_alias).update_or_create(
         name="default-source-authentication-login"
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=user_login, order=0
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=user_login, defaults={"order": 0}
     )
 
 
