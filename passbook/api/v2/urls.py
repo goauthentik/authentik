@@ -33,6 +33,7 @@ from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.sources.saml.api import SAMLSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
 from passbook.stages.dummy.api import DummyStageViewSet
+from passbook.stages.consent.api import ConsentStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
 from passbook.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
@@ -85,6 +86,7 @@ router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 
 router.register("stages/all", StageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)
+router.register("stages/consent", ConsentStageViewSet)
 router.register("stages/email", EmailStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
 router.register("stages/invitation", InvitationStageViewSet)
