@@ -42,7 +42,11 @@ class OTPStaticStageView(FormView, StageView):
 
         if SESSION_STATIC_DEVICE not in self.request.session:
             device = StaticDevice(user=user, confirmed=True)
-            tokens = [StaticToken(device=device, token=StaticToken.random_token()) for _ in range(0, stage.token_count)]
+            tokens = []
+            for _ in range(0, stage.token_count):
+                tokens.append(
+                    StaticToken(device=device, token=StaticToken.random_token())
+                )
             self.request.session[SESSION_STATIC_DEVICE] = device
             self.request.session[SESSION_STATIC_TOKENS] = tokens
         return super().get(request, *args, **kwargs)
@@ -51,7 +55,8 @@ class OTPStaticStageView(FormView, StageView):
         """Verify OTP Token"""
         device: StaticDevice = self.request.session[SESSION_STATIC_DEVICE]
         device.save()
-        [x.save() for x in self.request.session[SESSION_STATIC_TOKENS]]
+        for token in self.request.session[SESSION_STATIC_TOKENS]:
+            token.save()
         del self.request.session[SESSION_STATIC_DEVICE]
         del self.request.session[SESSION_STATIC_TOKENS]
         return self.executor.stage_ok()
