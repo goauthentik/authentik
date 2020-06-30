@@ -116,7 +116,7 @@ class FlowExecutorView(View):
                 render(
                     request,
                     "flows/error.html",
-                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
                 ),
             )
 
@@ -137,7 +137,7 @@ class FlowExecutorView(View):
                 render(
                     request,
                     "flows/error.html",
-                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
                 ),
             )
 
