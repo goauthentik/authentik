@@ -1,3 +1,4 @@
+"""OTP Time forms"""
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -15,6 +16,7 @@ class PictureWidget(forms.widgets.Widget):
 
 
 class SetupForm(forms.Form):
+    """Form to setup Time-based OTP"""
 
     title = _("Set up OTP")
     device: Device = None
@@ -40,6 +42,8 @@ class SetupForm(forms.Form):
 
 
 class OTPTimeStageForm(forms.ModelForm):
+    """OTP Time-based Stage setup form"""
+
     class Meta:
 
         model = OTPTimeStage

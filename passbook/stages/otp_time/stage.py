@@ -1,6 +1,6 @@
-from typing import Any, Dict
 from base64 import b32encode
 from binascii import unhexlify
+from typing import Any, Dict
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse

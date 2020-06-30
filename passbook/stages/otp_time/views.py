@@ -1,15 +1,17 @@
+"""otp time-based view"""
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.views import View
-from django.views.generic import FormView, TemplateView
-from django_otp.plugins.otp_totp.models import TOTPDevice
-from django.contrib import messages
-from passbook.audit.models import Event, EventAction
 from django.shortcuts import redirect
+from django.views import View
+from django.views.generic import TemplateView
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from passbook.flows.views import SESSION_KEY_PLAN
-from passbook.stages.otp_time.models import OTPTimeStage
+from passbook.audit.models import Event, EventAction
+
+# from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+# from passbook.flows.views import SESSION_KEY_PLAN
+# from passbook.stages.otp_time.models import OTPTimeStage
 
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -34,5 +36,7 @@ class DisableView(LoginRequiredMixin, View):
         totp.delete()
         messages.success(request, "Successfully disabled Time-based OTP")
         # Create event with email notification
-        Event.new(EventAction.CUSTOM, message="User disabled Time-based OTP.").from_http(request)
+        Event.new(
+            EventAction.CUSTOM, message="User disabled Time-based OTP."
+        ).from_http(request)
         return redirect("passbook_stages_otp:otp-user-settings")
