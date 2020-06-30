@@ -32,8 +32,8 @@
                     {% if user.is_superuser %}
                     <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_app 'passbook_admin' %}"
                             href="{% url 'passbook_admin:overview' %}">{% trans 'Administrate' %}</a></li>
-                    <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_url 'passbook_admin:audit-log' %}"
-                            href="{% url 'passbook_admin:audit-log' %}">{% trans 'Monitor' %}</a></li>
+                    <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_url 'passbook_audit:log' %}"
+                            href="{% url 'passbook_audit:log' %}">{% trans 'Monitor' %}</a></li>
                     {% endif %}
                 </ul>
             </nav>
