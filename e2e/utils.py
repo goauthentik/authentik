@@ -46,8 +46,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         makedirs("out", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
-        self.driver.implicitly_wait(60)
-        self.wait = WebDriverWait(self.driver, 120)
+        self.driver.implicitly_wait(300)
+        self.wait = WebDriverWait(self.driver, 500)
         self.apply_default_data()
         self.logger = get_logger()
 
@@ -68,7 +68,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def wait_for_url(self, desired_url):
         """Wait until URL is `desired_url`."""
-        self.wait.until(lambda driver: driver.current_url == desired_url)
+        self.wait.until(
+            lambda driver: driver.current_url == desired_url,
+            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
+        )
 
     def url(self, view, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
