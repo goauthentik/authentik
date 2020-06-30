@@ -37,7 +37,9 @@ from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
 from passbook.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
-from passbook.stages.otp.api import OTPStageViewSet
+from passbook.stages.otp_static.api import OTPStaticStageViewSet
+from passbook.stages.otp_time.api import OTPTimeStageViewSet
+from passbook.stages.otp_validate.api import OTPValidateStageViewSet
 from passbook.stages.password.api import PasswordStageViewSet
 from passbook.stages.prompt.api import PromptStageViewSet, PromptViewSet
 from passbook.stages.user_delete.api import UserDeleteStageViewSet
@@ -91,10 +93,12 @@ router.register("stages/email", EmailStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
 router.register("stages/invitation", InvitationStageViewSet)
 router.register("stages/invitation/invitations", InvitationViewSet)
-router.register("stages/otp", OTPStageViewSet)
+router.register("stages/otp_static", OTPStaticStageViewSet)
+router.register("stages/otp_time", OTPTimeStageViewSet)
+router.register("stages/otp_validate", OTPValidateStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
-router.register("stages/prompt/stages", PromptStageViewSet)
 router.register("stages/prompt/prompts", PromptViewSet)
+router.register("stages/prompt/stages", PromptStageViewSet)
 router.register("stages/user_delete", UserDeleteStageViewSet)
 router.register("stages/user_login", UserLoginStageViewSet)
 router.register("stages/user_logout", UserLogoutStageViewSet)

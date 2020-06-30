@@ -111,6 +111,7 @@ class FlowExecutorView(View):
             stage_response = self.current_stage_view.get(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.exception(exc)
             return to_stage_response(
                 request,
                 render(
@@ -132,6 +133,7 @@ class FlowExecutorView(View):
             stage_response = self.current_stage_view.post(request, *args, **kwargs)
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.exception(exc)
             return to_stage_response(
                 request,
                 render(

@@ -128,6 +128,7 @@ class TestProviderSAML(SeleniumTestCase):
                 By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
             ).text,
         )
+        sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
         self.wait_for_url("http://localhost:9009/")
         self.assertEqual(

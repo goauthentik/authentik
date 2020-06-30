@@ -1,4 +1,5 @@
 """OAuth Client models"""
+from typing import Optional
 
 from django.db import models
 from django.urls import reverse, reverse_lazy
@@ -61,7 +62,7 @@ class OAuthSource(Source):
         return f"Callback URL: <pre>{url}</pre>"
 
     @property
-    def ui_user_settings(self) -> UIUserSettings:
+    def ui_user_settings(self) -> Optional[UIUserSettings]:
         view_name = "passbook_sources_oauth:oauth-client-user"
         return UIUserSettings(
             name=self.name, url=reverse(view_name, kwargs={"source_slug": self.slug}),

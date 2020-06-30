@@ -6,7 +6,7 @@
 {% block page %}
 <div class="pf-c-card">
     <div class="pf-c-card__header pf-c-title pf-m-md">
-        {% trans "One-Time Passwords" %}
+        {% trans "Time-based One-Time Passwords" %}
     </div>
     <div class="pf-c-card__body">
         <p>
@@ -21,22 +21,11 @@
         </p>
         <p>
             {% if not state %}
-            <a href="{% url 'passbook_stages_otp:otp-enable' %}" class="btn btn-success btn-sm">{% trans "Enable OTP" %}</a>
+            <a href="{% url 'passbook_stages_otp_time:otp-enable' %}" class="pf-c-button pf-m-primary">{% trans "Enable Time-based OTP" %}</a>
             {% else %}
-            <a href="{% url 'passbook_stages_otp:otp-disable' %}" class="btn btn-danger btn-sm">{% trans "Disable OTP" %}</a>
+            <a href="{% url 'passbook_stages_otp_time:disable' %}" class="pf-c-button pf-m-danger">{% trans "Disable Time-based OTP" %}</a>
             {% endif %}
         </p>
-    </div>
-</div>
-
-<div class="pf-c-card">
-    <div class="pf-c-card__header pf-c-title pf-m-md">
-        {% trans "Your Backup tokens:" %}
-    </div>
-    <div class="pf-c-card__body">
-        <pre>{% for token in static_tokens %}{{ token.token }}
-        {% empty %}{% trans 'N/A' %}{% endfor %}</pre>
-        </div>
     </div>
 </div>
 {% endblock %}

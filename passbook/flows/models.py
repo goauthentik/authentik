@@ -15,6 +15,13 @@ from passbook.policies.models import PolicyBindingModel
 LOGGER = get_logger()
 
 
+class NotConfiguredAction(models.TextChoices):
+    """Decides how the FlowExecutor should proceed when a stage isn't configured"""
+
+    SKIP = "skip"
+    # CONFIGURE = "configure"
+
+
 class FlowDesignation(models.TextChoices):
     """Designation of what a Flow should be used for. At a later point, this
     should be replaced by a database entry."""
