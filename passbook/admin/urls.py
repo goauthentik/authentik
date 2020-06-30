@@ -188,6 +188,11 @@ urlpatterns = [
         "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
     ),
     path(
+        "flows/<uuid:pk>/execute/",
+        flows.FlowDebugExecuteView.as_view(),
+        name="flow-execute",
+    ),
+    path(
         "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
     ),
     # Property Mappings
