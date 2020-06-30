@@ -1,4 +1,5 @@
 """passbook multi-stage authentication engine"""
+from traceback import format_tb
 from typing import Any, Dict, Optional
 
 from django.http import (
@@ -8,7 +9,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
 )
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -106,8 +107,18 @@ class FlowExecutorView(View):
             stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_response = self.current_stage_view.get(request, *args, **kwargs)
-        return to_stage_response(request, stage_response)
+        try:
+            stage_response = self.current_stage_view.get(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                ),
+            )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
@@ -117,8 +128,18 @@ class FlowExecutorView(View):
             stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_response = self.current_stage_view.post(request, *args, **kwargs)
-        return to_stage_response(request, stage_response)
+        try:
+            stage_response = self.current_stage_view.post(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                ),
+            )
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
