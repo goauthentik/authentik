@@ -28,6 +28,7 @@ class PasswordForm(forms.Form):
         widget=forms.HiddenInput(attrs={"autocomplete": "username"}), required=False
     )
     password = forms.CharField(
+        label=_("Please enter your password."),
         widget=forms.PasswordInput(
             attrs={
                 "placeholder": _("Password"),

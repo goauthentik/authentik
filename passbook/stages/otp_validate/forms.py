@@ -18,7 +18,7 @@ class ValidationForm(forms.Form):
     user: User
 
     code = forms.CharField(
-        label=_("Code"),
+        label=_("Please enter the token from your device."),
         validators=[OTP_CODE_VALIDATOR],
         widget=forms.TextInput(
             attrs={

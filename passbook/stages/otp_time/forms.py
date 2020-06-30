@@ -27,7 +27,7 @@ class SetupForm(forms.Form):
         label=_("Scan this Code with your OTP App."),
     )
     code = forms.CharField(
-        label=_("Code"),
+        label=_("Please enter the Token on your device."),
         validators=[OTP_CODE_VALIDATOR],
         widget=forms.TextInput(
             attrs={
