@@ -30,17 +30,24 @@ class SetupForm(forms.Form):
     code = forms.CharField(
         label=_("Code"),
         validators=[OTP_CODE_VALIDATOR],
-        widget=forms.TextInput(attrs={"placeholder": _("One-Time Password")}),
+        widget=forms.TextInput(
+            attrs={
+                "autocomplete": "off",
+                "placeholder": "Code",
+                "autofocus": "autofocus",
+            }
+        ),
     )
 
     def __init__(self, device, qr_code, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.device = device
         self.fields["qr_code"].initial = qr_code
 
     def clean_code(self):
         """Check code with new otp device"""
         if self.device is not None:
-            if not self.device.verify_token(int(self.cleaned_data.get("code"))):
+            if not self.device.verify_token(self.cleaned_data.get("code")):
                 raise forms.ValidationError(_("OTP Code does not match"))
         return self.cleaned_data.get("code")
 

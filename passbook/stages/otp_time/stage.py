@@ -1,20 +1,15 @@
 """TOTP Setup stage"""
-from base64 import b32encode
-from binascii import unhexlify
 from typing import Any, Dict
 
 import lxml.etree as ET  # nosec
 from django.http import HttpRequest, HttpResponse
 from django.utils.encoding import force_text
-from django.utils.http import urlencode
-from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from qrcode import QRCode
 from qrcode.image.svg import SvgFillImage
 from structlog import get_logger
 
-from passbook.flows.models import NotConfiguredAction, Stage
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
 from passbook.stages.otp_time.forms import SetupForm
@@ -24,26 +19,8 @@ LOGGER = get_logger()
 SESSION_TOTP_DEVICE = "totp_device"
 
 
-def otp_auth_url(device: TOTPDevice) -> str:
-    """Create otpauth according to
-    https://github.com/google/google-authenticator/wiki/Key-Uri-Format"""
-    # Ensure that the secret parameter is the FIRST parameter of the URI, this
-    # allows Microsoft Authenticator to work.
-    issuer = "passbook"
-
-    rawkey = unhexlify(device.key.encode("ascii"))
-    secret = b32encode(rawkey).decode("utf-8")
-
-    query = [
-        ("secret", secret),
-        ("digits", device.digits),
-        ("issuer", issuer),
-    ]
-
-    return "otpauth://totp/%s:%s?%s" % (issuer, device.user.username, urlencode(query))
-
-
 class OTPTimeStageView(FormView, StageView):
+    """OTP totp Setup stage"""
 
     form_class = SetupForm
 
@@ -56,9 +33,8 @@ class OTPTimeStageView(FormView, StageView):
 
     def _get_qr_code(self, device: TOTPDevice) -> str:
         """Get QR Code SVG as string based on `device`"""
-        url = otp_auth_url(device)
         qr_code = QRCode(image_factory=SvgFillImage)
-        qr_code.add_data(url)
+        qr_code.add_data(device.config_url)
         return force_text(ET.tostring(qr_code.make_image().get_image()))
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
