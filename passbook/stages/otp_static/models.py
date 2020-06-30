@@ -1,4 +1,4 @@
-"""OTP Static-based models"""
+"""OTP Static models"""
 from typing import Optional
 
 from django.db import models
@@ -20,8 +20,7 @@ class OTPStaticStage(Stage):
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:
         return UIUserSettings(
-            name="Static-based OTP",
-            url=reverse("passbook_stages_otp_static:user-settings"),
+            name="Static OTP", url=reverse("passbook_stages_otp_static:user-settings"),
         )
 
     def __str__(self) -> str:

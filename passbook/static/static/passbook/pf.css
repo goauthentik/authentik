@@ -200,6 +200,7 @@ input[data-is-monospace] {
 
 /* Form with user */
 .form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -209,10 +210,22 @@ input[data-is-monospace] {
     align-items: center;
 }
 .form-control-static img {
-    margin-right: 5px;
+    margin-right: var(--pf-global--spacer--xs);
 }
 .form-control-static a {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    line-height: 32px;
+    padding-top: var(--pf-global--spacer--xs);
+    padding-bottom: var(--pf-global--spacer--xs);
+    line-height: var(--pf-global--spacer--xl);
+}
+
+/* Static OTP Tokens, passbook.stages.otp_static */
+.pb-otp-tokens {
+    list-style: circle;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+}
+.pb-otp-tokens li {
+    font-size: var(--pf-global--FontSize--2xl);
+    font-family: monospace;
 }

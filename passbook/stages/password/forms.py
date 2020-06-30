@@ -35,7 +35,7 @@ class PasswordForm(forms.Form):
                 "autofocus": "autofocus",
                 "autocomplete": "current-password",
             }
-        )
+        ),
     )
 
 

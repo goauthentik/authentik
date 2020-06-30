@@ -23,7 +23,7 @@ class ValidationForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "autocomplete": "off",
-                "placeholder": "Code",
+                "placeholder": "123456",
                 "autofocus": "autofocus",
             }
         ),
