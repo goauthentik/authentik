@@ -54,9 +54,11 @@
 </div>
 <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
     <section class="pf-c-page__main-section">
-        <div class="pf-l-split pf-m-gutter">
-            {% block page %}
-            {% endblock %}
+        <div class="pf-u-display-flex pf-u-justify-content-center">
+            <div class="pf-u-w-75">
+                {% block page %}
+                {% endblock %}
+            </div>
         </div>
     </section>
 </main>

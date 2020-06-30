@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView
-from django_otp.plugins.otp_static.models import StaticDevice
+from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
 
 from passbook.audit.models import Event, EventAction
 
@@ -21,7 +21,8 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         static_devices = StaticDevice.objects.filter(
             user=self.request.user, confirmed=True
         )
-        kwargs["state"] = static_devices.exists()
+        if static_devices.exists():
+            kwargs["tokens"] = StaticToken.objects.filter(device=static_devices.first())
         return kwargs
 
 

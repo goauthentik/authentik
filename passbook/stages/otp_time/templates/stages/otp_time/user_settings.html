@@ -21,9 +21,9 @@
         </p>
         <p>
             {% if not state %}
-            <a href="{% url 'passbook_stages_otp_time:otp-enable' %}" class="btn btn-success btn-sm">{% trans "Enable Time-based OTP" %}</a>
+            <a href="{% url 'passbook_stages_otp_time:otp-enable' %}" class="pf-c-button pf-m-primary">{% trans "Enable Time-based OTP" %}</a>
             {% else %}
-            <a href="{% url 'passbook_stages_otp_time:disable' %}" class="btn btn-danger btn-sm">{% trans "Disable Time-based OTP" %}</a>
+            <a href="{% url 'passbook_stages_otp_time:disable' %}" class="pf-c-button pf-m-danger">{% trans "Disable Time-based OTP" %}</a>
             {% endif %}
         </p>
     </div>

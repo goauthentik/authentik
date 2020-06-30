@@ -224,6 +224,7 @@ input[data-is-monospace] {
     columns: 2;
     -webkit-columns: 2;
     -moz-columns: 2;
+    margin-left: var(--pf-global--spacer--xs);
 }
 .pb-otp-tokens li {
     font-size: var(--pf-global--FontSize--2xl);
