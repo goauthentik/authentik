@@ -12,7 +12,7 @@ class PictureWidget(forms.widgets.Widget):
     """Widget to render value as img-tag"""
 
     def render(self, name, value, attrs=None, renderer=None):
-        return mark_safe(f'<img src="{value}" />')  # nosec
+        return mark_safe(f"<br>{value}")  # nosec
 
 
 class SetupForm(forms.Form):
@@ -32,6 +32,10 @@ class SetupForm(forms.Form):
         validators=[OTP_CODE_VALIDATOR],
         widget=forms.TextInput(attrs={"placeholder": _("One-Time Password")}),
     )
+
+    def __init__(self, device, qr_code, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["qr_code"].initial = qr_code
 
     def clean_code(self):
         """Check code with new otp device"""

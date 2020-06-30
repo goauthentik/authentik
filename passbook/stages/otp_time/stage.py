@@ -1,16 +1,17 @@
+"""TOTP Setup stage"""
 from base64 import b32encode
 from binascii import unhexlify
 from typing import Any, Dict
 
-from django.contrib import messages
+import lxml.etree as ET  # nosec
 from django.http import HttpRequest, HttpResponse
+from django.utils.encoding import force_text
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
-from django_otp import match_token, user_has_device
 from django_otp.plugins.otp_totp.models import TOTPDevice
-from qrcode import make
-from qrcode.image.svg import SvgPathImage
+from qrcode import QRCode
+from qrcode.image.svg import SvgFillImage
 from structlog import get_logger
 
 from passbook.flows.models import NotConfiguredAction, Stage
@@ -20,7 +21,7 @@ from passbook.stages.otp_time.forms import SetupForm
 from passbook.stages.otp_time.models import OTPTimeStage
 
 LOGGER = get_logger()
-PLAN_CONTEXT_TOTP_DEVICE = "totp_device"
+SESSION_TOTP_DEVICE = "totp_device"
 
 
 def otp_auth_url(device: TOTPDevice) -> str:
@@ -48,7 +49,7 @@ class OTPTimeStageView(FormView, StageView):
 
     def get_form_kwargs(self, **kwargs) -> Dict[str, Any]:
         kwargs = super().get_form_kwargs(**kwargs)
-        device: TOTPDevice = self.executor.plan.context[PLAN_CONTEXT_TOTP_DEVICE]
+        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         kwargs["device"] = device
         kwargs["qr_code"] = self._get_qr_code(device)
         return kwargs
@@ -56,9 +57,9 @@ class OTPTimeStageView(FormView, StageView):
     def _get_qr_code(self, device: TOTPDevice) -> str:
         """Get QR Code SVG as string based on `device`"""
         url = otp_auth_url(device)
-        # Make and return QR code
-        img = make(url, image_factory=SvgPathImage)
-        return img._img
+        qr_code = QRCode(image_factory=SvgFillImage)
+        qr_code.add_data(url)
+        return force_text(ET.tostring(qr_code.make_image().get_image()))
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
@@ -67,13 +68,16 @@ class OTPTimeStageView(FormView, StageView):
             return self.executor.stage_ok()
 
         stage: OTPTimeStage = self.executor.current_stage
-        device = TOTPDevice(user=user, confirmed=True, digits=stage.digits)
 
-        self.executor.plan.context[PLAN_CONTEXT_TOTP_DEVICE] = device
+        if SESSION_TOTP_DEVICE not in self.request.session:
+            device = TOTPDevice(user=user, confirmed=True, digits=stage.digits)
+
+            self.request.session[SESSION_TOTP_DEVICE] = device
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form: SetupForm) -> HttpResponse:
         """Verify OTP Token"""
-        device: TOTPDevice = self.executor.plan.context[PLAN_CONTEXT_TOTP_DEVICE]
+        device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         device.save()
+        del self.request.session[SESSION_TOTP_DEVICE]
         return self.executor.stage_ok()

@@ -16,7 +16,7 @@ register = template.Library()
 # pylint: disable=unused-argument
 def user_stages(context: RequestContext) -> List[UIUserSettings]:
     """Return list of all stages which apply to user"""
-    _all_stages: Iterable[Stage] = Stage.__subclasses__()
+    _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()
     matching_stages: List[UIUserSettings] = []
     for stage in _all_stages:
         user_settings = stage.ui_user_settings
