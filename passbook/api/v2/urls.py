@@ -32,8 +32,8 @@ from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceView
 from passbook.sources.oauth.api import OAuthSourceViewSet
 from passbook.sources.saml.api import SAMLSourceViewSet
 from passbook.stages.captcha.api import CaptchaStageViewSet
-from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.consent.api import ConsentStageViewSet
+from passbook.stages.dummy.api import DummyStageViewSet
 from passbook.stages.email.api import EmailStageViewSet
 from passbook.stages.identification.api import IdentificationStageViewSet
 from passbook.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
