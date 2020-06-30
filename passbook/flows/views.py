@@ -1,4 +1,5 @@
 """passbook multi-stage authentication engine"""
+from traceback import format_tb
 from typing import Any, Dict, Optional
 
 from django.http import (
@@ -8,7 +9,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
 )
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -106,8 +107,18 @@ class FlowExecutorView(View):
             stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_response = self.current_stage_view.get(request, *args, **kwargs)
-        return to_stage_response(request, stage_response)
+        try:
+            stage_response = self.current_stage_view.get(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                ),
+            )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
@@ -117,8 +128,18 @@ class FlowExecutorView(View):
             stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_response = self.current_stage_view.post(request, *args, **kwargs)
-        return to_stage_response(request, stage_response)
+        try:
+            stage_response = self.current_stage_view.post(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__)),},
+                ),
+            )
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -183,6 +204,30 @@ class FlowPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
 
 
+class FlowExecutorShellView(TemplateView):
+    """Executor Shell view, loads a dummy card with a spinner
+    that loads the next stage in the background."""
+
+    template_name = "flows/shell.html"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
+        kwargs["msg_url"] = reverse("passbook_api:messages-list")
+        self.request.session[SESSION_KEY_GET] = self.request.GET
+        return kwargs
+
+
+class CancelView(View):
+    """View which canels the currently active plan"""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """View which canels the currently active plan"""
+        if SESSION_KEY_PLAN in request.session:
+            del request.session[SESSION_KEY_PLAN]
+            LOGGER.debug("Canceled current plan")
+        return redirect("passbook_core:overview")
+
+
 class ToDefaultFlow(View):
     """Redirect to default flow matching by designation"""
 
@@ -204,19 +249,6 @@ class ToDefaultFlow(View):
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell", request.GET, flow_slug=flow.slug
         )
-
-
-class FlowExecutorShellView(TemplateView):
-    """Executor Shell view, loads a dummy card with a spinner
-    that loads the next stage in the background."""
-
-    template_name = "flows/shell.html"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
-        kwargs["msg_url"] = reverse("passbook_api:messages-list")
-        self.request.session[SESSION_KEY_GET] = self.request.GET
-        return kwargs
 
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:

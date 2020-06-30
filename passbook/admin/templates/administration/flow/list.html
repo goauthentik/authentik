@@ -61,6 +61,7 @@
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-update' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
                         <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:flow-delete' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-execute' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Execute' %}</a>
                     </td>
                 </tr>
                 {% endfor %}

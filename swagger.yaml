@@ -3275,6 +3275,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /stages/consent/:
+    get:
+      operationId: stages_consent_list
+      description: ConsentStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_consent_create
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/consent/{stage_uuid}/:
+    get:
+      operationId: stages_consent_read
+      description: ConsentStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_consent_update
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_consent_partial_update
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_consent_delete
+      description: ConsentStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this Consent Stage.
+        required: true
+        type: string
+        format: uuid
   /stages/dummy/:
     get:
       operationId: stages_dummy_list
@@ -6050,6 +6177,20 @@ definitions:
       private_key:
         title: Private key
         description: Private key, acquired from https://www.google.com/recaptcha/intro/v3.html
+        type: string
+        minLength: 1
+  ConsentStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
         type: string
         minLength: 1
   DummyStage:

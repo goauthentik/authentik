@@ -120,7 +120,17 @@
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ version }}
+                {% if version >= version_latest %}
+                <i class="pf-icon pf-icon-ok"></i>
+                    {% blocktrans with version=version %}
+                    {{ version }} (Up-to-date!)
+                    {% endblocktrans %}
+                {% else %}
+                <i class="pf-icon pf-icon-warning-triangle"></i>
+                    {% blocktrans with version=version latest=version_latest %}
+                    {{ version }} ({{ latest }} is available!)
+                    {% endblocktrans %}
+                {% endif %}
             </div>
         </div>
 

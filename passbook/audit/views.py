@@ -9,7 +9,7 @@ class EventListView(PermissionListMixin, ListView):
     """Show list of all invitations"""
 
     model = Event
-    template_name = "administration/audit/list.html"
+    template_name = "audit/list.html"
     permission_required = "passbook_audit.view_event"
     ordering = "-created"
     paginate_by = 20
