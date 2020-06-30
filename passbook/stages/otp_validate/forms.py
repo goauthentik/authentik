@@ -1,7 +1,10 @@
+"""OTP Validate stage forms"""
 from django import forms
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from django_otp import match_token
 
+from passbook.core.models import User
 from passbook.stages.otp_validate.models import OTPValidateStage
 
 OTP_CODE_VALIDATOR = RegexValidator(
@@ -10,6 +13,9 @@ OTP_CODE_VALIDATOR = RegexValidator(
 
 
 class ValidationForm(forms.Form):
+    """OTP Validate stage forms"""
+
+    user: User
 
     code = forms.CharField(
         label=_("Code"),
@@ -23,11 +29,22 @@ class ValidationForm(forms.Form):
         ),
     )
 
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
     def clean_code(self):
-        pass
+        """Validate code against all confirmed devices"""
+        code = self.cleaned_data.get("code")
+        device = match_token(self.user, code)
+        if not device:
+            raise forms.ValidationError(_("Invalid Token"))
+        return code
 
 
 class OTPValidateStageForm(forms.ModelForm):
+    """OTP Validate stage forms"""
+
     class Meta:
 
         model = OTPValidateStage

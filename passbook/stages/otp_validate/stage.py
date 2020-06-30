@@ -1,12 +1,12 @@
-from django.contrib import messages
+"""OTP Validation"""
+from typing import Any, Dict
+
 from django.http import HttpRequest, HttpResponse
-from django.utils.translation import gettext as _
 from django.views.generic import FormView
-from django_otp import match_token, user_has_device
-from django_otp.models import Device
+from django_otp import user_has_device
 from structlog import get_logger
 
-from passbook.flows.models import NotConfiguredAction, Stage
+from passbook.flows.models import NotConfiguredAction
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
 from passbook.stages.otp_validate.forms import ValidationForm
@@ -16,8 +16,14 @@ LOGGER = get_logger()
 
 
 class OTPValidateStageView(FormView, StageView):
+    """OTP Validation"""
 
     form_class = ValidationForm
+
+    def get_form_kwargs(self, **kwargs) -> Dict[str, Any]:
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs["user"] = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        return kwargs
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
@@ -35,11 +41,6 @@ class OTPValidateStageView(FormView, StageView):
 
     def form_valid(self, form: ValidationForm) -> HttpResponse:
         """Verify OTP Token"""
-        device = match_token(
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
-            form.cleaned_data.get("code"),
-        )
-        if not device:
-            messages.error(self.request, _("Invalid OTP."))
-            return self.form_invalid(form)
+        # Since we do token checking in the form, we know the token is valid here
+        # so we can just continue
         return self.executor.stage_ok()
