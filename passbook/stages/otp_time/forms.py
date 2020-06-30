@@ -18,7 +18,6 @@ class PictureWidget(forms.widgets.Widget):
 class SetupForm(forms.Form):
     """Form to setup Time-based OTP"""
 
-    title = _("Set up OTP")
     device: Device = None
 
     qr_code = forms.CharField(

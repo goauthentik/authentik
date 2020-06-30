@@ -9,6 +9,7 @@ from lxml.etree import tostring  # nosec
 from qrcode import QRCode
 from qrcode.image.svg import SvgFillImage
 from structlog import get_logger
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
@@ -41,6 +42,11 @@ class OTPTimeStageView(FormView, StageView):
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
         if not user:
             LOGGER.debug("No pending user, continuing")
+            return self.executor.stage_ok()
+
+        # Currently, this stage only supports one device per user. If the user already
+        # has a device, just skip to the next stage
+        if TOTPDevice.objects.filter(user=user).exists():
             return self.executor.stage_ok()
 
         stage: OTPTimeStage = self.executor.current_stage
