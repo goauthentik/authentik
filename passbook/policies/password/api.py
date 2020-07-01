@@ -1,4 +1,4 @@
-"""Source API Views"""
+"""Password Policy API Views"""
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -22,7 +22,7 @@ class PasswordPolicySerializer(ModelSerializer):
 
 
 class PasswordPolicyViewSet(ModelViewSet):
-    """Source Viewset"""
+    """Password Policy Viewset"""
 
     queryset = PasswordPolicy.objects.all()
     serializer_class = PasswordPolicySerializer

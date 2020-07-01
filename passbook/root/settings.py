@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
+    "passbook.policies.group_membership.apps.PassbookPoliciesGroupMembershipConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
     "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
     "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",

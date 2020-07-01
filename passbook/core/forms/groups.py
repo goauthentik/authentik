@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
+from passbook.admin.fields import CodeMirrorWidget, YAMLField
 from passbook.core.models import Group, User
 
 
@@ -34,4 +35,8 @@ class GroupForm(forms.ModelForm):
         fields = ["name", "parent", "members", "attributes"]
         widgets = {
             "name": forms.TextInput(),
+            "attributes": CodeMirrorWidget,
+        }
+        field_classes = {
+            "attributes": YAMLField,
         }

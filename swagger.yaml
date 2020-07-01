@@ -1222,6 +1222,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /policies/group_membership/:
+    get:
+      operationId: policies_group_membership_list
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_group_membership_create
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/group_membership/{policy_uuid}/:
+    get:
+      operationId: policies_group_membership_read
+      description: Group Membership Policy Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_group_membership_update
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_group_membership_partial_update
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_group_membership_delete
+      description: Group Membership Policy Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: policy_uuid
+        in: path
+        description: A UUID string identifying this Group Membership Policy.
+        required: true
+        type: string
+        format: uuid
   /policies/haveibeenpwned/:
     get:
       operationId: policies_haveibeenpwned_list
@@ -1352,7 +1479,7 @@ paths:
   /policies/password/:
     get:
       operationId: policies_password_list
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: ordering
           in: query
@@ -1401,7 +1528,7 @@ paths:
         - policies
     post:
       operationId: policies_password_create
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1419,7 +1546,7 @@ paths:
   /policies/password/{policy_uuid}/:
     get:
       operationId: policies_password_read
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters: []
       responses:
         '200':
@@ -1430,7 +1557,7 @@ paths:
         - policies
     put:
       operationId: policies_password_update
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1446,7 +1573,7 @@ paths:
         - policies
     patch:
       operationId: policies_password_partial_update
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1462,7 +1589,7 @@ paths:
         - policies
     delete:
       operationId: policies_password_delete
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters: []
       responses:
         '204':
@@ -1476,9 +1603,9 @@ paths:
         required: true
         type: string
         format: uuid
-  /policies/passwordexpiry/:
+  /policies/password_expiry/:
     get:
-      operationId: policies_passwordexpiry_list
+      operationId: policies_password_expiry_list
       description: Password Expiry Viewset
       parameters:
         - name: ordering
@@ -1527,7 +1654,7 @@ paths:
       tags:
         - policies
     post:
-      operationId: policies_passwordexpiry_create
+      operationId: policies_password_expiry_create
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1543,9 +1670,9 @@ paths:
       tags:
         - policies
     parameters: []
-  /policies/passwordexpiry/{policy_uuid}/:
+  /policies/password_expiry/{policy_uuid}/:
     get:
-      operationId: policies_passwordexpiry_read
+      operationId: policies_password_expiry_read
       description: Password Expiry Viewset
       parameters: []
       responses:
@@ -1556,7 +1683,7 @@ paths:
       tags:
         - policies
     put:
-      operationId: policies_passwordexpiry_update
+      operationId: policies_password_expiry_update
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1572,7 +1699,7 @@ paths:
       tags:
         - policies
     patch:
-      operationId: policies_passwordexpiry_partial_update
+      operationId: policies_password_expiry_partial_update
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1588,7 +1715,7 @@ paths:
       tags:
         - policies
     delete:
-      operationId: policies_passwordexpiry_delete
+      operationId: policies_password_expiry_delete
       description: Password Expiry Viewset
       parameters: []
       responses:
@@ -5661,6 +5788,23 @@ definitions:
         title: Expression
         type: string
         minLength: 1
+  GroupMembershipPolicy:
+    type: object
+    properties:
+      pk:
+        title: Policy uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      group:
+        title: Group
+        type: string
+        format: uuid
+        x-nullable: true
   HaveIBeenPwendPolicy:
     type: object
     properties:

@@ -21,6 +21,7 @@ from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
 from passbook.policies.expression.api import ExpressionPolicyViewSet
+from passbook.policies.group_membership.api import GroupMembershipPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
@@ -71,9 +72,10 @@ router.register("sources/oauth", OAuthSourceViewSet)
 router.register("policies/all", PolicyViewSet)
 router.register("policies/bindings", PolicyBindingViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
+router.register("policies/group_membership", GroupMembershipPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
+router.register("policies/password_expiry", PasswordExpiryPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
-router.register("policies/passwordexpiry", PasswordExpiryPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)
