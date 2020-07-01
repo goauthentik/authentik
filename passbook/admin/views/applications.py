@@ -24,9 +24,6 @@ class ApplicationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     paginate_by = 40
     template_name = "administration/application/list.html"
 
-    def get_queryset(self):
-        return super().get_queryset().select_subclasses()
-
 
 class ApplicationCreateView(
     SuccessMessageMixin,

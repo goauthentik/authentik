@@ -17,6 +17,7 @@ from passbook.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
+    tokens,
     users,
 )
 
@@ -40,6 +41,13 @@ urlpatterns = [
         "applications/<uuid:pk>/delete/",
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
+    ),
+    # Tokens
+    path("tokens/", tokens.TokenListView.as_view(), name="tokens"),
+    path(
+        "tokens/<uuid:pk>/delete/",
+        tokens.TokenDeleteView.as_view(),
+        name="token-delete",
     ),
     # Sources
     path("sources/", sources.SourceListView.as_view(), name="sources"),
