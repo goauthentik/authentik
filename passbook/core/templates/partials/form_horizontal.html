@@ -15,16 +15,18 @@
         </div>
         <div class="pf-c-form__group-control">
             {% for c in field %}
-            <div class="radio col-sm-10">
-                <input type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
-                    name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}" value="{{ c.data.value }}"
-                    {% if c.data.selected %} checked {% endif %}>
-                <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
+            <div class="pf-c-radio">
+                <input class="pf-c-radio__input"
+                       type="radio" id="{{ field.name }}-{{ forloop.counter0 }}"
+                       name="{% if wizard %}{{ wizard.steps.current }}-{% endif %}{{ field.name }}"
+                       value="{{ c.data.value }}"
+                       {% if c.data.selected %} checked {% endif %}/>
+                <label class="pf-c-radio__label" for="{{ field.name }}-{{ forloop.counter0 }}">{{ c.choice_label }}</label>
             </div>
+            {% endfor %}
             {% if field.help_text %}
             <p class="pf-c-form__helper-text">{{ field.help_text }}</p>
             {% endif %}
-            {% endfor %}
         </div>
     {% elif field.field.widget|fieldtype == 'Select' %}
         <div class="pf-c-form__group-label">
