@@ -54,7 +54,7 @@ class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
-        if not self.user_has_access(self.application):
+        if not self.user_has_access(self.application).passing:
             raise PermissionDenied()
         # Call the method handler, which checks the SAML Request
         method_response = super().dispatch(request, *args, application_slug, **kwargs)
