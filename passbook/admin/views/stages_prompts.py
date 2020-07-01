@@ -1,5 +1,4 @@
 """passbook Prompt administration"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -7,9 +6,10 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.prompt.forms import PromptAdminForm
 from passbook.stages.prompt.models import Prompt
@@ -41,10 +41,6 @@ class PromptCreateView(
     success_url = reverse_lazy("passbook_admin:stage-prompts")
     success_message = _("Successfully created Prompt")
 
-    def get_context_data(self, **kwargs):
-        kwargs["type"] = "Prompt"
-        return super().get_context_data(**kwargs)
-
 
 class PromptUpdateView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
@@ -60,9 +56,7 @@ class PromptUpdateView(
     success_message = _("Successfully updated Prompt")
 
 
-class PromptDeleteView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class PromptDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Delete prompt"""
 
     model = Prompt
@@ -71,7 +65,3 @@ class PromptDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:stage-prompts")
     success_message = _("Successfully deleted Prompt")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)

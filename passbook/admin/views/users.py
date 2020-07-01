@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView, UpdateView
 from guardian.mixins import (
     PermissionListMixin,
     PermissionRequiredMixin,
@@ -18,6 +18,7 @@ from guardian.mixins import (
 )
 
 from passbook.admin.forms.users import UserForm
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.core.models import Token, User
 from passbook.lib.views import CreateAssignPermView
 
@@ -68,9 +69,7 @@ class UserUpdateView(
     success_message = _("Successfully updated User")
 
 
-class UserDeleteView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
-):
+class UserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Delete user"""
 
     model = User
@@ -81,10 +80,6 @@ class UserDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:users")
     success_message = _("Successfully deleted User")
-
-    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)
 
 
 class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):

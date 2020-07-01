@@ -1,5 +1,4 @@
 """passbook Invitation administration"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -8,9 +7,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView
+from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.core.signals import invitation_created
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.invitation.forms import InvitationForm
@@ -43,10 +43,6 @@ class InvitationCreateView(
     success_url = reverse_lazy("passbook_admin:stage-invitations")
     success_message = _("Successfully created Invitation")
 
-    def get_context_data(self, **kwargs):
-        kwargs["type"] = "Invitation"
-        return super().get_context_data(**kwargs)
-
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.created_by = self.request.user
@@ -56,7 +52,7 @@ class InvitationCreateView(
 
 
 class InvitationDeleteView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
 ):
     """Delete invitation"""
 
@@ -66,7 +62,3 @@ class InvitationDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:stage-invitations")
     success_message = _("Successfully deleted Invitation")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)
