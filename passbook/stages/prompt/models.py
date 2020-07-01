@@ -95,7 +95,7 @@ class Prompt(models.Model):
 
 
 class PromptStage(PolicyBindingModel, Stage):
-    """Prompt Stage, pointing to multiple prompts"""
+    """Define arbitrary prompts for the user."""
 
     fields = models.ManyToManyField(Prompt)
 

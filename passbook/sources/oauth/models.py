@@ -11,7 +11,7 @@ from passbook.sources.oauth.clients import get_client
 
 
 class OAuthSource(Source):
-    """Configuration for OAuth provider."""
+    """Login using a Generic OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
     request_token_url = models.CharField(
@@ -78,7 +78,7 @@ class OAuthSource(Source):
 
 
 class GitHubOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify GitHub Form"""
+    """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
 
     form = "passbook.sources.oauth.forms.GitHubOAuthSourceForm"
 
@@ -90,7 +90,7 @@ class GitHubOAuthSource(OAuthSource):
 
 
 class TwitterOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify Twitter Form"""
+    """Social Login using Twitter.com"""
 
     form = "passbook.sources.oauth.forms.TwitterOAuthSourceForm"
 
@@ -102,7 +102,7 @@ class TwitterOAuthSource(OAuthSource):
 
 
 class FacebookOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify Facebook Form"""
+    """Social Login using Facebook.com."""
 
     form = "passbook.sources.oauth.forms.FacebookOAuthSourceForm"
 
@@ -114,7 +114,7 @@ class FacebookOAuthSource(OAuthSource):
 
 
 class DiscordOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify Discord Form"""
+    """Social Login using Discord."""
 
     form = "passbook.sources.oauth.forms.DiscordOAuthSourceForm"
 
@@ -126,7 +126,7 @@ class DiscordOAuthSource(OAuthSource):
 
 
 class GoogleOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify Google Form"""
+    """Social Login using Google or Gsuite."""
 
     form = "passbook.sources.oauth.forms.GoogleOAuthSourceForm"
 
@@ -138,7 +138,7 @@ class GoogleOAuthSource(OAuthSource):
 
 
 class AzureADOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify AzureAD Form"""
+    """Social Login using Azure AD."""
 
     form = "passbook.sources.oauth.forms.AzureADOAuthSourceForm"
 
@@ -150,7 +150,7 @@ class AzureADOAuthSource(OAuthSource):
 
 
 class OpenIDOAuthSource(OAuthSource):
-    """Abstract subclass of OAuthSource to specify OpenID Form"""
+    """Login using a Generic OpenID-Connect compliant provider."""
 
     form = "passbook.sources.oauth.forms.OAuthSourceForm"
 

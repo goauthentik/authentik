@@ -6,7 +6,7 @@ from passbook.flows.models import Stage
 
 
 class CaptchaStage(Stage):
-    """Captcha Stage instance"""
+    """Verify the user is human using Google's reCaptcha."""
 
     public_key = models.TextField(
         help_text=_(

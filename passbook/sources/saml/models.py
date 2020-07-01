@@ -17,7 +17,7 @@ class SAMLBindingTypes(models.TextChoices):
 
 
 class SAMLSource(Source):
-    """SAML Source"""
+    """Authenticate using an external SAML Identity Provider."""
 
     issuer = models.TextField(
         blank=True,

@@ -5,7 +5,7 @@ from passbook.flows.models import Stage
 
 
 class ConsentStage(Stage):
-    """Consent Stage instance"""
+    """Prompt the user for confirmation."""
 
     type = "passbook.stages.consent.stage.ConsentStage"
     form = "passbook.stages.consent.forms.ConsentStageForm"

@@ -21,7 +21,7 @@ class EmailTemplates(models.TextChoices):
 
 
 class EmailStage(Stage):
-    """Email-based verification."""
+    """Sends an Email to the user with a token to confirm their Email address."""
 
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)

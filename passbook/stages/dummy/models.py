@@ -5,7 +5,7 @@ from passbook.flows.models import Stage
 
 
 class DummyStage(Stage):
-    """Dummy stage, mostly used to debug"""
+    """Used for debugging."""
 
     type = "passbook.stages.dummy.stage.DummyStage"
     form = "passbook.stages.dummy.forms.DummyStageForm"

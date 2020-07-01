@@ -17,7 +17,7 @@ class TOTPDigits(models.IntegerChoices):
 
 
 class OTPTimeStage(Stage):
-    """Enroll a user's device into Time-based OTP"""
+    """Enroll a user's device into Time-based OTP."""
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
 

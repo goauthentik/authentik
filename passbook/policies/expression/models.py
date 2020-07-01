@@ -8,7 +8,7 @@ from passbook.policies.types import PolicyRequest, PolicyResult
 
 
 class ExpressionPolicy(Policy):
-    """Implement custom logic using python."""
+    """Execute arbitrary Python code to implement custom checks and validation."""
 
     expression = models.TextField()
 

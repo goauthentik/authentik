@@ -13,7 +13,7 @@ from passbook.flows.views import NEXT_ARG_NAME
 
 
 class PasswordStage(Stage):
-    """Password-based Django-backend Authentication Stage"""
+    """Prompts the user for their password, and validates it against the configured backends."""
 
     backends = ArrayField(
         models.TextField(),

@@ -13,7 +13,7 @@ LOGGER = get_logger()
 
 
 class HaveIBeenPwendPolicy(Policy):
-    """Check if password is on HaveIBeenPwned's list by upload the first
+    """Check if password is on HaveIBeenPwned's list by uploading the first
     5 characters of the SHA1 Hash."""
 
     allowed_count = models.IntegerField(default=0)

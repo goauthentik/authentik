@@ -5,7 +5,7 @@ from passbook.flows.models import Stage
 
 
 class UserLogoutStage(Stage):
-    """Logout stage, allows a user to identify themselves to authenticate."""
+    """Resets the users current session."""
 
     type = "passbook.stages.user_logout.stage.UserLogoutStageView"
     form = "passbook.stages.user_logout.forms.UserLogoutStageForm"

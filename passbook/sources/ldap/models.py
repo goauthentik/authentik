@@ -10,7 +10,7 @@ from passbook.core.models import Group, PropertyMapping, Source
 
 
 class LDAPSource(Source):
-    """LDAP Authentication source"""
+    """Federate LDAP Directory with passbook, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
         validators=[URLValidator(schemes=["ldap", "ldaps"])],
@@ -81,7 +81,7 @@ class LDAPSource(Source):
 
 
 class LDAPPropertyMapping(PropertyMapping):
-    """Map LDAP Property to User or Group object"""
+    """Map LDAP Property to User or Group object attribute"""
 
     object_field = models.TextField()
 

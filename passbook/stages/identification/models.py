@@ -21,7 +21,7 @@ class Templates(models.TextChoices):
 
 
 class IdentificationStage(Stage):
-    """Identification stage, allows a user to identify themselves to authenticate."""
+    """Allows the user to identify themselves for authentication."""
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),

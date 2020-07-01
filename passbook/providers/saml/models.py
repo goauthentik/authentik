@@ -25,7 +25,7 @@ class SAMLBindings(models.TextChoices):
 
 
 class SAMLProvider(Provider):
-    """SAML 2.0-based authentication protocol."""
+    """SAML 2.0 Endpoint for applications which support SAML."""
 
     name = models.TextField()
     processor_path = models.CharField(max_length=255, choices=[])
@@ -157,7 +157,7 @@ class SAMLProvider(Provider):
 
 
 class SAMLPropertyMapping(PropertyMapping):
-    """SAML Property mapping, allowing Name/FriendlyName mapping to a list of strings"""
+    """Map User/Group attribute to SAML Attribute, which can be used by the Service Provider."""
 
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)

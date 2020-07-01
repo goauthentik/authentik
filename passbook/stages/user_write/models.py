@@ -5,7 +5,8 @@ from passbook.flows.models import Stage
 
 
 class UserWriteStage(Stage):
-    """Write stage, write a user from saved data."""
+    """Writes currently pending data into the pending user, or if no user exists,
+    creates a new user with the data."""
 
     type = "passbook.stages.user_write.stage.UserWriteStageView"
     form = "passbook.stages.user_write.forms.UserWriteStageForm"

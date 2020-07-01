@@ -10,7 +10,7 @@ from passbook.flows.models import Stage
 
 
 class OTPStaticStage(Stage):
-    """Generate static tokens for the user as a backup"""
+    """Generate static tokens for the user as a backup."""
 
     token_count = models.IntegerField(default=6)
 

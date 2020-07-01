@@ -6,7 +6,7 @@ from passbook.flows.models import NotConfiguredAction, Stage
 
 
 class OTPValidateStage(Stage):
-    """Validate user's configured OTP Device"""
+    """Validate user's configured OTP Device."""
 
     not_configured_action = models.TextField(
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP
