@@ -5,8 +5,10 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.http import urlencode
 from django.utils.translation import ugettext as _
 from django.views.generic import DeleteView, DetailView, ListView, UpdateView
 from guardian.mixins import (
@@ -80,7 +82,7 @@ class UserDeleteView(
     success_url = reverse_lazy("passbook_admin:users")
     success_message = _("Successfully deleted User")
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         messages.success(self.request, self.success_message)
         return super().delete(request, *args, **kwargs)
 
@@ -91,13 +93,13 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
     model = User
     permission_required = "passbook_core.reset_user_password"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Create token for user and return link"""
         super().get(request, *args, **kwargs)
-        # TODO: create plan for user, get token
         token = Token.objects.create(user=self.object)
+        querystring = urlencode({"token": token.token_uuid})
         link = request.build_absolute_uri(
-            reverse("passbook_flows:default-recovery", kwargs={"token": token.uuid})
+            reverse("passbook_flows:default-recovery") + f"?{querystring}"
         )
         messages.success(
             request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})

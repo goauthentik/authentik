@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.views import View
 from django.views.generic import TemplateView
-from django_otp.plugins.otp_static.models import StaticToken, StaticDevice
+from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 
 from passbook.audit.models import Event, EventAction
 

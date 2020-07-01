@@ -230,3 +230,8 @@ input[data-is-monospace] {
     font-size: var(--pf-global--FontSize--2xl);
     font-family: monospace;
 }
+
+/* Fix pre elements within alerts */
+.pf-c-alert pre {
+    white-space: pre-wrap;
+}
