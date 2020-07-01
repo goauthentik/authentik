@@ -1,7 +1,6 @@
 """passbook SAML IDP Views"""
 from typing import Optional
 
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.validators import URLValidator
@@ -9,7 +8,6 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
-from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
@@ -28,7 +26,7 @@ from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.template import render_to_string
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
-from passbook.policies.engine import PolicyEngine
+from passbook.policies.mixins import PolicyAccessMixin
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLBindings, SAMLProvider
 from passbook.providers.saml.processors.types import SAMLResponseParams
@@ -42,33 +40,12 @@ SESSION_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_PARAMS = "SAMLParams"
 
 
-class SAMLAccessMixin:
-    """SAML base access mixin, checks access to an application based on its policies"""
-
-    request: HttpRequest
-    application: Application
-    provider: SAMLProvider
-
-    def _has_access(self) -> bool:
-        """Check if user has access to application, add an error if not"""
-        policy_engine = PolicyEngine(self.application, self.request.user, self.request)
-        policy_engine.build()
-        result = policy_engine.result
-        LOGGER.debug(
-            "SAMLFlowInit _has_access",
-            user=self.request.user,
-            app=self.application,
-            result=result,
-        )
-        if not result.passing:
-            for message in result.messages:
-                messages.error(self.request, _(message))
-        return result.passing
-
-
-class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
+class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
     """"SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
+
+    application: Application
+    provider: SAMLProvider
 
     def dispatch(
         self, request: HttpRequest, *args, application_slug: str, **kwargs
@@ -77,7 +54,7 @@ class SAMLSSOView(LoginRequiredMixin, SAMLAccessMixin, View):
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
-        if not self._has_access():
+        if not self.user_has_access(self.application):
             raise PermissionDenied()
         # Call the method handler, which checks the SAML Request
         method_response = super().dispatch(request, *args, application_slug, **kwargs)

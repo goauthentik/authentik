@@ -1,4 +1,6 @@
 """passbook access helper classes"""
+from typing import Optional
+
 from django.contrib import messages
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
@@ -11,12 +13,15 @@ from passbook.policies.types import PolicyResult
 LOGGER = get_logger()
 
 
-class AccessMixin:
+class BaseMixin:
+    """Base Mixin class, used to annotate View Member variables"""
+
+    request: HttpRequest
+
+
+class PolicyAccessMixin(BaseMixin):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
-
-    # request is set by view but since this Mixin has no base class
-    request: HttpRequest = None
 
     def provider_to_application(self, provider: Provider) -> Application:
         """Lookup application assigned to provider, throw error if no application assigned"""
@@ -32,9 +37,20 @@ class AccessMixin:
             )
             raise exc
 
-    def user_has_access(self, application: Application, user: User) -> PolicyResult:
+    def user_has_access(
+        self, application: Application, user: Optional[User] = None
+    ) -> PolicyResult:
         """Check if user has access to application."""
-        LOGGER.debug("Checking permissions", user=user, application=application)
-        policy_engine = PolicyEngine(application, user, self.request)
+        user = user or self.request.user
+        policy_engine = PolicyEngine(
+            application, user or self.request.user, self.request
+        )
         policy_engine.build()
-        return policy_engine.result
+        result = policy_engine.result
+        LOGGER.debug(
+            "AccessMixin user_has_access", user=user, app=application, result=result,
+        )
+        if not result.passing:
+            for message in result.messages:
+                messages.error(self.request, _(message))
+        return result

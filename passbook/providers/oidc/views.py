@@ -1,5 +1,4 @@
 """passbook OIDC Views"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
@@ -11,7 +10,6 @@ from oidc_provider.views import AuthorizeView
 from structlog import get_logger
 
 from passbook.core.models import Application
-from passbook.core.views.access import AccessMixin
 from passbook.flows.models import in_memory_stage
 from passbook.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -22,6 +20,7 @@ from passbook.flows.planner import (
 from passbook.flows.stage import StageView
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
+from passbook.policies.mixins import PolicyAccessMixin
 from passbook.providers.oidc.models import OpenIDProvider
 from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
@@ -31,7 +30,7 @@ PLAN_CONTEXT_PARAMS = "params"
 PLAN_CONTEXT_SCOPES = "scopes"
 
 
-class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
+class AuthorizationFlowInitView(PolicyAccessMixin, LoginRequiredMixin, View):
     """OIDC Flow initializer, checks access to application and starts flow"""
 
     # pylint: disable=unused-argument
@@ -44,10 +43,8 @@ class AuthorizationFlowInitView(AccessMixin, LoginRequiredMixin, View):
         except Application.DoesNotExist:
             return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Check permissions
-        result = self.user_has_access(application, request.user)
+        result = self.user_has_access(application)
         if not result.passing:
-            for policy_message in result.messages:
-                messages.error(request, policy_message)
             return redirect("passbook_providers_oauth:oauth2-permission-denied")
         # Extract params so we can save them in the plan context
         endpoint = AuthorizeEndpoint(request)
