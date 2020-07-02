@@ -1,7 +1,7 @@
 """passbook OAuth2 Views"""
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.views import View
 from oauth2_provider.exceptions import OAuthToolkitError
 from oauth2_provider.scopes import get_scopes_backend
@@ -48,11 +48,11 @@ class AuthorizationFlowInitView(PolicyAccessMixin, LoginRequiredMixin, View):
         try:
             application = self.provider_to_application(provider)
         except Application.DoesNotExist:
-            return redirect("passbook_providers_oauth:oauth2-permission-denied")
+            return self.handle_no_permission_authorized()
         # Check permissions
         result = self.user_has_access(application)
         if not result.passing:
-            return redirect("passbook_providers_oauth:oauth2-permission-denied")
+            return self.handle_no_permission_authorized()
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(provider.authorization_flow)
         planner.allow_empty_flows = True

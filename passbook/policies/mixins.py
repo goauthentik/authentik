@@ -2,7 +2,9 @@
 from typing import Optional
 
 from django.contrib import messages
-from django.http import HttpRequest
+from django.contrib.auth.mixins import AccessMixin
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
@@ -19,9 +21,13 @@ class BaseMixin:
     request: HttpRequest
 
 
-class PolicyAccessMixin(BaseMixin):
+class PolicyAccessMixin(BaseMixin, AccessMixin):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
+
+    def handle_no_permission_authorized(self) -> HttpResponse:
+        """Function called when user has no permissions but is authorized"""
+        return redirect("passbook_flows:denied")
 
     def provider_to_application(self, provider: Provider) -> Application:
         """Lookup application assigned to provider, throw error if no application assigned"""

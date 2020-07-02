@@ -40,11 +40,11 @@ def check_permissions(
     sections/settings.html#oidc-after-userlogin-hook"""
     provider = client_related_provider(client)
     if not provider:
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
     try:
         application = provider.application
     except Application.DoesNotExist:
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
     LOGGER.debug(
         "Checking permissions for application", user=user, application=application
     )
@@ -56,7 +56,7 @@ def check_permissions(
     if not result.passing:
         for policy_message in result.messages:
             messages.error(request, policy_message)
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
 
     plan: FlowPlan = request.session[SESSION_KEY_PLAN]
     Event.new(

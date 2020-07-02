@@ -1,7 +1,7 @@
 """passbook OIDC Views"""
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, reverse
 from django.views import View
 from oidc_provider.lib.endpoints.authorize import AuthorizeEndpoint
 from oidc_provider.lib.utils.common import get_issuer, get_site_url
@@ -41,11 +41,11 @@ class AuthorizationFlowInitView(PolicyAccessMixin, LoginRequiredMixin, View):
         try:
             application = self.provider_to_application(provider)
         except Application.DoesNotExist:
-            return redirect("passbook_providers_oauth:oauth2-permission-denied")
+            return self.handle_no_permission_authorized()
         # Check permissions
         result = self.user_has_access(application)
         if not result.passing:
-            return redirect("passbook_providers_oauth:oauth2-permission-denied")
+            return self.handle_no_permission_authorized()
         # Extract params so we can save them in the plan context
         endpoint = AuthorizeEndpoint(request)
         # Regardless, we start the planner and return to it

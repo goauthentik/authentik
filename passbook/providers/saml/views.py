@@ -2,7 +2,6 @@
 from typing import Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
@@ -54,8 +53,10 @@ class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
         if not self.user_has_access(self.application).passing:
-            raise PermissionDenied()
+            return self.handle_no_permission_authorized()
         # Call the method handler, which checks the SAML Request
         method_response = super().dispatch(request, *args, application_slug, **kwargs)
         if method_response:
