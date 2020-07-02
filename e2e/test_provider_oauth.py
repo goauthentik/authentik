@@ -11,6 +11,8 @@ from docker.types import Healthcheck
 from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import Application
 from passbook.flows.models import Flow
+from passbook.policies.expression.models import ExpressionPolicy
+from passbook.policies.models import PolicyBinding
 from passbook.providers.oauth.models import OAuth2Provider
 
 
@@ -191,4 +193,43 @@ class TestProviderOAuth(SeleniumTestCase):
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
             ).get_attribute("value"),
             USER().username,
+        )
+
+    def test_denied(self):
+        """test OAuth Provider flow (default authorization flow, denied)"""
+        sleep(1)
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-explicit-consent"
+        )
+        provider = OAuth2Provider.objects.create(
+            name="grafana",
+            client_type=OAuth2Provider.CLIENT_CONFIDENTIAL,
+            authorization_grant_type=OAuth2Provider.GRANT_AUTHORIZATION_CODE,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            redirect_uris="http://localhost:3000/login/github",
+            skip_authorization=True,
+            authorization_flow=authorization_flow,
+        )
+        app = Application.objects.create(
+            name="Grafana", slug="grafana", provider=provider,
+        )
+
+        negative_policy = ExpressionPolicy.objects.create(
+            name="negative-static", expression="return False"
+        )
+        PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
+
+        self.driver.get("http://localhost:3000")
+        self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
+        self.driver.find_element(By.ID, "id_uid_field").click()
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.wait_for_url(self.url("passbook_flows:denied"))
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "#flow-body > header > h1").text,
+            "Permission denied",
         )

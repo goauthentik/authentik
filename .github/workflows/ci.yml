@@ -152,7 +152,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
-          path: out/
+          path: selenium_screenshots/
       - name: Create XML Report
         run: pipenv run coverage xml
       - uses: codecov/codecov-action@v1

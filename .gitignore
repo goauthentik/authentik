@@ -196,3 +196,6 @@ local.env.yml
 ### Helm ###
 # Chart dependencies
 **/charts/*.tgz
+
+# Selenium Screenshots
+selenium_screenshots/**

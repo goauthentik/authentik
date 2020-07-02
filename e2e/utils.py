@@ -43,7 +43,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
-        makedirs("out", exist_ok=True)
+        makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(300)
@@ -58,7 +58,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        self.driver.save_screenshot(f"out/{self.__class__.__name__}_{time()}.png")
+        self.driver.save_screenshot(f"selenium_screenshots/{self.__class__.__name__}_{time()}.png")
         for line in self.driver.get_log("browser"):
             self.logger.warning(
                 line["message"], source=line["source"], level=line["level"]

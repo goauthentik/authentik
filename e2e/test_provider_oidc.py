@@ -14,6 +14,8 @@ from docker.types import Healthcheck
 from e2e.utils import USER, SeleniumTestCase, ensure_rsa_key
 from passbook.core.models import Application
 from passbook.flows.models import Flow
+from passbook.policies.expression.models import ExpressionPolicy
+from passbook.policies.models import PolicyBinding
 from passbook.providers.oidc.models import OpenIDProvider
 
 
@@ -251,4 +253,51 @@ class TestProviderOIDC(SeleniumTestCase):
                 "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
             ).get_attribute("value"),
             USER().email,
+        )
+
+    def test_authorization_denied(self):
+        """test OpenID Provider flow (default authorization with access deny)"""
+        sleep(1)
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-explicit-consent"
+        )
+        client = Client.objects.create(
+            name="grafana",
+            client_type="confidential",
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            _redirect_uris="http://localhost:3000/login/generic_oauth",
+            _scope="openid profile email",
+            reuse_consent=False,
+            require_consent=False,
+        )
+        # At least one of these objects must exist
+        ensure_rsa_key()
+        # This response_code object might exist or not, depending on the order the tests are run
+        rp_type, _ = ResponseType.objects.get_or_create(value="code")
+        client.response_types.set([rp_type])
+        client.save()
+        provider = OpenIDProvider.objects.create(
+            oidc_client=client, authorization_flow=authorization_flow,
+        )
+        app = Application.objects.create(
+            name="Grafana", slug="grafana", provider=provider,
+        )
+
+        negative_policy = ExpressionPolicy.objects.create(
+            name="negative-static", expression="return False"
+        )
+        PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
+        self.driver.get("http://localhost:3000")
+        self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
+        self.driver.find_element(By.ID, "id_uid_field").click()
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.wait_for_url(self.url("passbook_flows:denied"))
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "#flow-body > header > h1").text,
+            "Permission denied",
         )
