@@ -1,12 +1,15 @@
 """admin tests"""
+from importlib import import_module
 from typing import Callable
 
+from django.forms import ModelForm
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.urls.exceptions import NoReverseMatch
 
 from passbook.admin.urls import urlpatterns
 from passbook.core.models import User
+from passbook.lib.utils.reflection import get_apps
 
 
 class TestAdmin(TestCase):
@@ -34,4 +37,28 @@ def generic_view_tester(view_name: str) -> Callable:
 
 for url in urlpatterns:
     method_name = url.name.replace("-", "_")
-    setattr(TestAdmin, f"test_{method_name}", generic_view_tester(url.name))
+    setattr(TestAdmin, f"test_view_{method_name}", generic_view_tester(url.name))
+
+
+def generic_form_tester(form: ModelForm) -> Callable:
+    """Test a form"""
+
+    def tester(self: TestAdmin):
+        form_inst = form()
+        self.assertFalse(form_inst.is_valid())
+
+    return tester
+
+
+# Load the forms module from every app, so we have all forms loaded
+for app in get_apps():
+    module = app.__module__.replace(".apps", ".forms")
+    try:
+        import_module(module)
+    except ImportError:
+        pass
+
+for form_class in ModelForm.__subclasses__():
+    setattr(
+        TestAdmin, f"test_form_{form_class.__name__}", generic_form_tester(form_class)
+    )

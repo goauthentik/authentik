@@ -4,7 +4,6 @@ from django.urls import path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers
-from structlog import get_logger
 
 from passbook.api.permissions import CustomObjectPermissions
 from passbook.audit.api import EventViewSet
@@ -16,7 +15,6 @@ from passbook.core.api.providers import ProviderViewSet
 from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
-from passbook.lib.utils.reflection import get_apps
 from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -48,14 +46,7 @@ from passbook.stages.user_login.api import UserLoginStageViewSet
 from passbook.stages.user_logout.api import UserLogoutStageViewSet
 from passbook.stages.user_write.api import UserWriteStageViewSet
 
-LOGGER = get_logger()
 router = routers.DefaultRouter()
-
-for _passbook_app in get_apps():
-    if hasattr(_passbook_app, "api_mountpoint"):
-        for prefix, viewset in _passbook_app.api_mountpoint:
-            router.register(prefix, viewset)
-        LOGGER.debug("Mounted API URLs", app_name=_passbook_app.name)
 
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
