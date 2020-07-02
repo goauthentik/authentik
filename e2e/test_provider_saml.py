@@ -12,6 +12,8 @@ from passbook.core.models import Application
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
 from passbook.lib.utils.reflection import class_to_path
+from passbook.policies.expression.models import ExpressionPolicy
+from passbook.policies.models import PolicyBinding
 from passbook.providers.saml.models import (
     SAMLBindings,
     SAMLPropertyMapping,
@@ -173,4 +175,42 @@ class TestProviderSAML(SeleniumTestCase):
         self.assertEqual(
             self.driver.find_element(By.XPATH, "/html/body/pre").text,
             f"Hello, {USER().name}!",
+        )
+
+    def test_sp_initiated_denied(self):
+        """test SAML Provider flow SP-initiated flow (Policy denies access)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        negative_policy = ExpressionPolicy.objects.create(
+            name="negative-static", expression="return False"
+        )
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name="saml-test",
+            processor_path=class_to_path(GenericProcessor),
+            acs_url="http://localhost:9009/saml/acs",
+            audience="passbook-e2e",
+            issuer="passbook-e2e",
+            sp_binding=SAMLBindings.POST,
+            authorization_flow=authorization_flow,
+            signing_kp=CertificateKeyPair.objects.first(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        provider.save()
+        app = Application.objects.create(
+            name="SAML", slug="passbook-saml", provider=provider,
+        )
+        PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
+        self.container = self.setup_client(provider)
+        self.driver.get("http://localhost:9009/")
+        self.driver.find_element(By.ID, "id_uid_field").click()
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.wait_for_url(self.url("passbook_flows:denied"))
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "#flow-body > header > h1").text,
+            "Permission denied",
         )
