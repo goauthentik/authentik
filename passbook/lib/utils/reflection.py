@@ -1,12 +1,19 @@
 """passbook lib reflection utilities"""
 from importlib import import_module
 
+from django.conf import settings
+
 
 def all_subclasses(cls, sort=True):
     """Recursively return all subclassess of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
     )
+    # Check if we're in debug mode, if not exclude classes which have `__debug_only__`
+    if not settings.DEBUG:
+        # Filter class out when __debug_only__ is not False
+        classes = [x for x in classes if not getattr(x, "__debug_only__", False)]
+        # classes = filter(lambda x: not getattr(x, "__debug_only__", False), classes)
     if sort:
         return sorted(classes, key=lambda x: x.__name__)
     return classes
@@ -34,10 +41,3 @@ def get_apps():
     for _app in apps.get_app_configs():
         if _app.name.startswith("passbook"):
             yield _app
-
-
-def app(name):
-    """Return true if app with `name` is enabled"""
-    from django.conf import settings
-
-    return name in settings.INSTALLED_APPS

@@ -20,42 +20,38 @@ def create_default_authentication_flow(
     )
     db_alias = schema_editor.connection.alias
 
-    if (
-        Flow.objects.using(db_alias)
-        .filter(designation=FlowDesignation.AUTHENTICATION)
-        .exists()
-    ):
-        # Only create default flow when none exist
-        return
+    identification_stage, _ = IdentificationStage.objects.using(
+        db_alias
+    ).update_or_create(
+        name="default-authentication-identification",
+        defaults={
+            "user_fields": [UserFields.E_MAIL, UserFields.USERNAME],
+            "template": Templates.DEFAULT_LOGIN,
+        },
+    )
 
-    if not IdentificationStage.objects.using(db_alias).exists():
-        IdentificationStage.objects.using(db_alias).create(
-            name="identification",
-            user_fields=[UserFields.E_MAIL],
-            template=Templates.DEFAULT_LOGIN,
-        )
+    password_stage, _ = PasswordStage.objects.using(db_alias).update_or_create(
+        name="default-authentication-password",
+        defaults={"backends": ["django.contrib.auth.backends.ModelBackend"]},
+    )
 
-    if not PasswordStage.objects.using(db_alias).exists():
-        PasswordStage.objects.using(db_alias).create(
-            name="password", backends=["django.contrib.auth.backends.ModelBackend"],
-        )
+    login_stage, _ = UserLoginStage.objects.using(db_alias).update_or_create(
+        name="default-authentication-login"
+    )
 
-    if not UserLoginStage.objects.using(db_alias).exists():
-        UserLoginStage.objects.using(db_alias).create(name="authentication")
-
-    flow = Flow.objects.using(db_alias).create(
-        name="default-authentication-flow",
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-authentication-flow",
         designation=FlowDesignation.AUTHENTICATION,
+        defaults={"name": "Welcome to passbook!",},
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=IdentificationStage.objects.using(db_alias).first(), order=0,
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=identification_stage, defaults={"order": 0,},
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=PasswordStage.objects.using(db_alias).first(), order=1,
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=password_stage, defaults={"order": 1,},
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=UserLoginStage.objects.using(db_alias).first(), order=2,
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow, stage=login_stage, defaults={"order": 2,},
     )
 
 
@@ -67,24 +63,19 @@ def create_default_invalidation_flow(
     UserLogoutStage = apps.get_model("passbook_stages_user_logout", "UserLogoutStage")
     db_alias = schema_editor.connection.alias
 
-    if (
-        Flow.objects.using(db_alias)
-        .filter(designation=FlowDesignation.INVALIDATION)
-        .exists()
-    ):
-        # Only create default flow when none exist
-        return
+    UserLogoutStage.objects.using(db_alias).update_or_create(
+        name="default-invalidation-logout"
+    )
 
-    if not UserLogoutStage.objects.using(db_alias).exists():
-        UserLogoutStage.objects.using(db_alias).create(name="logout")
-
-    flow = Flow.objects.using(db_alias).create(
-        name="default-invalidation-flow",
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-invalidation-flow",
         designation=FlowDesignation.INVALIDATION,
+        defaults={"name": "Logout",},
     )
-    FlowStageBinding.objects.using(db_alias).create(
-        flow=flow, stage=UserLogoutStage.objects.using(db_alias).first(), order=0,
+    FlowStageBinding.objects.using(db_alias).update_or_create(
+        flow=flow,
+        stage=UserLogoutStage.objects.using(db_alias).first(),
+        defaults={"order": 0,},
     )
 
 

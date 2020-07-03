@@ -6,13 +6,13 @@ from passbook.stages.email.models import EmailStage
 
 
 class EmailStageSendForm(forms.Form):
-    """Form used when sending the e-mail to prevent multiple emails being sent"""
+    """Form used when sending the email to prevent multiple emails being sent"""
 
     invalid = forms.CharField(widget=forms.HiddenInput, required=True)
 
 
 class EmailStageForm(forms.ModelForm):
-    """Form to create/edit E-Mail Stage"""
+    """Form to create/edit Email Stage"""
 
     class Meta:
 
@@ -34,6 +34,7 @@ class EmailStageForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(),
             "host": forms.TextInput(),
+            "subject": forms.TextInput(),
             "username": forms.TextInput(),
             "password": forms.TextInput(),
         }

@@ -25,8 +25,7 @@
                 <ul class="pf-c-nav__list">
                     {% for stage in user_stages_loc %}
                     <li class="pf-c-nav__item">
-                        <a href="{% url stage.view_name %}" class="pf-c-nav__link {% is_active stage.view_name %}">
-                            <i class="{{ stage.icon }}"></i>
+                        <a href="{{ stage.url }}" class="pf-c-nav__link {% if stage.url == request.get_full_path %} pf-m-current {% endif %}">
                             {{ stage.name }}
                         </a>
                     </li>
@@ -42,8 +41,7 @@
                     {% for source in user_sources_loc %}
                     <li class="pf-c-nav__item">
                         <a href="{{ source.view_name }}"
-                            class="pf-c-nav__link {% if user_settings.view_name == request.get_full_path %} pf-m-current {% endif %}">
-                            <i class="{{ source.icon }}"></i>
+                            class="pf-c-nav__link {% if source.url == request.get_full_path %} pf-m-current {% endif %}">
                             {{ source.name }}
                         </a>
                     </li>
@@ -56,9 +54,11 @@
 </div>
 <main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
     <section class="pf-c-page__main-section">
-        <div class="pf-l-split pf-m-gutter">
-            {% block page %}
-            {% endblock %}
+        <div class="pf-u-display-flex pf-u-justify-content-center">
+            <div class="pf-u-w-75">
+                {% block page %}
+                {% endblock %}
+            </div>
         </div>
     </section>
 </main>

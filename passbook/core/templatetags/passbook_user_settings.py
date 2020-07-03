@@ -23,7 +23,7 @@ def user_stages(context: RequestContext) -> List[UIUserSettings]:
         if not user_settings:
             continue
         matching_stages.append(user_settings)
-    return matching_stages
+    return sorted(matching_stages, key=lambda x: x.name)
 
 
 @register.simple_tag(takes_context=True)
@@ -38,10 +38,8 @@ def user_sources(context: RequestContext) -> List[UIUserSettings]:
         user_settings = source.ui_user_settings
         if not user_settings:
             continue
-        policy_engine = PolicyEngine(
-            source.policies.all(), user, context.get("request")
-        )
+        policy_engine = PolicyEngine(source, user, context.get("request"))
         policy_engine.build()
         if policy_engine.passing:
             matching_sources.append(user_settings)
-    return matching_sources
+    return sorted(matching_sources, key=lambda x: x.name)

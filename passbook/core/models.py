@@ -5,20 +5,18 @@ from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
-from jinja2 import Undefined
-from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
 from passbook.core.types import UILoginButton, UIUserSettings
+from passbook.flows.models import Flow
 from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
 
@@ -78,6 +76,13 @@ class User(GuardianUserMixin, AbstractUser):
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
+    authorization_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.CASCADE,
+        help_text=_("Flow used when authorizing this provider."),
+        related_name="provider_authorization",
+    )
+
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
     )
@@ -98,7 +103,6 @@ class Application(PolicyBindingModel):
 
     name = models.TextField(help_text=_("Application's display Name."))
     slug = models.SlugField(help_text=_("Internal application name, used in URLs."))
-    skip_authorization = models.BooleanField(default=False)
     provider = models.OneToOneField(
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
@@ -107,8 +111,6 @@ class Application(PolicyBindingModel):
     meta_icon_url = models.TextField(default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
-
-    objects = InheritanceManager()
 
     def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""
@@ -129,6 +131,25 @@ class Source(PolicyBindingModel):
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True
+    )
+
+    authentication_flow = models.ForeignKey(
+        Flow,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Flow to use when authenticating existing users."),
+        related_name="source_authentication",
+    )
+    enrollment_flow = models.ForeignKey(
+        Flow,
+        blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_("Flow to use when enrolling new users."),
+        related_name="source_enrollment",
     )
 
     form = ""  # ModelForm-based class ued to create/edit instance
@@ -206,30 +227,14 @@ class PropertyMapping(models.Model):
         self, user: Optional[User], request: Optional[HttpRequest], **kwargs
     ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        from passbook.policies.expression.evaluator import Evaluator
+        from passbook.core.expression import PropertyMappingEvaluator
 
-        evaluator = Evaluator()
+        evaluator = PropertyMappingEvaluator()
+        evaluator.set_context(user, request, **kwargs)
         try:
-            expression = evaluator.env.from_string(self.expression)
-        except TemplateSyntaxError as exc:
+            return evaluator.evaluate(self.expression)
+        except (ValueError, SyntaxError) as exc:
             raise PropertyMappingExpressionException from exc
-        try:
-            response = expression.render(user=user, request=request, **kwargs)
-            if isinstance(response, Undefined):
-                raise PropertyMappingExpressionException("Response was 'Undefined'")
-            return response
-        except UndefinedError as exc:
-            raise PropertyMappingExpressionException from exc
-
-    def save(self, *args, **kwargs):
-        from passbook.policies.expression.evaluator import Evaluator
-
-        evaluator = Evaluator()
-        try:
-            evaluator.env.from_string(self.expression)
-        except TemplateSyntaxError as exc:
-            raise ValidationError("Expression Syntax Error") from exc
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Property Mapping {self.name}"

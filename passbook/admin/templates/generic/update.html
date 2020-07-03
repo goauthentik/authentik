@@ -6,7 +6,7 @@
 {% block above_form %}
 <h1>
     {% blocktrans with type=form|form_verbose_name|title inst=form.instance %}
-    Update {{ type }}: {{ inst }}
+    Update {{ inst }}
     {% endblocktrans %}
 </h1>
 {% endblock %}

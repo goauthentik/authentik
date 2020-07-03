@@ -4,7 +4,9 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
+from passbook.admin.fields import CodeMirrorWidget
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.core.expression import PropertyMappingEvaluator
 from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
@@ -52,6 +54,13 @@ class LDAPPropertyMappingForm(forms.ModelForm):
 
     template_name = "ldap/property_mapping_form.html"
 
+    def clean_expression(self):
+        """Test Syntax"""
+        expression = self.cleaned_data.get("expression")
+        evaluator = PropertyMappingEvaluator()
+        evaluator.validate(expression)
+        return expression
+
     class Meta:
 
         model = LDAPPropertyMapping
@@ -60,4 +69,8 @@ class LDAPPropertyMappingForm(forms.ModelForm):
             "name": forms.TextInput(),
             "ldap_property": forms.TextInput(),
             "object_field": forms.TextInput(),
+            "expression": CodeMirrorWidget(mode="python"),
+        }
+        help_texts = {
+            "object_field": _("Field of the user object this value is written to.")
         }

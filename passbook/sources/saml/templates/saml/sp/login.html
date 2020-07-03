@@ -14,7 +14,7 @@
 <form method="POST" action="{{ request_url }}">
     {% csrf_token %}
     <input type="hidden" name="SAMLRequest" value="{{ request }}" />
-    <input type="hidden" name="RelayState" value="{{ token }}" />
+    <input type="hidden" name="RelayState" value="{{ relay_state }}" />
     <div class="login-group">
         <h3>
             {% blocktrans with remote=source.name %}

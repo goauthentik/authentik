@@ -3,8 +3,10 @@ from unittest.mock import MagicMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -95,7 +97,9 @@ class TestPromptStage(TestCase):
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -107,16 +111,16 @@ class TestPromptStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
-            self.assertIn(prompt.field_key, response.rendered_content)
-            self.assertIn(prompt.label, response.rendered_content)
-            self.assertIn(prompt.placeholder, response.rendered_content)
+            self.assertIn(prompt.field_key, force_text(response.content))
+            self.assertIn(prompt.label, force_text(response.content))
+            self.assertIn(prompt.placeholder, force_text(response.content))
 
-    def test_valid_form(self) -> PromptForm:
+    def test_valid_form_with_policy(self) -> PromptForm:
         """Test form validation"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
-        expr = (
-            "{{ request.context.password_prompt == request.context.password2_prompt }}"
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
+        expr = "return request.context['password_prompt'] == request.context['password2_prompt']"
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
@@ -127,7 +131,9 @@ class TestPromptStage(TestCase):
 
     def test_invalid_form(self) -> PromptForm:
         """Test form validation"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         expr = "False"
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
@@ -139,12 +145,14 @@ class TestPromptStage(TestCase):
 
     def test_valid_form_request(self):
         """Test a request with valid form data"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        form = self.test_valid_form()
+        form = self.test_valid_form_with_policy()
 
         with patch("passbook.flows.views.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
@@ -153,8 +161,11 @@ class TestPromptStage(TestCase):
                 ),
                 form.cleaned_data,
             )
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
 
         # Check that valid data has been saved
         session = self.client.session

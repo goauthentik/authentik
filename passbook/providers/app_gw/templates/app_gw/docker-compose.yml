@@ -2,7 +2,6 @@ version: "3.5"
 
 services:
   passbook_gatekeeper:
-    container_name: gatekeeper
     image: beryju/passbook-gatekeeper:{{ version }}
     ports:
       - 4180:4180

@@ -1,5 +1,4 @@
 """passbook StageBinding administration"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -7,9 +6,10 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.flows.forms import FlowStageBindingForm
 from passbook.flows.models import FlowStageBinding
 from passbook.lib.views import CreateAssignPermView
@@ -41,13 +41,6 @@ class StageBindingCreateView(
     success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully created StageBinding")
 
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        form_cls = self.get_form_class()
-        if hasattr(form_cls, "template_name"):
-            kwargs["base_template"] = form_cls.template_name
-        return kwargs
-
 
 class StageBindingUpdateView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
@@ -62,16 +55,9 @@ class StageBindingUpdateView(
     success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully updated StageBinding")
 
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        form_cls = self.get_form_class()
-        if hasattr(form_cls, "template_name"):
-            kwargs["base_template"] = form_cls.template_name
-        return kwargs
-
 
 class StageBindingDeleteView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
 ):
     """Delete FlowStageBinding"""
 
@@ -81,7 +67,3 @@ class StageBindingDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:stage-bindings")
     success_message = _("Successfully deleted FlowStageBinding")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)

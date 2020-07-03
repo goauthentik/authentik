@@ -135,7 +135,23 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run ./scripts/coverage.sh
+              script: |
+                cd e2e
+                docker-compose pull -q chrome
+                docker-compose up -d chrome
+          - task: CmdLine@2
+            inputs:
+              script: |
+                cd passbook/static/static
+                yarn
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run coverage run ./manage.py test --failfast
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'selenium_screenshots/'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
           - task: CmdLine@2
             inputs:
               script: pipenv run coverage xml
@@ -156,7 +172,7 @@ stages:
             repository: 'beryju/passbook'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
-            tags: '$(Build.SourceBranchName)'
+            tags: 'gh-$(Build.SourceBranchName)'
       - job: build_gatekeeper
         pool:
           vmImage: 'ubuntu-latest'
@@ -170,7 +186,7 @@ stages:
             repository: 'beryju/passbook-gatekeeper'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
-            tags: '$(Build.SourceBranchName)'
+            tags: 'gh-$(Build.SourceBranchName)'
       - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
@@ -187,11 +203,11 @@ stages:
             repository: 'beryju/passbook-static'
             command: 'build'
             Dockerfile: 'static.Dockerfile'
-            tags: '$(Build.SourceBranchName)'
+            tags: 'gh-$(Build.SourceBranchName)'
             arguments: "--network=beryjupassbook_default"
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-static'
             command: 'push'
-            tags: '$(Build.SourceBranchName)'
+            tags: 'gh-$(Build.SourceBranchName)'

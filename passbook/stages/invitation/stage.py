@@ -7,6 +7,7 @@ from passbook.stages.invitation.models import Invitation, InvitationStage
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 INVITATION_TOKEN_KEY = "token"
+INVITATION_IN_EFFECT = "invitation_in_effect"
 
 
 class InvitationStageView(StageView):
@@ -23,4 +24,5 @@ class InvitationStageView(StageView):
         token = request.GET[INVITATION_TOKEN_KEY]
         invite: Invitation = get_object_or_404(Invitation, pk=token)
         self.executor.plan.context[PLAN_CONTEXT_PROMPT] = invite.fixed_data
+        self.executor.plan.context[INVITATION_IN_EFFECT] = True
         return self.executor.stage_ok()

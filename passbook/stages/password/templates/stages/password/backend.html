@@ -1,39 +1,10 @@
+{% extends 'login/form_with_user.html' %}
+
 {% load i18n %}
 {% load passbook_utils %}
 
-<header class="pf-c-login__main-header">
-    <h1 class="pf-c-title pf-m-3xl">
-        {% block card_title %}
-        {% trans title %}
-        {% endblock %}
-    </h1>
-</header>
-<div class="pf-c-login__main-body">
-    {% block card %}
-    <form method="POST" class="pf-c-form">
-        <div class="pf-c-form__group">
-            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
-                <span class="pf-c-form__label-text">{% trans "Username" %}</span>
-            </label>
-            <div class="form-control-static">
-                <div class="left">
-                    <img class="pf-c-avatar" src="{% gravatar user.email %}" alt="">
-                    {{ user.username }}
-                </div>
-                <div class="right">
-                    <a href="{% url 'passbook_flows:default-authentication' %}">{% trans 'Not you?' %}</a>
-                </div>
-            </div>
-        </div>
-
-        {% include 'partials/form.html' %}
-
-        {% if recovery_flow %}
-        <a href="{% url 'passbook_flows:flow-executor' flow_slug=recovery_flow.slug %}">{% trans 'Forgot password?' %}</a>
-        {% endif %}
-        <div class="pf-c-form__group pf-m-action">
-            <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans primary_action %}</button>
-        </div>
-    </form>
-    {% endblock %}
-</div>
+{% block beneath_form %}
+{% if recovery_flow %}
+<a href="{% url 'passbook_flows:flow-executor' flow_slug=recovery_flow.slug %}">{% trans 'Forgot password?' %}</a>
+{% endif %}
+{% endblock %}

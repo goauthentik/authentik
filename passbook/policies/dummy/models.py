@@ -16,6 +16,8 @@ class DummyPolicy(Policy):
     """Policy used for debugging the PolicyEngine. Returns a fixed result,
     but takes a random time to process."""
 
+    __debug_only__ = True
+
     result = models.BooleanField(default=False)
     wait_min = models.IntegerField(default=5)
     wait_max = models.IntegerField(default=30)

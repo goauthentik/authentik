@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  chrome:
+    image: selenium/standalone-chrome-debug:3.141.59-20200525
+    volumes:
+      - /dev/shm:/dev/shm
+    network_mode: host
+
+  postgresql:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: passbook
+    network_mode: host
+  redis:
+    image: redis
+    restart: always
+    network_mode: host

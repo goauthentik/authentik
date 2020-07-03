@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
 <script src="{% static 'node_modules/codemirror/mode/xml/xml.js' %}"></script>
 <script src="{% static 'node_modules/codemirror/mode/yaml/yaml.js' %}"></script>
-<script src="{% static 'node_modules/codemirror/mode/jinja2/jinja2.js' %}"></script>
+<script src="{% static 'node_modules/codemirror/mode/python/python.js' %}"></script>
 {% endblock %}
 
 {% block page_content %}
@@ -123,14 +123,20 @@
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
+                    <a href="{% url 'passbook_admin:tokens' %}"
+                        class="pf-c-nav__link {% is_active 'passbook_admin:tokens' 'passbook_admin:token-delete' %}">
+                        {% trans 'Tokens' %}
+                    </a>
+                </li>
+                <li class="pf-c-nav__item">
                     <a href="{% url 'passbook_admin:users' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:users' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
+                        class="pf-c-nav__link {% is_active 'passbook_admin:users' 'passbook_admin:user-create' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
                         {% trans 'Users' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="{% url 'passbook_admin:groups' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:groups' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
+                        class="pf-c-nav__link {% is_active 'passbook_admin:groups' 'passbook_admin:group-create' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
                         {% trans 'Groups' %}
                     </a>
                 </li>

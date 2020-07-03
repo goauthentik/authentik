@@ -6,8 +6,10 @@ from unittest.mock import MagicMock, patch
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -42,7 +44,9 @@ class TestPasswordStage(TestCase):
 
     def test_without_user(self):
         """Test without user"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -54,8 +58,12 @@ class TestPasswordStage(TestCase):
             # Still have to send the password so the form is valid
             {"password": self.password},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
@@ -63,7 +71,9 @@ class TestPasswordStage(TestCase):
             designation=FlowDesignation.RECOVERY, slug="qewrqerqr"
         )
 
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -74,11 +84,13 @@ class TestPasswordStage(TestCase):
             ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, response.rendered_content)
+        self.assertIn(flow.slug, force_text(response.content))
 
     def test_valid_password(self):
         """Test with a valid pending user and valid password"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -91,12 +103,18 @@ class TestPasswordStage(TestCase):
             # Form data
             {"password": self.password},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
 
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -118,7 +136,9 @@ class TestPasswordStage(TestCase):
     def test_permission_denied(self):
         """Test with a valid pending user and valid password.
         Backend is patched to return PermissionError"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -131,5 +151,9 @@ class TestPasswordStage(TestCase):
             # Form data
             {"password": self.password + "test"},
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )

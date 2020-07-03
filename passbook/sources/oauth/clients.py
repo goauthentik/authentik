@@ -94,8 +94,6 @@ class OAuthClient(BaseOAuthClient):
                 "oauth_callback": callback,
                 "token": raw_token,
             }
-            callback = request.build_absolute_uri(callback or request.path)
-            callback = force_text(callback)
             try:
                 response = self.session.request(
                     "post",

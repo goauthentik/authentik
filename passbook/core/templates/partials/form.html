@@ -10,6 +10,9 @@
 </div>
 {% endif %}
 {% for field in form %}
+{% if field.field.widget|fieldtype == 'HiddenInput' %}
+    {{ field }}
+{% else %}
 <div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
     {% if field.field.widget|fieldtype == 'RadioSelect' %}
         <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
@@ -66,4 +69,5 @@
     </p>
     {% endfor %}
 </div>
+{% endif %}
 {% endfor %}

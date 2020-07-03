@@ -1,0 +1,31 @@
+{% extends "user/base.html" %}
+
+{% load passbook_utils %}
+{% load i18n %}
+
+{% block page %}
+<div class="pf-c-card">
+    <div class="pf-c-card__header pf-c-title pf-m-md">
+        {% trans "Time-based One-Time Passwords" %}
+    </div>
+    <div class="pf-c-card__body">
+        <p>
+            {% blocktrans with state=state|yesno:"Enabled,Disabled" %}
+            Status: {{ state }}
+            {% endblocktrans %}
+            {% if state %}
+            <i class="pf-icon pf-icon-ok"></i>
+            {% else %}
+            <i class="pf-icon pf-icon-error-circle-o"></i>
+            {% endif %}
+        </p>
+        <p>
+            {% if not state %}
+            <a href="{% url 'passbook_stages_otp_time:otp-enable' %}" class="pf-c-button pf-m-primary">{% trans "Enable Time-based OTP" %}</a>
+            {% else %}
+            <a href="{% url 'passbook_stages_otp_time:disable' %}" class="pf-c-button pf-m-danger">{% trans "Disable Time-based OTP" %}</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}

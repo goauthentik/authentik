@@ -5,7 +5,7 @@ from passbook.flows.models import Stage
 
 
 class UserLoginStage(Stage):
-    """Login stage, allows a user to identify themselves to authenticate."""
+    """Attaches the currently pending user to the current session."""
 
     type = "passbook.stages.user_login.stage.UserLoginStageView"
     form = "passbook.stages.user_login.forms.UserLoginStageForm"

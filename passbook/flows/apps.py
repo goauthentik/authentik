@@ -1,4 +1,6 @@
 """passbook flows app config"""
+from importlib import import_module
+
 from django.apps import AppConfig
 
 
@@ -9,3 +11,7 @@ class PassbookFlowsConfig(AppConfig):
     label = "passbook_flows"
     mountpoint = "flows/"
     verbose_name = "passbook Flows"
+
+    def ready(self):
+        """Flow signals that clear the cache"""
+        import_module("passbook.flows.signals")

@@ -1,7 +1,11 @@
 """passbook administration overview"""
+from functools import lru_cache
+
 from django.core.cache import cache
 from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
+from packaging.version import Version, parse
+from requests import RequestException, get
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
@@ -10,6 +14,19 @@ from passbook.flows.models import Flow, Stage
 from passbook.policies.models import Policy
 from passbook.root.celery import CELERY_APP
 from passbook.stages.invitation.models import Invitation
+
+
+@lru_cache
+def latest_version() -> Version:
+    """Get latest release from GitHub, cached"""
+    try:
+        data = get(
+            "https://api.github.com/repos/beryju/passbook/releases/latest"
+        ).json()
+        tag_name = data.get("tag_name")
+        return parse(tag_name.split("/")[1])
+    except RequestException:
+        return parse("0.0.0")
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
@@ -33,7 +50,8 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["stage_count"] = len(Stage.objects.all())
         kwargs["flow_count"] = len(Flow.objects.all())
         kwargs["invitation_count"] = len(Invitation.objects.all())
-        kwargs["version"] = __version__
+        kwargs["version"] = parse(__version__)
+        kwargs["version_latest"] = latest_version()
         kwargs["worker_count"] = len(CELERY_APP.control.ping(timeout=0.5))
         kwargs["providers_without_application"] = Provider.objects.filter(
             application=None

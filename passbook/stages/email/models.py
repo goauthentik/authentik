@@ -8,7 +8,7 @@ from passbook.flows.models import Stage
 
 
 class EmailTemplates(models.TextChoices):
-    """Templates used for rendering the E-Mail"""
+    """Templates used for rendering the Email"""
 
     PASSWORD_RESET = (
         "stages/email/for_email/password_reset.html",
@@ -21,7 +21,7 @@ class EmailTemplates(models.TextChoices):
 
 
 class EmailStage(Stage):
-    """email stage"""
+    """Sends an Email to the user with a token to confirm their Email address."""
 
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)

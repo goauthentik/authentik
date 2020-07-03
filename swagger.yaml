@@ -1222,6 +1222,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /policies/group_membership/:
+    get:
+      operationId: policies_group_membership_list
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_group_membership_create
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/group_membership/{policy_uuid}/:
+    get:
+      operationId: policies_group_membership_read
+      description: Group Membership Policy Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_group_membership_update
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_group_membership_partial_update
+      description: Group Membership Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/GroupMembershipPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_group_membership_delete
+      description: Group Membership Policy Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: policy_uuid
+        in: path
+        description: A UUID string identifying this Group Membership Policy.
+        required: true
+        type: string
+        format: uuid
   /policies/haveibeenpwned/:
     get:
       operationId: policies_haveibeenpwned_list
@@ -1352,7 +1479,7 @@ paths:
   /policies/password/:
     get:
       operationId: policies_password_list
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: ordering
           in: query
@@ -1401,7 +1528,7 @@ paths:
         - policies
     post:
       operationId: policies_password_create
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1419,7 +1546,7 @@ paths:
   /policies/password/{policy_uuid}/:
     get:
       operationId: policies_password_read
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters: []
       responses:
         '200':
@@ -1430,7 +1557,7 @@ paths:
         - policies
     put:
       operationId: policies_password_update
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1446,7 +1573,7 @@ paths:
         - policies
     patch:
       operationId: policies_password_partial_update
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters:
         - name: data
           in: body
@@ -1462,7 +1589,7 @@ paths:
         - policies
     delete:
       operationId: policies_password_delete
-      description: Source Viewset
+      description: Password Policy Viewset
       parameters: []
       responses:
         '204':
@@ -1476,9 +1603,9 @@ paths:
         required: true
         type: string
         format: uuid
-  /policies/passwordexpiry/:
+  /policies/password_expiry/:
     get:
-      operationId: policies_passwordexpiry_list
+      operationId: policies_password_expiry_list
       description: Password Expiry Viewset
       parameters:
         - name: ordering
@@ -1527,7 +1654,7 @@ paths:
       tags:
         - policies
     post:
-      operationId: policies_passwordexpiry_create
+      operationId: policies_password_expiry_create
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1543,9 +1670,9 @@ paths:
       tags:
         - policies
     parameters: []
-  /policies/passwordexpiry/{policy_uuid}/:
+  /policies/password_expiry/{policy_uuid}/:
     get:
-      operationId: policies_passwordexpiry_read
+      operationId: policies_password_expiry_read
       description: Password Expiry Viewset
       parameters: []
       responses:
@@ -1556,7 +1683,7 @@ paths:
       tags:
         - policies
     put:
-      operationId: policies_passwordexpiry_update
+      operationId: policies_password_expiry_update
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1572,7 +1699,7 @@ paths:
       tags:
         - policies
     patch:
-      operationId: policies_passwordexpiry_partial_update
+      operationId: policies_password_expiry_partial_update
       description: Password Expiry Viewset
       parameters:
         - name: data
@@ -1588,7 +1715,7 @@ paths:
       tags:
         - policies
     delete:
-      operationId: policies_passwordexpiry_delete
+      operationId: policies_password_expiry_delete
       description: Password Expiry Viewset
       parameters: []
       responses:
@@ -2951,6 +3078,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /sources/saml/:
+    get:
+      operationId: sources_saml_list
+      description: SAMLSource Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    post:
+      operationId: sources_saml_create
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    parameters: []
+  /sources/saml/{pbm_uuid}/:
+    get:
+      operationId: sources_saml_read
+      description: SAMLSource Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    put:
+      operationId: sources_saml_update
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    patch:
+      operationId: sources_saml_partial_update
+      description: SAMLSource Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/SAMLSource'
+      tags:
+        - sources
+    delete:
+      operationId: sources_saml_delete
+      description: SAMLSource Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this SAML Source.
+        required: true
+        type: string
+        format: uuid
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -3145,6 +3399,133 @@ paths:
       - name: stage_uuid
         in: path
         description: A UUID string identifying this Captcha Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/consent/:
+    get:
+      operationId: stages_consent_list
+      description: ConsentStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_consent_create
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/consent/{stage_uuid}/:
+    get:
+      operationId: stages_consent_read
+      description: ConsentStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_consent_update
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_consent_partial_update
+      description: ConsentStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ConsentStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_consent_delete
+      description: ConsentStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this Consent Stage.
         required: true
         type: string
         format: uuid
@@ -3783,10 +4164,10 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/otp/:
+  /stages/otp_static/:
     get:
-      operationId: stages_otp_list
-      description: OTPStage Viewset
+      operationId: stages_otp_static_list
+      description: OTPStaticStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -3830,73 +4211,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OTPStage'
+                  $ref: '#/definitions/OTPStaticStage'
       tags:
         - stages
     post:
-      operationId: stages_otp_create
-      description: OTPStage Viewset
+      operationId: stages_otp_static_create
+      description: OTPStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       tags:
         - stages
     parameters: []
-  /stages/otp/{stage_uuid}/:
+  /stages/otp_static/{stage_uuid}/:
     get:
-      operationId: stages_otp_read
-      description: OTPStage Viewset
+      operationId: stages_otp_static_read
+      description: OTPStaticStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       tags:
         - stages
     put:
-      operationId: stages_otp_update
-      description: OTPStage Viewset
+      operationId: stages_otp_static_update
+      description: OTPStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       tags:
         - stages
     patch:
-      operationId: stages_otp_partial_update
-      description: OTPStage Viewset
+      operationId: stages_otp_static_partial_update
+      description: OTPStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStage'
+            $ref: '#/definitions/OTPStaticStage'
       tags:
         - stages
     delete:
-      operationId: stages_otp_delete
-      description: OTPStage Viewset
+      operationId: stages_otp_static_delete
+      description: OTPStaticStage Viewset
       parameters: []
       responses:
         '204':
@@ -3906,7 +4287,261 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this OTP Stage.
+        description: A UUID string identifying this OTP Static Setup Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/otp_time/:
+    get:
+      operationId: stages_otp_time_list
+      description: OTPTimeStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OTPTimeStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_otp_time_create
+      description: OTPTimeStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/otp_time/{stage_uuid}/:
+    get:
+      operationId: stages_otp_time_read
+      description: OTPTimeStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_otp_time_update
+      description: OTPTimeStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_otp_time_partial_update
+      description: OTPTimeStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPTimeStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_otp_time_delete
+      description: OTPTimeStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this OTP Time (TOTP) Setup Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/otp_validate/:
+    get:
+      operationId: stages_otp_validate_list
+      description: OTPValidateStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/OTPValidateStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_otp_validate_create
+      description: OTPValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/otp_validate/{stage_uuid}/:
+    get:
+      operationId: stages_otp_validate_read
+      description: OTPValidateStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_otp_validate_update
+      description: OTPValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_otp_validate_partial_update
+      description: OTPValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/OTPValidateStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_otp_validate_delete
+      description: OTPValidateStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this OTP Validation Stage.
         required: true
         type: string
         format: uuid
@@ -4875,9 +5510,6 @@ definitions:
         pattern: ^[-a-zA-Z0-9_]+$
         maxLength: 50
         minLength: 1
-      skip_authorization:
-        title: Skip authorization
-        type: boolean
       provider:
         title: Provider
         type: integer
@@ -5048,11 +5680,12 @@ definitions:
         type: string
         enum:
           - authentication
+          - authorization
           - invalidation
           - enrollment
           - unenrollment
           - recovery
-          - password_change
+          - stage_setup
       stages:
         type: array
         items:
@@ -5155,6 +5788,23 @@ definitions:
         title: Expression
         type: string
         minLength: 1
+  GroupMembershipPolicy:
+    type: object
+    properties:
+      pk:
+        title: Policy uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      group:
+        title: Group
+        type: string
+        format: uuid
+        x-nullable: true
   HaveIBeenPwendPolicy:
     type: object
     properties:
@@ -5335,12 +5985,19 @@ definitions:
         type: string
         minLength: 1
   Provider:
+    required:
+      - authorization_flow
     type: object
     properties:
       pk:
         title: ID
         type: integer
         readOnly: true
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
       property_mappings:
         type: array
         items:
@@ -5594,6 +6251,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       __type__:
         title: 'type  '
         type: string
@@ -5629,6 +6298,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       server_uri:
         title: Server URI
         type: string
@@ -5726,6 +6407,18 @@ definitions:
       enabled:
         title: Enabled
         type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
       provider_type:
         title: Provider type
         type: string
@@ -5763,6 +6456,79 @@ definitions:
         title: Consumer secret
         type: string
         minLength: 1
+  SAMLSource:
+    required:
+      - name
+      - slug
+      - sso_url
+      - signing_kp
+    type: object
+    properties:
+      name:
+        title: Name
+        description: Source's display Name.
+        type: string
+        minLength: 1
+      slug:
+        title: Slug
+        description: Internal source name, used in URLs.
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 50
+        minLength: 1
+      enabled:
+        title: Enabled
+        type: boolean
+      authentication_flow:
+        title: Authentication flow
+        description: Flow to use when authenticating existing users.
+        type: string
+        format: uuid
+        x-nullable: true
+      enrollment_flow:
+        title: Enrollment flow
+        description: Flow to use when enrolling new users.
+        type: string
+        format: uuid
+        x-nullable: true
+      issuer:
+        title: Issuer
+        description: Also known as Entity ID. Defaults the Metadata URL.
+        type: string
+      sso_url:
+        title: SSO URL
+        description: URL that the initial Login request is sent to.
+        type: string
+        format: uri
+        maxLength: 200
+        minLength: 1
+      binding_type:
+        title: Binding type
+        type: string
+        enum:
+          - REDIRECT
+          - POST
+      slo_url:
+        title: SLO URL
+        description: Optional URL if your IDP supports Single-Logout.
+        type: string
+        format: uri
+        maxLength: 200
+        x-nullable: true
+      temporary_user_delete_after:
+        title: Delete temporary users after
+        description: "Time offset when temporary users should be deleted. This only\
+          \ applies if your IDP uses the NameID Format 'transient', and the user doesn't\
+          \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
+        type: string
+        minLength: 1
+      signing_kp:
+        title: Singing Keypair
+        description: Certificate Key Pair of the IdP which Assertion's Signature is
+          validated against.
+        type: string
+        format: uuid
   Stage:
     required:
       - name
@@ -5809,6 +6575,20 @@ definitions:
       private_key:
         title: Private key
         description: Private key, acquired from https://www.google.com/recaptcha/intro/v3.html
+        type: string
+        minLength: 1
+  ConsentStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
         type: string
         minLength: 1
   DummyStage:
@@ -5927,7 +6707,7 @@ definitions:
         x-nullable: true
       recovery_flow:
         title: Recovery flow
-        description: Optional enrollment flow, which is linked at the bottom of the
+        description: Optional recovery flow, which is linked at the bottom of the
           page.
         type: string
         format: uuid
@@ -5968,7 +6748,7 @@ definitions:
       fixed_data:
         title: Fixed data
         type: object
-  OTPStage:
+  OTPStaticStage:
     required:
       - name
     type: object
@@ -5982,10 +6762,46 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      enforced:
-        title: Enforced
-        description: Enforce enabled OTP for Users this stage applies to.
-        type: boolean
+      token_count:
+        title: Token count
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  OTPTimeStage:
+    required:
+      - name
+      - digits
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      digits:
+        title: Digits
+        type: integer
+        enum:
+          - 6
+          - 8
+  OTPValidateStage:
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
   PasswordStage:
     required:
       - name
@@ -6038,7 +6854,8 @@ definitions:
         type: string
         enum:
           - text
-          - e-mail
+          - username
+          - email
           - password
           - number
           - checkbox

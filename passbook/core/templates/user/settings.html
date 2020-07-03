@@ -3,28 +3,26 @@
 {% load i18n %}
 
 {% block page %}
-<div class="pf-l-split__item">
-    <div class="pf-c-card">
-        <div class="pf-c-card__header pf-c-title pf-m-md">
-            <h1>{% trans 'Update details' %}</h1>
-        </div>
-        <div class="pf-c-card__body">
-            <form action="" method="post" class="pf-c-form pf-m-horizontal">
-                {% include 'partials/form_horizontal.html' with form=form %}
-                {% block beneath_form %}
-                {% endblock %}
-                <div class="pf-c-form__group pf-m-action">
-                    <div class="pf-c-form__horizontal-group">
-                        <div class="pf-c-form__actions">
-                            <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
-                            {% if unenrollment_enabled %}
-                            <a class="pf-c-button pf-m-danger" href="{% url 'passbook_flows:default-unenrollment' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
-                            {% endif %}
-                        </div>
+<div class="pf-c-card">
+    <div class="pf-c-card__header pf-c-title pf-m-md">
+        {% trans 'Update details' %}
+    </div>
+    <div class="pf-c-card__body">
+        <form action="" method="post" class="pf-c-form pf-m-horizontal">
+            {% include 'partials/form_horizontal.html' with form=form %}
+            {% block beneath_form %}
+            {% endblock %}
+            <div class="pf-c-form__group pf-m-action">
+                <div class="pf-c-form__horizontal-group">
+                    <div class="pf-c-form__actions">
+                        <input class="pf-c-button pf-m-primary" type="submit" value="{% trans 'Update' %}" />
+                        {% if unenrollment_enabled %}
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_flows:default-unenrollment' %}?back={{ request.get_full_path }}">{% trans "Delete account" %}</a>
+                        {% endif %}
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

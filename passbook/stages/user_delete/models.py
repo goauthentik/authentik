@@ -5,7 +5,8 @@ from passbook.flows.models import Stage
 
 
 class UserDeleteStage(Stage):
-    """Delete stage, delete a user from saved data."""
+    """Deletes the currently pending user without confirmation.
+    Use with caution."""
 
     type = "passbook.stages.user_delete.stage.UserDeleteStageView"
     form = "passbook.stages.user_delete.forms.UserDeleteStageForm"

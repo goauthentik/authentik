@@ -1,23 +1,43 @@
 site_name: passbook Docs
-site_url: https://beryju.github.io/passbook
+site_url: https://passbook.beryju.org/
 copyright: "Copyright &copy; 2019 - 2020 BeryJu.org"
 
 nav:
   - Home: index.md
+  - Terminology: terminology.md
   - Installation:
-    - Installation: installation/install.md
     - docker-compose: installation/docker-compose.md
     - Kubernetes: installation/kubernetes.md
+  - Flows:
+      Overview: flow/flows.md
+      Examples:
+        - Login: flow/examples/login.md
+  - Stages:
+      - Captcha Stage: flow/stages/captcha/index.md
+      - Dummy Stage: flow/stages/dummy/index.md
+      - Email Stage: flow/stages/email/index.md
+      - Identification Stage: flow/stages/identification/index.md
+      - Invitation Stage: flow/stages/invitation/index.md
+      - OTP Stage: flow/stages/otp/index.md
+      - Password Stage: flow/stages/password/index.md
+      - Prompt Stage: flow/stages/prompt/index.md
+      - Prompt Stage Validation: flow/stages/prompt/validation.md
+      - User Delete Stage: flow/stages/user_delete.md
+      - User Login Stage: flow/stages/user_login.md
+      - User Logout Stage: flow/stages/user_logout.md
+      - User Write Stage: flow/stages/user_write.md
   - Sources: sources.md
   - Providers: providers.md
+  - Expressions:
+    - Overview: expressions/index.md
+    - Reference:
+      - User Object: expressions/reference/user-object.md
   - Property Mappings:
     - Overview: property-mappings/index.md
-    - Reference:
-      - User Object: property-mappings/reference/user-object.md
-  - Factors: factors.md
+    - Expressions: property-mappings/expression.md
   - Policies:
     - Overview: policies/index.md
-    - Expression: policies/expression/index.md
+    - Expression: policies/expression.md
   - Integrations:
     - as Provider:
         - Amazon Web Services: integrations/services/aws/index.md
@@ -31,10 +51,23 @@ nav:
 repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook
 theme:
-  name: "material"
-  logo: "images/logo.svg"
+  name: material
+  logo: images/logo.svg
+  favicon: images/logo.svg
+  palette:
+    scheme: slate
+    primary: white
 
 markdown_extensions:
   - toc:
       permalink: "¶"
   - admonition
+  - codehilite
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - attr_list
+
+plugins:
+  - search

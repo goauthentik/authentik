@@ -5,14 +5,14 @@
 
 {% block above_form %}
 <h1>
-    {% blocktrans with type=form|form_verbose_name|title %}
+    {% blocktrans with type=form|form_verbose_name %}
     Create {{ type }}
     {% endblocktrans %}
 </h1>
 {% endblock %}
 
 {% block action %}
-{% blocktrans with type=form|form_verbose_name|title %}
+{% blocktrans with type=form|form_verbose_name %}
 Create {{ type }}
 {% endblocktrans %}
 {% endblock %}

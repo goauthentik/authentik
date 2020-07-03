@@ -1,6 +1,8 @@
 # Kubernetes
 
-For a mid to high-load Installation, Kubernetes is recommended. passbook is installed using a helm-chart.
+For a mid to high-load installation, Kubernetes is recommended. passbook is installed using a helm-chart.
+
+This installation automatically applies database migrations on startup. After the installation is done, you can use `pbadmin` as username and password.
 
 ```
 # Default values for passbook.

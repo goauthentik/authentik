@@ -1,0 +1,83 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load passbook_utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="fas fa-key"></i>
+            {% trans 'Tokens' %}
+        </h1>
+        <p>{% trans "Tokens are used throughout passbook for Email validation stages, Recovery keys and API access." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        {% if object_list %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Token' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'User' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Expires?' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Expiry Date' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for token in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ token.pk }}</div>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ token.user }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ token.expiring|yesno:"Yes,No" }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ token.expires }}
+                        </span>
+                    </td>
+                    <td>
+                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:token-delete' pk=token.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <div class="pf-c-empty-state__content">
+                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Applications.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                    {% trans 'Currently no applications exist. Click the button below to create one.' %}
+                </div>
+                <a href="{% url 'passbook_admin:application-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

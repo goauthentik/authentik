@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 from django import template
 from django.db.models import Model
 from django.template import Context
-from django.utils.html import escape
+from django.utils.html import escape, mark_safe
 from structlog import get_logger
 
 from passbook.lib.config import CONFIG
@@ -105,4 +105,4 @@ def debug(obj) -> str:
 @register.filter
 def doc(obj) -> str:
     """Return docstring of object"""
-    return obj.__doc__
+    return mark_safe(obj.__doc__.replace("\n", "<br>"))

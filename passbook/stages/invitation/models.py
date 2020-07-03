@@ -10,7 +10,8 @@ from passbook.flows.models import Stage
 
 
 class InvitationStage(Stage):
-    """Invitation stage, to enroll themselves with enforced parameters"""
+    """Simplify enrollment; allow users to use a single
+    link to create their user with pre-defined parameters."""
 
     continue_flow_without_invitation = models.BooleanField(
         default=False,

@@ -1,5 +1,4 @@
 """passbook Application administration"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -7,9 +6,10 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.core.forms.applications import ApplicationForm
 from passbook.core.models import Application
 from passbook.lib.views import CreateAssignPermView
@@ -23,9 +23,6 @@ class ApplicationListView(LoginRequiredMixin, PermissionListMixin, ListView):
     ordering = "name"
     paginate_by = 40
     template_name = "administration/application/list.html"
-
-    def get_queryset(self):
-        return super().get_queryset().select_subclasses()
 
 
 class ApplicationCreateView(
@@ -44,10 +41,6 @@ class ApplicationCreateView(
     success_url = reverse_lazy("passbook_admin:applications")
     success_message = _("Successfully created Application")
 
-    def get_context_data(self, **kwargs):
-        kwargs["type"] = "Application"
-        return super().get_context_data(**kwargs)
-
 
 class ApplicationUpdateView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
@@ -64,7 +57,7 @@ class ApplicationUpdateView(
 
 
 class ApplicationDeleteView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, DeleteView
+    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
 ):
     """Delete application"""
 
@@ -74,7 +67,3 @@ class ApplicationDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:applications")
     success_message = _("Successfully deleted Application")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)

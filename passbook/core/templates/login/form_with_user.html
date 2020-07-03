@@ -5,16 +5,13 @@
 
 {% block above_form %}
 <div class="pf-c-form__group">
-    <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
-        <span class="pf-c-form__label-text">{% trans "Username" %}</span>
-    </label>
     <div class="form-control-static">
         <div class="left">
             <img class="pf-c-avatar" src="{% gravatar user.email %}" alt="">
             {{ user.username }}
         </div>
         <div class="right">
-            <a href="{% url 'passbook_flows:default-authentication' %}">{% trans 'Not you?' %}</a>
+            <a href="{% url 'passbook_flows:cancel' %}">{% trans 'Not you?' %}</a>
         </div>
     </div>
 </div>

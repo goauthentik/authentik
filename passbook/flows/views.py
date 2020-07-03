@@ -1,13 +1,22 @@
 """passbook multi-stage authentication engine"""
+from traceback import format_tb
 from typing import Any, Dict, Optional
 
-from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.http import (
+    Http404,
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from structlog import get_logger
 
+from passbook.audit.models import cleanse_dict
 from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
@@ -20,6 +29,7 @@ LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
+SESSION_KEY_GET = "passbook_flows_get"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -79,8 +89,13 @@ class FlowExecutorView(View):
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
+        if not self.current_stage:
+            LOGGER.debug("f(exec): no more stages, flow is done.")
+            return self._flow_done()
         stage_cls = path_to_class(self.current_stage.type)
         self.current_stage_view = stage_cls(self)
+        self.current_stage_view.args = self.args
+        self.current_stage_view.kwargs = self.kwargs
         self.current_stage_view.request = request
         return super().dispatch(request)
 
@@ -89,18 +104,44 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "f(exec): Passing GET",
             view_class=class_to_path(self.current_stage_view.__class__),
+            stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.get(request, *args, **kwargs)
+        try:
+            stage_response = self.current_stage_view.get(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.exception(exc)
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
+                ),
+            )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
         LOGGER.debug(
             "f(exec): Passing POST",
             view_class=class_to_path(self.current_stage_view.__class__),
+            stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        return self.current_stage_view.post(request, *args, **kwargs)
+        try:
+            stage_response = self.current_stage_view.post(request, *args, **kwargs)
+            return to_stage_response(request, stage_response)
+        except Exception as exc:  # pylint: disable=broad-except
+            LOGGER.exception(exc)
+            return to_stage_response(
+                request,
+                render(
+                    request,
+                    "flows/error.html",
+                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
+                ),
+            )
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -111,7 +152,10 @@ class FlowExecutorView(View):
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
         self.cancel()
-        next_param = self.request.GET.get(NEXT_ARG_NAME, "passbook_core:overview")
+        # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
+        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "passbook_core:overview"
+        )
         return redirect_with_qs(next_param)
 
     def stage_ok(self) -> HttpResponse:
@@ -122,7 +166,11 @@ class FlowExecutorView(View):
             stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        self.plan.stages.pop(0)
+        # We call plan.next here to check for re-evaluate markers
+        # this is important so we can save the result
+        # and we don't have to re-evaluate the policies each request
+        self.plan.next()
+        self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.stages:
             LOGGER.debug(
@@ -137,7 +185,7 @@ class FlowExecutorView(View):
         LOGGER.debug(
             "f(exec): User passed all stages",
             flow_slug=self.flow.slug,
-            context=self.plan.context,
+            context=cleanse_dict(self.plan.context),
         )
         return self._flow_done()
 
@@ -156,6 +204,30 @@ class FlowExecutorView(View):
 
 class FlowPermissionDeniedView(PermissionDeniedView):
     """User could not be authenticated"""
+
+
+class FlowExecutorShellView(TemplateView):
+    """Executor Shell view, loads a dummy card with a spinner
+    that loads the next stage in the background."""
+
+    template_name = "flows/shell.html"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
+        kwargs["msg_url"] = reverse("passbook_api:messages-list")
+        self.request.session[SESSION_KEY_GET] = self.request.GET
+        return kwargs
+
+
+class CancelView(View):
+    """View which canels the currently active plan"""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """View which canels the currently active plan"""
+        if SESSION_KEY_PLAN in request.session:
+            del request.session[SESSION_KEY_PLAN]
+            LOGGER.debug("Canceled current plan")
+        return redirect("passbook_core:overview")
 
 
 class ToDefaultFlow(View):
@@ -181,13 +253,20 @@ class ToDefaultFlow(View):
         )
 
 
-class FlowExecutorShellView(TemplateView):
-    """Executor Shell view, loads a dummy card with a spinner
-    that loads the next stage in the background."""
-
-    template_name = "flows/shell.html"
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
-        kwargs["msg_url"] = reverse("passbook_api:messages-list")
-        return kwargs
+def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+    """Convert normal HttpResponse into JSON Response"""
+    if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
+        redirect_url = source["Location"]
+        if request.path != redirect_url:
+            return JsonResponse({"type": "redirect", "to": redirect_url})
+        return source
+    if isinstance(source, TemplateResponse):
+        return JsonResponse(
+            {"type": "template", "body": source.render().content.decode("utf-8")}
+        )
+    # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
+    if source.__class__ == HttpResponse:
+        return JsonResponse(
+            {"type": "template", "body": source.content.decode("utf-8")}
+        )
+    return source

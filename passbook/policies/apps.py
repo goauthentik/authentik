@@ -12,5 +12,5 @@ class PassbookPoliciesConfig(AppConfig):
     verbose_name = "passbook Policies"
 
     def ready(self):
-        """Load source_types from config file"""
+        """Load policy cache clearing signals"""
         import_module("passbook.policies.signals")

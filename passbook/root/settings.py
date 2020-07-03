@@ -86,17 +86,18 @@ INSTALLED_APPS = [
     "passbook.policies.expression.apps.PassbookPolicyExpressionConfig",
     "passbook.policies.hibp.apps.PassbookPolicyHIBPConfig",
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
+    "passbook.policies.group_membership.apps.PassbookPoliciesGroupMembershipConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
     "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
     "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
     "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
-    "passbook.providers.samlv2.apps.PassbookProviderSAMLv2Config",
     "passbook.recovery.apps.PassbookRecoveryConfig",
     "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
     "passbook.sources.oauth.apps.PassbookSourceOAuthConfig",
     "passbook.sources.saml.apps.PassbookSourceSAMLConfig",
     "passbook.stages.captcha.apps.PassbookStageCaptchaConfig",
+    "passbook.stages.consent.apps.PassbookStageConsentConfig",
     "passbook.stages.dummy.apps.PassbookStageDummyConfig",
     "passbook.stages.email.apps.PassbookStageEmailConfig",
     "passbook.stages.prompt.apps.PassbookStagPromptConfig",
@@ -106,7 +107,9 @@ INSTALLED_APPS = [
     "passbook.stages.user_login.apps.PassbookStageUserLoginConfig",
     "passbook.stages.user_logout.apps.PassbookStageUserLogoutConfig",
     "passbook.stages.user_write.apps.PassbookStageUserWriteConfig",
-    "passbook.stages.otp.apps.PassbookStageOTPConfig",
+    "passbook.stages.otp_static.apps.PassbookStageOTPStaticConfig",
+    "passbook.stages.otp_time.apps.PassbookStageOTPTimeConfig",
+    "passbook.stages.otp_validate.apps.PassbookStageOTPValidateConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
     "passbook.static.apps.PassbookStaticConfig",
 ]
@@ -187,7 +190,7 @@ WSGI_APPLICATION = "passbook.root.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
+        "ENGINE": "django.db.backends.postgresql",
         "HOST": CONFIG.y("postgresql.host"),
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
@@ -329,13 +332,24 @@ LOGGING = {
     },
     "loggers": {},
 }
+
+TEST = False
+TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
 LOG_LEVEL = CONFIG.y("log_level").upper()
+
+TEST_OUTPUT_FILE_NAME = "unittest.xml"
+
+if len(sys.argv) >= 2 and sys.argv[1] == "test":
+    LOG_LEVEL = "DEBUG"
+    TEST = True
+    CELERY_TASK_ALWAYS_EAGER = True
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "passbook": LOG_LEVEL,
     "django": "WARNING",
     "celery": "WARNING",
+    "selenium": "WARNING",
     "grpc": LOG_LEVEL,
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
@@ -348,18 +362,6 @@ for handler_name, level in _LOGGING_HANDLER_MAP.items():
         "level": level,
         "propagate": False,
     }
-
-TEST = False
-TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
-TEST_OUTPUT_VERBOSE = 2
-
-TEST_OUTPUT_FILE_NAME = "unittest.xml"
-
-if any("test" in arg for arg in sys.argv):
-    LOGGER.warning("Testing mode enabled, no logging from now on...")
-    LOGGING = None
-    TEST = True
-    CELERY_TASK_ALWAYS_EAGER = True
 
 
 _DISALLOWED_ITEMS = [

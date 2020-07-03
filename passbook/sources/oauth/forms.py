@@ -3,12 +3,20 @@
 from django import forms
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.sources.oauth.models import OAuthSource
 from passbook.sources.oauth.types.manager import MANAGER
 
 
 class OAuthSourceForm(forms.ModelForm):
     """OAuthSource Form"""
+
+    authentication_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
+    )
+    enrollment_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,9 +84,9 @@ class FacebookOAuthSourceForm(OAuthSourceForm):
         overrides = {
             "provider_type": "facebook",
             "request_token_url": "",
-            "authorization_url": "https://www.facebook.com/v2.8/dialog/oauth",
-            "access_token_url": "https://graph.facebook.com/v2.8/oauth/access_token",
-            "profile_url": "https://graph.facebook.com/v2.8/me?fields=name,email,short_name",
+            "authorization_url": "https://www.facebook.com/v7.0/dialog/oauth",
+            "access_token_url": "https://graph.facebook.com/v7.0/oauth/access_token",
+            "profile_url": "https://graph.facebook.com/v7.0/me?fields=id,name,email",
         }
 
 

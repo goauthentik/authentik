@@ -1,4 +1,4 @@
-FROM quay.io/pusher/oauth2_proxy
+FROM quay.io/oauth2-proxy/oauth2-proxy
 
 COPY templates /templates
 

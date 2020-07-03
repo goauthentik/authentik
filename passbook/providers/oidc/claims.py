@@ -10,5 +10,5 @@ def userinfo(claims: Dict[str, Any], user: User) -> Dict[str, Any]:
     claims["given_name"] = user.name
     claims["family_name"] = user.name
     claims["email"] = user.email
-
+    claims["preferred_username"] = user.username
     return claims

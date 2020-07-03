@@ -1,0 +1,20 @@
+{% extends 'login/form_with_user.html' %}
+
+{% load i18n %}
+
+{% block beneath_form %}
+<div class="pf-c-form__group">
+    <p>
+        {% blocktrans with name=context.application.name %}
+        You're about to sign into {{ name }}.
+        {% endblocktrans %}
+    </p>
+    <p>{% trans "Application requires following permissions" %}</p>
+    <ul class="pf-c-list">
+        {% for scope in context.scopes %}
+        <li>{{ scope.name }}</li>
+        {% endfor %}
+    </ul>
+    {{ hidden_inputs }}
+</div>
+{% endblock %}

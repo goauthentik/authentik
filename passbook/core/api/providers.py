@@ -17,7 +17,7 @@ class ProviderSerializer(ModelSerializer):
     class Meta:
 
         model = Provider
-        fields = ["pk", "property_mappings", "__type__"]
+        fields = ["pk", "authorization_flow", "property_mappings", "__type__"]
 
 
 class ProviderViewSet(ReadOnlyModelViewSet):

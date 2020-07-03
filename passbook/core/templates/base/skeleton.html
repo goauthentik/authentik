@@ -20,11 +20,15 @@
     </head>
     <body>
         {% if 'impersonate_id' in request.session %}
-        <div class="experimental-pf-bar">
-            <span id="experimentalBar" class="experimental-pf-text">
-                {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
-                <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
-            </span>
+        <div class="pf-c-banner pf-m-warning pf-c-alert pf-m-sticky">
+            <div class="pf-l-flex pf-m-justify-content-center pf-m-justify-content-space-between-on-lg pf-m-nowrap" style="height: 100%;">
+                <div class=""></div>
+                <div class="pf-u-display-none pf-u-display-block-on-lg">
+                    {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
+                    <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
+                </div>
+                <div class=""></div>
+            </div>
         </div>
         {% endif %}
         {% block body %}

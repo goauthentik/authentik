@@ -1,9 +1,9 @@
 #!/bin/bash -xe
-isort -rc passbook
+isort -rc .
 pyright
-black passbook
+black .
 ./manage.py generate_swagger -o swagger.yaml -f yaml
 scripts/coverage.sh
-bandit -r passbook
+bandit -r .
 pylint passbook
 prospector

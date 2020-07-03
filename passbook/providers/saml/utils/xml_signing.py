@@ -35,4 +35,4 @@ def sign_with_signxml(data: str, provider: "SAMLProvider", reference_uri=None) -
 
 def get_signature_xml() -> str:
     """Returns XML Signature for subject."""
-    return render_to_string("saml/xml/signature.xml", {})
+    return render_to_string("providers/saml/xml/signature.xml", {})

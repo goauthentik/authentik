@@ -1,47 +1,60 @@
 """passbook administration forms"""
 from django import forms
-from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
-from passbook.lib.utils.reflection import path_to_class
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.stages.password.models import PasswordStage
 
 
 def get_authentication_backends():
     """Return all available authentication backends as tuple set"""
-    for backend in settings.AUTHENTICATION_BACKENDS:
-        klass = path_to_class(backend)
-        yield backend, getattr(
-            klass(), "name", "%s (%s)" % (klass.__name__, klass.__module__)
-        )
+    return [
+        (
+            "django.contrib.auth.backends.ModelBackend",
+            _("passbook-internal Userdatabase"),
+        ),
+        (
+            "passbook.sources.ldap.auth.LDAPBackend",
+            _("passbook LDAP (Only needed when User-Sync is not enabled."),
+        ),
+    ]
 
 
 class PasswordForm(forms.Form):
     """Password authentication form"""
 
+    username = forms.CharField(
+        widget=forms.HiddenInput(attrs={"autocomplete": "username"}), required=False
+    )
     password = forms.CharField(
+        label=_("Please enter your password."),
         widget=forms.PasswordInput(
             attrs={
                 "placeholder": _("Password"),
                 "autofocus": "autofocus",
                 "autocomplete": "current-password",
             }
-        )
+        ),
     )
 
 
 class PasswordStageForm(forms.ModelForm):
     """Form to create/edit Password Stages"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["change_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.STAGE_SETUP
+        )
+
     class Meta:
 
         model = PasswordStage
-        fields = ["name", "backends"]
+        fields = ["name", "backends", "change_flow"]
         widgets = {
             "name": forms.TextInput(),
             "backends": FilteredSelectMultiple(
                 _("backends"), False, choices=get_authentication_backends()
             ),
-            "password_policies": FilteredSelectMultiple(_("password policies"), False),
         }

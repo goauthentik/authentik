@@ -3,6 +3,7 @@ from django.urls import path
 
 from passbook.flows.models import FlowDesignation
 from passbook.flows.views import (
+    CancelView,
     FlowExecutorShellView,
     FlowExecutorView,
     FlowPermissionDeniedView,
@@ -36,11 +37,7 @@ urlpatterns = [
         ToDefaultFlow.as_view(designation=FlowDesignation.UNRENOLLMENT),
         name="default-unenrollment",
     ),
-    path(
-        "-/default/password_change/",
-        ToDefaultFlow.as_view(designation=FlowDesignation.PASSWORD_CHANGE),
-        name="default-password-change",
-    ),
+    path("-/cancel/", CancelView.as_view(), name="cancel"),
     path("b/<slug:flow_slug>/", FlowExecutorView.as_view(), name="flow-executor"),
     path(
         "<slug:flow_slug>/", FlowExecutorShellView.as_view(), name="flow-executor-shell"

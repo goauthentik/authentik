@@ -3,9 +3,11 @@ from unittest.mock import MagicMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.utils.encoding import force_text
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
+from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
@@ -38,7 +40,9 @@ class TestUserLoginStage(TestCase):
 
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -52,14 +56,20 @@ class TestUserLoginStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_flows:denied"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_without_invitation_continue(self):
         """Test without any invitation, continue_flow_without_invitation is set."""
         self.stage.continue_flow_without_invitation = True
         self.stage.save()
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -73,14 +83,21 @@ class TestUserLoginStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )
+
         self.stage.continue_flow_without_invitation = False
         self.stage.save()
 
     def test_with_invitation(self):
         """Test with invitation, check data in session"""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, stages=[self.stage])
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[
             PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -106,5 +123,8 @@ class TestUserLoginStage(TestCase):
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], data)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_text(response.content),
+            {"type": "redirect", "to": reverse("passbook_core:overview")},
+        )

@@ -1,16 +1,12 @@
 """passbook SAML IDP Views"""
 from typing import Optional
 
-from django.contrib.auth import logout
-from django.contrib.auth.mixins import AccessMixin
-from django.core.exceptions import ValidationError
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
-from django.utils.html import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.http import urlencode
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
@@ -18,12 +14,22 @@ from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application, Provider
+from passbook.flows.models import in_memory_stage
+from passbook.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_SSO,
+    FlowPlanner,
+)
+from passbook.flows.stage import StageView
+from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.template import render_to_string
+from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
-from passbook.policies.engine import PolicyEngine
+from passbook.policies.mixins import PolicyAccessMixin
 from passbook.providers.saml.exceptions import CannotHandleAssertion
-from passbook.providers.saml.models import SAMLProvider
+from passbook.providers.saml.models import SAMLBindings, SAMLProvider
 from passbook.providers.saml.processors.types import SAMLResponseParams
+from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
@@ -33,69 +39,67 @@ SESSION_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_PARAMS = "SAMLParams"
 
 
-class AccessRequiredView(AccessMixin, View):
-    """Mixin class for Views using a provider instance"""
+class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
+    """"SAML SSO Base View, which plans a flow and injects our final stage.
+    Calls get/post handler."""
 
-    _provider: Optional[SAMLProvider] = None
+    application: Application
+    provider: SAMLProvider
 
-    @property
-    def provider(self) -> SAMLProvider:
-        """Get provider instance"""
-        if not self._provider:
-            application = get_object_or_404(
-                Application, slug=self.kwargs["application"]
-            )
-            provider: SAMLProvider = get_object_or_404(
-                SAMLProvider, pk=application.provider_id
-            )
-            self._provider = provider
-            return self._provider
-        return self._provider
-
-    def _has_access(self) -> bool:
-        """Check if user has access to application"""
-        policy_engine = PolicyEngine(
-            self.provider.application.policies.all(), self.request.user, self.request
+    def dispatch(
+        self, request: HttpRequest, *args, application_slug: str, **kwargs
+    ) -> HttpResponse:
+        self.application = get_object_or_404(Application, slug=application_slug)
+        self.provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=self.application.provider_id
         )
-        policy_engine.build()
-        passing = policy_engine.passing
-        LOGGER.debug(
-            "saml_has_access",
-            user=self.request.user,
-            app=self.provider.application,
-            passing=passing,
-        )
-        return passing
-
-    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if not request.user.is_authenticated:
             return self.handle_no_permission()
-        if not self._has_access():
-            return render(
-                request,
-                "login/denied.html",
-                {"title": _("You don't have access to this application")},
-            )
-        return super().dispatch(request, *args, **kwargs)
+        if not self.user_has_access(self.application).passing:
+            return self.handle_no_permission_authorized()
+        # Call the method handler, which checks the SAML Request
+        method_response = super().dispatch(request, *args, application_slug, **kwargs)
+        if method_response:
+            return method_response
+        # Regardless, we start the planner and return to it
+        planner = FlowPlanner(self.provider.authorization_flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(
+            self.request,
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_APPLICATION: self.application,
+                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/saml/consent.html",
+            },
+        )
+        plan.append(in_memory_stage(SAMLFlowFinalView))
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "passbook_flows:flow-executor-shell",
+            self.request.GET,
+            flow_slug=self.provider.authorization_flow.slug,
+        )
 
 
-class LoginBeginView(AccessRequiredView):
-    """Receives a SAML 2.0 AuthnRequest from a Service Provider and
-    stores it in the session prior to enforcing login."""
+class SAMLSSOBindingRedirectView(SAMLSSOView):
+    """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
 
-    def handler(self, source, application: str) -> HttpResponse:
-        """Handle SAML Request whether its a POST or a Redirect binding"""
+    # pylint: disable=unused-argument
+    def get(  # lgtm [py/similar-function]
+        self, request: HttpRequest, application_slug: str
+    ) -> Optional[HttpResponse]:
+        """Handle REDIRECT bindings"""
         # Store these values now, because Django's login cycle won't preserve them.
-        try:
-            self.request.session[SESSION_KEY_SAML_REQUEST] = source[
-                SESSION_KEY_SAML_REQUEST
-            ]
-        except (KeyError, MultiValueDictKeyError):
+        if SESSION_KEY_SAML_REQUEST not in request.GET:
+            LOGGER.info("handle_saml_request: SAML payload missing")
             return bad_request_message(
                 self.request, "The SAML request payload is missing."
             )
 
-        self.request.session[SESSION_KEY_RELAY_STATE] = source.get(
+        self.request.session[SESSION_KEY_SAML_REQUEST] = request.GET[
+            SESSION_KEY_SAML_REQUEST
+        ]
+        self.request.session[SESSION_KEY_RELAY_STATE] = request.GET.get(
             SESSION_KEY_RELAY_STATE, ""
         )
 
@@ -105,195 +109,149 @@ class LoginBeginView(AccessRequiredView):
             self.request.session[SESSION_KEY_PARAMS] = params
         except CannotHandleAssertion as exc:
             LOGGER.info(exc)
-            did_you_mean_link = self.request.build_absolute_uri(
-                reverse(
-                    "passbook_providers_saml:saml-login-initiate",
-                    kwargs={"application": application},
-                )
-            )
-            did_you_mean_message = (
-                f" Did you mean to go <a href='{did_you_mean_link}'>here</a>?"
-            )
-            return bad_request_message(
-                self.request, mark_safe(str(exc) + did_you_mean_message)
-            )
-
-        return redirect(
-            reverse(
-                "passbook_providers_saml:saml-login-authorize",
-                kwargs={"application": application},
-            )
-        )
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
-    @method_decorator(csrf_exempt)
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Handle REDIRECT bindings"""
-        return self.handler(request.GET, application)
-
-    @method_decorator(csrf_exempt)
-    def post(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Handle POST Bindings"""
-        return self.handler(request.POST, application)
+            return bad_request_message(self.request, str(exc))
+        return None
 
 
-class InitiateLoginView(AccessRequiredView):
-    """IdP-initiated Login"""
-
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Initiates an IdP-initiated link to a simple SP resource/target URL."""
-        self.provider.processor.is_idp_initiated = True
-        self.provider.processor.init_deep_link(request)
-        params = self.provider.processor.generate_response()
-        request.session[SESSION_KEY_PARAMS] = params
-        return redirect(
-            reverse(
-                "passbook_providers_saml:saml-login-authorize",
-                kwargs={"application": application},
-            )
-        )
-
-
-class AuthorizeView(AccessRequiredView):
-    """Ask the user for authorization to continue to the SP.
-    Presents a SAML 2.0 Assertion for POSTing back to the Service Provider."""
-
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Handle get request, i.e. render form"""
-        # User access gets checked in dispatch
-
-        # Otherwise we generate the IdP initiated session
-        try:
-            # application.skip_authorization is set so we directly redirect the user
-            if self.provider.application.skip_authorization:
-                LOGGER.debug("skipping authz", application=self.provider.application)
-                return self.post(request, application)
-
-            return render(
-                request,
-                "saml/idp/login.html",
-                {"provider": self.provider, "title": "Authorize Application"},
-            )
-
-        except KeyError:
-            return bad_request_message(request, "Missing SAML Payload")
+@method_decorator(csrf_exempt, name="dispatch")
+class SAMLSSOBindingPOSTView(SAMLSSOView):
+    """SAML Handler for SSO/POST bindings"""
 
     # pylint: disable=unused-argument
-    def post(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Handle post request, return back to ACS"""
-        # User access gets checked in dispatch
+    def post(
+        self, request: HttpRequest, application_slug: str
+    ) -> Optional[HttpResponse]:
+        """Handle POST bindings"""
+        # Store these values now, because Django's login cycle won't preserve them.
+        if SESSION_KEY_SAML_REQUEST not in request.POST:
+            LOGGER.info("handle_saml_request: SAML payload missing")
+            return bad_request_message(
+                self.request, "The SAML request payload is missing."
+            )
 
-        # we get here when skip_authorization is True, and after the user accepted
-        # the authorization form
+        self.request.session[SESSION_KEY_SAML_REQUEST] = request.POST[
+            SESSION_KEY_SAML_REQUEST
+        ]
+        self.request.session[SESSION_KEY_RELAY_STATE] = request.POST.get(
+            SESSION_KEY_RELAY_STATE, ""
+        )
+
+        try:
+            self.provider.processor.can_handle(self.request)
+            params = self.provider.processor.generate_response()
+            self.request.session[SESSION_KEY_PARAMS] = params
+        except CannotHandleAssertion as exc:
+            LOGGER.info(exc)
+            return bad_request_message(self.request, str(exc))
+        return None
+
+
+class SAMLSSOBindingInitView(SAMLSSOView):
+    """SAML Handler for for IdP Initiated login flows"""
+
+    # pylint: disable=unused-argument
+    def get(
+        self, request: HttpRequest, application_slug: str
+    ) -> Optional[HttpResponse]:
+        """Create saml params from scratch"""
+        LOGGER.debug(
+            "handle_saml_no_request: No SAML Request, using IdP-initiated flow."
+        )
+        self.provider.processor.is_idp_initiated = True
+        self.provider.processor.init_deep_link(self.request)
+        params = self.provider.processor.generate_response()
+        self.request.session[SESSION_KEY_PARAMS] = params
+
+
+# This View doesn't have a URL on purpose, as its called by the FlowExecutor
+class SAMLFlowFinalView(StageView):
+    """View used by FlowExecutor after all stages have passed. Logs the authorization,
+    and redirects to the SP (if REDIRECT is configured) or shows and auto-submit for
+    (if POST is configured)."""
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
+        )
         # Log Application Authorization
         Event.new(
             EventAction.AUTHORIZE_APPLICATION,
-            authorized_application=self.provider.application,
-            skipped_authorization=self.provider.application.skip_authorization,
+            authorized_application=application,
+            flow=self.executor.plan.flow_pk,
         ).from_http(self.request)
         self.request.session.pop(SESSION_KEY_SAML_REQUEST, None)
         self.request.session.pop(SESSION_KEY_SAML_RESPONSE, None)
         self.request.session.pop(SESSION_KEY_RELAY_STATE, None)
+        if SESSION_KEY_PARAMS not in self.request.session:
+            return self.executor.stage_invalid()
         response: SAMLResponseParams = self.request.session.pop(SESSION_KEY_PARAMS)
-        return render(
-            self.request,
-            "saml/idp/autosubmit_form.html",
-            {
-                "url": response.acs_url,
-                "attrs": {
-                    "ACSUrl": response.acs_url,
+
+        if provider.sp_binding == SAMLBindings.POST:
+            return render(
+                self.request,
+                "providers/saml/autosubmit_form.html",
+                {
+                    "url": response.acs_url,
+                    "application": application,
+                    "attrs": {
+                        "ACSUrl": response.acs_url,
+                        SESSION_KEY_SAML_RESPONSE: response.saml_response,
+                        SESSION_KEY_RELAY_STATE: response.relay_state,
+                    },
+                },
+            )
+        if provider.sp_binding == SAMLBindings.REDIRECT:
+            querystring = urlencode(
+                {
                     SESSION_KEY_SAML_RESPONSE: response.saml_response,
                     SESSION_KEY_RELAY_STATE: response.relay_state,
-                },
-            },
-        )
+                }
+            )
+            return redirect(f"{response.acs_url}?{querystring}")
+        return bad_request_message(request, "Invalid sp_binding specified")
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class LogoutView(AccessRequiredView):
-    """Allows a non-SAML 2.0 URL to log out the user and
-    returns a standard logged-out page. (SalesForce and others use this method,
-    though it's technically not SAML 2.0)."""
-
-    # pylint: disable=unused-argument
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Perform logout"""
-        logout(request)
-
-        redirect_url = request.GET.get("redirect_to", "")
-
-        try:
-            URL_VALIDATOR(redirect_url)
-        except ValidationError:
-            pass
-        else:
-            return redirect(redirect_url)
-
-        return render(request, "saml/idp/logged_out.html")
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class SLOLogout(AccessRequiredView):
-    """Receives a SAML 2.0 LogoutRequest from a Service Provider,
-    logs out the user and returns a standard logged-out page."""
-
-    # pylint: disable=unused-argument
-    def post(self, request: HttpRequest, application: str) -> HttpResponse:
-        """Perform logout"""
-        request.session[SESSION_KEY_SAML_REQUEST] = request.POST[
-            SESSION_KEY_SAML_REQUEST
-        ]
-        # TODO: Parse SAML LogoutRequest from POST data, similar to login_process().
-        # TODO: Modify the base processor to handle logouts?
-        # TODO: Combine this with login_process(), since they are so very similar?
-        # TODO: Format a LogoutResponse and return it to the browser.
-        # XXX: For now, simply log out without validating the request.
-        logout(request)
-        return render(request, "saml/idp/logged_out.html")
-
-
-class DescriptorDownloadView(AccessRequiredView):
+class DescriptorDownloadView(View):
     """Replies with the XML Metadata IDSSODescriptor."""
 
     @staticmethod
     def get_metadata(request: HttpRequest, provider: SAMLProvider) -> str:
         """Return rendered XML Metadata"""
         entity_id = provider.issuer
-        slo_url = request.build_absolute_uri(
+        saml_sso_binding_post = request.build_absolute_uri(
             reverse(
-                "passbook_providers_saml:saml-logout",
-                kwargs={"application": provider.application.slug},
+                "passbook_providers_saml:sso-post",
+                kwargs={"application_slug": provider.application.slug},
             )
         )
-        sso_post_url = request.build_absolute_uri(
+        saml_sso_binding_redirect = request.build_absolute_uri(
             reverse(
-                "passbook_providers_saml:saml-login",
-                kwargs={"application": provider.application.slug},
+                "passbook_providers_saml:sso-redirect",
+                kwargs={"application_slug": provider.application.slug},
             )
         )
         subject_format = provider.processor.subject_format
         ctx = {
+            "saml_sso_binding_post": saml_sso_binding_post,
+            "saml_sso_binding_redirect": saml_sso_binding_redirect,
             "entity_id": entity_id,
-            "slo_url": slo_url,
-            # Currently, the same endpoint accepts POST and REDIRECT
-            "sso_post_url": sso_post_url,
-            "sso_redirect_url": sso_post_url,
             "subject_format": subject_format,
         }
         if provider.signing_kp:
             ctx["cert_public_key"] = strip_pem_header(
                 provider.signing_kp.certificate_data.replace("\r", "")
             ).replace("\n", "")
-        return render_to_string("saml/xml/metadata.xml", ctx)
+        return render_to_string("providers/saml/xml/metadata.xml", ctx)
 
-    # pylint: disable=unused-argument
-    def get(self, request: HttpRequest, application: str) -> HttpResponse:
+    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""
+        application = get_object_or_404(Application, slug=application_slug)
+        provider: SAMLProvider = get_object_or_404(
+            SAMLProvider, pk=application.provider_id
+        )
         try:
-            metadata = DescriptorDownloadView.get_metadata(request, self.provider)
+            metadata = DescriptorDownloadView.get_metadata(request, provider)
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             return bad_request_message(
                 request, "Provider is not assigned to an application."
@@ -302,5 +260,5 @@ class DescriptorDownloadView(AccessRequiredView):
             response = HttpResponse(metadata, content_type="application/xml")
             response[
                 "Content-Disposition"
-            ] = f'attachment; filename="{self.provider.name}_passbook_meta.xml"'
+            ] = f'attachment; filename="{provider.name}_passbook_meta.xml"'
             return response

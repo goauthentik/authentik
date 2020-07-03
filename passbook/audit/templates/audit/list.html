@@ -1,0 +1,70 @@
+{% extends "base/page.html" %}
+
+{% load i18n %}
+{% load passbook_utils %}
+
+{% block page_content %}
+<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
+    <section class="pf-c-page__main-section pf-m-light">
+        <div class="pf-c-content">
+            <h1>
+                <i class="pf-icon pf-icon-catalog"></i>
+                {% trans 'Audit Log' %}
+            </h1>
+        </div>
+    </section>
+    <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+        <div class="pf-c-card">
+            <div class="pf-c-toolbar">
+                <div class="pf-c-toolbar__content">
+                    {% include 'partials/pagination.html' %}
+                </div>
+            </div>
+            <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+                <thead>
+                    <tr role="row">
+                        <th role="columnheader" scope="col">{% trans 'Action' %}</th>
+                        <th role="columnheader" scope="col">{% trans 'Context' %}</th>
+                        <th role="columnheader" scope="col">{% trans 'User' %}</th>
+                        <th role="columnheader" scope="col">{% trans 'Creation Date' %}</th>
+                        <th role="columnheader" scope="col">{% trans 'Client IP' %}</th>
+                    </tr>
+                </thead>
+                <tbody role="rowgroup">
+                    {% for entry in object_list %}
+                    <tr role="row">
+                        <th role="columnheader">
+                            <div>
+                                <div>{{ entry.action }}</div>
+                                <small>{{ entry.app|default:'-' }}</small>
+                            </div>
+                        </th>
+                        <td role="cell">
+                            <code>{{ entry.context }}</code>
+                        </td>
+                        <td role="cell">
+                            <span>
+                                {{ entry.user }}
+                            </span>
+                        </td>
+                        <td role="cell">
+                            <span>
+                                {{ entry.created }}
+                            </span>
+                        </td>
+                        <td role="cell">
+                            <span>
+                                {{ entry.client_ip }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pf-c-toolbar" id="page-layout-table-simple-toolbar-bottom">
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

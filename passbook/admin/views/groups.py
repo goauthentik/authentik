@@ -1,5 +1,4 @@
 """passbook Group administration"""
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -7,9 +6,10 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
+from passbook.admin.views.utils import DeleteMessageView
 from passbook.core.forms.groups import GroupForm
 from passbook.core.models import Group
 from passbook.lib.views import CreateAssignPermView
@@ -41,10 +41,6 @@ class GroupCreateView(
     success_url = reverse_lazy("passbook_admin:groups")
     success_message = _("Successfully created Group")
 
-    def get_context_data(self, **kwargs):
-        kwargs["type"] = "Group"
-        return super().get_context_data(**kwargs)
-
 
 class GroupUpdateView(
     SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
@@ -60,7 +56,7 @@ class GroupUpdateView(
     success_message = _("Successfully updated Group")
 
 
-class GroupDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class GroupDeleteView(LoginRequiredMixin, DeleteMessageView):
     """Delete group"""
 
     model = Group
@@ -68,7 +64,3 @@ class GroupDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:groups")
     success_message = _("Successfully deleted Group")
-
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)

@@ -22,6 +22,14 @@ document.querySelectorAll(".pf-c-modal-box [data-modal-close]").forEach((b) => {
     });
 });
 
+// Make Checkbox label click trigger checkbox toggle
+document.querySelectorAll(".pf-c-check__label").forEach((checkLabel) => {
+    checkLabel.addEventListener("click", (e) => {
+        const checkbox = e.target.parentElement.querySelector("input[type=checkbox]");
+        checkbox.checked = !checkbox.checked;
+    });
+});
+
 // CodeMirror
 document.querySelectorAll(".codemirror").forEach((cm) => {
     let cmMode = 'xml';
@@ -50,6 +58,9 @@ const convertToSlug = (text) => {
 document.querySelectorAll("input[name=name]").forEach((input) => {
     input.addEventListener("input", (e) => {
         const form = e.target.closest("form");
+        if (form === null) {
+            return;
+        }
         const slugField = form.querySelector("input[name=slug]");
         slugField.value = convertToSlug(e.target.value);
     });

@@ -43,17 +43,19 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="pf-c-empty-state">
-        <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-        <h1 class="pf-c-title pf-m-lg">{% trans 'No Applications available.' %}</h1>
-        <div class="pf-c-empty-state__body">
-            {% trans "Either no applications are defined, or you don't have access to any." %}
+    <div class="pf-c-empty-state pf-m-full-height">
+        <div class="pf-c-empty-state__content">
+            <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+            <h1 class="pf-c-title pf-m-lg">{% trans 'No Applications available.' %}</h1>
+            <div class="pf-c-empty-state__body">
+                {% trans "Either no applications are defined, or you don't have access to any." %}
+            </div>
+            {% if user.is_superuser %} {# TODO:use guardian permissions instead #}
+            <a href="{% url 'passbook_admin:application-create' %}" class="pf-c-button pf-m-primary" type="button">
+                {% trans 'Create Application' %}
+            </a>
+            {% endif %}
         </div>
-        {% if user.is_superuser %} {# todo: use guardian permissions instead #}
-        <a href="{% url 'passbook_admin:application-create' %}" class="pf-c-button pf-m-primary" type="button">
-            {% trans 'Create Application' %}
-        </a>
-        {% endif %}
     </div>
     {% endif %}
 </section>

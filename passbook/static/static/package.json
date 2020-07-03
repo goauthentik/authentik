@@ -1,8 +1,8 @@
 {
   "license": "MIT",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "@patternfly/patternfly": "^2.71.6",
-    "codemirror": "^5.54.0"
+    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@patternfly/patternfly": "^4.16.7",
+    "codemirror": "^5.55.0"
   }
 }

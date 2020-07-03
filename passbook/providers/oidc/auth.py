@@ -10,6 +10,8 @@ from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application, Provider, User
+from passbook.flows.planner import FlowPlan
+from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -38,15 +40,15 @@ def check_permissions(
     sections/settings.html#oidc-after-userlogin-hook"""
     provider = client_related_provider(client)
     if not provider:
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
     try:
         application = provider.application
     except Application.DoesNotExist:
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
     LOGGER.debug(
         "Checking permissions for application", user=user, application=application
     )
-    policy_engine = PolicyEngine(application.policies.all(), user, request)
+    policy_engine = PolicyEngine(application, user, request)
     policy_engine.build()
 
     # Check permissions
@@ -54,11 +56,12 @@ def check_permissions(
     if not result.passing:
         for policy_message in result.messages:
             messages.error(request, policy_message)
-        return redirect("passbook_providers_oauth:oauth2-permission-denied")
+        return redirect("passbook_flows:denied")
 
+    plan: FlowPlan = request.session[SESSION_KEY_PLAN]
     Event.new(
         EventAction.AUTHORIZE_APPLICATION,
         authorized_application=application,
-        skipped_authorization=False,
+        flow=plan.flow_pk,
     ).from_http(request)
     return None

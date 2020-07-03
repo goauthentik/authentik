@@ -3,7 +3,6 @@ from django.urls import path
 
 from passbook.admin.views import (
     applications,
-    audit,
     certificate_key_pair,
     debug,
     flows,
@@ -18,6 +17,7 @@ from passbook.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
+    tokens,
     users,
 )
 
@@ -41,6 +41,13 @@ urlpatterns = [
         "applications/<uuid:pk>/delete/",
         applications.ApplicationDeleteView.as_view(),
         name="application-delete",
+    ),
+    # Tokens
+    path("tokens/", tokens.TokenListView.as_view(), name="tokens"),
+    path(
+        "tokens/<uuid:pk>/delete/",
+        tokens.TokenDeleteView.as_view(),
+        name="token-delete",
     ),
     # Sources
     path("sources/", sources.SourceListView.as_view(), name="sources"),
@@ -189,6 +196,11 @@ urlpatterns = [
         "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
     ),
     path(
+        "flows/<uuid:pk>/execute/",
+        flows.FlowDebugExecuteView.as_view(),
+        name="flow-execute",
+    ),
+    path(
         "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
     ),
     # Property Mappings
@@ -252,8 +264,6 @@ urlpatterns = [
         certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
         name="certificatekeypair-delete",
     ),
-    # Audit Log
-    path("audit/", audit.EventListView.as_view(), name="audit-log"),
     # Groups
     path("groups/", groups.GroupListView.as_view(), name="groups"),
     # Debug

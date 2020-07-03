@@ -54,7 +54,9 @@ class SourceTypeManager:
                 return OAuthCallback
             if kind.value == RequestKind.redirect:
                 return OAuthRedirect
-        raise KeyError
+        raise KeyError(
+            f"Provider Type {source.provider_type} (type {kind.value}) not found."
+        )
 
 
 MANAGER = SourceTypeManager()

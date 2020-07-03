@@ -1,5 +1,6 @@
 """Write stage logic"""
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
@@ -48,6 +49,10 @@ class UserWriteStageView(StageView):
             else:
                 user.attributes[key] = value
         user.save()
+        # Check if the password has been updated, and update the session auth hash
+        if any(["password" in x for x in data.keys()]):
+            update_session_auth_hash(self.request, user)
+            LOGGER.debug("Updated session hash", user=user)
         LOGGER.debug(
             "Updated existing user", user=user, flow_slug=self.executor.flow.slug,
         )

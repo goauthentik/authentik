@@ -12,7 +12,9 @@ from passbook.lib.utils.template import render_to_string
 
 
 class OAuth2Provider(Provider, AbstractApplication):
-    """Associate an OAuth2 Application with a Product"""
+    """Generic OAuth2 Provider for applications not using OpenID-Connect.
+    This Provider also supports the GitHub-pretend mode for Applications that don't support
+    generic OAuth."""
 
     form = "passbook.providers.oauth.forms.OAuth2ProviderForm"
 
@@ -22,7 +24,7 @@ class OAuth2Provider(Provider, AbstractApplication):
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
         return render_to_string(
-            "oauth2_provider/setup_url_modal.html",
+            "providers/oauth/setup_url_modal.html",
             {
                 "provider": self,
                 "authorize_url": request.build_absolute_uri(
