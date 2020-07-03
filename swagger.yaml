@@ -210,7 +210,7 @@ paths:
     parameters:
       - name: pbm_uuid
         in: path
-        description: A UUID string identifying this application.
+        description: A UUID string identifying this Application.
         required: true
         type: string
         format: uuid
@@ -479,7 +479,7 @@ paths:
     parameters:
       - name: id
         in: path
-        description: A unique integer value identifying this user.
+        description: A unique integer value identifying this User.
         required: true
         type: integer
   /flows/bindings/:

@@ -71,6 +71,8 @@ class User(GuardianUserMixin, AbstractUser):
     class Meta:
 
         permissions = (("reset_user_password", "Reset Password"),)
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
 
 class Provider(models.Model):
@@ -120,6 +122,11 @@ class Application(PolicyBindingModel):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+
+        verbose_name = _("Application")
+        verbose_name_plural = _("Applications")
 
 
 class Source(PolicyBindingModel):
