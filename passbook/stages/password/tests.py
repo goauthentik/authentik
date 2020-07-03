@@ -40,7 +40,7 @@ class TestPasswordStage(TestCase):
         self.stage = PasswordStage.objects.create(
             name="password", backends=["django.contrib.auth.backends.ModelBackend"]
         )
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_without_user(self):
         """Test without user"""

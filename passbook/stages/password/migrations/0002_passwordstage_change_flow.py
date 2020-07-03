@@ -75,10 +75,10 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
     )
 
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=prompt_stage, defaults={"order": 0}
+        target=flow, stage=prompt_stage, defaults={"order": 0}
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=user_write, defaults={"order": 1}
+        target=flow, stage=user_write, defaults={"order": 1}
     )
 
 

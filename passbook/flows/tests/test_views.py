@@ -107,10 +107,10 @@ class TestFlowExecutor(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
         FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
+            target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
         )
 
         exec_url = reverse(
@@ -143,10 +143,10 @@ class TestFlowExecutor(TestCase):
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
         binding2 = FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
             re_evaluate_policies=True,
@@ -194,16 +194,16 @@ class TestFlowExecutor(TestCase):
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
         binding2 = FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -261,22 +261,22 @@ class TestFlowExecutor(TestCase):
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
         binding2 = FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy3"),
             order=2,
             re_evaluate_policies=True,
         )
         binding4 = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy4"), order=2
+            target=flow, stage=DummyStage.objects.create(name="dummy4"), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)

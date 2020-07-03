@@ -29,7 +29,7 @@ class TestUserWriteStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = UserWriteStage.objects.create(name="write")
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_user_create(self):
         """Test creation of user"""

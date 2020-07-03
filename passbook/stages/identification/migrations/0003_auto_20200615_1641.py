@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_flows", "0005_provider_flows"),
+        ("passbook_flows", "0007_auto_20200703_2059"),
         ("passbook_stages_identification", "0002_auto_20200530_2204"),
     ]
 

@@ -24,7 +24,7 @@ class TestDummyStage(TestCase):
         )
         self.stage = DummyStage.objects.create(name="dummy",)
         FlowStageBinding.objects.create(
-            flow=self.flow, stage=self.stage, order=0,
+            target=self.flow, stage=self.stage, order=0,
         )
 
     def test_valid_render(self):

@@ -502,7 +502,7 @@ paths:
           description: ''
           required: false
           type: string
-        - name: flow
+        - name: target
           in: query
           description: ''
           required: false
@@ -5617,7 +5617,7 @@ definitions:
         maxLength: 254
   FlowStageBinding:
     required:
-      - flow
+      - target
       - stage
       - order
     type: object
@@ -5627,8 +5627,8 @@ definitions:
         type: string
         format: uuid
         readOnly: true
-      flow:
-        title: Flow
+      target:
+        title: Target
         type: string
         format: uuid
       stage:

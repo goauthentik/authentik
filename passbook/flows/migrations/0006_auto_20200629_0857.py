@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_flows", "0005_provider_flows"),
+        ("passbook_flows", "0003_auto_20200523_1133"),
     ]
 
     operations = [

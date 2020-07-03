@@ -73,7 +73,7 @@ class TestFlowPlanner(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
         request = self.request_factory.get(
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -97,7 +97,7 @@ class TestFlowPlanner(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
 
         user = User.objects.create(username="test-user")
@@ -119,7 +119,7 @@ class TestFlowPlanner(TestCase):
         )
 
         FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy1"),
             order=0,
             re_evaluate_policies=True,
@@ -145,10 +145,10 @@ class TestFlowPlanner(TestCase):
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(
-            flow=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
         binding2 = FlowStageBinding.objects.create(
-            flow=flow,
+            target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
             re_evaluate_policies=True,

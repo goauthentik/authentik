@@ -27,7 +27,7 @@ class FlowStageBindingSerializer(ModelSerializer):
     class Meta:
 
         model = FlowStageBinding
-        fields = ["pk", "flow", "stage", "re_evaluate_policies", "order", "policies"]
+        fields = ["pk", "target", "stage", "re_evaluate_policies", "order", "policies"]
 
 
 class FlowStageBindingViewSet(ModelViewSet):

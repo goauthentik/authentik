@@ -32,7 +32,7 @@ class TestCaptchaStage(TestCase):
             public_key=settings.RECAPTCHA_PUBLIC_KEY,
             private_key=settings.RECAPTCHA_PRIVATE_KEY,
         )
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_valid(self):
         """Test valid captcha"""

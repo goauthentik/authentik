@@ -34,14 +34,14 @@ def create_default_provider_authorization_flow(
         name="default-provider-authorization-consent"
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=stage, defaults={"order": 0}
+        target=flow, stage=stage, defaults={"order": 0}
     )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_flows", "0004_source_flows"),
+        ("passbook_flows", "0009_source_flows"),
         ("passbook_stages_consent", "0001_initial"),
     ]
 

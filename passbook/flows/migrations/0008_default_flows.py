@@ -45,13 +45,13 @@ def create_default_authentication_flow(
         defaults={"name": "Welcome to passbook!",},
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=identification_stage, defaults={"order": 0,},
+        target=flow, stage=identification_stage, defaults={"order": 0,},
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=password_stage, defaults={"order": 1,},
+        target=flow, stage=password_stage, defaults={"order": 1,},
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=login_stage, defaults={"order": 2,},
+        target=flow, stage=login_stage, defaults={"order": 2,},
     )
 
 
@@ -73,7 +73,7 @@ def create_default_invalidation_flow(
         defaults={"name": "Logout",},
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow,
+        target=flow,
         stage=UserLogoutStage.objects.using(db_alias).first(),
         defaults={"order": 0,},
     )
@@ -82,7 +82,7 @@ def create_default_invalidation_flow(
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_flows", "0001_initial"),
+        ("passbook_flows", "0007_auto_20200703_2059"),
         ("passbook_stages_user_login", "0001_initial"),
         ("passbook_stages_user_logout", "0001_initial"),
         ("passbook_stages_password", "0001_initial"),

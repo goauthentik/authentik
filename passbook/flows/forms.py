@@ -39,7 +39,7 @@ class FlowStageBindingForm(forms.ModelForm):
 
         model = FlowStageBinding
         fields = [
-            "flow",
+            "target",
             "stage",
             "re_evaluate_policies",
             "order",

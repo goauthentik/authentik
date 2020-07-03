@@ -26,7 +26,7 @@ class TestUserDeleteStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = UserDeleteStage.objects.create(name="delete")
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_no_user(self):
         """Test without user set"""

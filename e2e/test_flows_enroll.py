@@ -105,10 +105,10 @@ class TestFlowsEnroll(SeleniumTestCase):
         ident_stage.enrollment_flow = flow
         ident_stage.save()
 
-        FlowStageBinding.objects.create(flow=flow, stage=first_stage, order=0)
-        FlowStageBinding.objects.create(flow=flow, stage=second_stage, order=1)
-        FlowStageBinding.objects.create(flow=flow, stage=user_write, order=2)
-        FlowStageBinding.objects.create(flow=flow, stage=user_login, order=3)
+        FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=second_stage, order=1)
+        FlowStageBinding.objects.create(target=flow, stage=user_write, order=2)
+        FlowStageBinding.objects.create(target=flow, stage=user_login, order=3)
 
         self.driver.get(self.live_server_url)
         self.wait.until(
@@ -206,11 +206,11 @@ class TestFlowsEnroll(SeleniumTestCase):
         ident_stage.enrollment_flow = flow
         ident_stage.save()
 
-        FlowStageBinding.objects.create(flow=flow, stage=first_stage, order=0)
-        FlowStageBinding.objects.create(flow=flow, stage=second_stage, order=1)
-        FlowStageBinding.objects.create(flow=flow, stage=user_write, order=2)
-        FlowStageBinding.objects.create(flow=flow, stage=email_stage, order=3)
-        FlowStageBinding.objects.create(flow=flow, stage=user_login, order=4)
+        FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=second_stage, order=1)
+        FlowStageBinding.objects.create(target=flow, stage=user_write, order=2)
+        FlowStageBinding.objects.create(target=flow, stage=email_stage, order=3)
+        FlowStageBinding.objects.create(target=flow, stage=user_login, order=4)
 
         self.driver.get(self.live_server_url)
         self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()

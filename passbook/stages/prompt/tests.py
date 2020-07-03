@@ -93,7 +93,7 @@ class TestPromptStage(TestCase):
             hidden_prompt.field_key: hidden_prompt.placeholder,
         }
 
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""

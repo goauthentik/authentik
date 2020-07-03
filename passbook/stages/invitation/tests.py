@@ -31,7 +31,7 @@ class TestUserLoginStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = InvitationStage.objects.create(name="invitation")
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_form(self):
         """Test Form"""

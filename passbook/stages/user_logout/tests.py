@@ -27,7 +27,7 @@ class TestUserLogoutStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = UserLogoutStage.objects.create(name="logout")
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_valid_password(self):
         """Test with a valid pending user and backend"""

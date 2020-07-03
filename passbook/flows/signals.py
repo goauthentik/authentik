@@ -25,13 +25,13 @@ def invalidate_flow_cache(sender, instance, **_):
         total = delete_cache_prefix(f"{cache_key(instance)}*")
         LOGGER.debug("Invalidating Flow cache", flow=instance, len=total)
     if isinstance(instance, FlowStageBinding):
-        total = delete_cache_prefix(f"{cache_key(instance.flow)}*")
+        total = delete_cache_prefix(f"{cache_key(instance.target)}*")
         LOGGER.debug(
             "Invalidating Flow cache from FlowStageBinding", binding=instance, len=total
         )
     if isinstance(instance, Stage):
         total = 0
         for binding in FlowStageBinding.objects.filter(stage=instance):
-            prefix = cache_key(binding.flow)
+            prefix = cache_key(binding.target)
             total += delete_cache_prefix(f"{prefix}*")
         LOGGER.debug("Invalidating Flow cache from Stage", stage=instance, len=total)

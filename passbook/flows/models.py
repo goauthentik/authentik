@@ -79,10 +79,6 @@ class Flow(PolicyBindingModel):
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
-    pbm = models.OneToOneField(
-        PolicyBindingModel, parent_link=True, on_delete=models.CASCADE, related_name="+"
-    )
-
     @staticmethod
     def with_policy(request: HttpRequest, **flow_filter) -> Optional["Flow"]:
         """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
@@ -123,7 +119,7 @@ class FlowStageBinding(PolicyBindingModel):
 
     fsb_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    flow = models.ForeignKey("Flow", on_delete=models.CASCADE)
+    target = models.ForeignKey("Flow", on_delete=models.CASCADE)
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
 
     re_evaluate_policies = models.BooleanField(
@@ -138,12 +134,12 @@ class FlowStageBinding(PolicyBindingModel):
     objects = InheritanceManager()
 
     def __str__(self) -> str:
-        return f"Flow Stage Binding #{self.order} {self.flow} -> {self.stage}"
+        return f"Flow Binding {self.target} -> {self.stage}"
 
     class Meta:
 
-        ordering = ["order", "flow"]
+        ordering = ["order", "target"]
 
         verbose_name = _("Flow Stage Binding")
         verbose_name_plural = _("Flow Stage Bindings")
-        unique_together = (("flow", "stage", "order"),)
+        unique_together = (("target", "stage", "order"),)

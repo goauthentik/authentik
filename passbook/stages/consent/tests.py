@@ -27,7 +27,7 @@ class TestConsentStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = ConsentStage.objects.create(name="consent",)
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_valid(self):
         """Test valid consent"""

@@ -80,17 +80,17 @@ def create_default_source_enrollment_flow(
     )
 
     binding, _ = FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=prompt_stage, defaults={"order": 0}
+        target=flow, stage=prompt_stage, defaults={"order": 0}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         policy=prompt_policy, target=binding, defaults={"order": 0}
     )
 
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=user_write, defaults={"order": 1}
+        target=flow, stage=user_write, defaults={"order": 1}
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=user_login, defaults={"order": 2}
+        target=flow, stage=user_login, defaults={"order": 2}
     )
 
 
@@ -129,14 +129,14 @@ def create_default_source_authentication_flow(
         name="default-source-authentication-login"
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        flow=flow, stage=user_login, defaults={"order": 0}
+        target=flow, stage=user_login, defaults={"order": 0}
     )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("passbook_flows", "0003_auto_20200523_1133"),
+        ("passbook_flows", "0008_default_flows"),
         ("passbook_policies", "0001_initial"),
         ("passbook_policies_expression", "0001_initial"),
         ("passbook_stages_prompt", "0001_initial"),

@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("passbook_flows", "0004_source_flows"),
+        ("passbook_flows", "0007_auto_20200703_2059"),
     ]
 
     operations = [

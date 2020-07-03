@@ -146,7 +146,7 @@ class FlowPlanner:
             .select_related()
         ):
             binding: FlowStageBinding = stage.flowstagebinding_set.get(
-                flow__pk=self.flow.pk
+                target__pk=self.flow.pk
             )
             engine = PolicyEngine(binding, user, request)
             engine.request.context = plan.context

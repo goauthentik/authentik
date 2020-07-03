@@ -31,7 +31,7 @@ class TestEmailStage(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         self.stage = EmailStage.objects.create(name="email",)
-        FlowStageBinding.objects.create(flow=self.flow, stage=self.stage, order=2)
+        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     def test_rendering(self):
         """Test with pending user"""
