@@ -167,12 +167,11 @@ stages:
             inputs:
               codeCoverageTool: Cobertura
               summaryFileLocation: 'coverage.xml'
-              reportDirectory: 'htmlcov'
           - task: PublishTestResults@2
             condition: succeededOrFailed()
             inputs:
-              testResultsFiles: 'unittest.xml'
               testRunTitle: 'Publish test results for Python $(python.version)'
+              testResultsFiles: 'unittest.xml'
           - task: CmdLine@2
             env:
               CODECOV_TOKEN: $(CODECOV_TOKEN)
