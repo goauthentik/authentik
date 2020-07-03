@@ -78,6 +78,8 @@ stages:
           vmImage: ubuntu-latest
         steps:
           - task: UseNode@1
+            inputs:
+              version: '12.x'
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '3.8'
