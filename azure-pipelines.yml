@@ -135,28 +135,44 @@ stages:
               script: |
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
-          - task: CmdLine@2
+          - task: DockerCompose@0
+            displayName: Run ChromeDriver
             inputs:
-              script: |
-                cd e2e
-                docker-compose pull -q chrome
-                docker-compose up -d chrome
+              dockerComposeFile: 'e2e/docker-compose.yml'
+              action: 'Run a specific service'
+              serviceName: 'chrome'
           - task: CmdLine@2
+            displayName: Build static files for e2e
             inputs:
               script: |
                 cd passbook/static/static
                 yarn
           - task: CmdLine@2
+            displayName: Run full test suite
             inputs:
               script: pipenv run coverage run ./manage.py test --failfast
           - task: PublishBuildArtifacts@1
+            condition: failed()
+            displayName: Upload screenshots if selenium tests fail
             inputs:
               PathtoPublish: 'selenium_screenshots/'
               ArtifactName: 'drop'
               publishLocation: 'Container'
           - task: CmdLine@2
             inputs:
-              script: pipenv run coverage xml
+              script: |
+                pipenv run coverage xml
+                pipenv run coverage html
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: 'coverage.xml'
+              reportDirectory: 'htmlcov'
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFiles: 'unittest.xml'
+              testRunTitle: 'Publish test results for Python $(python.version)'
           - task: CmdLine@2
             env:
               CODECOV_TOKEN: $(CODECOV_TOKEN)
