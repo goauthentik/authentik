@@ -1,7 +1,5 @@
 """Utility Widgets"""
-from functools import partial
 from itertools import groupby
-from operator import attrgetter
 
 from django.forms.models import ModelChoiceField, ModelChoiceIterator
 

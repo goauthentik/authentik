@@ -28,29 +28,50 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Policy' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Target' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Timeout' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
-            <tbody role="rowgroup" class="pf-m-expanded">
-                {% for binding in object_list %}
-                <tr role="row pf-c-table__expandable-row pf-m-expanded">
-                    <th role="cell">
-                        <div>{{ binding.enabled }}</div>
-                    </th>
-                    <th role="cell">
-                        <div>{{ binding.policy }}</div>
-                    </th>
-                    <th role="cell">
-                        <div>{{ binding.target|verbose_name }}</div>
-                    </th>
-                    <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:policy-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:policy-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
-                    </td>
-                </tr>
+            <tbody role="rowgroup">
+                {% for pbm in object_list %}
+                    <tr role="role">
+                        <td>
+                            {{ pbm }}
+                            <small>
+                                {{ pbm|fieldtype }}
+                            </small>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% for binding in pbm.bindings %}
+                    <tr class="row pf-c-table__expandable-row pf-m-expanded">
+                        <th role="cell">
+                            <div>{{ binding.policy }}</div>
+                            <small>
+                                {{ binding.policy|fieldtype }}
+                            </small>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.enabled }}</div>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.order }}</div>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.timeout }}</div>
+                        </th>
+                        <td class="pb-table-action" role="cell">
+                            <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:policy-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
+                            <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:policy-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
