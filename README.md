@@ -1,6 +1,7 @@
 <img src="passbook/static/static/passbook/logo.svg" height="50" alt="passbook logo"><img src="passbook/static/static/passbook/brand_inverted.svg" height="50" alt="passbook">
 
-![CI Build status](https://img.shields.io/github/workflow/status/beryju/passbook/passbook-ci?style=flat-square)
+=======
+![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/5d94b893-6dea-4f68-a8fe-10f1674fc3a9/1?style=flat-square)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
 ![Docker pulls (gatekeeper)](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
@@ -50,31 +51,7 @@ pipenv sync -d
 ```
 
 Since passbook uses PostgreSQL-specific fields, you also need a local PostgreSQL instance to develop. passbook also uses redis for caching and message queueing.
-For these databases you can use [Postgres.app](https://postgresapp.com/) and [Redis.app](https://jpadilla.github.io/redisapp/) on macOS or use it via docker-comppose:
-
-```yaml
-version: '3.7'
-
-services:
-  postgresql:
-    container_name: postgres
-    image: postgres:11
-    volumes:
-    - db-data:/var/lib/postgresql/data
-    ports:
-    - 127.0.0.1:5432:5432
-    restart: always
-  redis:
-    container_name: redis
-    image: redis
-    ports:
-    - 127.0.0.1:6379:6379
-    restart: always
-
-volumes:
-  db-data:
-    driver: local
-```
+For these databases you can use [Postgres.app](https://postgresapp.com/) and [Redis.app](https://jpadilla.github.io/redisapp/) on macOS or use it the docker-compose file in `scripts/docker-compose.yml`.
 
 To tell passbook about these databases, create a file in the project root called `local.env.yml` with the following contents:
 

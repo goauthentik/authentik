@@ -1,0 +1,230 @@
+trigger:
+  - master
+
+resources:
+  - repo: self
+
+variables:
+  POSTGRES_DB: passbook
+  POSTGRES_USER: passbook
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+stages:
+  - stage: Lint
+    jobs:
+      - job: pylint
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run pylint passbook
+      - job: black
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run black --check passbook
+      - job: prospector
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+                pipenv install --dev prospector --skip-lock
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run prospector passbook
+      - job: bandit
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run bandit -r passbook
+      - job: pyright
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: '12.x'
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: CmdLine@2
+            inputs:
+              script: npm install -g pyright
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run pyright
+  - stage: Test
+    jobs:
+      - job: migrations
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            inputs:
+              script: pipenv run ./manage.py migrate
+      - job: coverage
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: DockerCompose@0
+            displayName: Run ChromeDriver
+            inputs:
+              dockerComposeFile: 'e2e/docker-compose.yml'
+              action: 'Run a specific service'
+              serviceName: 'chrome'
+          - task: CmdLine@2
+            displayName: Build static files for e2e
+            inputs:
+              script: |
+                cd passbook/static/static
+                yarn
+          - task: CmdLine@2
+            displayName: Run full test suite
+            inputs:
+              script: pipenv run coverage run ./manage.py test --failfast
+          - task: PublishBuildArtifacts@1
+            condition: failed()
+            displayName: Upload screenshots if selenium tests fail
+            inputs:
+              PathtoPublish: 'selenium_screenshots/'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                pipenv run coverage xml
+                pipenv run coverage html
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: 'coverage.xml'
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testRunTitle: 'Publish test results for Python $(python.version)'
+              testResultsFiles: 'unittest.xml'
+          - task: CmdLine@2
+            env:
+              CODECOV_TOKEN: $(CODECOV_TOKEN)
+            inputs:
+              script: bash <(curl -s https://codecov.io/bash)
+  - stage: Build
+    jobs:
+      - job: build_server
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook'
+            command: 'buildAndPush'
+            Dockerfile: 'Dockerfile'
+            tags: 'gh-$(Build.SourceBranchName)'
+      - job: build_gatekeeper
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: CmdLine@2
+          inputs:
+            script: cd gatekeeper
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook-gatekeeper'
+            command: 'buildAndPush'
+            Dockerfile: 'Dockerfile'
+            tags: 'gh-$(Build.SourceBranchName)'
+      - job: build_static
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: DockerCompose@0
+          displayName: Run services
+          inputs:
+            dockerComposeFile: 'scripts/docker-compose.yml'
+            action: 'Run services'
+            buildImages: false
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook-static'
+            command: 'build'
+            Dockerfile: 'static.Dockerfile'
+            tags: 'gh-$(Build.SourceBranchName)'
+            arguments: "--network=beryjupassbook_default"
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook-static'
+            command: 'push'
+            tags: 'gh-$(Build.SourceBranchName)'
