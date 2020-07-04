@@ -3,7 +3,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from passbook.flows.models import Flow, FlowStageBinding
+from passbook.flows.models import Flow, FlowStageBinding, Stage
+from passbook.lib.widgets import GroupedModelChoiceField
 
 
 class FlowForm(forms.ModelForm):
@@ -34,6 +35,8 @@ class FlowForm(forms.ModelForm):
 
 class FlowStageBindingForm(forms.ModelForm):
     """FlowStageBinding Form"""
+
+    stage = GroupedModelChoiceField(queryset=Stage.objects.all().select_subclasses(),)
 
     class Meta:
 
