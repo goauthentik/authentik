@@ -10,7 +10,7 @@ class UserLoginStageForm(forms.ModelForm):
     class Meta:
 
         model = UserLoginStage
-        fields = ["name"]
+        fields = ["name", "session_duration"]
         widgets = {
             "name": forms.TextInput(),
         }

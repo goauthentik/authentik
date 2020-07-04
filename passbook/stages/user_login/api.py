@@ -14,6 +14,7 @@ class UserLoginStageSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
+            "session_duration",
         ]
 
 
