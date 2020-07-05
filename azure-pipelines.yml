@@ -228,3 +228,19 @@ stages:
             repository: 'beryju/passbook-static'
             command: 'push'
             tags: 'gh-$(Build.SourceBranchName)'
+  - stage: Deploy
+    jobs:
+      - job: deploy_dev
+        pool:
+          vmImage: 'ubuntu-latest'
+          steps:
+          - task: HelmDeploy@0
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceConnection: 'k8s-beryjuorg-prd'
+              namespace: 'passbook-dev'
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: 'helm/'
+              releaseName: 'passbook-dev'
+              recreate: true
