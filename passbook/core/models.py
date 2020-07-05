@@ -6,6 +6,7 @@ from uuid import uuid4
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -195,14 +196,38 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
+class TokenIntents(models.TextChoices):
+    """Intents a Token can be created for."""
+
+    # Single user token
+    INTENT_VERIFICATION = "verification"
+
+    # Allow access to API
+    INTENT_API = "api"
+
+
 class Token(models.Model):
-    """One-time link for password resets/sign-up-confirmations"""
+    """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    intent = models.TextField(
+        choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
+    )
     expires = models.DateTimeField(default=default_token_duration)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
     expiring = models.BooleanField(default=True)
     description = models.TextField(default="", blank=True)
+
+    @staticmethod
+    def filter_not_expired(**kwargs) -> QuerySet:
+        """Filer for tokens which are not expired yet or are not expiring,
+        and match filters in `kwargs`"""
+        query = Q(**kwargs)
+        query_not_expired_yet = Q(expires__lt=now(), expiring=True)
+        query_not_expiring = Q(expiring=False)
+        return Token.objects.filter(
+            query & (query_not_expired_yet | query_not_expiring)
+        )
 
     @property
     def is_expired(self) -> bool:
@@ -211,7 +236,7 @@ class Token(models.Model):
 
     def __str__(self):
         return (
-            f"Token f{self.token_uuid.hex} {self.description} (expires={self.expires})"
+            f"Token {self.token_uuid.hex} {self.description} (expires={self.expires})"
         )
 
     class Meta:
