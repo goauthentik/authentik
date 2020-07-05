@@ -3,12 +3,13 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Application, Provider
+from passbook.lib.widgets import GroupedModelChoiceField
 
 
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
-    provider = forms.ModelChoiceField(
+    provider = GroupedModelChoiceField(
         queryset=Provider.objects.all().order_by("pk").select_subclasses(),
         required=False,
     )
