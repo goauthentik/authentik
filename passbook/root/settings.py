@@ -118,6 +118,9 @@ GUARDIAN_MONKEY_PATCH = False
 
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": "passbook.api.v2.urls.info",
+    "SECURITY_DEFINITIONS": {
+        "token": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    },
 }
 
 REST_FRAMEWORK = {
@@ -128,13 +131,10 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PERMISSION_CLASSES": (
-        # 'rest_framework.permissions.IsAuthenticated',
-        "passbook.api.permissions.CustomObjectPermissions",
-    ),
+    "DEFAULT_PERMISSION_CLASSES": ("passbook.api.permissions.CustomObjectPermissions"),
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "passbook.api.auth.PassbookTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
 

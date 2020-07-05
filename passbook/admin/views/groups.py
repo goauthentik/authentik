@@ -56,10 +56,11 @@ class GroupUpdateView(
     success_message = _("Successfully updated Group")
 
 
-class GroupDeleteView(LoginRequiredMixin, DeleteMessageView):
+class GroupDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Delete group"""
 
     model = Group
+    permission_required = "passbook_flows.delete_group"
 
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:groups")

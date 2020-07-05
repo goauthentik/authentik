@@ -6,16 +6,18 @@ info:
   license:
     name: MIT License
   version: v2
-basePath: /api/v2
+basePath: /api/v2beta
 consumes:
   - application/json
 produces:
   - application/json
 securityDefinitions:
-  Basic:
-    type: basic
+  token:
+    type: apiKey
+    name: Authorization
+    in: header
 security:
-  - Basic: []
+  - token: []
 paths:
   /audit/events/:
     get:
