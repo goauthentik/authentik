@@ -28,7 +28,7 @@ class OpenIDProvider(Provider):
         return self.oidc_client.name
 
     def __str__(self):
-        return f"OpenID Connect Provider {self.oidc_client.__str__()}"
+        return self.oidc_client.__str__()
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""

@@ -37,7 +37,7 @@ class ApplicationGatewayProvider(Provider):
         )
 
     def __str__(self):
-        return f"Application Gateway {self.name}"
+        return self.name
 
     class Meta:
 

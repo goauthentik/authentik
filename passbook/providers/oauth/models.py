@@ -19,7 +19,7 @@ class OAuth2Provider(Provider, AbstractApplication):
     form = "passbook.providers.oauth.forms.OAuth2ProviderForm"
 
     def __str__(self):
-        return f"OAuth2 Provider {self.name}"
+        return self.name
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
