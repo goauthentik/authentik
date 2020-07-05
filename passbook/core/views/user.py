@@ -23,7 +23,7 @@ class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-    def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         unenrollment_flow = Flow.with_policy(
             self.request, designation=FlowDesignation.UNRENOLLMENT
