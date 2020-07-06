@@ -40,7 +40,7 @@
                 <ul class="pf-c-nav__list">
                     {% for source in user_sources_loc %}
                     <li class="pf-c-nav__item">
-                        <a href="{{ source.view_name }}"
+                        <a href="{{ source.url }}"
                             class="pf-c-nav__link {% if source.url == request.get_full_path %} pf-m-current {% endif %}">
                             {{ source.name }}
                         </a>
