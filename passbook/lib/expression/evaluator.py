@@ -2,9 +2,9 @@
 import re
 from textwrap import indent
 from typing import Any, Dict, Iterable, Optional
-from elasticapm import capture_span
 
 from django.core.exceptions import ValidationError
+from elasticapm import capture_span
 from requests import Session
 from structlog import get_logger
 
