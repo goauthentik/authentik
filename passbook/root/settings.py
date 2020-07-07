@@ -281,6 +281,19 @@ if not DEBUG and _ERROR_REPORTING:
         release="passbook@%s" % __version__,
     )
 
+_APM_ENABLED = CONFIG.y("apm.enabled", True)
+if _APM_ENABLED:
+    INSTALLED_APPS.append("elasticapm.contrib.django")
+    ELASTIC_APM = {
+        "CLOUD_PROVIDER": False,
+        "DEBUG": DEBUG,
+        "SERVICE_NAME": "passbook",
+        "SERVICE_VERSION": __version__,
+        "SECRET_TOKEN": CONFIG.y("apm.secret_token", ""),
+        "SERVER_URL": CONFIG.y("apm.secret_token", "http://localhost:8200"),
+    }
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 

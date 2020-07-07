@@ -41,6 +41,7 @@ structlog = "*"
 swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 facebook-sdk = "*"
+elastic-apm = "*"
 
 [requires]
 python_version = "3.8"

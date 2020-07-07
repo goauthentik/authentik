@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fd0192b73c01aaffb90716ce7b6d4e5be9adb8788d3ebd58e54ccd6f85d9b71b"
+            "sha256": "f90d79a67bbd689ca4e7ccbfd528e4ed45078e848c36d84e53ff9c6b2a1e92ed"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -305,6 +305,38 @@
                 "sha256:d148aa1fac6cafb5ff806ff634914b05e3f9357aa8dbd82cd7908821d7f93f43"
             ],
             "version": "==1.0.0"
+        },
+        "elastic-apm": {
+            "hashes": [
+                "sha256:0ffd86d8449d7b63c6053c5032e09abf398c753214a55de8a4e15cb9b56108d1",
+                "sha256:18006ade25a91a8030b5fcfa825d5c364b13bc5e902b818725341f8c9a00895a",
+                "sha256:1d8335f94660c246d5475ec3b15452cd0f5b51affb2e1d16eb2fbc36380308a8",
+                "sha256:25fea9cb6c99efc229b1449d7fbdda76260404cc74abefcc0cc86b3a5102d99d",
+                "sha256:2841bee5650b736d5ebb199d728a18b415dfed22cb367cd913619a691dfe39e8",
+                "sha256:301d159933f19115b21f92bc1ff7f0073bfea13ca24c6ff34023c23077a08e44",
+                "sha256:4eaaebd088315d7ba2726b21fea06279598cad128be073b28c0462049f093d5a",
+                "sha256:515d027d380df818ec304d4d28121c39069a0d919cb2eb7f8e29019a14d62c2a",
+                "sha256:5ad2b431298567f642d44826be2c557d9aca5761c0240be23f9a52b66833cc93",
+                "sha256:5dbf19570bdf97e169b5901913e9a3e271ff5e10d298a608e214802dca8c9065",
+                "sha256:724ded78cc24d2c7d8bc81642a938d9bfc2dcb8b5bdad1b1da242300f9f4ec73",
+                "sha256:7e859162f4c187defe26fb00c974a128eee2bd8988cd30ccffdcaaeb56cb2248",
+                "sha256:9180ed12b9c12cc794f3b57069d1e7b2a04352af02f8d0bc89c9251231f8660e",
+                "sha256:92f885cc67a9d78e72b174feaa979ddb5188d7cef2b5a7739be740955e07c5ed",
+                "sha256:976eaaf3825df760946f31b5426544fecc4c32fd66e124565ede7151f8152689",
+                "sha256:abafeff08ff285cc03c33e822633c6e25a9434174413f72a5032393e9f95a1e0",
+                "sha256:ad21169ebee7ae35d6c42cd6ac9e7658d6e07bc6a3f34dcc4f0a32e03d736fdc",
+                "sha256:b2b4ff079a20d620d7f87a345d37cf9b7f2bc1c8cc8c9317fb0c3979371f0d41",
+                "sha256:b3b72d26104de89124cca965b234b6b67be4604518e168aedcd52c7229c923e9",
+                "sha256:c4a144ecb0b1570c1f6a285cd6f28f2eda89c0696ed494892e3250bb6fed7909",
+                "sha256:dc368bbac6401fa0c9d7a35429257190759f4f33099783d9e0557ce12d64ca6c",
+                "sha256:e28a81802784ea80d21c294a4ab4e47f658a4031caa5c320147925ab62c6a0d4",
+                "sha256:e7832a5ad503d6cd4a7eaa4cee782ccdf113afa99708e3d005fe9aef539a8222",
+                "sha256:f2674a3aee0c38df82dedade353c944a2f55b215c7d5b0776e1bb89ce87de57c",
+                "sha256:f7b37f65c0ca971038f6b69c7581ea762fbc89d9631107babc04c646898686d2",
+                "sha256:fbd1a68b4cf32298e09652958ec3cf13462a5269408522211cfd3e02b451c3b2"
+            ],
+            "index": "pypi",
+            "version": "==5.8.0"
         },
         "facebook-sdk": {
             "hashes": [
