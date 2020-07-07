@@ -11,10 +11,10 @@ from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import DeleteMessageView
-from passbook.core.signals import invitation_created
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.invitation.forms import InvitationForm
 from passbook.stages.invitation.models import Invitation
+from passbook.stages.invitation.signals import invitation_created
 
 
 class InvitationListView(LoginRequiredMixin, PermissionListMixin, ListView):

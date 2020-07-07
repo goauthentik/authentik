@@ -1,5 +1,6 @@
 """passbook audit signal listener"""
-from typing import Dict
+from threading import Thread
+from typing import Any, Dict, Optional
 
 from django.contrib.auth.signals import (
     user_logged_in,
@@ -11,21 +12,43 @@ from django.http import HttpRequest
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import User
-from passbook.core.signals import invitation_created, invitation_used, user_signed_up
+from passbook.core.signals import user_signed_up
+from passbook.stages.invitation.signals import invitation_created, invitation_used
+
+class EventNewThread(Thread):
+    """Create Event in background thread"""
+
+    action: EventAction
+    request: HttpRequest
+    kwargs: Dict[str, Any]
+    user: Optional[User]
+
+    def __init__(self, action: EventAction, request: HttpRequest, **kwargs):
+        super().__init__()
+        self.action = action
+        self.request = request
+        self.kwargs = kwargs
+
+    def run(self):
+        Event.new(self.action, **self.kwargs).from_http(self.request, user=self.user)
 
 
 @receiver(user_logged_in)
 # pylint: disable=unused-argument
 def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     """Log successful login"""
-    Event.new(EventAction.LOGIN).from_http(request)
+    thread = EventNewThread(EventAction.LOGIN, request)
+    thread.user = user
+    thread.run()
 
 
 @receiver(user_logged_out)
 # pylint: disable=unused-argument
 def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
     """Log successfully logout"""
-    Event.new(EventAction.LOGOUT).from_http(request)
+    thread = EventNewThread(EventAction.LOGOUT, request)
+    thread.user = user
+    thread.run()
 
 
 @receiver(user_login_failed)
@@ -34,29 +57,25 @@ def on_user_login_failed(
     sender, credentials: Dict[str, str], request: HttpRequest, **_
 ):
     """Failed Login"""
-    Event.new(EventAction.LOGIN_FAILED, **credentials).from_http(request)
-
-
-@receiver(user_signed_up)
-# pylint: disable=unused-argument
-def on_user_signed_up(sender, request: HttpRequest, user: User, **_):
-    """Log successfully signed up"""
-    Event.new(EventAction.SIGN_UP).from_http(request)
+    thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)
+    thread.run()
 
 
 @receiver(invitation_created)
 # pylint: disable=unused-argument
 def on_invitation_created(sender, request: HttpRequest, invitation, **_):
     """Log Invitation creation"""
-    Event.new(
-        EventAction.INVITE_CREATED, invitation_uuid=invitation.uuid.hex
-    ).from_http(request)
+    thread = EventNewThread(
+        EventAction.INVITE_CREATED, request, invitation_uuid=invitation.uuid.hex
+    )
+    thread.run()
 
 
 @receiver(invitation_used)
 # pylint: disable=unused-argument
 def on_invitation_used(sender, request: HttpRequest, invitation, **_):
     """Log Invitation usage"""
-    Event.new(EventAction.INVITE_USED, invitation_uuid=invitation.uuid.hex).from_http(
-        request
+    thread = EventNewThread(
+        EventAction.INVITE_USED, request, invitation_uuid=invitation.uuid.hex
     )
+    thread.run()
