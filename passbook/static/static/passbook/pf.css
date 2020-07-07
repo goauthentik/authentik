@@ -241,3 +241,9 @@ input[data-is-monospace] {
     white-space: nowrap !important;
     padding: var(--pf-c-table--cell--PaddingTop) var(--pf-c-table--cell--PaddingRight) var(--pf-c-table--cell--PaddingBottom) var(--pf-c-table--cell--PaddingLeft) !important;
 }
+
+/* Aggregate Cards */
+.pf-c-card.pf-c-card-aggregate > .pf-c-card__body > .aggregate-status {
+    font-size: var(--pf-global--icon--FontSize--lg);
+    text-align: center;
+}

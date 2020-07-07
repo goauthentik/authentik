@@ -8,7 +8,9 @@
             <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Metadata' %}</h1>
+            <div class="pf-c-modal-box__header">
+                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Metadata' %}</h1>
+            </div>
             <div class="pf-c-modal-box__body" id="modal-description">
                 <form method="post">
                     <textarea class="codemirror" readonly data-cm-mode="xml">{{ metadata }}</textarea>
