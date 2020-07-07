@@ -89,16 +89,16 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
-class TwitterOAuthSource(OAuthSource):
-    """Social Login using Twitter.com"""
+# class TwitterOAuthSource(OAuthSource):
+#     """Social Login using Twitter.com"""
 
-    form = "passbook.sources.oauth.forms.TwitterOAuthSourceForm"
+#     form = "passbook.sources.oauth.forms.TwitterOAuthSourceForm"
 
-    class Meta:
+#     class Meta:
 
-        abstract = True
-        verbose_name = _("Twitter OAuth Source")
-        verbose_name_plural = _("Twitter OAuth Sources")
+#         abstract = True
+#         verbose_name = _("Twitter OAuth Source")
+#         verbose_name_plural = _("Twitter OAuth Sources")
 
 
 class FacebookOAuthSource(OAuthSource):
