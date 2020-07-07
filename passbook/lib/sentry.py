@@ -4,6 +4,7 @@ from botocore.client import ClientError
 from django.core.exceptions import DisallowedHost, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
+from elasticapm.transport.http import TransportException
 from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
@@ -33,6 +34,7 @@ def before_send(event, hint):
         OSError,
         RedisError,
         SentryIgnoredException,
+        TransportException,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]

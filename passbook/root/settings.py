@@ -281,7 +281,7 @@ if not DEBUG and _ERROR_REPORTING:
         release="passbook@%s" % __version__,
     )
 
-_APM_ENABLED = CONFIG.y("apm.enabled", True)
+_APM_ENABLED = CONFIG.y("apm.enabled", False)
 if _APM_ENABLED:
     INSTALLED_APPS.append("elasticapm.contrib.django")
     ELASTIC_APM = {
