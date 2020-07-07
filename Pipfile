@@ -42,7 +42,6 @@ swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 facebook-sdk = "*"
 elastic-apm = "*"
-psutil = "*"
 
 [requires]
 python_version = "3.8"
