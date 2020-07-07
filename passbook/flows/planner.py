@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
+from elasticapm import capture_span
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -88,6 +89,7 @@ class FlowPlanner:
         self.allow_empty_flows = False
         self.flow = flow
 
+    @capture_span(name="FlowPlanner", span_type="flow.planner.plan")
     def plan(
         self, request: HttpRequest, default_context: Optional[Dict[str, Any]] = None
     ) -> FlowPlan:
@@ -127,6 +129,7 @@ class FlowPlanner:
             raise EmptyFlowException()
         return plan
 
+    @capture_span(name="FlowPlanner", span_type="flow.planner.build_plan")
     def _build_plan(
         self,
         user: User,
