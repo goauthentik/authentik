@@ -10,29 +10,33 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-applications"></i> {% trans 'Applications' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ application_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ application_count }}
+                </p>
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-middleware"></i> {% trans 'Sources' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ source_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ source_count }}
+                </p>
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-plugged"></i> {% trans 'Providers' %}
@@ -40,15 +44,19 @@
             </div>
             <div class="pf-c-card__body">
                 {% if providers_without_application.exists %}
-                <i class="pf-icon pf-icon-warning-triangle"></i> {{ provider_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-exclamation-triangle"></i> {{ provider_count }}
+                </p>
                 <p>{% trans 'Warning: At least one Provider has no application assigned.' %}</p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ provider_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ provider_count }}
+                </p>
                 {% endif %}
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-plugged"></i> {% trans 'Stages' %}
@@ -56,26 +64,32 @@
             </div>
             <div class="pf-c-card__body">
                 {% if stage_count < 1 %}
-                <i class="pficon-error-circle-o"></i> {{ stage_count }}
+                <p class="aggregate-status">
+                    <i class="pficon-error-circle-o"></i> {{ stage_count }}
+                </p>
                 <p>{% trans 'No Stages configured. No Users will be able to login.' %}"></p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ stage_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ stage_count }}
+                </p>
                 {% endif %}
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-topology"></i> {% trans 'Flows' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ flow_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ flow_count }}
+                </p>
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:policies' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:policies' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-infrastructure"></i> {% trans 'Policies' %}
@@ -83,58 +97,71 @@
             </div>
             <div class="pf-c-card__body">
                 {% if policies_without_binding %}
-                <i class="pf-icon pf-icon-warning-triangle"></i> {{ policy_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-exclamation-triangle"></i> {{ policy_count }}
+                </p>
                 <p>{% trans 'Policies without binding exist.' %}</p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ policy_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ policy_count }}
+                </p>
                 {% endif %}
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:stage-invitations' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:stage-invitations' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-migration"></i> {% trans 'Invitation' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ invitation_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ invitation_count }}
+                </p>
             </div>
         </a>
 
-        <a href="{% url 'passbook_admin:users' %}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{% url 'passbook_admin:users' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-user"></i> {% trans 'Users' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <i class="pf-icon pf-icon-ok"></i> {{ user_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ user_count }}
+                </p>
             </div>
         </a>
 
-        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-bundle"></i> {% trans 'Version' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
+                <p class="aggregate-status">
+                    {% if version >= version_latest %}
+                    <i class="fa fa-check-circle"></i> {{ version }}
+                    {% else %}
+                    <i class="fa fa-exclamation-triangle"></i> {{ version }}
+                    {% endif %}
+                </p>
                 {% if version >= version_latest %}
-                <i class="pf-icon pf-icon-ok"></i>
-                    {% blocktrans with version=version %}
-                    {{ version }} (Up-to-date!)
+                    {% blocktrans %}
+                    Up-to-date!
                     {% endblocktrans %}
                 {% else %}
-                <i class="pf-icon pf-icon-warning-triangle"></i>
-                    {% blocktrans with version=version latest=version_latest %}
-                    {{ version }} ({{ latest }} is available!)
+                    {% blocktrans with latest=version_latest %}
+                    {{ latest }} is available!
                     {% endblocktrans %}
                 {% endif %}
             </div>
         </div>
 
-        <div class="pf-c-card pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Workers' %}
@@ -142,15 +169,19 @@
             </div>
             <div class="pf-c-card__body">
                 {% if worker_count < 1 %}
-                <i class="pf-icon pf-icon-warning-triangle"></i> {{ worker_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-exclamation-triangle"></i> {{ worker_count }}
+                </p>
                 <p>{% trans 'No workers connected.' %}</p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ worker_count }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ worker_count }}
+                </p>
                 {% endif %}
             </div>
         </div>
 
-        <a class="pf-c-card pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
+        <a class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
@@ -158,13 +189,37 @@
             </div>
             <div class="pf-c-card__body">
                 {% if cached_policies < 1 %}
-                <i class="pf-icon pf-icon-warning-triangle"></i> {{ cached_policies }}
+                <p class="aggregate-status">
+                    <i class="fa fa-exclamation-triangle"></i> {{ cached_policies }}
+                </p>
                 <p>{% trans 'No policies cached. Users may experience slow response times.' %}</p>
                 {% else %}
-                <i class="pf-icon pf-icon-ok"></i> {{ cached_policies }}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ cached_policies }}
+                </p>
                 {% endif %}
             </div>
         </a>
+
+        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+            <div class="pf-c-card__header">
+                <div class="pf-c-card__header-main">
+                    <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Flows' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body">
+                {% if cached_flows < 1 %}
+                <p class="aggregate-status">
+                    <span class="fa fa-exclamation-triangle"></span> {{ cached_flows }}
+                </p>
+                <p>{% trans 'No flows cached.' %}</p>
+                {% else %}
+                <p class="aggregate-status">
+                    <i class="fa fa-check-circle"></i> {{ cached_flows }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
     </section>
 </div>
 <div class="pf-c-backdrop" id="clearCacheModalRoot" hidden>

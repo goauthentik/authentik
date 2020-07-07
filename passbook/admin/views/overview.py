@@ -61,4 +61,5 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
             Policy.objects.filter(bindings__isnull=True)
         )
         kwargs["cached_policies"] = len(cache.keys("policy_*"))
+        kwargs["cached_flows"] = len(cache.keys("flow_*"))
         return super().get_context_data(**kwargs)
