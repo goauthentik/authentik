@@ -86,3 +86,19 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+  sentry-release:
+    needs:
+      - test-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create a Sentry.io release
+        uses: tclindner/sentry-releases-action@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: beryjuorg
+          SENTRY_PROJECT: passbook
+          SENTRY_URL: https://sentry.beryju.org
+        with:
+          tagName: 0.9.0-pre5
+          environment: production
