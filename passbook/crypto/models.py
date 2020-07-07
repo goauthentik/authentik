@@ -56,7 +56,9 @@ class CertificateKeyPair(CreatedUpdatedModel):
     @property
     def fingerprint(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
-        return hexlify(self.certificate.fingerprint(hashes.SHA256())).decode("utf-8")
+        return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode(
+            "utf-8"
+        )
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name} {self.fingerprint}"

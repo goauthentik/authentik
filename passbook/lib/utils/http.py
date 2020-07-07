@@ -23,4 +23,4 @@ def get_client_ip(request: Optional[HttpRequest]) -> Optional[str]:
     Returns none if no IP Could be found"""
     if request:
         return _get_client_ip_from_meta(request.META)
-    return ""
+    return None

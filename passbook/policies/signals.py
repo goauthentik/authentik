@@ -14,7 +14,6 @@ def invalidate_policy_cache(sender, instance, **_):
     from passbook.policies.models import Policy, PolicyBinding
 
     if isinstance(instance, Policy):
-        LOGGER.debug("Invalidating policy cache", policy=instance)
         total = 0
         for binding in PolicyBinding.objects.filter(policy=instance):
             prefix = (
@@ -23,4 +22,4 @@ def invalidate_policy_cache(sender, instance, **_):
             keys = cache.keys(prefix)
             total += len(keys)
             cache.delete_many(keys)
-        LOGGER.debug("Deleted keys", len=total)
+        LOGGER.debug("Invalidating policy cache", policy=instance, keys=total)

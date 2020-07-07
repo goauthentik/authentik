@@ -9,7 +9,7 @@ from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
 
-class PolicyTestEngine(TestCase):
+class TestPolicyEngine(TestCase):
     """PolicyEngine tests"""
 
     def setUp(self):
