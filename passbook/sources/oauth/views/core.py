@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict, Optional
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -22,6 +21,7 @@ from passbook.flows.planner import (
 )
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
+from passbook.sources.oauth.auth import AuthorizedServiceBackend
 from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
@@ -134,7 +134,7 @@ class OAuthCallback(OAuthClientMixin, View):
                     identifier=identifier,
                     access_token=token.get("access_token"),
                 )
-            user = authenticate(
+            user = AuthorizedServiceBackend().authenticate(
                 source=self.source, identifier=identifier, request=request
             )
             if user is None:
@@ -181,7 +181,8 @@ class OAuthCallback(OAuthClientMixin, View):
             self.request,
             {
                 PLAN_CONTEXT_PENDING_USER: user,
-                PLAN_CONTEXT_AUTHENTICATION_BACKEND: user.backend,
+                # Since we authenticate the user by their token, they have no backend set
+                PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
                 PLAN_CONTEXT_SSO: True,
             },
         )
@@ -206,7 +207,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        user = authenticate(
+        user = AuthorizedServiceBackend().authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )
         return self.handle_login_flow(source.authentication_flow, user)
@@ -249,7 +250,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 )
             )
         # User was not authenticated, new user has been created
-        user = authenticate(
+        user = AuthorizedServiceBackend().authenticate(
             source=access.source, identifier=access.identifier, request=self.request
         )
         messages.success(
