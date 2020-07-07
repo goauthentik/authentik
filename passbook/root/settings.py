@@ -131,7 +131,10 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PERMISSION_CLASSES": ("passbook.api.permissions.CustomObjectPermissions"),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.DjangoObjectPermissions",
+        "passbook.api.permissions.CustomObjectPermissions",
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "passbook.api.auth.PassbookTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
