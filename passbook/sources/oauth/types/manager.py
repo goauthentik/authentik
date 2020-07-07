@@ -50,9 +50,9 @@ class SourceTypeManager:
                 return self.__source_types[kind.value][source.provider_type]
             LOGGER.warning("no matching type found, using default")
             # Return defaults
-            if kind.value == RequestKind.callback:
+            if kind == RequestKind.callback:
                 return OAuthCallback
-            if kind.value == RequestKind.redirect:
+            if kind == RequestKind.redirect:
                 return OAuthRedirect
         raise KeyError(
             f"Provider Type {source.provider_type} (type {kind.value}) not found."
