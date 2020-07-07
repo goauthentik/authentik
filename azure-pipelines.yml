@@ -199,7 +199,7 @@ stages:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-gatekeeper'
             command: 'buildAndPush'
-            Dockerfile: 'Dockerfile'
+            Dockerfile: 'gatekeeper/Dockerfile'
             buildContext: 'gatekeeper/'
             tags: 'gh-$(Build.SourceBranchName)'
       - job: build_static
