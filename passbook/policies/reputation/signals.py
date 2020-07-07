@@ -1,29 +1,31 @@
 """passbook reputation request signals"""
 from django.contrib.auth.signals import user_logged_in, user_login_failed
+from django.core.cache import cache
 from django.dispatch import receiver
+from django.http import HttpRequest
 from structlog import get_logger
 
-from passbook.core.models import User
 from passbook.lib.utils.http import get_client_ip
-from passbook.policies.reputation.models import IPReputation, UserReputation
+from passbook.policies.reputation.models import (
+    CACHE_KEY_IP_PREFIX,
+    CACHE_KEY_USER_PREFIX,
+)
 
 LOGGER = get_logger()
 
 
-def update_score(request, username, amount):
+def update_score(request: HttpRequest, username: str, amount: int):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request) or "255.255.255.255."
-    ip_score, _ = IPReputation.objects.update_or_create(ip=remote_ip)
-    ip_score.score += amount
-    ip_score.save()
-    LOGGER.debug("Updated score", amount=amount, for_ip=remote_ip)
-    user = User.objects.filter(username=username)
-    if not user.exists():
-        return
-    user_score, _ = UserReputation.objects.update_or_create(user=user.first())
-    user_score.score += amount
-    user_score.save()
-    LOGGER.debug("Updated score", amount=amount, for_user=username)
+    remote_ip = get_client_ip(request) or "255.255.255.255"
+
+    # We only update the cache here, as its faster than writing to the DB
+    cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
+    cache.incr(CACHE_KEY_IP_PREFIX + remote_ip, amount)
+
+    cache.get_or_set(CACHE_KEY_USER_PREFIX + username, 0)
+    cache.incr(CACHE_KEY_USER_PREFIX + username, amount)
+
+    LOGGER.debug("Updated score", amount=amount, for_user=username, for_ip=remote_ip)
 
 
 @receiver(user_login_failed)

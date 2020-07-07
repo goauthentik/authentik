@@ -1,4 +1,5 @@
 """passbook reputation request policy"""
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -6,6 +7,9 @@ from passbook.core.models import User
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.models import Policy
 from passbook.policies.types import PolicyRequest, PolicyResult
+
+CACHE_KEY_IP_PREFIX = "passbook_reputation_ip_"
+CACHE_KEY_USER_PREFIX = "passbook_reputation_user_"
 
 
 class ReputationPolicy(Policy):
@@ -18,18 +22,14 @@ class ReputationPolicy(Policy):
     form = "passbook.policies.reputation.forms.ReputationPolicyForm"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        remote_ip = get_client_ip(request.http_request)
+        remote_ip = get_client_ip(request.http_request) or "255.255.255.255"
         passing = True
         if self.check_ip:
-            ip_scores = IPReputation.objects.filter(
-                ip=remote_ip, score__lte=self.threshold
-            )
-            passing = passing and ip_scores.exists()
+            score = cache.get_or_set(CACHE_KEY_IP_PREFIX + remote_ip, 0)
+            passing = passing and score <= self.threshold
         if self.check_username:
-            user_scores = UserReputation.objects.filter(
-                user=request.user, score__lte=self.threshold
-            )
-            passing = passing and user_scores.exists()
+            score = cache.get_or_set(CACHE_KEY_USER_PREFIX + request.user.username, 0)
+            passing = passing and score <= self.threshold
         return PolicyResult(passing)
 
     class Meta:
