@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404
 
 from passbook.flows.stage import StageView
 from passbook.stages.invitation.models import Invitation, InvitationStage
-from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from passbook.stages.invitation.signals import invitation_used
+from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 INVITATION_TOKEN_KEY = "token"
 INVITATION_IN_EFFECT = "invitation_in_effect"

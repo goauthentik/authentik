@@ -12,6 +12,7 @@ from passbook.flows.stage import StageView
 from passbook.lib.utils.reflection import class_to_path
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from passbook.stages.user_write.signals import user_write
 
 LOGGER = get_logger()
 
@@ -49,6 +50,7 @@ class UserWriteStageView(StageView):
             else:
                 user.attributes[key] = value
         user.save()
+        user_write.send(sender=self, request=request, user=user, data=data)
         # Check if the password has been updated, and update the session auth hash
         if any(["password" in x for x in data.keys()]):
             update_session_auth_hash(self.request, user)
