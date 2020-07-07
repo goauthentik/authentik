@@ -25,3 +25,4 @@ data:
       enabled: {{ .Values.config.apm.enabled }}
       server_url: "{{ .Values.config.apm.server_url }}"
       secret_token: "{{ .Values.config.apm.server_token }}"
+      verify_server_cert: {{ .Values.config.apm.verify_server_cert }}

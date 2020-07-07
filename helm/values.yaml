@@ -19,6 +19,7 @@ config:
     enabled: false
     server_url: ""
     secret_token: ""
+    verify_server_cert: true
 
 # This Helm chart ships with built-in Prometheus ServiceMonitors and Rules.
 # This requires the CoreOS Prometheus Operator.

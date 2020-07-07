@@ -290,7 +290,8 @@ if _APM_ENABLED:
         "SERVICE_NAME": "passbook",
         "SERVICE_VERSION": __version__,
         "SECRET_TOKEN": CONFIG.y("apm.secret_token", ""),
-        "SERVER_URL": CONFIG.y("apm.secret_token", "http://localhost:8200"),
+        "SERVER_URL": CONFIG.y("apm.server_url", "http://localhost:8200"),
+        "VERIFY_SERVER_CERT": CONFIG.y_bool("apm.verify_server_cert", True),
     }
 
 
