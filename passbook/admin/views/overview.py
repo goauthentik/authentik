@@ -1,6 +1,4 @@
 """passbook administration overview"""
-from functools import lru_cache
-
 from django.core.cache import cache
 from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
@@ -15,18 +13,21 @@ from passbook.policies.models import Policy
 from passbook.root.celery import CELERY_APP
 from passbook.stages.invitation.models import Invitation
 
+VERSION_CACHE_KEY = "passbook_latest_version"
 
-@lru_cache
+
 def latest_version() -> Version:
     """Get latest release from GitHub, cached"""
-    try:
-        data = get(
-            "https://api.github.com/repos/beryju/passbook/releases/latest"
-        ).json()
-        tag_name = data.get("tag_name")
-        return parse(tag_name.split("/")[1])
-    except RequestException:
-        return parse("0.0.0")
+    if not cache.get(VERSION_CACHE_KEY):
+        try:
+            data = get(
+                "https://api.github.com/repos/beryju/passbook/releases/latest"
+            ).json()
+            tag_name = data.get("tag_name")
+            cache.set(VERSION_CACHE_KEY, tag_name.split("/")[1], 30)
+        except (RequestException, IndexError):
+            cache.set(VERSION_CACHE_KEY, "0.0.0", 30)
+    return parse(cache.get(VERSION_CACHE_KEY))
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
