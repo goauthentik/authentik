@@ -56,10 +56,11 @@
         <footer class="pf-c-login__footer">
             <p></p>
             <ul class="pf-c-list pf-m-inline">
+                {% for link in config.passbook.footer_links %}
                 <li>
-                    <a href="https://passbook.beryju.org/">{% trans 'Documentation' %}</a>
+                    <a href="{{ link.href }}">{{ link.name }}</a>
                 </li>
-                <!-- TODO:load config.passbook.footer.links -->
+                {% endfor %}
             </ul>
         </footer>
     </div>

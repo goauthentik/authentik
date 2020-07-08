@@ -18,7 +18,9 @@ log_level: warning
 error_reporting: false
 
 passbook:
+  # Optionally add links to the footer on the login page
   footer_links:
-    # Optionally add links to the footer on the login page
+    - name: Documentation
+      href: https://passbook.beryju.org/
     #  - name: test
     #    href: https://test

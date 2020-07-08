@@ -3,11 +3,12 @@ import os
 from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
-from typing import Any
+from typing import Any, Dict
 from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
+from django.http import HttpRequest
 from structlog import get_logger
 
 SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", ""] + glob(
@@ -16,6 +17,12 @@ SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", ""] + gl
 LOGGER = get_logger()
 ENV_PREFIX = "PASSBOOK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
+
+
+def context_processor(request: HttpRequest) -> Dict[str, Any]:
+    """Context Processor that injects config object into every template"""
+    kwargs = {"config": CONFIG.raw}
+    return kwargs
 
 
 class ConfigLoader:
