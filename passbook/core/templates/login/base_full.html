@@ -1,0 +1,53 @@
+{% extends 'base/skeleton.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load passbook_utils %}
+
+{% block body %}
+<div class="pf-c-background-image">
+    <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
+        <filter id="image_overlay">
+            <feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"></feColorMatrix>
+            <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
+                <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
+                <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
+                <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
+                <feFuncA type="table" tableValues="0 1"></feFuncA>
+            </feComponentTransfer>
+        </filter>
+    </svg>
+</div>
+<div class="pf-c-login">
+    <div class="pf-c-login__container">
+        <header class="pf-c-login__header">
+            <img class="pf-c-brand" src="{% static 'passbook/logo.svg' %}" style="height: 60px;" alt="passbook icon" />
+            <img class="pf-c-brand" src="{% static 'passbook/brand.svg' %}" style="height: 60px;" alt="passbook branding" />
+        </header>
+        {% block main_container %}
+        <main class="pf-c-login__main">
+            <header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">
+                    {% block title %}
+                    {% endblock %}
+                </h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                {% block card %}
+                {% endblock %}
+            </div>
+        </main>
+        {% endblock %}
+        <footer class="pf-c-login__footer">
+            <p></p>
+            <ul class="pf-c-list pf-m-inline">
+                {% for link in config.passbook.footer_links %}
+                <li>
+                    <a href="{{ link.href }}">{{ link.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </footer>
+    </div>
+</div>
+{% endblock %}
