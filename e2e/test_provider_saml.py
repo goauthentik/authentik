@@ -211,6 +211,6 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.wait_for_url(self.url("passbook_flows:denied"))
         self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "#flow-body > header > h1").text,
+            self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",
         )

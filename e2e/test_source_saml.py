@@ -125,3 +125,108 @@ class TestSourceSAML(SeleniumTestCase):
         self.assertNotEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )
+
+    def test_idp_post(self):
+        """test SAML Source With post binding"""
+        sleep(1)
+        # Bootstrap all needed objects
+        authentication_flow = Flow.objects.get(slug="default-source-authentication")
+        enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        keypair = CertificateKeyPair.objects.create(
+            name="test-idp-cert", certificate_data=IDP_CERT
+        )
+
+        SAMLSource.objects.create(
+            name="saml-idp-test",
+            slug="saml-idp-test",
+            authentication_flow=authentication_flow,
+            enrollment_flow=enrollment_flow,
+            issuer="entity-id",
+            sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
+            binding_type=SAMLBindingTypes.POST,
+            signing_kp=keypair,
+        )
+
+        self.driver.get(self.live_server_url)
+
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+            )
+        )
+        self.driver.find_element(
+            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+        ).click()
+        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+
+        # Now we should be at the IDP, wait for the username field
+        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.driver.find_element(By.ID, "username").send_keys("user1")
+        self.driver.find_element(By.ID, "password").send_keys("user1pass")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.XPATH, "//a[contains(@href, '/-/user/')]")
+            )
+        )
+        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+
+        # Wait until we've loaded the user info page
+        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
+        self.assertNotEqual(
+            self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
+        )
+
+    def test_idp_post_auto(self):
+        """test SAML Source With post binding (auto redirect)"""
+        sleep(1)
+        # Bootstrap all needed objects
+        authentication_flow = Flow.objects.get(slug="default-source-authentication")
+        enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        keypair = CertificateKeyPair.objects.create(
+            name="test-idp-cert", certificate_data=IDP_CERT
+        )
+
+        SAMLSource.objects.create(
+            name="saml-idp-test",
+            slug="saml-idp-test",
+            authentication_flow=authentication_flow,
+            enrollment_flow=enrollment_flow,
+            issuer="entity-id",
+            sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
+            binding_type=SAMLBindingTypes.POST_AUTO,
+            signing_kp=keypair,
+        )
+
+        self.driver.get(self.live_server_url)
+
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+            )
+        )
+        self.driver.find_element(
+            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+        ).click()
+
+        # Now we should be at the IDP, wait for the username field
+        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.driver.find_element(By.ID, "username").send_keys("user1")
+        self.driver.find_element(By.ID, "password").send_keys("user1pass")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.XPATH, "//a[contains(@href, '/-/user/')]")
+            )
+        )
+        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+
+        # Wait until we've loaded the user info page
+        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
+        self.assertNotEqual(
+            self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
+        )

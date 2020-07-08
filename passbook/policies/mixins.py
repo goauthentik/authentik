@@ -27,6 +27,7 @@ class PolicyAccessMixin(BaseMixin, AccessMixin):
 
     def handle_no_permission_authorized(self) -> HttpResponse:
         """Function called when user has no permissions but is authorized"""
+        # TODO: Remove this URL and render the view instead
         return redirect("passbook_flows:denied")
 
     def provider_to_application(self, provider: Provider) -> Application:
