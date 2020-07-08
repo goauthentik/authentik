@@ -2,8 +2,8 @@
 
 from django import forms
 
-from passbook.flows.models import Flow, FlowDesignation
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.sources.saml.models import SAMLSource
 
 

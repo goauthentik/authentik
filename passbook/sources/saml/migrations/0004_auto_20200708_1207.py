@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_sources_saml', '0003_auto_20200624_1957'),
+        ("passbook_sources_saml", "0003_auto_20200624_1957"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='samlsource',
-            name='binding_type',
-            field=models.CharField(choices=[('REDIRECT', 'Redirect Binding'), ('POST', 'POST Binding'), ('POST_AUTO', 'POST Binding with auto-confirmation')], default='REDIRECT', max_length=100),
+            model_name="samlsource",
+            name="binding_type",
+            field=models.CharField(
+                choices=[
+                    ("REDIRECT", "Redirect Binding"),
+                    ("POST", "POST Binding"),
+                    ("POST_AUTO", "POST Binding with auto-confirmation"),
+                ],
+                default="REDIRECT",
+                max_length=100,
+            ),
         ),
     ]

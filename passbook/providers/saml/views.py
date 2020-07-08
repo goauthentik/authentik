@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml.util import strip_pem_header
@@ -190,10 +191,10 @@ class SAMLFlowFinalView(StageView):
         if provider.sp_binding == SAMLBindings.POST:
             return render(
                 self.request,
-                "providers/saml/autosubmit_form.html",
+                "generic/autosubmit_form.html",
                 {
                     "url": response.acs_url,
-                    "application": application,
+                    "title": _("Redirecting to %(app)s..." % {"app": application.name}),
                     "attrs": {
                         "ACSUrl": response.acs_url,
                         SESSION_KEY_SAML_RESPONSE: response.saml_response,

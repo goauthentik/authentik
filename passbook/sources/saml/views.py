@@ -5,6 +5,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from signxml import InvalidSignature
@@ -64,13 +65,10 @@ class InitiateView(View):
         if source.binding_type == SAMLBindingTypes.POST_AUTO:
             return render(
                 request,
-                "providers/saml/autosubmit_form.html",
+                "generic/autosubmit_form.html",
                 {
-                    "application": source,
-                    "attrs": {
-                        "SAMLRequest": _request,
-                        "RelayState": relay_state,
-                    },
+                    "title": _("Redirecting to %(app)s..." % {"app": source.name}),
+                    "attrs": {"SAMLRequest": _request, "RelayState": relay_state},
                     "url": source.sso_url,
                 },
             )
