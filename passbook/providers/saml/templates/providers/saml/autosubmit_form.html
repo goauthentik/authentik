@@ -1,9 +1,9 @@
-{% extends "login/base.html" %}
+{% extends "login/denied.html" %}
 
 {% load passbook_utils %}
 {% load i18n %}
 
-{% block card_title %}
+{% block title %}
 {% blocktrans with app=application.name %}
 Redirecting to {{ app }}...
 {% endblocktrans %}
@@ -15,15 +15,22 @@ Redirecting to {{ app }}...
     {% for key, value in attrs.items %}
     <input type="hidden" name="{{ key }}" value="{{ value }}">
     {% endfor %}
-    <div class="pf-c-form__group">
-        <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-            <span class="pf-c-spinner__clipper"></span>
-            <span class="pf-c-spinner__lead-ball"></span>
-            <span class="pf-c-spinner__tail-ball"></span>
-        </span>
+    <div class="pf-c-form__group pf-u-display-flex pf-u-justify-content-center">
+        <div class="pf-c-form__group-control">
+            <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+                <span class="pf-c-spinner__clipper"></span>
+                <span class="pf-c-spinner__lead-ball"></span>
+                <span class="pf-c-spinner__tail-ball"></span>
+            </span>
+        </div>
     </div>
     <div class="pf-c-form__group pf-m-action">
-        <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans 'Continue' %}</button>
+        <div class="pf-c-form__actions">
+            <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans 'Continue' %}</button>
+        </div>
     </div>
 </form>
+<script>
+document.querySelector("form").submit();
+</script>
 {% endblock %}
