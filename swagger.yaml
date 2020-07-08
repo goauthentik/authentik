@@ -6505,6 +6505,17 @@ definitions:
         format: uri
         maxLength: 200
         minLength: 1
+      name_id_policy:
+        title: Name id policy
+        description: NameID Policy sent to the IdP. Can be unset, in which case no
+          Policy is sent.
+        type: string
+        enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       binding_type:
         title: Binding type
         type: string

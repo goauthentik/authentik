@@ -127,6 +127,13 @@ class Processor:
     def prepare_flow(self, request: HttpRequest) -> HttpResponse:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
+        # Sanity check, show a warning if NameIDPolicy doesn't match what we go
+        if self._source.name_id_policy != name_id.attrib["Format"]:
+            LOGGER.warning(
+                "NameID from IdP doesn't match our policy",
+                expected=self._source.name_id_policy,
+                got=name_id.attrib["Format"],
+            )
         # transient NameIDs are handeled seperately as they don't have to go through flows.
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient(request)

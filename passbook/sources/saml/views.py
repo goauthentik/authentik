@@ -41,6 +41,7 @@ class InitiateView(View):
             "AUTHN_REQUEST_ID": get_random_id(),
             "ISSUE_INSTANT": get_time_string(),
             "ISSUER": get_issuer(request, source),
+            "NAME_ID_POLICY": source.name_id_policy,
         }
         authn_req = get_authnrequest_xml(parameters, signed=False)
         # If the source is configured for Redirect bindings, we can just redirect there
