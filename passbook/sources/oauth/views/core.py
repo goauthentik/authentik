@@ -67,10 +67,10 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
         try:
             source = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
-            raise Http404("Unknown OAuth source '%s'." % slug)
+            raise Http404(f"Unknown OAuth source '{slug}'.")
         else:
             if not source.enabled:
-                raise Http404("source %s is not enabled." % slug)
+                raise Http404(f"source {slug} is not enabled.")
             client = self.get_client(source)
             callback = self.get_callback_url(source)
             params = self.get_additional_parameters(source)
@@ -138,8 +138,8 @@ class OAuthCallback(OAuthClientMixin, View):
                 source=self.source, identifier=identifier, request=request
             )
             if user is None:
-                LOGGER.debug("Handling new user", source=self.source)
-                return self.handle_new_user(self.source, connection, info)
+                LOGGER.debug("Handling new connection", source=self.source)
+                return self.handle_new_connection(self.source, connection, info)
             LOGGER.debug("Handling existing user", source=self.source)
             return self.handle_existing_user(self.source, user, connection, info)
 
@@ -153,13 +153,13 @@ class OAuthCallback(OAuthClientMixin, View):
         "Return url to redirect on login failure."
         return settings.LOGIN_URL
 
-    def get_or_create_user(
+    def get_user_enroll_context(
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
         info: Dict[str, Any],
-    ) -> User:
-        "Create a shell auth.User."
+    ) -> Dict[str, Any]:
+        """Create a dict of User data"""
         raise NotImplementedError()
 
     # pylint: disable=unused-argument
@@ -171,21 +171,19 @@ class OAuthCallback(OAuthClientMixin, View):
             return info["id"]
         return None
 
-    def handle_login_flow(self, flow: Optional[Flow], user: User) -> HttpResponse:
+    def handle_login_flow(self, flow: Flow, **kwargs) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
-        if not flow:
-            raise Http404
-        # We run the Flow planner here so we can pass the Pending user in the context
-        planner = FlowPlanner(flow)
-        plan = planner.plan(
-            self.request,
+        kwargs.update(
             {
-                PLAN_CONTEXT_PENDING_USER: user,
+                # PLAN_CONTEXT_PENDING_USER: user,
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
                 PLAN_CONTEXT_SSO: True,
-            },
+            }
         )
+        # We run the Flow planner here so we can pass the Pending user in the context
+        planner = FlowPlanner(flow)
+        plan = planner.plan(self.request, kwargs,)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell", self.request.GET, flow_slug=flow.slug,
@@ -207,10 +205,8 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        user = AuthorizedServiceBackend().authenticate(
-            source=access.source, identifier=access.identifier, request=self.request
-        )
-        return self.handle_login_flow(source.authentication_flow, user)
+        flow_kwargs = {PLAN_CONTEXT_PENDING_USER: user}
+        return self.handle_login_flow(source.authentication_flow, **flow_kwargs)
 
     def handle_login_failure(self, source: OAuthSource, reason: str) -> HttpResponse:
         "Message user and redirect on error."
@@ -218,27 +214,23 @@ class OAuthCallback(OAuthClientMixin, View):
         messages.error(self.request, _("Authentication Failed."))
         return redirect(self.get_error_redirect(source, reason))
 
-    def handle_new_user(
+    def handle_new_connection(
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
         info: Dict[str, Any],
     ) -> HttpResponse:
-        "Create a shell auth.User and redirect."
-        was_authenticated = False
+        """Check if a user exists for the connection and connect them, otherwise
+        prepare to enroll a new user."""
         if self.request.user.is_authenticated:
             # there's already a user logged in, just link them up
             user = self.request.user
-            was_authenticated = True
-        else:
-            user = self.get_or_create_user(source, access, info)
-        access.user = user
-        access.save()
-        UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
-        Event.new(
-            EventAction.CUSTOM, message="Linked OAuth Source", source=source
-        ).from_http(self.request)
-        if was_authenticated:
+            access.user = user
+            access.save()
+            UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
+            Event.new(
+                EventAction.CUSTOM, message="Linked OAuth Source", source=source
+            ).from_http(self.request)
             messages.success(
                 self.request,
                 _("Successfully linked %(source)s!" % {"source": self.source.name}),
@@ -249,10 +241,7 @@ class OAuthCallback(OAuthClientMixin, View):
                     kwargs={"source_slug": self.source.slug},
                 )
             )
-        # User was not authenticated, new user has been created
-        user = AuthorizedServiceBackend().authenticate(
-            source=access.source, identifier=access.identifier, request=self.request
-        )
+        # User was not authenticated, new user will be created
         messages.success(
             self.request,
             _(
@@ -260,7 +249,8 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        return self.handle_login_flow(source.enrollment_flow, user)
+        context = self.get_user_enroll_context(source, access, info)
+        return self.handle_login_flow(source.enrollment_flow, **context)
 
 
 class DisconnectView(LoginRequiredMixin, View):

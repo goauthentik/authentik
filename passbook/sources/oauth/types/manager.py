@@ -48,7 +48,11 @@ class SourceTypeManager:
         if kind.value in self.__source_types:
             if source.provider_type in self.__source_types[kind.value]:
                 return self.__source_types[kind.value][source.provider_type]
-            LOGGER.warning("no matching type found, using default")
+            LOGGER.warning(
+                "no matching type found, using default",
+                wanted=source.provider_type,
+                have=self.__source_types[kind.value].keys(),
+            )
             # Return defaults
             if kind == RequestKind.callback:
                 return OAuthCallback

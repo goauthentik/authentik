@@ -1,9 +1,8 @@
 """OpenID Connect OAuth Views"""
-from typing import Dict
+from typing import Any, Dict
 
-from passbook.sources.oauth.models import OAuthSource
+from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.utils import user_get_or_create
 from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
 
 
@@ -24,11 +23,14 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
     def get_user_id(self, source: OAuthSource, info: Dict[str, str]) -> str:
         return info.get("sub", "")
 
-    def get_or_create_user(self, source: OAuthSource, access, info: Dict[str, str]):
-        user_data = {
+    def get_user_enroll_context(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        return {
             "username": info.get("nickname"),
             "email": info.get("email"),
             "name": info.get("name"),
-            "password": None,
         }
-        return user_get_or_create(**user_data)

@@ -4,8 +4,8 @@ from typing import Any, Dict, Optional
 from facebook import GraphAPI
 
 from passbook.sources.oauth.clients import OAuth2Client
+from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.utils import user_get_or_create
 from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
 
 
@@ -33,12 +33,14 @@ class FacebookOAuth2Callback(OAuthCallback):
 
     client_class = FacebookOAuth2Client
 
-    def get_or_create_user(self, source, access, info):
-        user_data = {
+    def get_user_enroll_context(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        return {
             "username": info.get("name"),
-            "email": info.get("email", ""),
+            "email": info.get("email"),
             "name": info.get("name"),
-            "password": None,
         }
-        fb_user = user_get_or_create(**user_data)
-        return fb_user
