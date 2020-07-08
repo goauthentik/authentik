@@ -7,25 +7,34 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Stage
 from passbook.policies.models import PolicyBindingModel
+from passbook.stages.prompt.widgets import HorizontalRuleWidget, StaticTextWidget
 
 
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
     # Simple text field
-    TEXT = "text"
+    TEXT = "text", _("Text: Simple Text input")
     # Same as text, but has autocomplete for password managers
-    USERNAME = "username"
-    EMAIL = "email"
+    USERNAME = (
+        "username",
+        _(
+            (
+                "Username: Same as Text input, but checks for "
+                "duplicate and prevents duplicate usernames."
+            )
+        ),
+    )
+    EMAIL = "email", _("Email: Text field with Email type.")
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
     CHECKBOX = "checkbox"
     DATE = "data"
     DATE_TIME = "data-time"
 
-    SEPARATOR = "separator"
-    HIDDEN = "hidden"
-    STATIC = "static"
+    SEPARATOR = "separator", _("Separator: Static Separator Line")
+    HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
+    STATIC = "static", _("Static: Static value, displayed as-is.")
 
 
 class Prompt(models.Model):
@@ -74,9 +83,16 @@ class Prompt(models.Model):
             field_class = forms.DateInput
         if self.type == FieldTypes.DATE_TIME:
             field_class = forms.DateTimeInput
+        if self.type == FieldTypes.STATIC:
+            widget = StaticTextWidget(attrs=attrs)
+            kwargs["initial"] = self.placeholder
+            kwargs["required"] = False
+            kwargs["label"] = ""
+        if self.type == FieldTypes.SEPARATOR:
+            widget = HorizontalRuleWidget(attrs=attrs)
+            kwargs["required"] = False
+            kwargs["label"] = ""
 
-        # TODO: Implement static
-        # TODO: Implement separator
         kwargs["widget"] = widget
         return field_class(**kwargs)
 
