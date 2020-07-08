@@ -42,12 +42,14 @@ class InitiateView(View):
             "ISSUER": get_issuer(request, source),
         }
         authn_req = get_authnrequest_xml(parameters, signed=False)
+        # If the source is configured for Redirect bindings, we can just redirect there
         if source.binding_type == SAMLBindingTypes.Redirect:
             _request = deflate_and_base64_encode(authn_req.encode())
             url_args = urlencode({"SAMLRequest": _request, "RelayState": relay_state})
             return redirect(f"{source.sso_url}?{url_args}")
+        # As POST Binding we show a form
+        _request = nice64(authn_req.encode())
         if source.binding_type == SAMLBindingTypes.POST:
-            _request = nice64(authn_req.encode())
             return render(
                 request,
                 "saml/sp/login.html",
@@ -56,6 +58,20 @@ class InitiateView(View):
                     "request": _request,
                     "relay_state": relay_state,
                     "source": source,
+                },
+            )
+        # Or an auto-submit form
+        if source.binding_type == SAMLBindingTypes.POST_AUTO:
+            return render(
+                request,
+                "providers/saml/autosubmit_form.html",
+                {
+                    "application": source,
+                    "attrs": {
+                        "SAMLRequest": _request,
+                        "RelayState": relay_state,
+                    },
+                    "url": source.sso_url,
                 },
             )
         raise Http404

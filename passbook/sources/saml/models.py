@@ -12,8 +12,9 @@ from passbook.providers.saml.utils.time import timedelta_string_validator
 class SAMLBindingTypes(models.TextChoices):
     """SAML Binding types"""
 
-    Redirect = "REDIRECT"
-    POST = "POST"
+    Redirect = "REDIRECT", _("Redirect Binding")
+    POST = "POST", _("POST Binding")
+    POST_AUTO = "POST_AUTO", _("POST Binding with auto-confirmation")
 
 
 class SAMLSource(Source):

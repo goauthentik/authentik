@@ -2,12 +2,20 @@
 
 from django import forms
 
+from passbook.flows.models import Flow, FlowDesignation
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.sources.saml.models import SAMLSource
 
 
 class SAMLSourceForm(forms.ModelForm):
     """SAML Provider form"""
+
+    authentication_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
+    )
+    enrollment_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
+    )
 
     class Meta:
 
