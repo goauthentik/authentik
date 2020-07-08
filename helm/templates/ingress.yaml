@@ -41,5 +41,9 @@ spec:
             backend:
               serviceName: {{ $fullName }}-static
               servicePort: http
+          - path: /favicon.ico
+            backend:
+              serviceName: {{ $fullName }}-static
+              servicePort: http
   {{- end }}
 {{- end }}
