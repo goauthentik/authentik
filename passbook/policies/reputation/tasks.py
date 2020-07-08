@@ -21,7 +21,6 @@ def save_ip_reputation():
     for key in keys:
         score = cache.get(key)
         remote_ip = key.replace(CACHE_KEY_IP_PREFIX, "")
-        print(remote_ip)
         rep, _ = IPReputation.objects.get_or_create(ip=remote_ip)
         rep.score = score
         objects_to_update.append(rep)

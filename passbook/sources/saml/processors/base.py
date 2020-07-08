@@ -15,6 +15,7 @@ from passbook.flows.planner import (
 )
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
+from passbook.policies.utils import delete_none_keys
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 from passbook.sources.saml.exceptions import (
     MissingSAMLResponse,
@@ -153,7 +154,7 @@ class Processor:
         return self._flow_response(
             request,
             self._source.enrollment_flow,
-            **{PLAN_CONTEXT_PROMPT: name_id_filter},
+            **{PLAN_CONTEXT_PROMPT: delete_none_keys(name_id_filter)},
         )
 
     def _flow_response(

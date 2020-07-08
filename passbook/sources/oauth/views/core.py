@@ -21,10 +21,12 @@ from passbook.flows.planner import (
 )
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
+from passbook.policies.utils import delete_none_keys
 from passbook.sources.oauth.auth import AuthorizedServiceBackend
 from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
+from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
 
@@ -175,7 +177,6 @@ class OAuthCallback(OAuthClientMixin, View):
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         kwargs.update(
             {
-                # PLAN_CONTEXT_PENDING_USER: user,
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
                 PLAN_CONTEXT_SSO: True,
@@ -249,7 +250,13 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        context = self.get_user_enroll_context(source, access, info)
+        # Trim out all keys that have a value of None,
+        # so we use `"key" in ` checks in policies
+        context = {
+            PLAN_CONTEXT_PROMPT: delete_none_keys(
+                self.get_user_enroll_context(source, access, info)
+            )
+        }
         return self.handle_login_flow(source.enrollment_flow, **context)
 
 
