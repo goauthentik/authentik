@@ -31,14 +31,36 @@ class TestSourceOAuth(SeleniumTestCase):
     def prepare_dex_config(self):
         """Since Dex does not document which environment
         variables can be used to configure clients"""
+        config = {
+            "enablePasswordDB": True,
+            "issuer": "http://127.0.0.1:5556/dex",
+            "logger": {"level": "debug"},
+            "staticClients": [
+                {
+                    "id": "example-app",
+                    "name": "Example App",
+                    "redirectURIs": [
+                        self.url(
+                            "passbook_sources_oauth:oauth-client-callback",
+                            source_slug="dex",
+                        )
+                    ],
+                    "secret": self.client_secret,
+                }
+            ],
+            "staticPasswords": [
+                {
+                    "email": "admin@example.com",
+                    # hash for password
+                    "hash": "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W",
+                    "userID": "08a8684b-db88-4b73-90a9-3cd1661f5466",
+                    "username": "admin",
+                }
+            ],
+            "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},
+            "web": {"http": "0.0.0.0:5556"},
+        }
         config_file = "./e2e/dex/config-dev.yaml"
-        with open(config_file, "r+") as _file:
-            config = safe_load(_file)
-            client = config.get("staticClients")[0]
-            client["redirectURIs"][0] = self.url(
-                "passbook_sources_oauth:oauth-client-callback", source_slug="dex"
-            )
-            client["secret"] = self.client_secret
         with open(config_file, "w+") as _file:
             safe_dump(config, _file)
 
@@ -71,12 +93,8 @@ class TestSourceOAuth(SeleniumTestCase):
                 return container
             sleep(1)
 
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
-
-    def test_oauth_oidc(self):
-        """test OAuth Source With With OIDC"""
+    def create_objects(self):
+        """Create required objects"""
         sleep(1)
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
@@ -95,6 +113,13 @@ class TestSourceOAuth(SeleniumTestCase):
             consumer_secret=self.client_secret,
         )
 
+    def tearDown(self):
+        self.container.kill()
+        super().tearDown()
+
+    def test_oauth_enroll(self):
+        """test OAuth Source With With OIDC"""
+        self.create_objects()
         self.driver.get(self.live_server_url)
 
         self.wait.until(

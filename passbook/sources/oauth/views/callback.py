@@ -1,5 +1,5 @@
 """OAuth Callback Views"""
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 from django.conf import settings
 from django.contrib import messages
@@ -7,7 +7,7 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.views.generic import RedirectView, View
+from django.views.generic import View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
@@ -22,7 +22,6 @@ from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.policies.utils import delete_none_keys
 from passbook.sources.oauth.auth import AuthorizedServiceBackend
-from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.views.base import OAuthClientMixin
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
