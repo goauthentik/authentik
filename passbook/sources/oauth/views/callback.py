@@ -1,11 +1,10 @@
-"""Core OAauth Views"""
+"""OAuth Callback Views"""
 from typing import Any, Callable, Dict, Optional
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import RedirectView, View
@@ -25,60 +24,11 @@ from passbook.policies.utils import delete_none_keys
 from passbook.sources.oauth.auth import AuthorizedServiceBackend
 from passbook.sources.oauth.clients import BaseOAuthClient, get_client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from passbook.sources.oauth.views.base import OAuthClientMixin
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 LOGGER = get_logger()
-
-
-# pylint: disable=too-few-public-methods
-class OAuthClientMixin:
-    "Mixin for getting OAuth client for a source."
-
-    client_class: Optional[Callable] = None
-
-    def get_client(self, source: OAuthSource) -> BaseOAuthClient:
-        "Get instance of the OAuth client for this source."
-        if self.client_class is not None:
-            # pylint: disable=not-callable
-            return self.client_class(source)
-        return get_client(source)
-
-
-class OAuthRedirect(OAuthClientMixin, RedirectView):
-    "Redirect user to OAuth source to enable access."
-
-    permanent = False
-    params = None
-
-    # pylint: disable=unused-argument
-    def get_additional_parameters(self, source: OAuthSource) -> Dict[str, Any]:
-        "Return additional redirect parameters for this source."
-        return self.params or {}
-
-    def get_callback_url(self, source: OAuthSource) -> str:
-        "Return the callback url for this source."
-        return reverse(
-            "passbook_sources_oauth:oauth-client-callback",
-            kwargs={"source_slug": source.slug},
-        )
-
-    def get_redirect_url(self, **kwargs) -> str:
-        "Build redirect url for a given source."
-        slug = kwargs.get("source_slug", "")
-        try:
-            source = OAuthSource.objects.get(slug=slug)
-        except OAuthSource.DoesNotExist:
-            raise Http404(f"Unknown OAuth source '{slug}'.")
-        else:
-            if not source.enabled:
-                raise Http404(f"source {slug} is not enabled.")
-            client = self.get_client(source)
-            callback = self.get_callback_url(source)
-            params = self.get_additional_parameters(source)
-            return client.get_redirect_url(
-                self.request, callback=callback, parameters=params
-            )
 
 
 class OAuthCallback(OAuthClientMixin, View):
@@ -258,46 +208,3 @@ class OAuthCallback(OAuthClientMixin, View):
             )
         }
         return self.handle_login_flow(source.enrollment_flow, **context)
-
-
-class DisconnectView(LoginRequiredMixin, View):
-    """Delete connection with source"""
-
-    source = None
-    aas = None
-
-    def dispatch(self, request, source_slug):
-        self.source = get_object_or_404(OAuthSource, slug=source_slug)
-        self.aas = get_object_or_404(
-            UserOAuthSourceConnection, source=self.source, user=request.user
-        )
-        return super().dispatch(request, source_slug)
-
-    def post(self, request, source_slug):
-        """Delete connection object"""
-        if "confirmdelete" in request.POST:
-            # User confirmed deletion
-            self.aas.delete()
-            messages.success(request, _("Connection successfully deleted"))
-            return redirect(
-                reverse(
-                    "passbook_sources_oauth:oauth-client-user",
-                    kwargs={"source_slug": self.source.slug},
-                )
-            )
-        return self.get(request, source_slug)
-
-    # pylint: disable=unused-argument
-    def get(self, request, source_slug):
-        """Show delete form"""
-        return render(
-            request,
-            "generic/delete.html",
-            {
-                "object": self.source,
-                "delete_url": reverse(
-                    "passbook_sources_oauth:oauth-client-disconnect",
-                    kwargs={"source_slug": self.source.slug},
-                ),
-            },
-        )

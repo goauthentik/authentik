@@ -6,7 +6,8 @@ from requests.auth import HTTPBasicAuth
 from passbook.sources.oauth.clients import OAuth2Client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
+from passbook.sources.oauth.views.callback import OAuthCallback
+from passbook.sources.oauth.views.redirect import OAuthRedirect
 
 
 @MANAGER.source(kind=RequestKind.redirect, name="reddit")

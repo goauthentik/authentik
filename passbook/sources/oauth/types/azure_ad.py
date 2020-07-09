@@ -1,10 +1,10 @@
 """AzureAD OAuth2 Views"""
-import uuid
 from typing import Any, Dict
+from uuid import UUID
 
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.views.core import OAuthCallback
+from passbook.sources.oauth.views.callback import OAuthCallback
 
 
 @MANAGER.source(kind=RequestKind.callback, name="Azure AD")
@@ -12,7 +12,7 @@ class AzureADOAuthCallback(OAuthCallback):
     """AzureAD OAuth2 Callback"""
 
     def get_user_id(self, source: OAuthSource, info: Dict[str, Any]) -> str:
-        return str(uuid.UUID(info.get("objectId")).int)
+        return str(UUID(info.get("objectId")).int)
 
     def get_user_enroll_context(
         self,

@@ -6,7 +6,8 @@ from django.utils.text import slugify
 from structlog import get_logger
 
 from passbook.sources.oauth.models import OAuthSource
-from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
+from passbook.sources.oauth.views.callback import OAuthCallback
+from passbook.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
 
