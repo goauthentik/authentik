@@ -134,7 +134,9 @@ class Source(PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(help_text=_("Internal source name, used in URLs."))
+    slug = models.SlugField(
+        help_text=_("Internal source name, used in URLs."), unique=True
+    )
 
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
