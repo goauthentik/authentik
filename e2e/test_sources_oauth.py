@@ -2,11 +2,11 @@
 from os.path import abspath
 from time import sleep
 
+from oauth2_provider.generators import generate_client_id, generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from yaml import safe_dump, safe_load
-from oauth2_provider.generators import generate_client_id, generate_client_secret
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container

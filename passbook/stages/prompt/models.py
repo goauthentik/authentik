@@ -21,7 +21,7 @@ class FieldTypes(models.TextChoices):
         _(
             (
                 "Username: Same as Text input, but checks for "
-                "duplicate and prevents duplicate usernames."
+                "and prevents duplicate usernames."
             )
         ),
     )
@@ -77,12 +77,14 @@ class Prompt(models.Model):
             kwargs["required"] = False
             kwargs["initial"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
-            field_class = forms.CheckboxInput
+            field_class = forms.BooleanField
             kwargs["required"] = False
         if self.type == FieldTypes.DATE:
-            field_class = forms.DateInput
+            attrs["type"] = "date"
+            widget = forms.DateInput(attrs=attrs)
         if self.type == FieldTypes.DATE_TIME:
-            field_class = forms.DateTimeInput
+            attrs["type"] = "datetime-local"
+            widget = forms.DateTimeInput(attrs=attrs)
         if self.type == FieldTypes.STATIC:
             widget = StaticTextWidget(attrs=attrs)
             kwargs["initial"] = self.placeholder
