@@ -2,11 +2,11 @@
 from os.path import abspath
 from time import sleep
 
-from oauth2_provider.generators import generate_client_id, generate_client_secret
+from oauth2_provider.generators import generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
-from yaml import safe_dump, safe_load
+from yaml import safe_dump
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -79,12 +79,7 @@ class TestSourceOAuth(SeleniumTestCase):
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            volumes={
-                abspath(CONFIG_PATH): {
-                    "bind": "/config.yml",
-                    "mode": "ro",
-                }
-            },
+            volumes={abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro",}},
         )
         while True:
             container.reload()
@@ -148,6 +143,53 @@ class TestSourceOAuth(SeleniumTestCase):
         self.driver.find_element(By.NAME, "username").click()
         self.driver.find_element(By.NAME, "username").send_keys("foo")
         self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
+
+        # Wait until we've loaded the user info page
+        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
+        self.driver.find_element(By.LINK_TEXT, "foo").click()
+
+        self.wait_for_url(self.url("passbook_core:user-settings"))
+        self.assertEqual(
+            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
+            "foo",
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_name").get_attribute("value"), "admin",
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
+            "admin@example.com",
+        )
+
+    def test_oauth_enroll_auth(self):
+        """test OAuth Source With With OIDC (enroll and authenticate again)"""
+        self.test_oauth_enroll()
+        # We're logged in at the end of this, log out and re-login
+        self.driver.find_element(By.CSS_SELECTOR, "[aria-label=logout]").click()
+
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+            )
+        )
+        self.driver.find_element(
+            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+        ).click()
+
+        # Now we should be at the IDP, wait for the login field
+        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
+        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
+        self.driver.find_element(By.ID, "password").send_keys("password")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
+        )
+        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've loaded the user info page
         self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
