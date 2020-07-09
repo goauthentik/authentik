@@ -6,7 +6,7 @@ staticClients:
 - id: example-app
   name: Example App
   redirectURIs:
-  - http://localhost:45713/source/oauth/callback/dex/
+  - http://localhost:37791/source/oauth/callback/dex/
   secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 staticPasswords:
 - email: admin@example.com

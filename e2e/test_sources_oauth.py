@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from yaml import safe_dump, safe_load
+from oauth2_provider.generators import generate_client_id, generate_client_secret
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -15,7 +16,6 @@ from passbook.flows.models import Flow
 from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"
-OAUTH_TEST_SECRET = "ZXhhbXBsZS1hcHAtc2VjcmV0"  # noqa
 
 
 class TestSourceOAuth(SeleniumTestCase):
@@ -25,6 +25,7 @@ class TestSourceOAuth(SeleniumTestCase):
 
     def setUp(self):
         super().setUp()
+        self.client_secret = generate_client_secret()
         self.container = self.setup_client()
 
     def prepare_dex_config(self):
@@ -33,9 +34,11 @@ class TestSourceOAuth(SeleniumTestCase):
         config_file = "./e2e/dex/config-dev.yaml"
         with open(config_file, "r+") as _file:
             config = safe_load(_file)
-            config.get("staticClients")[0]["redirectURIs"][0] = self.url(
+            client = config.get("staticClients")[0]
+            client["redirectURIs"][0] = self.url(
                 "passbook_sources_oauth:oauth-client-callback", source_slug="dex"
             )
+            client["secret"] = self.client_secret
         with open(config_file, "w+") as _file:
             safe_dump(config, _file)
 
@@ -89,7 +92,7 @@ class TestSourceOAuth(SeleniumTestCase):
             access_token_url=TOKEN_URL,
             profile_url="http://127.0.0.1:5556/dex/userinfo",
             consumer_key="example-app",
-            consumer_secret=OAUTH_TEST_SECRET,
+            consumer_secret=self.client_secret,
         )
 
         self.driver.get(self.live_server_url)
@@ -117,7 +120,6 @@ class TestSourceOAuth(SeleniumTestCase):
 
         # At this point we've been redirected back
         # and we're asked for the username
-        sleep(5000)
         self.driver.find_element(By.NAME, "username").click()
         self.driver.find_element(By.NAME, "username").send_keys("foo")
         self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
