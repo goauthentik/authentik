@@ -1,5 +1,5 @@
 """Flow models"""
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Optional, Type
 from uuid import uuid4
 
 from django.db import models
@@ -11,6 +11,9 @@ from structlog import get_logger
 from passbook.core.types import UIUserSettings
 from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.models import PolicyBindingModel
+
+if TYPE_CHECKING:
+    from passbook.flows.stage import StageView
 
 LOGGER = get_logger()
 
@@ -57,9 +60,9 @@ class Stage(models.Model):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(_type: Callable) -> Stage:
+def in_memory_stage(view: Type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
-    class_path = class_to_path(_type)
+    class_path = class_to_path(view)
     stage = Stage()
     stage.type = class_path
     return stage

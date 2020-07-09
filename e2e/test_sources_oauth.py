@@ -16,6 +16,7 @@ from passbook.flows.models import Flow
 from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"
+CONFIG_PATH = "/tmp/dex.yml"
 
 
 class TestSourceOAuth(SeleniumTestCase):
@@ -60,8 +61,7 @@ class TestSourceOAuth(SeleniumTestCase):
             "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},
             "web": {"http": "0.0.0.0:5556"},
         }
-        config_file = "./e2e/dex/config-dev.yaml"
-        with open(config_file, "w+") as _file:
+        with open(CONFIG_PATH, "w+") as _file:
             safe_dump(config, _file)
 
     def setup_client(self) -> Container:
@@ -80,7 +80,7 @@ class TestSourceOAuth(SeleniumTestCase):
                 start_period=1 * 100 * 1000000,
             ),
             volumes={
-                abspath("./e2e/dex/config-dev.yaml"): {
+                abspath(CONFIG_PATH): {
                     "bind": "/config.yml",
                     "mode": "ro",
                 }
