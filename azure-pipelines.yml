@@ -145,8 +145,8 @@ stages:
                 mv .coverage output-unittest/coverage
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'coverage-unittest'
-              artifact: 'output-unittest/'
+              targetPath: 'output-unittest/'
+              artifact: 'coverage-unittest'
               publishLocation: 'pipeline'
       - job: coverage_e2e
         pool:
@@ -195,8 +195,8 @@ stages:
               publishLocation: 'pipeline'
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'coverage-e2e'
-              artifact: 'output-e2e/'
+              targetPath: 'output-e2e/'
+              artifact: 'coverage-e2e'
               publishLocation: 'pipeline'
   - stage: test_combine
     jobs:
