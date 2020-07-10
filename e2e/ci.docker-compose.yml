@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   chrome:
-    image: selenium/standalone-chrome-debug:3.141.59-20200525
+    image: selenium/standalone-chrome
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host

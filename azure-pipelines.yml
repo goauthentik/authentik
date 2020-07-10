@@ -138,7 +138,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run ChromeDriver
             inputs:
-              dockerComposeFile: 'e2e/docker-compose.yml'
+              dockerComposeFile: 'e2e/ci.docker-compose.yml'
               action: 'Run a specific service'
               serviceName: 'chrome'
           - task: CmdLine@2
