@@ -220,7 +220,7 @@ stages:
               script: |
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
-                pipenv run combine coverage-e2e/coverage coverage-unittest/coverage
+                pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
           - task: PublishCodeCoverageResults@1
