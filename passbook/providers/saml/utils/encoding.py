@@ -12,9 +12,9 @@ def decode_base64_and_inflate(encoded: str, encoding="utf-8") -> str:
         return decoded_data.decode(encoding)
 
 
-def deflate_and_base64_encode(inflated: bytes, encoding="utf-8"):
+def deflate_and_base64_encode(inflated: str, encoding="utf-8"):
     """Base64 and ZLib Compress b64string"""
-    zlibbed_str = zlib.compress(inflated)
+    zlibbed_str = zlib.compress(inflated.encode())
     compressed_string = zlibbed_str[2:-4]
     return base64.b64encode(compressed_string).decode(encoding)
 

@@ -1,5 +1,7 @@
 """saml sp models"""
 from django.db import models
+from django.http import HttpRequest
+from django.shortcuts import reverse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -92,6 +94,18 @@ class SAMLSource(Source):
     )
 
     form = "passbook.sources.saml.forms.SAMLSourceForm"
+
+    def get_issuer(self, request: HttpRequest) -> str:
+        """Get Source's Issuer, falling back to our Metadata URL if none is set"""
+        if self.issuer is None:
+            return self.build_full_url(request, view="metadata")
+        return self.issuer
+
+    def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
+        """Build Full ACS URL to be used in IDP"""
+        return request.build_absolute_uri(
+            reverse(f"passbook_sources_saml:{view}", kwargs={"source_slug": self.slug})
+        )
 
     @property
     def ui_login_button(self) -> UILoginButton:

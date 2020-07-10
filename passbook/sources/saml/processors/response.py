@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
 
 
-class Processor:
+class ResponseProcessor:
     """SAML Response Processor"""
 
     _source: SAMLSource
