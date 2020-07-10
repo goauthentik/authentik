@@ -14,6 +14,7 @@ class PasswordPolicyForm(forms.ModelForm):
 
         model = PasswordPolicy
         fields = GENERAL_FIELDS + [
+            "password_field",
             "amount_uppercase",
             "amount_lowercase",
             "amount_symbols",
@@ -23,6 +24,7 @@ class PasswordPolicyForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(),
+            "password_field": forms.TextInput(),
             "symbol_charset": forms.TextInput(),
             "error_message": forms.TextInput(),
         }

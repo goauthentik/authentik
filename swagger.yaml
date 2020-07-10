@@ -5819,6 +5819,11 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      password_field:
+        title: Password field
+        description: Field key to check, field keys defined in Prompt stages are available.
+        type: string
+        minLength: 1
       allowed_count:
         title: Allowed count
         type: integer
@@ -5838,6 +5843,11 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      password_field:
+        title: Password field
+        description: Field key to check, field keys defined in Prompt stages are available.
+        type: string
+        minLength: 1
       amount_uppercase:
         title: Amount uppercase
         type: integer

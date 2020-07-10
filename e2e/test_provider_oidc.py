@@ -23,10 +23,10 @@ class TestProviderOIDC(SeleniumTestCase):
     """test OpenID Provider flow"""
 
     def setUp(self):
-        super().setUp()
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
         self.container = self.setup_client()
+        super().setUp()
 
     def setup_client(self) -> Container:
         """Setup client grafana container which we test OIDC against"""

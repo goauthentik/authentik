@@ -5,8 +5,6 @@ omit =
     manage.py
     */migrations/*
     */apps.py
-    passbook/management/commands/web.py
-    passbook/management/commands/worker.py
     docs/
 
 [report]

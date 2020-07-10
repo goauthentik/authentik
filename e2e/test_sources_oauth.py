@@ -25,9 +25,9 @@ class TestSourceOAuth(SeleniumTestCase):
     container: Container
 
     def setUp(self):
-        super().setUp()
         self.client_secret = generate_client_secret()
         self.container = self.setup_client()
+        super().setUp()
 
     def prepare_dex_config(self):
         """Since Dex does not document which environment
