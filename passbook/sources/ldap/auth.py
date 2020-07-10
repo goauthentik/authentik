@@ -18,8 +18,7 @@ class LDAPBackend(ModelBackend):
             return None
         for source in LDAPSource.objects.filter(enabled=True):
             LOGGER.debug("LDAP Auth attempt", source=source)
-            _ldap = Connector(source)
-            user = _ldap.auth_user(**kwargs)
+            user = Connector(source).auth_user(**kwargs)
             if user:
                 return user
         return None
