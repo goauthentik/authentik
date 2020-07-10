@@ -23,8 +23,8 @@ class TestFlowsEnroll(SeleniumTestCase):
     """Test Enroll flow"""
 
     def setUp(self):
-        super().setUp()
         self.container = self.setup_client()
+        super().setUp()
 
     def setup_client(self) -> Container:
         """Setup test IdP container"""
