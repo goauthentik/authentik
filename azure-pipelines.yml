@@ -208,10 +208,12 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'coverage-e2e'
+              path: "coverage-e2e/"
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
               artifactName: 'coverage-unittest'
+              path: "coverage-unittest/"
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '3.8'
@@ -220,6 +222,7 @@ stages:
               script: |
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
+                find .
                 pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
