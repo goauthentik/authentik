@@ -139,7 +139,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                pipenv run coverage run ./manage.py test --failfast passbook
+                pipenv run coverage run ./manage.py test passbook
                 mkdir output-unittest
                 mv unittest.xml output-unittest/unittest.xml
                 mv .coverage output-unittest/coverage
@@ -182,7 +182,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                pipenv run coverage run ./manage.py test --failfast e2e
+                pipenv run coverage run ./manage.py test e2e
                 mkdir output-e2e
                 mv unittest.xml output-e2e/unittest.xml
                 mv .coverage output-e2e/coverage
