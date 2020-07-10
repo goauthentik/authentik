@@ -117,7 +117,38 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run ./manage.py migrate
-      - job: coverage
+      - job: coverage-unittest
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Run full test suite
+            inputs:
+              script: |
+                pipenv run coverage run ./manage.py test --failfast passbook
+                mkdir output-unittest
+                mv unittest.xml output-unittest/unittest.xml
+                mv .coverage output-unittest/coverage
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'coverage-unittest'
+              artifact: 'output-unittest/'
+              publishLocation: 'pipeline'
+      - job: coverage-e2e
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -150,17 +181,46 @@ stages:
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
-              script: pipenv run coverage run ./manage.py test --failfast
-          - task: PublishBuildArtifacts@1
+              script: |
+                pipenv run coverage run ./manage.py test --failfast e2e
+                mkdir output-e2e
+                mv unittest.xml output-e2e/unittest.xml
+                mv .coverage output-e2e/coverage
+          - task: PublishPipelineArtifact@1
             condition: failed()
             displayName: Upload screenshots if selenium tests fail
             inputs:
-              PathtoPublish: 'selenium_screenshots/'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
+              targetPath: 'selenium_screenshots/'
+              artifact: 'selenium screenshots'
+              publishLocation: 'pipeline'
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'coverage-e2e'
+              artifact: 'output-e2e/'
+              publishLocation: 'pipeline'
+  - stage: Test (combine)
+    jobs:
+      - job: test_coverage_combine
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'coverage-e2e'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'coverage-unittest'
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
           - task: CmdLine@2
             inputs:
               script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+                pipenv run combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
           - task: PublishCodeCoverageResults@1
@@ -171,7 +231,7 @@ stages:
             condition: succeededOrFailed()
             inputs:
               testRunTitle: 'Publish test results for Python $(python.version)'
-              testResultsFiles: 'unittest.xml'
+              testResultsFiles: 'coverage-e2e/unittest.xml:coverage-unittest/unittest.xml'
           - task: CmdLine@2
             env:
               CODECOV_TOKEN: $(CODECOV_TOKEN)

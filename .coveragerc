@@ -1,12 +1,12 @@
 [run]
 source = passbook
+branch = True
+relative_files = True
 omit =
     */wsgi.py
     manage.py
     */migrations/*
     */apps.py
-    passbook/management/commands/web.py
-    passbook/management/commands/worker.py
     docs/
 
 [report]
