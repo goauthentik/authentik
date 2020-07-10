@@ -58,9 +58,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        self.driver.save_screenshot(
-            f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
-        )
+        screenshot_file = f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
+        self.driver.save_screenshot(screenshot_file)
+        self.logger.warning("Saved screenshot", file=screenshot_file)
         for line in self.driver.get_log("browser"):
             self.logger.warning(
                 line["message"], source=line["source"], level=line["level"]
