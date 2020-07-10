@@ -232,7 +232,6 @@ stages:
               codeCoverageTool: 'Cobertura'
               summaryFileLocation: 'coverage.xml'
               pathToSources: '$(System.DefaultWorkingDirectory)'
-              reportDirectory: 'htmlcov'
           - task: PublishTestResults@2
             condition: succeededOrFailed()
             inputs:

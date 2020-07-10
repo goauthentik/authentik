@@ -1,7 +1,6 @@
 [run]
 source = passbook
 branch = True
-relative_files = True
 omit =
     */wsgi.py
     manage.py
