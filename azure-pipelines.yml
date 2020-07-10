@@ -226,15 +226,21 @@ stages:
                 pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
+                find .
           - task: PublishCodeCoverageResults@1
             inputs:
-              codeCoverageTool: Cobertura
+              codeCoverageTool: 'Cobertura'
               summaryFileLocation: 'coverage.xml'
+              pathToSources: '$(System.DefaultWorkingDirectory)'
+              reportDirectory: 'htmlcov'
           - task: PublishTestResults@2
             condition: succeededOrFailed()
             inputs:
-              testRunTitle: 'Publish test results for Python $(python.version)'
-              testResultsFiles: 'coverage-e2e/unittest.xml:coverage-unittest/unittest.xml'
+              testResultsFormat: 'JUnit'
+              testResultsFiles: |
+                coverage-e2e/unittest.xml
+                coverage-unittest/unittest.xml
+              mergeTestResults: true
           - task: CmdLine@2
             env:
               CODECOV_TOKEN: $(CODECOV_TOKEN)
