@@ -6154,7 +6154,6 @@ definitions:
   SAMLProvider:
     required:
       - name
-      - processor_path
       - acs_url
       - issuer
     type: object
@@ -6166,11 +6165,6 @@ definitions:
       name:
         title: Name
         type: string
-        minLength: 1
-      processor_path:
-        title: Processor path
-        type: string
-        maxLength: 255
         minLength: 1
       acs_url:
         title: ACS URL

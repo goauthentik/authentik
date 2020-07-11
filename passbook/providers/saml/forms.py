@@ -8,11 +8,7 @@ from django.utils.translation import gettext as _
 from passbook.admin.fields import CodeMirrorWidget
 from passbook.core.expression import PropertyMappingEvaluator
 from passbook.flows.models import Flow, FlowDesignation
-from passbook.providers.saml.models import (
-    SAMLPropertyMapping,
-    SAMLProvider,
-    get_provider_choices,
-)
+from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 
 
 class SAMLProviderForm(forms.ModelForm):
@@ -21,9 +17,6 @@ class SAMLProviderForm(forms.ModelForm):
     authorization_flow = forms.ModelChoiceField(
         queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
     )
-    processor_path = forms.ChoiceField(
-        choices=get_provider_choices(), label="Processor"
-    )
 
     class Meta:
 
@@ -31,7 +24,6 @@ class SAMLProviderForm(forms.ModelForm):
         fields = [
             "name",
             "authorization_flow",
-            "processor_path",
             "acs_url",
             "audience",
             "issuer",
