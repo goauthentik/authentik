@@ -24,12 +24,15 @@ class RequestProcessor:
     source: SAMLSource
     http_request: HttpRequest
 
+    relay_state: str
+
     request_id: str
     issue_instant: str
 
-    def __init__(self, source: SAMLSource, request: HttpRequest):
+    def __init__(self, source: SAMLSource, request: HttpRequest, relay_state: str):
         self.source = source
         self.http_request = request
+        self.relay_state = relay_state
         self.request_id = get_random_id()
         self.issue_instant = get_time_string()
 
@@ -86,6 +89,7 @@ class RequestProcessor:
             "SAMLRequest": deflate_and_base64_encode(
                 etree.tostring(auth_n_request).decode()
             ),
+            "RelayState": self.relay_state
         }
 
         if self.source.signing_kp:

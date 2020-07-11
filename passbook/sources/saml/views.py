@@ -31,13 +31,10 @@ class InitiateView(View):
         if not source.enabled:
             raise Http404
         relay_state = request.GET.get("next", "")
-        request.session["sso_destination"] = relay_state
-        auth_n_req = RequestProcessor(source, request)
+        auth_n_req = RequestProcessor(source, request, relay_state)
         # If the source is configured for Redirect bindings, we can just redirect there
         if source.binding_type == SAMLBindingTypes.Redirect:
-            url_params = auth_n_req.build_auth_n_detached()
-            url_params["RelayState"] = relay_state
-            url_args = urlencode(url_params)
+            url_args = urlencode(auth_n_req.build_auth_n_detached())
             return redirect(f"{source.sso_url}?{url_args}")
         # As POST Binding we show a form
         saml_request = nice64(auth_n_req.build_auth_n())
