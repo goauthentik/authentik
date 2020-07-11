@@ -4,13 +4,12 @@ from typing import Optional
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from signxml.util import strip_pem_header
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
@@ -23,13 +22,18 @@ from passbook.flows.planner import (
 )
 from passbook.flows.stage import StageView
 from passbook.flows.views import SESSION_KEY_PLAN
-from passbook.lib.utils.template import render_to_string
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
 from passbook.policies.mixins import PolicyAccessMixin
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLBindings, SAMLProvider
-from passbook.providers.saml.processors.types import SAMLResponseParams
+from passbook.providers.saml.processors.assertion import AssertionProcessor
+from passbook.providers.saml.processors.metadata import MetadataProcessor
+from passbook.providers.saml.processors.request_parser import (
+    AuthNRequest,
+    AuthNRequestParser,
+)
+from passbook.providers.saml.utils.encoding import nice64
 from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
@@ -37,7 +41,7 @@ URL_VALIDATOR = URLValidator(schemes=("http", "https"))
 SESSION_KEY_SAML_REQUEST = "SAMLRequest"
 SESSION_KEY_SAML_RESPONSE = "SAMLResponse"
 SESSION_KEY_RELAY_STATE = "RelayState"
-SESSION_KEY_PARAMS = "SAMLParams"
+SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
 class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
@@ -97,17 +101,12 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
                 self.request, "The SAML request payload is missing."
             )
 
-        self.request.session[SESSION_KEY_SAML_REQUEST] = request.GET[
-            SESSION_KEY_SAML_REQUEST
-        ]
-        self.request.session[SESSION_KEY_RELAY_STATE] = request.GET.get(
-            SESSION_KEY_RELAY_STATE, ""
-        )
-
         try:
-            self.provider.processor.can_handle(self.request)
-            params = self.provider.processor.generate_response()
-            self.request.session[SESSION_KEY_PARAMS] = params
+            auth_n_request = AuthNRequestParser(self.provider).parse(
+                request.GET[SESSION_KEY_SAML_REQUEST],
+                request.GET.get(SESSION_KEY_RELAY_STATE, ""),
+            )
+            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             LOGGER.info(exc)
             return bad_request_message(self.request, str(exc))
@@ -130,17 +129,12 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
                 self.request, "The SAML request payload is missing."
             )
 
-        self.request.session[SESSION_KEY_SAML_REQUEST] = request.POST[
-            SESSION_KEY_SAML_REQUEST
-        ]
-        self.request.session[SESSION_KEY_RELAY_STATE] = request.POST.get(
-            SESSION_KEY_RELAY_STATE, ""
-        )
-
         try:
-            self.provider.processor.can_handle(self.request)
-            params = self.provider.processor.generate_response()
-            self.request.session[SESSION_KEY_PARAMS] = params
+            auth_n_request = AuthNRequestParser(self.provider).parse(
+                request.POST[SESSION_KEY_SAML_REQUEST],
+                request.POST.get(SESSION_KEY_RELAY_STATE, ""),
+            )
+            self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
             LOGGER.info(exc)
             return bad_request_message(self.request, str(exc))
@@ -154,14 +148,12 @@ class SAMLSSOBindingInitView(SAMLSSOView):
     def get(
         self, request: HttpRequest, application_slug: str
     ) -> Optional[HttpResponse]:
-        """Create saml params from scratch"""
+        """Create SAML Response from scratch"""
         LOGGER.debug(
             "handle_saml_no_request: No SAML Request, using IdP-initiated flow."
         )
-        self.provider.processor.is_idp_initiated = True
-        self.provider.processor.init_deep_link(self.request)
-        params = self.provider.processor.generate_response()
-        self.request.session[SESSION_KEY_PARAMS] = params
+        auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
+        self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
 
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
@@ -184,32 +176,37 @@ class SAMLFlowFinalView(StageView):
         self.request.session.pop(SESSION_KEY_SAML_REQUEST, None)
         self.request.session.pop(SESSION_KEY_SAML_RESPONSE, None)
         self.request.session.pop(SESSION_KEY_RELAY_STATE, None)
-        if SESSION_KEY_PARAMS not in self.request.session:
+        if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
             return self.executor.stage_invalid()
-        response: SAMLResponseParams = self.request.session.pop(SESSION_KEY_PARAMS)
+        auth_n_request: AuthNRequest = self.request.session.pop(
+            SESSION_KEY_AUTH_N_REQUEST
+        )
+        response = AssertionProcessor(
+            provider, request, auth_n_request
+        ).build_response()
 
         if provider.sp_binding == SAMLBindings.POST:
             return render(
                 self.request,
                 "generic/autosubmit_form.html",
                 {
-                    "url": response.acs_url,
+                    "url": provider.acs_url,
                     "title": _("Redirecting to %(app)s..." % {"app": application.name}),
                     "attrs": {
-                        "ACSUrl": response.acs_url,
-                        SESSION_KEY_SAML_RESPONSE: response.saml_response,
-                        SESSION_KEY_RELAY_STATE: response.relay_state,
+                        "ACSUrl": provider.acs_url,
+                        SESSION_KEY_SAML_RESPONSE: nice64(response.encode()),
+                        SESSION_KEY_RELAY_STATE: auth_n_request.relay_state,
                     },
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
             querystring = urlencode(
                 {
-                    SESSION_KEY_SAML_RESPONSE: response.saml_response,
-                    SESSION_KEY_RELAY_STATE: response.relay_state,
+                    SESSION_KEY_SAML_RESPONSE: nice64(response.encode()),
+                    SESSION_KEY_RELAY_STATE: auth_n_request.relay_state,
                 }
             )
-            return redirect(f"{response.acs_url}?{querystring}")
+            return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
 
 
@@ -219,31 +216,7 @@ class DescriptorDownloadView(View):
     @staticmethod
     def get_metadata(request: HttpRequest, provider: SAMLProvider) -> str:
         """Return rendered XML Metadata"""
-        entity_id = provider.issuer
-        saml_sso_binding_post = request.build_absolute_uri(
-            reverse(
-                "passbook_providers_saml:sso-post",
-                kwargs={"application_slug": provider.application.slug},
-            )
-        )
-        saml_sso_binding_redirect = request.build_absolute_uri(
-            reverse(
-                "passbook_providers_saml:sso-redirect",
-                kwargs={"application_slug": provider.application.slug},
-            )
-        )
-        subject_format = provider.processor.subject_format
-        ctx = {
-            "saml_sso_binding_post": saml_sso_binding_post,
-            "saml_sso_binding_redirect": saml_sso_binding_redirect,
-            "entity_id": entity_id,
-            "subject_format": subject_format,
-        }
-        if provider.signing_kp:
-            ctx["cert_public_key"] = strip_pem_header(
-                provider.signing_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
-        return render_to_string("providers/saml/xml/metadata.xml", ctx)
+        return MetadataProcessor(provider, request).build_entity_descriptor()
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Replies with the XML Metadata IDSSODescriptor."""

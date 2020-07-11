@@ -11,7 +11,6 @@ from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import Application
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
-from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
 from passbook.providers.saml.models import (
@@ -19,7 +18,6 @@ from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
 )
-from passbook.providers.saml.processors.generic import GenericProcessor
 
 
 class TestProviderSAML(SeleniumTestCase):
@@ -70,7 +68,6 @@ class TestProviderSAML(SeleniumTestCase):
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
-            processor_path=class_to_path(GenericProcessor),
             acs_url="http://localhost:9009/saml/acs",
             audience="passbook-e2e",
             issuer="passbook-e2e",
@@ -104,7 +101,6 @@ class TestProviderSAML(SeleniumTestCase):
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
-            processor_path=class_to_path(GenericProcessor),
             acs_url="http://localhost:9009/saml/acs",
             audience="passbook-e2e",
             issuer="passbook-e2e",
@@ -146,7 +142,6 @@ class TestProviderSAML(SeleniumTestCase):
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
-            processor_path=class_to_path(GenericProcessor),
             acs_url="http://localhost:9009/saml/acs",
             audience="passbook-e2e",
             issuer="passbook-e2e",
@@ -188,7 +183,6 @@ class TestProviderSAML(SeleniumTestCase):
         )
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
-            processor_path=class_to_path(GenericProcessor),
             acs_url="http://localhost:9009/saml/acs",
             audience="passbook-e2e",
             issuer="passbook-e2e",
