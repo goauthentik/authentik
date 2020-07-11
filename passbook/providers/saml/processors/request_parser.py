@@ -1,6 +1,6 @@
 """SAML AuthNRequest Parser and dataclass"""
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 from cryptography.exceptions import InvalidSignature
 from defusedxml import ElementTree
@@ -9,7 +9,6 @@ from structlog import get_logger
 
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLProvider
-from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 
 LOGGER = get_logger()

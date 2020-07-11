@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from signxml import InvalidSignature
 
 from passbook.lib.views import bad_request_message
-from passbook.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
+from passbook.providers.saml.utils.encoding import nice64
 from passbook.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
@@ -32,16 +32,15 @@ class InitiateView(View):
             raise Http404
         relay_state = request.GET.get("next", "")
         request.session["sso_destination"] = relay_state
-        auth_n_req = RequestProcessor(source, request).build_auth_n()
+        auth_n_req = RequestProcessor(source, request)
         # If the source is configured for Redirect bindings, we can just redirect there
         if source.binding_type == SAMLBindingTypes.Redirect:
-            saml_request = deflate_and_base64_encode(auth_n_req)
-            url_args = urlencode(
-                {"SAMLRequest": saml_request, "RelayState": relay_state}
-            )
+            url_params = auth_n_req.build_auth_n_detached()
+            url_params["RelayState"] = relay_state
+            url_args = urlencode(url_params)
             return redirect(f"{source.sso_url}?{url_args}")
         # As POST Binding we show a form
-        saml_request = nice64(auth_n_req)
+        saml_request = nice64(auth_n_req.build_auth_n())
         if source.binding_type == SAMLBindingTypes.POST:
             return render(
                 request,

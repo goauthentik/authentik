@@ -1,7 +1,6 @@
 """SAML Assertion generator"""
 from types import GeneratorType
 
-from defusedxml import ElementTree
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -212,4 +211,4 @@ class AssertionProcessor:
                 signed, x509_cert=self.provider.signing_kp.certificate_data
             )
             return etree.tostring(signed).decode("utf-8")  # nosec
-        return ElementTree.tostring(root_response).decode()
+        return etree.tostring(root_response).decode("utf-8")  # nosec
