@@ -188,26 +188,28 @@ class SAMLFlowFinalView(StageView):
         ).build_response()
 
         if provider.sp_binding == SAMLBindings.POST:
+            form_attrs = {
+                "ACSUrl": provider.acs_url,
+                REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+            }
+            if auth_n_request.relay_state:
+                form_attrs[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
             return render(
                 self.request,
                 "generic/autosubmit_form.html",
                 {
                     "url": provider.acs_url,
                     "title": _("Redirecting to %(app)s..." % {"app": application.name}),
-                    "attrs": {
-                        "ACSUrl": provider.acs_url,
-                        REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
-                        REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
-                    },
+                    "attrs": form_attrs,
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
-            querystring = urlencode(
-                {
-                    REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
-                    REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
-                }
-            )
+            url_args = {
+                REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+            }
+            if auth_n_request.relay_state:
+                url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
+            querystring = urlencode(url_args)
             return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
 
