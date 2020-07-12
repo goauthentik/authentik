@@ -53,3 +53,14 @@ Example:
 ```python
 other_user = pb_user_by(username="other_user")
 ```
+
+## Comparing IP Addresses
+
+To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
+
+You can also check if an IP Address is within a subnet by writing the following:
+
+```python
+ip_address('192.0.2.1') in ip_network('192.0.2.0/24')
+# evaluates to True
+```

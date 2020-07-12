@@ -64,7 +64,9 @@ class BaseEvaluator:
     def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
         handler_signature = ",".join(params)
-        full_expression = f"def handler({handler_signature}):\n"
+        full_expression = ""
+        full_expression += "from ipaddress import ip_address, ip_network\n"
+        full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
         full_expression += f"\nresult = handler({handler_signature})"
         return full_expression

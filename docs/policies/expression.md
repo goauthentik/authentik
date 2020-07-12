@@ -26,5 +26,5 @@ return False
     - `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 - `pb_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
-- `pb_client_ip`: Client's IP Address or '255.255.255.255' if no IP Address could be extracted.
+- `pb_client_ip`: Client's IP Address or '255.255.255.255' if no IP Address could be extracted. Can be [compared](../expressions/index.md#comparing-ip-addresses)
 - `pb_flow_plan`: Current Plan if Policy is called from the Flow Planner.

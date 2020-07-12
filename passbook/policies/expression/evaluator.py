@@ -1,4 +1,5 @@
 """passbook expression policy evaluator"""
+from ipaddress import ip_address
 from typing import List
 
 from django.http import HttpRequest
@@ -41,7 +42,9 @@ class PolicyEvaluator(BaseEvaluator):
         """Update context based on http request"""
         # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
-        self._context["pb_client_ip"] = get_client_ip(request) or "255.255.255.255"
+        self._context["pb_client_ip"] = ip_address(
+            get_client_ip(request) or "255.255.255.255"
+        )
         self._context["request"] = request
         if SESSION_KEY_PLAN in request.session:
             self._context["pb_flow_plan"] = request.session[SESSION_KEY_PLAN]

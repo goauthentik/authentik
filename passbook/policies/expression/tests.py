@@ -36,7 +36,7 @@ class TestEvaluator(TestCase):
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
-        self.assertEqual(result.messages, ("invalid syntax (test, line 2)",))
+        self.assertEqual(result.messages, ("invalid syntax (test, line 3)",))
 
     def test_undefined(self):
         """test undefined result"""
