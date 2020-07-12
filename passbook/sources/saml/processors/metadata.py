@@ -1,7 +1,6 @@
 """SAML Service Provider Metadata Processor"""
 from typing import Iterator, Optional
 
-from defusedxml import ElementTree
 from django.http import HttpRequest
 from lxml.etree import Element, SubElement, tostring  # nosec
 from signxml.util import strip_pem_header
