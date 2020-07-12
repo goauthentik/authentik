@@ -1,20 +1,22 @@
 """SAML AuthnRequest Processor"""
 from typing import Dict
+from urllib.parse import quote_plus
 
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
-from signxml import XMLSigner, methods
+from signxml import XMLSigner
 
 from passbook.providers.saml.utils import get_random_id
-from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
+from passbook.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
-    NS_SIGNATURE,
 )
 
 
@@ -82,27 +84,37 @@ class RequestProcessor:
 
     def build_auth_n_detached(self) -> Dict[str, str]:
         """Get Dict AuthN Request for Redirect bindings, with detached
-        Signature"""
+        Signature. See https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf"""
         auth_n_request = self.get_auth_n()
 
+        saml_request = deflate_and_base64_encode(
+            etree.tostring(auth_n_request).decode()
+        )
+
         response_dict = {
-            "SAMLRequest": deflate_and_base64_encode(
-                etree.tostring(auth_n_request).decode()
-            ),
-            "RelayState": self.relay_state
+            "SAMLRequest": saml_request,
         }
 
+        if self.relay_state != "":
+            response_dict["RelayState"] = self.relay_state
+
         if self.source.signing_kp:
-            signer = XMLSigner(methods.detached)
-            signature = signer.sign(
-                auth_n_request,
-                cert=self.source.signing_kp.certificate_data,
-                key=self.source.signing_kp.key_data,
+            sig_alg = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+            sig_hash = hashes.SHA1()  # nosec
+            # Create the full querystring in the correct order to be signed
+            querystring = f"SAMLRequest={quote_plus(saml_request)}&"
+            if self.relay_state != "":
+                querystring += f"RelayState={quote_plus(self.relay_state)}&"
+            querystring += f"SigAlg={sig_alg}"
+
+            signature = self.source.signing_kp.private_key.sign(
+                querystring.encode(),
+                padding.PSS(
+                    mgf=padding.MGF1(sig_hash), salt_length=padding.PSS.MAX_LENGTH
+                ),
+                sig_hash,
             )
-            signature_value = signature.find(
-                f".//{{{NS_SIGNATURE}}}SignatureValue"
-            ).text
-            response_dict["Signature"] = signature_value
-            response_dict["SigAlg"] = signer.sign_alg
+            response_dict["SigAlg"] = sig_alg
+            response_dict["Signature"] = nice64(signature)
 
         return response_dict
