@@ -4,7 +4,9 @@ from django import forms
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.flows.models import Flow, FlowDesignation
+from passbook.crypto.models import CertificateKeyPair
 from passbook.sources.saml.models import SAMLSource
+from django.utils.translation import gettext as _
 
 
 class SAMLSourceForm(forms.ModelForm):
@@ -15,6 +17,13 @@ class SAMLSourceForm(forms.ModelForm):
     )
     enrollment_flow = forms.ModelChoiceField(
         queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
+    )
+    signing_kp = forms.ModelChoiceField(
+        queryset=CertificateKeyPair.objects.filter(
+            certificate_data__isnull=False,
+            key_data__isnull=False,
+        ),
+        help_text=_("Certificate used to sign Requests.")
     )
 
     class Meta:

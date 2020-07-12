@@ -221,6 +221,7 @@ class TestProviderOIDC(SeleniumTestCase):
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
         )
+        sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
         self.wait.until(
