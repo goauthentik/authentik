@@ -3,7 +3,7 @@ from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
-from os import makedirs
+from os import environ, makedirs
 from time import time
 
 from Cryptodome.PublicKey import RSA
@@ -58,9 +58,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        screenshot_file = f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
-        self.driver.save_screenshot(screenshot_file)
-        self.logger.warning("Saved screenshot", file=screenshot_file)
+        if "CI" in environ:
+            screenshot_file = (
+                f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
+            )
+            self.driver.save_screenshot(screenshot_file)
+            self.logger.warning("Saved screenshot", file=screenshot_file)
         for line in self.driver.get_log("browser"):
             self.logger.warning(
                 line["message"], source=line["source"], level=line["level"]
