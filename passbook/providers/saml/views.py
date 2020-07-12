@@ -47,7 +47,7 @@ REQUEST_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
-class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
+class SAMLSSOView(PolicyAccessMixin, LoginRequiredMixin, View):
     """"SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
@@ -62,7 +62,7 @@ class SAMLSSOView(LoginRequiredMixin, PolicyAccessMixin, View):
             SAMLProvider, pk=self.application.provider_id
         )
         if not request.user.is_authenticated:
-            return self.handle_no_permission()
+            return self.handle_no_permission(self.application)
         if not self.user_has_access(self.application).passing:
             return self.handle_no_permission_authorized()
         # Call the method handler, which checks the SAML Request

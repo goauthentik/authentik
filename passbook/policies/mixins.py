@@ -3,12 +3,14 @@ from typing import Optional
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
+from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.core.models import Application, Provider, User
+from passbook.flows.views import SESSION_KEY_APPLICATION_PRE
 from passbook.policies.engine import PolicyEngine
 from passbook.policies.types import PolicyResult
 
@@ -24,6 +26,15 @@ class BaseMixin:
 class PolicyAccessMixin(BaseMixin, AccessMixin):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
+
+    def handle_no_permission(self, application: Optional[Application] = None):
+        if application:
+            self.request.session[SESSION_KEY_APPLICATION_PRE] = application
+        return redirect_to_login(
+            self.request.get_full_path(),
+            self.get_login_url(),
+            self.get_redirect_field_name(),
+        )
 
     def handle_no_permission_authorized(self) -> HttpResponse:
         """Function called when user has no permissions but is authorized"""

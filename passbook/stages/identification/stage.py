@@ -12,6 +12,7 @@ from structlog import get_logger
 from passbook.core.models import Source, User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
+from passbook.flows.views import SESSION_KEY_APPLICATION_PRE
 from passbook.stages.identification.forms import IdentificationForm
 from passbook.stages.identification.models import IdentificationStage
 
@@ -34,6 +35,12 @@ class IdentificationStageView(FormView, StageView):
 
     def get_context_data(self, **kwargs):
         current_stage: IdentificationStage = self.executor.current_stage
+        # If the user has been redirected to us whilst trying to access an
+        # application, SESSION_KEY_APPLICATION_PRE is set in the session
+        if SESSION_KEY_APPLICATION_PRE in self.request.session:
+            kwargs["application_pre"] = self.request.session[
+                SESSION_KEY_APPLICATION_PRE
+            ]
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
             kwargs["enroll_url"] = reverse(

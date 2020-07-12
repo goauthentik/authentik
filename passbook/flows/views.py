@@ -29,6 +29,7 @@ LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
+SESSION_KEY_APPLICATION_PRE = "passbook_flows_application_pre"
 SESSION_KEY_GET = "passbook_flows_get"
 
 
@@ -198,8 +199,14 @@ class FlowExecutorView(View):
 
     def cancel(self):
         """Cancel current execution and return a redirect"""
-        if SESSION_KEY_PLAN in self.request.session:
-            del self.request.session[SESSION_KEY_PLAN]
+        keys_to_delete = [
+            SESSION_KEY_APPLICATION_PRE,
+            SESSION_KEY_PLAN,
+            SESSION_KEY_GET,
+        ]
+        for key in keys_to_delete:
+            if key in self.request.session:
+                del self.request.session[key]
 
 
 class FlowPermissionDeniedView(PermissionDeniedView):
