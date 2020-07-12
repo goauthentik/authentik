@@ -39,6 +39,8 @@ from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
 SESSION_KEY_SAML_REQUEST = "SAMLRequest"
+SESSION_KEY_SAML_SIGNATURE = "Signature"
+SESSION_KEY_SAML_SIG_ALG = "SigAlg"
 SESSION_KEY_SAML_RESPONSE = "SAMLResponse"
 SESSION_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
@@ -102,9 +104,11 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
             )
 
         try:
-            auth_n_request = AuthNRequestParser(self.provider).parse(
+            auth_n_request = AuthNRequestParser(self.provider).parse_detached(
                 request.GET[SESSION_KEY_SAML_REQUEST],
                 request.GET.get(SESSION_KEY_RELAY_STATE, ""),
+                request.GET.get(SESSION_KEY_SAML_SIGNATURE),
+                request.GET.get(SESSION_KEY_SAML_SIG_ALG),
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
