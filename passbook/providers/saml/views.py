@@ -38,11 +38,12 @@ from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))
-SESSION_KEY_SAML_REQUEST = "SAMLRequest"
-SESSION_KEY_SAML_SIGNATURE = "Signature"
-SESSION_KEY_SAML_SIG_ALG = "SigAlg"
-SESSION_KEY_SAML_RESPONSE = "SAMLResponse"
-SESSION_KEY_RELAY_STATE = "RelayState"
+REQUEST_KEY_SAML_REQUEST = "SAMLRequest"
+REQUEST_KEY_SAML_SIGNATURE = "Signature"
+REQUEST_KEY_SAML_SIG_ALG = "SigAlg"
+REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
+REQUEST_KEY_RELAY_STATE = "RelayState"
+
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
@@ -96,8 +97,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         self, request: HttpRequest, application_slug: str
     ) -> Optional[HttpResponse]:
         """Handle REDIRECT bindings"""
-        # Store these values now, because Django's login cycle won't preserve them.
-        if SESSION_KEY_SAML_REQUEST not in request.GET:
+        if REQUEST_KEY_SAML_REQUEST not in request.GET:
             LOGGER.info("handle_saml_request: SAML payload missing")
             return bad_request_message(
                 self.request, "The SAML request payload is missing."
@@ -105,10 +105,10 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
-                request.GET[SESSION_KEY_SAML_REQUEST],
-                request.GET.get(SESSION_KEY_RELAY_STATE, ""),
-                request.GET.get(SESSION_KEY_SAML_SIGNATURE),
-                request.GET.get(SESSION_KEY_SAML_SIG_ALG),
+                request.GET[REQUEST_KEY_SAML_REQUEST],
+                request.GET.get(REQUEST_KEY_RELAY_STATE),
+                request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
+                request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
@@ -126,8 +126,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         self, request: HttpRequest, application_slug: str
     ) -> Optional[HttpResponse]:
         """Handle POST bindings"""
-        # Store these values now, because Django's login cycle won't preserve them.
-        if SESSION_KEY_SAML_REQUEST not in request.POST:
+        if REQUEST_KEY_SAML_REQUEST not in request.POST:
             LOGGER.info("handle_saml_request: SAML payload missing")
             return bad_request_message(
                 self.request, "The SAML request payload is missing."
@@ -135,8 +134,8 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(
-                request.POST[SESSION_KEY_SAML_REQUEST],
-                request.POST.get(SESSION_KEY_RELAY_STATE, ""),
+                request.POST[REQUEST_KEY_SAML_REQUEST],
+                request.POST.get(REQUEST_KEY_RELAY_STATE),
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
@@ -177,11 +176,10 @@ class SAMLFlowFinalView(StageView):
             authorized_application=application,
             flow=self.executor.plan.flow_pk,
         ).from_http(self.request)
-        self.request.session.pop(SESSION_KEY_SAML_REQUEST, None)
-        self.request.session.pop(SESSION_KEY_SAML_RESPONSE, None)
-        self.request.session.pop(SESSION_KEY_RELAY_STATE, None)
+
         if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
             return self.executor.stage_invalid()
+
         auth_n_request: AuthNRequest = self.request.session.pop(
             SESSION_KEY_AUTH_N_REQUEST
         )
@@ -198,16 +196,16 @@ class SAMLFlowFinalView(StageView):
                     "title": _("Redirecting to %(app)s..." % {"app": application.name}),
                     "attrs": {
                         "ACSUrl": provider.acs_url,
-                        SESSION_KEY_SAML_RESPONSE: nice64(response.encode()),
-                        SESSION_KEY_RELAY_STATE: auth_n_request.relay_state,
+                        REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+                        REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
                     },
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
             querystring = urlencode(
                 {
-                    SESSION_KEY_SAML_RESPONSE: nice64(response.encode()),
-                    SESSION_KEY_RELAY_STATE: auth_n_request.relay_state,
+                    REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+                    REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
                 }
             )
             return redirect(f"{provider.acs_url}?{querystring}")

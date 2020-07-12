@@ -1,4 +1,5 @@
 """SAML Assertion generator"""
+from hashlib import sha256
 from types import GeneratorType
 
 from django.http import HttpRequest
@@ -12,12 +13,16 @@ from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from passbook.providers.saml.processors.request_parser import AuthNRequest
 from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.time import get_time_string, timedelta_from_string
+from passbook.sources.saml.exceptions import UnsupportedNameIDFormat
 from passbook.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
     SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_X509,
 )
 
 LOGGER = get_logger()
@@ -127,14 +132,35 @@ class AssertionProcessor:
         audience.text = self.provider.audience
         return conditions
 
+    def get_name_id(self) -> Element:
+        """Get NameID Element"""
+        name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")
+        name_id.attrib["Format"] = self.auth_n_request.name_id_policy
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
+            name_id.text = self.http_request.user.email
+            return name_id
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_PRESISTENT:
+            name_id.text = self.http_request.user.username
+            return name_id
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
+            # This attribute is statically set by the LDAP source
+            name_id.text = self.http_request.user.attributes.get(
+                "distinguishedName", ""
+            )
+            return name_id
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+            # This attribute is statically set by the LDAP source
+            session_key: str = self.http_request.user.session.session_key
+            name_id.text = sha256(session_key.encode()).hexdigest()
+            return name_id
+        raise UnsupportedNameIDFormat(
+            f"Assertion contains NameID with unsupported format {name_id.attrib['Format']}."
+        )
+
     def get_assertion_subject(self) -> Element:
         """Generate Subject Element with NameID and SubjectConfirmation Objects"""
         subject = Element(f"{{{NS_SAML_ASSERTION}}}Subject")
-
-        name_id = SubElement(subject, f"{{{NS_SAML_ASSERTION}}}NameID")
-        # TODO: Make this configurable
-        name_id.attrib["Format"] = SAML_NAME_ID_FORMAT_EMAIL
-        name_id.text = self.http_request.user.email
+        subject.append(self.get_name_id())
 
         subject_confirmation = SubElement(
             subject, f"{{{NS_SAML_ASSERTION}}}SubjectConfirmation"

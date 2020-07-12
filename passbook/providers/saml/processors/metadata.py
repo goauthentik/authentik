@@ -17,7 +17,6 @@ from passbook.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PRESISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
 )
 
@@ -54,7 +53,6 @@ class MetadataProcessor:
             SAML_NAME_ID_FORMAT_EMAIL,
             SAML_NAME_ID_FORMAT_PRESISTENT,
             SAML_NAME_ID_FORMAT_X509,
-            SAML_NAME_ID_FORMAT_WINDOWS,
             SAML_NAME_ID_FORMAT_TRANSIENT,
         ]
         for name_id_format in formats:
