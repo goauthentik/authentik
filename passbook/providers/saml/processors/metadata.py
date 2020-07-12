@@ -1,10 +1,9 @@
 """SAML Identity Provider Metadata Processor"""
 from typing import Iterator, Optional
 
-from defusedxml import ElementTree
 from django.http import HttpRequest
 from django.shortcuts import reverse
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, tostring  # nosec
 from signxml.util import strip_pem_header
 
 from passbook.providers.saml.models import SAMLProvider
@@ -106,4 +105,4 @@ class MetadataProcessor:
         for binding in self.get_bindings():
             idp_sso_descriptor.append(binding)
 
-        return ElementTree.tostring(entity_descriptor).decode()
+        return tostring(entity_descriptor).decode()

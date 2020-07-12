@@ -3,7 +3,7 @@ from typing import Iterator, Optional
 
 from defusedxml import ElementTree
 from django.http import HttpRequest
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, tostring  # nosec
 from signxml.util import strip_pem_header
 
 from passbook.sources.saml.models import SAMLSource
@@ -75,7 +75,7 @@ class MetadataProcessor:
         ] = "urn:oasis:names:tc:SAML:2.0:protocol"
 
         signing_descriptor = self.get_signing_key_descriptor()
-        if signing_descriptor:
+        if signing_descriptor is not None:
             sp_sso_descriptor.append(signing_descriptor)
 
         for name_id_format in self.get_name_id_formats():
@@ -91,4 +91,4 @@ class MetadataProcessor:
             self.http_request
         )
 
-        return ElementTree.tostring(entity_descriptor).decode()
+        return tostring(entity_descriptor).decode()
