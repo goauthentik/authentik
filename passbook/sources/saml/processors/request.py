@@ -1,4 +1,5 @@
 """SAML AuthnRequest Processor"""
+from base64 import b64encode
 from typing import Dict
 from urllib.parse import quote_plus
 
@@ -10,7 +11,7 @@ from lxml.etree import Element  # nosec
 from signxml import XMLSigner
 
 from passbook.providers.saml.utils import get_random_id
-from passbook.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
+from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
@@ -115,6 +116,6 @@ class RequestProcessor:
                 sig_hash,
             )
             response_dict["SigAlg"] = sig_alg
-            response_dict["Signature"] = nice64(signature)
+            response_dict["Signature"] = b64encode(signature).decode()
 
         return response_dict

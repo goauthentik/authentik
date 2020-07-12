@@ -68,6 +68,7 @@ class ResponseProcessor:
         verifier.verify(
             self._root_xml, x509_cert=self._source.signing_kp.certificate_data
         )
+        LOGGER.debug("Successfully verified signautre")
 
     def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:
         """Handle a NameID with the Format of Transient. This is a bit more complex than other

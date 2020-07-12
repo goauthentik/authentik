@@ -33,7 +33,7 @@ from passbook.providers.saml.processors.request_parser import (
     AuthNRequest,
     AuthNRequestParser,
 )
-from passbook.providers.saml.utils.encoding import nice64
+from passbook.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
@@ -190,7 +190,7 @@ class SAMLFlowFinalView(StageView):
         if provider.sp_binding == SAMLBindings.POST:
             form_attrs = {
                 "ACSUrl": provider.acs_url,
-                REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+                REQUEST_KEY_SAML_RESPONSE: nice64(response),
             }
             if auth_n_request.relay_state:
                 form_attrs[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
@@ -205,7 +205,7 @@ class SAMLFlowFinalView(StageView):
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
             url_args = {
-                REQUEST_KEY_SAML_RESPONSE: nice64(response.encode()),
+                REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),
             }
             if auth_n_request.relay_state:
                 url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state

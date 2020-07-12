@@ -186,6 +186,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
+        sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
         # Now we should be at the IDP, wait for the username field
