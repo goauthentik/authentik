@@ -53,7 +53,7 @@ class InitiateView(View):
         if source.binding_type == SAMLBindingTypes.POST_AUTO:
             return render(
                 request,
-                "generic/autosubmit_form.html",
+                "generic/autosubmit_form_full.html",
                 {
                     "title": _("Redirecting to %(app)s..." % {"app": source.name}),
                     "attrs": {"SAMLRequest": saml_request, "RelayState": relay_state},
