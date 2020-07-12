@@ -82,10 +82,10 @@ class MetadataProcessor:
             sp_sso_descriptor.append(name_id_format)
 
         assertion_consumer_service = SubElement(
-            sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}"
+            sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}AssertionConsumerService"
         )
-        assertion_consumer_service.attrib["isDefault"] = True
-        assertion_consumer_service.attrib["index"] = 0
+        assertion_consumer_service.attrib["isDefault"] = "true"
+        assertion_consumer_service.attrib["index"] = "0"
         assertion_consumer_service.attrib["Binding"] = SAML_BINDING_POST
         assertion_consumer_service.attrib["Location"] = self.source.build_full_url(
             self.http_request
