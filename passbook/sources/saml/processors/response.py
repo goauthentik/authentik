@@ -24,7 +24,7 @@ from passbook.sources.saml.exceptions import (
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
@@ -112,7 +112,7 @@ class ResponseProcessor:
         _format = name_id_el.attrib["Format"]
         if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
-        if _format == SAML_NAME_ID_FORMAT_PRESISTENT:
+        if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
             return {"username": name_id}
         if _format == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source

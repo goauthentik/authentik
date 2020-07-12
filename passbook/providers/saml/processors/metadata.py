@@ -15,7 +15,7 @@ from passbook.sources.saml.processors.constants import (
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_X509,
 )
@@ -51,7 +51,7 @@ class MetadataProcessor:
         """Get compatible NameID Formats"""
         formats = [
             SAML_NAME_ID_FORMAT_EMAIL,
-            SAML_NAME_ID_FORMAT_PRESISTENT,
+            SAML_NAME_ID_FORMAT_PERSISTENT,
             SAML_NAME_ID_FORMAT_X509,
             SAML_NAME_ID_FORMAT_TRANSIENT,
         ]

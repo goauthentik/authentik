@@ -20,7 +20,7 @@ from passbook.sources.saml.processors.constants import (
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
     SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_X509,
 )
@@ -139,7 +139,7 @@ class AssertionProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_PRESISTENT:
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_PERSISTENT:
             name_id.text = self.http_request.user.username
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:

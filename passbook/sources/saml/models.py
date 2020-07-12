@@ -11,7 +11,7 @@ from passbook.crypto.models import CertificateKeyPair
 from passbook.providers.saml.utils.time import timedelta_string_validator
 from passbook.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PRESISTENT,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
@@ -30,7 +30,7 @@ class SAMLNameIDPolicy(models.TextChoices):
     """SAML NameID Policies"""
 
     EMAIL = SAML_NAME_ID_FORMAT_EMAIL
-    PERSISTENT = SAML_NAME_ID_FORMAT_PRESISTENT
+    PERSISTENT = SAML_NAME_ID_FORMAT_PERSISTENT
     X509 = SAML_NAME_ID_FORMAT_X509
     WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
     TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
