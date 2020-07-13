@@ -46,8 +46,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
-        self.driver.implicitly_wait(300)
-        self.wait = WebDriverWait(self.driver, 500)
+        self.driver.implicitly_wait(30)
+        self.wait = WebDriverWait(self.driver, 50)
         self.apply_default_data()
         self.logger = get_logger()
 
