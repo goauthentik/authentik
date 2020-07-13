@@ -1162,11 +1162,11 @@
         },
         "pylint-django": {
             "hashes": [
-                "sha256:06a64331c498a3f049ba669dc0c174b92209e164198d43e589b1096ee616d5f8",
-                "sha256:3d3436ba8d0fae576ae2db160e33a8f2746a101fda4463f2b3ff3a8b6fccec38"
+                "sha256:b7756844dba0cecd3471056a1ef4154439defedaba38bf3ced9f848d2bf6297c",
+                "sha256:ca32277c77878dd3c2d9e75f3f3f7f0c0712f053f10ff1b946cdc27367a6c911"
             ],
             "index": "pypi",
-            "version": "==2.0.15"
+            "version": "==2.1.0"
         },
         "pylint-plugin-utils": {
             "hashes": [
