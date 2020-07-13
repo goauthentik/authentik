@@ -232,11 +232,11 @@
         },
         "django-prometheus": {
             "hashes": [
-                "sha256:054924b6aedd41f3f76940578127e7fac852a696805f956da39b7941c78bba91",
-                "sha256:208e55e3a11ac9edd53a3b342b033e140ffe27914af1202f0b064edf99e83fc3"
+                "sha256:441bd85531ecdeddacbe73c930f16de926c426869ce388fa1e8c8092f7ee5a1b",
+                "sha256:6e824cd407b56c01810c69d2e296940d00afe609b58818794525f9760a9a5364"
             ],
             "index": "pypi",
-            "version": "==2.1.0.dev46"
+            "version": "==2.1.0.dev52"
         },
         "django-recaptcha": {
             "hashes": [
