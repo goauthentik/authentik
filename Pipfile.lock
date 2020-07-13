@@ -232,11 +232,11 @@
         },
         "django-prometheus": {
             "hashes": [
-                "sha256:054924b6aedd41f3f76940578127e7fac852a696805f956da39b7941c78bba91",
-                "sha256:208e55e3a11ac9edd53a3b342b033e140ffe27914af1202f0b064edf99e83fc3"
+                "sha256:441bd85531ecdeddacbe73c930f16de926c426869ce388fa1e8c8092f7ee5a1b",
+                "sha256:6e824cd407b56c01810c69d2e296940d00afe609b58818794525f9760a9a5364"
             ],
             "index": "pypi",
-            "version": "==2.1.0.dev46"
+            "version": "==2.1.0.dev52"
         },
         "django-recaptcha": {
             "hashes": [
@@ -1072,10 +1072,10 @@
         },
         "gitpython": {
             "hashes": [
-                "sha256:e107af4d873daed64648b4f4beb89f89f0cfbe3ef558fc7821ed2331c2f8da1a",
-                "sha256:ef1d60b01b5ce0040ad3ec20bc64f783362d41fa0822a2742d3586e1f49bb8ac"
+                "sha256:b54969b3262d4647f80ace8e9dd4e3f99ac30cc0f3e766415b349208f810908f",
+                "sha256:b742bc5010d9b69fc027f1be21443bc2ad87ffc81a365e958dbc275f3fe0475b"
             ],
-            "version": "==3.1.3"
+            "version": "==3.1.6"
         },
         "idna": {
             "hashes": [
@@ -1270,10 +1270,10 @@
         },
         "stevedore": {
             "hashes": [
-                "sha256:609912b87df5ad338ff8e44d13eaad4f4170a65b79ae9cb0aa5632598994a1b7",
-                "sha256:c4724f8d7b8f6be42130663855d01a9c2414d6046055b5a65ab58a0e38637688"
+                "sha256:182d557078b4f840f412f148e6f3c2ace83a3e206a020f35f6c97d3b8d91f180",
+                "sha256:4ccc328424eb8b6b3d9def62976b686348b7064b2b470daf81ffd6251abd6d02"
             ],
-            "version": "==2.0.1"
+            "version": "==3.0.0"
         },
         "toml": {
             "hashes": [
