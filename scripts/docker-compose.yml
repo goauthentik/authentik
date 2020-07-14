@@ -7,9 +7,8 @@ services:
     volumes:
     - db-data:/var/lib/postgresql/data
     environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: passbook
-      POSTGRES_USER: passbook
-      POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
     ports:
     - 5432:5432
     restart: always

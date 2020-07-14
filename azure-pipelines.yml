@@ -181,8 +181,11 @@ stages:
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
+              script: pipenv run coverage run ./manage.py test e2e
+          - task: CmdLine@2
+            displayName: Prepare unittests and coverage for upload
+            inputs:
               script: |
-                pipenv run coverage run ./manage.py test e2e
                 mkdir output-e2e
                 mv unittest.xml output-e2e/unittest.xml
                 mv .coverage output-e2e/coverage
