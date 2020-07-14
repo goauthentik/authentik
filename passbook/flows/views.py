@@ -152,11 +152,12 @@ class FlowExecutorView(View):
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
-        self.cancel()
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
+        # extract the next param before cancel as that cleans it
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "passbook_core:overview"
         )
+        self.cancel()
         return redirect_with_qs(next_param)
 
     def stage_ok(self) -> HttpResponse:
