@@ -106,7 +106,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run services
             inputs:
-              dockerComposeFile: 'scripts/docker-compose.yml'
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
@@ -127,7 +127,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run services
             inputs:
-              dockerComposeFile: 'scripts/docker-compose.yml'
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
@@ -158,7 +158,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run services
             inputs:
-              dockerComposeFile: 'scripts/docker-compose.yml'
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
@@ -280,7 +280,7 @@ stages:
         - task: DockerCompose@0
           displayName: Run services
           inputs:
-            dockerComposeFile: 'scripts/docker-compose.yml'
+            dockerComposeFile: 'scripts/ci.docker-compose.yml'
             action: 'Run services'
             buildImages: false
         - task: Docker@2
