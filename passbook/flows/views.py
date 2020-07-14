@@ -22,7 +22,7 @@ from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableExcep
 from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.utils.reflection import class_to_path, path_to_class
-from passbook.lib.utils.urls import redirect_with_qs
+from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
 from passbook.lib.views import bad_request_message
 
 LOGGER = get_logger()
@@ -50,8 +50,9 @@ class FlowExecutorView(View):
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if NEXT_ARG_NAME in self.request.GET:
-            LOGGER.debug("f(exec): Redirecting to next on fail")
-            return redirect(self.request.GET.get(NEXT_ARG_NAME))
+            if not is_url_absolute(self.request.GET.get(NEXT_ARG_NAME)):
+                LOGGER.debug("f(exec): Redirecting to next on fail")
+                return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return bad_request_message(self.request, message)
 
