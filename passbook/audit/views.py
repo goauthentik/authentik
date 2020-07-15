@@ -1,11 +1,12 @@
 """passbook Event administration"""
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin
 
 from passbook.audit.models import Event
 
 
-class EventListView(PermissionListMixin, ListView):
+class EventListView(PermissionListMixin, LoginRequiredMixin, ListView):
     """Show list of all invitations"""
 
     model = Event
