@@ -323,6 +323,7 @@ LOG_PRE_CHAIN = [
     # Add the log level and a timestamp to the event_dict if the log entry
     # is not from structlog.
     structlog.stdlib.add_log_level,
+    structlog.stdlib.add_logger_name,
     structlog.processors.TimeStamper(),
 ]
 
@@ -372,6 +373,8 @@ _LOGGING_HANDLER_MAP = {
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
     "oidc_provider": LOG_LEVEL,
+    "docker": "WARNING",
+    "urllib3": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
