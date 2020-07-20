@@ -32,7 +32,7 @@ class TestProviderOIDC(SeleniumTestCase):
         """Setup client grafana container which we test OIDC against"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="grafana/grafana:latest",
+            image="grafana/grafana:7.1.0",
             detach=True,
             network_mode="host",
             auto_remove=True,
