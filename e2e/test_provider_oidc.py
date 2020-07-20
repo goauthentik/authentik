@@ -154,22 +154,19 @@ class TestProviderOIDC(SeleniumTestCase):
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[1]/div/input",
+                By.CSS_SELECTOR, "input[name=name]"
             ).get_attribute("value"),
             USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[2]/div/input",
+                By.CSS_SELECTOR, "input[name=email]"
             ).get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
+                By.CSS_SELECTOR, "input[name=login]"
             ).get_attribute("value"),
             USER().email,
         )
@@ -236,22 +233,19 @@ class TestProviderOIDC(SeleniumTestCase):
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[1]/div/input",
+                By.CSS_SELECTOR, "input[name=name]"
             ).get_attribute("value"),
             USER().name,
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[2]/div/input",
+                By.CSS_SELECTOR, "input[name=email]"
             ).get_attribute("value"),
             USER().email,
         )
         self.assertEqual(
             self.driver.find_element(
-                By.XPATH,
-                "/html/body/grafana-app/div/div/div/react-profile-wrapper/form[1]/div[3]/div/input",
+                By.CSS_SELECTOR, "input[name=login]"
             ).get_attribute("value"),
             USER().email,
         )
