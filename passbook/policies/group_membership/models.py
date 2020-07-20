@@ -1,5 +1,8 @@
 """user field matcher models"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
 
 from passbook.core.models import Group
@@ -12,7 +15,10 @@ class GroupMembershipPolicy(Policy):
 
     group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL)
 
-    form = "passbook.policies.group_membership.forms.GroupMembershipPolicyForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.group_membership.forms import GroupMembershipPolicyForm
+
+        return GroupMembershipPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         return PolicyResult(self.group.user_set.filter(pk=request.user.pk).exists())

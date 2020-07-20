@@ -1,7 +1,9 @@
 """user field matcher models"""
 import re
+from typing import Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
@@ -28,7 +30,10 @@ class PasswordPolicy(Policy):
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
     error_message = models.TextField()
 
-    form = "passbook.policies.password.forms.PasswordPolicyForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.password.forms import PasswordPolicyForm
+
+        return PasswordPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if self.password_field not in request.context:

@@ -1,5 +1,8 @@
 """passbook expression Policy Models"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
 
 from passbook.policies.expression.evaluator import PolicyEvaluator
@@ -12,7 +15,10 @@ class ExpressionPolicy(Policy):
 
     expression = models.TextField()
 
-    form = "passbook.policies.expression.forms.ExpressionPolicyForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.expression.forms import ExpressionPolicyForm
+
+        return ExpressionPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Evaluate and render expression. Returns PolicyResult(false) on error."""

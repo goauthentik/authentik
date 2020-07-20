@@ -1,6 +1,9 @@
 """passbook reputation request policy"""
+from typing import Type
+
 from django.core.cache import cache
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
 
 from passbook.core.models import User
@@ -19,7 +22,10 @@ class ReputationPolicy(Policy):
     check_username = models.BooleanField(default=True)
     threshold = models.IntegerField(default=-5)
 
-    form = "passbook.policies.reputation.forms.ReputationPolicyForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.reputation.forms import ReputationPolicyForm
+
+        return ReputationPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         remote_ip = get_client_ip(request.http_request) or "255.255.255.255"

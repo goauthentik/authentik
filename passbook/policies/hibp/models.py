@@ -1,7 +1,9 @@
 """passbook HIBP Models"""
 from hashlib import sha1
+from typing import Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from requests import get
 from structlog import get_logger
@@ -25,7 +27,10 @@ class HaveIBeenPwendPolicy(Policy):
 
     allowed_count = models.IntegerField(default=0)
 
-    form = "passbook.policies.hibp.forms.HaveIBeenPwnedPolicyForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.hibp.forms import HaveIBeenPwnedPolicyForm
+
+        return HaveIBeenPwnedPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if password is in HIBP DB. Hashes given Password with SHA1, uses the first 5
