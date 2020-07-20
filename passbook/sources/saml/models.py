@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from passbook.core.models import Source
 from passbook.core.types import UILoginButton
 from passbook.crypto.models import CertificateKeyPair
-from passbook.providers.saml.utils.time import timedelta_string_validator
+from passbook.lib.utils.time import timedelta_string_validator
 from passbook.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,

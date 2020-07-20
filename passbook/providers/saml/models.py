@@ -10,7 +10,7 @@ from structlog import get_logger
 from passbook.core.models import PropertyMapping, Provider
 from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.utils.template import render_to_string
-from passbook.providers.saml.utils.time import timedelta_string_validator
+from passbook.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
