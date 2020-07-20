@@ -33,9 +33,6 @@ class SourceTypeManager:
                 self.__source_types[kind.value] = {}
             self.__source_types[kind.value][slugify(name)] = cls
             self.__names.append(name)
-            LOGGER.debug(
-                "Registered source", source_class=cls.__name__, kind=kind.value
-            )
             return cls
 
         return inner_wrapper
