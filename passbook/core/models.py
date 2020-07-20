@@ -93,6 +93,10 @@ class Provider(models.Model):
 
     objects = InheritanceManager()
 
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
+
     # This class defines no field for easier inheritance
     def __str__(self):
         if hasattr(self, "name"):

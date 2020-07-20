@@ -1,7 +1,8 @@
 """oidc models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
@@ -20,7 +21,10 @@ class OpenIDProvider(Provider):
 
     oidc_client = models.OneToOneField(Client, on_delete=models.CASCADE)
 
-    form = "passbook.providers.oidc.forms.OIDCProviderForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.oidc.forms import OIDCProviderForm
+
+        return OIDCProviderForm
 
     @property
     def name(self):
