@@ -14,7 +14,7 @@ class ConsentStageForm(forms.ModelForm):
     class Meta:
 
         model = ConsentStage
-        fields = ["name"]
+        fields = ["name", "mode", "consent_expire_in"]
         widgets = {
             "name": forms.TextInput(),
         }
