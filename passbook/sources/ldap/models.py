@@ -89,7 +89,10 @@ class LDAPPropertyMapping(PropertyMapping):
 
     object_field = models.TextField()
 
-    form = "passbook.sources.ldap.forms.LDAPPropertyMappingForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.ldap.forms import LDAPPropertyMappingForm
+
+        return LDAPPropertyMappingForm
 
     def __str__(self):
         return f"LDAP Property Mapping {self.expression} -> {self.object_field}"

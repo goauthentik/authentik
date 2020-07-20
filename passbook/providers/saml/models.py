@@ -147,7 +147,10 @@ class SAMLPropertyMapping(PropertyMapping):
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
 
-    form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.saml.forms import SAMLPropertyMappingForm
+
+        return SAMLPropertyMappingForm
 
     def __str__(self):
         return f"SAML Property Mapping {self.saml_name}"
