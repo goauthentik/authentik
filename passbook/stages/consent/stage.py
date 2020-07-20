@@ -9,7 +9,7 @@ from passbook.stages.consent.forms import ConsentForm
 PLAN_CONTEXT_CONSENT_TEMPLATE = "consent_template"
 
 
-class ConsentStage(FormView, StageView):
+class ConsentStageView(FormView, StageView):
     """Simple consent checker."""
 
     form_class = ConsentForm

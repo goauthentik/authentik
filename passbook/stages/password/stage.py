@@ -46,7 +46,7 @@ def authenticate(
     )
 
 
-class PasswordStage(FormView, StageView):
+class PasswordStageView(FormView, StageView):
     """Authentication stage which authenticates against django's AuthBackend"""
 
     form_class = PasswordForm

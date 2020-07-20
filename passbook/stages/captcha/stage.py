@@ -6,7 +6,7 @@ from passbook.flows.stage import StageView
 from passbook.stages.captcha.forms import CaptchaForm
 
 
-class CaptchaStage(FormView, StageView):
+class CaptchaStageView(FormView, StageView):
     """Simple captcha checker, logic is handeled in django-captcha module"""
 
     form_class = CaptchaForm

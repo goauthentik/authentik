@@ -1,9 +1,11 @@
 """OTP Time-based models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.core.types import UIUserSettings
 from passbook.flows.models import Stage
@@ -21,8 +23,15 @@ class OTPTimeStage(Stage):
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
 
-    type = "passbook.stages.otp_time.stage.OTPTimeStageView"
-    form = "passbook.stages.otp_time.forms.OTPTimeStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.otp_time.stage import OTPTimeStageView
+
+        return OTPTimeStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.otp_time.forms import OTPTimeStageForm
+
+        return OTPTimeStageForm
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:

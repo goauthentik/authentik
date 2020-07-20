@@ -1,5 +1,9 @@
 """passbook consent stage"""
+from typing import Type
+
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.flows.models import Stage
 
@@ -7,8 +11,15 @@ from passbook.flows.models import Stage
 class ConsentStage(Stage):
     """Prompt the user for confirmation."""
 
-    type = "passbook.stages.consent.stage.ConsentStage"
-    form = "passbook.stages.consent.forms.ConsentStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.consent.stage import ConsentStageView
+
+        return ConsentStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.consent.forms import ConsentStageForm
+
+        return ConsentStageForm
 
     def __str__(self):
         return f"Consent Stage {self.name}"
