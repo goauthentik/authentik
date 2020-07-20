@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING, Optional, Type
 from uuid import uuid4
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
-from passbook.lib.utils.reflection import class_to_path
 from passbook.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
@@ -47,8 +47,14 @@ class Stage(models.Model):
     name = models.TextField()
 
     objects = InheritanceManager()
-    type = ""
-    form = ""
+
+    def type(self) -> Type["StageView"]:
+        """Return StageView class that implements logic for this stage"""
+        raise NotImplementedError
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:
@@ -62,9 +68,8 @@ class Stage(models.Model):
 
 def in_memory_stage(view: Type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
-    class_path = class_to_path(view)
     stage = Stage()
-    stage.type = class_path
+    setattr(stage, "type", lambda self: view)
     return stage
 
 

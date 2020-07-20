@@ -21,7 +21,7 @@ from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
-from passbook.lib.utils.reflection import class_to_path, path_to_class
+from passbook.lib.utils.reflection import class_to_path
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
 from passbook.lib.views import bad_request_message
 
@@ -94,7 +94,7 @@ class FlowExecutorView(View):
         if not self.current_stage:
             LOGGER.debug("f(exec): no more stages, flow is done.")
             return self._flow_done()
-        stage_cls = path_to_class(self.current_stage.type)
+        stage_cls = self.current_stage.type()
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs
