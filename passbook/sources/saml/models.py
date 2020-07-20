@@ -1,5 +1,8 @@
 """saml sp models"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.urls import reverse_lazy
@@ -93,7 +96,10 @@ class SAMLSource(Source):
         on_delete=models.PROTECT,
     )
 
-    form = "passbook.sources.saml.forms.SAMLSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.saml.forms import SAMLSourceForm
+
+        return SAMLSourceForm
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""

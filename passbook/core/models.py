@@ -1,12 +1,13 @@
 """passbook core models"""
 from datetime import timedelta
-from typing import Any, Optional
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q, QuerySet
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -162,9 +163,11 @@ class Source(PolicyBindingModel):
         related_name="source_enrollment",
     )
 
-    form = ""  # ModelForm-based class ued to create/edit instance
-
     objects = InheritanceManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     @property
     def ui_login_button(self) -> Optional[UILoginButton]:
@@ -261,8 +264,11 @@ class PropertyMapping(models.Model):
     name = models.TextField()
     expression = models.TextField()
 
-    form = ""
     objects = InheritanceManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     def evaluate(
         self, user: Optional[User], request: Optional[HttpRequest], **kwargs
