@@ -50,6 +50,9 @@ class Stage(models.Model):
 
     def type(self) -> Type["StageView"]:
         """Return StageView class that implements logic for this stage"""
+        # This is a bit of a workaround, since we can't set class methods with setattr
+        if hasattr(self, "__in_memory_type"):
+            return getattr(self, "__in_memory_type")
         raise NotImplementedError
 
     def form(self) -> Type[ModelForm]:
@@ -69,7 +72,10 @@ class Stage(models.Model):
 def in_memory_stage(view: Type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
     stage = Stage()
-    setattr(stage, "type", lambda self: view)
+    # Because we can't pickle a locally generated function,
+    # we set the view as a separate property and reference a generic function
+    # that returns that member
+    setattr(stage, "__in_memory_type", view)
     return stage
 
 
