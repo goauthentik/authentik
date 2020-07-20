@@ -36,7 +36,7 @@ def back(context: Context) -> str:
 def fieldtype(field):
     """Return classname"""
     if isinstance(field.__class__, Model) or issubclass(field.__class__, Model):
-        return field._meta.verbose_name
+        return verbose_name(field)
     return field.__class__.__name__
 
 
@@ -84,6 +84,9 @@ def verbose_name(obj) -> str:
     """Return Object's Verbose Name"""
     if not obj:
         return ""
+    if hasattr(obj, "verbose_name"):
+        print(obj.verbose_name)
+        return obj.verbose_name
     return obj._meta.verbose_name
 
 
@@ -92,7 +95,7 @@ def form_verbose_name(obj) -> str:
     """Return ModelForm's Object's Verbose Name"""
     if not obj:
         return ""
-    return obj._meta.model._meta.verbose_name
+    return verbose_name(obj._meta.model)
 
 
 @register.filter
