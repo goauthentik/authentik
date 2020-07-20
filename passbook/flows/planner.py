@@ -52,7 +52,8 @@ class FlowPlan:
         stage = self.stages[0]
         marker = self.markers[0]
 
-        LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
+        if marker.__class__ is not StageMarker:
+            LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
         marked_stage = marker.process(self, stage)
         if not marked_stage:
             LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)

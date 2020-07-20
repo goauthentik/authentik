@@ -6618,7 +6618,7 @@ definitions:
           - expiring
       consent_expire_in:
         title: Consent expires in
-        description: 'Offset after which consent expires.(Format: hours=1;minutes=2;seconds=3).'
+        description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
   DummyStage:

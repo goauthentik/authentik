@@ -1,7 +1,7 @@
 """passbook consent stage"""
-from django.db import models
 from typing import Type
 
+from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
