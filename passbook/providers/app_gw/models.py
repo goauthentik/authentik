@@ -1,9 +1,10 @@
 """passbook app_gw models"""
 import string
 from random import SystemRandom
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from oidc_provider.models import Client
@@ -23,7 +24,10 @@ class ApplicationGatewayProvider(Provider):
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
-    form = "passbook.providers.app_gw.forms.ApplicationGatewayProviderForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.app_gw.forms import ApplicationGatewayProviderForm
+
+        return ApplicationGatewayProviderForm
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""

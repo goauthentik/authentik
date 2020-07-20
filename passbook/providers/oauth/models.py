@@ -1,7 +1,8 @@
 """Oauth2 provider product extension"""
 
-from typing import Optional
+from typing import Optional, Type
 
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
@@ -16,7 +17,10 @@ class OAuth2Provider(Provider, AbstractApplication):
     This Provider also supports the GitHub-pretend mode for Applications that don't support
     generic OAuth."""
 
-    form = "passbook.providers.oauth.forms.OAuth2ProviderForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.oauth.forms import OAuth2ProviderForm
+
+        return OAuth2ProviderForm
 
     def __str__(self):
         return self.name

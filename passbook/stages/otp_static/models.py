@@ -1,9 +1,11 @@
 """OTP Static models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.core.types import UIUserSettings
 from passbook.flows.models import Stage
@@ -14,8 +16,15 @@ class OTPStaticStage(Stage):
 
     token_count = models.IntegerField(default=6)
 
-    type = "passbook.stages.otp_static.stage.OTPStaticStageView"
-    form = "passbook.stages.otp_static.forms.OTPStaticStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.otp_static.stage import OTPStaticStageView
+
+        return OTPStaticStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.otp_static.forms import OTPStaticStageForm
+
+        return OTPStaticStageForm
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:

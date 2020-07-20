@@ -103,9 +103,9 @@ class TestProviderOAuth(SeleniumTestCase):
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=name]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
+                "value"
+            ),
             USER().username,
         )
         self.assertEqual(
@@ -172,9 +172,9 @@ class TestProviderOAuth(SeleniumTestCase):
             USER().username,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=name]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
+                "value"
+            ),
             USER().username,
         )
         self.assertEqual(

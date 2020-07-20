@@ -1,9 +1,12 @@
 """invitation stage models"""
+from typing import Type
 from uuid import uuid4
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.core.models import User
 from passbook.flows.models import Stage
@@ -24,8 +27,15 @@ class InvitationStage(Stage):
         ),
     )
 
-    type = "passbook.stages.invitation.stage.InvitationStageView"
-    form = "passbook.stages.invitation.forms.InvitationStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.invitation.stage import InvitationStageView
+
+        return InvitationStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.invitation.forms import InvitationStageForm
+
+        return InvitationStageForm
 
     def __str__(self):
         return f"Invitation Stage {self.name}"

@@ -1,8 +1,9 @@
 """passbook LDAP Models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.core.validators import URLValidator
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from ldap3 import Connection, Server
 
@@ -53,7 +54,10 @@ class LDAPSource(Source):
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    form = "passbook.sources.ldap.forms.LDAPSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.ldap.forms import LDAPSourceForm
+
+        return LDAPSourceForm
 
     _connection: Optional[Connection] = None
 
@@ -85,7 +89,10 @@ class LDAPPropertyMapping(PropertyMapping):
 
     object_field = models.TextField()
 
-    form = "passbook.sources.ldap.forms.LDAPPropertyMappingForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.ldap.forms import LDAPPropertyMappingForm
+
+        return LDAPPropertyMappingForm
 
     def __str__(self):
         return f"LDAP Property Mapping {self.expression} -> {self.object_field}"

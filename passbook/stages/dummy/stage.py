@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from passbook.flows.stage import StageView
 
 
-class DummyStage(StageView):
+class DummyStageView(StageView):
     """Dummy stage for testing with multiple stages"""
 
     def post(self, request: HttpRequest):

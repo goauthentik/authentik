@@ -98,9 +98,9 @@ class DiscordOAuthSourceForm(OAuthSourceForm):
         overrides = {
             "provider_type": "discord",
             "request_token_url": "",
-            "authorization_url": "https://discordapp.com/api/oauth2/authorize",
-            "access_token_url": "https://discordapp.com/api/oauth2/token",
-            "profile_url": "https://discordapp.com/api/users/@me",
+            "authorization_url": "https://discord.com/api/oauth2/authorize",
+            "access_token_url": "https://discord.com/api/oauth2/token",
+            "profile_url": "https://discord.com/api/users/@me",
         }
 
 

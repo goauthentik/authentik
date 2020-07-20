@@ -1,7 +1,11 @@
 """identification stage models"""
+from typing import Type
+
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.flows.models import Flow, Stage
 
@@ -52,8 +56,15 @@ class IdentificationStage(Stage):
         ),
     )
 
-    type = "passbook.stages.identification.stage.IdentificationStageView"
-    form = "passbook.stages.identification.forms.IdentificationStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.identification.stage import IdentificationStageView
+
+        return IdentificationStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.identification.forms import IdentificationStageForm
+
+        return IdentificationStageForm
 
     def __str__(self):
         return f"Identification Stage {self.name}"

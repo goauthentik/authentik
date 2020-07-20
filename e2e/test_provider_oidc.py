@@ -153,9 +153,9 @@ class TestProviderOIDC(SeleniumTestCase):
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=name]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
+                "value"
+            ),
             USER().name,
         )
         self.assertEqual(
@@ -232,9 +232,9 @@ class TestProviderOIDC(SeleniumTestCase):
             USER().name,
         )
         self.assertEqual(
-            self.driver.find_element(
-                By.CSS_SELECTOR, "input[name=name]"
-            ).get_attribute("value"),
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
+                "value"
+            ),
             USER().name,
         )
         self.assertEqual(

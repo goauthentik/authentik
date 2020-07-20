@@ -1,7 +1,8 @@
 """passbook saml_idp Models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -101,7 +102,10 @@ class SAMLProvider(Provider):
         ),
     )
 
-    form = "passbook.providers.saml.forms.SAMLProviderForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.saml.forms import SAMLProviderForm
+
+        return SAMLProviderForm
 
     def __str__(self):
         return self.name
@@ -143,7 +147,10 @@ class SAMLPropertyMapping(PropertyMapping):
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
 
-    form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.saml.forms import SAMLPropertyMappingForm
+
+        return SAMLPropertyMappingForm
 
     def __str__(self):
         return f"SAML Property Mapping {self.saml_name}"

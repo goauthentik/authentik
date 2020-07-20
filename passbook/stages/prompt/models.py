@@ -1,9 +1,12 @@
 """prompt models"""
+from typing import Type
 from uuid import uuid4
 
 from django import forms
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.flows.models import Stage
 from passbook.policies.models import PolicyBindingModel
@@ -117,8 +120,15 @@ class PromptStage(PolicyBindingModel, Stage):
 
     fields = models.ManyToManyField(Prompt)
 
-    type = "passbook.stages.prompt.stage.PromptStageView"
-    form = "passbook.stages.prompt.forms.PromptStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.prompt.stage import PromptStageView
+
+        return PromptStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.prompt.forms import PromptStageForm
+
+        return PromptStageForm
 
     def __str__(self):
         return f"Prompt Stage {self.name}"

@@ -1,6 +1,10 @@
 """passbook captcha stage"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 from passbook.flows.models import Stage
 
@@ -19,8 +23,15 @@ class CaptchaStage(Stage):
         )
     )
 
-    type = "passbook.stages.captcha.stage.CaptchaStage"
-    form = "passbook.stages.captcha.forms.CaptchaStageForm"
+    def type(self) -> Type[View]:
+        from passbook.stages.captcha.stage import CaptchaStageView
+
+        return CaptchaStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.captcha.forms import CaptchaStageForm
+
+        return CaptchaStageForm
 
     def __str__(self):
         return f"Captcha Stage {self.name}"

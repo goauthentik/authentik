@@ -1,7 +1,9 @@
 """Policy base models"""
+from typing import Type
 from uuid import uuid4
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 
@@ -72,6 +74,10 @@ class Policy(CreatedUpdatedModel):
     name = models.TextField(blank=True, null=True)
 
     objects = InheritanceAutoManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     def __str__(self):
         return f"Policy {self.name}"
