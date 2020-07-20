@@ -4,10 +4,7 @@ from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from passbook.providers.saml.utils.time import (
-    timedelta_from_string,
-    timedelta_string_validator,
-)
+from passbook.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
 
 class TestTimeUtils(TestCase):

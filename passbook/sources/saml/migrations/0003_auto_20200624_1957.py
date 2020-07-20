@@ -3,7 +3,7 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-import passbook.providers.saml.utils.time
+import passbook.lib.utils.time
 
 
 class Migration(migrations.Migration):
@@ -27,9 +27,7 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 default="days=1",
                 help_text="Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).",
-                validators=[
-                    passbook.providers.saml.utils.time.timedelta_string_validator
-                ],
+                validators=[passbook.lib.utils.time.timedelta_string_validator],
                 verbose_name="Delete temporary users after",
             ),
         ),

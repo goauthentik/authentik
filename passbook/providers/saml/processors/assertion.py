@@ -9,10 +9,11 @@ from signxml import XMLSigner, XMLVerifier
 from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
+from passbook.lib.utils.time import timedelta_from_string
 from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from passbook.providers.saml.processors.request_parser import AuthNRequest
 from passbook.providers.saml.utils import get_random_id
-from passbook.providers.saml.utils.time import get_time_string, timedelta_from_string
+from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.exceptions import UnsupportedNameIDFormat
 from passbook.sources.saml.processors.constants import (
     NS_MAP,
