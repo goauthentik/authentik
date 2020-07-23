@@ -58,7 +58,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        if "CI" in environ:
+        if "TF_BUILD" in environ:
             screenshot_file = (
                 f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
             )
