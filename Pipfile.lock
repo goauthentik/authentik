@@ -46,6 +46,7 @@
         },
         "boto3": {
             "hashes": [
+                "sha256:45331be8740a8f5ee873a487a7f91d93d9c360bb1408fc887f3a2f5c37377d87",
                 "sha256:69038d4a42056ec67060020a64001ac09a6ef668aca81c45af1cbbdb7b56a4f6"
             ],
             "index": "pypi",
@@ -53,10 +54,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:918c5ccde335545a2c2eb426bc47520a960d11e3e3ab72aa43b73f1d692f07e1",
-                "sha256:98dc8b99e47d2d0bc14c017c957b4fb23172d2fc7db5e8529576308a6898f0fc"
+                "sha256:0c4ed6349e8ef6bfe9648757f3ff66c33a8f37d9cbadd9c17987138184990cbd",
+                "sha256:28832be365204f00d5c7d2c2a0538d9d082dbfc39ed984fdc9556770470b7487"
             ],
-            "version": "==1.17.25"
+            "version": "==1.17.26"
         },
         "celery": {
             "hashes": [
@@ -771,11 +772,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:2f023ff348359ec5f0b73a840e8b08e6a8d3b2613a98c57d11c222ef43879237",
-                "sha256:380a280cfc7c4ade5912294e6d9aa71ce776b5fca60a3782e9331b0bcd2866bf"
+                "sha256:2de15b13836fa3522815a933bd9c887c77f4868071043349f94f1b896c1bcfb8",
+                "sha256:38bb09d0277117f76507c8728d9a5156f09a47ac5175bb8072513859d19a593b"
             ],
             "index": "pypi",
-            "version": "==0.16.1"
+            "version": "==0.16.2"
         },
         "service-identity": {
             "hashes": [
