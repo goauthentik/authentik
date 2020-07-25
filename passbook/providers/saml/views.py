@@ -1,7 +1,6 @@
 """passbook SAML IDP Views"""
 from typing import Optional
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -47,7 +46,7 @@ REQUEST_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
-class SAMLSSOView(PolicyAccessMixin, LoginRequiredMixin, View):
+class SAMLSSOView(PolicyAccessMixin, View):
     """"SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
