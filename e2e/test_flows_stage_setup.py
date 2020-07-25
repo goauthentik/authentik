@@ -8,6 +8,8 @@ from selenium.webdriver.common.keys import Keys
 
 from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import User
+from passbook.flows.models import Flow, FlowDesignation
+from passbook.stages.password.models import PasswordStage
 
 
 class TestFlowsStageSetup(SeleniumTestCase):
@@ -15,6 +17,16 @@ class TestFlowsStageSetup(SeleniumTestCase):
 
     def test_password_change(self):
         """test password change flow"""
+        # Ensure that password stage has change_flow set
+        flow = Flow.objects.get(
+            slug="default-password-change", designation=FlowDesignation.STAGE_SETUP,
+        )
+
+        stages = PasswordStage.objects.filter(name="default-authentication-password")
+        stage = stages.first()
+        stage.change_flow = flow
+        stage.save()
+
         new_password = "".join(
             SystemRandom().choice(string.ascii_uppercase + string.digits)
             for _ in range(8)
