@@ -1,5 +1,4 @@
 """passbook OAuth2 Views"""
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import View
@@ -37,7 +36,7 @@ PLAN_CONTEXT_NONCE = "nonce"
 PLAN_CONTEXT_SCOPE_DESCRIPTION = "scope_descriptions"
 
 
-class AuthorizationFlowInitView(PolicyAccessMixin, LoginRequiredMixin, View):
+class AuthorizationFlowInitView(PolicyAccessMixin, View):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     # pylint: disable=unused-argument
