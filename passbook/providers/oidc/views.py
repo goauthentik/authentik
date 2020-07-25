@@ -1,5 +1,4 @@
 """passbook OIDC Views"""
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
@@ -30,7 +29,7 @@ PLAN_CONTEXT_PARAMS = "params"
 PLAN_CONTEXT_SCOPES = "scopes"
 
 
-class AuthorizationFlowInitView(PolicyAccessMixin, LoginRequiredMixin, View):
+class AuthorizationFlowInitView(PolicyAccessMixin, View):
     """OIDC Flow initializer, checks access to application and starts flow"""
 
     # pylint: disable=unused-argument
