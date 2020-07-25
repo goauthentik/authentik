@@ -1,7 +1,5 @@
 FROM quay.io/oauth2-proxy/oauth2-proxy
 
-COPY templates /templates
-
 ENV OAUTH2_PROXY_EMAIL_DOMAINS=*
 ENV OAUTH2_PROXY_PROVIDER=oidc
 ENV OAUTH2_PROXY_HTTP_ADDRESS=:4180
