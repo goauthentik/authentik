@@ -18,7 +18,7 @@ LOGGER = get_logger()
 def get_cookie_secret():
     """Generate random 50-character string for cookie-secret"""
     return "".join(
-        SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(50)
+        SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32)
     )
 
 

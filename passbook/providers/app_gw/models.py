@@ -6,6 +6,7 @@ from typing import Optional, Type
 from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
+from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from oidc_provider.models import Client
 
@@ -35,9 +36,17 @@ class ApplicationGatewayProvider(Provider):
             SystemRandom().choice(string.ascii_uppercase + string.digits)
             for _ in range(50)
         )
+        full_issuer_user = request.build_absolute_uri(
+            reverse("passbook_providers_oidc:authorize")
+        )
         return render_to_string(
             "app_gw/setup_modal.html",
-            {"provider": self, "cookie_secret": cookie_secret, "version": __version__},
+            {
+                "provider": self,
+                "cookie_secret": cookie_secret,
+                "version": __version__,
+                "full_issuer_user": full_issuer_user,
+            },
         )
 
     def __str__(self):

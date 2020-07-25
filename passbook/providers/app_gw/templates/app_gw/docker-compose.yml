@@ -9,6 +9,6 @@ services:
       OAUTH2_PROXY_CLIENT_ID: {{ provider.client.client_id }}
       OAUTH2_PROXY_CLIENT_SECRET: {{ provider.client.client_secret }}
       OAUTH2_PROXY_REDIRECT_URL: https://{{ provider.external_host }}/oauth2/callback
-      OAUTH2_PROXY_OIDC_ISSUER_URL: https://{{ request.META.HTTP_HOST }}/application/oidc
+      OAUTH2_PROXY_OIDC_ISSUER_URL: {{ full_issuer_user }}
       OAUTH2_PROXY_COOKIE_SECRET: {{ cookie_secret }}
       OAUTH2_PROXY_UPSTREAMS: http://{{ provider.internal_host }}
