@@ -3,6 +3,7 @@ import string
 from random import SystemRandom
 from typing import Optional, Type
 
+from django.core.validators import URLValidator
 from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
@@ -20,8 +21,8 @@ class ApplicationGatewayProvider(Provider):
     Protocols by using a Reverse-Proxy."""
 
     name = models.TextField()
-    internal_host = models.TextField()
-    external_host = models.TextField()
+    internal_host = models.TextField(validators=[URLValidator])
+    external_host = models.TextField(validators=[URLValidator])
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
