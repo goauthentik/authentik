@@ -137,6 +137,7 @@ const setFormSubmitHandlers = () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             let formData = new FormData(form);
+            showSpinner();
             fetch(flowBodyUrl, {
                 method: 'post',
                 body: formData,
