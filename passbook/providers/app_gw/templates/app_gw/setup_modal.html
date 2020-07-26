@@ -26,7 +26,7 @@
             </div>
             <div class="pf-c-modal-box__body">
                 {% trans 'Add the following snippet to your docker-compose file.' %}
-                <textarea class="codemirror" readonly data-cm-mode="yaml">{% include 'app_gw/docker-compose.yml' %}</textarea>
+                <textarea class="codemirror" readonly data-cm-mode="yaml">{{ docker_compose }}</textarea>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
                 <button data-modal-close class="pf-c-button pf-m-primary" type="button">{% trans 'Close' %}</button>
