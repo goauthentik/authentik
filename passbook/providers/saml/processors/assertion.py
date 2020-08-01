@@ -5,7 +5,7 @@ from types import GeneratorType
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from signxml import XMLSigner, XMLVerifier
+from signxml import XMLSigner, XMLVerifier, strip_pem_header
 from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
@@ -228,14 +228,15 @@ class AssertionProcessor:
                 signature_algorithm=self.provider.signature_algorithm,
                 digest_algorithm=self.provider.digest_algorithm,
             )
+            x509_data = strip_pem_header(
+                self.provider.signing_kp.certificate_data
+            ).replace("\n", "")
             signed = signer.sign(
                 root_response,
                 key=self.provider.signing_kp.private_key,
-                cert=[self.provider.signing_kp.certificate_data],
+                cert=[x509_data],
                 reference_uri=self._assertion_id,
             )
-            XMLVerifier().verify(
-                signed, x509_cert=self.provider.signing_kp.certificate_data
-            )
+            XMLVerifier().verify(signed, x509_cert=x509_data)
             return etree.tostring(signed).decode("utf-8")  # nosec
         return etree.tostring(root_response).decode("utf-8")  # nosec
