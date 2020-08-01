@@ -10,4 +10,4 @@ As passbook is currently in a pre-stable, only the latest "stable" version is su
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send am email to [security@beryju.org](mailto:security@beryju.org)
+To report a vulnerability, send an email to [security@beryju.org](mailto:security@beryju.org)
