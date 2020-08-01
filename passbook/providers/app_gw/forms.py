@@ -15,6 +15,8 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
             self.instance.client = Client.objects.create(
                 client_id=generate_client_id(), client_secret=generate_client_secret()
             )
+        self.instance.client.reuse_consent = False  # This is managed by passbook
+        self.instance.client.require_consent = False  # This is managed by passbook
         self.instance.client.name = self.instance.name
         self.instance.client.response_types.set(
             [ResponseType.objects.get_by_natural_key("code")]
