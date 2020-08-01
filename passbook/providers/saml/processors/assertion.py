@@ -173,7 +173,7 @@ class AssertionProcessor:
         )
         if self.auth_n_request.id:
             subject_confirmation_data.attrib["InResponseTo"] = self.auth_n_request.id
-        subject_confirmation_data.attrib["NotOnOrAfter"] = self._issue_instant
+        subject_confirmation_data.attrib["NotOnOrAfter"] = self._valid_not_on_or_after
         subject_confirmation_data.attrib["Recipient"] = self.provider.acs_url
         return subject
 
