@@ -17,8 +17,12 @@ class ApplicationGatewayProvider(Provider):
     Protocols by using a Reverse-Proxy."""
 
     name = models.TextField()
-    internal_host = models.TextField(validators=[URLValidator])
-    external_host = models.TextField(validators=[URLValidator])
+    internal_host = models.TextField(
+        validators=[URLValidator(schemes=("http", "https"))]
+    )
+    external_host = models.TextField(
+        validators=[URLValidator(schemes=("http", "https"))]
+    )
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
