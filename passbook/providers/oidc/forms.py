@@ -1,6 +1,7 @@
 """passbook OIDC IDP Forms"""
 
 from django import forms
+from django.utils.translation import gettext as _
 from oauth2_provider.generators import generate_client_id, generate_client_secret
 from oidc_provider.models import Client
 
@@ -12,7 +13,8 @@ class OIDCProviderForm(forms.ModelForm):
     """OpenID Client form"""
 
     authorization_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
+        help_text=_("Flow used when authorizing this provider."),
     )
 
     def __init__(self, *args, **kwargs):

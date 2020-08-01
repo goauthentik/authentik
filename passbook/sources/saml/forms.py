@@ -1,7 +1,6 @@
 """passbook SAML SP Forms"""
 
 from django import forms
-from django.utils.translation import gettext as _
 
 from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.crypto.models import CertificateKeyPair
@@ -12,18 +11,18 @@ from passbook.sources.saml.models import SAMLSource
 class SAMLSourceForm(forms.ModelForm):
     """SAML Provider form"""
 
-    authentication_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
-    )
-    enrollment_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
-    )
-    signing_kp = forms.ModelChoiceField(
-        queryset=CertificateKeyPair.objects.filter(
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["authentication_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.AUTHENTICATION
+        )
+        self.fields["enrollment_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.ENROLLMENT
+        )
+        self.fields["signing_kp"].queryset = CertificateKeyPair.objects.filter(
             certificate_data__isnull=False, key_data__isnull=False,
-        ),
-        help_text=_("Certificate used to sign Requests."),
-    )
+        )
 
     class Meta:
 

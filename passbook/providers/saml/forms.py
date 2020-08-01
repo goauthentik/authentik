@@ -14,9 +14,12 @@ from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 class SAMLProviderForm(forms.ModelForm):
     """SAML Provider form"""
 
-    authorization_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["authorization_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.AUTHORIZATION
+        )
+        self.fields["property_mappings"].queryset = SAMLPropertyMapping.objects.all()
 
     class Meta:
 

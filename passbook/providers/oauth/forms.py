@@ -10,9 +10,11 @@ from passbook.providers.oauth.models import OAuth2Provider
 class OAuth2ProviderForm(forms.ModelForm):
     """OAuth2 Provider form"""
 
-    authorization_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["authorization_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.AUTHORIZATION
+        )
 
     class Meta:
 
