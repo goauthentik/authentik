@@ -377,6 +377,7 @@ _LOGGING_HANDLER_MAP = {
     "oidc_provider": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
+    "elasticapm": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

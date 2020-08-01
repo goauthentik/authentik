@@ -20,12 +20,10 @@ class ApplicationGatewayProviderForm(forms.ModelForm):
             [ResponseType.objects.get_by_natural_key("code")]
         )
         self.instance.client.redirect_uris = [
-            f"http://{self.instance.external_host}/oauth2/callback",
-            f"https://{self.instance.external_host}/oauth2/callback",
-            f"http://{self.instance.internal_host}/oauth2/callback",
-            f"https://{self.instance.internal_host}/oauth2/callback",
+            f"{self.instance.external_host}/oauth2/callback",
+            f"{self.instance.internal_host}/oauth2/callback",
         ]
-        self.instance.client.scope = ["openid", "email"]
+        self.instance.client.scope = ["openid", "email", "profile"]
         self.instance.client.save()
         return super().save(*args, **kwargs)
 
