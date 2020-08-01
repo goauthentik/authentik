@@ -49,8 +49,15 @@
                 <a href="{% url 'passbook_providers_app_gw:k8s-manifest' provider=provider.pk %}">{% trans 'Here' %}</a>
                 <p>{% trans 'Afterwards, add the following annotations to the Ingress you want to secure:' %}</p>
                 <textarea class="codemirror" readonly data-cm-mode="yaml">
-nginx.ingress.kubernetes.io/auth-url: "{{ provider.external_host }}/oauth2/auth"
-nginx.ingress.kubernetes.io/auth-signin: "{{ provider.external_host }}/oauth2/start?rd=$escaped_request_uri"
+nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
+nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+nginx.ingress.kubernetes.io/configuration-snippet: |
+    auth_request_set $user_id   $upstream_http_x_auth_request_user;
+    auth_request_set $email     $upstream_http_x_auth_request_email;
+    auth_request_set $user_name $upstream_http_x_auth_request_preferred_username;
+    proxy_set_header X-User-Id  $user_id;
+    proxy_set_header X-User     $user_name;
+    proxy_set_header X-Email    $email;
                 </textarea>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
