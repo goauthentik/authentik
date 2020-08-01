@@ -2,29 +2,31 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: passbook-gatekeeper
+    app.kubernetes.io/name: passbook-gatekeeper
   name: passbook-gatekeeper
   namespace: kube-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: passbook-gatekeeper
+      app.kubernetes.io/name: passbook-gatekeeper
   template:
     metadata:
       labels:
-        k8s-app: passbook-gatekeeper
+        app.kubernetes.io/name: passbook-gatekeeper
     spec:
       containers:
       - args:
         - --upstream=file:///dev/null
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
-          value: {{ provider.client.client_id }}
+          value: "{{ provider.client.client_id }}"
         - name: OAUTH2_PROXY_CLIENT_SECRET
-          value: {{ provider.client.client_secret }}
+          value: "{{ provider.client.client_secret }}"
         - name: OAUTH2_PROXY_COOKIE_SECRET
-          value: {{ cookie_secret }}
+          value: "{{ cookie_secret }}"
+        - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+          value: "{{ issuer }}"
         image: beryju/passbook-gatekeeper:{{ version }}
         imagePullPolicy: Always
         name: passbook-gatekeeper
@@ -36,7 +38,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: passbook-gatekeeper
+    app.kubernetes.io/name: passbook-gatekeeper
   name: passbook-gatekeeper
   namespace: kube-system
 spec:
@@ -46,7 +48,7 @@ spec:
     protocol: TCP
     targetPort: 4180
   selector:
-    k8s-app: passbook-gatekeeper
+    app.kubernetes.io/name: passbook-gatekeeper
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress

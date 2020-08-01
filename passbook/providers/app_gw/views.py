@@ -6,9 +6,10 @@ from urllib.parse import urlparse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render, reverse
+from django.shortcuts import get_object_or_404, render
 from django.views import View
 from guardian.shortcuts import get_objects_for_user
+from oidc_provider.lib.utils.common import get_issuer, get_site_url
 from structlog import get_logger
 from yaml import safe_dump
 
@@ -37,14 +38,13 @@ class DockerComposeView(LoginRequiredMixin, View):
 
     def get_compose(self, provider: ApplicationGatewayProvider) -> str:
         """Generate docker-compose yaml, version 3.5"""
-        full_issuer_user = self.request.build_absolute_uri(
-            reverse("passbook_providers_oidc:authorize")
-        )
+        site_url = get_site_url(request=self.request)
+        issuer = get_issuer(site_url=site_url, request=self.request)
         env = {
             "OAUTH2_PROXY_CLIENT_ID": provider.client.client_id,
             "OAUTH2_PROXY_CLIENT_SECRET": provider.client.client_secret,
             "OAUTH2_PROXY_REDIRECT_URL": f"{provider.external_host}/oauth2/callback",
-            "OAUTH2_PROXY_OIDC_ISSUER_URL": full_issuer_user,
+            "OAUTH2_PROXY_OIDC_ISSUER_URL": issuer,
             "OAUTH2_PROXY_COOKIE_SECRET": get_cookie_secret(),
             "OAUTH2_PROXY_UPSTREAMS": provider.internal_host,
         }
@@ -85,6 +85,8 @@ class K8sManifestView(LoginRequiredMixin, View):
             "passbook_providers_app_gw.view_applicationgatewayprovider",
             pk=provider_pk,
         )
+        site_url = get_site_url(request=self.request)
+        issuer = get_issuer(site_url=site_url, request=self.request)
         return render(
             request,
             "app_gw/k8s-manifest.yaml",
@@ -92,6 +94,7 @@ class K8sManifestView(LoginRequiredMixin, View):
                 "provider": provider,
                 "cookie_secret": get_cookie_secret(),
                 "version": __version__,
+                "issuer": issuer,
             },
             content_type="text/yaml",
         )
