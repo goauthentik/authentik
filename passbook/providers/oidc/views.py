@@ -1,10 +1,10 @@
 """passbook OIDC Views"""
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
 from oidc_provider.lib.endpoints.authorize import AuthorizeEndpoint
 from oidc_provider.lib.utils.common import get_issuer, get_site_url
-from oidc_provider.models import ResponseType
+from oidc_provider.models import Client, ResponseType
 from oidc_provider.views import AuthorizeView
 from structlog import get_logger
 
@@ -20,7 +20,7 @@ from passbook.flows.stage import StageView
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.policies.mixins import PolicyAccessMixin
-from passbook.providers.oidc.models import OpenIDProvider
+from passbook.providers.oidc.auth import client_related_provider
 from passbook.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
 
 LOGGER = get_logger()
@@ -36,7 +36,11 @@ class AuthorizationFlowInitView(PolicyAccessMixin, View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check access to application, start FlowPLanner, return to flow executor shell"""
         client_id = request.GET.get("client_id")
-        provider = get_object_or_404(OpenIDProvider, oidc_client__client_id=client_id)
+        client: Client = get_object_or_404(Client, client_id=client_id)
+        provider = client_related_provider(client)
+        if not provider:
+            LOGGER.debug(f"Cannot find related provider to client '{client}")
+            raise Http404
         try:
             application = self.provider_to_application(provider)
         except Application.DoesNotExist:
