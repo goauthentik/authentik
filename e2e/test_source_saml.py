@@ -4,6 +4,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from structlog import get_logger
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -12,6 +13,8 @@ from e2e.utils import SeleniumTestCase
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
 from passbook.sources.saml.models import SAMLBindingTypes, SAMLSource
+
+LOGGER = get_logger()
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
@@ -76,7 +79,7 @@ class TestSourceSAML(SeleniumTestCase):
         """Setup test IdP container"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="kristophjunge/test-saml-idp",
+            image="kristophjunge/test-saml-idp:1.15",
             detach=True,
             network_mode="host",
             auto_remove=True,
@@ -97,6 +100,7 @@ class TestSourceSAML(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def tearDown(self):

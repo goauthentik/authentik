@@ -4,6 +4,7 @@ from time import sleep
 from oauth2_provider.generators import generate_client_id, generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from structlog import get_logger
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -14,6 +15,8 @@ from passbook.flows.models import Flow
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
 from passbook.providers.oauth.models import OAuth2Provider
+
+LOGGER = get_logger()
 
 
 class TestProviderOAuth(SeleniumTestCase):
@@ -61,6 +64,7 @@ class TestProviderOAuth(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def tearDown(self):

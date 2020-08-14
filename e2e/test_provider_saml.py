@@ -3,6 +3,7 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from structlog import get_logger
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -18,6 +19,8 @@ from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
 )
+
+LOGGER = get_logger()
 
 
 class TestProviderSAML(SeleniumTestCase):
@@ -54,6 +57,7 @@ class TestProviderSAML(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def tearDown(self):

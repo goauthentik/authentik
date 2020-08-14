@@ -7,6 +7,7 @@ from oidc_provider.models import Client, ResponseType
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from structlog import get_logger
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -17,6 +18,8 @@ from passbook.flows.models import Flow
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
 from passbook.providers.oidc.models import OpenIDProvider
+
+LOGGER = get_logger()
 
 
 class TestProviderOIDC(SeleniumTestCase):
@@ -63,6 +66,7 @@ class TestProviderOIDC(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def tearDown(self):

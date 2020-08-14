@@ -6,6 +6,7 @@ from oauth2_provider.generators import generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from structlog import get_logger
 from yaml import safe_dump
 
 from docker import DockerClient, from_env
@@ -17,6 +18,7 @@ from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"
 CONFIG_PATH = "/tmp/dex.yml"
+LOGGER = get_logger()
 
 
 class TestSourceOAuth(SeleniumTestCase):
@@ -86,6 +88,7 @@ class TestSourceOAuth(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def create_objects(self):
