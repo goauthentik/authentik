@@ -251,7 +251,7 @@ CELERY_RESULT_BACKEND = (
 
 # Database backup
 if CONFIG.y("postgresql.backup"):
-    INSTALLED_APPS += ["dbbackup"]
+    INSTALLED_APPS.append("dbbackup")
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_CONNECTOR_MAPPING = {
         "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
@@ -368,16 +368,16 @@ if len(sys.argv) >= 2 and sys.argv[1] == "test":
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "passbook": LOG_LEVEL,
-    "django": "WARNING",
-    "celery": "WARNING",
-    "selenium": "WARNING",
+    "django": LOG_LEVEL,
+    "celery": LOG_LEVEL,
+    "selenium": LOG_LEVEL,
     "grpc": LOG_LEVEL,
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
     "oidc_provider": LOG_LEVEL,
-    "docker": "WARNING",
-    "urllib3": "WARNING",
-    "elasticapm": "WARNING",
+    "docker": LOG_LEVEL,
+    "urllib3": LOG_LEVEL,
+    "elasticapm": LOG_LEVEL,
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
