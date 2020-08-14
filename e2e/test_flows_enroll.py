@@ -30,12 +30,12 @@ class TestFlowsEnroll(SeleniumTestCase):
         """Setup test IdP container"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="mailhog/mailhog",
+            image="mailhog/mailhog:v.1.0.1",
             detach=True,
             network_mode="host",
             auto_remove=True,
             healthcheck=Healthcheck(
-                test=["CMD", "wget", "-s", "http://localhost:8025"],
+                test=["CMD", "wget", "--spider", "http://localhost:8025"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),

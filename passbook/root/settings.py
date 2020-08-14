@@ -368,16 +368,16 @@ if len(sys.argv) >= 2 and sys.argv[1] == "test":
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "passbook": LOG_LEVEL,
-    "django": LOG_LEVEL,
-    "celery": LOG_LEVEL,
-    "selenium": LOG_LEVEL,
+    "django": "WARNING",
+    "celery": "WARNING",
+    "selenium": "WARNING",
     "grpc": LOG_LEVEL,
     "oauthlib": LOG_LEVEL,
     "oauth2_provider": LOG_LEVEL,
     "oidc_provider": LOG_LEVEL,
-    "docker": LOG_LEVEL,
-    "urllib3": LOG_LEVEL,
-    "elasticapm": LOG_LEVEL,
+    "docker": "WARNING",
+    "urllib3": "WARNING",
+    "elasticapm": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
