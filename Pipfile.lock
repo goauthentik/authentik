@@ -1062,11 +1062,11 @@
         },
         "docker": {
             "hashes": [
-                "sha256:03a46400c4080cb6f7aa997f881ddd84fef855499ece219d75fbdb53289c17ab",
-                "sha256:26eebadce7e298f55b76a88c4f8802476c5eaddbdbe38dbc6cce8781c47c9b54"
+                "sha256:431a268f2caf85aa30613f9642da274c62f6ee8bae7d70d968e01529f7d6af93",
+                "sha256:ba118607b0ba6bfc1b236ec32019a355c47b5d012d01d976467d4692ef443929"
             ],
             "index": "pypi",
-            "version": "==4.2.2"
+            "version": "==4.3.0"
         },
         "gitdb": {
             "hashes": [
