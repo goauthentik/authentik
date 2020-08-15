@@ -2,7 +2,6 @@
 
 import uuid
 
-import django.contrib.postgres.fields.jsonb
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
@@ -59,10 +58,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("expires", models.DateTimeField(blank=True, default=None, null=True)),
-                (
-                    "fixed_data",
-                    django.contrib.postgres.fields.jsonb.JSONField(default=dict),
-                ),
+                ("fixed_data", models.JSONField(default=dict),),
                 (
                     "created_by",
                     models.ForeignKey(

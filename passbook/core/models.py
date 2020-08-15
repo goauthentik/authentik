@@ -4,7 +4,6 @@ from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.forms import ModelForm
@@ -42,7 +41,7 @@ class Group(models.Model):
         on_delete=models.SET_NULL,
         related_name="children",
     )
-    attributes = JSONField(default=dict, blank=True)
+    attributes = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Group {self.name}"
@@ -62,7 +61,7 @@ class User(GuardianUserMixin, AbstractUser):
     groups = models.ManyToManyField("Group")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
-    attributes = JSONField(default=dict, blank=True)
+    attributes = models.JSONField(default=dict, blank=True)
 
     def set_password(self, password):
         if self.pk:

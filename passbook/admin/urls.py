@@ -4,7 +4,6 @@ from django.urls import path
 from passbook.admin.views import (
     applications,
     certificate_key_pair,
-    debug,
     flows,
     groups,
     overview,
@@ -235,13 +234,17 @@ urlpatterns = [
         name="user-password-reset",
     ),
     # Groups
-    path("group/", groups.GroupListView.as_view(), name="group"),
-    path("group/create/", groups.GroupCreateView.as_view(), name="group-create"),
+    path("groups/", groups.GroupListView.as_view(), name="group"),
+    path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
     path(
-        "group/<uuid:pk>/update/", groups.GroupUpdateView.as_view(), name="group-update"
+        "groups/<uuid:pk>/update/",
+        groups.GroupUpdateView.as_view(),
+        name="group-update",
     ),
     path(
-        "group/<uuid:pk>/delete/", groups.GroupDeleteView.as_view(), name="group-delete"
+        "groups/<uuid:pk>/delete/",
+        groups.GroupDeleteView.as_view(),
+        name="group-delete",
     ),
     # Certificate-Key Pairs
     path(
@@ -264,8 +267,4 @@ urlpatterns = [
         certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
         name="certificatekeypair-delete",
     ),
-    # Groups
-    path("groups/", groups.GroupListView.as_view(), name="groups"),
-    # Debug
-    path("debug/request/", debug.DebugRequestView.as_view(), name="debug-request"),
 ]

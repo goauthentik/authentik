@@ -2,7 +2,6 @@
 from typing import Type
 from uuid import uuid4
 
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
@@ -53,7 +52,7 @@ class Invitation(models.Model):
 
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     expires = models.DateTimeField(default=None, blank=True, null=True)
-    fixed_data = JSONField(default=dict)
+    fixed_data = models.JSONField(default=dict)
 
     def __str__(self):
         return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"
