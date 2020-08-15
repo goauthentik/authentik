@@ -136,7 +136,7 @@ class ConfigLoader:
             root = root.get(sub, None)
         # Walk each component of the path
         for comp in path.split(sep):
-            if comp in root:
+            if root and comp in root:
                 root = root.get(comp)
             else:
                 return default
