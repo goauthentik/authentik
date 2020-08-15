@@ -5477,7 +5477,7 @@ definitions:
         minLength: 1
       context:
         title: Context
-        type: object
+        type: string
       client_ip:
         title: Client ip
         type: string
@@ -5565,7 +5565,7 @@ definitions:
         uniqueItems: true
       attributes:
         title: Attributes
-        type: object
+        type: string
   Message:
     type: object
     properties:
@@ -6777,7 +6777,7 @@ definitions:
         x-nullable: true
       fixed_data:
         title: Fixed data
-        type: object
+        type: string
   OTPStaticStage:
     required:
       - name
