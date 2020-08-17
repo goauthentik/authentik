@@ -1315,11 +1315,11 @@
         },
         "unittest-xml-reporting": {
             "hashes": [
-                "sha256:74eaf7739a7957a74f52b8187c5616f61157372189bef0a32ba5c30bbc00e58a",
-                "sha256:e09b8ae70cce9904cdd331f53bf929150962869a5324ab7ff3dd6c8b87e01f7d"
+                "sha256:257c1b6c8bf09f348a691d3e0a74e5fa63007bd2eb6e94b017bcd36c3877dc9b",
+                "sha256:89ad3376cc63dc0f7227c1e39d03d5f6a20807fef989c57d8c623446b5f79575"
             ],
             "index": "pypi",
-            "version": "==3.0.2"
+            "version": "==3.0.3"
         },
         "urllib3": {
             "extras": [
