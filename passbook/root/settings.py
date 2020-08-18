@@ -414,6 +414,8 @@ for _app in INSTALLED_APPS:
         except ImportError:
             pass
 
+SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error", "urls.W005"]
+
 if DEBUG:
     SESSION_COOKIE_SAMESITE = None
     INSTALLED_APPS.append("debug_toolbar")
