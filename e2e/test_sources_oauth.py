@@ -2,7 +2,6 @@
 from os.path import abspath
 from time import sleep
 
-from oauth2_provider.generators import generate_client_secret
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -14,6 +13,7 @@ from docker.models.containers import Container
 from docker.types import Healthcheck
 from e2e.utils import SeleniumTestCase
 from passbook.flows.models import Flow
+from passbook.providers.oauth2.generators import generate_client_secret
 from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"

@@ -87,9 +87,8 @@ INSTALLED_APPS = [
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
     "passbook.policies.group_membership.apps.PassbookPoliciesGroupMembershipConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
-    "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
-    "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
-    "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
+    "passbook.providers.proxy.apps.PassbookProviderProxyConfig",
+    "passbook.providers.oauth2.apps.PassbookProviderOAuth2Config",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.recovery.apps.PassbookRecoveryConfig",
     "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
@@ -371,9 +370,6 @@ _LOGGING_HANDLER_MAP = {
     "celery": "WARNING",
     "selenium": "WARNING",
     "grpc": LOG_LEVEL,
-    "oauthlib": LOG_LEVEL,
-    "oauth2_provider": LOG_LEVEL,
-    "oidc_provider": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
     "elasticapm": "WARNING",
@@ -413,8 +409,6 @@ for _app in INSTALLED_APPS:
                     globals()[_attr] = getattr(app_settings, _attr)
         except ImportError:
             pass
-
-SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error", "urls.W005"]
 
 if DEBUG:
     SESSION_COOKIE_SAMESITE = None

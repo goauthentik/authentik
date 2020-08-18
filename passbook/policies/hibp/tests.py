@@ -1,10 +1,10 @@
 """HIBP Policy tests"""
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
-from oauth2_provider.generators import generate_client_secret
 
 from passbook.policies.hibp.models import HaveIBeenPwendPolicy
 from passbook.policies.types import PolicyRequest, PolicyResult
+from passbook.providers.oauth2.generators import generate_client_secret
 
 
 class TestHIBPPolicy(TestCase):

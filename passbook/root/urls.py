@@ -27,25 +27,28 @@ urlpatterns = []
 
 for _passbook_app in get_apps():
     mountpoints = None
+    base_url_module = _passbook_app.name + ".urls"
     if hasattr(_passbook_app, "mountpoint"):
         mountpoint = getattr(_passbook_app, "mountpoint")
-        mountpoints = {_passbook_app.name + ".urls": mountpoint}
+        mountpoints = {base_url_module: mountpoint}
     if hasattr(_passbook_app, "mountpoints"):
         mountpoints = getattr(_passbook_app, "mountpoints")
     if not mountpoints:
         continue
     for module, mountpoint in mountpoints.items():
+        namespace = _passbook_app.label + module.replace(base_url_module, "")
         _path = path(
-            mountpoint,
-            include((module, _passbook_app.label), namespace=_passbook_app.label,),
+            mountpoint, include((module, _passbook_app.label), namespace=namespace,),
         )
         urlpatterns.append(_path)
         LOGGER.debug(
-            "Mounted URLs", app_name=_passbook_app.name, mountpoint=mountpoint,
+            "Mounted URLs",
+            app_name=_passbook_app.name,
+            mountpoint=mountpoint,
+            namespace=namespace,
         )
 
 urlpatterns += [
-    # Administration
     path("administration/django/", admin.site.urls),
     path("metrics/", MetricsView.as_view(), name="metrics"),
 ]

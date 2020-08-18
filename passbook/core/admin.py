@@ -18,7 +18,7 @@ def admin_autoregister(app: AppConfig):
             pass
 
 
-for app in apps.get_app_configs():
-    if app.label.startswith("passbook_"):
-        LOGGER.debug("Registering application for dj-admin", app=app.label)
-        admin_autoregister(app)
+for _app in apps.get_app_configs():
+    if _app.label.startswith("passbook_"):
+        LOGGER.debug("Registering application for dj-admin", app=_app.label)
+        admin_autoregister(_app)
