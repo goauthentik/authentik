@@ -54,10 +54,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:3fb144d2b5d705127f394f7483737ece6fa79577ca7c493e4f42047ac8636200",
-                "sha256:f8801ce7f7603922ccab1c86c448e802f94183e31d99457e85fb9985a20d3abc"
+                "sha256:1b46ffe1d13922066c873323186cbf97e77c137e08e27039d9d684552ccc4892",
+                "sha256:1f6175bf59ffa068055b65f7d703eb1f748c338594a40dfdc645a6130280d8bb"
             ],
-            "version": "==1.17.43"
+            "version": "==1.17.44"
         },
         "celery": {
             "hashes": [
@@ -1315,11 +1315,11 @@
         },
         "unittest-xml-reporting": {
             "hashes": [
-                "sha256:257c1b6c8bf09f348a691d3e0a74e5fa63007bd2eb6e94b017bcd36c3877dc9b",
-                "sha256:89ad3376cc63dc0f7227c1e39d03d5f6a20807fef989c57d8c623446b5f79575"
+                "sha256:7bf515ea8cb244255a25100cd29db611a73f8d3d0aaf672ed3266307e14cc1ca",
+                "sha256:984cebba69e889401bfe3adb9088ca376b3a1f923f0590d005126c1bffd1a695"
             ],
             "index": "pypi",
-            "version": "==3.0.3"
+            "version": "==3.0.4"
         },
         "urllib3": {
             "extras": [
