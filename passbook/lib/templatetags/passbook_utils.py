@@ -85,7 +85,6 @@ def verbose_name(obj) -> str:
     if not obj:
         return ""
     if hasattr(obj, "verbose_name"):
-        print(obj.verbose_name)
         return obj.verbose_name
     return obj._meta.verbose_name
 

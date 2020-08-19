@@ -17,6 +17,6 @@
         {% trans 'Something went wrong! Please try again later.' %}
     </h3>
     {% if debug %}
-    <pre class="pb-exception">{{ tb }}</pre>
+    <pre class="pb-exception">{{ tb }}{{ error }}</pre>
     {% endif %}
 </div>

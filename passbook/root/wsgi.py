@@ -22,8 +22,8 @@ defuse_stdlib()
 class WSGILogger:
     """ This is the generalized WSGI middleware for any style request logging. """
 
-    def __init__(self, application):
-        self.application = application
+    def __init__(self, _application):
+        self.application = _application
         self.logger = get_logger("passbook.wsgi")
 
     def __healthcheck(self, start_response):

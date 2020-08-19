@@ -23,9 +23,8 @@ from passbook.policies.group_membership.api import GroupMembershipPolicyViewSet
 from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
-from passbook.providers.app_gw.api import ApplicationGatewayProviderViewSet
-from passbook.providers.oauth.api import OAuth2ProviderViewSet
-from passbook.providers.oidc.api import OpenIDProviderViewSet
+from passbook.providers.oauth2.api import OAuth2ProviderViewSet, ScopeMappingViewSet
+from passbook.providers.proxy.api import ProxyProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
@@ -70,14 +69,14 @@ router.register("policies/password", PasswordPolicyViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)
-router.register("providers/applicationgateway", ApplicationGatewayProviderViewSet)
-router.register("providers/oauth", OAuth2ProviderViewSet)
-router.register("providers/openid", OpenIDProviderViewSet)
+router.register("providers/proxy", ProxyProviderViewSet)
+router.register("providers/oauth2", OAuth2ProviderViewSet)
 router.register("providers/saml", SAMLProviderViewSet)
 
 router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
+router.register("propertymappings/scope", ScopeMappingViewSet)
 
 router.register("stages/all", StageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)

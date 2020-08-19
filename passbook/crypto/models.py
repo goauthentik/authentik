@@ -1,11 +1,12 @@
 """passbook crypto models"""
 from binascii import hexlify
+from hashlib import md5
 from typing import Optional
 from uuid import uuid4
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.db import models
@@ -31,7 +32,8 @@ class CertificateKeyPair(CreatedUpdatedModel):
     )
 
     _cert: Optional[Certificate] = None
-    _key: Optional[RSAPrivateKey] = None
+    _private_key: Optional[RSAPrivateKey] = None
+    _public_key: Optional[RSAPublicKey] = None
 
     @property
     def certificate(self) -> Certificate:
@@ -43,21 +45,37 @@ class CertificateKeyPair(CreatedUpdatedModel):
         return self._cert
 
     @property
+    def public_key(self) -> Optional[RSAPublicKey]:
+        """Get public key of the private key"""
+        if not self._public_key:
+            self._public_key = self.private_key.public_key()
+        return self._public_key
+
+    @property
     def private_key(self) -> Optional[RSAPrivateKey]:
         """Get python cryptography PrivateKey instance"""
-        if not self._key:
-            self._key = load_pem_private_key(
+        if not self._private_key:
+            self._private_key = load_pem_private_key(
                 str.encode("\n".join([x.strip() for x in self.key_data.split("\n")])),
                 password=None,
                 backend=default_backend(),
             )
-        return self._key
+        return self._private_key
 
     @property
     def fingerprint(self) -> str:
         """Get SHA256 Fingerprint of certificate_data"""
         return hexlify(self.certificate.fingerprint(hashes.SHA256()), ":").decode(
             "utf-8"
+        )
+
+    @property
+    def kid(self):
+        """Get Key ID used for JWKS"""
+        return "{0}".format(
+            md5(self.key_data.encode("utf-8")).hexdigest()  # nosec
+            if self.key_data
+            else ""
         )
 
     def __str__(self) -> str:

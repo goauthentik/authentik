@@ -3,9 +3,9 @@ from unittest.mock import Mock, PropertyMock, patch
 
 from django.test import TestCase
 from ldap3 import MOCK_SYNC, OFFLINE_AD_2012_R2, Connection, Server
-from oauth2_provider.generators import generate_client_secret
 
 from passbook.core.models import Group, User
+from passbook.providers.oauth2.generators import generate_client_secret
 from passbook.sources.ldap.auth import LDAPBackend
 from passbook.sources.ldap.connector import Connector
 from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource

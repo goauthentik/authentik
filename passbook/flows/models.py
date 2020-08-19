@@ -66,6 +66,8 @@ class Stage(models.Model):
         return None
 
     def __str__(self):
+        if hasattr(self, "__in_memory_type"):
+            return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
 
 

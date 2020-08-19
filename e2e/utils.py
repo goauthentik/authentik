@@ -6,7 +6,6 @@ from inspect import getmembers, isfunction
 from os import environ, makedirs
 from time import time
 
-from Cryptodome.PublicKey import RSA
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
@@ -26,16 +25,6 @@ from passbook.core.models import User
 def USER() -> User:  # noqa
     """Cached function that always returns pbadmin"""
     return User.objects.get(username="pbadmin")
-
-
-def ensure_rsa_key():
-    """Ensure that at least one RSAKey Object exists, create one if none exist"""
-    from oidc_provider.models import RSAKey
-
-    if not RSAKey.objects.exists():
-        key = RSA.generate(2048)
-        rsakey = RSAKey(key=key.exportKey("PEM").decode("utf8"))
-        rsakey.save()
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):
