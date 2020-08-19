@@ -81,7 +81,7 @@ class TestSourceOAuth(SeleniumTestCase):
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            volumes={abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro",}},
+            volumes={abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro"}},
         )
         while True:
             container.reload()
