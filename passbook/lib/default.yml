@@ -18,6 +18,7 @@ log_level: warning
 error_reporting:
   enabled: false
   environment: customer
+  send_pii: false
 
 passbook:
   # Optionally add links to the footer on the login page

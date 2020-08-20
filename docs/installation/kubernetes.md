@@ -20,6 +20,7 @@ config:
   # Enable error reporting
   error_reporting:
     enabled: false
+    send_pii: false
   # Log level used by web and worker
   # Can be either debug, info, warning, error
   log_level: warning
