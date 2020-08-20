@@ -269,7 +269,7 @@ if CONFIG.y("postgresql.backup"):
     }
 
 # Sentry integration
-_ERROR_REPORTING = CONFIG.y_bool("error_reporting", False)
+_ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
     LOGGER.info("Error reporting is enabled.")
     sentry_init(
@@ -278,20 +278,9 @@ if not DEBUG and _ERROR_REPORTING:
         send_default_pii=True,
         before_send=before_send,
         release="passbook@%s" % __version__,
+        traces_sample_rate=1.0,
+        environment=CONFIG.y("error_reporting.environment", "customer"),
     )
-
-_APM_ENABLED = CONFIG.y("apm.enabled", False)
-if _APM_ENABLED:
-    INSTALLED_APPS.append("elasticapm.contrib.django")
-    ELASTIC_APM = {
-        "CLOUD_PROVIDER": False,
-        "DEBUG": DEBUG,
-        "SERVICE_NAME": "passbook",
-        "SERVICE_VERSION": __version__,
-        "SECRET_TOKEN": CONFIG.y("apm.secret_token", ""),
-        "SERVER_URL": CONFIG.y("apm.server_url", "http://localhost:8200"),
-        "VERIFY_SERVER_CERT": CONFIG.y_bool("apm.verify_server_cert", True),
-    }
 
 
 # Static files (CSS, JavaScript, Images)
@@ -372,7 +361,6 @@ _LOGGING_HANDLER_MAP = {
     "grpc": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
-    "elasticapm": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

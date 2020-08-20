@@ -5,7 +5,8 @@ from typing import List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from elasticapm import capture_span
+from sentry_sdk import start_span
+from sentry_sdk.tracing import Span
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -70,36 +71,39 @@ class PolicyEngine:
         if policy.__class__ == Policy:
             raise TypeError(f"Policy '{policy}' is root type")
 
-    @capture_span(name="PolicyEngine", span_type="policy.engine.build")
     def build(self) -> "PolicyEngine":
-        """Build task group"""
-        for binding in self._iter_bindings():
-            self._check_policy_type(binding.policy)
-            key = cache_key(binding, self.request)
-            cached_policy = cache.get(key, None)
-            if cached_policy and self.use_cache:
-                LOGGER.debug(
-                    "P_ENG: Taking result from cache",
-                    policy=binding.policy,
-                    cache_key=key,
+        """Build wrapper which monitors performance"""
+        with start_span(op="policy.engine.build") as span:
+            span: Span
+            span.set_data("pbm", self.__pbm)
+            span.set_data("request", self.request)
+            for binding in self._iter_bindings():
+                self._check_policy_type(binding.policy)
+                key = cache_key(binding, self.request)
+                cached_policy = cache.get(key, None)
+                if cached_policy and self.use_cache:
+                    LOGGER.debug(
+                        "P_ENG: Taking result from cache",
+                        policy=binding.policy,
+                        cache_key=key,
+                    )
+                    self.__cached_policies.append(cached_policy)
+                    continue
+                LOGGER.debug("P_ENG: Evaluating policy", policy=binding.policy)
+                our_end, task_end = Pipe(False)
+                task = PolicyProcess(binding, self.request, task_end)
+                LOGGER.debug("P_ENG: Starting Process", policy=binding.policy)
+                task.start()
+                self.__processes.append(
+                    PolicyProcessInfo(process=task, connection=our_end, binding=binding)
                 )
-                self.__cached_policies.append(cached_policy)
-                continue
-            LOGGER.debug("P_ENG: Evaluating policy", policy=binding.policy)
-            our_end, task_end = Pipe(False)
-            task = PolicyProcess(binding, self.request, task_end)
-            LOGGER.debug("P_ENG: Starting Process", policy=binding.policy)
-            task.start()
-            self.__processes.append(
-                PolicyProcessInfo(process=task, connection=our_end, binding=binding)
-            )
-        # If all policies are cached, we have an empty list here.
-        for proc_info in self.__processes:
-            proc_info.process.join(proc_info.binding.timeout)
-            # Only call .recv() if no result is saved, otherwise we just deadlock here
-            if not proc_info.result:
-                proc_info.result = proc_info.connection.recv()
-        return self
+            # If all policies are cached, we have an empty list here.
+            for proc_info in self.__processes:
+                proc_info.process.join(proc_info.binding.timeout)
+                # Only call .recv() if no result is saved, otherwise we just deadlock here
+                if not proc_info.result:
+                    proc_info.result = proc_info.connection.recv()
+            return self
 
     @property
     def result(self) -> PolicyResult:

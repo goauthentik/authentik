@@ -110,7 +110,11 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         if self.redirect_uri not in self.provider.redirect_uris.split():
-            LOGGER.warning("Invalid redirect uri", uri=self.redirect_uri, expected=self.provider.redirect_uris.split())
+            LOGGER.warning(
+                "Invalid redirect uri",
+                uri=self.redirect_uri,
+                expected=self.provider.redirect_uris.split(),
+            )
             raise TokenError("invalid_client")
 
         try:

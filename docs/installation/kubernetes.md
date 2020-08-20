@@ -18,16 +18,11 @@ config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secret_key: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
   # Enable error reporting
-  error_reporting: false
+  error_reporting:
+    enabled: false
   # Log level used by web and worker
   # Can be either debug, info, warning, error
   log_level: warning
-  # Optionally enable Elastic APM Support
-  apm:
-    enabled: false
-    server_url: ""
-    secret_token: ""
-    verify_server_cert: true
 
 # This Helm chart ships with built-in Prometheus ServiceMonitors and Rules.
 # This requires the CoreOS Prometheus Operator.
