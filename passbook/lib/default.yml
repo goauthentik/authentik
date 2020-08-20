@@ -15,7 +15,9 @@ debug: false
 log_level: warning
 
 # Error reporting, sends stacktrace to sentry.beryju.org
-error_reporting: false
+error_reporting:
+  enabled: false
+  environment: customer
 
 passbook:
   # Optionally add links to the footer on the login page

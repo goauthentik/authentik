@@ -10,7 +10,9 @@ config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secret_key: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
   # Enable error reporting
-  error_reporting: false
+  error_reporting:
+    enabled: false
+    environment: customer
   # Log level used by web and worker
   # Can be either debug, info, warning, error
   log_level: warning

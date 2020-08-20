@@ -269,7 +269,7 @@ if CONFIG.y("postgresql.backup"):
     }
 
 # Sentry integration
-_ERROR_REPORTING = CONFIG.y_bool("error_reporting", False)
+_ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
     LOGGER.info("Error reporting is enabled.")
     sentry_init(
@@ -278,6 +278,8 @@ if not DEBUG and _ERROR_REPORTING:
         send_default_pii=True,
         before_send=before_send,
         release="passbook@%s" % __version__,
+        traces_sample_rate=1.0,
+        environment=CONFIG.y("error_reporting.environment", "customer"),
     )
 
 

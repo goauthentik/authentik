@@ -1,5 +1,5 @@
 """flow planner tests"""
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
@@ -18,7 +18,7 @@ from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
-TIME_NOW_MOCK = MagicMock(return_value=3)
+CACHE_MOCK = Mock(wraps=cache)
 
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
 
@@ -64,7 +64,7 @@ class TestFlowPlanner(TestCase):
             planner = FlowPlanner(flow)
             planner.plan(request)
 
-    @patch("passbook.flows.planner.time", TIME_NOW_MOCK)
+    @patch("passbook.flows.planner.cache", CACHE_MOCK)
     def test_planner_cache(self):
         """Test planner cache"""
         flow = Flow.objects.create(
@@ -82,12 +82,15 @@ class TestFlowPlanner(TestCase):
 
         planner = FlowPlanner(flow)
         planner.plan(request)
-        self.assertEqual(TIME_NOW_MOCK.call_count, 2)  # Start and end
+        self.assertEqual(
+            CACHE_MOCK.set.call_count, 1
+        )  # Ensure plan is written to cache
         planner = FlowPlanner(flow)
         planner.plan(request)
         self.assertEqual(
-            TIME_NOW_MOCK.call_count, 2
-        )  # When taking from cache, time is not measured
+            CACHE_MOCK.set.call_count, 1
+        )  # Ensure nothing is written to cache
+        self.assertEqual(CACHE_MOCK.get.call_count, 2)  # Get is called twice
 
     def test_planner_default_context(self):
         """Test planner with default_context"""

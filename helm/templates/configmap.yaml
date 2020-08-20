@@ -19,5 +19,7 @@ data:
       host: "{{ .Release.Name }}-redis-master"
       cache_db: 0
       message_queue_db: 1
-    error_reporting: {{ .Values.config.error_reporting }}
+    error_reporting:
+      enabled: {{ .Values.config.error_reporting.enabled }}
+      environment: {{ .Values.config.error_reporting.environment }}
     log_level: "{{ .Values.config.log_level }}"
