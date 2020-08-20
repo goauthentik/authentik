@@ -280,19 +280,6 @@ if not DEBUG and _ERROR_REPORTING:
         release="passbook@%s" % __version__,
     )
 
-_APM_ENABLED = CONFIG.y("apm.enabled", False)
-if _APM_ENABLED:
-    INSTALLED_APPS.append("elasticapm.contrib.django")
-    ELASTIC_APM = {
-        "CLOUD_PROVIDER": False,
-        "DEBUG": DEBUG,
-        "SERVICE_NAME": "passbook",
-        "SERVICE_VERSION": __version__,
-        "SECRET_TOKEN": CONFIG.y("apm.secret_token", ""),
-        "SERVER_URL": CONFIG.y("apm.server_url", "http://localhost:8200"),
-        "VERIFY_SERVER_CERT": CONFIG.y_bool("apm.verify_server_cert", True),
-    }
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -372,7 +359,6 @@ _LOGGING_HANDLER_MAP = {
     "grpc": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
-    "elasticapm": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

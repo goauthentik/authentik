@@ -22,12 +22,6 @@ config:
   # Log level used by web and worker
   # Can be either debug, info, warning, error
   log_level: warning
-  # Optionally enable Elastic APM Support
-  apm:
-    enabled: false
-    server_url: ""
-    secret_token: ""
-    verify_server_cert: true
 
 # This Helm chart ships with built-in Prometheus ServiceMonitors and Rules.
 # This requires the CoreOS Prometheus Operator.

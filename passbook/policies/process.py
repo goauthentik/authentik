@@ -4,7 +4,6 @@ from multiprocessing.connection import Connection
 from typing import Optional
 
 from django.core.cache import cache
-from elasticapm import capture_span
 from structlog import get_logger
 
 from passbook.policies.exceptions import PolicyException
@@ -45,7 +44,6 @@ class PolicyProcess(Process):
         if connection:
             self.connection = connection
 
-    @capture_span(name="PolicyEngine", span_type="policy.process.execute")
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
         LOGGER.debug(

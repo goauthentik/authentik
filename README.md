@@ -61,7 +61,6 @@ postgresql:
   user: postgres
 
 log_level: debug
-error_reporting: false
 ```
 
 ## Security

@@ -4,7 +4,6 @@ from textwrap import indent
 from typing import Any, Dict, Iterable, Optional
 
 from django.core.exceptions import ValidationError
-from elasticapm import capture_span
 from requests import Session
 from structlog import get_logger
 
@@ -71,7 +70,6 @@ class BaseEvaluator:
         full_expression += f"\nresult = handler({handler_signature})"
         return full_expression
 
-    @capture_span(name="BaseEvaluator", span_type="lib.evaluator.evaluate")
     def evaluate(self, expression_source: str) -> Any:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.

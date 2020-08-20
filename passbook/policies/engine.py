@@ -5,7 +5,6 @@ from typing import List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from elasticapm import capture_span
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -70,7 +69,6 @@ class PolicyEngine:
         if policy.__class__ == Policy:
             raise TypeError(f"Policy '{policy}' is root type")
 
-    @capture_span(name="PolicyEngine", span_type="policy.engine.build")
     def build(self) -> "PolicyEngine":
         """Build task group"""
         for binding in self._iter_bindings():
