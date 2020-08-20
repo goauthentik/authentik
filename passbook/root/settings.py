@@ -274,12 +274,14 @@ if not DEBUG and _ERROR_REPORTING:
     LOGGER.info("Error reporting is enabled.")
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
-        integrations=[DjangoIntegration(), CeleryIntegration()],
+        integrations=[
+            DjangoIntegration(transaction_style="function_name"),
+            CeleryIntegration(),
+        ],
         before_send=before_send,
         release="passbook@%s" % __version__,
         traces_sample_rate=1.0,
         environment=CONFIG.y("error_reporting.environment", "customer"),
-        transaction_style="function_name",
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
 

@@ -101,4 +101,4 @@ jobs:
           SENTRY_URL: https://sentry.beryju.org
         with:
           tagName: 0.9.0-stable
-          environment: production
+          environment: beryjuorg-prod
