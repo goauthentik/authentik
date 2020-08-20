@@ -231,8 +231,8 @@ USE_TZ = True
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
 CELERY_BEAT_SCHEDULE = {
-    "clean_tokens": {
-        "task": "passbook.core.tasks.clean_tokens",
+    "clean_expired_models": {
+        "task": "passbook.core.tasks.clean_expired_models",
         "schedule": crontab(minute="*/5"),  # Run every 5 minutes
     }
 }
