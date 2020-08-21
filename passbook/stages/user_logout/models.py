@@ -4,12 +4,19 @@ from typing import Type
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 
 
 class UserLogoutStage(Stage):
     """Resets the users current session."""
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.user_logout.api import UserLogoutStageSerializer
+
+        return UserLogoutStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.user_logout.stage import UserLogoutStageView

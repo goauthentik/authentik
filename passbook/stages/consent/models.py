@@ -5,6 +5,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.core.models import Application, ExpiringModel, User
 from passbook.flows.models import Stage
@@ -36,6 +37,12 @@ class ConsentStage(Stage):
             )
         ),
     )
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.consent.api import ConsentStageSerializer
+
+        return ConsentStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.consent.stage import ConsentStageView

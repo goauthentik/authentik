@@ -7,6 +7,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 from passbook.policies.models import PolicyBindingModel
@@ -119,6 +120,12 @@ class PromptStage(PolicyBindingModel, Stage):
     """Define arbitrary prompts for the user."""
 
     fields = models.ManyToManyField(Prompt)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.prompt.api import PromptStageSerializer
+
+        return PromptStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.prompt.stage import PromptStageView
