@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
+from rest_framework.serializers import BaseSerializer
 
 from passbook.core.models import User
 from passbook.lib.utils.http import get_client_ip
@@ -21,6 +22,12 @@ class ReputationPolicy(Policy):
     check_ip = models.BooleanField(default=True)
     check_username = models.BooleanField(default=True)
     threshold = models.IntegerField(default=-5)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.reputation.api import ReputationPolicySerializer
+
+        return ReputationPolicySerializer
 
     def form(self) -> Type[ModelForm]:
         from passbook.policies.reputation.forms import ReputationPolicyForm

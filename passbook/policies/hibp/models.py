@@ -6,6 +6,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from requests import get
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.policies.models import Policy, PolicyResult
@@ -26,6 +27,12 @@ class HaveIBeenPwendPolicy(Policy):
     )
 
     allowed_count = models.IntegerField(default=0)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.hibp.api import HaveIBeenPwendPolicySerializer
+
+        return HaveIBeenPwendPolicySerializer
 
     def form(self) -> Type[ModelForm]:
         from passbook.policies.hibp.forms import HaveIBeenPwnedPolicyForm
