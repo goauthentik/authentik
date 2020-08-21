@@ -12,7 +12,7 @@
   resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.31.6.tgz#ef9919df610171760cd19920a904ca9b09a74593"
   integrity sha512-gp8tpbE4Z6C1PIQwNiWMjO5XSr/UGjXs4InL/zmxgZbToyizUxsudwJyCObtdvDNoN57ZJp0gYWYy0tIuwEyMA==
 
-codemirror@^5.56.0:
-  version "5.56.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.56.0.tgz#675640fcc780105cd22d3faa738b5d7ea6426f61"
-  integrity sha512-MfKVmYgifXjQpLSgpETuih7A7WTTIsxvKfSLGseTY5+qt0E1UD1wblZGM6WLenORo8sgmf+3X+WTe2WF7mufyw==
+codemirror@^5.57.0:
+  version "5.57.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.57.0.tgz#d26365b72f909f5d2dbb6b1209349ca1daeb2d50"
+  integrity sha512-WGc6UL7Hqt+8a6ZAsj/f1ApQl3NPvHY/UQSzG6fB6l4BjExgVdhFaxd7mRTw1UCiYe/6q86zHP+kfvBQcZGvUg==
