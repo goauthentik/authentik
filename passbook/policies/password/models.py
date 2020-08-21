@@ -5,6 +5,7 @@ from typing import Type
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.policies.models import Policy
@@ -29,6 +30,12 @@ class PasswordPolicy(Policy):
     length_min = models.IntegerField(default=0)
     symbol_charset = models.TextField(default=r"!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ")
     error_message = models.TextField()
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.password.api import PasswordPolicySerializer
+
+        return PasswordPolicySerializer
 
     def form(self) -> Type[ModelForm]:
         from passbook.policies.password.forms import PasswordPolicyForm

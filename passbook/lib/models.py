@@ -1,6 +1,19 @@
 """Generic models"""
 from django.db import models
 from model_utils.managers import InheritanceManager
+from rest_framework.serializers import BaseSerializer
+
+
+class SerializerModel(models.Model):
+    """Base Abstract Model which has a serializer"""
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        """Get serializer for this model"""
+        raise NotImplementedError
+
+    class Meta:
+        abstract = True
 
 
 class CreatedUpdatedModel(models.Model):

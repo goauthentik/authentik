@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.core.types import UIUserSettings
 from passbook.flows.models import Stage
@@ -15,6 +16,12 @@ class OTPStaticStage(Stage):
     """Generate static tokens for the user as a backup."""
 
     token_count = models.IntegerField(default=6)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.otp_static.api import OTPStaticStageSerializer
+
+        return OTPStaticStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.otp_static.stage import OTPStaticStageView

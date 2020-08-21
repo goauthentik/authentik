@@ -5,6 +5,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 
@@ -19,6 +20,12 @@ class UserLoginStage(Stage):
             " that the sessions lasts until the browser is closed."
         ),
     )
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.user_login.api import UserLoginStageSerializer
+
+        return UserLoginStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.user_login.stage import UserLoginStageView

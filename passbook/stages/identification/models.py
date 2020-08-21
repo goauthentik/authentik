@@ -6,6 +6,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Flow, Stage
 
@@ -55,6 +56,12 @@ class IdentificationStage(Stage):
             "Optional recovery flow, which is linked at the bottom of the page."
         ),
     )
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.identification.api import IdentificationStageSerializer
+
+        return IdentificationStageSerializer
 
     def type(self) -> Type[View]:
         from passbook.stages.identification.stage import IdentificationStageView

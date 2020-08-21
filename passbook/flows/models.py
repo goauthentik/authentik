@@ -7,9 +7,11 @@ from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
+from passbook.lib.models import SerializerModel
 from passbook.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
@@ -38,7 +40,7 @@ class FlowDesignation(models.TextChoices):
     STAGE_SETUP = "stage_setup"
 
 
-class Stage(models.Model):
+class Stage(SerializerModel):
     """Stage is an instance of a component used in a flow. This can verify the user,
     enroll the user or offer a way of recovery"""
 
@@ -81,7 +83,7 @@ def in_memory_stage(view: Type["StageView"]) -> Stage:
     return stage
 
 
-class Flow(PolicyBindingModel):
+class Flow(SerializerModel, PolicyBindingModel):
     """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
     have access to this flow."""
@@ -94,6 +96,12 @@ class Flow(PolicyBindingModel):
     designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.flows.api import FlowSerializer
+
+        return FlowSerializer
 
     @staticmethod
     def with_policy(request: HttpRequest, **flow_filter) -> Optional["Flow"]:
@@ -128,7 +136,7 @@ class Flow(PolicyBindingModel):
         verbose_name_plural = _("Flows")
 
 
-class FlowStageBinding(PolicyBindingModel):
+class FlowStageBinding(SerializerModel, PolicyBindingModel):
     """Relationship between Flow and Stage. Order is required and unique for
     each flow-stage Binding. Additionally, policies can be specified, which determine if
     this Binding applies to the current user"""
@@ -148,6 +156,12 @@ class FlowStageBinding(PolicyBindingModel):
     order = models.IntegerField()
 
     objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.flows.api import FlowStageBindingSerializer
+
+        return FlowStageBindingSerializer
 
     def __str__(self) -> str:
         return f"Flow Binding {self.target} -> {self.stage}"
