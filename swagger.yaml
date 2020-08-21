@@ -6859,7 +6859,6 @@ definitions:
       - field_key
       - label
       - type
-      - placeholder
     type: object
     properties:
       pk:
@@ -6900,7 +6899,6 @@ definitions:
       placeholder:
         title: Placeholder
         type: string
-        minLength: 1
       order:
         title: Order
         type: integer

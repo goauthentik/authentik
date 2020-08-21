@@ -4,6 +4,7 @@ from typing import Type
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
+from rest_framework.serializers import BaseSerializer
 
 from passbook.policies.expression.evaluator import PolicyEvaluator
 from passbook.policies.models import Policy
@@ -14,6 +15,12 @@ class ExpressionPolicy(Policy):
     """Execute arbitrary Python code to implement custom checks and validation."""
 
     expression = models.TextField()
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.expression.api import ExpressionPolicySerializer
+
+        return ExpressionPolicySerializer
 
     def form(self) -> Type[ModelForm]:
         from passbook.policies.expression.forms import ExpressionPolicyForm
