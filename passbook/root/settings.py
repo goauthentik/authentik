@@ -131,7 +131,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.DjangoObjectPermissions",
-        "passbook.api.permissions.CustomObjectPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "passbook.api.auth.PassbookTokenAuthentication",

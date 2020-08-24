@@ -6,14 +6,16 @@ from drf_yasg.views import get_schema_view
 from rest_framework import routers
 
 from passbook.api.permissions import CustomObjectPermissions
+from passbook.api.v2.config import ConfigViewSet
+from passbook.api.v2.messages import MessagesViewSet
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
 from passbook.core.api.groups import GroupViewSet
-from passbook.core.api.messages import MessagesViewSet
 from passbook.core.api.propertymappings import PropertyMappingViewSet
 from passbook.core.api.providers import ProviderViewSet
 from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
+from passbook.crypto.api import CertificateKeyPairViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
@@ -47,10 +49,13 @@ from passbook.stages.user_write.api import UserWriteStageViewSet
 
 router = routers.DefaultRouter()
 
+router.register("root/config", ConfigViewSet, basename="configs")
+router.register("root/messages", MessagesViewSet, basename="messages")
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
-router.register("core/messages", MessagesViewSet, basename="messages")
+
+router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
 router.register("audit/events", EventViewSet)
 

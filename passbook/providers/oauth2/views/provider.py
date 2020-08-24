@@ -1,4 +1,6 @@
 """passbook OAuth2 OpenID well-known views"""
+from typing import Any, Dict
+
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
@@ -16,6 +18,41 @@ PLAN_CONTEXT_SCOPES = "scopes"
 class ProviderInfoView(View):
     """OpenID-compliant Provider Info"""
 
+    def get_info(self, provider: OAuth2Provider) -> Dict[str, Any]:
+        """Get dictionary for OpenID Connect information"""
+        return {
+            "issuer": provider.get_issuer(self.request),
+            "authorization_endpoint": self.request.build_absolute_uri(
+                reverse("passbook_providers_oauth2:authorize")
+            ),
+            "token_endpoint": self.request.build_absolute_uri(
+                reverse("passbook_providers_oauth2:token")
+            ),
+            "userinfo_endpoint": self.request.build_absolute_uri(
+                reverse("passbook_providers_oauth2:userinfo")
+            ),
+            "end_session_endpoint": self.request.build_absolute_uri(
+                reverse("passbook_providers_oauth2:end-session")
+            ),
+            "introspection_endpoint": self.request.build_absolute_uri(
+                reverse("passbook_providers_oauth2:token-introspection")
+            ),
+            "response_types_supported": [provider.response_type],
+            "jwks_uri": self.request.build_absolute_uri(
+                reverse(
+                    "passbook_providers_oauth2:jwks",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            ),
+            "id_token_signing_alg_values_supported": [provider.jwt_alg],
+            # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
+            "subject_types_supported": ["public"],
+            "token_endpoint_auth_methods_supported": [
+                "client_secret_post",
+                "client_secret_basic",
+            ],
+        }
+
     # pylint: disable=unused-argument
     def get(
         self, request: HttpRequest, application_slug: str, *args, **kwargs
@@ -26,40 +63,7 @@ class ProviderInfoView(View):
         provider: OAuth2Provider = get_object_or_404(
             OAuth2Provider, pk=application.provider_id
         )
-        response = JsonResponse(
-            {
-                "issuer": provider.get_issuer(request),
-                "authorization_endpoint": request.build_absolute_uri(
-                    reverse("passbook_providers_oauth2:authorize")
-                ),
-                "token_endpoint": request.build_absolute_uri(
-                    reverse("passbook_providers_oauth2:token")
-                ),
-                "userinfo_endpoint": request.build_absolute_uri(
-                    reverse("passbook_providers_oauth2:userinfo")
-                ),
-                "end_session_endpoint": request.build_absolute_uri(
-                    reverse("passbook_providers_oauth2:end-session")
-                ),
-                "introspection_endpoint": request.build_absolute_uri(
-                    reverse("passbook_providers_oauth2:token-introspection")
-                ),
-                "response_types_supported": [provider.response_type],
-                "jwks_uri": request.build_absolute_uri(
-                    reverse(
-                        "passbook_providers_oauth2:jwks",
-                        kwargs={"application_slug": application.slug},
-                    )
-                ),
-                "id_token_signing_alg_values_supported": [provider.jwt_alg],
-                # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
-                "subject_types_supported": ["public"],
-                "token_endpoint_auth_methods_supported": [
-                    "client_secret_post",
-                    "client_secret_basic",
-                ],
-            }
-        )
+        response = JsonResponse(self.get_info(provider))
         response["Access-Control-Allow-Origin"] = "*"
 
         return response

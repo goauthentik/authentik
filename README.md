@@ -4,7 +4,7 @@
 ![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/passbook/1?compact_message&style=flat-square)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)](https://codecov.io/gh/BeryJu/passbook)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
-![Docker pulls (gatekeeper)](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
+![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/passbook-proxy.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/BeryJu/passbook?style=flat-square)
 

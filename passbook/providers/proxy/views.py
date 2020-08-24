@@ -1,6 +1,4 @@
 """passbook proxy views"""
-import string
-from random import SystemRandom
 from urllib.parse import urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -25,13 +23,6 @@ def get_object_for_user_or_404(user: User, perm: str, **filters) -> Model:
     return get_object_or_404(get_objects_for_user(user, perm), **filters)
 
 
-def get_cookie_secret():
-    """Generate random 32-character string for cookie-secret"""
-    return "".join(
-        SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32)
-    )
-
-
 class DockerComposeView(LoginRequiredMixin, View):
     """Generate docker-compose yaml"""
 
@@ -43,17 +34,15 @@ class DockerComposeView(LoginRequiredMixin, View):
             "OAUTH2_PROXY_CLIENT_SECRET": provider.client_secret,
             "OAUTH2_PROXY_REDIRECT_URL": f"{provider.external_host}/oauth2/callback",
             "OAUTH2_PROXY_OIDC_ISSUER_URL": issuer,
-            "OAUTH2_PROXY_COOKIE_SECRET": get_cookie_secret(),
+            "OAUTH2_PROXY_COOKIE_SECRET": provider.cookie_secret,
             "OAUTH2_PROXY_UPSTREAMS": provider.internal_host,
         }
-        if urlparse(provider.external_host).scheme != "https":
-            env["OAUTH2_PROXY_COOKIE_SECURE"] = "false"
         compose = {
             "version": "3.5",
             "services": {
                 "passbook_gatekeeper": {
                     "image": f"beryju/passbook-proxy:{__version__}",
-                    "ports": ["4180:4180"],
+                    "ports": ["4180:4180", "4443:4443"],
                     "environment": env,
                 }
             },
@@ -63,9 +52,7 @@ class DockerComposeView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, provider_pk: int) -> HttpResponse:
         """Render docker-compose file"""
         provider: ProxyProvider = get_object_for_user_or_404(
-            request.user,
-            "passbook_providers_proxy.view_applicationgatewayprovider",
-            pk=provider_pk,
+            request.user, "passbook_providers_proxy.view_proxyprovider", pk=provider_pk,
         )
         response = HttpResponse()
         response.content_type = "application/x-yaml"
@@ -74,21 +61,19 @@ class DockerComposeView(LoginRequiredMixin, View):
 
 
 class K8sManifestView(LoginRequiredMixin, View):
-    """Generate K8s Deployment and SVC for gatekeeper"""
+    """Generate K8s Deployment and SVC for proxy"""
 
     def get(self, request: HttpRequest, provider_pk: int) -> HttpResponse:
         """Render deployment template"""
         provider: ProxyProvider = get_object_for_user_or_404(
-            request.user,
-            "passbook_providers_app_gw.view_applicationgatewayprovider",
-            pk=provider_pk,
+            request.user, "passbook_providers_proxy.view_proxyprovider", pk=provider_pk,
         )
         return render(
             request,
             "providers/proxy/k8s-manifest.yaml",
             {
                 "provider": provider,
-                "cookie_secret": get_cookie_secret(),
+                "cookie_secret": provider.cookie_secret,
                 "version": __version__,
                 "issuer": provider.get_issuer(request),
             },
