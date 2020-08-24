@@ -885,6 +885,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /outposts/outposts/:
+    get:
+      operationId: outposts_outposts_list
+      description: Outpost Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_outposts_create
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/outposts/{uuid}/:
+    get:
+      operationId: outposts_outposts_read
+      description: Outpost Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_outposts_update
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_outposts_partial_update
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_outposts_delete
+      description: Outpost Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this outpost.
+        required: true
+        type: string
+        format: uuid
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -5846,6 +5973,26 @@ definitions:
           type: string
           format: uuid
         readOnly: true
+        uniqueItems: true
+  Outpost:
+    required:
+      - name
+      - providers
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      providers:
+        type: array
+        items:
+          type: integer
         uniqueItems: true
   Policy:
     type: object

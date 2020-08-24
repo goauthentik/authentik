@@ -236,7 +236,7 @@ class OAuth2Provider(Provider):
         return OAuth2ProviderForm
 
     def __str__(self):
-        return self.name
+        return f"OAuth2 Provider {self.name}"
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""

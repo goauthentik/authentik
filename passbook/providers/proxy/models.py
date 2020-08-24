@@ -1,7 +1,7 @@
 """passbook proxy models"""
 import string
 from random import SystemRandom
-from typing import Optional, Type
+from typing import Iterable, Optional, Type
 from urllib.parse import urljoin
 
 from django.core.validators import URLValidator
@@ -12,6 +12,7 @@ from django.utils.translation import gettext as _
 
 from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.utils.template import render_to_string
+from passbook.outposts.models import OutpostModel
 from passbook.providers.oauth2.constants import (
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
@@ -37,7 +38,7 @@ def _get_callback_url(uri: str) -> str:
     return urljoin(uri, "/pbprox/callback")
 
 
-class ProxyProvider(OAuth2Provider):
+class ProxyProvider(OutpostModel, OAuth2Provider):
     """Protect applications that don't support any of the other
     Protocols by using a Reverse-Proxy."""
 
@@ -87,7 +88,13 @@ class ProxyProvider(OAuth2Provider):
         )
 
     def __str__(self):
-        return self.name
+        return f"Proxy Provider {self.name}"
+
+    def get_required_objects(self) -> Iterable[models.Model]:
+        required_models = [self]
+        if self.certificate is not None:
+            required_models.append(self.certificate)
+        return required_models
 
     class Meta:
 

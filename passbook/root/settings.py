@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "passbook.audit.apps.PassbookAuditConfig",
     "passbook.crypto.apps.PassbookCryptoConfig",
     "passbook.flows.apps.PassbookFlowsConfig",
+    "passbook.outposts.apps.PassbookOutpostConfig",
     "passbook.lib.apps.PassbookLibConfig",
     "passbook.policies.apps.PassbookPoliciesConfig",
     "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",

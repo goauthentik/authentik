@@ -17,6 +17,7 @@ from passbook.core.api.sources import SourceViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.crypto.api import CertificateKeyPairViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
+from passbook.outposts.api import OutpostViewSet
 from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -54,6 +55,7 @@ router.register("root/messages", MessagesViewSet, basename="messages")
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
+router.register("outposts/outposts", OutpostViewSet)
 
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 

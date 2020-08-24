@@ -47,6 +47,12 @@
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
+                    <a href="{% url 'passbook_admin:outposts' %}"
+                        class="pf-c-nav__link {% is_active 'passbook_admin:outposts' 'passbook_admin:outpost-create' 'passbook_admin:outpost-update' 'passbook_admin:outpost-delete' %}">
+                        {% trans 'Outposts' %}
+                    </a>
+                </li>
+                <li class="pf-c-nav__item">
                     <a href="{% url 'passbook_admin:property-mappings' %}"
                         class="pf-c-nav__link {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
                         {% trans 'Property Mappings' %}

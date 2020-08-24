@@ -6,6 +6,7 @@ from passbook.admin.views import (
     certificate_key_pair,
     flows,
     groups,
+    outposts,
     overview,
     policies,
     policies_bindings,
@@ -266,5 +267,20 @@ urlpatterns = [
         "crypto/certificates/<uuid:pk>/delete/",
         certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
         name="certificatekeypair-delete",
+    ),
+    # Outposts
+    path("outposts/", outposts.OutpostListView.as_view(), name="outposts",),
+    path(
+        "outposts/create/", outposts.OutpostCreateView.as_view(), name="outpost-create",
+    ),
+    path(
+        "outposts/<uuid:pk>/update/",
+        outposts.OutpostUpdateView.as_view(),
+        name="outpost-update",
+    ),
+    path(
+        "outposts/<uuid:pk>/delete/",
+        outposts.OutpostDeleteView.as_view(),
+        name="outpost-delete",
     ),
 ]
