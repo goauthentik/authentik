@@ -1,10 +1,10 @@
 """ProxyProvider API Views"""
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework.fields import CharField, ListField, SerializerMethodField
-from rest_framework.serializers import ModelSerializer, Serializer
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.viewsets import ModelViewSet
 
 from passbook.providers.oauth2.views.provider import ProviderInfoView
 from passbook.providers.proxy.models import ProxyProvider

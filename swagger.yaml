@@ -6272,8 +6272,9 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-  OIDCConfiguration:
+  OpenIDConnectConfiguration:
     title: Oidc configuration
+    description: Embed OpenID Connect provider information
     required:
       - issuer
       - authorization_endpoint
@@ -6369,7 +6370,7 @@ definitions:
         type: string
         maxLength: 255
       oidc_configuration:
-        $ref: '#/definitions/OIDCConfiguration'
+        $ref: '#/definitions/OpenIDConnectConfiguration'
       cookie_secret:
         title: Cookie secret
         type: string

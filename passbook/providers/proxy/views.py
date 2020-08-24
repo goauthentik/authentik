@@ -1,6 +1,4 @@
 """passbook proxy views"""
-from urllib.parse import urlparse
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Model
 from django.http import HttpRequest, HttpResponse
