@@ -58,7 +58,7 @@ class User(GuardianUserMixin, AbstractUser):
     name = models.TextField(help_text=_("User's display name."))
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group")
+    pb_groups = models.ManyToManyField("Group")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     attributes = models.JSONField(default=dict, blank=True)
