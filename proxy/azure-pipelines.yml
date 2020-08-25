@@ -1,13 +1,34 @@
 trigger:
   - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-steps:
-  - script: |
-      go version
-      go get -v -t -d ./...
-      go build -v .
-    workingDirectory: '$(modulePath)'
-    displayName: 'Get dependencies, then build'
+stages:
+  - stage: Lint
+    jobs:
+      - job:
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: GoTool@0
+            inputs:
+              version: '1.15'
+          - task: Go@0
+            inputs:
+              command: 'get'
+              arguments: '-u golang.org/x/lint/golint'
+          - task: CmdLine@2
+            inputs:
+              script: 'golint ../...'
+              workingDirectory: 'proxy/'
+  - stage: Build
+    jobs:
+      - job:
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: GoTool@0
+            inputs:
+              version: '1.15'
+          - task: Go@0
+            inputs:
+              command: 'build'
+              workingDirectory: 'proxy/'
