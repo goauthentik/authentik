@@ -5,9 +5,11 @@ name: passbook
 version: "0.9.0-stable"
 icon: https://github.com/BeryJu/passbook/blob/master/passbook/static/static/passbook/logo.svg
 dependencies:
-- name: postgresql
-  version: 9.3.2
-  repository: https://charts.bitnami.com/bitnami
-- name: redis
-  version: 10.7.16
-  repository: https://charts.bitnami.com/bitnami
+  - name: postgresql
+    version: 9.3.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.postgresql
+  - name: redis
+    version: 10.7.16
+    repository: https://charts.bitnami.com/bitnami
+    condition: install.redis

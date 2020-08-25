@@ -5,12 +5,13 @@ For a mid to high-load installation, Kubernetes is recommended. passbook is inst
 This installation automatically applies database migrations on startup. After the installation is done, you can use `pbadmin` as username and password.
 
 ```
-# Default values for passbook.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-# passbook version to use. Defaults to latest stable version
-# image:
-#   tag:
+###################################
+# Values directly affecting passbook
+###################################
+image:
+  name: beryju/passbook
+  name_static: beryju/passbook-static
+  tag: 0.9.0-stable
 
 nameOverride: ""
 
@@ -20,6 +21,7 @@ config:
   # Enable error reporting
   error_reporting:
     enabled: false
+    environment: customer
     send_pii: false
   # Log level used by web and worker
   # Can be either debug, info, warning, error
@@ -32,19 +34,15 @@ config:
 #   bucket: s3-bucket
 #   host: s3-host
 
-ingress:
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  path: /
-  hosts:
-    - passbook.k8s.local
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - passbook.k8s.local
+###################################
+# Values controlling dependencies
+###################################
 
-# These settings configure the packaged PostgreSQL and Redis chart.
+install:
+  postgresql: true
+  redis: true
+
+# These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
 postgresql:
   postgresqlDatabase: passbook
 
@@ -56,4 +54,16 @@ redis:
       enabled: false
     # https://stackoverflow.com/a/59189742
     disableCommands: []
+
+ingress:
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - passbook.k8s.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - passbook.k8s.local
 ```
