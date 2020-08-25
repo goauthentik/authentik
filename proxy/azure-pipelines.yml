@@ -2,7 +2,7 @@ trigger:
   - master
 
 stages:
-  - stage: Lint
+  - stage: lint
     jobs:
       - job:
         pool:
@@ -19,7 +19,7 @@ stages:
             inputs:
               script: '$(go list -f {{.Target}} golang.org/x/lint/golint) ./...'
               workingDirectory: 'proxy/'
-  - stage: Build-go
+  - stage: build_go
     jobs:
       - job:
         pool:
@@ -32,7 +32,7 @@ stages:
             inputs:
               command: 'build'
               workingDirectory: 'proxy/'
-  - stage: Build-docker
+  - stage: build_docker
     jobs:
       - job: build_proxy
         pool:
