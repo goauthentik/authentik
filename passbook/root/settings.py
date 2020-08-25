@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "guardian",
     "django_prometheus",
+    "channels",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.audit.apps.PassbookAuditConfig",
@@ -187,6 +188,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "passbook.root.wsgi.application"
+ASGI_APPLICATION = "passbook.root.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [(CONFIG.y("redis.host"), 6379)]},
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

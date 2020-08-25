@@ -39,6 +39,8 @@ structlog = "*"
 swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}
 dacite = "*"
+channels = "*"
+channels-redis = "*"
 
 [requires]
 python_version = "3.8"

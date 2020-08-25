@@ -1,7 +1,20 @@
 {% extends "administration/base.html" %}
 
 {% load i18n %}
+{% load humanize %}
 {% load passbook_utils %}
+
+{% block head %}
+{{ block.super }}
+<style>
+.pf-m-success {
+    color: var(--pf-global--success-color--100);
+}
+.pf-m-danger {
+    color: var(--pf-global--danger-color--100);
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="pf-c-page__main-section pf-m-light">
@@ -29,7 +42,7 @@
                 <tr role="row">
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Providers' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Status' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Health' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
@@ -45,9 +58,13 @@
                         </span>
                     </td>
                     <td role="cell">
-                        <span>
-                            {{ outpost.policies.all|length }}
-                        </span>
+                        {% with health=outpost.health %}
+                        {% if health %}
+                            <i class="fas fa-check pf-m-success"></i> {{ health|naturaltime }}
+                        {% else %}
+                            <i class="fas fa-times pf-m-danger"></i> Unhealthy
+                        {% endif %}
+                        {% endwith %}
                     </td>
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>

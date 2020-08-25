@@ -1012,6 +1012,132 @@ paths:
         required: true
         type: string
         format: uuid
+  /outposts/proxy/:
+    get:
+      operationId: outposts_proxy_list
+      description: ProxyProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_proxy_create
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/proxy/{id}/:
+    get:
+      operationId: outposts_proxy_read
+      description: ProxyProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_proxy_update
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_proxy_partial_update
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_proxy_delete
+      description: ProxyProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Proxy Provider.
+        required: true
+        type: integer
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -5994,6 +6120,114 @@ definitions:
         items:
           type: integer
         uniqueItems: true
+  OpenIDConnectConfiguration:
+    title: Oidc configuration
+    description: Embed OpenID Connect provider information
+    required:
+      - issuer
+      - authorization_endpoint
+      - token_endpoint
+      - userinfo_endpoint
+      - end_session_endpoint
+      - introspection_endpoint
+      - jwks_uri
+      - response_types_supported
+      - id_token_signing_alg_values_supported
+      - subject_types_supported
+      - token_endpoint_auth_methods_supported
+    type: object
+    properties:
+      issuer:
+        title: Issuer
+        type: string
+        minLength: 1
+      authorization_endpoint:
+        title: Authorization endpoint
+        type: string
+        minLength: 1
+      token_endpoint:
+        title: Token endpoint
+        type: string
+        minLength: 1
+      userinfo_endpoint:
+        title: Userinfo endpoint
+        type: string
+        minLength: 1
+      end_session_endpoint:
+        title: End session endpoint
+        type: string
+        minLength: 1
+      introspection_endpoint:
+        title: Introspection endpoint
+        type: string
+        minLength: 1
+      jwks_uri:
+        title: Jwks uri
+        type: string
+        minLength: 1
+      response_types_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      id_token_signing_alg_values_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      subject_types_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      token_endpoint_auth_methods_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+  ProxyOutpostConfig:
+    required:
+      - name
+      - internal_host
+      - external_host
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      internal_host:
+        title: Internal host
+        type: string
+        minLength: 1
+      external_host:
+        title: External host
+        type: string
+        minLength: 1
+      client_id:
+        title: Client ID
+        type: string
+        maxLength: 255
+        minLength: 1
+      client_secret:
+        title: Client Secret
+        type: string
+        maxLength: 255
+      oidc_configuration:
+        $ref: '#/definitions/OpenIDConnectConfiguration'
+      cookie_secret:
+        title: Cookie secret
+        type: string
+        minLength: 1
+      certificate:
+        title: Certificate
+        type: string
+        format: uuid
+        x-nullable: true
   Policy:
     type: object
     properties:
@@ -6419,71 +6653,6 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
-  OpenIDConnectConfiguration:
-    title: Oidc configuration
-    description: Embed OpenID Connect provider information
-    required:
-      - issuer
-      - authorization_endpoint
-      - token_endpoint
-      - userinfo_endpoint
-      - end_session_endpoint
-      - introspection_endpoint
-      - jwks_uri
-      - response_types_supported
-      - id_token_signing_alg_values_supported
-      - subject_types_supported
-      - token_endpoint_auth_methods_supported
-    type: object
-    properties:
-      issuer:
-        title: Issuer
-        type: string
-        minLength: 1
-      authorization_endpoint:
-        title: Authorization endpoint
-        type: string
-        minLength: 1
-      token_endpoint:
-        title: Token endpoint
-        type: string
-        minLength: 1
-      userinfo_endpoint:
-        title: Userinfo endpoint
-        type: string
-        minLength: 1
-      end_session_endpoint:
-        title: End session endpoint
-        type: string
-        minLength: 1
-      introspection_endpoint:
-        title: Introspection endpoint
-        type: string
-        minLength: 1
-      jwks_uri:
-        title: Jwks uri
-        type: string
-        minLength: 1
-      response_types_supported:
-        type: array
-        items:
-          type: string
-          minLength: 1
-      id_token_signing_alg_values_supported:
-        type: array
-        items:
-          type: string
-          minLength: 1
-      subject_types_supported:
-        type: array
-        items:
-          type: string
-          minLength: 1
-      token_endpoint_auth_methods_supported:
-        type: array
-        items:
-          type: string
-          minLength: 1
   ProxyProvider:
     required:
       - name
@@ -6505,21 +6674,6 @@ definitions:
         minLength: 1
       external_host:
         title: External host
-        type: string
-        minLength: 1
-      client_id:
-        title: Client ID
-        type: string
-        maxLength: 255
-        minLength: 1
-      client_secret:
-        title: Client Secret
-        type: string
-        maxLength: 255
-      oidc_configuration:
-        $ref: '#/definitions/OpenIDConnectConfiguration'
-      cookie_secret:
-        title: Cookie secret
         type: string
         minLength: 1
       certificate:

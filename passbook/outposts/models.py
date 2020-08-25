@@ -1,7 +1,10 @@
 """Outpost models"""
-from typing import Iterable
+from datetime import datetime
+from typing import Iterable, Optional
 from uuid import uuid4
 
+from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.db import models
 from guardian.shortcuts import assign_perm
 
@@ -25,6 +28,22 @@ class Outpost(models.Model):
 
     providers = models.ManyToManyField(Provider)
 
+    channels = ArrayField(models.TextField())
+
+    @property
+    def health_cache_key(self) -> str:
+        """Key by which the outposts health status is saved"""
+        return f"outpost_{self.uuid.hex}_health"
+
+    @property
+    def health(self) -> Optional[datetime]:
+        """Get outpost's health status"""
+        key = self.health_cache_key
+        value = cache.get(key, None)
+        if value:
+            return datetime.fromtimestamp(value)
+        return None
+
     def _create_user(self) -> User:
         """Create user and assign permissions for all required objects"""
         user: User = User.objects.create(username=f"pb-outpost-{self.uuid.hex}")
@@ -47,7 +66,7 @@ class Outpost(models.Model):
     @property
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
-        token = Token.objects.filter(user=self.user, intent=TokenIntents.INTENT_API)
+        token = Token.filter_not_expired(user=self.user, intent=TokenIntents.INTENT_API)
         if token.exists():
             return token
         return Token.objects.create(
@@ -59,7 +78,7 @@ class Outpost(models.Model):
 
     def get_required_objects(self) -> Iterable[models.Model]:
         """Get an iterator of all objects the user needs read access to"""
-        objects = []
+        objects = [self]
         for provider in (
             Provider.objects.filter(outpost=self).select_related().select_subclasses()
         ):

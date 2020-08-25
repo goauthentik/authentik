@@ -36,6 +36,38 @@ class OpenIDConnectConfigurationSerializer(Serializer):
 class ProxyProviderSerializer(ModelSerializer):
     """ProxyProvider Serializer"""
 
+    def create(self, validated_data):
+        instance: ProxyProvider = super().create(validated_data)
+        instance.set_oauth_defaults()
+        instance.save()
+        return instance
+
+    def update(self, instance: ProxyProvider, validated_data):
+        instance.set_oauth_defaults()
+        return super().update(instance, validated_data)
+
+    class Meta:
+
+        model = ProxyProvider
+        fields = [
+            "pk",
+            "name",
+            "internal_host",
+            "external_host",
+            "certificate",
+        ]
+
+
+class ProxyProviderViewSet(ModelViewSet):
+    """ProxyProvider Viewset"""
+
+    queryset = ProxyProvider.objects.all()
+    serializer_class = ProxyProviderSerializer
+
+
+class ProxyOutpostConfigSerializer(ModelSerializer):
+    """ProxyProvider Serializer"""
+
     oidc_configuration = SerializerMethodField()
 
     def create(self, validated_data):
@@ -70,8 +102,8 @@ class ProxyProviderSerializer(ModelSerializer):
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
-class ProxyProviderViewSet(ModelViewSet):
+class OutpostConfigViewSet(ModelViewSet):
     """ProxyProvider Viewset"""
 
-    queryset = ProxyProvider.objects.all()
-    serializer_class = ProxyProviderSerializer
+    queryset = ProxyProvider.objects.filter(application__isnull=False)
+    serializer_class = ProxyOutpostConfigSerializer

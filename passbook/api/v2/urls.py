@@ -27,7 +27,7 @@ from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
 from passbook.providers.oauth2.api import OAuth2ProviderViewSet, ScopeMappingViewSet
-from passbook.providers.proxy.api import ProxyProviderViewSet
+from passbook.providers.proxy.api import OutpostConfigViewSet, ProxyProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
@@ -56,6 +56,7 @@ router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
 router.register("outposts/outposts", OutpostViewSet)
+router.register("outposts/proxy", OutpostConfigViewSet)
 
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
