@@ -14,6 +14,7 @@ import (
 	"github.com/BeryJu/passbook/proxy/pkg/client/core"
 	"github.com/BeryJu/passbook/proxy/pkg/client/crypto"
 	"github.com/BeryJu/passbook/proxy/pkg/client/flows"
+	"github.com/BeryJu/passbook/proxy/pkg/client/outposts"
 	"github.com/BeryJu/passbook/proxy/pkg/client/policies"
 	"github.com/BeryJu/passbook/proxy/pkg/client/propertymappings"
 	"github.com/BeryJu/passbook/proxy/pkg/client/providers"
@@ -68,6 +69,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Passbook {
 	cli.Core = core.New(transport, formats)
 	cli.Crypto = crypto.New(transport, formats)
 	cli.Flows = flows.New(transport, formats)
+	cli.Outposts = outposts.New(transport, formats)
 	cli.Policies = policies.New(transport, formats)
 	cli.Propertymappings = propertymappings.New(transport, formats)
 	cli.Providers = providers.New(transport, formats)
@@ -126,6 +128,8 @@ type Passbook struct {
 
 	Flows flows.ClientService
 
+	Outposts outposts.ClientService
+
 	Policies policies.ClientService
 
 	Propertymappings propertymappings.ClientService
@@ -148,6 +152,7 @@ func (c *Passbook) SetTransport(transport runtime.ClientTransport) {
 	c.Core.SetTransport(transport)
 	c.Crypto.SetTransport(transport)
 	c.Flows.SetTransport(transport)
+	c.Outposts.SetTransport(transport)
 	c.Policies.SetTransport(transport)
 	c.Propertymappings.SetTransport(transport)
 	c.Providers.SetTransport(transport)

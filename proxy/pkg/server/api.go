@@ -1,16 +1,17 @@
 package server
 
 import (
-	"context"
 	"crypto/sha512"
 	"encoding/hex"
 	"net/url"
-	"sync"
-	"time"
 
 	"github.com/BeryJu/passbook/proxy/pkg/client"
-	"github.com/BeryJu/passbook/proxy/pkg/client/providers"
+	"github.com/BeryJu/passbook/proxy/pkg/client/outposts"
 	"github.com/go-openapi/runtime"
+	"github.com/recws-org/recws"
+
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
 	log "github.com/sirupsen/logrus"
 )
@@ -18,6 +19,7 @@ import (
 type APIController struct {
 	client *client.Passbook
 	auth   runtime.ClientAuthInfoWriter
+	token  string
 
 	server *Server
 
@@ -25,9 +27,18 @@ type APIController struct {
 
 	lastBundleHash string
 	logger         *log.Entry
+
+	wsConn recws.RecConn
 }
 
-func NewAPIController(client *client.Passbook, auth runtime.ClientAuthInfoWriter) *APIController {
+func NewAPIController(pbURL url.URL, token string) *APIController {
+	// create the transport
+	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
+	auth := httptransport.BasicAuth("", token)
+
+	// create the API client, with the transport
+	apiClient := client.New(transport, strfmt.Default)
+
 	commonOpts := options.NewOptions()
 	commonOpts.Cookie.Name = "passbook_proxy"
 	commonOpts.EmailDomains = []string{"*"}
@@ -36,20 +47,30 @@ func NewAPIController(client *client.Passbook, auth runtime.ClientAuthInfoWriter
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
 
-	return &APIController{
-		client:         client,
+	// Because we don't know the outpost UUID, we simply do a list and pick the first
+	// The service account this token belongs to should only have access to a single outpost
+	outposts, err := apiClient.Outposts.OutpostsOutpostsList(outposts.NewOutpostsOutpostsListParams(), auth)
+
+	if err != nil {
+		panic(err)
+	}
+	outpost := outposts.Payload.Results[0]
+
+	ac := &APIController{
+		client:         apiClient,
 		auth:           auth,
+		token:          token,
 		logger:         log.WithField("component", "api-controller"),
 		commonOpts:     commonOpts,
 		server:         NewServer(),
 		lastBundleHash: "",
 	}
+	ac.initWS(pbURL, outpost.Pk)
+	return ac
 }
 
 func (a *APIController) bundleProviders() ([]*ProviderBundle, error) {
-	providers, err := a.client.Providers.ProvidersProxyList(&providers.ProvidersProxyListParams{
-		Context: context.Background(),
-	}, a.auth)
+	providers, err := a.client.Outposts.OutpostsProxyList(outposts.NewOutpostsProxyListParams(), a.auth)
 	if err != nil {
 		a.logger.WithError(err).Error("Failed to fetch providers")
 		return nil, err
@@ -106,37 +127,21 @@ func (a *APIController) Start() error {
 	if err != nil {
 		return err
 	}
-	wg := sync.WaitGroup{}
-	wg.Add(3)
 	go func() {
 		a.logger.Debug("Starting HTTP Server...")
 		a.server.ServeHTTP()
-		defer wg.Done()
 	}()
 	go func() {
 		a.logger.Debug("Starting HTTPs Server...")
 		a.server.ServeHTTPS()
-		defer wg.Done()
 	}()
-	ticker := time.NewTicker(30 * time.Second)
-	quit := make(chan struct{})
 	go func() {
-		a.logger.Debug("Starting API Update time...")
-		defer wg.Done()
-		for {
-			select {
-			case <-ticker.C:
-				a.logger.Debug("Updating providers from passbook")
-				err := a.UpdateIfRequired()
-				if err != nil {
-					a.logger.WithError(err).Warning("Failed to update providers")
-				}
-			case <-quit:
-				ticker.Stop()
-				return
-			}
-		}
+		a.logger.Debug("Starting WS Handler...")
+		a.startWSHandler()
 	}()
-	wg.Wait()
+	go func() {
+		a.logger.Debug("Starting WS Health notifier...")
+		a.startWSHealth()
+	}()
 	return nil
 }

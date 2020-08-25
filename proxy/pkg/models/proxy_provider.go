@@ -21,19 +21,6 @@ type ProxyProvider struct {
 	// Format: uuid
 	Certificate *strfmt.UUID `json:"certificate,omitempty"`
 
-	// Client ID
-	// Max Length: 255
-	// Min Length: 1
-	ClientID string `json:"client_id,omitempty"`
-
-	// Client Secret
-	// Max Length: 255
-	ClientSecret string `json:"client_secret,omitempty"`
-
-	// Cookie secret
-	// Min Length: 1
-	CookieSecret string `json:"cookie_secret,omitempty"`
-
 	// External host
 	// Required: true
 	// Min Length: 1
@@ -49,9 +36,6 @@ type ProxyProvider struct {
 	// Min Length: 1
 	Name *string `json:"name"`
 
-	// oidc configuration
-	OidcConfiguration *OIDCConfiguration `json:"oidc_configuration,omitempty"`
-
 	// ID
 	// Read Only: true
 	Pk int64 `json:"pk,omitempty"`
@@ -65,18 +49,6 @@ func (m *ProxyProvider) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateClientID(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateClientSecret(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateCookieSecret(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateExternalHost(formats); err != nil {
 		res = append(res, err)
 	}
@@ -86,10 +58,6 @@ func (m *ProxyProvider) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateOidcConfiguration(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -106,49 +74,6 @@ func (m *ProxyProvider) validateCertificate(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("certificate", "body", "uuid", m.Certificate.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ProxyProvider) validateClientID(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.ClientID) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("client_id", "body", string(m.ClientID), 1); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("client_id", "body", string(m.ClientID), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ProxyProvider) validateClientSecret(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.ClientSecret) { // not required
-		return nil
-	}
-
-	if err := validate.MaxLength("client_secret", "body", string(m.ClientSecret), 255); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *ProxyProvider) validateCookieSecret(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.CookieSecret) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("cookie_secret", "body", string(m.CookieSecret), 1); err != nil {
 		return err
 	}
 
@@ -189,24 +114,6 @@ func (m *ProxyProvider) validateName(formats strfmt.Registry) error {
 
 	if err := validate.MinLength("name", "body", string(*m.Name), 1); err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func (m *ProxyProvider) validateOidcConfiguration(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.OidcConfiguration) { // not required
-		return nil
-	}
-
-	if m.OidcConfiguration != nil {
-		if err := m.OidcConfiguration.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("oidc_configuration")
-			}
-			return err
-		}
 	}
 
 	return nil

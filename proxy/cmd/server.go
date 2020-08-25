@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"net/url"
 	"os"
+	"os/signal"
 	"time"
 
 	"github.com/BeryJu/passbook/proxy/pkg/client"
@@ -76,6 +77,18 @@ func RunServer() {
 
 	defer sentry.Flush(2 * time.Second)
 
-	ac := server.NewAPIController(apiClient, basicAuth)
-	panic(ac.Start())
+	ac := server.NewAPIController(*pbURLActual, pbToken)
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	ac.Start()
+
+	for {
+		select {
+		case <-interrupt:
+			ac.Shutdown()
+			os.Exit(0)
+		}
+	}
 }

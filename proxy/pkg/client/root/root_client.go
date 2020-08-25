@@ -35,7 +35,7 @@ type ClientService interface {
 }
 
 /*
-  RootConfigList List current messages and pass into Serializer
+  RootConfigList Retrieve passbook configurations
 */
 func (a *Client) RootConfigList(params *RootConfigListParams, authInfo runtime.ClientAuthInfoWriter) (*RootConfigListOK, error) {
 	// TODO: Validate the params before sending
