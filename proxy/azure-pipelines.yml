@@ -22,7 +22,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                swagger generate client -f ../swagger.yaml -A passbook -t pkg/
+                $(go list -f {{.Target}} github.com/go-swagger/go-swagger/cmd/swagger) generate client -f ../swagger.yaml -A passbook -t pkg/
               workingDirectory: 'proxy/'
           - task: CmdLine@2
             inputs:
@@ -31,7 +31,7 @@ stages:
               workingDirectory: 'proxy/'
   - stage: build_go
     jobs:
-      - job:
+      - job: build_go
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -45,7 +45,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                swagger generate client -f ../swagger.yaml -A passbook -t pkg/
+                $(go list -f {{.Target}} github.com/go-swagger/go-swagger/cmd/swagger) generate client -f ../swagger.yaml -A passbook -t pkg/
               workingDirectory: 'proxy/'
           - task: Go@0
             inputs:
@@ -67,7 +67,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                swagger generate client -f ../swagger.yaml -A passbook -t pkg/
+                $(go list -f {{.Target}} github.com/go-swagger/go-swagger/cmd/swagger) generate client -f ../swagger.yaml -A passbook -t pkg/
               workingDirectory: 'proxy/'
           - task: Docker@2
             inputs:
