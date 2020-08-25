@@ -19,7 +19,7 @@ stages:
             inputs:
               script: '$(go list -f {{.Target}} golang.org/x/lint/golint) ./...'
               workingDirectory: 'proxy/'
-  - stage: Build
+  - stage: Build-go
     jobs:
       - job:
         pool:
@@ -32,3 +32,17 @@ stages:
             inputs:
               command: 'build'
               workingDirectory: 'proxy/'
+  - stage: Build-docker
+    jobs:
+      - job: build_proxy
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook-proxy'
+            command: 'buildAndPush'
+            Dockerfile: 'proxy/Dockerfile'
+            buildContext: 'proxy/'
+            tags: 'gh-$(Build.SourceBranchName)'
