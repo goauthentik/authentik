@@ -1,0 +1,13 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: |
+      go version
+      go get -v -t -d ./...
+      go build -v .
+    workingDirectory: '$(modulePath)'
+    displayName: 'Get dependencies, then build'
