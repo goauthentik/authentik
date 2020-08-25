@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/passbook/proxy/pkg"
 	"github.com/coreos/go-oidc"
 	"github.com/justinas/alice"
 	ipapi "github.com/oauth2-proxy/oauth2-proxy/pkg/apis/ip"
@@ -447,7 +446,7 @@ func (p *OAuthProxy) SignInPage(rw http.ResponseWriter, req *http.Request, code 
 		SignInMessage: template.HTML(p.SignInMessage),
 		CustomLogin:   p.displayHtpasswdForm,
 		Redirect:      redirectURL,
-		Version:       pkg.VERSION,
+		Version:       "",
 		ProxyPrefix:   p.ProxyPrefix,
 		Footer:        template.HTML(p.Footer),
 	}

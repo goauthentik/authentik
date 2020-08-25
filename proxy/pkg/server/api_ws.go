@@ -31,6 +31,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	ac.wsConn = ws
 }
 
+// Shutdown Gracefully stops all workers, disconnects from websocket
 func (ac *APIController) Shutdown() {
 	// Cleanly close the connection by sending a close message and then
 	// waiting (with timeout) for the server to close the connection.
@@ -44,7 +45,7 @@ func (ac *APIController) Shutdown() {
 
 func (ac *APIController) startWSHandler() {
 	for {
-		var wsMsg WebsocketMessage
+		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			ac.logger.Println("read:", err)
@@ -64,7 +65,7 @@ func (ac *APIController) startWSHandler() {
 
 func (ac *APIController) startWSHealth() {
 	for ; true; <-time.Tick(time.Second * 10) {
-		aliveMsg := WebsocketMessage{
+		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
 			Args:        make(map[string]interface{}),
 		}

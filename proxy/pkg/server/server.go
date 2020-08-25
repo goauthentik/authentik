@@ -15,7 +15,7 @@ import (
 
 // Server represents an HTTP server
 type Server struct {
-	Handlers map[string]*ProviderBundle
+	Handlers map[string]*providerBundle
 
 	stop   chan struct{} // channel for waiting shutdown
 	logger *log.Entry
@@ -23,13 +23,14 @@ type Server struct {
 	defaultCert tls.Certificate
 }
 
+// NewServer initialise a new HTTP Server
 func NewServer() *Server {
 	defaultCert, err := generateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
 	}
 	return &Server{
-		Handlers:    make(map[string]*ProviderBundle),
+		Handlers:    make(map[string]*providerBundle),
 		logger:      log.WithField("component", "http-server"),
 		defaultCert: defaultCert,
 	}
@@ -48,7 +49,7 @@ func (s *Server) ServeHTTP() {
 	s.logger.Printf("closing %s", listener.Addr())
 }
 
-func (s *Server) GetCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
+func (s *Server) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
 	handler, ok := s.Handlers[info.ServerName]
 	if !ok {
 		s.logger.WithField("server-name", info.ServerName).Debug("Handler does not exist")
@@ -68,7 +69,7 @@ func (s *Server) ServeHTTPS() {
 	config := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,
-		GetCertificate: s.GetCertificates,
+		GetCertificate: s.getCertificates,
 	}
 
 	ln, err := net.Listen("tcp", listenAddress)

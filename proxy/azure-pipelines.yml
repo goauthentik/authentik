@@ -17,7 +17,7 @@ stages:
               arguments: '-u golang.org/x/lint/golint'
           - task: CmdLine@2
             inputs:
-              script: 'golint ../...'
+              script: '$(go list -f {{.Target}} golang.org/x/lint/golint) ./...'
               workingDirectory: 'proxy/'
   - stage: Build
     jobs:

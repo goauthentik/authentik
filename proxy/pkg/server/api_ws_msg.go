@@ -1,14 +1,17 @@
 package server
 
-type WebsocketInstruction int
+type websocketInstruction int
 
 const (
-	WebsocketInstructionAck           WebsocketInstruction = 0
-	WebsocketInstructionHello         WebsocketInstruction = 1
-	WebsocketInstructionTriggerUpdate WebsocketInstruction = 2
+	// WebsocketInstructionAck Code used to acknowledge a previous message
+	WebsocketInstructionAck websocketInstruction = 0
+	// WebsocketInstructionHello Code used to send a healthcheck keepalive
+	WebsocketInstructionHello websocketInstruction = 1
+	// WebsocketInstructionTriggerUpdate Code received to trigger a config update
+	WebsocketInstructionTriggerUpdate websocketInstruction = 2
 )
 
-type WebsocketMessage struct {
-	Instruction WebsocketInstruction   `json:"instruction"`
+type websocketMessage struct {
+	Instruction websocketInstruction   `json:"instruction"`
 	Args        map[string]interface{} `json:"args"`
 }

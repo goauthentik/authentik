@@ -17,6 +17,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// RunServer main entrypoint, runs the full server
 func RunServer() {
 	pbURL, found := os.LookupEnv("PASSBOOK_HOST")
 	if !found {

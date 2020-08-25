@@ -19,7 +19,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type ProviderBundle struct {
+type providerBundle struct {
 	http.Handler
 
 	a     *APIController
@@ -29,7 +29,7 @@ type ProviderBundle struct {
 	cert *tls.Certificate
 }
 
-func (pb *ProviderBundle) prepareOpts(provider *models.ProxyOutpostConfig) *options.Options {
+func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *options.Options {
 	externalHost, err := url.Parse(*provider.ExternalHost)
 	if err != nil {
 		log.WithError(err).Warning("Failed to parse URL, skipping provider")
@@ -79,7 +79,7 @@ func (pb *ProviderBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 	return providerOpts
 }
 
-func (pb *ProviderBundle) Build(provider *models.ProxyOutpostConfig) {
+func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
 	opts := pb.prepareOpts(provider)
 
 	chain := alice.New()

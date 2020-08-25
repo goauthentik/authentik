@@ -16,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// APIController main controller which connects to the passbook api via http and ws
 type APIController struct {
 	client *client.Passbook
 	auth   runtime.ClientAuthInfoWriter
@@ -31,6 +32,7 @@ type APIController struct {
 	wsConn recws.RecConn
 }
 
+// NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(pbURL url.URL, token string) *APIController {
 	// create the transport
 	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
@@ -69,7 +71,7 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 	return ac
 }
 
-func (a *APIController) bundleProviders() ([]*ProviderBundle, error) {
+func (a *APIController) bundleProviders() ([]*providerBundle, error) {
 	providers, err := a.client.Outposts.OutpostsProxyList(outposts.NewOutpostsProxyListParams(), a.auth)
 	if err != nil {
 		a.logger.WithError(err).Error("Failed to fetch providers")
@@ -84,14 +86,14 @@ func (a *APIController) bundleProviders() ([]*ProviderBundle, error) {
 	}
 	a.lastBundleHash = hash
 
-	bundles := make([]*ProviderBundle, len(providers.Payload.Results))
+	bundles := make([]*providerBundle, len(providers.Payload.Results))
 
 	for idx, provider := range providers.Payload.Results {
 		externalHost, err := url.Parse(*provider.ExternalHost)
 		if err != nil {
 			log.WithError(err).Warning("Failed to parse URL, skipping provider")
 		}
-		bundles[idx] = &ProviderBundle{
+		bundles[idx] = &providerBundle{
 			a:    a,
 			Host: externalHost.Hostname(),
 		}
@@ -100,8 +102,8 @@ func (a *APIController) bundleProviders() ([]*ProviderBundle, error) {
 	return bundles, nil
 }
 
-func (a *APIController) updateHTTPServer(bundles []*ProviderBundle) {
-	newMap := make(map[string]*ProviderBundle)
+func (a *APIController) updateHTTPServer(bundles []*providerBundle) {
+	newMap := make(map[string]*providerBundle)
 	for _, bundle := range bundles {
 		newMap[bundle.Host] = bundle
 	}
@@ -109,6 +111,7 @@ func (a *APIController) updateHTTPServer(bundles []*ProviderBundle) {
 	a.server.Handlers = newMap
 }
 
+// UpdateIfRequired Updates the HTTP Server config if required, automatically swaps the handlers
 func (a *APIController) UpdateIfRequired() error {
 	bundles, err := a.bundleProviders()
 	if err != nil {
@@ -122,6 +125,7 @@ func (a *APIController) UpdateIfRequired() error {
 	return nil
 }
 
+// Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
 	err := a.UpdateIfRequired()
 	if err != nil {
