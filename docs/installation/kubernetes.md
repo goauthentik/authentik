@@ -25,11 +25,6 @@ config:
   # Can be either debug, info, warning, error
   log_level: warning
 
-# This Helm chart ships with built-in Prometheus ServiceMonitors and Rules.
-# This requires the CoreOS Prometheus Operator.
-monitoring:
-  enabled: false
-
 # Enable Database Backups to S3
 # backup:
 #   access_key: access-key
