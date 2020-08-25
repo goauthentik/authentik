@@ -3,24 +3,17 @@ kind: ConfigMap
 metadata:
   name: {{ include "passbook.fullname" . }}-config
 data:
-  config.yml: |
-    postgresql:
-      host: "{{ .Release.Name }}-postgresql"
-      name: "{{ .Values.postgresql.postgresqlDatabase }}"
-      user: postgres
-      {{- if .Values.backup }}
-      backup:
-        access_key: "{{ .Values.backup.access_key }}"
-        secret_key: "{{ .Values.backup.secret_key }}"
-        bucket: "{{ .Values.backup.bucket }}"
-        host: "{{ .Values.backup.host }}"
-      {{- end}}
-    redis:
-      host: "{{ .Release.Name }}-redis-master"
-      cache_db: 0
-      message_queue_db: 1
-    error_reporting:
-      enabled: {{ .Values.config.error_reporting.enabled }}
-      environment: {{ .Values.config.error_reporting.environment }}
-      send_pii: {{ .Values.config.error_reporting.send_pii }}
-    log_level: "{{ .Values.config.log_level }}"
+  POSTGRESQL__HOST: "{{ .Release.Name }}-postgresql"
+  POSTGRESQL__NAME: "{{ .Values.postgresql.postgresqlDatabase }}"
+  POSTGRESQL__USER: "{{ .Values.postgresql.postgresqlUsername }}"
+  {{- if .Values.backup }}
+  POSTGRESQL__BACKUP__ACCESS_KEY: "{{ .Values.backup.access_key }}"
+  POSTGRESQL__BACKUP__SECRET_KEY: "{{ .Values.backup.secret_key }}"
+  POSTGRESQL__BACKUP__BUCKET: "{{ .Values.backup.bucket }}"
+  POSTGRESQL__BACKUP__HOST: "{{ .Values.backup.host }}"
+  {{- end}}
+  REDIS__HOST: "{{ .Release.Name }}-redis-master"
+  ERROR_REPORTING__ENABLED: "{{ .Values.config.error_reporting.enabled }}"
+  ERROR_REPORTING__ENVIRONMENT: "{{ .Values.config.error_reporting.environment }}"
+  ERROR_REPORTING__SEND_PII: "{{ .Values.config.error_reporting.send_pii }}"
+  LOG_LEVEL: "{{ .Values.config.log_level }}"
