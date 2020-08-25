@@ -22,10 +22,6 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         k8s.passbook.io/component: web
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "passbook.fullname" . }}-config
       initContainers:
         - name: passbook-database-migrations
           image: "beryju/passbook:{{ .Values.image.tag }}"
@@ -33,9 +29,6 @@ spec:
           args:
             - ./manage.py
             - migrate
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config
@@ -63,9 +56,6 @@ spec:
           args:
             - uwsgi
             - uwsgi.ini
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config
@@ -74,18 +64,18 @@ spec:
             - name: PASSBOOK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "passbook.fullname" . }}-secret-key
-                  key: secret_key
+                  name: "{{ include "passbook.fullname" . }}-secret-key"
+                  key: "secret_key"
             - name: PASSBOOK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-redis"
-                  key: redis-password
+                  key: "redis-password"
             - name: PASSBOOK_POSTGRESQL__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
-                  key: postgresql-password
+                  key: "postgresql-password"
           ports:
             - name: http
               containerPort: 8000

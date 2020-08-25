@@ -22,10 +22,6 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         k8s.passbook.io/component: worker
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "passbook.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
           image: "beryju/passbook:{{ .Values.image.tag }}"
@@ -38,29 +34,26 @@ spec:
             - -B
             - -A=passbook.root.celery
             - -s=/tmp/celerybeat-schedule
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
           envFrom:
             - configMapRef:
-                name: {{ include "passbook.fullname" . }}-config
-              prefix: PASSBOOK_
+                name: "{{ include "passbook.fullname" . }}-config"
+              prefix: "PASSBOOK_"
           env:
             - name: PASSBOOK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "passbook.fullname" . }}-secret-key
+                  name: "{{ include "passbook.fullname" . }}-secret-key"
                   key: secret_key
             - name: PASSBOOK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-redis"
-                  key: redis-password
+                  key: "redis-password"
             - name: PASSBOOK_POSTGRESQL__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
-                  key: postgresql-password
+                  key: "postgresql-password"
           resources:
             requests:
               cpu: 150m
