@@ -22,5 +22,5 @@ spec:
     interval: 10s
   selector:
     matchLabels:
-      k8s.passbook.io/component: web
+      k8s.passbook.beryju.org/component: web
 {{- end }}

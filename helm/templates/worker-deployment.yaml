@@ -7,20 +7,20 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.passbook.io/component: worker
+    k8s.passbook.beryju.org/component: worker
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "passbook.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      k8s.passbook.io/component: worker
+      k8s.passbook.beryju.org/component: worker
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        k8s.passbook.io/component: worker
+        k8s.passbook.beryju.org/component: worker
     spec:
       containers:
         - name: {{ .Chart.Name }}

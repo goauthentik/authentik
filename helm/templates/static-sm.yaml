@@ -13,5 +13,5 @@ spec:
   - port: http
   selector:
     matchLabels:
-      k8s.passbook.io/component: static
+      k8s.passbook.beryju.org/component: static
 {{- end }}
