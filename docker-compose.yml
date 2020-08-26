@@ -22,9 +22,7 @@ services:
       - traefik.enable=false
   server:
     image: beryju/passbook:${PASSBOOK_TAG:-latest}
-    command:
-      - uwsgi
-      - uwsgi.ini
+    command: server
     environment:
       - PASSBOOK_REDIS__HOST=redis
       - PASSBOOK_ERROR_REPORTING=${PASSBOOK_ERROR_REPORTING:-false}
@@ -40,14 +38,7 @@ services:
       - traefik.frontend.rule=PathPrefix:/
   worker:
     image: beryju/passbook:${PASSBOOK_TAG:-latest}
-    command:
-      - celery
-      - worker
-      - --autoscale=10,3
-      - -E
-      - -B
-      - -A=passbook.root.celery
-      - -s=/tmp/celerybeat-schedule
+    command: worker
     networks:
       - internal
     labels:

@@ -53,9 +53,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          args:
-            - uwsgi
-            - uwsgi.ini
+          args: server
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config

@@ -26,14 +26,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          args:
-            - celery
-            - worker
-            - --autoscale=10,3
-            - -E
-            - -B
-            - -A=passbook.root.celery
-            - -s=/tmp/celerybeat-schedule
+          args: worker
           envFrom:
             - configMapRef:
                 name: "{{ include "passbook.fullname" . }}-config"
