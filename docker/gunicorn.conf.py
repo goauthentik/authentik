@@ -33,6 +33,6 @@ logconfig_dict = {
             "class": "logging.StreamHandler",
             "formatter": "json_formatter",
         },
-        "console": {"class": "logging.StreamHandler", "formatter": "json_formatter",},
+        "console": {"class": "logging.StreamHandler", "formatter": "json_formatter"},
     },
 }
