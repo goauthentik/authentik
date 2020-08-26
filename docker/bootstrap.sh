@@ -1,5 +1,6 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 /app/wait_for_db.py
+printf '{"event": "Bootstrap completed", "level": "info", "logger": "bootstrap", "command": "%s"}\n' "$@"
 if [[ "$1" == "server" ]]; then
     gunicorn -c gunicorn.conf.py passbook.root.asgi:application
 elif [[ "$1" == "worker" ]]; then
