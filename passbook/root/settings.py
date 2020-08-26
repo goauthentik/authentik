@@ -187,7 +187,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "passbook.root.wsgi.application"
 ASGI_APPLICATION = "passbook.root.routing.application"
 
 CHANNEL_LAYERS = {
@@ -375,7 +374,7 @@ _LOGGING_HANDLER_MAP = {
     "grpc": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
-    "websockets": "WARNING"
+    "websockets": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
