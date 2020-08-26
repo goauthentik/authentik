@@ -72,9 +72,7 @@ class ASGILogger:
         if self.headers.get(b"host", b"") == b"kubernetes-healthcheck-host":
             # Don't log kubernetes health/readiness requests
             await send({"type": "http.response.start", "status": 204, "headers": []})
-            await send(
-                {"type": "http.response.body", "body": ""}
-            )
+            await send({"type": "http.response.body", "body": ""})
             return
 
         self.start = time()

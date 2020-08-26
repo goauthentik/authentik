@@ -244,7 +244,7 @@ CELERY_BEAT_SCHEDULE = {
     "clean_expired_models": {
         "task": "passbook.core.tasks.clean_expired_models",
         "schedule": crontab(minute="*/5"),  # Run every 5 minutes
-        'options': {'queue': 'passbook_scheduled'},
+        "options": {"queue": "passbook_scheduled"},
     }
 }
 CELERY_CREATE_MISSING_QUEUES = True

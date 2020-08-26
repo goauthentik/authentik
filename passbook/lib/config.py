@@ -1,9 +1,9 @@
 """passbook core config loader"""
-from json import dumps
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
+from json import dumps
 from typing import Any, Dict
 from urllib.parse import urlparse
 
@@ -60,11 +60,7 @@ class ConfigLoader:
     def _log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
         'structlog' or 'logging' hasn't been configured yet."""
-        output = {
-            "event": message,
-            "level": level,
-            "logger": self.__class__.__module__
-        }
+        output = {"event": message, "level": level, "logger": self.__class__.__module__}
         output.update(kwargs)
         print(dumps(output))
 
@@ -97,7 +93,9 @@ class ConfigLoader:
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            self._log("warning", "Permission denied while reading file", path=path, error=exc)
+            self._log(
+                "warning", "Permission denied while reading file", path=path, error=exc
+            )
 
     def update_from_dict(self, update: dict):
         """Update config from dict"""
