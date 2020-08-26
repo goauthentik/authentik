@@ -47,7 +47,6 @@ class ASGILoggerMiddleware:
         return
 
 
-# pylint: disable=too-many-instance-attributes
 class ASGILogger:
     """ASGI Logger, instantiated for each request"""
 
@@ -74,7 +73,7 @@ class ASGILogger:
             # Don't log kubernetes health/readiness requests
             await send({"type": "http.response.start", "status": 204, "headers": []})
             await send(
-                {"type": "http.response.body", "body": "",}
+                {"type": "http.response.body", "body": ""}
             )
             return
 

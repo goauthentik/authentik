@@ -1,5 +1,5 @@
+"""Gunicorn config"""
 import multiprocessing
-import re
 
 import structlog
 
