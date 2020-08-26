@@ -51,7 +51,11 @@
                     </td>
                     <td role="cell">
                         <span>
+                            {% if not token.expiring %}
+                            -
+                            {% else %}
                             {{ token.expires }}
+                            {% endif %}
                         </span>
                     </td>
                     <td>

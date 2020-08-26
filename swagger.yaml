@@ -3122,21 +3122,6 @@ paths:
         description: A unique integer value identifying this SAML Provider.
         required: true
         type: integer
-  /root/config/:
-    get:
-      operationId: root_config_list
-      description: Retrieve passbook configurations
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Config'
-      tags:
-        - root
-    parameters: []
   /root/messages/:
     get:
       operationId: root_messages_list
@@ -6104,6 +6089,7 @@ definitions:
     required:
       - name
       - providers
+      - config
     type: object
     properties:
       pk:
@@ -6120,6 +6106,9 @@ definitions:
         items:
           type: integer
         uniqueItems: true
+      config:
+        title: Config
+        type: object
   OpenIDConnectConfiguration:
     title: Oidc configuration
     description: Embed OpenID Connect provider information
@@ -6760,21 +6749,6 @@ definitions:
         description: Require Requests to be signed by an X509 Certificate. Must match
           the Certificate selected in `Singing Keypair`.
         type: boolean
-  Config:
-    type: object
-    properties:
-      log_level:
-        title: Log level
-        type: string
-        readOnly: true
-      error_reporting_enabled:
-        title: Error reporting enabled
-        type: boolean
-        readOnly: true
-      error_reporting_environment:
-        title: Error reporting environment
-        type: string
-        readOnly: true
   Message:
     type: object
     properties:

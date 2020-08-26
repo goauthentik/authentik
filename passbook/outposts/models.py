@@ -2,6 +2,7 @@
 from datetime import datetime
 from typing import Iterable, Optional
 from uuid import uuid4
+from dataclasses import asdict, dataclass, field
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
@@ -9,6 +10,14 @@ from django.db import models
 from guardian.shortcuts import assign_perm
 
 from passbook.core.models import Provider, Token, TokenIntents, User
+from passbook.lib.config import CONFIG
+
+@dataclass
+class OutpostConfig:
+
+    log_level: str = CONFIG.y("log_level")
+    error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
+    error_reporting_environment: str = CONFIG.y("error_reporting.environment", "customer")
 
 
 class OutpostModel:
@@ -19,6 +28,14 @@ class OutpostModel:
         return [self]
 
 
+class OutpostType(models.TextChoices):
+
+    PROXY = "proxy"
+
+
+def default_outpost_config():
+    return asdict(OutpostConfig())
+
 class Outpost(models.Model):
     """Outpost instance which manages a service user and token"""
 
@@ -26,9 +43,13 @@ class Outpost(models.Model):
 
     name = models.TextField()
 
+    type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
+
     providers = models.ManyToManyField(Provider)
 
-    channels = ArrayField(models.TextField())
+    channels = ArrayField(models.TextField(), default=list)
+
+    config = models.JSONField(default=default_outpost_config)
 
     @property
     def health_cache_key(self) -> str:

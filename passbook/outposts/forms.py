@@ -2,8 +2,10 @@
 
 from django import forms
 
+from passbook.admin.fields import CodeMirrorWidget, YAMLField
 from passbook.core.models import Provider
 from passbook.outposts.models import Outpost
+from django.utils.translation import gettext_lazy as _
 
 
 class OutpostForm(forms.ModelForm):
@@ -19,7 +21,16 @@ class OutpostForm(forms.ModelForm):
         fields = [
             "name",
             "providers",
+            "type",
+            "config",
         ]
         widgets = {
             "name": forms.TextInput(),
+            "config": CodeMirrorWidget,
+        }
+        field_classes = {
+            "config": YAMLField,
+        }
+        labels = {
+            "config": _("Configuration")
         }

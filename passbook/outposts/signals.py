@@ -11,7 +11,7 @@ from passbook.outposts.models import Outpost, OutpostModel
 LOGGER = get_logger()
 
 
-@receiver(pre_save, sender=Outpost)
+@receiver(post_save, sender=Outpost)
 # pylint: disable=unused-argument
 def ensure_user_and_token(sender, instance, **_):
     """Ensure that token is created/updated on save"""
@@ -27,6 +27,7 @@ def post_save_update(sender, instance, **_):
         LOGGER.debug("triggering outpost update from outpostmodel", instance=instance)
         _send_update(instance)
         return
+
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
