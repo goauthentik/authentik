@@ -9,9 +9,7 @@ class PassbookOutpostConfig(AppConfig):
 
     name = "passbook.outposts"
     label = "passbook_outposts"
-    # mountpoint = "outposts/"
     verbose_name = "passbook Outpost"
 
     def ready(self):
-        """Flow signals that clear the cache"""
         import_module("passbook.outposts.signals")

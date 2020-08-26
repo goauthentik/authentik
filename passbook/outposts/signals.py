@@ -31,15 +31,24 @@ def post_save_update(sender, instance, **_):
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
         # are used, and if it has a value
-        if hasattr(field, "related_model") and field.related_model:
-            if issubclass(field.related_model, OutpostModel):
-                LOGGER.debug(
-                    "triggering outpost update from from field", field=field.name
-                )
-                # Because the Outpost Model has an M2M to Provider,
-                # we have to iterate over the entire QS
-                for reverse in getattr(instance, f"{field.name}_set").all():
-                    _send_update(reverse)
+        if not hasattr(field, "related_model"):
+            continue
+        if not field.related_model:
+            continue
+        if not issubclass(field.related_model, OutpostModel):
+            continue
+
+        field_name = f"{field.name}_set"
+        if not hasattr(instance, field_name):
+            continue
+
+        LOGGER.debug(
+            "triggering outpost update from from field", field=field.name
+        )
+        # Because the Outpost Model has an M2M to Provider,
+        # we have to iterate over the entire QS
+        for reverse in getattr(instance, field_name).all():
+            _send_update(reverse)
 
 
 def _send_update(outpost_model: Model):
