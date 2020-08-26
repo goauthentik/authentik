@@ -2,7 +2,7 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from structlog import get_logger
 
@@ -27,7 +27,6 @@ def post_save_update(sender, instance, **_):
         LOGGER.debug("triggering outpost update from outpostmodel", instance=instance)
         _send_update(instance)
         return
-
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)

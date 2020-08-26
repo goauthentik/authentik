@@ -1,5 +1,5 @@
 """Outpost API Views"""
-from rest_framework.serializers import ModelSerializer, JSONField
+from rest_framework.serializers import JSONField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from passbook.outposts.models import Outpost
