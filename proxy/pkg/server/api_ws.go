@@ -1,9 +1,11 @@
 package server
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -20,9 +22,14 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 		"Authorization": []string{ac.token},
 	}
 
+	_, set := os.LookupEnv("PASSBOOK_INSECURE")
+
 	ws := recws.RecConn{
 		// KeepAliveTimeout: 10 * time.Second,
 		NonVerbose: true,
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: set,
+		},
 	}
 	ws.Dial(fmt.Sprintf(pathTemplate, scheme, pbURL.Host, outpostUUID.String()), header)
 

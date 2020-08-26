@@ -3,10 +3,14 @@ package server
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"net/http"
 	"net/url"
+	"os"
+	"time"
 
 	"github.com/BeryJu/passbook/proxy/pkg/client"
 	"github.com/BeryJu/passbook/proxy/pkg/client/outposts"
+	"github.com/getsentry/sentry-go"
 	"github.com/go-openapi/runtime"
 	"github.com/recws-org/recws"
 
@@ -15,6 +19,10 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
 	log "github.com/sirupsen/logrus"
 )
+
+const ConfigLogLevel = "log_level"
+const ConfigErrorReportingEnabled = "error_reporting_enabled"
+const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
 // APIController main controller which connects to the passbook api via http and ws
 type APIController struct {
@@ -32,15 +40,7 @@ type APIController struct {
 	wsConn recws.RecConn
 }
 
-// NewAPIController initialise new API Controller instance from URL and API token
-func NewAPIController(pbURL url.URL, token string) *APIController {
-	// create the transport
-	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
-	auth := httptransport.BasicAuth("", token)
-
-	// create the API client, with the transport
-	apiClient := client.New(transport, strfmt.Default)
-
+func getCommonOptions() *options.Options {
 	commonOpts := options.NewOptions()
 	commonOpts.Cookie.Name = "passbook_proxy"
 	commonOpts.EmailDomains = []string{"*"}
@@ -48,6 +48,62 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 	commonOpts.ProxyPrefix = "/pbprox"
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
+	return commonOpts
+}
+
+func doGlobalSetup(config map[string]interface{}) {
+	switch config[ConfigLogLevel].(string) {
+	case "debug":
+		log.SetLevel(log.DebugLevel)
+	case "info":
+		log.SetLevel(log.InfoLevel)
+	case "warning":
+		log.SetLevel(log.WarnLevel)
+	case "error":
+		log.SetLevel(log.ErrorLevel)
+	default:
+		log.SetLevel(log.DebugLevel)
+	}
+
+	var dsn string
+	if config[ConfigErrorReportingEnabled].(bool) {
+		dsn = "https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3"
+		log.Debug("Error reporting enabled")
+	}
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:         dsn,
+		Environment: config[ConfigErrorReportingEnvironment].(string),
+	})
+	if err != nil {
+		log.Fatalf("sentry.Init: %s", err)
+	}
+
+	defer sentry.Flush(2 * time.Second)
+}
+
+func getTLSTransport() http.RoundTripper {
+	_, set := os.LookupEnv("PASSBOOK_INSECURE")
+	tlsTransport, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
+		InsecureSkipVerify: set,
+	})
+	if err != nil {
+		panic(err)
+	}
+	return tlsTransport
+}
+
+// NewAPIController initialise new API Controller instance from URL and API token
+func NewAPIController(pbURL url.URL, token string) *APIController {
+	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
+
+	transport.Transport = getTLSTransport()
+
+	// create the transport
+	auth := httptransport.BasicAuth("", token)
+
+	// create the API client, with the transport
+	apiClient := client.New(transport, strfmt.Default)
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
@@ -57,14 +113,17 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 		panic(err)
 	}
 	outpost := outposts.Payload.Results[0]
+	doGlobalSetup(outpost.Config.(map[string]interface{}))
 
 	ac := &APIController{
-		client:         apiClient,
-		auth:           auth,
-		token:          token,
-		logger:         log.WithField("component", "api-controller"),
-		commonOpts:     commonOpts,
-		server:         NewServer(),
+		client: apiClient,
+		auth:   auth,
+		token:  token,
+
+		logger:     log.WithField("component", "api-controller"),
+		commonOpts: getCommonOptions(),
+		server:     NewServer(),
+
 		lastBundleHash: "",
 	}
 	ac.initWS(pbURL, outpost.Pk)
