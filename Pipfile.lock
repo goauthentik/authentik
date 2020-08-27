@@ -46,18 +46,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:34ee7608afa457da7bf4ad42dc53ac967b2f28769ef4ef1a0a41e1b40f35d897",
-                "sha256:997369e68a5091f608897caa0322daca12ee76338371b983b34b98c57c1e1913"
+                "sha256:8a7aa1da29b7c8039f81798bd27465f29494629c40280a70c2ef0daed5bb7682",
+                "sha256:a2bf58d375ad1b918e6007a46e415721b51dd7bb23703332cc64afa1470b056d"
             ],
             "index": "pypi",
-            "version": "==1.14.48"
+            "version": "==1.14.49"
         },
         "botocore": {
             "hashes": [
-                "sha256:0b23b519ec10193d1ead1cbb1469e7ede80789b068b74575b4efb06619e8e457",
-                "sha256:db9cd219d4180e782615179950e16b43d13e2f3fa57f510a43bf4ed5a3a8dacb"
+                "sha256:4433510d12dc783dd068f39ada942008f5792eea0c569f6b357bb751640c6ab4",
+                "sha256:87326c2d3b68c49a56f2d9237aa47a0476bb9ec6c6bc50d04df8bba66991930c"
             ],
-            "version": "==1.17.48"
+            "version": "==1.17.49"
         },
         "celery": {
             "hashes": [
