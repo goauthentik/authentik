@@ -1,19 +1,22 @@
 """passbook Flow administration"""
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext as _
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import DetailView, FormView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import DeleteMessageView
-from passbook.flows.forms import FlowForm
+from passbook.flows.forms import FlowForm, FlowImportForm
 from passbook.flows.models import Flow
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
+from passbook.flows.transfer.exporter import FlowExporter
+from passbook.flows.transfer.importer import FlowImporter
 from passbook.flows.views import SESSION_KEY_PLAN, FlowPlanner
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import CreateAssignPermView
@@ -88,3 +91,43 @@ class FlowDebugExecuteView(LoginRequiredMixin, PermissionRequiredMixin, DetailVi
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell", self.request.GET, flow_slug=flow.slug,
         )
+
+
+class FlowImportView(LoginRequiredMixin, FormView):
+    """Import flow from JSON Export; only allowed for superusers
+    as these flows can contain python code"""
+
+    form_class = FlowImportForm
+    template_name = "administration/flow/import.html"
+    success_url = reverse_lazy("passbook_admin:flows")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form: FlowImportForm) -> HttpResponse:
+        importer = FlowImporter(form.cleaned_data["flow"].read().decode())
+        successful = importer.apply()
+        if not successful:
+            messages.error(self.request, _("Failed to import flow."))
+        else:
+            messages.success(self.request, _("Successfully imported flow."))
+        return super().form_valid(form)
+
+
+class FlowExportView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    """Export Flow"""
+
+    model = Flow
+    permission_required = "passbook_flows.export_flow"
+
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, pk: str) -> HttpResponse:
+        """Debug exectue flow, setting the current user as pending user"""
+        flow: Flow = self.get_object()
+        exporter = FlowExporter(flow)
+        export = exporter.export_to_string()
+        response = JsonResponse(export)
+        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.json"'
+        return response

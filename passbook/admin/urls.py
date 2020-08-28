@@ -191,6 +191,7 @@ urlpatterns = [
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),
     path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
+    path("flows/import/", flows.FlowImportView.as_view(), name="flow-import",),
     path(
         "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
     ),
@@ -198,6 +199,9 @@ urlpatterns = [
         "flows/<uuid:pk>/execute/",
         flows.FlowDebugExecuteView.as_view(),
         name="flow-execute",
+    ),
+    path(
+        "flows/<uuid:pk>/export/", flows.FlowExportView.as_view(), name="flow-export",
     ),
     path(
         "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",

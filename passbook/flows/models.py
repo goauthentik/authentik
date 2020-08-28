@@ -135,6 +135,10 @@ class Flow(SerializerModel, PolicyBindingModel):
         verbose_name = _("Flow")
         verbose_name_plural = _("Flows")
 
+        permissions = [
+            ("export_flow", "Can export a Flow"),
+        ]
+
 
 class FlowStageBinding(SerializerModel, PolicyBindingModel):
     """Relationship between Flow and Stage. Order is required and unique for
