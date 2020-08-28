@@ -17,11 +17,12 @@ class FlowForm(forms.ModelForm):
         model = Flow
         fields = [
             "name",
+            "title",
             "slug",
             "designation",
         ]
         help_texts = {
-            "name": _("Shown as the Title in Flow pages."),
+            "title": _("Shown as the Title in Flow pages."),
             "slug": _("Visible in the URL."),
             "designation": _(
                 (

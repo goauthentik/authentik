@@ -93,6 +93,8 @@ class Flow(SerializerModel, PolicyBindingModel):
     name = models.TextField()
     slug = models.SlugField(unique=True)
 
+    title = models.TextField(default="", blank=True)
+
     designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
@@ -108,7 +110,7 @@ class Flow(SerializerModel, PolicyBindingModel):
         """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
         from passbook.policies.engine import PolicyEngine
 
-        flows = Flow.objects.filter(**flow_filter)
+        flows = Flow.objects.filter(**flow_filter).order_by("slug")
         for flow in flows:
             engine = PolicyEngine(flow, request.user, request)
             engine.build()

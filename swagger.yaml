@@ -5678,6 +5678,9 @@ definitions:
         pattern: ^[-a-zA-Z0-9_]+$
         maxLength: 50
         minLength: 1
+      title:
+        title: Title
+        type: string
       designation:
         title: Designation
         type: string
