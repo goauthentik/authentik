@@ -30,7 +30,7 @@
         <div class="pf-l-stack__item">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <form action="" method="post" class="pf-c-form pf-m-horizontal">
+                    <form action="" method="post" class="pf-c-form pf-m-horizontal" enctype="multipart/form-data">
                         {% include 'partials/form_horizontal.html' with form=form %}
                         {% block beneath_form %}
                         {% endblock %}

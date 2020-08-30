@@ -22,7 +22,7 @@ class StageView(TemplateView):
         self.executor = executor
 
     def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
-        kwargs["title"] = self.executor.flow.name
+        kwargs["title"] = self.executor.flow.title
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             kwargs["user"] = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         kwargs["primary_action"] = _("Continue")
