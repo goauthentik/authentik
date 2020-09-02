@@ -45,8 +45,8 @@
                 <h1 class="pf-c-title pf-m-2xl">{% trans 'Setup with Kubernetes' %}</h1>
             </div>
             <div class="pf-c-modal-box__body">
-                <p>{% trans 'Download the manifest to create the Gatekeeper deployment and service:' %}</p>
-                <a href="{% url 'passbook_providers_app_gw:k8s-manifest' provider=provider.pk %}">{% trans 'Here' %}</a>
+                <p>{% trans 'Download the manifest to create the Proxy deployment and service:' %}</p>
+                <a href="{% url 'passbook_providers_proxy:k8s-manifest' provider=provider.pk %}">{% trans 'Here' %}</a>
                 <p>{% trans 'Afterwards, add the following annotations to the Ingress you want to secure:' %}</p>
                 <textarea class="codemirror" readonly data-cm-mode="yaml">
 nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri

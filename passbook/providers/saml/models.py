@@ -108,7 +108,7 @@ class SAMLProvider(Provider):
         return SAMLProviderForm
 
     def __str__(self):
-        return self.name
+        return f"SAML Provider {self.name}"
 
     def link_download_metadata(self):
         """Get link to download XML metadata for admin interface"""

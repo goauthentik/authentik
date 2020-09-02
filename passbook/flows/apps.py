@@ -13,5 +13,4 @@ class PassbookFlowsConfig(AppConfig):
     verbose_name = "passbook Flows"
 
     def ready(self):
-        """Flow signals that clear the cache"""
         import_module("passbook.flows.signals")

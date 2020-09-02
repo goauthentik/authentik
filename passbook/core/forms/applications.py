@@ -9,10 +9,11 @@ from passbook.lib.widgets import GroupedModelChoiceField
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
-    provider = GroupedModelChoiceField(
-        queryset=Provider.objects.all().order_by("pk").select_subclasses(),
-        required=False,
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["provider"].queryset = (
+            Provider.objects.all().order_by("pk").select_subclasses()
+        )
 
     class Meta:
 
@@ -32,6 +33,7 @@ class ApplicationForm(forms.ModelForm):
             "meta_icon_url": forms.TextInput(),
             "meta_publisher": forms.TextInput(),
         }
+        field_classes = {"provider": GroupedModelChoiceField}
         labels = {
             "meta_launch_url": _("Launch URL"),
             "meta_icon_url": _("Icon URL"),

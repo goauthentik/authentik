@@ -12,7 +12,7 @@ redis:
   message_queue_db: 1
 
 debug: false
-log_level: warning
+log_level: info
 
 # Error reporting, sends stacktrace to sentry.beryju.org
 error_reporting:

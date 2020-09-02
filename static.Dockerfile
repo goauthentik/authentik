@@ -17,9 +17,11 @@ COPY --from=locker /app/requirements-dev.txt /app/
 WORKDIR /app/
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends postgresql-client-11 && \
+    apt-get install -y --no-install-recommends postgresql-client-11 build-essential && \
     rm -rf /var/lib/apt/ && \
     pip install -r requirements.txt  --no-cache-dir && \
+    apt-get remove --purge -y build-essential && \
+    apt-get autoremove --purge && \
     adduser --system --no-create-home --uid 1000 --group --home /app passbook
 
 COPY ./passbook/ /app/passbook

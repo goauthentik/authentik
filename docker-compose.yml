@@ -22,14 +22,13 @@ services:
       - traefik.enable=false
   server:
     image: beryju/passbook:${PASSBOOK_TAG:-latest}
-    command:
-      - uwsgi
-      - uwsgi.ini
+    command: server
     environment:
-      - PASSBOOK_REDIS__HOST=redis
-      - PASSBOOK_ERROR_REPORTING=${PASSBOOK_ERROR_REPORTING:-false}
-      - PASSBOOK_POSTGRESQL__HOST=postgresql
-      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_REDIS__HOST: redis
+      PASSBOOK_ERROR_REPORTING: ${PASSBOOK_ERROR_REPORTING:-false}
+      PASSBOOK_POSTGRESQL__HOST: postgresql
+      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_LOG_LEVEL: debug
     ports:
       - 8000
     networks:
@@ -40,23 +39,17 @@ services:
       - traefik.frontend.rule=PathPrefix:/
   worker:
     image: beryju/passbook:${PASSBOOK_TAG:-latest}
-    command:
-      - celery
-      - worker
-      - --autoscale=10,3
-      - -E
-      - -B
-      - -A=passbook.root.celery
-      - -s=/tmp/celerybeat-schedule
+    command: worker
     networks:
       - internal
     labels:
       - traefik.enable=false
     environment:
-      - PASSBOOK_REDIS__HOST=redis
-      - PASSBOOK_ERROR_REPORTING=${PASSBOOK_ERROR_REPORTING:-false}
-      - PASSBOOK_POSTGRESQL__HOST=postgresql
-      - PASSBOOK_POSTGRESQL__PASSWORD=${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_REDIS__HOST: redis
+      PASSBOOK_ERROR_REPORTING: ${PASSBOOK_ERROR_REPORTING:-false}
+      PASSBOOK_POSTGRESQL__HOST: postgresql
+      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_LOG_LEVEL: debug
   static:
     image: beryju/passbook-static:latest
     networks:

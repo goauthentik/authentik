@@ -73,11 +73,13 @@ INSTALLED_APPS = [
     "drf_yasg",
     "guardian",
     "django_prometheus",
+    "channels",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.audit.apps.PassbookAuditConfig",
     "passbook.crypto.apps.PassbookCryptoConfig",
     "passbook.flows.apps.PassbookFlowsConfig",
+    "passbook.outposts.apps.PassbookOutpostConfig",
     "passbook.lib.apps.PassbookLibConfig",
     "passbook.policies.apps.PassbookPoliciesConfig",
     "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
@@ -125,13 +127,13 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
+        "rest_framework_guardian.filters.ObjectPermissionsFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.DjangoObjectPermissions",
-        "passbook.api.permissions.CustomObjectPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "passbook.api.auth.PassbookTokenAuthentication",
@@ -185,7 +187,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "passbook.root.wsgi.application"
+ASGI_APPLICATION = "passbook.root.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [(CONFIG.y("redis.host"), 6379)]},
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -234,6 +244,7 @@ CELERY_BEAT_SCHEDULE = {
     "clean_expired_models": {
         "task": "passbook.core.tasks.clean_expired_models",
         "schedule": crontab(minute="*/5"),  # Run every 5 minutes
+        "options": {"queue": "passbook_scheduled"},
     }
 }
 CELERY_CREATE_MISSING_QUEUES = True
@@ -364,6 +375,7 @@ _LOGGING_HANDLER_MAP = {
     "grpc": LOG_LEVEL,
     "docker": "WARNING",
     "urllib3": "WARNING",
+    "websockets": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

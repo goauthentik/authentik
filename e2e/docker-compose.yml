@@ -6,3 +6,4 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
+    restart: always
