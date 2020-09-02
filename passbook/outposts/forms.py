@@ -20,8 +20,9 @@ class OutpostForm(forms.ModelForm):
         model = Outpost
         fields = [
             "name",
-            "providers",
             "type",
+            "deployment_type",
+            "providers",
             "config",
         ]
         widgets = {

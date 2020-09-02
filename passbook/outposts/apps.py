@@ -9,6 +9,7 @@ class PassbookOutpostConfig(AppConfig):
 
     name = "passbook.outposts"
     label = "passbook_outposts"
+    mountpoint = "outposts/"
     verbose_name = "passbook Outpost"
 
     def ready(self):

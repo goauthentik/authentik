@@ -1,17 +1,15 @@
 """passbook proxy models"""
 import string
 from random import SystemRandom
-from typing import Iterable, Optional, Type
+from typing import Iterable, Type
 from urllib.parse import urljoin
 
 from django.core.validators import URLValidator
 from django.db import models
 from django.forms import ModelForm
-from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from passbook.crypto.models import CertificateKeyPair
-from passbook.lib.utils.template import render_to_string
 from passbook.outposts.models import OutpostModel
 from passbook.providers.oauth2.constants import (
     SCOPE_OPENID,
@@ -59,16 +57,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         from passbook.providers.proxy.forms import ProxyProviderForm
 
         return ProxyProviderForm
-
-    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
-        """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        from passbook.providers.proxy.views import DockerComposeView
-
-        docker_compose_yaml = DockerComposeView(request=request).get_compose(self)
-        return render_to_string(
-            "providers/proxy/setup_modal.html",
-            {"provider": self, "docker_compose": docker_compose_yaml},
-        )
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""

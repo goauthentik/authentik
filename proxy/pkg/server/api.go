@@ -48,6 +48,8 @@ func getCommonOptions() *options.Options {
 	commonOpts.ProxyPrefix = "/pbprox"
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
+	commonOpts.SetXAuthRequest = true
+	commonOpts.SetAuthorization = true
 	return commonOpts
 }
 

@@ -8,7 +8,7 @@ require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.7.0
 	github.com/go-openapi/errors v0.19.6
-	github.com/go-openapi/runtime v0.19.20
+	github.com/go-openapi/runtime v0.19.21
 	github.com/go-openapi/spec v0.19.9 // indirect
 	github.com/go-openapi/strfmt v0.19.5
 	github.com/go-openapi/swag v0.19.9
@@ -37,8 +37,8 @@ require (
 	go.mongodb.org/mongo-driver v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
-	golang.org/x/sys v0.0.0-20200824131525-c12d262b63d8 // indirect
-	golang.org/x/tools v0.0.0-20200825210148-b72e8bb66c93 // indirect
-	gopkg.in/ini.v1 v1.60.1 // indirect
+	golang.org/x/sys v0.0.0-20200828194041-157a740278f4 // indirect
+	golang.org/x/tools v0.0.0-20200828161849-5deb26317202 // indirect
+	gopkg.in/ini.v1 v1.60.2 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )

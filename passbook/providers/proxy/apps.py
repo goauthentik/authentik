@@ -8,4 +8,3 @@ class PassbookProviderProxyConfig(AppConfig):
     name = "passbook.providers.proxy"
     label = "passbook_providers_proxy"
     verbose_name = "passbook Providers.Proxy"
-    mountpoint = "application/proxy/"

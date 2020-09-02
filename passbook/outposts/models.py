@@ -7,6 +7,7 @@ from uuid import uuid4
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import assign_perm
 
 from passbook.core.models import Provider, Token, TokenIntents, User
@@ -38,6 +39,13 @@ class OutpostType(models.TextChoices):
     PROXY = "proxy"
 
 
+class OutpostDeploymentType(models.TextChoices):
+    """Deployment types that are managed through passbook"""
+
+    KUBERNETES = "kubernetes"
+    CUSTOM = "custom"
+
+
 def default_outpost_config():
     """Get default outpost config"""
     return asdict(OutpostConfig())
@@ -47,16 +55,21 @@ class Outpost(models.Model):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
-
     name = models.TextField()
 
     type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
+    deployment_type = models.TextField(
+        choices=OutpostDeploymentType.choices,
+        default=OutpostDeploymentType.CUSTOM,
+        help_text=_(
+            "Select between passbook-managed deployment types or a custom deployment."
+        ),
+    )
+    config = models.JSONField(default=default_outpost_config)
 
     providers = models.ManyToManyField(Provider)
 
     channels = ArrayField(models.TextField(), default=list)
-
-    config = models.JSONField(default=default_outpost_config)
 
     @property
     def health_cache_key(self) -> str:
@@ -96,7 +109,7 @@ class Outpost(models.Model):
         """Get/create token for auto-generated user"""
         token = Token.filter_not_expired(user=self.user, intent=TokenIntents.INTENT_API)
         if token.exists():
-            return token
+            return token.first()
         return Token.objects.create(
             user=self.user,
             intent=TokenIntents.INTENT_API,
