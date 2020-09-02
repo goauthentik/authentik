@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="outpost",
-            name="config",
+            name="_config",
             field=models.JSONField(
                 default=passbook.outposts.models.default_outpost_config
             ),

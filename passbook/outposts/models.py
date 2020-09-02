@@ -1,9 +1,11 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass
 from datetime import datetime
+from json import dumps, loads
 from typing import Iterable, Optional
 from uuid import uuid4
 
+from dacite import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
@@ -17,6 +19,9 @@ from passbook.lib.config import CONFIG
 @dataclass
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
+
+    passbook_host: str
+    passbook_host_insecure: bool = False
 
     log_level: str = CONFIG.y("log_level")
     error_reporting_enabled: bool = CONFIG.y_bool("error_reporting.enabled")
@@ -48,7 +53,7 @@ class OutpostDeploymentType(models.TextChoices):
 
 def default_outpost_config():
     """Get default outpost config"""
-    return asdict(OutpostConfig())
+    return asdict(OutpostConfig(passbook_host=""))
 
 
 class Outpost(models.Model):
@@ -65,11 +70,21 @@ class Outpost(models.Model):
             "Select between passbook-managed deployment types or a custom deployment."
         ),
     )
-    config = models.JSONField(default=default_outpost_config)
+    _config = models.JSONField(default=default_outpost_config)
 
     providers = models.ManyToManyField(Provider)
 
     channels = ArrayField(models.TextField(), default=list)
+
+    @property
+    def config(self) -> OutpostConfig:
+        """Load config as OutpostConfig object"""
+        return from_dict(OutpostConfig, loads(self._config))
+
+    @config.setter
+    def config(self, value):
+        """Dump config into json"""
+        self._config = dumps(asdict(value))
 
     @property
     def health_cache_key(self) -> str:

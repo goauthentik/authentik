@@ -8,12 +8,12 @@ from passbook.outposts.models import Outpost
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    config = JSONField()
+    _config = JSONField()
 
     class Meta:
 
         model = Outpost
-        fields = ["pk", "name", "providers", "config"]
+        fields = ["pk", "name", "providers", "_config"]
 
 
 class OutpostViewSet(ModelViewSet):

@@ -6,5 +6,6 @@
     ],
     "strictParameterNoneValue": true,
     "strictDictionaryInference": true,
-    "strictListInference": true
+    "strictListInference": true,
+    "verboseOutput": false
 }

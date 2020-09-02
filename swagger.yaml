@@ -6092,7 +6092,7 @@ definitions:
     required:
       - name
       - providers
-      - config
+      - _config
     type: object
     properties:
       pk:
@@ -6109,8 +6109,8 @@ definitions:
         items:
           type: integer
         uniqueItems: true
-      config:
-        title: Config
+      _config:
+        title: config
         type: object
   OpenIDConnectConfiguration:
     title: Oidc configuration

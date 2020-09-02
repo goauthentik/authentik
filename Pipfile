@@ -42,6 +42,7 @@ urllib3 = {extras = ["secure"],version = "*"}
 dacite = "*"
 channels = "*"
 channels-redis = "*"
+kubernetes = "*"
 
 [requires]
 python_version = "3.8"

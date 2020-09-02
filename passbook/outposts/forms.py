@@ -23,13 +23,13 @@ class OutpostForm(forms.ModelForm):
             "type",
             "deployment_type",
             "providers",
-            "config",
+            "_config",
         ]
         widgets = {
             "name": forms.TextInput(),
-            "config": CodeMirrorWidget,
+            "_config": CodeMirrorWidget,
         }
         field_classes = {
-            "config": YAMLField,
+            "_config": YAMLField,
         }
-        labels = {"config": _("Configuration")}
+        labels = {"_config": _("Configuration")}
