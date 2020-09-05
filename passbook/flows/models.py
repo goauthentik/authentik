@@ -46,7 +46,7 @@ class Stage(SerializerModel):
 
     stage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     objects = InheritanceManager()
 
@@ -170,7 +170,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"Flow Binding {self.target} -> {self.stage}"
+        return f"'{self.target}' -> '{self.stage}' # {self.order}"
 
     class Meta:
 

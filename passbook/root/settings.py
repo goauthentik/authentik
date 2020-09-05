@@ -376,6 +376,7 @@ _LOGGING_HANDLER_MAP = {
     "docker": "WARNING",
     "urllib3": "WARNING",
     "websockets": "WARNING",
+    "daphne": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

@@ -1,6 +1,7 @@
 """Test flow transfer"""
 from json import dumps
 
+from django.db import transaction
 from django.test import TransactionTestCase
 
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -21,12 +22,13 @@ class TestFlowTransfer(TransactionTestCase):
         importer = FlowImporter('{"version": 3}')
         self.assertFalse(importer.validate())
         importer = FlowImporter(
-            '{"version": 1,"entries":[{"identifier":"","attrs":{},"model": "passbook_core.User"}]}'
+            '{"version": 1,"entries":[{"identifiers":{},"attrs":{},"model": "passbook_core.User"}]}'
         )
         self.assertFalse(importer.validate())
 
     def test_export_validate_import(self):
         """Test export and validate it"""
+        sid = transaction.savepoint()
         login_stage = UserLoginStage.objects.create(name="default-authentication-login")
 
         flow = Flow.objects.create(
@@ -40,42 +42,55 @@ class TestFlowTransfer(TransactionTestCase):
 
         exporter = FlowExporter(flow)
         export = exporter.export()
+
+        transaction.savepoint_rollback(sid)
+
         self.assertEqual(len(export.entries), 3)
         export_json = dumps(export, cls=DataclassEncoder)
         importer = FlowImporter(export_json)
         self.assertTrue(importer.validate())
-        flow.delete()
-        login_stage.delete()
         self.assertTrue(importer.apply())
 
         self.assertTrue(Flow.objects.filter(slug="test").exists())
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""
+        sid = transaction.savepoint()
+
         flow_policy = ExpressionPolicy.objects.create(
             name="default-source-authentication-if-sso", expression="return True",
         )
         flow = Flow.objects.create(
-            slug="default-source-authentication",
+            slug="default-source-authentication-test",
             designation=FlowDesignation.AUTHENTICATION,
             name="Welcome to passbook!",
         )
         PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
 
         user_login = UserLoginStage.objects.create(
-            name="default-source-authentication-login"
+            name="default-source-authentication-login-test"
         )
         FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
 
         exporter = FlowExporter(flow)
         export = exporter.export()
+
+        transaction.savepoint_rollback(sid)
+
         export_json = dumps(export, cls=DataclassEncoder)
         importer = FlowImporter(export_json)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
+        self.assertTrue(
+            UserLoginStage.objects.filter(
+                name="default-source-authentication-login-test"
+            ).exists()
+        )
 
     def test_export_validate_import_prompt(self):
         """Test export and validate it"""
+        sid = transaction.savepoint()
+
         # First stage fields
         username_prompt = Prompt.objects.create(
             field_key="username", label="Username", order=0, type=FieldTypes.TEXT
@@ -90,13 +105,13 @@ class TestFlowTransfer(TransactionTestCase):
             type=FieldTypes.PASSWORD,
         )
         # Stages
-        first_stage = PromptStage.objects.create(name="prompt-stage-first")
+        first_stage = PromptStage.objects.create(name="prompt-stage-first-test")
         first_stage.fields.set([username_prompt, password, password_repeat])
         first_stage.save()
 
         # Password checking policy
         password_policy = ExpressionPolicy.objects.create(
-            name="policy-enrollment-password-equals",
+            name="policy-enrollment-password-equals-test",
             expression="return request.context['password'] == request.context['password_repeat']",
         )
         PolicyBinding.objects.create(
@@ -105,7 +120,7 @@ class TestFlowTransfer(TransactionTestCase):
 
         flow = Flow.objects.create(
             name="default-enrollment-flow",
-            slug="default-enrollment-flow",
+            slug="default-enrollment-flow-test",
             designation=FlowDesignation.ENROLLMENT,
         )
 
@@ -114,6 +129,10 @@ class TestFlowTransfer(TransactionTestCase):
         exporter = FlowExporter(flow)
         export = exporter.export()
         export_json = dumps(export, cls=DataclassEncoder)
+
+        transaction.savepoint_rollback(sid)
+
         importer = FlowImporter(export_json)
+
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())

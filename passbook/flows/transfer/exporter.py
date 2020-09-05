@@ -28,13 +28,13 @@ class FlowExporter:
         for stage in stages:
             if isinstance(stage, PromptStage):
                 pass
-            yield FlowBundleEntry.from_model(stage)
+            yield FlowBundleEntry.from_model(stage, "name")
 
     def walk_stage_bindings(self) -> Iterator[FlowBundleEntry]:
         """Convert all bindings attached to self.flow into FlowBundleEntry objects"""
         bindings = FlowStageBinding.objects.filter(target=self.flow).select_related()
         for binding in bindings:
-            yield FlowBundleEntry.from_model(binding)
+            yield FlowBundleEntry.from_model(binding, "target", "stage", "order")
 
     def walk_policies(self) -> Iterator[FlowBundleEntry]:
         """Walk over all policies and their respective bindings"""
@@ -64,7 +64,7 @@ class FlowExporter:
     def export(self) -> FlowBundle:
         """Create a list of all objects including the flow"""
         bundle = FlowBundle()
-        bundle.entries.append(FlowBundleEntry.from_model(self.flow))
+        bundle.entries.append(FlowBundleEntry.from_model(self.flow, "slug"))
         if self.with_stage_prompts:
             bundle.entries.extend(self.walk_stage_prompts())
         bundle.entries.extend(self.walk_stages())

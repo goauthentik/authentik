@@ -54,5 +54,5 @@ def _send_update(outpost_model: Model):
     for outpost in outpost_model.outpost_set.all():
         channel_layer = get_channel_layer()
         for channel in outpost.channels:
-            print(f"sending update to channel {channel}")
+            LOGGER.debug("sending update", channel=channel)
             async_to_sync(channel_layer.send)(channel, {"type": "event.update"})

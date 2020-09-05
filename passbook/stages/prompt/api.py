@@ -1,5 +1,6 @@
 """Prompt Stage API Views"""
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import CharField, ModelSerializer
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from passbook.stages.prompt.models import Prompt, PromptStage
@@ -7,6 +8,8 @@ from passbook.stages.prompt.models import Prompt, PromptStage
 
 class PromptStageSerializer(ModelSerializer):
     """PromptStage Serializer"""
+
+    name = CharField(validators=[UniqueValidator(queryset=PromptStage.objects.all())])
 
     class Meta:
 

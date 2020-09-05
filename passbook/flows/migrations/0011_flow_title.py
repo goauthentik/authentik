@@ -6,13 +6,13 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 def add_title_for_defaults(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     slug_title_map = {
-        "default-authentication-flow": "Default Authentication Flow",
+        "default-authentication-flow": "Welcome to passbook!",
         "default-invalidation-flow": "Default Invalidation Flow",
-        "default-source-enrollment": "Default Source Enrollment Flow",
-        "default-source-authentication": "Default Source Authentication Flow",
+        "default-source-enrollment": "Welcome to passbook!",
+        "default-source-authentication": "Welcome to passbook!",
         "default-provider-authorization-implicit-consent": "Default Provider Authorization Flow (implicit consent)",
         "default-provider-authorization-explicit-consent": "Default Provider Authorization Flow (explicit consent)",
-        "default-password-change": "Default Password Change Flow",
+        "default-password-change": "Change password",
     }
     db_alias = schema_editor.connection.alias
     Flow = apps.get_model("passbook_flows", "Flow")
