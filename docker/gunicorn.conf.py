@@ -1,15 +1,16 @@
 """Gunicorn config"""
-import multiprocessing
-
 import structlog
 
 bind = "0.0.0.0:8000"
-workers = multiprocessing.cpu_count() * 2 + 1
+workers = 2
+threads = 4
 
 user = "passbook"
 group = "passbook"
 
 worker_class = "uvicorn.workers.UvicornWorker"
+# Docker containers don't have /tmp as tmpfs
+worker_tmp_dir = "/dev/shm"
 
 logconfig_dict = {
     "version": 1,
