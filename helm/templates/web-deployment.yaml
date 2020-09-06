@@ -26,9 +26,7 @@ spec:
         - name: passbook-database-migrations
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          args:
-            - ./manage.py
-            - migrate
+          args: [migrate]
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config
@@ -53,7 +51,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          args: server
+          args: [server]
           envFrom:
             - configMapRef:
                 name: {{ include "passbook.fullname" . }}-config

@@ -26,7 +26,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          args: worker
+          args: [worker]
           envFrom:
             - configMapRef:
                 name: "{{ include "passbook.fullname" . }}-config"
