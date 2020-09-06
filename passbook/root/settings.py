@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import importlib
 import os
 import sys
+from json import dumps
 
 import structlog
 from celery.schedules import crontab
@@ -270,8 +271,15 @@ if CONFIG.y("postgresql.backup"):
     AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
     AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
     AWS_DEFAULT_ACL = None
-    LOGGER.info(
-        "Database backup is configured", host=CONFIG.y("postgresql.backup.host")
+    print(
+        dumps(
+            {
+                "event": "Database backup is configured.",
+                "level": "info",
+                "logger": __name__,
+                "host": CONFIG.y("postgresql.backup.host"),
+            }
+        )
     )
     # Add automatic task to backup
     CELERY_BEAT_SCHEDULE["db_backup"] = {
@@ -282,7 +290,15 @@ if CONFIG.y("postgresql.backup"):
 # Sentry integration
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
-    LOGGER.info("Error reporting is enabled.")
+    print(
+        dumps(
+            {
+                "event": "Error reporting is enabled.",
+                "level": "info",
+                "logger": __name__,
+            }
+        )
+    )
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
         integrations=[
