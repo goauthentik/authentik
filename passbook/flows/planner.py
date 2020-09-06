@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from sentry_sdk import start_span
+from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
@@ -96,7 +96,7 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with start_span(op="flow.planner.plan") as span:
+        with Hub.current.start_span(op="flow.planner.plan") as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -146,7 +146,7 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
-        with start_span(op="flow.planner.build_plan") as span:
+        with Hub.current.start_span(op="flow.planner.build_plan") as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("user", user)

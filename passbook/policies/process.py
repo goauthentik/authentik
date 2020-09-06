@@ -4,7 +4,7 @@ from multiprocessing.connection import Connection
 from typing import Optional
 
 from django.core.cache import cache
-from sentry_sdk import start_span
+from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
@@ -48,7 +48,7 @@ class PolicyProcess(Process):
 
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
-        with start_span(op="policy.process.execute",) as span:
+        with Hub.current.start_span(op="policy.process.execute",) as span:
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)

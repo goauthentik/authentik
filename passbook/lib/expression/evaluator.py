@@ -5,7 +5,7 @@ from typing import Any, Dict, Iterable, Optional
 
 from django.core.exceptions import ValidationError
 from requests import Session
-from sentry_sdk import start_span
+from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
@@ -76,7 +76,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="lib.evaluator.evaluate") as span:
+        with Hub.current.start_span(op="lib.evaluator.evaluate") as span:
             span: Span
             span.set_data("expression", expression_source)
             param_keys = self._context.keys()

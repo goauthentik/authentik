@@ -36,15 +36,7 @@ logconfig_dict = {
         "console": {"class": "logging.StreamHandler", "formatter": "json_formatter"},
     },
     "loggers": {
-        "uvicorn": {
-            "handlers": ["console"],
-            "level": "WARNING",
-            "propagate": False,
-        },
-        "gunicorn": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
+        "uvicorn": {"handlers": ["console"], "level": "WARNING", "propagate": False},
+        "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }

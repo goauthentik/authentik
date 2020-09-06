@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from sentry_sdk import start_span
+from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
@@ -73,7 +73,7 @@ class PolicyEngine:
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
-        with start_span(op="policy.engine.build") as span:
+        with Hub.current.start_span(op="policy.engine.build") as span:
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
