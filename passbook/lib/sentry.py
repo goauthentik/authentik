@@ -4,6 +4,7 @@ from botocore.client import ClientError
 from django.core.exceptions import DisallowedHost, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
+from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
@@ -24,6 +25,7 @@ def before_send(event, hint):
         ConnectionInterrupted,
         APIException,
         ConnectionResetError,
+        RedisConnectionError,
         WorkerLostError,
         DisallowedHost,
         ConnectionResetError,

@@ -76,6 +76,10 @@ class ASGILogger:
             return
 
         self.start = time()
+        if scope["type"] == "lifespan":
+            # https://code.djangoproject.com/ticket/31508
+            # https://github.com/encode/uvicorn/issues/266
+            return
         await self.app(scope, receive, self.send_hooked)
 
     async def send_hooked(self, message: Message) -> None:
@@ -115,6 +119,6 @@ class ASGILogger:
         )
 
 
-application = SentryAsgiMiddleware(
-    ASGILogger(guarantee_single_callable(get_default_application()))
+application = ASGILogger(
+    guarantee_single_callable(SentryAsgiMiddleware(get_default_application()))
 )
