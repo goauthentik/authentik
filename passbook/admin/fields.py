@@ -33,7 +33,7 @@ class YAMLString(str):
     """YAML String type"""
 
 
-class YAMLField(forms.CharField):
+class YAMLField(forms.JSONField):
     """Django's JSON Field converted to YAML"""
 
     default_error_messages = {

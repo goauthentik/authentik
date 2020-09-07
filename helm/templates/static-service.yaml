@@ -7,7 +7,7 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.passbook.io/component: static
+    k8s.passbook.beryju.org/component: static
 spec:
   type: ClusterIP
   ports:
@@ -18,4 +18,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "passbook.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    k8s.passbook.io/component: static
+    k8s.passbook.beryju.org/component: static

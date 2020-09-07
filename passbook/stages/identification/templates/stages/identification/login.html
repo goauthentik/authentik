@@ -11,6 +11,13 @@
 <div class="pf-c-login__main-body">
     <form method="POST" class="pf-c-form">
         {% block above_form %}
+            {% if application_pre %}
+            <p>
+                {% blocktrans with app_name=application_pre.name %}
+                Login to continue to <strong>{{ app_name }}</strong>.
+                {% endblocktrans %}
+            </p>
+            {% endif %}
         {% endblock %}
 
         {% include 'partials/form.html' %}

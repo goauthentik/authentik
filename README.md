@@ -1,12 +1,11 @@
 <img src="passbook/static/static/passbook/logo.svg" height="50" alt="passbook logo"><img src="passbook/static/static/passbook/brand_inverted.svg" height="50" alt="passbook">
 
-=======
-![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/5d94b893-6dea-4f68-a8fe-10f1674fc3a9/1?style=flat-square)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/passbook/1?style=flat-square)](https://dev.azure.com/beryjuorg/passbook/_build?definitionId=1)
+![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/passbook/1?compact_message&style=flat-square)
+[![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)](https://codecov.io/gh/BeryJu/passbook)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/passbook.svg?style=flat-square)
-![Docker pulls (gatekeeper)](https://img.shields.io/docker/pulls/beryju/passbook-gatekeeper.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/passbook?sort=semver&style=flat-square)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/python/github/BeryJu/passbook?style=flat-square)
-![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/passbook?style=flat-square)
 
 ## What is passbook?
 
@@ -21,7 +20,7 @@ wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
 # Optionally enable Error-reporting
 # export PASSBOOK_ERROR_REPORTING=true
 # Optionally deploy a different version
-# export PASSBOOK_TAG=0.8.15-beta
+# export PASSBOOK_TAG=0.9.0-stable
 # If this is a productive installation, set a different PostgreSQL Password
 # export PG_PASS=$(pwgen 40 1)
 docker-compose pull
@@ -61,7 +60,6 @@ postgresql:
   user: postgres
 
 log_level: debug
-error_reporting: false
 ```
 
 ## Security

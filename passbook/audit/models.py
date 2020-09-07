@@ -7,12 +7,11 @@ from uuid import UUID, uuid4
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
-from django.views.debug import CLEANSED_SUBSTITUTE, HIDDEN_SETTINGS
+from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
@@ -26,8 +25,8 @@ def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     final_dict = {}
     for key, value in source.items():
         try:
-            if HIDDEN_SETTINGS.search(key):
-                final_dict[key] = CLEANSED_SUBSTITUTE
+            if SafeExceptionReporterFilter.hidden_settings.search(key):
+                final_dict[key] = SafeExceptionReporterFilter.cleansed_substitute
             else:
                 final_dict[key] = value
         except TypeError:
@@ -100,7 +99,7 @@ class Event(models.Model):
     action = models.TextField(choices=EventAction.as_choices())
     date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
-    context = JSONField(default=dict, blank=True)
+    context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
 

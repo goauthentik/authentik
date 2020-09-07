@@ -21,14 +21,15 @@ from passbook.core.views.utils import PermissionDeniedView
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
-from passbook.lib.utils.reflection import class_to_path, path_to_class
-from passbook.lib.utils.urls import redirect_with_qs
+from passbook.lib.utils.reflection import class_to_path
+from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
 from passbook.lib.views import bad_request_message
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
+SESSION_KEY_APPLICATION_PRE = "passbook_flows_application_pre"
 SESSION_KEY_GET = "passbook_flows_get"
 
 
@@ -49,8 +50,9 @@ class FlowExecutorView(View):
     def handle_invalid_flow(self, exc: BaseException) -> HttpResponse:
         """When a flow is non-applicable check if user is on the correct domain"""
         if NEXT_ARG_NAME in self.request.GET:
-            LOGGER.debug("f(exec): Redirecting to next on fail")
-            return redirect(self.request.GET.get(NEXT_ARG_NAME))
+            if not is_url_absolute(self.request.GET.get(NEXT_ARG_NAME)):
+                LOGGER.debug("f(exec): Redirecting to next on fail")
+                return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return bad_request_message(self.request, message)
 
@@ -83,16 +85,17 @@ class FlowExecutorView(View):
                 return self.handle_invalid_flow(exc)
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
-        self.current_stage = self.plan.next()
+        next_stage = self.plan.next()
+        if not next_stage:
+            LOGGER.debug("f(exec): no more stages, flow is done.")
+            return self._flow_done()
+        self.current_stage = next_stage
         LOGGER.debug(
             "f(exec): Current stage",
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        if not self.current_stage:
-            LOGGER.debug("f(exec): no more stages, flow is done.")
-            return self._flow_done()
-        stage_cls = path_to_class(self.current_stage.type)
+        stage_cls = self.current_stage.type()
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs
@@ -151,11 +154,12 @@ class FlowExecutorView(View):
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
-        self.cancel()
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
+        # extract the next param before cancel as that cleans it
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "passbook_core:overview"
         )
+        self.cancel()
         return redirect_with_qs(next_param)
 
     def stage_ok(self) -> HttpResponse:
@@ -198,8 +202,14 @@ class FlowExecutorView(View):
 
     def cancel(self):
         """Cancel current execution and return a redirect"""
-        if SESSION_KEY_PLAN in self.request.session:
-            del self.request.session[SESSION_KEY_PLAN]
+        keys_to_delete = [
+            SESSION_KEY_APPLICATION_PRE,
+            SESSION_KEY_PLAN,
+            SESSION_KEY_GET,
+        ]
+        for key in keys_to_delete:
+            if key in self.request.session:
+                del self.request.session[key]
 
 
 class FlowPermissionDeniedView(PermissionDeniedView):

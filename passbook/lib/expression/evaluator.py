@@ -5,6 +5,8 @@ from typing import Any, Dict, Iterable, Optional
 
 from django.core.exceptions import ValidationError
 from requests import Session
+from sentry_sdk.hub import Hub
+from sentry_sdk.tracing import Span
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -63,7 +65,9 @@ class BaseEvaluator:
     def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
         handler_signature = ",".join(params)
-        full_expression = f"def handler({handler_signature}):\n"
+        full_expression = ""
+        full_expression += "from ipaddress import ip_address, ip_network\n"
+        full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
         full_expression += f"\nresult = handler({handler_signature})"
         return full_expression
@@ -72,22 +76,27 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        param_keys = self._context.keys()
-        ast_obj = compile(
-            self.wrap_expression(expression_source, param_keys), self._filename, "exec",
-        )
-        try:
-            _locals = self._context
-            # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
-            # available here, and these policies can only be edited by admins, this is a risk
-            # we're willing to take.
-            # pylint: disable=exec-used
-            exec(ast_obj, self._globals, _locals)  # nosec # noqa
-            result = _locals["result"]
-        except Exception as exc:
-            LOGGER.warning("Expression error", exc=exc)
-            raise
-        return result
+        with Hub.current.start_span(op="lib.evaluator.evaluate") as span:
+            span: Span
+            span.set_data("expression", expression_source)
+            param_keys = self._context.keys()
+            ast_obj = compile(
+                self.wrap_expression(expression_source, param_keys),
+                self._filename,
+                "exec",
+            )
+            try:
+                _locals = self._context
+                # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
+                # available here, and these policies can only be edited by admins, this is a risk
+                # we're willing to take.
+                # pylint: disable=exec-used
+                exec(ast_obj, self._globals, _locals)  # nosec # noqa
+                result = _locals["result"]
+            except Exception as exc:
+                LOGGER.warning("Expression error", exc=exc)
+                raise
+            return result
 
     def validate(self, expression: str) -> bool:
         """Validate expression's syntax, raise ValidationError if Syntax is invalid"""

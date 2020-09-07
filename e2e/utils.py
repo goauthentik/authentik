@@ -3,10 +3,9 @@ from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
-from os import makedirs
+from os import environ, makedirs
 from time import time
 
-from Cryptodome.PublicKey import RSA
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
@@ -28,16 +27,6 @@ def USER() -> User:  # noqa
     return User.objects.get(username="pbadmin")
 
 
-def ensure_rsa_key():
-    """Ensure that at least one RSAKey Object exists, create one if none exist"""
-    from oidc_provider.models import RSAKey
-
-    if not RSAKey.objects.exists():
-        key = RSA.generate(2048)
-        rsakey = RSAKey(key=key.exportKey("PEM").decode("utf8"))
-        rsakey.save()
-
-
 class SeleniumTestCase(StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
@@ -46,8 +35,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
-        self.driver.implicitly_wait(300)
-        self.wait = WebDriverWait(self.driver, 500)
+        self.driver.implicitly_wait(30)
+        self.wait = WebDriverWait(self.driver, 50)
         self.apply_default_data()
         self.logger = get_logger()
 
@@ -58,9 +47,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
 
     def tearDown(self):
-        self.driver.save_screenshot(
-            f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
-        )
+        if "TF_BUILD" in environ:
+            screenshot_file = (
+                f"selenium_screenshots/{self.__class__.__name__}_{time()}.png"
+            )
+            self.driver.save_screenshot(screenshot_file)
+            self.logger.warning("Saved screenshot", file=screenshot_file)
         for line in self.driver.get_log("browser"):
             self.logger.warning(
                 line["message"], source=line["source"], level=line["level"]

@@ -6,8 +6,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CELERY_BEAT_SCHEDULE = {
-    "sync": {
+    "sources_ldap_sync": {
         "task": "passbook.sources.ldap.tasks.sync",
         "schedule": crontab(minute=0),  # Run every hour
+        "options": {"queue": "passbook_scheduled"},
     }
 }

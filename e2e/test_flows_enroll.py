@@ -4,6 +4,7 @@ from time import sleep
 from django.test import override_settings
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from structlog import get_logger
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -18,24 +19,26 @@ from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
 
+LOGGER = get_logger()
+
 
 class TestFlowsEnroll(SeleniumTestCase):
     """Test Enroll flow"""
 
     def setUp(self):
-        super().setUp()
         self.container = self.setup_client()
+        super().setUp()
 
     def setup_client(self) -> Container:
         """Setup test IdP container"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="mailhog/mailhog",
+            image="mailhog/mailhog:v1.0.1",
             detach=True,
             network_mode="host",
             auto_remove=True,
             healthcheck=Healthcheck(
-                test=["CMD", "wget", "-s", "http://localhost:8025"],
+                test=["CMD", "wget", "--spider", "http://localhost:8025"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
@@ -45,6 +48,7 @@ class TestFlowsEnroll(SeleniumTestCase):
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
             if status == "healthy":
                 return container
+            LOGGER.info("Container failed healthcheck")
             sleep(1)
 
     def tearDown(self):

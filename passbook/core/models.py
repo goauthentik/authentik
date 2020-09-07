@@ -1,12 +1,12 @@
 """passbook core models"""
 from datetime import timedelta
-from typing import Any, Optional
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Q, QuerySet
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -41,7 +41,7 @@ class Group(models.Model):
         on_delete=models.SET_NULL,
         related_name="children",
     )
-    attributes = JSONField(default=dict, blank=True)
+    attributes = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"Group {self.name}"
@@ -58,10 +58,10 @@ class User(GuardianUserMixin, AbstractUser):
     name = models.TextField(help_text=_("User's display name."))
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group")
+    pb_groups = models.ManyToManyField("Group")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
-    attributes = JSONField(default=dict, blank=True)
+    attributes = models.JSONField(default=dict, blank=True)
 
     def set_password(self, password):
         if self.pk:
@@ -91,6 +91,10 @@ class Provider(models.Model):
     )
 
     objects = InheritanceManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     # This class defines no field for easier inheritance
     def __str__(self):
@@ -134,7 +138,9 @@ class Source(PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
-    slug = models.SlugField(help_text=_("Internal source name, used in URLs."))
+    slug = models.SlugField(
+        help_text=_("Internal source name, used in URLs."), unique=True
+    )
 
     enabled = models.BooleanField(default=True)
     property_mappings = models.ManyToManyField(
@@ -160,9 +166,11 @@ class Source(PolicyBindingModel):
         related_name="source_enrollment",
     )
 
-    form = ""  # ModelForm-based class ued to create/edit instance
-
     objects = InheritanceManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     @property
     def ui_login_button(self) -> Optional[UILoginButton]:
@@ -196,6 +204,31 @@ class UserSourceConnection(CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
+class ExpiringModel(models.Model):
+    """Base Model which can expire, and is automatically cleaned up."""
+
+    expires = models.DateTimeField(default=default_token_duration)
+    expiring = models.BooleanField(default=True)
+
+    @classmethod
+    def filter_not_expired(cls, **kwargs) -> QuerySet:
+        """Filer for tokens which are not expired yet or are not expiring,
+        and match filters in `kwargs`"""
+        query = Q(**kwargs)
+        query_not_expired_yet = Q(expires__lt=now(), expiring=True)
+        query_not_expiring = Q(expiring=False)
+        return cls.objects.filter(query & (query_not_expired_yet | query_not_expiring))
+
+    @property
+    def is_expired(self) -> bool:
+        """Check if token is expired yet."""
+        return now() > self.expires
+
+    class Meta:
+
+        abstract = True
+
+
 class TokenIntents(models.TextChoices):
     """Intents a Token can be created for."""
 
@@ -206,33 +239,15 @@ class TokenIntents(models.TextChoices):
     INTENT_API = "api"
 
 
-class Token(models.Model):
+class Token(ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
     )
-    expires = models.DateTimeField(default=default_token_duration)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="+")
-    expiring = models.BooleanField(default=True)
     description = models.TextField(default="", blank=True)
-
-    @staticmethod
-    def filter_not_expired(**kwargs) -> QuerySet:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        query = Q(**kwargs)
-        query_not_expired_yet = Q(expires__lt=now(), expiring=True)
-        query_not_expiring = Q(expiring=False)
-        return Token.objects.filter(
-            query & (query_not_expired_yet | query_not_expiring)
-        )
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if token is expired yet."""
-        return now() > self.expires
 
     def __str__(self):
         return (
@@ -252,8 +267,11 @@ class PropertyMapping(models.Model):
     name = models.TextField()
     expression = models.TextField()
 
-    form = ""
     objects = InheritanceManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     def evaluate(
         self, user: Optional[User], request: Optional[HttpRequest], **kwargs

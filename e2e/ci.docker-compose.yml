@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  chrome:
+    image: selenium/standalone-chrome:3.141.59-20200525
+    volumes:
+      - /dev/shm:/dev/shm
+    network_mode: host

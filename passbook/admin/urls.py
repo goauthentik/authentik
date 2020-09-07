@@ -4,9 +4,9 @@ from django.urls import path
 from passbook.admin.views import (
     applications,
     certificate_key_pair,
-    debug,
     flows,
     groups,
+    outposts,
     overview,
     policies,
     policies_bindings,
@@ -192,6 +192,7 @@ urlpatterns = [
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),
     path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
+    path("flows/import/", flows.FlowImportView.as_view(), name="flow-import",),
     path(
         "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
     ),
@@ -199,6 +200,9 @@ urlpatterns = [
         "flows/<uuid:pk>/execute/",
         flows.FlowDebugExecuteView.as_view(),
         name="flow-execute",
+    ),
+    path(
+        "flows/<uuid:pk>/export/", flows.FlowExportView.as_view(), name="flow-export",
     ),
     path(
         "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
@@ -235,13 +239,17 @@ urlpatterns = [
         name="user-password-reset",
     ),
     # Groups
-    path("group/", groups.GroupListView.as_view(), name="group"),
-    path("group/create/", groups.GroupCreateView.as_view(), name="group-create"),
+    path("groups/", groups.GroupListView.as_view(), name="groups"),
+    path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
     path(
-        "group/<uuid:pk>/update/", groups.GroupUpdateView.as_view(), name="group-update"
+        "groups/<uuid:pk>/update/",
+        groups.GroupUpdateView.as_view(),
+        name="group-update",
     ),
     path(
-        "group/<uuid:pk>/delete/", groups.GroupDeleteView.as_view(), name="group-delete"
+        "groups/<uuid:pk>/delete/",
+        groups.GroupDeleteView.as_view(),
+        name="group-delete",
     ),
     # Certificate-Key Pairs
     path(
@@ -264,8 +272,19 @@ urlpatterns = [
         certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
         name="certificatekeypair-delete",
     ),
-    # Groups
-    path("groups/", groups.GroupListView.as_view(), name="groups"),
-    # Debug
-    path("debug/request/", debug.DebugRequestView.as_view(), name="debug-request"),
+    # Outposts
+    path("outposts/", outposts.OutpostListView.as_view(), name="outposts",),
+    path(
+        "outposts/create/", outposts.OutpostCreateView.as_view(), name="outpost-create",
+    ),
+    path(
+        "outposts/<uuid:pk>/update/",
+        outposts.OutpostUpdateView.as_view(),
+        name="outpost-update",
+    ),
+    path(
+        "outposts/<uuid:pk>/delete/",
+        outposts.OutpostDeleteView.as_view(),
+        name="outpost-delete",
+    ),
 ]

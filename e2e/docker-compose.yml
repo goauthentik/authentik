@@ -6,15 +6,4 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
-
-  postgresql:
-    image: postgres:11
     restart: always
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: passbook
-    network_mode: host
-  redis:
-    image: redis
-    restart: always
-    network_mode: host

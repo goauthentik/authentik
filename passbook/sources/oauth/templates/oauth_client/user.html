@@ -1,22 +1,29 @@
 {% extends "user/base.html" %}
 
+{% load passbook_utils %}
 {% load i18n %}
 
 {% block page %}
-<div class="pf-c-card__header pf-c-title pf-m-md">
-    <h1>{{ source.name }}</h1>
-</div>
-<div class="pf-c-card__body">
-    {% if connections.exists %}
-    <p>{% trans 'Connected.' %}</p>
-    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_sources_oauth:oauth-client-disconnect' source_slug=source.slug %}">
-        {% trans 'Disconnect' %}
-    </a>
-    {% else %}
-    <p>Not connected.</p>
-    <a class="pf-c-button pf-m-primary" href="{% url 'passbook_sources_oauth:oauth-client-login' source_slug=source.slug %}">
-        {% trans 'Connect' %}
-    </a>
-    {% endif %}
+<div class="pf-c-card">
+    <div class="pf-c-card__header pf-c-title pf-m-md">
+        {% blocktrans with source_name=source.name %}
+        Source {{ source_name }}
+        {% endblocktrans %}
+    </div>
+    <div class="pf-c-card__body">
+        {% if connections.exists %}
+        <p>{% trans 'Connected.' %}</p>
+        <a class="pf-c-button pf-m-danger"
+            href="{% url 'passbook_sources_oauth:oauth-client-disconnect' source_slug=source.slug %}">
+            {% trans 'Disconnect' %}
+        </a>
+        {% else %}
+        <p>Not connected.</p>
+        <a class="pf-c-button pf-m-primary"
+            href="{% url 'passbook_sources_oauth:oauth-client-login' source_slug=source.slug %}">
+            {% trans 'Connect' %}
+        </a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

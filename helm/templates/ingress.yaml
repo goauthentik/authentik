@@ -1,4 +1,3 @@
-{{- if .Values.ingress.enabled -}}
 {{- $fullName := include "passbook.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -41,5 +40,8 @@ spec:
             backend:
               serviceName: {{ $fullName }}-static
               servicePort: http
+          - path: /favicon.ico
+            backend:
+              serviceName: {{ $fullName }}-static
+              servicePort: http
   {{- end }}
-{{- end }}

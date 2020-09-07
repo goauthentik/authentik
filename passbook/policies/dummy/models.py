@@ -1,9 +1,12 @@
 """Dummy policy"""
 from random import SystemRandom
 from time import sleep
+from typing import Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.policies.models import Policy
@@ -22,7 +25,16 @@ class DummyPolicy(Policy):
     wait_min = models.IntegerField(default=5)
     wait_max = models.IntegerField(default=30)
 
-    form = "passbook.policies.dummy.forms.DummyPolicyForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.dummy.api import DummyPolicySerializer
+
+        return DummyPolicySerializer
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.dummy.forms import DummyPolicyForm
+
+        return DummyPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Wait random time then return result"""

@@ -16,6 +16,7 @@ Create an application in passbook and note the slug, as this will be used later.
 -   ACS URL: `https://signin.aws.amazon.com/saml`
 -   Audience: `urn:amazon:webservices`
 -   Issuer: `passbook`
+-   Binding: `Post`
 
 You can of course use a custom signing certificate, and adjust durations.
 

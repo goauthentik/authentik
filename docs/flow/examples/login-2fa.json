@@ -1,0 +1,111 @@
+{
+    "version": 1,
+    "entries": [
+        {
+            "identifiers": {
+                "slug": "default-authentication-flow",
+                "pk": "563ece21-e9a4-47e5-a264-23ffd923e393"
+            },
+            "model": "passbook_flows.flow",
+            "attrs": {
+                "name": "Default Authentication Flow",
+                "title": "Welcome to passbook!",
+                "designation": "authentication"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "69d41125-3987-499b-8d74-ef27b54b88c8",
+                "name": "default-authentication-login"
+            },
+            "model": "passbook_stages_user_login.userloginstage",
+            "attrs": {
+                "session_duration": 0
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "5f594f27-0def-488d-9855-fe604eb13de5",
+                "name": "default-authentication-identification"
+            },
+            "model": "passbook_stages_identification.identificationstage",
+            "attrs": {
+                "user_fields": [
+                    "email",
+                    "username"
+                ],
+                "template": "stages/identification/login.html",
+                "enrollment_flow": null,
+                "recovery_flow": null
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "37f709c3-8817-45e8-9a93-80a925d293c2",
+                "name": "default-authentication-flow-totp"
+            },
+            "model": "passbook_stages_otp_validate.otpvalidatestage",
+            "attrs": {}
+        },
+        {
+            "identifiers": {
+                "pk": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
+                "name": "default-authentication-password"
+            },
+            "model": "passbook_stages_password.passwordstage",
+            "attrs": {
+                "backends": [
+                    "django.contrib.auth.backends.ModelBackend"
+                ]
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "a3056482-b692-4e3a-93f1-7351c6a351c7",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "5f594f27-0def-488d-9855-fe604eb13de5",
+                "order": 0
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "4e8538cf-3e18-4a68-82ae-6df6725fa2e6",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
+                "order": 1
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "688aec6f-5622-42c6-83a5-d22072d7e798",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "37f709c3-8817-45e8-9a93-80a925d293c2",
+                "order": 2
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "f3fede3a-a9b5-4232-9ec7-be7ff4194b27",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
+                "order": 3
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        }
+    ]
+}

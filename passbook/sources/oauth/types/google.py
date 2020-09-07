@@ -1,7 +1,10 @@
 """Google OAuth Views"""
+from typing import Any, Dict
+
+from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.utils import user_get_or_create
-from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
+from passbook.sources.oauth.views.callback import OAuthCallback
+from passbook.sources.oauth.views.redirect import OAuthRedirect
 
 
 @MANAGER.source(kind=RequestKind.redirect, name="Google")
@@ -18,12 +21,14 @@ class GoogleOAuthRedirect(OAuthRedirect):
 class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 
-    def get_or_create_user(self, source, access, info):
-        user_data = {
+    def get_user_enroll_context(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        return {
             "username": info.get("email"),
-            "email": info.get("email", ""),
+            "email": info.get("email"),
             "name": info.get("name"),
-            "password": None,
         }
-        google_user = user_get_or_create(**user_data)
-        return google_user

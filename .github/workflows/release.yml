@@ -16,14 +16,14 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/passbook:0.9.0-pre4
+          -t beryju/passbook:0.9.0-stable
           -t beryju/passbook:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook:0.9.0-pre4
+        run: docker push beryju/passbook:0.9.0-stable
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook:latest
-  build-gatekeeper:
+  build-proxy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -34,16 +34,16 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Building Docker Image
         run: |
-          cd gatekeeper
+          cd proxy
           docker build \
           --no-cache \
-          -t beryju/passbook-gatekeeper:0.9.0-pre4 \
-          -t beryju/passbook-gatekeeper:latest \
+          -t beryju/passbook-proxy:0.9.0-stable \
+          -t beryju/passbook-proxy:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-gatekeeper:0.9.0-pre4
+        run: docker push beryju/passbook-proxy:0.9.0-stable
       - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/passbook-gatekeeper:latest
+        run: docker push beryju/passbook-proxy:latest
   build-static:
     runs-on: ubuntu-latest
     services:
@@ -66,11 +66,11 @@ jobs:
         run: docker build
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
-          -t beryju/passbook-static:0.9.0-pre4
+          -t beryju/passbook-static:0.9.0-stable
           -t beryju/passbook-static:latest
           -f static.Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-static:0.9.0-pre4
+        run: docker push beryju/passbook-static:0.9.0-stable
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-static:latest
   test-release:
@@ -86,3 +86,19 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+  sentry-release:
+    needs:
+      - test-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Create a Sentry.io release
+        uses: tclindner/sentry-releases-action@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: beryjuorg
+          SENTRY_PROJECT: passbook
+          SENTRY_URL: https://sentry.beryju.org
+        with:
+          tagName: 0.9.0-stable
+          environment: beryjuorg-prod

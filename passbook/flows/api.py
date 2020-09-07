@@ -11,7 +11,7 @@ class FlowSerializer(ModelSerializer):
     class Meta:
 
         model = Flow
-        fields = ["pk", "name", "slug", "designation", "stages", "policies"]
+        fields = ["pk", "name", "slug", "title", "designation", "stages", "policies"]
 
 
 class FlowViewSet(ModelViewSet):

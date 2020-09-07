@@ -1,7 +1,8 @@
 """OAuth Client models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -40,7 +41,10 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
-    form = "passbook.sources.oauth.forms.OAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import OAuthSourceForm
+
+        return OAuthSourceForm
 
     @property
     def ui_login_button(self) -> UILoginButton:
@@ -80,7 +84,10 @@ class OAuthSource(Source):
 class GitHubOAuthSource(OAuthSource):
     """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
 
-    form = "passbook.sources.oauth.forms.GitHubOAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import GitHubOAuthSourceForm
+
+        return GitHubOAuthSourceForm
 
     class Meta:
 
@@ -89,22 +96,27 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
-class TwitterOAuthSource(OAuthSource):
-    """Social Login using Twitter.com"""
+# class TwitterOAuthSource(OAuthSource):
+#     """Social Login using Twitter.com"""
 
-    form = "passbook.sources.oauth.forms.TwitterOAuthSourceForm"
+#     def form(self) -> Type[ModelForm]:
+#         from passbook.sources.oauth.forms import TwitterOAuthSourceForm
+#         return TwitterOAuthSourceForm
 
-    class Meta:
+#     class Meta:
 
-        abstract = True
-        verbose_name = _("Twitter OAuth Source")
-        verbose_name_plural = _("Twitter OAuth Sources")
+#         abstract = True
+#         verbose_name = _("Twitter OAuth Source")
+#         verbose_name_plural = _("Twitter OAuth Sources")
 
 
 class FacebookOAuthSource(OAuthSource):
     """Social Login using Facebook.com."""
 
-    form = "passbook.sources.oauth.forms.FacebookOAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import FacebookOAuthSourceForm
+
+        return FacebookOAuthSourceForm
 
     class Meta:
 
@@ -116,7 +128,10 @@ class FacebookOAuthSource(OAuthSource):
 class DiscordOAuthSource(OAuthSource):
     """Social Login using Discord."""
 
-    form = "passbook.sources.oauth.forms.DiscordOAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import DiscordOAuthSourceForm
+
+        return DiscordOAuthSourceForm
 
     class Meta:
 
@@ -128,7 +143,10 @@ class DiscordOAuthSource(OAuthSource):
 class GoogleOAuthSource(OAuthSource):
     """Social Login using Google or Gsuite."""
 
-    form = "passbook.sources.oauth.forms.GoogleOAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import GoogleOAuthSourceForm
+
+        return GoogleOAuthSourceForm
 
     class Meta:
 
@@ -140,7 +158,10 @@ class GoogleOAuthSource(OAuthSource):
 class AzureADOAuthSource(OAuthSource):
     """Social Login using Azure AD."""
 
-    form = "passbook.sources.oauth.forms.AzureADOAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import AzureADOAuthSourceForm
+
+        return AzureADOAuthSourceForm
 
     class Meta:
 
@@ -152,7 +173,10 @@ class AzureADOAuthSource(OAuthSource):
 class OpenIDOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
-    form = "passbook.sources.oauth.forms.OAuthSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import OAuthSourceForm
+
+        return OAuthSourceForm
 
     class Meta:
 

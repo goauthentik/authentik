@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import importlib
 import os
 import sys
+from json import dumps
 
 import structlog
 from celery.schedules import crontab
@@ -67,18 +68,19 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.postgres",
     "django.contrib.humanize",
     "rest_framework",
     "django_filters",
     "drf_yasg",
     "guardian",
     "django_prometheus",
+    "channels",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.audit.apps.PassbookAuditConfig",
     "passbook.crypto.apps.PassbookCryptoConfig",
     "passbook.flows.apps.PassbookFlowsConfig",
+    "passbook.outposts.apps.PassbookOutpostConfig",
     "passbook.lib.apps.PassbookLibConfig",
     "passbook.policies.apps.PassbookPoliciesConfig",
     "passbook.policies.dummy.apps.PassbookPolicyDummyConfig",
@@ -88,9 +90,8 @@ INSTALLED_APPS = [
     "passbook.policies.password.apps.PassbookPoliciesPasswordConfig",
     "passbook.policies.group_membership.apps.PassbookPoliciesGroupMembershipConfig",
     "passbook.policies.reputation.apps.PassbookPolicyReputationConfig",
-    "passbook.providers.app_gw.apps.PassbookApplicationApplicationGatewayConfig",
-    "passbook.providers.oauth.apps.PassbookProviderOAuthConfig",
-    "passbook.providers.oidc.apps.PassbookProviderOIDCConfig",
+    "passbook.providers.proxy.apps.PassbookProviderProxyConfig",
+    "passbook.providers.oauth2.apps.PassbookProviderOAuth2Config",
     "passbook.providers.saml.apps.PassbookProviderSAMLConfig",
     "passbook.recovery.apps.PassbookRecoveryConfig",
     "passbook.sources.ldap.apps.PassbookSourceLDAPConfig",
@@ -127,11 +128,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
+        "rest_framework_guardian.filters.ObjectPermissionsFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PERMISSION_CLASSES": ("passbook.api.permissions.CustomObjectPermissions"),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.DjangoObjectPermissions",
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "passbook.api.auth.PassbookTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -178,12 +182,21 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "passbook.lib.config.context_processor",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "passbook.root.wsgi.application"
+ASGI_APPLICATION = "passbook.root.routing.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [(CONFIG.y("redis.host"), 6379)]},
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -229,9 +242,10 @@ USE_TZ = True
 # Add a 10 minute timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
 CELERY_BEAT_SCHEDULE = {
-    "clean_tokens": {
-        "task": "passbook.core.tasks.clean_tokens",
+    "clean_expired_models": {
+        "task": "passbook.core.tasks.clean_expired_models",
         "schedule": crontab(minute="*/5"),  # Run every 5 minutes
+        "options": {"queue": "passbook_scheduled"},
     }
 }
 CELERY_CREATE_MISSING_QUEUES = True
@@ -247,7 +261,7 @@ CELERY_RESULT_BACKEND = (
 
 # Database backup
 if CONFIG.y("postgresql.backup"):
-    INSTALLED_APPS += ["dbbackup"]
+    INSTALLED_APPS.append("dbbackup")
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_CONNECTOR_MAPPING = {
         "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
@@ -257,8 +271,15 @@ if CONFIG.y("postgresql.backup"):
     AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
     AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
     AWS_DEFAULT_ACL = None
-    LOGGER.info(
-        "Database backup is configured", host=CONFIG.y("postgresql.backup.host")
+    print(
+        dumps(
+            {
+                "event": "Database backup is configured.",
+                "level": "info",
+                "logger": __name__,
+                "host": CONFIG.y("postgresql.backup.host"),
+            }
+        )
     )
     # Add automatic task to backup
     CELERY_BEAT_SCHEDULE["db_backup"] = {
@@ -267,16 +288,30 @@ if CONFIG.y("postgresql.backup"):
     }
 
 # Sentry integration
-_ERROR_REPORTING = CONFIG.y_bool("error_reporting", False)
+_ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
-    LOGGER.info("Error reporting is enabled.")
+    print(
+        dumps(
+            {
+                "event": "Error reporting is enabled.",
+                "level": "info",
+                "logger": __name__,
+            }
+        )
+    )
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
-        integrations=[DjangoIntegration(), CeleryIntegration()],
-        send_default_pii=True,
+        integrations=[
+            DjangoIntegration(transaction_style="function_name"),
+            CeleryIntegration(),
+        ],
         before_send=before_send,
         release="passbook@%s" % __version__,
+        traces_sample_rate=1.0,
+        environment=CONFIG.y("error_reporting.environment", "customer"),
+        send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -305,7 +340,10 @@ LOG_PRE_CHAIN = [
     # Add the log level and a timestamp to the event_dict if the log entry
     # is not from structlog.
     structlog.stdlib.add_log_level,
+    structlog.stdlib.add_logger_name,
     structlog.processors.TimeStamper(),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.format_exc_info,
 ]
 
 LOGGING = {
@@ -351,9 +389,10 @@ _LOGGING_HANDLER_MAP = {
     "celery": "WARNING",
     "selenium": "WARNING",
     "grpc": LOG_LEVEL,
-    "oauthlib": LOG_LEVEL,
-    "oauth2_provider": LOG_LEVEL,
-    "oidc_provider": LOG_LEVEL,
+    "docker": "WARNING",
+    "urllib3": "WARNING",
+    "websockets": "WARNING",
+    "daphne": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

@@ -1,34 +1,48 @@
 """prompt models"""
+from typing import Type
 from uuid import uuid4
 
 from django import forms
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
+from passbook.lib.models import SerializerModel
 from passbook.policies.models import PolicyBindingModel
+from passbook.stages.prompt.widgets import HorizontalRuleWidget, StaticTextWidget
 
 
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
     # Simple text field
-    TEXT = "text"
+    TEXT = "text", _("Text: Simple Text input")
     # Same as text, but has autocomplete for password managers
-    USERNAME = "username"
-    EMAIL = "email"
+    USERNAME = (
+        "username",
+        _(
+            (
+                "Username: Same as Text input, but checks for "
+                "and prevents duplicate usernames."
+            )
+        ),
+    )
+    EMAIL = "email", _("Email: Text field with Email type.")
     PASSWORD = "password"  # noqa # nosec
     NUMBER = "number"
     CHECKBOX = "checkbox"
     DATE = "data"
     DATE_TIME = "data-time"
 
-    SEPARATOR = "separator"
-    HIDDEN = "hidden"
-    STATIC = "static"
+    SEPARATOR = "separator", _("Separator: Static Separator Line")
+    HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
+    STATIC = "static", _("Static: Static value, displayed as-is.")
 
 
-class Prompt(models.Model):
+class Prompt(SerializerModel):
     """Single Prompt, part of a prompt stage."""
 
     prompt_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -39,9 +53,15 @@ class Prompt(models.Model):
     label = models.TextField()
     type = models.CharField(max_length=100, choices=FieldTypes.choices)
     required = models.BooleanField(default=True)
-    placeholder = models.TextField()
+    placeholder = models.TextField(blank=True)
 
     order = models.IntegerField(default=0)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.prompt.api import PromptSerializer
+
+        return PromptSerializer
 
     @property
     def field(self):
@@ -68,15 +88,24 @@ class Prompt(models.Model):
             kwargs["required"] = False
             kwargs["initial"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
-            field_class = forms.CheckboxInput
+            field_class = forms.BooleanField
             kwargs["required"] = False
         if self.type == FieldTypes.DATE:
-            field_class = forms.DateInput
+            attrs["type"] = "date"
+            widget = forms.DateInput(attrs=attrs)
         if self.type == FieldTypes.DATE_TIME:
-            field_class = forms.DateTimeInput
+            attrs["type"] = "datetime-local"
+            widget = forms.DateTimeInput(attrs=attrs)
+        if self.type == FieldTypes.STATIC:
+            widget = StaticTextWidget(attrs=attrs)
+            kwargs["initial"] = self.placeholder
+            kwargs["required"] = False
+            kwargs["label"] = ""
+        if self.type == FieldTypes.SEPARATOR:
+            widget = HorizontalRuleWidget(attrs=attrs)
+            kwargs["required"] = False
+            kwargs["label"] = ""
 
-        # TODO: Implement static
-        # TODO: Implement separator
         kwargs["widget"] = widget
         return field_class(**kwargs)
 
@@ -99,8 +128,21 @@ class PromptStage(PolicyBindingModel, Stage):
 
     fields = models.ManyToManyField(Prompt)
 
-    type = "passbook.stages.prompt.stage.PromptStageView"
-    form = "passbook.stages.prompt.forms.PromptStageForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.prompt.api import PromptStageSerializer
+
+        return PromptStageSerializer
+
+    def type(self) -> Type[View]:
+        from passbook.stages.prompt.stage import PromptStageView
+
+        return PromptStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.prompt.forms import PromptStageForm
+
+        return PromptStageForm
 
     def __str__(self):
         return f"Prompt Stage {self.name}"

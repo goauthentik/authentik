@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  postgresql:
+    container_name: postgres
+    image: postgres:11
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: passbook
+      POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      POSTGRES_DB: passbook
+    ports:
+    - 5432:5432
+    restart: always
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+    - 6379:6379
+    restart: always
+
+volumes:
+  db-data:
+    driver: local

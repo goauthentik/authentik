@@ -1,4 +1,4 @@
-{% extends "login/base.html" %}
+{% extends "login/base_full.html" %}
 
 {% load passbook_utils %}
 {% load i18n %}
@@ -8,20 +8,19 @@
 {% endblock %}
 
 {% block card %}
-<header class="login-pf-header">
-    <h1>{% trans 'Authorize Application' %}</h1>
-</header>
-<form method="POST" action="{{ request_url }}">
+<form class="pf-c-form" method="POST" action="{{ request_url }}">
     {% csrf_token %}
     <input type="hidden" name="SAMLRequest" value="{{ request }}" />
     <input type="hidden" name="RelayState" value="{{ relay_state }}" />
     <div class="login-group">
         <h3>
-            {% blocktrans with remote=source.name %}
-            You're about to sign-in via {{ remote }}
+            {% blocktrans with source=source.name %}
+            You're about to sign-in via {{ source }}.
             {% endblocktrans %}
         </h3>
-        <input class="btn btn-primary btn-block btn-lg" type="submit" value="{% trans 'Continue' %}" />
+    </div>
+    <div class="pf-c-form__group pf-m-action">
+        <button class="pf-c-button pf-m-primary pf-m-block" type="submit">{% trans "Continue" %}</button>
     </div>
 </form>
 {% endblock %}

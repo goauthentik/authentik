@@ -11,15 +11,14 @@ from passbook.sources.oauth.types.manager import MANAGER
 class OAuthSourceForm(forms.ModelForm):
     """OAuthSource Form"""
 
-    authentication_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHENTICATION)
-    )
-    enrollment_flow = forms.ModelChoiceField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.ENROLLMENT)
-    )
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["authentication_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.AUTHENTICATION
+        )
+        self.fields["enrollment_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.ENROLLMENT
+        )
         if hasattr(self.Meta, "overrides"):
             for overide_field, overide_value in getattr(self.Meta, "overrides").items():
                 self.fields[overide_field].initial = overide_value
@@ -98,9 +97,9 @@ class DiscordOAuthSourceForm(OAuthSourceForm):
         overrides = {
             "provider_type": "discord",
             "request_token_url": "",
-            "authorization_url": "https://discordapp.com/api/oauth2/authorize",
-            "access_token_url": "https://discordapp.com/api/oauth2/token",
-            "profile_url": "https://discordapp.com/api/users/@me",
+            "authorization_url": "https://discord.com/api/oauth2/authorize",
+            "access_token_url": "https://discord.com/api/oauth2/token",
+            "profile_url": "https://discord.com/api/users/@me",
         }
 
 

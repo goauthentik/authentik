@@ -7,60 +7,46 @@ metadata:
     helm.sh/chart: {{ include "passbook.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.passbook.io/component: worker
+    k8s.passbook.beryju.org/component: worker
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "passbook.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      k8s.passbook.io/component: worker
+      k8s.passbook.beryju.org/component: worker
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "passbook.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        k8s.passbook.io/component: worker
+        k8s.passbook.beryju.org/component: worker
     spec:
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "passbook.fullname" . }}-config
       containers:
         - name: {{ .Chart.Name }}
-          image: "beryju/passbook:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
-          args:
-            - celery
-            - worker
-            - --autoscale=10,3
-            - -E
-            - -B
-            - -A=passbook.root.celery
-            - -s=/tmp/celerybeat-schedule
-          volumeMounts:
-            - mountPath: /etc/passbook
-              name: config-volume
+          args: [worker]
           envFrom:
             - configMapRef:
-                name: {{ include "passbook.fullname" . }}-config
-              prefix: PASSBOOK_
+                name: "{{ include "passbook.fullname" . }}-config"
+              prefix: "PASSBOOK_"
           env:
             - name: PASSBOOK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "passbook.fullname" . }}-secret-key
+                  name: "{{ include "passbook.fullname" . }}-secret-key"
                   key: secret_key
             - name: PASSBOOK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-redis"
-                  key: redis-password
+                  key: "redis-password"
             - name: PASSBOOK_POSTGRESQL__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
-                  key: postgresql-password
+                  key: "postgresql-password"
           resources:
             requests:
               cpu: 150m

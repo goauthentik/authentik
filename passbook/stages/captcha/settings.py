@@ -5,4 +5,5 @@ RECAPTCHA_PRIVATE_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 NOCAPTCHA = True
 INSTALLED_APPS = ["captcha"]
+
 SILENCED_SYSTEM_CHECKS = ["captcha.recaptcha_test_key_error"]

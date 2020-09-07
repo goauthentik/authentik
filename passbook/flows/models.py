@@ -1,16 +1,21 @@
 """Flow models"""
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Optional, Type
 from uuid import uuid4
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
-from passbook.lib.utils.reflection import class_to_path
+from passbook.lib.models import SerializerModel
 from passbook.policies.models import PolicyBindingModel
+
+if TYPE_CHECKING:
+    from passbook.flows.stage import StageView
 
 LOGGER = get_logger()
 
@@ -35,17 +40,26 @@ class FlowDesignation(models.TextChoices):
     STAGE_SETUP = "stage_setup"
 
 
-class Stage(models.Model):
+class Stage(SerializerModel):
     """Stage is an instance of a component used in a flow. This can verify the user,
     enroll the user or offer a way of recovery"""
 
     stage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     objects = InheritanceManager()
-    type = ""
-    form = ""
+
+    def type(self) -> Type["StageView"]:
+        """Return StageView class that implements logic for this stage"""
+        # This is a bit of a workaround, since we can't set class methods with setattr
+        if hasattr(self, "__in_memory_type"):
+            return getattr(self, "__in_memory_type")
+        raise NotImplementedError
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:
@@ -54,18 +68,22 @@ class Stage(models.Model):
         return None
 
     def __str__(self):
+        if hasattr(self, "__in_memory_type"):
+            return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
 
 
-def in_memory_stage(_type: Callable) -> Stage:
+def in_memory_stage(view: Type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
-    class_path = class_to_path(_type)
     stage = Stage()
-    stage.type = class_path
+    # Because we can't pickle a locally generated function,
+    # we set the view as a separate property and reference a generic function
+    # that returns that member
+    setattr(stage, "__in_memory_type", view)
     return stage
 
 
-class Flow(PolicyBindingModel):
+class Flow(SerializerModel, PolicyBindingModel):
     """Flow describes how a series of Stages should be executed to authenticate/enroll/recover
     a user. Additionally, policies can be applied, to specify which users
     have access to this flow."""
@@ -75,16 +93,24 @@ class Flow(PolicyBindingModel):
     name = models.TextField()
     slug = models.SlugField(unique=True)
 
+    title = models.TextField(default="", blank=True)
+
     designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.flows.api import FlowSerializer
+
+        return FlowSerializer
 
     @staticmethod
     def with_policy(request: HttpRequest, **flow_filter) -> Optional["Flow"]:
         """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
         from passbook.policies.engine import PolicyEngine
 
-        flows = Flow.objects.filter(**flow_filter)
+        flows = Flow.objects.filter(**flow_filter).order_by("slug")
         for flow in flows:
             engine = PolicyEngine(flow, request.user, request)
             engine.build()
@@ -111,8 +137,12 @@ class Flow(PolicyBindingModel):
         verbose_name = _("Flow")
         verbose_name_plural = _("Flows")
 
+        permissions = [
+            ("export_flow", "Can export a Flow"),
+        ]
 
-class FlowStageBinding(PolicyBindingModel):
+
+class FlowStageBinding(SerializerModel, PolicyBindingModel):
     """Relationship between Flow and Stage. Order is required and unique for
     each flow-stage Binding. Additionally, policies can be specified, which determine if
     this Binding applies to the current user"""
@@ -133,8 +163,14 @@ class FlowStageBinding(PolicyBindingModel):
 
     objects = InheritanceManager()
 
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.flows.api import FlowStageBindingSerializer
+
+        return FlowStageBindingSerializer
+
     def __str__(self) -> str:
-        return f"Flow Binding {self.target} -> {self.stage}"
+        return f"'{self.target}' -> '{self.stage}' # {self.order}"
 
     class Meta:
 

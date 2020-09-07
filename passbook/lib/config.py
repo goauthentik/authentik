@@ -3,19 +3,25 @@ import os
 from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
-from typing import Any
+from json import dumps
+from typing import Any, Dict
 from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
-from structlog import get_logger
+from django.http import HttpRequest
 
 SEARCH_PATHS = ["passbook/lib/default.yml", "/etc/passbook/config.yml", ""] + glob(
     "/etc/passbook/config.d/*.yml", recursive=True
 )
-LOGGER = get_logger()
 ENV_PREFIX = "PASSBOOK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
+
+
+def context_processor(request: HttpRequest) -> Dict[str, Any]:
+    """Context Processor that injects config object into every template"""
+    kwargs = {"config": CONFIG.raw}
+    return kwargs
 
 
 class ConfigLoader:
@@ -51,6 +57,13 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
 
+    def _log(self, level: str, message: str, **kwargs):
+        """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
+        'structlog' or 'logging' hasn't been configured yet."""
+        output = {"event": message, "level": level, "logger": self.__class__.__module__}
+        output.update(kwargs)
+        print(dumps(output))
+
     def update(self, root, updatee):
         """Recursively update dictionary"""
         for key, value in updatee.items():
@@ -75,12 +88,14 @@ class ConfigLoader:
             with open(path) as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
-                    LOGGER.debug("Loaded config", file=path)
+                    self._log("debug", "Loaded config", file=path)
                     self.loaded_file.append(path)
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
-            LOGGER.warning("Permission denied while reading file", path=path, error=exc)
+            self._log(
+                "warning", "Permission denied while reading file", path=path, error=exc
+            )
 
     def update_from_dict(self, update: dict):
         """Update config from dict"""
@@ -104,7 +119,7 @@ class ConfigLoader:
             current_obj[dot_parts[-1]] = value
             idx += 1
         if idx > 0:
-            LOGGER.debug("Loaded environment variables", count=idx)
+            self._log("debug", "Loaded environment variables", count=idx)
             self.update(self.__config, outer)
 
     @contextmanager
@@ -129,7 +144,7 @@ class ConfigLoader:
             root = root.get(sub, None)
         # Walk each component of the path
         for comp in path.split(sep):
-            if comp in root:
+            if root and comp in root:
                 root = root.get(comp)
             else:
                 return default

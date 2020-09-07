@@ -1,7 +1,10 @@
 """Discord OAuth Views"""
+from typing import Any, Dict
+
+from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
-from passbook.sources.oauth.utils import user_get_or_create
-from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
+from passbook.sources.oauth.views.callback import OAuthCallback
+from passbook.sources.oauth.views.redirect import OAuthRedirect
 
 
 @MANAGER.source(kind=RequestKind.redirect, name="Discord")
@@ -18,12 +21,14 @@ class DiscordOAuthRedirect(OAuthRedirect):
 class DiscordOAuth2Callback(OAuthCallback):
     """Discord OAuth2 Callback"""
 
-    def get_or_create_user(self, source, access, info):
-        user_data = {
+    def get_user_enroll_context(
+        self,
+        source: OAuthSource,
+        access: UserOAuthSourceConnection,
+        info: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        return {
             "username": info.get("username"),
-            "email": info.get("email", "None"),
+            "email": info.get("email", None),
             "name": info.get("username"),
-            "password": None,
         }
-        discord_user = user_get_or_create(**user_data)
-        return discord_user

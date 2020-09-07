@@ -32,7 +32,7 @@ class PolicyResult:
     """Small data-class to hold policy results"""
 
     passing: bool
-    messages: Tuple[str]
+    messages: Tuple[str, ...]
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

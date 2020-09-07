@@ -1,0 +1,59 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load passbook_utils %}
+
+{% block head %}
+{{ block.super }}
+<style>
+.pf-m-success {
+    color: var(--pf-global--success-color--100);
+}
+.pf-m-danger {
+    color: var(--pf-global--danger-color--100);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="fas fa-map-marker"></i>
+            {% trans 'Outpost Setup' %}
+        </h1>
+        <p>{% trans "Outposts are deployments of passbook components to support different environments and protocols, like reverse proxies." %}</p>
+    </div>
+</section>
+<div class="pf-c-tabs pf-m-fill" id="filled-example">
+    <button class="pf-c-tabs__scroll-button" disabled aria-hidden="true" aria-label="Scroll left">
+        <i class="fas fa-angle-left" aria-hidden="true"></i>
+    </button>
+    <ul class="pf-c-tabs__list">
+        <li class="pf-c-tabs__item">
+            <button class="pf-c-tabs__link" id="filled-example-users-link">
+                <span class="pf-c-tabs__item-text">Users</span>
+            </button>
+        </li>
+        <li class="pf-c-tabs__item pf-m-current">
+            <button class="pf-c-tabs__link" id="filled-example-containers-link">
+                <span class="pf-c-tabs__item-text">Containers</span>
+            </button>
+        </li>
+        <li class="pf-c-tabs__item">
+            <button class="pf-c-tabs__link" id="filled-example-database-link">
+                <span class="pf-c-tabs__item-text">Database</span>
+            </button>
+        </li>
+    </ul>
+    <button class="pf-c-tabs__scroll-button" disabled aria-hidden="true" aria-label="Scroll right">
+        <i class="fas fa-angle-right" aria-hidden="true"></i>
+    </button>
+</div>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+
+    </div>
+</section>
+{% endblock %}

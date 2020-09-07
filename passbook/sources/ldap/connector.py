@@ -53,18 +53,19 @@ class Connector:
         )
         for group in groups:
             attributes = group.get("attributes", {})
+            if self._source.object_uniqueness_field not in attributes:
+                LOGGER.warning(
+                    "Cannot find uniqueness Field in attributes", user=attributes.keys()
+                )
+                continue
+            uniq = attributes[self._source.object_uniqueness_field]
             _, created = Group.objects.update_or_create(
-                attributes__ldap_uniq=attributes.get(
-                    self._source.object_uniqueness_field, ""
-                ),
+                attributes__ldap_uniq=uniq,
                 parent=self._source.sync_parent_group,
-                # defaults=self._build_object_properties(attributes),
                 defaults={
                     "name": attributes.get("name", ""),
                     "attributes": {
-                        "ldap_uniq": attributes.get(
-                            self._source.object_uniqueness_field, ""
-                        ),
+                        "ldap_uniq": uniq,
                         "distinguishedName": attributes.get("distinguishedName"),
                     },
                 },
@@ -86,11 +87,12 @@ class Connector:
         )
         for user in users:
             attributes = user.get("attributes", {})
-            try:
-                uniq = attributes[self._source.object_uniqueness_field]
-            except KeyError:
-                LOGGER.warning("Cannot find uniqueness Field in attributes")
+            if self._source.object_uniqueness_field not in attributes:
+                LOGGER.warning(
+                    "Cannot find uniqueness Field in attributes", user=user.keys()
+                )
                 continue
+            uniq = attributes[self._source.object_uniqueness_field]
             try:
                 defaults = self._build_object_properties(attributes)
                 user, created = User.objects.update_or_create(
@@ -180,7 +182,7 @@ class Connector:
         )
         return properties
 
-    def auth_user(self, password: str, **filters: Dict[str, str]) -> Optional[User]:
+    def auth_user(self, password: str, **filters: str) -> Optional[User]:
         """Try to bind as either user_dn or mail with password.
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)

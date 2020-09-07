@@ -1,14 +1,18 @@
 """Policy base models"""
+from typing import Type
 from uuid import uuid4
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
+from rest_framework.serializers import BaseSerializer
 
 from passbook.lib.models import (
     CreatedUpdatedModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
+    SerializerModel,
 )
 from passbook.policies.exceptions import PolicyException
 from passbook.policies.types import PolicyRequest, PolicyResult
@@ -30,7 +34,7 @@ class PolicyBindingModel(models.Model):
         verbose_name_plural = _("Policy Binding Models")
 
 
-class PolicyBinding(models.Model):
+class PolicyBinding(SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
 
     policy_binding_uuid = models.UUIDField(
@@ -53,6 +57,12 @@ class PolicyBinding(models.Model):
 
     order = models.IntegerField()
 
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.api import PolicyBindingSerializer
+
+        return PolicyBindingSerializer
+
     def __str__(self) -> str:
         return f"PolicyBinding policy={self.policy} target={self.target} order={self.order}"
 
@@ -63,7 +73,7 @@ class PolicyBinding(models.Model):
         unique_together = ("policy", "target", "order")
 
 
-class Policy(CreatedUpdatedModel):
+class Policy(SerializerModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""
 
@@ -72,6 +82,10 @@ class Policy(CreatedUpdatedModel):
     name = models.TextField(blank=True, null=True)
 
     objects = InheritanceAutoManager()
+
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
 
     def __str__(self):
         return f"Policy {self.name}"

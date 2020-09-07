@@ -1,7 +1,8 @@
 """passbook saml_idp Models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -9,10 +10,8 @@ from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider
 from passbook.crypto.models import CertificateKeyPair
-from passbook.lib.utils.reflection import class_to_path, path_to_class
 from passbook.lib.utils.template import render_to_string
-from passbook.providers.saml.processors.base import Processor
-from passbook.providers.saml.utils.time import timedelta_string_validator
+from passbook.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 
@@ -28,7 +27,6 @@ class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
     name = models.TextField()
-    processor_path = models.CharField(max_length=255, choices=[])
 
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(default="")
@@ -104,26 +102,13 @@ class SAMLProvider(Provider):
         ),
     )
 
-    form = "passbook.providers.saml.forms.SAMLProviderForm"
-    _processor = None
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.saml.forms import SAMLProviderForm
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._meta.get_field("processor_path").choices = get_provider_choices()
-
-    @property
-    def processor(self) -> Optional[Processor]:
-        """Return selected processor as instance"""
-        if not self._processor:
-            try:
-                self._processor = path_to_class(self.processor_path)(self)
-            except ImportError as exc:
-                LOGGER.warning(exc)
-                self._processor = None
-        return self._processor
+        return SAMLProviderForm
 
     def __str__(self):
-        return self.name
+        return f"SAML Provider {self.name}"
 
     def link_download_metadata(self):
         """Get link to download XML metadata for admin interface"""
@@ -162,7 +147,10 @@ class SAMLPropertyMapping(PropertyMapping):
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
 
-    form = "passbook.providers.saml.forms.SAMLPropertyMappingForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.providers.saml.forms import SAMLPropertyMappingForm
+
+        return SAMLPropertyMappingForm
 
     def __str__(self):
         return f"SAML Property Mapping {self.saml_name}"
@@ -171,10 +159,3 @@ class SAMLPropertyMapping(PropertyMapping):
 
         verbose_name = _("SAML Property Mapping")
         verbose_name_plural = _("SAML Property Mappings")
-
-
-def get_provider_choices():
-    """Return tuple of class_path, class name of all providers."""
-    return [
-        (class_to_path(x), x.__name__) for x in getattr(Processor, "__subclasses__")()
-    ]

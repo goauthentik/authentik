@@ -1,9 +1,12 @@
 """passbook password_expiry_policy Models"""
 from datetime import timedelta
+from typing import Type
 
 from django.db import models
+from django.forms import ModelForm
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.policies.models import Policy
@@ -19,7 +22,16 @@ class PasswordExpiryPolicy(Policy):
     deny_only = models.BooleanField(default=False)
     days = models.IntegerField()
 
-    form = "passbook.policies.expiry.forms.PasswordExpiryPolicyForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.policies.expiry.api import PasswordExpiryPolicySerializer
+
+        return PasswordExpiryPolicySerializer
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.policies.expiry.forms import PasswordExpiryPolicyForm
+
+        return PasswordExpiryPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """If password change date is more than x days in the past, call set_unusable_password

@@ -1,8 +1,13 @@
 """email stage models"""
+from typing import Type
+
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext as _
+from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 
@@ -40,8 +45,21 @@ class EmailStage(Stage):
         choices=EmailTemplates.choices, default=EmailTemplates.PASSWORD_RESET
     )
 
-    type = "passbook.stages.email.stage.EmailStageView"
-    form = "passbook.stages.email.forms.EmailStageForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.email.api import EmailStageSerializer
+
+        return EmailStageSerializer
+
+    def type(self) -> Type[View]:
+        from passbook.stages.email.stage import EmailStageView
+
+        return EmailStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.email.forms import EmailStageForm
+
+        return EmailStageForm
 
     @property
     def backend(self) -> BaseEmailBackend:

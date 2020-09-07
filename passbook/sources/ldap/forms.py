@@ -5,7 +5,6 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.fields import CodeMirrorWidget
-from passbook.admin.forms.source import SOURCE_FORM_FIELDS
 from passbook.core.expression import PropertyMappingEvaluator
 from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
@@ -13,10 +12,19 @@ from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 class LDAPSourceForm(forms.ModelForm):
     """LDAPSource Form"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["property_mappings"].queryset = LDAPPropertyMapping.objects.all()
+
     class Meta:
 
         model = LDAPSource
-        fields = SOURCE_FORM_FIELDS + [
+        fields = [
+            # we don't use all common fields, as we don't use flows for this
+            "name",
+            "slug",
+            "enabled",
+            # -- start of our custom fields
             "server_uri",
             "bind_cn",
             "bind_password",

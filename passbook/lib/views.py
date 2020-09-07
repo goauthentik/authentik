@@ -26,11 +26,13 @@ class CreateAssignPermView(CreateView):
         return response
 
 
-def bad_request_message(request: HttpRequest, message: str) -> TemplateResponse:
+def bad_request_message(
+    request: HttpRequest, message: str, title="Bad Request"
+) -> TemplateResponse:
     """Return generic error page with message, with status code set to 400"""
     return TemplateResponse(
         request,
         "error/generic.html",
-        {"message": message, "card_title": _("Bad Request")},
+        {"message": message, "card_title": _(title)},
         status=400,
     )

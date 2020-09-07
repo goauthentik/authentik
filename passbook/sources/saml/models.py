@@ -1,19 +1,42 @@
 """saml sp models"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
+from django.http import HttpRequest
+from django.shortcuts import reverse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source
 from passbook.core.types import UILoginButton
 from passbook.crypto.models import CertificateKeyPair
-from passbook.providers.saml.utils.time import timedelta_string_validator
+from passbook.lib.utils.time import timedelta_string_validator
+from passbook.sources.saml.processors.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_WINDOWS,
+    SAML_NAME_ID_FORMAT_X509,
+)
 
 
 class SAMLBindingTypes(models.TextChoices):
     """SAML Binding types"""
 
-    Redirect = "REDIRECT"
-    POST = "POST"
+    Redirect = "REDIRECT", _("Redirect Binding")
+    POST = "POST", _("POST Binding")
+    POST_AUTO = "POST_AUTO", _("POST Binding with auto-confirmation")
+
+
+class SAMLNameIDPolicy(models.TextChoices):
+    """SAML NameID Policies"""
+
+    EMAIL = SAML_NAME_ID_FORMAT_EMAIL
+    PERSISTENT = SAML_NAME_ID_FORMAT_PERSISTENT
+    X509 = SAML_NAME_ID_FORMAT_X509
+    WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
+    TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
 
 
 class SAMLSource(Source):
@@ -29,6 +52,13 @@ class SAMLSource(Source):
     sso_url = models.URLField(
         verbose_name=_("SSO URL"),
         help_text=_("URL that the initial Login request is sent to."),
+    )
+    name_id_policy = models.TextField(
+        choices=SAMLNameIDPolicy.choices,
+        default=SAMLNameIDPolicy.TRANSIENT,
+        help_text=_(
+            "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+        ),
     )
     binding_type = models.CharField(
         max_length=100,
@@ -66,7 +96,22 @@ class SAMLSource(Source):
         on_delete=models.PROTECT,
     )
 
-    form = "passbook.sources.saml.forms.SAMLSourceForm"
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.saml.forms import SAMLSourceForm
+
+        return SAMLSourceForm
+
+    def get_issuer(self, request: HttpRequest) -> str:
+        """Get Source's Issuer, falling back to our Metadata URL if none is set"""
+        if self.issuer is None:
+            return self.build_full_url(request, view="metadata")
+        return self.issuer
+
+    def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
+        """Build Full ACS URL to be used in IDP"""
+        return request.build_absolute_uri(
+            reverse(f"passbook_sources_saml:{view}", kwargs={"source_slug": self.slug})
+        )
 
     @property
     def ui_login_button(self) -> UILoginButton:

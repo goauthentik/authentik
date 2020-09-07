@@ -15,6 +15,7 @@ class SAMLSourceSerializer(ModelSerializer):
         fields = SOURCE_FORM_FIELDS + [
             "issuer",
             "sso_url",
+            "name_id_policy",
             "binding_type",
             "slo_url",
             "temporary_user_delete_after",

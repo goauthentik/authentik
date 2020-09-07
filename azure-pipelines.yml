@@ -106,7 +106,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run services
             inputs:
-              dockerComposeFile: 'scripts/docker-compose.yml'
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
@@ -117,7 +117,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run ./manage.py migrate
-      - job: coverage
+      - job: coverage_unittest
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -127,7 +127,38 @@ stages:
           - task: DockerCompose@0
             displayName: Run services
             inputs:
-              dockerComposeFile: 'scripts/docker-compose.yml'
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Run full test suite
+            inputs:
+              script: |
+                pipenv run coverage run ./manage.py test passbook
+                mkdir output-unittest
+                mv unittest.xml output-unittest/unittest.xml
+                mv .coverage output-unittest/coverage
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'output-unittest/'
+              artifact: 'coverage-unittest'
+              publishLocation: 'pipeline'
+      - job: coverage_e2e
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
@@ -138,7 +169,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run ChromeDriver
             inputs:
-              dockerComposeFile: 'e2e/docker-compose.yml'
+              dockerComposeFile: 'e2e/ci.docker-compose.yml'
               action: 'Run a specific service'
               serviceName: 'chrome'
           - task: CmdLine@2
@@ -150,28 +181,68 @@ stages:
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
-              script: pipenv run coverage run ./manage.py test --failfast
-          - task: PublishBuildArtifacts@1
+              script: pipenv run coverage run ./manage.py test e2e
+          - task: CmdLine@2
+            displayName: Prepare unittests and coverage for upload
+            inputs:
+              script: |
+                mkdir output-e2e
+                mv unittest.xml output-e2e/unittest.xml
+                mv .coverage output-e2e/coverage
+          - task: PublishPipelineArtifact@1
             condition: failed()
             displayName: Upload screenshots if selenium tests fail
             inputs:
-              PathtoPublish: 'selenium_screenshots/'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
+              targetPath: 'selenium_screenshots/'
+              artifact: 'selenium screenshots'
+              publishLocation: 'pipeline'
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'output-e2e/'
+              artifact: 'coverage-e2e'
+              publishLocation: 'pipeline'
+  - stage: test_combine
+    jobs:
+      - job: test_coverage_combine
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'coverage-e2e'
+              path: "coverage-e2e/"
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'coverage-unittest'
+              path: "coverage-unittest/"
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
           - task: CmdLine@2
             inputs:
               script: |
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+                find .
+                pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
+                find .
           - task: PublishCodeCoverageResults@1
             inputs:
-              codeCoverageTool: Cobertura
+              codeCoverageTool: 'Cobertura'
               summaryFileLocation: 'coverage.xml'
+              pathToSources: '$(System.DefaultWorkingDirectory)'
           - task: PublishTestResults@2
             condition: succeededOrFailed()
             inputs:
-              testRunTitle: 'Publish test results for Python $(python.version)'
-              testResultsFiles: 'unittest.xml'
+              testResultsFormat: 'JUnit'
+              testResultsFiles: |
+                coverage-e2e/unittest.xml
+                coverage-unittest/unittest.xml
+              mergeTestResults: true
           - task: CmdLine@2
             env:
               CODECOV_TOKEN: $(CODECOV_TOKEN)
@@ -190,20 +261,6 @@ stages:
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
             tags: 'gh-$(Build.SourceBranchName)'
-      - job: build_gatekeeper
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-        - task: CmdLine@2
-          inputs:
-            script: cd gatekeeper
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'dockerhub'
-            repository: 'beryju/passbook-gatekeeper'
-            command: 'buildAndPush'
-            Dockerfile: 'Dockerfile'
-            tags: 'gh-$(Build.SourceBranchName)'
       - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
@@ -211,7 +268,7 @@ stages:
         - task: DockerCompose@0
           displayName: Run services
           inputs:
-            dockerComposeFile: 'scripts/docker-compose.yml'
+            dockerComposeFile: 'scripts/ci.docker-compose.yml'
             action: 'Run services'
             buildImages: false
         - task: Docker@2

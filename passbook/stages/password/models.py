@@ -1,11 +1,14 @@
 """password stage models"""
-from typing import Optional
+from typing import Optional, Type
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.forms import ModelForm
 from django.shortcuts import reverse
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
+from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.core.types import UIUserSettings
 from passbook.flows.models import Flow, Stage
@@ -33,8 +36,21 @@ class PasswordStage(Stage):
         ),
     )
 
-    type = "passbook.stages.password.stage.PasswordStage"
-    form = "passbook.stages.password.forms.PasswordStageForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.password.api import PasswordStageSerializer
+
+        return PasswordStageSerializer
+
+    def type(self) -> Type[View]:
+        from passbook.stages.password.stage import PasswordStageView
+
+        return PasswordStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.password.forms import PasswordStageForm
+
+        return PasswordStageForm
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:

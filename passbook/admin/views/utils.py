@@ -6,7 +6,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.views.generic import DeleteView, ListView, UpdateView
 
-from passbook.lib.utils.reflection import all_subclasses, path_to_class
+from passbook.lib.utils.reflection import all_subclasses
 from passbook.lib.views import CreateAssignPermView
 
 
@@ -40,7 +40,7 @@ class InheritanceCreateView(CreateAssignPermView):
             )
         except StopIteration as exc:
             raise Http404 from exc
-        return path_to_class(model.form)
+        return model.form(model)
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
@@ -61,9 +61,7 @@ class InheritanceUpdateView(UpdateView):
         return kwargs
 
     def get_form_class(self):
-        form_class_path = self.get_object().form
-        form_class = path_to_class(form_class_path)
-        return form_class
+        return self.get_object().form()
 
     def get_object(self, queryset=None):
         return (

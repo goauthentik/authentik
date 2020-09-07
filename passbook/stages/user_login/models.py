@@ -1,6 +1,11 @@
 """login stage models"""
+from typing import Type
+
 from django.db import models
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
+from django.views import View
+from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 
@@ -16,8 +21,21 @@ class UserLoginStage(Stage):
         ),
     )
 
-    type = "passbook.stages.user_login.stage.UserLoginStageView"
-    form = "passbook.stages.user_login.forms.UserLoginStageForm"
+    @property
+    def serializer(self) -> BaseSerializer:
+        from passbook.stages.user_login.api import UserLoginStageSerializer
+
+        return UserLoginStageSerializer
+
+    def type(self) -> Type[View]:
+        from passbook.stages.user_login.stage import UserLoginStageView
+
+        return UserLoginStageView
+
+    def form(self) -> Type[ModelForm]:
+        from passbook.stages.user_login.forms import UserLoginStageForm
+
+        return UserLoginStageForm
 
     def __str__(self):
         return f"User Login Stage {self.name}"

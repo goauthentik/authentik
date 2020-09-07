@@ -2,7 +2,6 @@
 
 import uuid
 
-import django.contrib.postgres.fields.jsonb
 import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
@@ -48,12 +47,7 @@ class Migration(migrations.Migration):
                 ),
                 ("date", models.DateTimeField(auto_now_add=True)),
                 ("app", models.TextField()),
-                (
-                    "context",
-                    django.contrib.postgres.fields.jsonb.JSONField(
-                        blank=True, default=dict
-                    ),
-                ),
+                ("context", models.JSONField(blank=True, default=dict),),
                 ("client_ip", models.GenericIPAddressField(null=True)),
                 ("created", models.DateTimeField(auto_now_add=True)),
                 (

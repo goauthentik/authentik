@@ -12,6 +12,7 @@ class PasswordPolicySerializer(ModelSerializer):
     class Meta:
         model = PasswordPolicy
         fields = GENERAL_SERIALIZER_FIELDS + [
+            "password_field",
             "amount_uppercase",
             "amount_lowercase",
             "amount_symbols",

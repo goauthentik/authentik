@@ -6,7 +6,8 @@ from django.utils.text import slugify
 from structlog import get_logger
 
 from passbook.sources.oauth.models import OAuthSource
-from passbook.sources.oauth.views.core import OAuthCallback, OAuthRedirect
+from passbook.sources.oauth.views.callback import OAuthCallback
+from passbook.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
 
@@ -32,9 +33,6 @@ class SourceTypeManager:
                 self.__source_types[kind.value] = {}
             self.__source_types[kind.value][slugify(name)] = cls
             self.__names.append(name)
-            LOGGER.debug(
-                "Registered source", source_class=cls.__name__, kind=kind.value
-            )
             return cls
 
         return inner_wrapper
@@ -48,11 +46,15 @@ class SourceTypeManager:
         if kind.value in self.__source_types:
             if source.provider_type in self.__source_types[kind.value]:
                 return self.__source_types[kind.value][source.provider_type]
-            LOGGER.warning("no matching type found, using default")
+            LOGGER.warning(
+                "no matching type found, using default",
+                wanted=source.provider_type,
+                have=self.__source_types[kind.value].keys(),
+            )
             # Return defaults
-            if kind.value == RequestKind.callback:
+            if kind == RequestKind.callback:
                 return OAuthCallback
-            if kind.value == RequestKind.redirect:
+            if kind == RequestKind.redirect:
                 return OAuthRedirect
         raise KeyError(
             f"Provider Type {source.provider_type} (type {kind.value}) not found."

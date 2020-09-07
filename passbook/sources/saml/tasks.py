@@ -3,7 +3,7 @@ from django.utils.timezone import now
 from structlog import get_logger
 
 from passbook.core.models import User
-from passbook.providers.saml.utils.time import timedelta_from_string
+from passbook.lib.utils.time import timedelta_from_string
 from passbook.root.celery import CELERY_APP
 from passbook.sources.saml.models import SAMLSource
 

@@ -11,7 +11,7 @@ class ConsentStageSerializer(ModelSerializer):
     class Meta:
 
         model = ConsentStage
-        fields = ["pk", "name"]
+        fields = ["pk", "name", "mode", "consent_expire_in"]
 
 
 class ConsentStageViewSet(ModelViewSet):

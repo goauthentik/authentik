@@ -1,12 +1,10 @@
 [run]
 source = passbook
 omit =
-    */wsgi.py
+    */asgi.py
     manage.py
     */migrations/*
     */apps.py
-    passbook/management/commands/web.py
-    passbook/management/commands/worker.py
     docs/
 
 [report]

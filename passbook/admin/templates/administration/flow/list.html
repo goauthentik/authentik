@@ -20,6 +20,7 @@
             <div class="pf-c-toolbar__content">
                 <div class="pf-c-toolbar__bulk-select">
                     <a href="{% url 'passbook_admin:flow-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                    <a href="{% url 'passbook_admin:flow-import' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-secondary" type="button">{% trans 'Import' %}</a>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -62,6 +63,7 @@
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-update' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
                         <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:flow-delete' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-execute' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Execute' %}</a>
+                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-export' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Export' %}</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -81,6 +83,7 @@
                     {% trans 'Currently no flows exist. Click the button below to create one.' %}
                 </div>
                 <a href="{% url 'passbook_admin:flow-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                <a href="{% url 'passbook_admin:flow-import' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Import' %}</a>
             </div>
         </div>
         {% endif %}

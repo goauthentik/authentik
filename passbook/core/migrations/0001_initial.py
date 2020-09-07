@@ -4,7 +4,6 @@ import uuid
 
 import django.contrib.auth.models
 import django.contrib.auth.validators
-import django.contrib.postgres.fields.jsonb
 import django.db.models.deletion
 import django.utils.timezone
 import guardian.mixins
@@ -109,12 +108,7 @@ class Migration(migrations.Migration):
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("name", models.TextField(help_text="User's display name.")),
                 ("password_change_date", models.DateTimeField(auto_now_add=True)),
-                (
-                    "attributes",
-                    django.contrib.postgres.fields.jsonb.JSONField(
-                        blank=True, default=dict
-                    ),
-                ),
+                ("attributes", models.JSONField(blank=True, default=dict),),
             ],
             options={"permissions": (("reset_user_password", "Reset Password"),),},
             bases=(guardian.mixins.GuardianUserMixin, models.Model),
@@ -264,12 +258,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=80, verbose_name="name")),
-                (
-                    "attributes",
-                    django.contrib.postgres.fields.jsonb.JSONField(
-                        blank=True, default=dict
-                    ),
-                ),
+                ("attributes", models.JSONField(blank=True, default=dict),),
                 (
                     "parent",
                     models.ForeignKey(

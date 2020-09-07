@@ -14,7 +14,6 @@ class SAMLProviderSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
-            "processor_path",
             "acs_url",
             "audience",
             "issuer",

@@ -343,21 +343,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /core/messages/:
-    get:
-      operationId: core_messages_list
-      description: List current messages and pass into Serializer
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Message'
-      tags:
-        - core
-    parameters: []
   /core/users/:
     get:
       operationId: core_users_list
@@ -484,6 +469,133 @@ paths:
         description: A unique integer value identifying this User.
         required: true
         type: integer
+  /crypto/certificatekeypairs/:
+    get:
+      operationId: crypto_certificatekeypairs_list
+      description: CertificateKeyPair Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    post:
+      operationId: crypto_certificatekeypairs_create
+      description: CertificateKeyPair Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    parameters: []
+  /crypto/certificatekeypairs/{kp_uuid}/:
+    get:
+      operationId: crypto_certificatekeypairs_read
+      description: CertificateKeyPair Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    put:
+      operationId: crypto_certificatekeypairs_update
+      description: CertificateKeyPair Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    patch:
+      operationId: crypto_certificatekeypairs_partial_update
+      description: CertificateKeyPair Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    delete:
+      operationId: crypto_certificatekeypairs_delete
+      description: CertificateKeyPair Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - crypto
+    parameters:
+      - name: kp_uuid
+        in: path
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+        type: string
+        format: uuid
   /flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -773,6 +885,259 @@ paths:
         required: true
         type: string
         format: uuid
+  /outposts/outposts/:
+    get:
+      operationId: outposts_outposts_list
+      description: Outpost Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_outposts_create
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/outposts/{uuid}/:
+    get:
+      operationId: outposts_outposts_read
+      description: Outpost Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_outposts_update
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_outposts_partial_update
+      description: Outpost Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Outpost'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Outpost'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_outposts_delete
+      description: Outpost Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this outpost.
+        required: true
+        type: string
+        format: uuid
+  /outposts/proxy/:
+    get:
+      operationId: outposts_proxy_list
+      description: ProxyProvider Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_proxy_create
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/proxy/{id}/:
+    get:
+      operationId: outposts_proxy_read
+      description: ProxyProvider Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_proxy_update
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_proxy_partial_update
+      description: ProxyProvider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ProxyOutpostConfig'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_proxy_delete
+      description: ProxyProvider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Proxy Provider.
+        required: true
+        type: integer
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -2183,6 +2548,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /propertymappings/scope/:
+    get:
+      operationId: propertymappings_scope_list
+      description: ScopeMapping Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ScopeMapping'
+      tags:
+        - propertymappings
+    post:
+      operationId: propertymappings_scope_create
+      description: ScopeMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      tags:
+        - propertymappings
+    parameters: []
+  /propertymappings/scope/{pm_uuid}/:
+    get:
+      operationId: propertymappings_scope_read
+      description: ScopeMapping Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      tags:
+        - propertymappings
+    put:
+      operationId: propertymappings_scope_update
+      description: ScopeMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      tags:
+        - propertymappings
+    patch:
+      operationId: propertymappings_scope_partial_update
+      description: ScopeMapping Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ScopeMapping'
+      tags:
+        - propertymappings
+    delete:
+      operationId: propertymappings_scope_delete
+      description: ScopeMapping Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - propertymappings
+    parameters:
+      - name: pm_uuid
+        in: path
+        description: A UUID string identifying this Scope Mapping.
+        required: true
+        type: string
+        format: uuid
   /providers/all/:
     get:
       operationId: providers_all_list
@@ -2252,135 +2744,9 @@ paths:
         description: A unique integer value identifying this provider.
         required: true
         type: integer
-  /providers/applicationgateway/:
+  /providers/oauth2/:
     get:
-      operationId: providers_applicationgateway_list
-      description: ApplicationGatewayProvider Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: limit
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/ApplicationGatewayProvider'
-      tags:
-        - providers
-    post:
-      operationId: providers_applicationgateway_create
-      description: ApplicationGatewayProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      tags:
-        - providers
-    parameters: []
-  /providers/applicationgateway/{id}/:
-    get:
-      operationId: providers_applicationgateway_read
-      description: ApplicationGatewayProvider Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      tags:
-        - providers
-    put:
-      operationId: providers_applicationgateway_update
-      description: ApplicationGatewayProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      tags:
-        - providers
-    patch:
-      operationId: providers_applicationgateway_partial_update
-      description: ApplicationGatewayProvider Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/ApplicationGatewayProvider'
-      tags:
-        - providers
-    delete:
-      operationId: providers_applicationgateway_delete
-      description: ApplicationGatewayProvider Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - providers
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this Application Gateway Provider.
-        required: true
-        type: integer
-  /providers/oauth/:
-    get:
-      operationId: providers_oauth_list
+      operationId: providers_oauth2_list
       description: OAuth2Provider Viewset
       parameters:
         - name: ordering
@@ -2429,7 +2795,7 @@ paths:
       tags:
         - providers
     post:
-      operationId: providers_oauth_create
+      operationId: providers_oauth2_create
       description: OAuth2Provider Viewset
       parameters:
         - name: data
@@ -2445,9 +2811,9 @@ paths:
       tags:
         - providers
     parameters: []
-  /providers/oauth/{id}/:
+  /providers/oauth2/{id}/:
     get:
-      operationId: providers_oauth_read
+      operationId: providers_oauth2_read
       description: OAuth2Provider Viewset
       parameters: []
       responses:
@@ -2458,7 +2824,7 @@ paths:
       tags:
         - providers
     put:
-      operationId: providers_oauth_update
+      operationId: providers_oauth2_update
       description: OAuth2Provider Viewset
       parameters:
         - name: data
@@ -2474,7 +2840,7 @@ paths:
       tags:
         - providers
     patch:
-      operationId: providers_oauth_partial_update
+      operationId: providers_oauth2_partial_update
       description: OAuth2Provider Viewset
       parameters:
         - name: data
@@ -2490,7 +2856,7 @@ paths:
       tags:
         - providers
     delete:
-      operationId: providers_oauth_delete
+      operationId: providers_oauth2_delete
       description: OAuth2Provider Viewset
       parameters: []
       responses:
@@ -2501,13 +2867,13 @@ paths:
     parameters:
       - name: id
         in: path
-        description: A unique integer value identifying this OAuth2 Provider.
+        description: A unique integer value identifying this OAuth2/OpenID Provider.
         required: true
         type: integer
-  /providers/openid/:
+  /providers/proxy/:
     get:
-      operationId: providers_openid_list
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_list
+      description: ProxyProvider Viewset
       parameters:
         - name: ordering
           in: query
@@ -2551,73 +2917,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OpenIDProvider'
+                  $ref: '#/definitions/ProxyProvider'
       tags:
         - providers
     post:
-      operationId: providers_openid_create
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_create
+      description: ProxyProvider Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       tags:
         - providers
     parameters: []
-  /providers/openid/{id}/:
+  /providers/proxy/{id}/:
     get:
-      operationId: providers_openid_read
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_read
+      description: ProxyProvider Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       tags:
         - providers
     put:
-      operationId: providers_openid_update
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_update
+      description: ProxyProvider Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       tags:
         - providers
     patch:
-      operationId: providers_openid_partial_update
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_partial_update
+      description: ProxyProvider Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OpenIDProvider'
+            $ref: '#/definitions/ProxyProvider'
       tags:
         - providers
     delete:
-      operationId: providers_openid_delete
-      description: OpenIDProvider Viewset
+      operationId: providers_proxy_delete
+      description: ProxyProvider Viewset
       parameters: []
       responses:
         '204':
@@ -2627,7 +2993,7 @@ paths:
     parameters:
       - name: id
         in: path
-        description: A unique integer value identifying this Client.
+        description: A unique integer value identifying this Proxy Provider.
         required: true
         type: integer
   /providers/saml/:
@@ -2756,6 +3122,21 @@ paths:
         description: A unique integer value identifying this SAML Provider.
         required: true
         type: integer
+  /root/messages/:
+    get:
+      operationId: root_messages_list
+      description: List current messages and pass into Serializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Message'
+      tags:
+        - root
+    parameters: []
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -5477,7 +5858,7 @@ definitions:
         minLength: 1
       context:
         title: Context
-        type: object
+        type: string
       client_ip:
         title: Client ip
         type: string
@@ -5565,30 +5946,7 @@ definitions:
         uniqueItems: true
       attributes:
         title: Attributes
-        type: object
-  Message:
-    type: object
-    properties:
-      message:
-        title: Message
         type: string
-        readOnly: true
-      level:
-        title: Level
-        type: string
-        readOnly: true
-      tags:
-        title: Tags
-        type: string
-        readOnly: true
-      extra_tags:
-        title: Extra tags
-        type: string
-        readOnly: true
-      level_tag:
-        title: Level tag
-        type: string
-        readOnly: true
   User:
     required:
       - username
@@ -5617,6 +5975,31 @@ definitions:
         type: string
         format: email
         maxLength: 254
+  CertificateKeyPair:
+    required:
+      - name
+      - certificate_data
+    type: object
+    properties:
+      pk:
+        title: Kp uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      certificate_data:
+        title: Certificate data
+        description: PEM-encoded Certificate data
+        type: string
+        minLength: 1
+      key_data:
+        title: Key data
+        description: Optional Private Key. If this is set, you can use this keypair
+          for encryption.
+        type: string
   FlowStageBinding:
     required:
       - target
@@ -5677,6 +6060,9 @@ definitions:
         pattern: ^[-a-zA-Z0-9_]+$
         maxLength: 50
         minLength: 1
+      title:
+        title: Title
+        type: string
       designation:
         title: Designation
         type: string
@@ -5702,6 +6088,138 @@ definitions:
           format: uuid
         readOnly: true
         uniqueItems: true
+  Outpost:
+    required:
+      - name
+      - providers
+      - _config
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      providers:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      _config:
+        title: config
+        type: object
+  OpenIDConnectConfiguration:
+    title: Oidc configuration
+    description: Embed OpenID Connect provider information
+    required:
+      - issuer
+      - authorization_endpoint
+      - token_endpoint
+      - userinfo_endpoint
+      - end_session_endpoint
+      - introspection_endpoint
+      - jwks_uri
+      - response_types_supported
+      - id_token_signing_alg_values_supported
+      - subject_types_supported
+      - token_endpoint_auth_methods_supported
+    type: object
+    properties:
+      issuer:
+        title: Issuer
+        type: string
+        minLength: 1
+      authorization_endpoint:
+        title: Authorization endpoint
+        type: string
+        minLength: 1
+      token_endpoint:
+        title: Token endpoint
+        type: string
+        minLength: 1
+      userinfo_endpoint:
+        title: Userinfo endpoint
+        type: string
+        minLength: 1
+      end_session_endpoint:
+        title: End session endpoint
+        type: string
+        minLength: 1
+      introspection_endpoint:
+        title: Introspection endpoint
+        type: string
+        minLength: 1
+      jwks_uri:
+        title: Jwks uri
+        type: string
+        minLength: 1
+      response_types_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      id_token_signing_alg_values_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      subject_types_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      token_endpoint_auth_methods_supported:
+        type: array
+        items:
+          type: string
+          minLength: 1
+  ProxyOutpostConfig:
+    required:
+      - name
+      - internal_host
+      - external_host
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      internal_host:
+        title: Internal host
+        type: string
+        minLength: 1
+      external_host:
+        title: External host
+        type: string
+        minLength: 1
+      client_id:
+        title: Client ID
+        type: string
+        maxLength: 255
+        minLength: 1
+      client_secret:
+        title: Client Secret
+        type: string
+        maxLength: 255
+      oidc_configuration:
+        $ref: '#/definitions/OpenIDConnectConfiguration'
+      cookie_secret:
+        title: Cookie secret
+        type: string
+        minLength: 1
+      certificate:
+        title: Certificate
+        type: string
+        format: uuid
+        x-nullable: true
   Policy:
     type: object
     properties:
@@ -5819,6 +6337,11 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      password_field:
+        title: Password field
+        description: Field key to check, field keys defined in Prompt stages are available.
+        type: string
+        minLength: 1
       allowed_count:
         title: Allowed count
         type: integer
@@ -5838,6 +6361,11 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      password_field:
+        title: Password field
+        description: Field key to check, field keys defined in Prompt stages are available.
+        type: string
+        minLength: 1
       amount_uppercase:
         title: Amount uppercase
         type: integer
@@ -5986,6 +6514,36 @@ definitions:
         title: Expression
         type: string
         minLength: 1
+  ScopeMapping:
+    required:
+      - name
+      - scope_name
+      - expression
+    type: object
+    properties:
+      pk:
+        title: Pm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      scope_name:
+        title: Scope name
+        description: Scope used by the client
+        type: string
+        minLength: 1
+      description:
+        title: Description
+        description: Description shown to the user when consenting. If left empty,
+          the user won't be informed.
+        type: string
+      expression:
+        title: Expression
+        type: string
+        minLength: 1
   Provider:
     required:
       - authorization_flow
@@ -6010,11 +6568,10 @@ definitions:
         title: 'type  '
         type: string
         readOnly: true
-  OpenIDProvider:
-    title: Client
+  OAuth2Provider:
     required:
-      - client_id
-      - response_types
+      - name
+      - authorization_flow
     type: object
     properties:
       pk:
@@ -6024,12 +6581,17 @@ definitions:
       name:
         title: Name
         type: string
-        maxLength: 100
         minLength: 1
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
       client_type:
         title: Client Type
-        description: <b>Confidential</b> clients are capable of maintaining the confidentiality
-          of their credentials. <b>Public</b> clients are incapable.
+        description: |-
+          <b>Confidential</b> clients are capable of maintaining the confidentiality
+              of their credentials. <b>Public</b> clients are incapable.
         type: string
         enum:
           - confidential
@@ -6040,46 +6602,54 @@ definitions:
         maxLength: 255
         minLength: 1
       client_secret:
-        title: Client SECRET
+        title: Client Secret
         type: string
         maxLength: 255
-      response_types:
-        type: array
-        items:
-          type: integer
-        uniqueItems: true
+      response_type:
+        title: Response type
+        description: Response Type required by the client.
+        type: string
+        enum:
+          - code
+          - id_token
+          - id_token token
+          - code token
+          - code id_token
+          - code id_token token
       jwt_alg:
         title: JWT Algorithm
-        description: Algorithm used to encode ID Tokens.
+        description: Algorithm used to sign the JWT Token
         type: string
         enum:
           - HS256
           - RS256
-      reuse_consent:
-        title: Reuse Consent?
-        description: If enabled, server will save the user consent given to a specific
-          client, so that user won't be prompted for the same authorization multiple
-          times.
-        type: boolean
-      require_consent:
-        title: Require Consent?
-        description: If disabled, the Server will NEVER ask the user for consent.
-        type: boolean
-      _redirect_uris:
+      rsa_key:
+        title: RSA Key
+        description: Key used to sign the tokens. Only required when JWT Algorithm
+          is set to RS256.
+        type: string
+        format: uuid
+        x-nullable: true
+      redirect_uris:
         title: Redirect URIs
         description: Enter each URI on a new line.
         type: string
         minLength: 1
-      _scope:
-        title: Scopes
-        description: Specifies the authorized scope values for the client app.
+      post_logout_redirect_uris:
+        title: Post Logout Redirect URIs
+        description: Enter each URI on a new line.
         type: string
-  ApplicationGatewayProvider:
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+  ProxyProvider:
     required:
       - name
       - internal_host
       - external_host
-      - client
     type: object
     properties:
       pk:
@@ -6098,53 +6668,14 @@ definitions:
         title: External host
         type: string
         minLength: 1
-      client:
-        $ref: '#/definitions/OpenIDProvider'
-  OAuth2Provider:
-    required:
-      - client_type
-      - authorization_grant_type
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
+      certificate:
+        title: Certificate
         type: string
-        maxLength: 255
-      redirect_uris:
-        title: Redirect uris
-        description: Allowed URIs list, space separated
-        type: string
-      client_type:
-        title: Client type
-        type: string
-        enum:
-          - confidential
-          - public
-      authorization_grant_type:
-        title: Authorization grant type
-        type: string
-        enum:
-          - authorization-code
-          - implicit
-          - password
-          - client-credentials
-      client_id:
-        title: Client id
-        type: string
-        maxLength: 100
-        minLength: 1
-      client_secret:
-        title: Client secret
-        type: string
-        maxLength: 255
+        format: uuid
+        x-nullable: true
   SAMLProvider:
     required:
       - name
-      - processor_path
       - acs_url
       - issuer
     type: object
@@ -6156,11 +6687,6 @@ definitions:
       name:
         title: Name
         type: string
-        minLength: 1
-      processor_path:
-        title: Processor path
-        type: string
-        maxLength: 255
         minLength: 1
       acs_url:
         title: ACS URL
@@ -6226,6 +6752,29 @@ definitions:
         description: Require Requests to be signed by an X509 Certificate. Must match
           the Certificate selected in `Singing Keypair`.
         type: boolean
+  Message:
+    type: object
+    properties:
+      message:
+        title: Message
+        type: string
+        readOnly: true
+      level:
+        title: Level
+        type: string
+        readOnly: true
+      tags:
+        title: Tags
+        type: string
+        readOnly: true
+      extra_tags:
+        title: Extra tags
+        type: string
+        readOnly: true
+      level_tag:
+        title: Level tag
+        type: string
+        readOnly: true
   Source:
     required:
       - name
@@ -6505,12 +7054,24 @@ definitions:
         format: uri
         maxLength: 200
         minLength: 1
+      name_id_policy:
+        title: Name id policy
+        description: NameID Policy sent to the IdP. Can be unset, in which case no
+          Policy is sent.
+        type: string
+        enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       binding_type:
         title: Binding type
         type: string
         enum:
           - REDIRECT
           - POST
+          - POST_AUTO
       slo_url:
         title: SLO URL
         description: Optional URL if your IDP supports Single-Logout.
@@ -6591,6 +7152,18 @@ definitions:
         readOnly: true
       name:
         title: Name
+        type: string
+        minLength: 1
+      mode:
+        title: Mode
+        type: string
+        enum:
+          - always_require
+          - permanent
+          - expiring
+      consent_expire_in:
+        title: Consent expires in
+        description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
   DummyStage:
@@ -6749,7 +7322,7 @@ definitions:
         x-nullable: true
       fixed_data:
         title: Fixed data
-        type: object
+        type: string
   OTPStaticStage:
     required:
       - name
@@ -6831,7 +7404,6 @@ definitions:
       - field_key
       - label
       - type
-      - placeholder
     type: object
     properties:
       pk:
@@ -6872,7 +7444,6 @@ definitions:
       placeholder:
         title: Placeholder
         type: string
-        minLength: 1
       order:
         title: Order
         type: integer

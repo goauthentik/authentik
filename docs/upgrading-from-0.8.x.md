@@ -6,13 +6,13 @@ To export data from your old instance, run this command:
 
 - docker-compose
 ```
-docker-compose exec server ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event
+docker-compose exec server ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event otp_totp.totpdevice otp_static.staticdevice otp_static.statictoken
 docker cp passbook_server_1:/tmp/passbook_dump.json passbook_dump.json
 ```
 
 - kubernetes
 ```
-kubectl exec -it passbook-web-... -- ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event
+kubectl exec -it passbook-web-... -- ./manage.py dumpdata -o /tmp/passbook_dump.json passbook_core.User passbook_core.Group passbook_crypto.CertificateKeyPair passbook_audit.Event otp_totp.totpdevice otp_static.staticdevice otp_static.statictoken
 kubectl cp passbook-web-...:/tmp/passbook_dump.json passbook_dump.json
 ```
 

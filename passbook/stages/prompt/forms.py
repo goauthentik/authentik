@@ -1,12 +1,15 @@
 """Prompt forms"""
+from typing import Callable
+
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 
+from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.policies.engine import PolicyEngine
-from passbook.stages.prompt.models import Prompt, PromptStage
+from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
 class PromptStageForm(forms.ModelForm):
@@ -57,6 +60,14 @@ class PromptForm(forms.Form):
         for field in fields:
             field: Prompt
             self.fields[field.field_key] = field.field
+            # Special handling for fields with username type
+            # these check for existing users with the same username
+            if field.type == FieldTypes.USERNAME:
+                setattr(
+                    self,
+                    f"clean_{field.field_key}",
+                    username_field_cleaner_generator(field),
+                )
         self.field_order = sorted(fields, key=lambda x: x.order)
 
     def clean(self):
@@ -68,3 +79,15 @@ class PromptForm(forms.Form):
         result = engine.result
         if not result.passing:
             raise forms.ValidationError(list(result.messages))
+
+
+def username_field_cleaner_generator(field: Prompt) -> Callable:
+    """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
+
+    def username_field_cleaner(self: PromptForm):
+        """Check for duplicate usernames"""
+        username = self.cleaned_data.get(field.field_key)
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Username is already taken.")
+
+    return username_field_cleaner

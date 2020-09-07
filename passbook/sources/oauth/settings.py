@@ -1,9 +1,5 @@
 """Oauth2 Client Settings"""
 
-AUTHENTICATION_BACKENDS = [
-    "passbook.sources.oauth.backends.AuthorizedServiceBackend",
-]
-
 PASSBOOK_SOURCES_OAUTH_TYPES = [
     "passbook.sources.oauth.types.discord",
     "passbook.sources.oauth.types.facebook",
