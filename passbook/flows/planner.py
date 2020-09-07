@@ -156,25 +156,22 @@ class FlowPlanner:
             if default_context:
                 plan.context = default_context
             # Check Flow policies
-            for stage in (
-                self.flow.stages.order_by("flowstagebinding__order")
-                .select_subclasses()
-                .select_related()
-            ):
-                binding: FlowStageBinding = stage.flowstagebinding_set.get(
-                    target__pk=self.flow.pk
-                )
+            for binding in FlowStageBinding.objects.filter(
+                target__pk=self.flow.pk
+            ).order_by("order"):
                 engine = PolicyEngine(binding, user, request)
                 engine.request.context = plan.context
                 engine.build()
                 if engine.passing:
-                    LOGGER.debug("f(plan): Stage passing", stage=stage, flow=self.flow)
-                    plan.stages.append(stage)
+                    LOGGER.debug(
+                        "f(plan): Stage passing", stage=binding.stage, flow=self.flow
+                    )
+                    plan.stages.append(binding.stage)
                     marker = StageMarker()
                     if binding.re_evaluate_policies:
                         LOGGER.debug(
                             "f(plan): Stage has re-evaluate marker",
-                            stage=stage,
+                            stage=binding.stage,
                             flow=self.flow,
                         )
                         marker = ReevaluateMarker(binding=binding, user=user)
