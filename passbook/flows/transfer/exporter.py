@@ -52,7 +52,7 @@ class FlowExporter:
             yield FlowBundleEntry.from_model(policy)
         bindings = PolicyBinding.objects.filter(target__in=pbm_uuids).select_related()
         for binding in bindings:
-            yield FlowBundleEntry.from_model(binding)
+            yield FlowBundleEntry.from_model(binding, "policy", "target", "order")
 
     def walk_stage_prompts(self) -> Iterator[FlowBundleEntry]:
         """Walk over all prompts associated with any PromptStages"""

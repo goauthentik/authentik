@@ -44,7 +44,7 @@ class PolicyBinding(SerializerModel):
     enabled = models.BooleanField(default=True)
 
     policy = InheritanceForeignKey("Policy", on_delete=models.CASCADE, related_name="+")
-    target = models.ForeignKey(
+    target = InheritanceForeignKey(
         PolicyBindingModel, on_delete=models.CASCADE, related_name="+"
     )
     negate = models.BooleanField(
