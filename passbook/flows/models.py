@@ -11,7 +11,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from passbook.core.types import UIUserSettings
-from passbook.lib.models import SerializerModel
+from passbook.lib.models import InheritanceForeignKey, SerializerModel
 from passbook.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:
@@ -150,7 +150,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     fsb_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     target = models.ForeignKey("Flow", on_delete=models.CASCADE)
-    stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
+    stage = InheritanceForeignKey(Stage, on_delete=models.CASCADE)
 
     re_evaluate_policies = models.BooleanField(
         default=False,

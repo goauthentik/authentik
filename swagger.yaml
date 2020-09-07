@@ -6243,6 +6243,11 @@ definitions:
       - order
     type: object
     properties:
+      pk:
+        title: Policy binding uuid
+        type: string
+        format: uuid
+        readOnly: true
       policy:
         title: Policy
         type: string
