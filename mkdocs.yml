@@ -10,8 +10,7 @@ nav:
     - Kubernetes: installation/kubernetes.md
   - Flows:
       Overview: flow/flows.md
-      Examples:
-        - Login: flow/examples/login.md
+      Examples: flow/examples/examples.md
   - Stages:
       - Captcha Stage: flow/stages/captcha/index.md
       - Dummy Stage: flow/stages/dummy/index.md

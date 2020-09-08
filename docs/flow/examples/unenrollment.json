@@ -1,0 +1,37 @@
+{
+    "version": 1,
+    "entries": [
+        {
+            "identifiers": {
+                "pk": "59a576ce-2f23-4a63-b63a-d18dc7e550f5",
+                "slug": "default-unenrollment-flow"
+            },
+            "model": "passbook_flows.flow",
+            "attrs": {
+                "name": "Default unenrollment flow",
+                "title": "Delete your account",
+                "designation": "unenrollment"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "c62ac2a4-2735-4a0f-abd0-8523d68c1209",
+                "name": "default-unenrollment-user-delete"
+            },
+            "model": "passbook_stages_user_delete.userdeletestage",
+            "attrs": {}
+        },
+        {
+            "identifiers": {
+                "pk": "eb9aff2b-b95d-40b3-ad08-233aa77bbcf3",
+                "target": "59a576ce-2f23-4a63-b63a-d18dc7e550f5",
+                "stage": "c62ac2a4-2735-4a0f-abd0-8523d68c1209",
+                "order": 0
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        }
+    ]
+}

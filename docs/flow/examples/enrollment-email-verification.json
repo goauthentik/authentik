@@ -1,0 +1,234 @@
+{
+    "version": 1,
+    "entries": [
+        {
+            "identifiers": {
+                "pk": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "slug": "default-enrollment-flow"
+            },
+            "model": "passbook_flows.flow",
+            "attrs": {
+                "name": "Default enrollment Flow",
+                "title": "Welcome to passbook!",
+                "designation": "enrollment"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4"
+            },
+            "model": "passbook_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "username",
+                "label": "Username",
+                "type": "text",
+                "required": true,
+                "placeholder": "Username",
+                "order": 0
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "7db91ee8-4290-4e08-8d39-63f132402515"
+            },
+            "model": "passbook_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "password",
+                "label": "Password",
+                "type": "password",
+                "required": true,
+                "placeholder": "Password",
+                "order": 0
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "d30b5eb4-7787-4072-b1ba-65b46e928920"
+            },
+            "model": "passbook_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "password_repeat",
+                "label": "Password (repeat)",
+                "type": "password",
+                "required": true,
+                "placeholder": "Password (repeat)",
+                "order": 1
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "f78d977a-efa6-4cc2-9a0f-2621a9fd94d2"
+            },
+            "model": "passbook_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "name",
+                "label": "Name",
+                "type": "text",
+                "required": true,
+                "placeholder": "Name",
+                "order": 0
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "1ff91927-e33d-4615-95b0-c258e5f0df62"
+            },
+            "model": "passbook_stages_prompt.prompt",
+            "attrs": {
+                "field_key": "email",
+                "label": "Email",
+                "type": "email",
+                "required": true,
+                "placeholder": "Email",
+                "order": 1
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "096e6282-6b30-4695-bd03-3b143eab5580",
+                "name": "default-enrollment-email-verficiation"
+            },
+            "model": "passbook_stages_email.emailstage",
+            "attrs": {
+                "host": "localhost",
+                "port": 25,
+                "username": "",
+                "use_tls": false,
+                "use_ssl": false,
+                "timeout": 10,
+                "from_address": "system@passbook.local",
+                "token_expiry": 30,
+                "subject": "passbook",
+                "template": "stages/email/for_email/account_confirmation.html"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "6c342b94-790d-425a-ae31-6196b6570722",
+                "name": "default-enrollment-prompt-second"
+            },
+            "model": "passbook_stages_prompt.promptstage",
+            "attrs": {
+                "fields": [
+                    "f78d977a-efa6-4cc2-9a0f-2621a9fd94d2",
+                    "1ff91927-e33d-4615-95b0-c258e5f0df62"
+                ]
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "20375f30-7fa7-4562-8f6e-0f61889f2963",
+                "name": "default-enrollment-prompt-first"
+            },
+            "model": "passbook_stages_prompt.promptstage",
+            "attrs": {
+                "fields": [
+                    "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4",
+                    "7db91ee8-4290-4e08-8d39-63f132402515",
+                    "d30b5eb4-7787-4072-b1ba-65b46e928920"
+                ]
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "77090897-eb3f-40db-81e6-b4074b1998c4",
+                "name": "default-enrollment-user-login"
+            },
+            "model": "passbook_stages_user_login.userloginstage",
+            "attrs": {
+                "session_duration": 0
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "a4090add-f483-4ac6-8917-10b493ef843e",
+                "name": "default-enrollment-user-write"
+            },
+            "model": "passbook_stages_user_write.userwritestage",
+            "attrs": {}
+        },
+        {
+            "identifiers": {
+                "pk": "34e1e7d5-8eed-4549-bc7a-305069ff7df0",
+                "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "stage": "7145399a-0015-4201-9560-2d5c6d27efeb",
+                "order": 0
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "e40467a6-3052-488c-a1b5-1ad7a80fe7b3",
+                "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "stage": "130ab95a-5146-4ca9-a7b7-3518f629cc3e",
+                "order": 1
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "76bc594e-2715-49ab-bd40-994abd9a7b70",
+                "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "stage": "a4090add-f483-4ac6-8917-10b493ef843e",
+                "order": 2
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "1db34a14-8985-4184-b5c9-254cd585d94f",
+                "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "stage": "096e6282-6b30-4695-bd03-3b143eab5580",
+                "order": 3
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "2f324f6d-7646-4108-a6e2-e7f90985477f",
+                "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
+                "stage": "77090897-eb3f-40db-81e6-b4074b1998c4",
+                "order": 4
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "9922212c-47a2-475a-9905-abeb5e621652"
+            },
+            "model": "passbook_policies_expression.expressionpolicy",
+            "attrs": {
+                "name": "policy-enrollment-password-equals",
+                "expression": "# Verifies that the passwords are equal\r\nreturn request.context['password'] == request.context['password_repeat']"
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "4f3b5a0a-8f91-438b-959c-c908415cacd9",
+                "policy": "9922212c-47a2-475a-9905-abeb5e621652",
+                "target": "20375f30-7fa7-4562-8f6e-0f61889f2963",
+                "order": 0
+            },
+            "model": "passbook_policies.policybinding",
+            "attrs": {
+                "enabled": true,
+                "timeout": 30
+            }
+        }
+    ]
+}

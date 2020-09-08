@@ -1,0 +1,139 @@
+{
+    "version": 1,
+    "entries": [
+        {
+            "identifiers": {
+                "slug": "default-authentication-flow",
+                "pk": "563ece21-e9a4-47e5-a264-23ffd923e393"
+            },
+            "model": "passbook_flows.flow",
+            "attrs": {
+                "name": "Default Authentication Flow",
+                "title": "Welcome to passbook!",
+                "designation": "authentication"
+            }
+        },
+        {
+            "identifiers": {
+                "name": "default-authentication-login",
+                "pk": "69d41125-3987-499b-8d74-ef27b54b88c8"
+            },
+            "model": "passbook_stages_user_login.userloginstage",
+            "attrs": {
+                "session_duration": 0
+            }
+        },
+        {
+            "identifiers": {
+                "name": "default-authentication-flow-captcha",
+                "pk": "a368cafc-1494-45e9-b75b-b5e7ac2bd3e4"
+            },
+            "model": "passbook_stages_captcha.captchastage",
+            "attrs": {
+                "public_key": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+                "private_key": "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+            }
+        },
+        {
+            "identifiers": {
+                "name": "default-authentication-identification",
+                "pk": "5f594f27-0def-488d-9855-fe604eb13de5"
+            },
+            "model": "passbook_stages_identification.identificationstage",
+            "attrs": {
+                "user_fields": [
+                    "email",
+                    "username"
+                ],
+                "template": "stages/identification/login.html",
+                "enrollment_flow": null,
+                "recovery_flow": null
+            }
+        },
+        {
+            "identifiers": {
+                "name": "default-authentication-password",
+                "pk": "d8affa62-500c-4c5c-a01f-5835e1ffdf40"
+            },
+            "model": "passbook_stages_password.passwordstage",
+            "attrs": {
+                "backends": [
+                    "django.contrib.auth.backends.ModelBackend"
+                ]
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "a3056482-b692-4e3a-93f1-7351c6a351c7",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "5f594f27-0def-488d-9855-fe604eb13de5",
+                "order": 0
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "4e8538cf-3e18-4a68-82ae-6df6725fa2e6",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
+                "order": 1
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "3bcd6af0-48a6-4e18-87f3-d251a1a58226",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "a368cafc-1494-45e9-b75b-b5e7ac2bd3e4",
+                "order": 2
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "f3fede3a-a9b5-4232-9ec7-be7ff4194b27",
+                "target": "563ece21-e9a4-47e5-a264-23ffd923e393",
+                "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
+                "order": 3
+            },
+            "model": "passbook_flows.flowstagebinding",
+            "attrs": {
+                "re_evaluate_policies": false
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "688c9890-47ad-4327-a9e5-380e88d34be5"
+            },
+            "model": "passbook_policies_reputation.reputationpolicy",
+            "attrs": {
+                "name": "default-authentication-flow-conditional-captcha",
+                "check_ip": true,
+                "check_username": true,
+                "threshold": -5
+            }
+        },
+        {
+            "identifiers": {
+                "pk": "02e4d220-3448-44db-822e-c5255cf7c250",
+                "policy": "688c9890-47ad-4327-a9e5-380e88d34be5",
+                "target": "998bdd3a-52b9-4298-8878-3c3fc993b68c",
+                "order": 0
+            },
+            "model": "passbook_policies.policybinding",
+            "attrs": {
+                "enabled": true,
+                "timeout": 30
+            }
+        }
+    ]
+}
