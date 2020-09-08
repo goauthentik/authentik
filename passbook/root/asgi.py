@@ -119,6 +119,6 @@ class ASGILogger:
         )
 
 
-application = ASGILogger(
-    guarantee_single_callable(SentryAsgiMiddleware(get_default_application()))
+application = SentryAsgiMiddleware(
+    ASGILogger(guarantee_single_callable(get_default_application()))
 )
