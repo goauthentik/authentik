@@ -47,6 +47,7 @@ class FlowExporter:
         pbm_uuids += FlowStageBinding.objects.filter(target=self.flow).values_list(
             "pbm_uuid", flat=True
         )
+        # Add policy objects first, so they are created first
         policies = Policy.objects.filter(bindings__in=pbm_uuids).select_related()
         for policy in policies:
             yield FlowBundleEntry.from_model(policy)

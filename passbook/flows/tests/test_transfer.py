@@ -35,6 +35,7 @@ class TestFlowTransfer(TransactionTestCase):
             slug="test",
             designation=FlowDesignation.AUTHENTICATION,
             name="Welcome to passbook!",
+            title="test",
         )
         FlowStageBinding.objects.update_or_create(
             target=flow, stage=login_stage, order=0,
@@ -64,6 +65,7 @@ class TestFlowTransfer(TransactionTestCase):
             slug="default-source-authentication-test",
             designation=FlowDesignation.AUTHENTICATION,
             name="Welcome to passbook!",
+            title="test",
         )
         PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
 
@@ -122,6 +124,7 @@ class TestFlowTransfer(TransactionTestCase):
             name="default-enrollment-flow",
             slug="default-enrollment-flow-test",
             designation=FlowDesignation.ENROLLMENT,
+            title="test",
         )
 
         FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)

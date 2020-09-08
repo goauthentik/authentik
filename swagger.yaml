@@ -6041,6 +6041,7 @@ definitions:
     required:
       - name
       - slug
+      - title
       - designation
     type: object
     properties:
@@ -6063,6 +6064,7 @@ definitions:
       title:
         title: Title
         type: string
+        minLength: 1
       designation:
         title: Designation
         type: string

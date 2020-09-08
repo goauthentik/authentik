@@ -33,6 +33,7 @@ class FlowForm(forms.ModelForm):
         }
         widgets = {
             "name": forms.TextInput(),
+            "title": forms.TextInput(),
         }
 
 

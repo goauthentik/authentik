@@ -93,7 +93,7 @@ class Flow(SerializerModel, PolicyBindingModel):
     name = models.TextField()
     slug = models.SlugField(unique=True)
 
-    title = models.TextField(default="", blank=True)
+    title = models.TextField()
 
     designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
 
