@@ -45,14 +45,20 @@ class FlowImporter:
 
     def __update_pks_for_attrs(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
         """Replace any value if it is a known primary key of an other object"""
+        def updater(value) -> Any:
+            if value in self.__pk_map:
+                self.logger.debug(
+                    "updating reference in entry", value=value
+                )
+                return self.__pk_map[value]
+            return value
+
         for key, value in attrs.items():
             if isinstance(value, (list, dict)):
-                continue
-            if value in self.__pk_map:
-                attrs[key] = self.__pk_map[value]
-                self.logger.debug(
-                    "updating reference in entry", key=key, new_value=attrs[key]
-                )
+                for idx, _inner_value in enumerate(value):
+                    attrs[key][idx] = updater(_inner_value)
+            else:
+                attrs[key] = updater(value)
         return attrs
 
     def __query_from_identifier(self, attrs: Dict[str, Any]) -> Q:
