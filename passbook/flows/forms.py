@@ -40,7 +40,9 @@ class FlowForm(forms.ModelForm):
 class FlowStageBindingForm(forms.ModelForm):
     """FlowStageBinding Form"""
 
-    stage = GroupedModelChoiceField(queryset=Stage.objects.all().select_subclasses())
+    stage = GroupedModelChoiceField(
+        queryset=Stage.objects.all().select_subclasses(), to_field_name="stage_uuid"
+    )
 
     class Meta:
 
