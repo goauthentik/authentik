@@ -15,6 +15,7 @@ from passbook.admin.views.utils import DeleteMessageView
 from passbook.flows.forms import FlowForm, FlowImportForm
 from passbook.flows.models import Flow
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
+from passbook.flows.transfer.common import DataclassEncoder
 from passbook.flows.transfer.exporter import FlowExporter
 from passbook.flows.transfer.importer import FlowImporter
 from passbook.flows.views import SESSION_KEY_PLAN, FlowPlanner
@@ -127,7 +128,6 @@ class FlowExportView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         """Debug exectue flow, setting the current user as pending user"""
         flow: Flow = self.get_object()
         exporter = FlowExporter(flow)
-        export = exporter.export_to_string()
-        response = JsonResponse(export)
+        response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
         response["Content-Disposition"] = f'attachment; filename="{flow.slug}.json"'
         return response
