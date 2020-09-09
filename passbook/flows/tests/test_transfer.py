@@ -1,15 +1,15 @@
 """Test flow transfer"""
 from json import dumps
 
-from django.db import transaction
 from django.test import TransactionTestCase
 
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.transfer.common import DataclassEncoder
 from passbook.flows.transfer.exporter import FlowExporter
-from passbook.flows.transfer.importer import FlowImporter
+from passbook.flows.transfer.importer import FlowImporter, transaction_rollback
 from passbook.policies.expression.models import ExpressionPolicy
 from passbook.policies.models import PolicyBinding
+from passbook.providers.oauth2.generators import generate_client_id
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 
@@ -28,112 +28,106 @@ class TestFlowTransfer(TransactionTestCase):
 
     def test_export_validate_import(self):
         """Test export and validate it"""
-        sid = transaction.savepoint()
-        login_stage = UserLoginStage.objects.create(name="default-authentication-login")
+        flow_slug = generate_client_id()
+        with transaction_rollback():
+            login_stage = UserLoginStage.objects.create(name=generate_client_id())
 
-        flow = Flow.objects.create(
-            slug="test",
-            designation=FlowDesignation.AUTHENTICATION,
-            name="Welcome to passbook!",
-            title="test",
-        )
-        FlowStageBinding.objects.update_or_create(
-            target=flow, stage=login_stage, order=0,
-        )
+            flow = Flow.objects.create(
+                slug=flow_slug,
+                designation=FlowDesignation.AUTHENTICATION,
+                name=generate_client_id(),
+                title=generate_client_id(),
+            )
+            FlowStageBinding.objects.update_or_create(
+                target=flow, stage=login_stage, order=0,
+            )
 
-        exporter = FlowExporter(flow)
-        export = exporter.export()
+            exporter = FlowExporter(flow)
+            export = exporter.export()
+            self.assertEqual(len(export.entries), 3)
+            export_json = exporter.export_to_string()
 
-        transaction.savepoint_rollback(sid)
-
-        self.assertEqual(len(export.entries), 3)
-        export_json = dumps(export, cls=DataclassEncoder)
         importer = FlowImporter(export_json)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
 
-        self.assertTrue(Flow.objects.filter(slug="test").exists())
+        self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""
-        sid = transaction.savepoint()
+        flow_slug = generate_client_id()
+        stage_name = generate_client_id()
+        with transaction_rollback():
+            flow_policy = ExpressionPolicy.objects.create(
+                name=generate_client_id(), expression="return True",
+            )
+            flow = Flow.objects.create(
+                slug=flow_slug,
+                designation=FlowDesignation.AUTHENTICATION,
+                name=generate_client_id(),
+                title=generate_client_id(),
+            )
+            PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
 
-        flow_policy = ExpressionPolicy.objects.create(
-            name="default-source-authentication-if-sso", expression="return True",
-        )
-        flow = Flow.objects.create(
-            slug="default-source-authentication-test",
-            designation=FlowDesignation.AUTHENTICATION,
-            name="Welcome to passbook!",
-            title="test",
-        )
-        PolicyBinding.objects.create(policy=flow_policy, target=flow, order=0)
+            user_login = UserLoginStage.objects.create(name=stage_name)
+            fsb = FlowStageBinding.objects.create(
+                target=flow, stage=user_login, order=0
+            )
+            PolicyBinding.objects.create(policy=flow_policy, target=fsb, order=0)
 
-        user_login = UserLoginStage.objects.create(
-            name="default-source-authentication-login-test"
-        )
-        FlowStageBinding.objects.create(target=flow, stage=user_login, order=0)
+            exporter = FlowExporter(flow)
+            export = exporter.export()
 
-        exporter = FlowExporter(flow)
-        export = exporter.export()
+            export_json = dumps(export, cls=DataclassEncoder)
 
-        transaction.savepoint_rollback(sid)
-
-        export_json = dumps(export, cls=DataclassEncoder)
         importer = FlowImporter(export_json)
         self.assertTrue(importer.validate())
         self.assertTrue(importer.apply())
-        self.assertTrue(
-            UserLoginStage.objects.filter(
-                name="default-source-authentication-login-test"
-            ).exists()
-        )
+        self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
+        self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
 
     def test_export_validate_import_prompt(self):
         """Test export and validate it"""
-        sid = transaction.savepoint()
+        with transaction_rollback():
+            # First stage fields
+            username_prompt = Prompt.objects.create(
+                field_key="username", label="Username", order=0, type=FieldTypes.TEXT
+            )
+            password = Prompt.objects.create(
+                field_key="password",
+                label="Password",
+                order=1,
+                type=FieldTypes.PASSWORD,
+            )
+            password_repeat = Prompt.objects.create(
+                field_key="password_repeat",
+                label="Password (repeat)",
+                order=2,
+                type=FieldTypes.PASSWORD,
+            )
+            # Password checking policy
+            password_policy = ExpressionPolicy.objects.create(
+                name=generate_client_id(), expression="return True",
+            )
 
-        # First stage fields
-        username_prompt = Prompt.objects.create(
-            field_key="username", label="Username", order=0, type=FieldTypes.TEXT
-        )
-        password = Prompt.objects.create(
-            field_key="password", label="Password", order=1, type=FieldTypes.PASSWORD
-        )
-        password_repeat = Prompt.objects.create(
-            field_key="password_repeat",
-            label="Password (repeat)",
-            order=2,
-            type=FieldTypes.PASSWORD,
-        )
-        # Stages
-        first_stage = PromptStage.objects.create(name="prompt-stage-first-test")
-        first_stage.fields.set([username_prompt, password, password_repeat])
-        first_stage.save()
+            # Stages
+            first_stage = PromptStage.objects.create(name=generate_client_id())
+            first_stage.fields.set([username_prompt, password, password_repeat])
+            first_stage.validation_policies.set([password_policy])
+            first_stage.save()
 
-        # Password checking policy
-        password_policy = ExpressionPolicy.objects.create(
-            name="policy-enrollment-password-equals-test",
-            expression="return request.context['password'] == request.context['password_repeat']",
-        )
-        PolicyBinding.objects.create(
-            target=first_stage, policy=password_policy, order=0
-        )
+            flow = Flow.objects.create(
+                name=generate_client_id(),
+                slug=generate_client_id(),
+                designation=FlowDesignation.ENROLLMENT,
+                title=generate_client_id(),
+            )
 
-        flow = Flow.objects.create(
-            name="default-enrollment-flow",
-            slug="default-enrollment-flow-test",
-            designation=FlowDesignation.ENROLLMENT,
-            title="test",
-        )
+            FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
 
-        FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
-
-        exporter = FlowExporter(flow)
-        export = exporter.export()
-        export_json = dumps(export, cls=DataclassEncoder)
-
-        transaction.savepoint_rollback(sid)
+            exporter = FlowExporter(flow)
+            export = exporter.export()
+            export_json = dumps(export, cls=DataclassEncoder)
 
         importer = FlowImporter(export_json)
 
