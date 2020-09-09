@@ -8,6 +8,9 @@ image:
 
 nameOverride: ""
 
+serverReplicas: 1
+workerReplicas: 1
+
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secret_key: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o

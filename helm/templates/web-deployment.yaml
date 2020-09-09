@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     k8s.passbook.beryju.org/component: web
 spec:
-  replicas: 2
+  replicas: {{ serverReplicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "passbook.name" . }}
