@@ -45,7 +45,9 @@ nav:
         - Harbor: integrations/services/harbor/index.md
         - Sentry: integrations/services/sentry/index.md
         - Ansible Tower/AWX: integrations/services/tower-awx/index.md
-  - Upgrading from v0.8.x: upgrading-from-0.8.x.md
+  - Upgrading:
+    - to 0.9: upgrading/to-0.9.md
+    - to 0.10: upgrading/to-0.10.md
 
 repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook

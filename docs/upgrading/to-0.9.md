@@ -1,4 +1,4 @@
-# Upgrading from 0.8.x
+# Upgrading to 0.9
 
 Due to some database changes that had to be rather sooner than later, there is no possibility to directly upgrade. You must extract the data before hand and import it again. It is recommended to spin up a second instance of passbook to do this.
 
