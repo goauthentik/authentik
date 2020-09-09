@@ -5249,7 +5249,7 @@ paths:
       tags:
         - stages
     parameters: []
-  /stages/prompt/stages/{pbm_uuid}/:
+  /stages/prompt/stages/{stage_uuid}/:
     get:
       operationId: stages_prompt_stages_read
       description: PromptStage Viewset
@@ -5303,7 +5303,7 @@ paths:
       tags:
         - stages
     parameters:
-      - name: pbm_uuid
+      - name: stage_uuid
         in: path
         description: A UUID string identifying this Prompt Stage.
         required: true
@@ -7463,7 +7463,7 @@ definitions:
     type: object
     properties:
       pk:
-        title: Pbm uuid
+        title: Stage uuid
         type: string
         format: uuid
         readOnly: true
@@ -7472,6 +7472,12 @@ definitions:
         type: string
         minLength: 1
       fields:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      validation_policies:
         type: array
         items:
           type: string

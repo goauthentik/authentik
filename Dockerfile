@@ -11,27 +11,22 @@ RUN pip install pipenv && \
 
 FROM python:3.8-slim-buster
 
-COPY --from=locker /app/requirements.txt /app/
-COPY --from=locker /app/requirements-dev.txt /app/
-
-WORKDIR /app/
+WORKDIR /
+COPY --from=locker /app/requirements.txt /
+COPY --from=locker /app/requirements-dev.txt /
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends postgresql-client-11 build-essential && \
     rm -rf /var/lib/apt/ && \
-    pip install -r requirements.txt  --no-cache-dir && \
+    pip install -r /requirements.txt  --no-cache-dir && \
     apt-get remove --purge -y build-essential && \
     apt-get autoremove --purge && \
-    adduser --system --no-create-home --uid 1000 --group --home /app passbook
+    adduser --system --no-create-home --uid 1000 --group --home /passbook passbook
 
-COPY ./passbook/ /app/passbook
-COPY ./manage.py /app/
-COPY ./docker/gunicorn.conf.py /app/
-COPY ./docker/bootstrap.sh /bootstrap.sh
-COPY ./docker/wait_for_db.py /app/wait_for_db.py
-
-WORKDIR /app/
+COPY ./passbook/ /passbook
+COPY ./manage.py /
+COPY ./lifecycle/ /lifecycle
 
 USER passbook
 
-ENTRYPOINT [ "/bootstrap.sh" ]
+ENTRYPOINT [ "/lifecycle/bootstrap.sh" ]

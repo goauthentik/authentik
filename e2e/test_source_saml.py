@@ -1,14 +1,14 @@
 """test SAML Source"""
 from time import sleep
 
+from docker import DockerClient, from_env
+from docker.models.containers import Container
+from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
-from docker.types import Healthcheck
 from e2e.utils import SeleniumTestCase
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow

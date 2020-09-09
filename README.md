@@ -25,7 +25,7 @@ wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
 # export PG_PASS=$(pwgen 40 1)
 docker-compose pull
 docker-compose up -d
-docker-compose exec server ./manage.py migrate
+docker-compose run --rm server migrate
 ```
 
 For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org//installation/kubernetes/)

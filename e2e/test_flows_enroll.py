@@ -2,13 +2,13 @@
 from time import sleep
 
 from django.test import override_settings
+from docker import DockerClient, from_env
+from docker.models.containers import Container
+from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
-from docker.types import Healthcheck
 from e2e.utils import USER, SeleniumTestCase
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.policies.expression.models import ExpressionPolicy
