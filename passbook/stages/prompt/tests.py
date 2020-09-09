@@ -11,7 +11,6 @@ from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
 from passbook.stages.prompt.forms import PromptForm
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -124,7 +123,8 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
+        self.stage.validation_policies.set([expr_policy])
+        self.stage.save()
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), True)
         return form
@@ -138,7 +138,8 @@ class TestPromptStage(TestCase):
         expr_policy = ExpressionPolicy.objects.create(
             name="validate-form", expression=expr
         )
-        PolicyBinding.objects.create(policy=expr_policy, target=self.stage, order=0)
+        self.stage.validation_policies.set([expr_policy])
+        self.stage.save()
         form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
         self.assertEqual(form.is_valid(), False)
         return form

@@ -1,14 +1,17 @@
 """Prompt forms"""
-from typing import Callable
+from email.policy import Policy
+from typing import Callable, Iterator, List
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.policies.engine import PolicyEngine
+from passbook.policies.models import PolicyBinding, PolicyBindingModel
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
@@ -18,7 +21,7 @@ class PromptStageForm(forms.ModelForm):
     class Meta:
 
         model = PromptStage
-        fields = ["name", "fields"]
+        fields = ["name", "fields", "validation_policies"]
         widgets = {
             "name": forms.TextInput(),
             "fields": FilteredSelectMultiple(_("prompts"), False),
@@ -43,6 +46,23 @@ class PromptAdminForm(forms.ModelForm):
             "label": forms.TextInput(),
             "placeholder": forms.TextInput(),
         }
+
+
+class ListPolicyEngine(PolicyEngine):
+    """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
+
+    __list: List[Policy]
+
+    def __init__(
+        self, policies: List[Policy], user: User, request: HttpRequest = None
+    ) -> None:
+        super().__init__(PolicyBindingModel(), user, request)
+        self.__list = policies
+        self.use_cache = False
+
+    def _iter_bindings(self) -> Iterator[PolicyBinding]:
+        for policy in self.__list:
+            yield PolicyBinding(policy=policy,)
 
 
 class PromptForm(forms.Form):
@@ -73,7 +93,7 @@ class PromptForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
-        engine = PolicyEngine(self.stage, user)
+        engine = ListPolicyEngine(self.stage.validation_policies.all(), user)
         engine.request.context = cleaned_data
         engine.build()
         result = engine.result

@@ -16,8 +16,6 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
     Flow = apps.get_model("passbook_flows", "Flow")
     FlowStageBinding = apps.get_model("passbook_flows", "FlowStageBinding")
 
-    PolicyBinding = apps.get_model("passbook_policies", "PolicyBinding")
-
     ExpressionPolicy = apps.get_model(
         "passbook_policies_expression", "ExpressionPolicy"
     )
@@ -58,17 +56,17 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
             "order": 1,
         },
     )
-    prompt_stage.fields.add(password_prompt)
-    prompt_stage.fields.add(password_rep_prompt)
 
     # Policy to only trigger prompt when no username is given
     prompt_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
         name="default-password-change-password-equal",
         defaults={"expression": PROMPT_POLICY_EXPRESSION},
     )
-    PolicyBinding.objects.using(db_alias).update_or_create(
-        policy=prompt_policy, target=prompt_stage, defaults={"order": 0}
-    )
+
+    prompt_stage.fields.add(password_prompt)
+    prompt_stage.fields.add(password_rep_prompt)
+    prompt_stage.validation_policies.add(prompt_policy)
+    prompt_stage.save()
 
     user_write, _ = UserWriteStage.objects.using(db_alias).update_or_create(
         name="default-password-change-write"
@@ -103,9 +101,8 @@ class Migration(migrations.Migration):
     dependencies = [
         ("passbook_flows", "0006_auto_20200629_0857"),
         ("passbook_policies_expression", "0001_initial"),
-        ("passbook_policies", "0001_initial"),
         ("passbook_stages_password", "0001_initial"),
-        ("passbook_stages_prompt", "0004_auto_20200618_1735"),
+        ("passbook_stages_prompt", "0001_initial"),
         ("passbook_stages_user_write", "0001_initial"),
     ]
 

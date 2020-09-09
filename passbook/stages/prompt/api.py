@@ -18,6 +18,7 @@ class PromptStageSerializer(ModelSerializer):
             "pk",
             "name",
             "fields",
+            "validation_policies",
         ]
 
 

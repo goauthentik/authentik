@@ -11,7 +11,7 @@ from rest_framework.serializers import BaseSerializer
 
 from passbook.flows.models import Stage
 from passbook.lib.models import SerializerModel
-from passbook.policies.models import PolicyBindingModel
+from passbook.policies.models import Policy
 from passbook.stages.prompt.widgets import HorizontalRuleWidget, StaticTextWidget
 
 
@@ -123,10 +123,12 @@ class Prompt(SerializerModel):
         verbose_name_plural = _("Prompts")
 
 
-class PromptStage(PolicyBindingModel, Stage):
+class PromptStage(Stage):
     """Define arbitrary prompts for the user."""
 
     fields = models.ManyToManyField(Prompt)
+
+    validation_policies = models.ManyToManyField(Policy, blank=True)
 
     @property
     def serializer(self) -> BaseSerializer:
