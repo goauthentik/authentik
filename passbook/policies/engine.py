@@ -1,7 +1,7 @@
 """passbook policy engine"""
 from multiprocessing import Pipe, set_start_method
 from multiprocessing.connection import Connection
-from typing import List, Optional
+from typing import Iterator, List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -40,7 +40,7 @@ class PolicyProcessInfo:
 class PolicyEngine:
     """Orchestrate policy checking, launch tasks and return result"""
 
-    use_cache: bool = True
+    use_cache: bool
     request: PolicyRequest
 
     __pbm: PolicyBindingModel
@@ -58,8 +58,9 @@ class PolicyEngine:
             self.request.http_request = request
         self.__cached_policies = []
         self.__processes = []
+        self.use_cache = True
 
-    def _iter_bindings(self) -> List[PolicyBinding]:
+    def _iter_bindings(self) -> Iterator[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
         return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by(
             "order"

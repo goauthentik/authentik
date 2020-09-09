@@ -1,11 +1,44 @@
 """policy API Views"""
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.utils.model_meta import get_field_info
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.serializers import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    SerializerMethodField,
+)
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from passbook.lib.api import InheritancePrimaryKeyRelatedField
 from passbook.policies.forms import GENERAL_FIELDS
 from passbook.policies.models import Policy, PolicyBinding, PolicyBindingModel
+
+
+class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
+    """rest_framework PrimaryKeyRelatedField which resolves
+    model_manager's InheritanceQuerySet"""
+
+    def use_pk_only_optimization(self):
+        return False
+
+    def to_internal_value(self, data):
+        if self.pk_field is not None:
+            data = self.pk_field.to_internal_value(data)
+        try:
+            # Due to inheritance, a direct DB lookup for the primary key
+            # won't return anything. This is because the direct lookup
+            # checks the PK of PolicyBindingModel (for example),
+            # but we get given the Primary Key of the inheriting class
+            for model in self.get_queryset().select_subclasses().all().select_related():
+                if model.pk == data:
+                    return model
+            # as a fallback we still try a direct lookup
+            return self.get_queryset().get_subclass(pk=data)
+        except ObjectDoesNotExist:
+            self.fail("does_not_exist", pk_value=data)
+        except (TypeError, ValueError):
+            self.fail("incorrect_type", data_type=type(data).__name__)
+
+    def to_representation(self, value):
+        correct_model = PolicyBindingModel.objects.get_subclass(pbm_uuid=value.pbm_uuid)
+        return correct_model.pk
 
 
 class PolicyBindingSerializer(ModelSerializer):
@@ -13,39 +46,9 @@ class PolicyBindingSerializer(ModelSerializer):
 
     # Because we're not interested in the PolicyBindingModel's PK but rather the subclasses PK,
     # we have to manually declare this field
-    target = InheritancePrimaryKeyRelatedField(
-        queryset=PolicyBindingModel.objects.all().select_subclasses(),
-        source="target.pk",
-        required=True,
+    target = PolicyBindingModelForeignKey(
+        queryset=PolicyBindingModel.objects.select_subclasses(), required=True,
     )
-
-    def update(self, instance, validated_data):
-        info = get_field_info(instance)
-
-        # Simply set each attribute on the instance, and then save it.
-        # Note that unlike `.create()` we don't need to treat many-to-many
-        # relationships as being a special case. During updates we already
-        # have an instance pk for the relationships to be associated with.
-        m2m_fields = []
-        for attr, value in validated_data.items():
-            if attr in info.relations and info.relations[attr].to_many:
-                m2m_fields.append((attr, value))
-            else:
-                if attr == "target":
-                    instance.target_pk = value["pk"].pbm_uuid
-                else:
-                    setattr(instance, attr, value)
-
-        instance.save()
-
-        # Note that many-to-many fields are set after updating instance.
-        # Setting m2m fields triggers signals which could potentially change
-        # updated instance and we do not want it to collide with .update()
-        for attr, value in m2m_fields:
-            field = getattr(instance, attr)
-            field.set(value)
-
-        return instance
 
     class Meta:
 
