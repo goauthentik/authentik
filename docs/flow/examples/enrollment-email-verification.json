@@ -85,6 +85,15 @@
         },
         {
             "identifiers": {
+                "pk": "9922212c-47a2-475a-9905-abeb5e621652"
+            },
+            "model": "passbook_policies_expression.expressionpolicy",
+            "attrs": {
+                "name": "policy-enrollment-password-equals",
+                "expression": "# Verifies that the passwords are equal\r\nreturn request.context['password'] == request.context['password_repeat']"
+            }
+        },{
+            "identifiers": {
                 "pk": "096e6282-6b30-4695-bd03-3b143eab5580",
                 "name": "default-enrollment-email-verficiation"
             },
@@ -126,6 +135,9 @@
                     "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4",
                     "7db91ee8-4290-4e08-8d39-63f132402515",
                     "d30b5eb4-7787-4072-b1ba-65b46e928920"
+                ],
+                "validation_policies": [
+                    "9922212c-47a2-475a-9905-abeb5e621652"
                 ]
             }
         },
@@ -151,7 +163,7 @@
             "identifiers": {
                 "pk": "34e1e7d5-8eed-4549-bc7a-305069ff7df0",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
-                "stage": "7145399a-0015-4201-9560-2d5c6d27efeb",
+                "stage": "20375f30-7fa7-4562-8f6e-0f61889f2963",
                 "order": 0
             },
             "model": "passbook_flows.flowstagebinding",
@@ -163,7 +175,7 @@
             "identifiers": {
                 "pk": "e40467a6-3052-488c-a1b5-1ad7a80fe7b3",
                 "target": "773c6673-e4a2-423f-8d32-95b7b4a41cf3",
-                "stage": "130ab95a-5146-4ca9-a7b7-3518f629cc3e",
+                "stage": "6c342b94-790d-425a-ae31-6196b6570722",
                 "order": 1
             },
             "model": "passbook_flows.flowstagebinding",
@@ -205,29 +217,6 @@
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
-            }
-        },
-        {
-            "identifiers": {
-                "pk": "9922212c-47a2-475a-9905-abeb5e621652"
-            },
-            "model": "passbook_policies_expression.expressionpolicy",
-            "attrs": {
-                "name": "policy-enrollment-password-equals",
-                "expression": "# Verifies that the passwords are equal\r\nreturn request.context['password'] == request.context['password_repeat']"
-            }
-        },
-        {
-            "identifiers": {
-                "pk": "4f3b5a0a-8f91-438b-959c-c908415cacd9",
-                "policy": "9922212c-47a2-475a-9905-abeb5e621652",
-                "target": "20375f30-7fa7-4562-8f6e-0f61889f2963",
-                "order": 0
-            },
-            "model": "passbook_policies.policybinding",
-            "attrs": {
-                "enabled": true,
-                "timeout": 30
             }
         }
     ]

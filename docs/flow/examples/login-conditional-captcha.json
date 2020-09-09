@@ -126,7 +126,7 @@
             "identifiers": {
                 "pk": "02e4d220-3448-44db-822e-c5255cf7c250",
                 "policy": "688c9890-47ad-4327-a9e5-380e88d34be5",
-                "target": "998bdd3a-52b9-4298-8878-3c3fc993b68c",
+                "target": "3bcd6af0-48a6-4e18-87f3-d251a1a58226",
                 "order": 0
             },
             "model": "passbook_policies.policybinding",
