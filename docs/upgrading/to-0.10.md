@@ -1,6 +1,6 @@
 # Upgrading to 0.10
 
-This upgrade brings a few database changes with it, some of which have to be done manually. The main changes are:
+This update brings a lot of big features, such as:
 
 - New OAuth2/OpenID Provider
 
@@ -24,7 +24,7 @@ This upgrade brings a few database changes with it, some of which have to be don
 - uwsgi has been replaced with Gunicorn and uvicorn.
 - Elastic APM has been replaced with Sentry Performance metrics
 - Flow title is now configurable separately from the name
-- All logs are now json
+- All logging output is now json
 
 ## Upgrading
 
@@ -50,17 +50,18 @@ A few options have changed:
 
 - `error_reporting` was changed from a simple boolean to a dictionary:
 
-  ```yaml
-    error_reporting:
-      enabled: false
-      environment: customer
-      send_pii: false
-  ```
+```yaml
+  error_reporting:
+    enabled: false
+    environment: customer
+    send_pii: false
+```
 
 - The `apm` and `monitoring` blocks have been removed.
 - `serverReplicas` and `workerReplicas` have been added
 
-During this update you must change `serverReplicas` to 0, and run a `helm upgrade`. Otherwise, an automatic upgrade process is attempted.
+!!! error "Important"
+    During this update you must change `serverReplicas` to 0, and run a `helm upgrade`. Otherwise, an automatic upgrade process is attempted.
 
 To run the commands below, use the prefix `kubectl exec -it passbook-*-worker-* -- ./manage.py`.
 
