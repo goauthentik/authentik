@@ -12,7 +12,6 @@ from docker.types import Healthcheck
 from e2e.utils import USER, SeleniumTestCase
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
 from passbook.stages.email.models import EmailStage, EmailTemplates
 from passbook.stages.identification.models import IdentificationStage
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
@@ -79,24 +78,22 @@ class TestFlowsEnroll(SeleniumTestCase):
             field_key="email", label="E-Mail", order=1, type=FieldTypes.EMAIL
         )
 
+        # Password checking policy
+        password_policy = ExpressionPolicy.objects.create(
+            name="policy-enrollment-password-equals",
+            expression="return request.context['password'] == request.context['password_repeat']",
+        )
+
         # Stages
         first_stage = PromptStage.objects.create(name="prompt-stage-first")
         first_stage.fields.set([username_prompt, password, password_repeat])
+        first_stage.validation_policies.set([password_policy])
         first_stage.save()
         second_stage = PromptStage.objects.create(name="prompt-stage-second")
         second_stage.fields.set([name_field, email])
         second_stage.save()
         user_write = UserWriteStage.objects.create(name="enroll-user-write")
         user_login = UserLoginStage.objects.create(name="enroll-user-login")
-
-        # Password checking policy
-        password_policy = ExpressionPolicy.objects.create(
-            name="policy-enrollment-password-equals",
-            expression="return request.context['password'] == request.context['password_repeat']",
-        )
-        PolicyBinding.objects.create(
-            target=first_stage, policy=password_policy, order=0
-        )
 
         flow = Flow.objects.create(
             name="default-enrollment-flow",
@@ -174,9 +171,16 @@ class TestFlowsEnroll(SeleniumTestCase):
             field_key="email", label="E-Mail", order=1, type=FieldTypes.EMAIL
         )
 
+        # Password checking policy
+        password_policy = ExpressionPolicy.objects.create(
+            name="policy-enrollment-password-equals",
+            expression="return request.context['password'] == request.context['password_repeat']",
+        )
+
         # Stages
         first_stage = PromptStage.objects.create(name="prompt-stage-first")
         first_stage.fields.set([username_prompt, password, password_repeat])
+        first_stage.validation_policies.set([password_policy])
         first_stage.save()
         second_stage = PromptStage.objects.create(name="prompt-stage-second")
         second_stage.fields.set([name_field, email])
@@ -189,15 +193,6 @@ class TestFlowsEnroll(SeleniumTestCase):
         )
         user_write = UserWriteStage.objects.create(name="enroll-user-write")
         user_login = UserLoginStage.objects.create(name="enroll-user-login")
-
-        # Password checking policy
-        password_policy = ExpressionPolicy.objects.create(
-            name="policy-enrollment-password-equals",
-            expression="return request.context['password'] == request.context['password_repeat']",
-        )
-        PolicyBinding.objects.create(
-            target=first_stage, policy=password_policy, order=0
-        )
 
         flow = Flow.objects.create(
             name="default-enrollment-flow",
