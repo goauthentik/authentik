@@ -1,4 +1,5 @@
 """Flow importer"""
+from copy import deepcopy
 from json import loads
 from typing import Any, Dict
 
@@ -130,7 +131,8 @@ class FlowImporter:
     def _apply_models(self) -> bool:
         """Apply (create/update) flow json"""
         self.__pk_map = {}
-        for entry in self.__import.entries:
+        entries = deepcopy(self.__import.entries)
+        for entry in entries:
             model_app_label, model_name = entry.model.split(".")
             model: SerializerModel = apps.get_model(model_app_label, model_name)
             # Validate each single entry
