@@ -29,6 +29,7 @@ nav:
   - Providers:
     - OAuth2: providers/oauth2.md
     - SAML: providers/saml.md
+    - Proxy: providers/proxy.md
   - Expressions:
     - Overview: expressions/index.md
     - Reference:

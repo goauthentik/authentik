@@ -10,6 +10,8 @@ This update brings a lot of big features, such as:
 
   Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs and more.
 
+  See [Proxy](../providers/proxy.md)
+
 - Outpost System
 
   This is a new Object type, used currently only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
