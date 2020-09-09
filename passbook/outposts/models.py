@@ -47,7 +47,7 @@ class OutpostType(models.TextChoices):
 class OutpostDeploymentType(models.TextChoices):
     """Deployment types that are managed through passbook"""
 
-    KUBERNETES = "kubernetes"
+    # KUBERNETES = "kubernetes"
     CUSTOM = "custom"
 
 

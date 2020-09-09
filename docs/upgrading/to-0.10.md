@@ -16,6 +16,8 @@ This update brings a lot of big features, such as:
 
   This is a new Object type, used currently only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
 
+  See [Outposts](../outposts/outposts.md)
+
 - Flow Import/Export
 
   Flows can now be imported and exported. This feature can be used as a backup system, or to share complex flows with other people. Example flows have also been added to the documentation to help you get going with passbook.
