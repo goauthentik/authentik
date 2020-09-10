@@ -21,7 +21,7 @@ services:
     labels:
       - traefik.enable=false
   server:
-    image: beryju/passbook:${PASSBOOK_TAG:-0.9.0-stable}
+    image: beryju/passbook:${PASSBOOK_TAG:-0.10.0-rc1}
     command: server
     environment:
       PASSBOOK_REDIS__HOST: redis
@@ -38,7 +38,7 @@ services:
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
   worker:
-    image: beryju/passbook:${PASSBOOK_TAG:-0.9.0-stable}
+    image: beryju/passbook:${PASSBOOK_TAG:-0.10.0-rc1}
     command: worker
     networks:
       - internal
@@ -51,7 +51,7 @@ services:
       PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS:-thisisnotagoodpassword}
       PASSBOOK_LOG_LEVEL: debug
   static:
-    image: beryju/passbook-static:0.9.0-stable
+    image: beryju/passbook-static:0.10.0-rc1
     networks:
       - internal
     labels:
