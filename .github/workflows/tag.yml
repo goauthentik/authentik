@@ -21,7 +21,7 @@ jobs:
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root server bash -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
       - name: Install Helm
         run: |
           apt update && apt install -y curl
