@@ -93,9 +93,9 @@ class OAuthAuthorizationParams:
         if response_type in [ResponseTypes.CODE]:
             grant_type = GrantTypes.AUTHORIZATION_CODE
         elif response_type in [
-            ResponseTypes.id_token,
-            ResponseTypes.id_token_token,
-            ResponseTypes.token,
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.ID_TOKEN_TOKEN,
+            ResponseTypes.TOKEN,
         ]:
             grant_type = GrantTypes.IMPLICIT
         elif response_type in [
