@@ -38,8 +38,7 @@ func NewServer() *Server {
 
 // ServeHTTP constructs a net.Listener and starts handling HTTP requests
 func (s *Server) ServeHTTP() {
-	// TODO: make this a setting
-	listenAddress := "localhost:4180"
+	listenAddress := "0.0.0.0:4180"
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
 		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
@@ -64,8 +63,7 @@ func (s *Server) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, e
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (s *Server) ServeHTTPS() {
-	// TODO: make this a setting
-	listenAddress := "localhost:4443"
+	listenAddress := "0.0.0.0:4443"
 	config := &tls.Config{
 		MinVersion:     tls.VersionTLS12,
 		MaxVersion:     tls.VersionTLS12,
