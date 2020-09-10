@@ -32,6 +32,11 @@ Send = typing.Callable[[Message], typing.Awaitable[None]]
 
 ASGIApp = typing.Callable[[Scope, Receive, Send], typing.Awaitable[None]]
 
+ASGI_IP_HEADERS = (
+    b"x-forwarded-for",
+    b"x-real-ip",
+)
+
 LOGGER = get_logger("passbook.asgi")
 
 
@@ -51,7 +56,6 @@ class ASGILogger:
     """ASGI Logger, instantiated for each request"""
 
     app: ASGIApp
-    send: Send
 
     scope: Scope
     headers: Dict[ByteString, Any]
@@ -64,10 +68,25 @@ class ASGILogger:
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        self.send = send
         self.scope = scope
         self.content_length = 0
         self.headers = dict(scope.get("headers", []))
+
+        async def send_hooked(message: Message) -> None:
+            """Hooked send method, which records status code and content-length, and for the final
+            requests logs it"""
+            headers = dict(message.get("headers", []))
+
+            if "status" in message:
+                self.status_code = message["status"]
+
+            if b"Content-Length" in headers:
+                self.content_length += int(headers.get(b"Content-Length", b"0"))
+
+            if message["type"] == "http.response.body" and not message["more_body"]:
+                runtime = int((time() - self.start) * 10 ** 6)
+                self.log(runtime)
+            await send(message)
 
         if self.headers.get(b"host", b"") == b"kubernetes-healthcheck-host":
             # Don't log kubernetes health/readiness requests
@@ -80,25 +99,12 @@ class ASGILogger:
             # https://code.djangoproject.com/ticket/31508
             # https://github.com/encode/uvicorn/issues/266
             return
-        await self.app(scope, receive, self.send_hooked)
-
-    async def send_hooked(self, message: Message) -> None:
-        """Hooked send method, which records status code and content-length, and for the final
-        requests logs it"""
-        headers = dict(message.get("headers", []))
-
-        if "status" in message:
-            self.status_code = message["status"]
-
-        if b"Content-Length" in headers:
-            self.content_length += int(headers.get(b"Content-Length", b"0"))
-
-        if message["type"] == "http.response.body" and not message["more_body"]:
-            runtime = int((time() - self.start) * 10 ** 6)
-            self.log(runtime)
-        return await self.send(message)
+        await self.app(scope, receive, send_hooked)
 
     def _get_ip(self) -> str:
+        for header in ASGI_IP_HEADERS:
+            if header in self.headers:
+                return self.headers[header].decode()
         client_ip, _ = self.scope.get("client", ("", 0))
         return client_ip
 
