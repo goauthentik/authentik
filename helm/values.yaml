@@ -4,7 +4,7 @@
 image:
   name: beryju/passbook
   name_static: beryju/passbook-static
-  tag: 0.10.0-rc5
+  tag: 0.10.0-rc6
 
 nameOverride: ""
 

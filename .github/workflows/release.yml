@@ -18,11 +18,11 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/passbook:0.10.0-rc5
+          -t beryju/passbook:0.10.0-rc6
           -t beryju/passbook:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook:0.10.0-rc5
+        run: docker push beryju/passbook:0.10.0-rc6
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook:latest
   build-proxy:
@@ -48,11 +48,11 @@ jobs:
           cd proxy
           docker build \
           --no-cache \
-          -t beryju/passbook-proxy:0.10.0-rc5 \
+          -t beryju/passbook-proxy:0.10.0-rc6 \
           -t beryju/passbook-proxy:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-proxy:0.10.0-rc5
+        run: docker push beryju/passbook-proxy:0.10.0-rc6
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-proxy:latest
   build-static:
@@ -77,11 +77,11 @@ jobs:
         run: docker build
           --no-cache
           --network=$(docker network ls | grep github | awk '{print $1}')
-          -t beryju/passbook-static:0.10.0-rc5
+          -t beryju/passbook-static:0.10.0-rc6
           -t beryju/passbook-static:latest
           -f static.Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-static:0.10.0-rc5
+        run: docker push beryju/passbook-static:0.10.0-rc6
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/passbook-static:latest
   test-release:
@@ -111,5 +111,5 @@ jobs:
           SENTRY_PROJECT: passbook
           SENTRY_URL: https://sentry.beryju.org
         with:
-          tagName: 0.10.0-rc5
+          tagName: 0.10.0-rc6
           environment: beryjuorg-prod
