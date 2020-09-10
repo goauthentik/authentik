@@ -2,7 +2,7 @@ name: passbook-on-release
 
 on:
   release:
-    types: [published]
+    types: [published, created]
 
 jobs:
   # Build
@@ -30,8 +30,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-go@v2
-        version: "^1.15"
-      - run: |
+        with:
+          go-version: "^1.15"
+      - name: prepare go api client
+        run: |
           cd proxy
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
           swagger generate client -f ../swagger.yaml -A passbook -t pkg/
