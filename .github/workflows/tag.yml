@@ -1,9 +1,9 @@
+name: passbook-on-tag
+
 on:
   push:
     tags:
     - 'version/*'
-
-name: passbook-version-tag
 
 jobs:
   build:

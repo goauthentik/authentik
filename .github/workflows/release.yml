@@ -1,6 +1,8 @@
-name: passbook-release
+name: passbook-on-release
+
 on:
-  release
+  release:
+    types: [published]
 
 jobs:
   # Build
