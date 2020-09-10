@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Pre-release test
         run: |
+          export PASSBOOK_TAG=latest
           docker-compose pull -q
           docker build \
             --no-cache \
