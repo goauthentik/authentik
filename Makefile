@@ -18,3 +18,9 @@ lint:
 
 gen: coverage
 	./manage.py generate_swagger -o swagger.yaml -f yaml
+
+local-stack:
+	export PASSBOOK_TAG=testing
+	docker build -t beryju/passbook:testng .
+	docker-compose up -d
+	docker-compose run --rm server migrate

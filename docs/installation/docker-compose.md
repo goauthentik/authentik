@@ -16,15 +16,15 @@ wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
 # Optionally enable Error-reporting
 # export PASSBOOK_ERROR_REPORTING=true
 # Optionally deploy a different version
-# export PASSBOOK_TAG=0.9.0-stable
+# export PASSBOOK_TAG=0.10.0-rc6
 # If this is a productive installation, set a different PostgreSQL Password
 # export PG_PASS=$(pwgen 40 1)
 docker-compose pull
 docker-compose up -d
-docker-compose exec server ./manage.py migrate
+docker-compose run --rm server migrate
 ```
 
-The compose file references the current latest version, which can be overridden with the `SERVER_TAG` environment variable.
+The compose file statically references the latest version available at the time of downloading, which can be overridden with the `SERVER_TAG` environment variable.
 
 If you plan to use this setup for production, it is also advised to change the PostgreSQL password by setting `PG_PASS` to a password of your choice.
 
