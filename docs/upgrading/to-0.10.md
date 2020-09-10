@@ -8,13 +8,13 @@ This update brings a lot of big features, such as:
 
 - Proxy Provider
 
-  Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs and more.
+  Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs, and more.
 
   See [Proxy](../providers/proxy.md)
 
 - Outpost System
 
-  This is a new Object type, used currently only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
+  This is a new Object type, currently used only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
 
   See [Outposts](../outposts/outposts.md)
 
@@ -24,8 +24,8 @@ This update brings a lot of big features, such as:
 
 ## Under the hood
 
-- passbook now runs on Django 3.1 and Channels with complete ASGI enabled.
-- uwsgi has been replaced with Gunicorn and uvicorn.
+- passbook now runs on Django 3.1 and Channels with complete ASGI enabled
+- uwsgi has been replaced with Gunicorn and uvicorn
 - Elastic APM has been replaced with Sentry Performance metrics
 - Flow title is now configurable separately from the name
 - All logging output is now json
@@ -44,9 +44,9 @@ docker-compose down
 docker-compose pull
 docker-compose up --no-start
 docker-compose start redis postgrseql
+docker-compose run --rm server migrate
+docker-compose up -d
 ```
-
-To run the commands below, use the prefix `docker-compose run ./manage.py`.
 
 ### Helm
 
@@ -64,59 +64,10 @@ A few options have changed:
 - The `apm` and `monitoring` blocks have been removed.
 - `serverReplicas` and `workerReplicas` have been added
 
-!!! error "Important"
-    During this update you must change `serverReplicas` to 0, and run a `helm upgrade`. Otherwise, an automatic upgrade process is attempted.
-
-To run the commands below, use the prefix `kubectl exec -it passbook-*-worker-* -- ./manage.py`.
-
 ### Upgrading
 
-For the first few steps, we need an SQL Shell connected to the passbook database. To start this, type in your command prefix from above and ` dbshell`. The entire command should end with this string `[...] ./manage.py dbshell`.
+This upgrade only applies if you are upgrading from a running 0.9 instance. Passbook detects this on startup, and automatically executes this upgrade.
 
-If you are using any OpenID or OAuth2 Providers, you need to export their configuration. Run these commands in the shell that is open.
+Because this upgrade brings the new OAuth2 Provider, the old providers will be lost in the process. Make sure to take note of the providers you want to bring over.
 
-```
-select * from passbook_providers_oauth_oauth2provider ;
-select * from oidc_provider_client;
-```
-
-After you've copied this information somewhere safe, we can start by cleaning up old tables. Run the command below in the same shell.
-
-```sql
-delete from django_migrations where app = 'passbook_stages_prompt';
-drop table passbook_stages_prompt_prompt cascade;
-drop table passbook_stages_prompt_promptstage cascade;
-drop table passbook_stages_prompt_promptstage_fields;
-drop table corsheaders_corsmodel cascade;
-drop table oauth2_provider_accesstoken cascade;
-drop table oauth2_provider_grant cascade;
-drop table oauth2_provider_refreshtoken cascade;
-drop table oidc_provider_client cascade;
-drop table oidc_provider_client_response_types cascade;
-drop table oidc_provider_code cascade;
-drop table oidc_provider_responsetype cascade;
-drop table oidc_provider_rsakey cascade;
-drop table oidc_provider_token cascade;
-drop table oidc_provider_userconsent cascade;
-drop table passbook_providers_app_gw_applicationgatewayprovider cascade;
-delete from django_migrations where app = 'passbook_flows' and name = '0008_default_flows';
-delete from django_migrations where app = 'passbook_flows' and name = '0009_source_flows';
-delete from django_migrations where app = 'passbook_flows' and name = '0010_provider_flows';
-delete from django_migrations where app = 'passbook_stages_password' and name = '0002_passwordstage_change_flow';
-```
-
-Now that we're done interacting with the database directly, we can exit the shell by typing `\q` and hitting enter.
-
-The next commands should be appended directly to your prefix, and ran in this order. If any of these commands show an error message, please stop and open a GitHub issue.
-
-```
-migrate passbook_stages_prompt
-migrate passbook_flows 0008_default_flows --fake
-migrate passbook_flows 0009_source_flows --fake
-migrate passbook_flows 0010_provider_flows --fake
-migrate passbook_flows
-migrate passbook_stages_password --fake
-migrate
-```
-
-After all of those commands are done, you can start passbook again, either by running `docker-compose up -d` or changing `serverReplicas` to 1.
+Another side-effect of this upgrade is the change of OAuth2 URLs, see [here](../providers/oauth2.md).
