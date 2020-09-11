@@ -1,5 +1,7 @@
 """test OAuth Provider flow"""
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -22,6 +24,7 @@ from passbook.providers.oauth2.models import ClientTypes, OAuth2Provider, Respon
 LOGGER = get_logger()
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 

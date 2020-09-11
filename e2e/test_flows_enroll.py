@@ -1,5 +1,7 @@
 """Test Enroll flow"""
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from django.test import override_settings
 from docker import DockerClient, from_env
@@ -21,6 +23,7 @@ from passbook.stages.user_write.models import UserWriteStage
 LOGGER = get_logger()
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsEnroll(SeleniumTestCase):
     """Test Enroll flow"""
 

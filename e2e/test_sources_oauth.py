@@ -1,6 +1,8 @@
 """test OAuth Source"""
 from os.path import abspath
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -21,6 +23,7 @@ CONFIG_PATH = "/tmp/dex.yml"
 LOGGER = get_logger()
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceOAuth(SeleniumTestCase):
     """test OAuth Source flow"""
 

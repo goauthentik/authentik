@@ -1,5 +1,7 @@
 """test SAML Provider flow"""
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -23,6 +25,7 @@ from passbook.providers.saml.models import (
 LOGGER = get_logger()
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderSAML(SeleniumTestCase):
     """test SAML Provider flow"""
 

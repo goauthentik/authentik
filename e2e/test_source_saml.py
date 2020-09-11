@@ -1,5 +1,7 @@
 """test SAML Source"""
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -68,6 +70,7 @@ Sm75WXsflOxuTn08LbgGc4s=
 -----END PRIVATE KEY-----"""
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceSAML(SeleniumTestCase):
     """test SAML Source flow"""
 

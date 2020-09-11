@@ -1,7 +1,9 @@
 """test stage setup flows (password change)"""
 import string
 from random import SystemRandom
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -12,6 +14,7 @@ from passbook.flows.models import Flow, FlowDesignation
 from passbook.stages.password.models import PasswordStage
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
