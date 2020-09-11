@@ -1,9 +1,10 @@
 """Gunicorn config"""
+from multiprocessing import cpu_count
+from pathlib import Path
+
 import structlog
 
 bind = "0.0.0.0:8000"
-workers = 2
-threads = 4
 
 user = "passbook"
 group = "passbook"
@@ -40,3 +41,11 @@ logconfig_dict = {
         "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }
+
+# if we're running in kubernetes, use fixed workers because we can scale with more pods
+# otherwise (assume docker-compose), use as much as we can
+if Path("/var/run/secrets/kubernetes.io").exists():
+    workers = 2
+else:
+    worker = cpu_count()
+threads = 4

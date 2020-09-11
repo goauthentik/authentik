@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from guardian.shortcuts import get_anonymous_user
 
 from passbook.core.models import User
@@ -59,7 +59,7 @@ class TestUserLoginStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_flows:denied")},
         )
 
@@ -86,7 +86,7 @@ class TestUserLoginStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
 
@@ -125,6 +125,6 @@ class TestUserLoginStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )

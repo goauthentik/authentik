@@ -1,10 +1,14 @@
 """test default login flow"""
+from sys import platform
+from unittest.case import skipUnless
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 from e2e.utils import USER, SeleniumTestCase
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsLogin(SeleniumTestCase):
     """test default login flow"""
 

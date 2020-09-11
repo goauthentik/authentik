@@ -52,7 +52,7 @@ def create_default_source_enrollment_flow(
 
     # PromptStage to ask user for their username
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
-        name="default-source-enrollment-username-prompt",
+        name="Welcome to passbook! Please select a username.",
     )
     prompt, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="username",

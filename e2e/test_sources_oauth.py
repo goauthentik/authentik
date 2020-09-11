@@ -1,8 +1,9 @@
 """test OAuth Source"""
 from os.path import abspath
-from time import sleep
+from sys import platform
+from typing import Any, Dict, Optional
+from unittest.case import skipUnless
 
-from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -21,6 +22,7 @@ CONFIG_PATH = "/tmp/dex.yml"
 LOGGER = get_logger()
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceOAuth(SeleniumTestCase):
     """test OAuth Source flow"""
 
@@ -28,7 +30,7 @@ class TestSourceOAuth(SeleniumTestCase):
 
     def setUp(self):
         self.client_secret = generate_client_secret()
-        self.container = self.setup_client()
+        self.prepare_dex_config()
         super().setUp()
 
     def prepare_dex_config(self):
@@ -66,34 +68,23 @@ class TestSourceOAuth(SeleniumTestCase):
         with open(CONFIG_PATH, "w+") as _file:
             safe_dump(config, _file)
 
-    def setup_client(self) -> Container:
-        """Setup test Dex container"""
-        self.prepare_dex_config()
-        client: DockerClient = from_env()
-        container = client.containers.run(
-            image="quay.io/dexidp/dex:v2.24.0",
-            detach=True,
-            network_mode="host",
-            auto_remove=True,
-            command="serve /config.yml",
-            healthcheck=Healthcheck(
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        return {
+            "image": "quay.io/dexidp/dex:v2.24.0",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "command": "serve /config.yml",
+            "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            volumes={abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro"}},
-        )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            LOGGER.info("Container failed healthcheck")
-            sleep(1)
+            "volumes": {abspath(CONFIG_PATH): {"bind": "/config.yml", "mode": "ro"}},
+        }
 
     def create_objects(self):
         """Create required objects"""
-        sleep(1)
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
@@ -110,10 +101,6 @@ class TestSourceOAuth(SeleniumTestCase):
             consumer_key="example-app",
             consumer_secret=self.client_secret,
         )
-
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
 
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
@@ -141,6 +128,7 @@ class TestSourceOAuth(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
+        self.wait.until(ec.presence_of_element_located((By.NAME, "username")))
         # At this point we've been redirected back
         # and we're asked for the username
         self.driver.find_element(By.NAME, "username").click()

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.markers import ReevaluateMarker, StageMarker
@@ -247,7 +247,7 @@ class TestFlowExecutor(TestCase):
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
 
@@ -293,7 +293,7 @@ class TestFlowExecutor(TestCase):
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
-            self.assertIn("dummy1", force_text(response.content))
+            self.assertIn("dummy1", force_str(response.content))
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
@@ -316,13 +316,13 @@ class TestFlowExecutor(TestCase):
         # but it won't save it, hence we cant' check the plan
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("dummy4", force_text(response.content))
+        self.assertIn("dummy4", force_str(response.content))
 
         # fourth request, this confirms the last stage (dummy4)
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )

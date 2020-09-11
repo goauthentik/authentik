@@ -1,6 +1,5 @@
 """api v2 urls"""
-from django.conf.urls import url
-from django.urls import path
+from django.urls import path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers
@@ -119,7 +118,7 @@ SchemaView = get_schema_view(
 )
 
 urlpatterns = [
-    url(
+    re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         SchemaView.without_ui(cache_timeout=0),
         name="schema-json",

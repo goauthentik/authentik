@@ -2,7 +2,7 @@
 from typing import Any, Dict, List
 
 from django.http import HttpRequest, HttpResponse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog import get_logger
 

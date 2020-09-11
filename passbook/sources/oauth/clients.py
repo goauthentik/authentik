@@ -5,7 +5,7 @@ from urllib.parse import parse_qs, urlencode
 
 from django.http import HttpRequest
 from django.utils.crypto import constant_time_compare, get_random_string
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from requests import Session
 from requests.exceptions import RequestException
 from requests_oauthlib import OAuth1
@@ -111,7 +111,7 @@ class OAuthClient(BaseOAuthClient):
 
     def get_request_token(self, request, callback):
         "Fetch the OAuth request token. Only required for OAuth 1.0."
-        callback = force_text(request.build_absolute_uri(callback))
+        callback = force_str(request.build_absolute_uri(callback))
         try:
             response = self.session.request(
                 "post",
@@ -128,7 +128,7 @@ class OAuthClient(BaseOAuthClient):
 
     def get_redirect_args(self, request, callback):
         "Get request parameters for redirect url."
-        callback = force_text(request.build_absolute_uri(callback))
+        callback = force_str(request.build_absolute_uri(callback))
         raw_token = self.get_request_token(request, callback)
         token, secret = self.parse_raw_token(raw_token)
         if token is not None and secret is not None:

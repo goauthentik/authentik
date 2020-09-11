@@ -1,7 +1,6 @@
 """test stage setup flows (password change)"""
-import string
-from random import SystemRandom
-from time import sleep
+from sys import platform
+from unittest.case import skipUnless
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -9,9 +8,11 @@ from selenium.webdriver.common.keys import Keys
 from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation
+from passbook.providers.oauth2.generators import generate_client_secret
 from passbook.stages.password.models import PasswordStage
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
@@ -27,10 +28,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         stage.change_flow = flow
         stage.save()
 
-        new_password = "".join(
-            SystemRandom().choice(string.ascii_uppercase + string.digits)
-            for _ in range(8)
-        )
+        new_password = generate_client_secret()
 
         self.driver.get(
             f"{self.live_server_url}/flows/default-authentication-flow/?next=%2F"
@@ -48,7 +46,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(new_password)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        sleep(2)
+        self.wait_for_url(self.url("passbook_core:user-settings"))
         # Because USER() is cached, we need to get the user manually here
         user = User.objects.get(username=USER().username)
         self.assertTrue(user.check_password(new_password))

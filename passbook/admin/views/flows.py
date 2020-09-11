@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 

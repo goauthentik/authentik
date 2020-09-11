@@ -1,5 +1,7 @@
 """test SAML Source"""
+from sys import platform
 from time import sleep
+from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
@@ -68,6 +70,7 @@ Sm75WXsflOxuTn08LbgGc4s=
 -----END PRIVATE KEY-----"""
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceSAML(SeleniumTestCase):
     """test SAML Source flow"""
 
@@ -102,10 +105,6 @@ class TestSourceSAML(SeleniumTestCase):
                 return container
             LOGGER.info("Container failed healthcheck")
             sleep(1)
-
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
 
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""

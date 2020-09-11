@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from passbook.core.models import User
 from passbook.flows.markers import StageMarker
@@ -110,9 +110,9 @@ class TestPromptStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
-            self.assertIn(prompt.field_key, force_text(response.content))
-            self.assertIn(prompt.label, force_text(response.content))
-            self.assertIn(prompt.placeholder, force_text(response.content))
+            self.assertIn(prompt.field_key, force_str(response.content))
+            self.assertIn(prompt.label, force_str(response.content))
+            self.assertIn(prompt.placeholder, force_str(response.content))
 
     def test_valid_form_with_policy(self) -> PromptForm:
         """Test form validation"""
@@ -164,7 +164,7 @@ class TestPromptStage(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
 
