@@ -4,7 +4,7 @@ from random import SystemRandom
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from passbook.core.models import User
 from passbook.flows.markers import StageMarker
@@ -59,7 +59,7 @@ class TestUserWriteStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
         user_qs = User.objects.filter(
@@ -97,7 +97,7 @@ class TestUserWriteStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
         user_qs = User.objects.filter(
@@ -124,7 +124,7 @@ class TestUserWriteStage(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_flows:denied")},
         )
 

@@ -2,7 +2,7 @@
 from typing import Any, Dict
 
 from django.http import HttpRequest, HttpResponse
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.views.generic import FormView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from lxml.etree import tostring  # nosec
@@ -35,7 +35,7 @@ class OTPTimeStageView(FormView, StageView):
         """Get QR Code SVG as string based on `device`"""
         qr_code = QRCode(image_factory=SvgFillImage)
         qr_code.add_data(device.config_url)
-        return force_text(tostring(qr_code.make_image().get_image()))
+        return force_str(tostring(qr_code.make_image().get_image()))
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)

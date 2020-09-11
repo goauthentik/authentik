@@ -3,7 +3,7 @@ from time import sleep
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from passbook.core.models import Application, User
 from passbook.core.tasks import clean_expired_models
@@ -49,7 +49,7 @@ class TestConsentStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
         self.assertFalse(UserConsent.objects.filter(user=self.user).exists())
@@ -80,7 +80,7 @@ class TestConsentStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
         self.assertTrue(
@@ -117,7 +117,7 @@ class TestConsentStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
         self.assertTrue(

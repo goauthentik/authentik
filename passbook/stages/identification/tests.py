@@ -1,7 +1,7 @@
 """identification tests"""
 from django.shortcuts import reverse
 from django.test import Client, TestCase
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -56,7 +56,7 @@ class TestIdentificationStage(TestCase):
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_text(response.content),
+            force_str(response.content),
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
 
@@ -101,7 +101,7 @@ class TestIdentificationStage(TestCase):
             ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, force_text(response.content))
+        self.assertIn(flow.slug, force_str(response.content))
 
     def test_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
@@ -122,4 +122,4 @@ class TestIdentificationStage(TestCase):
             ),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIn(flow.slug, force_text(response.content))
+        self.assertIn(flow.slug, force_str(response.content))
