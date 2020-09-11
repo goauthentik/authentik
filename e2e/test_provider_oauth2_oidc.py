@@ -1,10 +1,9 @@
 """test OAuth2 OpenID Provider flow"""
 from sys import platform
 from time import sleep
+from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -43,23 +42,20 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
     def setUp(self):
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
-        self.container = self.setup_client()
         super().setUp()
 
-    def setup_client(self) -> Container:
-        """Setup client grafana container which we test OIDC against"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
-            image="grafana/grafana:7.1.0",
-            detach=True,
-            network_mode="host",
-            auto_remove=True,
-            healthcheck=Healthcheck(
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        return {
+            "image": "grafana/grafana:7.1.0",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            environment={
+            "environment": {
                 "GF_AUTH_GENERIC_OAUTH_ENABLED": "true",
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_ID": self.client_id,
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
@@ -75,18 +71,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
-        )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            LOGGER.info("Container failed healthcheck")
-            sleep(1)
-
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
+        }
 
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""

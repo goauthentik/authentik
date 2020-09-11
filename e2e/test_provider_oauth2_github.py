@@ -155,7 +155,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             (
                 "form[action='/flows/b/default-provider-authorization-explicit-consent/'] "
                 "[type=submit]"
-            )
+            ),
         ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")

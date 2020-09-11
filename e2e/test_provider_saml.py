@@ -63,10 +63,6 @@ class TestProviderSAML(SeleniumTestCase):
             LOGGER.info("Container failed healthcheck")
             sleep(1)
 
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
-
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
