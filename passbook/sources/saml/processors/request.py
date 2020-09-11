@@ -20,6 +20,8 @@ from passbook.sources.saml.processors.constants import (
     NS_SAML_PROTOCOL,
 )
 
+SESSION_REQUEST_ID = "passbook_source_saml_request_id"
+
 
 class RequestProcessor:
     """SAML AuthnRequest Processor"""
@@ -37,6 +39,7 @@ class RequestProcessor:
         self.http_request = request
         self.relay_state = relay_state
         self.request_id = get_random_id()
+        self.http_request.session[SESSION_REQUEST_ID] = self.request_id
         self.issue_instant = get_time_string()
 
     def get_issuer(self) -> Element:

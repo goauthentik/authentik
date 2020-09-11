@@ -1,10 +1,9 @@
 """test SAML Source"""
 from sys import platform
 from time import sleep
+from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -74,41 +73,27 @@ Sm75WXsflOxuTn08LbgGc4s=
 class TestSourceSAML(SeleniumTestCase):
     """test SAML Source flow"""
 
-    def setUp(self):
-        self.container = self.setup_client()
-        super().setUp()
-
-    def setup_client(self) -> Container:
-        """Setup test IdP container"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
-            image="kristophjunge/test-saml-idp:1.15",
-            detach=True,
-            network_mode="host",
-            auto_remove=True,
-            healthcheck=Healthcheck(
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        return {
+            "image": "kristophjunge/test-saml-idp:1.15",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "healthcheck": Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            environment={
+            "environment": {
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
                 "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": (
                     f"{self.live_server_url}/source/saml/saml-idp-test/acs/"
                 ),
             },
-        )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            LOGGER.info("Container failed healthcheck")
-            sleep(1)
+        }
 
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
-        sleep(1)
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
@@ -160,7 +145,6 @@ class TestSourceSAML(SeleniumTestCase):
 
     def test_idp_post(self):
         """test SAML Source With post binding"""
-        sleep(1)
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
@@ -214,7 +198,6 @@ class TestSourceSAML(SeleniumTestCase):
 
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""
-        sleep(1)
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")

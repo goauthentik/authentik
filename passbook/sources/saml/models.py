@@ -53,6 +53,21 @@ class SAMLSource(Source):
         verbose_name=_("SSO URL"),
         help_text=_("URL that the initial Login request is sent to."),
     )
+    slo_url = models.URLField(
+        default=None,
+        blank=True,
+        null=True,
+        verbose_name=_("SLO URL"),
+        help_text=_("Optional URL if your IDP supports Single-Logout."),
+    )
+
+    allow_idp_initiated = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Allows authentication flows initiated by the IdP. This can be a security risk, "
+            "as no validation of the request ID is done."
+        ),
+    )
     name_id_policy = models.TextField(
         choices=SAMLNameIDPolicy.choices,
         default=SAMLNameIDPolicy.TRANSIENT,
@@ -64,14 +79,6 @@ class SAMLSource(Source):
         max_length=100,
         choices=SAMLBindingTypes.choices,
         default=SAMLBindingTypes.Redirect,
-    )
-
-    slo_url = models.URLField(
-        default=None,
-        blank=True,
-        null=True,
-        verbose_name=_("SLO URL"),
-        help_text=_("Optional URL if your IDP supports Single-Logout."),
     )
 
     temporary_user_delete_after = models.TextField(

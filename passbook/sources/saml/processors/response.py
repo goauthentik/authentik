@@ -18,6 +18,7 @@ from passbook.lib.utils.urls import redirect_with_qs
 from passbook.policies.utils import delete_none_keys
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 from passbook.sources.saml.exceptions import (
+    MismatchedRequestID,
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
@@ -29,6 +30,7 @@ from passbook.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
 )
+from passbook.sources.saml.processors.request import SESSION_REQUEST_ID
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
@@ -59,8 +61,9 @@ class ResponseProcessor:
         # Check if response is compressed, b64 decode it
         self._root_xml = decode_base64_and_inflate(raw_response)
         self._root = ElementTree.fromstring(self._root_xml)
-        # Verify signed XML
+
         self._verify_signed()
+        self._verify_request_id(request)
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
@@ -69,6 +72,16 @@ class ResponseProcessor:
             self._root_xml, x509_cert=self._source.signing_kp.certificate_data
         )
         LOGGER.debug("Successfully verified signautre")
+
+    def _verify_request_id(self, request: HttpRequest):
+        if self._source.allow_idp_initiated:
+            return
+        if SESSION_REQUEST_ID not in request.session or "ID" not in self._root.attrib:
+            raise MismatchedRequestID(
+                "Missing request ID and IdP-initiated Logins are not allowed"
+            )
+        if request.session[SESSION_REQUEST_ID] != self._root.attrib["ID"]:
+            raise MismatchedRequestID("Mismatched request ID")
 
     def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:
         """Handle a NameID with the Format of Transient. This is a bit more complex than other

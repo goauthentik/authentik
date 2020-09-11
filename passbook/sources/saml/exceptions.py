@@ -8,3 +8,7 @@ class MissingSAMLResponse(SentryIgnoredException):
 
 class UnsupportedNameIDFormat(SentryIgnoredException):
     """Exception raised when SAML Response contains NameID Format not supported."""
+
+
+class MismatchedRequestID(SentryIgnoredException):
+    """Exception raised when the returned request ID doesn't match the saved ID."""

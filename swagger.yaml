@@ -7061,6 +7061,18 @@ definitions:
         format: uri
         maxLength: 200
         minLength: 1
+      slo_url:
+        title: SLO URL
+        description: Optional URL if your IDP supports Single-Logout.
+        type: string
+        format: uri
+        maxLength: 200
+        x-nullable: true
+      allow_idp_initiated:
+        title: Allow idp initiated
+        description: Allows authentication flows initiated by the IdP. This can be
+          a security risk, as no validation of the request ID is done.
+        type: boolean
       name_id_policy:
         title: Name id policy
         description: NameID Policy sent to the IdP. Can be unset, in which case no
@@ -7079,13 +7091,6 @@ definitions:
           - REDIRECT
           - POST
           - POST_AUTO
-      slo_url:
-        title: SLO URL
-        description: Optional URL if your IDP supports Single-Logout.
-        type: string
-        format: uri
-        maxLength: 200
-        x-nullable: true
       temporary_user_delete_after:
         title: Delete temporary users after
         description: "Time offset when temporary users should be deleted. This only\
