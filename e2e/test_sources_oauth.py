@@ -128,6 +128,7 @@ class TestSourceOAuth(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
+        self.wait.until(ec.presence_of_element_located((By.NAME, "username")))
         # At this point we've been redirected back
         # and we're asked for the username
         self.driver.find_element(By.NAME, "username").click()
