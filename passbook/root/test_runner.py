@@ -11,6 +11,7 @@ class PytestTestRunner:
         self.keepdb = keepdb
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
+        settings.MIDDLEWARE.remove("debug_toolbar.middleware.DebugToolbarMiddleware")
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.
@@ -19,7 +20,7 @@ class PytestTestRunner:
         """
         import pytest
 
-        argv = ["--junitxml=unittest.xml"]
+        argv = []
         if self.verbosity == 0:
             argv.append("--quiet")
         if self.verbosity == 2:

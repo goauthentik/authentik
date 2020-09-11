@@ -29,7 +29,7 @@ class TestFlowsEnroll(SeleniumTestCase):
             "network_mode": "host",
             "auto_remove": True,
             "healthcheck": Healthcheck(
-                test=["CMD", "wget", "-s", "http://localhost:8025"],
+                test=["CMD", "wget", "--spider", "http://localhost:8025"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
