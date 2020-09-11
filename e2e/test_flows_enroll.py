@@ -1,15 +1,12 @@
 """Test Enroll flow"""
 from sys import platform
-from time import sleep
+from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
 from django.test import override_settings
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from structlog import get_logger
 
 from e2e.utils import USER, SeleniumTestCase
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -20,42 +17,23 @@ from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
 
-LOGGER = get_logger()
-
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsEnroll(SeleniumTestCase):
     """Test Enroll flow"""
 
-    def setUp(self):
-        self.container = self.setup_client()
-        super().setUp()
-
-    def setup_client(self) -> Container:
-        """Setup test IdP container"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
-            image="mailhog/mailhog:v1.0.1",
-            detach=True,
-            network_mode="host",
-            auto_remove=True,
-            healthcheck=Healthcheck(
-                test=["CMD", "wget", "--spider", "http://localhost:8025"],
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        return {
+            "image": "mailhog/mailhog:v1.0.1",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "healthcheck": Healthcheck(
+                test=["CMD", "wget", "-s", "http://localhost:8025"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-        )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            LOGGER.info("Container failed healthcheck")
-            sleep(1)
-
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
+        }
 
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
@@ -223,21 +201,25 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_name").send_keys("some name")
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
-        sleep(3)
+        # Wait for the success message so we know the email is sent
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-form > p"))
+        )
 
         # Open Mailhog
         self.driver.get("http://localhost:8025")
 
         # Click on first message
+        self.wait.until(
+            ec.presence_of_element_located((By.CLASS_NAME, "msglist-message"))
+        )
         self.driver.find_element(By.CLASS_NAME, "msglist-message").click()
-        sleep(3)
         self.driver.switch_to.frame(self.driver.find_element(By.CLASS_NAME, "tab-pane"))
         self.driver.find_element(By.ID, "confirm").click()
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         # We're now logged in
-        sleep(3)
         self.wait.until(
             ec.presence_of_element_located(
                 (By.XPATH, "//a[contains(@href, '/-/user/')]")

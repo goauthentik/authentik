@@ -1,14 +1,11 @@
 """test OAuth Provider flow"""
 from sys import platform
-from time import sleep
+from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from structlog import get_logger
 
 from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import Application
@@ -21,8 +18,6 @@ from passbook.providers.oauth2.generators import (
 )
 from passbook.providers.oauth2.models import ClientTypes, OAuth2Provider, ResponseTypes
 
-LOGGER = get_logger()
-
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2Github(SeleniumTestCase):
@@ -31,23 +26,21 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     def setUp(self):
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
-        self.container = self.setup_client()
         super().setUp()
 
-    def setup_client(self) -> Container:
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
         """Setup client grafana container which we test OAuth against"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
-            image="grafana/grafana:7.1.0",
-            detach=True,
-            network_mode="host",
-            auto_remove=True,
-            healthcheck=Healthcheck(
+        return {
+            "image": "grafana/grafana:7.1.0",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 100 * 1000000,
                 start_period=1 * 100 * 1000000,
             ),
-            environment={
+            "environment": {
                 "GF_AUTH_GITHUB_ENABLED": "true",
                 "GF_AUTH_GITHUB_ALLOW_SIGN_UP": "true",
                 "GF_AUTH_GITHUB_CLIENT_ID": self.client_id,
@@ -64,22 +57,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
-        )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            LOGGER.info("Container failed healthcheck")
-            sleep(1)
-
-    def tearDown(self):
-        self.container.kill()
-        super().tearDown()
+        }
 
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
-        sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-implicit-consent"
@@ -132,7 +113,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
     def test_authorization_consent_explicit(self):
         """test OAuth Provider flow (default authorization flow with explicit consent)"""
-        sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-explicit-consent"
@@ -170,8 +150,13 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/ul/li[1]"
             ).text,
         )
-        sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
+        self.driver.find_element(
+            By.CSS_SELECTOR,
+            (
+                "form[action='/flows/b/default-provider-authorization-explicit-consent/'] "
+                "[type=submit]"
+            )
+        ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
@@ -200,7 +185,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
     def test_denied(self):
         """test OAuth Provider flow (default authorization flow, denied)"""
-        sleep(1)
         # Bootstrap all needed objects
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-explicit-consent"

@@ -15,7 +15,7 @@ admin.site.login = RedirectView.as_view(
     pattern_name="passbook_flows:default-authentication"
 )
 admin.site.logout = RedirectView.as_view(
-    pattern_name="passbook_flows:default-invalidate"
+    pattern_name="passbook_flows:default-invalidation"
 )
 
 handler400 = error.BadRequestView.as_view()

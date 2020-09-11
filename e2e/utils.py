@@ -4,13 +4,16 @@ from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
 from os import environ, makedirs
-from time import time
+from time import sleep, time
+from typing import Any, Dict, Optional
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
 from django.shortcuts import reverse
+from docker import DockerClient, from_env
+from docker.models.containers import Container
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -30,15 +33,35 @@ def USER() -> User:  # noqa
 class SeleniumTestCase(StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
+    container: Optional[Container] = None
+
     def setUp(self):
         super().setUp()
         makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
-        self.driver.implicitly_wait(30)
-        self.wait = WebDriverWait(self.driver, 50)
+        self.driver.implicitly_wait(10)
+        self.wait = WebDriverWait(self.driver, 30)
         self.apply_default_data()
         self.logger = get_logger()
+        if specs := self.get_container_specs():
+            self.container = self._start_container(specs)
+
+    def _start_container(self, specs: Dict[str, Any]) -> Container:
+        client: DockerClient = from_env()
+        container = client.containers.run(**specs)
+        while True:
+            container.reload()
+            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
+            if status == "healthy":
+                return container
+            self.logger.info("Container failed healthcheck")
+            sleep(1)
+
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        """Optionally get container specs which will launched on setup, wait for the container to
+        be healthy, and deleted again on tearDown"""
+        return None
 
     def _get_driver(self) -> WebDriver:
         return webdriver.Remote(
@@ -57,6 +80,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.logger.warning(
                 line["message"], source=line["source"], level=line["level"]
             )
+        if self.container:
+            self.container.kill()
         self.driver.quit()
         super().tearDown()
 
