@@ -4,6 +4,7 @@ from sys import platform
 from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
+from django.test import override_settings
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -153,6 +154,39 @@ class TestSourceOAuth(SeleniumTestCase):
         self.assertEqual(
             self.driver.find_element(By.ID, "id_email").get_attribute("value"),
             "admin@example.com",
+        )
+
+    @override_settings(SESSION_COOKIE_SAMESITE="strict")
+    def test_oauth_samesite_strict(self):
+        """test OAuth Source With SameSite set to strict
+        (=will fail because session is not carried over)"""
+        self.create_objects()
+        self.driver.get(self.live_server_url)
+
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+            )
+        )
+        self.driver.find_element(
+            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+        ).click()
+
+        # Now we should be at the IDP, wait for the login field
+        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
+        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
+        self.driver.find_element(By.ID, "password").send_keys("password")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
+        )
+        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, ".pf-c-alert__title").text,
+            "Authentication Failed.",
         )
 
     def test_oauth_enroll_auth(self):
