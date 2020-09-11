@@ -10,7 +10,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django.views.generic.detail import DetailView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin

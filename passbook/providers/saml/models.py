@@ -5,7 +5,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
 
 from passbook.core.models import PropertyMapping, Provider

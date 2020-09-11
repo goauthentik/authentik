@@ -1,7 +1,7 @@
 """passbook Token administration"""
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
