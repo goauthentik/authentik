@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import importlib
 import os
-import sys
 from json import dumps
 
 import structlog
@@ -372,15 +371,10 @@ LOGGING = {
 }
 
 TEST = False
-TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"
+TEST_RUNNER = "passbook.root.test_runner.PytestTestRunner"
 LOG_LEVEL = CONFIG.y("log_level").upper()
 
 TEST_OUTPUT_FILE_NAME = "unittest.xml"
-
-if len(sys.argv) >= 2 and sys.argv[1] == "test":
-    LOG_LEVEL = "DEBUG"
-    TEST = True
-    CELERY_TASK_ALWAYS_EAGER = True
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
