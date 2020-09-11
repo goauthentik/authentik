@@ -43,7 +43,6 @@ DEBUG = CONFIG.y_bool("debug")
 INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_REFERRER_POLICY = "same-origin"
 
 LOGIN_URL = "passbook_flows:default-authentication"
 
@@ -156,7 +155,7 @@ DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_SAMESITE = "strict"
+SESSION_COOKIE_SAMESITE = "lax"
 
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
@@ -376,7 +375,6 @@ TEST = False
 TEST_RUNNER = "passbook.root.test_runner.PytestTestRunner"
 LOG_LEVEL = CONFIG.y("log_level").upper()
 
-TEST_OUTPUT_FILE_NAME = "unittest.xml"
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
@@ -427,7 +425,6 @@ for _app in INSTALLED_APPS:
             pass
 
 if DEBUG:
-    SESSION_COOKIE_SAMESITE = None
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
