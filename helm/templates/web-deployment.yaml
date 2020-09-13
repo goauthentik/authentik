@@ -25,7 +25,6 @@ spec:
       initContainers:
         - name: passbook-database-migrations
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Always
           args: [migrate]
           envFrom:
             - configMapRef:
@@ -50,7 +49,6 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Always
           args: [server]
           envFrom:
             - configMapRef:
