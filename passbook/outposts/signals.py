@@ -1,31 +1,31 @@
 """passbook outpost signals"""
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.db.models import Model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from structlog import get_logger
 
+from passbook.lib.utils.reflection import class_to_path
 from passbook.outposts.models import Outpost, OutpostModel
+from passbook.outposts.tasks import outpost_send_update
 
 LOGGER = get_logger()
 
 
 @receiver(post_save, sender=Outpost)
 # pylint: disable=unused-argument
-def ensure_user_and_token(sender, instance, **_):
+def ensure_user_and_token(sender, instance: Model, **_):
     """Ensure that token is created/updated on save"""
     _ = instance.token
 
 
 @receiver(post_save)
 # pylint: disable=unused-argument
-def post_save_update(sender, instance, **_):
+def post_save_update(sender, instance: Model, **_):
     """If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
     we send a message down the relevant OutpostModels WS connection to trigger an update"""
     if isinstance(instance, OutpostModel):
         LOGGER.debug("triggering outpost update from outpostmodel", instance=instance)
-        _send_update(instance)
+        outpost_send_update.delay(class_to_path(instance.__class__), instance.pk)
         return
 
     for field in instance._meta.get_fields():
@@ -46,13 +46,4 @@ def post_save_update(sender, instance, **_):
         # Because the Outpost Model has an M2M to Provider,
         # we have to iterate over the entire QS
         for reverse in getattr(instance, field_name).all():
-            _send_update(reverse)
-
-
-def _send_update(outpost_model: Model):
-    """Send update trigger for each channel of an outpost model"""
-    for outpost in outpost_model.outpost_set.all():
-        channel_layer = get_channel_layer()
-        for channel in outpost.channels:
-            LOGGER.debug("sending update", channel=channel)
-            async_to_sync(channel_layer.send)(channel, {"type": "event.update"})
+            outpost_send_update(class_to_path(reverse.__class__), reverse.pk)

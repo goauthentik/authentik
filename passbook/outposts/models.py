@@ -9,6 +9,7 @@ from dacite import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
+from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import assign_perm
 
@@ -30,12 +31,16 @@ class OutpostConfig:
     )
 
 
-class OutpostModel:
+class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
     def get_required_objects(self) -> Iterable[models.Model]:
         """Return a list of all required objects"""
         return [self]
+
+    class Meta:
+
+        abstract = True
 
 
 class OutpostType(models.TextChoices):
