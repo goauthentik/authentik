@@ -76,11 +76,14 @@ class ResponseProcessor:
     def _verify_request_id(self, request: HttpRequest):
         if self._source.allow_idp_initiated:
             return
-        if SESSION_REQUEST_ID not in request.session or "ID" not in self._root.attrib:
+        if (
+            SESSION_REQUEST_ID not in request.session
+            or "InResponseTo" not in self._root.attrib
+        ):
             raise MismatchedRequestID(
-                "Missing request ID and IdP-initiated Logins are not allowed"
+                "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if request.session[SESSION_REQUEST_ID] != self._root.attrib["ID"]:
+        if request.session[SESSION_REQUEST_ID] != self._root.attrib["InResponseTo"]:
             raise MismatchedRequestID("Mismatched request ID")
 
     def _handle_name_id_transient(self, request: HttpRequest) -> HttpResponse:
