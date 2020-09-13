@@ -1,6 +1,7 @@
 """test OAuth Source"""
 from os.path import abspath
 from sys import platform
+from time import sleep
 from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
@@ -200,10 +201,11 @@ class TestSourceOAuth(SeleniumTestCase):
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
+        sleep(1)
         self.driver.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
-
+        sleep(1)
         # Now we should be at the IDP, wait for the login field
         self.wait.until(ec.presence_of_element_located((By.ID, "login")))
         self.driver.find_element(By.ID, "login").send_keys("admin@example.com")

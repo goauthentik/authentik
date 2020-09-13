@@ -2,6 +2,8 @@
 from typing import TYPE_CHECKING, Dict
 
 from defusedxml import ElementTree
+from django.core.cache import cache
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
 from signxml import XMLVerifier
 from structlog import get_logger
@@ -37,6 +39,8 @@ from passbook.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 LOGGER = get_logger()
 if TYPE_CHECKING:
     from xml.etree.ElementTree import Element  # nosec
+
+CACHE_SEEN_REQUEST_ID = "passbook_saml_seen_ids_%s"
 DEFAULT_BACKEND = "django.contrib.auth.backends.ModelBackend"
 
 
@@ -75,6 +79,13 @@ class ResponseProcessor:
 
     def _verify_request_id(self, request: HttpRequest):
         if self._source.allow_idp_initiated:
+            # If IdP-initiated SSO flows are enabled, we want to cache the Response ID
+            # somewhat mitigate replay attacks
+            seen_ids = cache.get(CACHE_SEEN_REQUEST_ID % self._source.pk, [])
+            if self._root.attrib["ID"] in seen_ids:
+                raise SuspiciousOperation("Replay attack detected")
+            seen_ids.append(self._root.attrib["ID"])
+            cache.set(CACHE_SEEN_REQUEST_ID % self._source.pk, seen_ids)
             return
         if (
             SESSION_REQUEST_ID not in request.session
