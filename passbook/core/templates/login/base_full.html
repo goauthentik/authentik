@@ -23,8 +23,10 @@
     <div class="pf-c-login__container">
         <header class="pf-c-login__header">
             <div class="pf-c-brand pb-brand">
-                <img src="{% static 'passbook/logo.svg' %}" alt="passbook icon" />
-                <p>passbook</p>
+                <img src="{{ config.passbook.branding.logo }}" alt="passbook icon" />
+                {% if config.passbook.branding.title_show %}
+                <p>{{ config.passbook.branding.title }}</p>
+                {% endif %}
             </div>
         </header>
         {% block main_container %}
@@ -49,6 +51,13 @@
                     <a href="{{ link.href }}">{{ link.name }}</a>
                 </li>
                 {% endfor %}
+                {% if config.passbook.branding.title != "passbook" %}
+                <li>
+                    <a href="https://github.com/beryju/passbook">
+                        {% trans 'Powered by passbook' %}
+                    </a>
+                </li>
+                {% endif %}
             </ul>
         </footer>
     </div>

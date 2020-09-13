@@ -21,8 +21,10 @@
             </div>
             <a class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand pb-brand">
-                    <img src="{% static 'passbook/logo.svg' %}" alt="passbook icon" />
-                    <small><small>passbook</small></small>
+                    <img src="{{ config.passbook.branding.logo }}" alt="passbook icon">
+                    {% if config.passbook.branding.title_show %}
+                    <small><small>{{ config.passbook.branding.title }}</small></small>
+                    {% endif %}
                 </div>
             </a>
         </div>
