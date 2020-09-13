@@ -68,7 +68,7 @@ class PolicyEngine:
 
     def _check_policy_type(self, policy: Policy):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
-        # policy_type = type(policy)
+        # pyright: reportGeneralTypeIssues=false
         if policy.__class__ == Policy:
             raise TypeError(f"Policy '{policy}' is root type")
 
