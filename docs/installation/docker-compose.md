@@ -16,7 +16,7 @@ wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
 # Optionally enable Error-reporting
 # export PASSBOOK_ERROR_REPORTING=true
 # Optionally deploy a different version
-# export PASSBOOK_TAG=0.10.0-rc6
+# export PASSBOOK_TAG=0.10.0-stable
 # If this is a productive installation, set a different PostgreSQL Password
 # export PG_PASS=$(pwgen 40 1)
 docker-compose pull

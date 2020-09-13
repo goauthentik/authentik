@@ -6,15 +6,17 @@
 
 <html lang="en">
     <head>
+        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff2' %}" as="font" type="font/woff2">
+        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff' %}" as="font" type="font/woff">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>{% block title %}{% trans title|default:"passbook" %}{% endblock %}</title>
+        <title>{% block title %}{% trans title|default:config.passbook.branding.title %}{% endblock %}</title>
         <link rel="icon" type="image/png" href="{% static 'passbook/logo.png' %}">
         <link rel="shortcut icon" type="image/png" href="{% static 'passbook/logo.png' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'passbook/pf.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'passbook/passbook.css' %}">
         {% block head %}
         {% endblock %}
     </head>
@@ -35,6 +37,6 @@
         {% endblock %}
         {% block scripts %}
         {% endblock %}
-        <script src="{% static 'passbook/pf.js' %}"></script>
+        <script src="{% static 'passbook/passbook.js' %}"></script>
     </body>
 </html>

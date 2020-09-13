@@ -185,6 +185,9 @@ class TestSourceOAuth(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-alert__title"))
+        )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, ".pf-c-alert__title").text,
             "Authentication Failed.",

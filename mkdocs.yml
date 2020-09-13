@@ -30,7 +30,10 @@ nav:
     - OAuth2: providers/oauth2.md
     - SAML: providers/saml.md
     - Proxy: providers/proxy.md
-  - Outposts: outposts/outposts.md
+  - Outposts:
+    - Overview: outposts/outposts.md
+    - Deploy on docker-compose: outposts/deploy-docker-compose.md
+    - Deploy on Kubernetes: outposts/deploy-kubernetes.md
   - Expressions:
     - Overview: expressions/index.md
     - Reference:

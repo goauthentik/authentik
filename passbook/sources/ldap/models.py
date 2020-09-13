@@ -1,20 +1,20 @@
 """passbook LDAP Models"""
 from typing import Optional, Type
 
-from django.core.validators import URLValidator
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from ldap3 import Connection, Server
 
 from passbook.core.models import Group, PropertyMapping, Source
+from passbook.lib.models import DomainlessURLValidator
 
 
 class LDAPSource(Source):
     """Federate LDAP Directory with passbook, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
-        validators=[URLValidator(schemes=["ldap", "ldaps"])],
+        validators=[DomainlessURLValidator(schemes=["ldap", "ldaps"])],
         verbose_name=_("Server URI"),
     )
     bind_cn = models.TextField(verbose_name=_("Bind CN"))

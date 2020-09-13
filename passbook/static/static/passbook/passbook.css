@@ -1,3 +1,31 @@
+@font-face {
+    font-family: 'DIN 1451 Std';
+    src: url('fonts/DINEngschriftStd.woff2') format('woff2'),
+        url('fonts/DINEngschriftStd.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.pb-brand {
+    font-family: "DIN 1451 Std";
+    font-size: 4em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: .5em;
+    color: var(--pf-global--Color--light-200);
+}
+
+.pb-brand > a:hover {
+    text-decoration: none;
+}
+
+.pb-brand > img {
+    max-height: 80px;
+    margin-right: .5em;
+}
+
 /* Fix patternfly sidebar and header with open Modal */
 .pf-c-page__sidebar {
     z-index: 0;

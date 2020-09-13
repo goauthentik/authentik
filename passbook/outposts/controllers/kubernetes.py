@@ -1,4 +1,5 @@
 """Kubernetes deployment controller"""
+from base64 import b64encode
 from io import StringIO
 
 from kubernetes.client import (
@@ -24,6 +25,11 @@ from passbook import __version__
 from passbook.outposts.controllers.base import BaseController
 
 
+def b64encode_str(input_string: str) -> str:
+    """base64 encode string"""
+    return b64encode(input_string.encode()).decode()
+
+
 class KubernetesController(BaseController):
     """Manage deployment of outpost in kubernetes"""
 
@@ -37,9 +43,9 @@ class KubernetesController(BaseController):
         with StringIO() as _str:
             dump_all(
                 [
-                    self.get_deployment_secret(),
-                    self.get_deployment(),
-                    self.get_service(),
+                    self.get_deployment_secret().to_dict(),
+                    self.get_deployment().to_dict(),
+                    self.get_service().to_dict(),
                 ],
                 stream=_str,
                 default_flow_style=False,
@@ -63,15 +69,18 @@ class KubernetesController(BaseController):
     def get_deployment_secret(self) -> V1Secret:
         """Get secret with token and passbook host"""
         return V1Secret(
+            api_version="v1",
+            kind="secret",
+            type="Opaque",
             metadata=self.get_object_meta(
                 name=f"passbook-outpost-{self.outpost.name}-api"
             ),
             data={
-                "passbook_host": self.outpost.config.passbook_host,
-                "passbook_host_insecure": str(
-                    self.outpost.config.passbook_host_insecure
+                "passbook_host": b64encode_str(self.outpost.config.passbook_host),
+                "passbook_host_insecure": b64encode_str(
+                    str(self.outpost.config.passbook_host_insecure)
                 ),
-                "token": self.outpost.token.token_uuid.hex,
+                "token": b64encode_str(self.outpost.token.token_uuid.hex),
             },
         )
 
@@ -82,6 +91,8 @@ class KubernetesController(BaseController):
         for port_name, port in self.deployment_ports.items():
             ports.append(V1ServicePort(name=port_name, port=port))
         return V1Service(
+            api_version="v1",
+            kind="service",
             metadata=meta,
             spec=V1ServiceSpec(ports=ports, selector=meta.labels, type="ClusterIP"),
         )
@@ -94,6 +105,8 @@ class KubernetesController(BaseController):
             container_ports.append(V1ContainerPort(container_port=port, name=port_name))
         meta = self.get_object_meta(name=f"passbook-outpost-{self.outpost.name}")
         return V1Deployment(
+            api_version="apps/v1",
+            kind="deployment",
             metadata=meta,
             spec=V1DeploymentSpec(
                 replicas=1,

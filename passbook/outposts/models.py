@@ -1,7 +1,6 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from json import dumps, loads
 from typing import Iterable, Optional
 from uuid import uuid4
 
@@ -84,12 +83,12 @@ class Outpost(models.Model):
     @property
     def config(self) -> OutpostConfig:
         """Load config as OutpostConfig object"""
-        return from_dict(OutpostConfig, loads(self._config))
+        return from_dict(OutpostConfig, self._config)
 
     @config.setter
     def config(self, value):
         """Dump config into json"""
-        self._config = dumps(asdict(value))
+        self._config = asdict(value)
 
     @property
     def health_cache_key(self) -> str:

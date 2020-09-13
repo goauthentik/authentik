@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.views import View
 from structlog import get_logger
 
-from passbook.core.models import Application, Token
+from passbook.core.models import Application
 from passbook.flows.models import in_memory_stage
 from passbook.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -95,7 +95,7 @@ class OAuthAuthorizationParams:
         elif response_type in [
             ResponseTypes.ID_TOKEN,
             ResponseTypes.ID_TOKEN_TOKEN,
-            ResponseTypes.TOKEN,
+            ResponseTypes.CODE_TOKEN,
         ]:
             grant_type = GrantTypes.IMPLICIT
         elif response_type in [
@@ -248,28 +248,26 @@ class OAuthFulfillmentStage(StageView):
                     str(self.params.state) if self.params.state else ""
                 ]
             elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                token: Token = self.provider.create_token(
+                token = self.provider.create_refresh_token(
                     user=self.request.user, scope=self.params.scope,
                 )
 
                 # Check if response_type must include access_token in the response.
                 if self.params.response_type in [
-                    ResponseTypes.id_token_token,
-                    ResponseTypes.code_id_token_token,
-                    ResponseTypes.token,
-                    ResponseTypes.code_token,
+                    ResponseTypes.ID_TOKEN_TOKEN,
+                    ResponseTypes.CODE_ID_TOKEN_TOKEN,
+                    ResponseTypes.ID_TOKEN,
+                    ResponseTypes.CODE_TOKEN,
                 ]:
                     query_fragment["access_token"] = token.access_token
 
                 # We don't need id_token if it's an OAuth2 request.
                 if SCOPE_OPENID in self.params.scope:
                     id_token = token.create_id_token(
-                        user=self.request.user,
-                        request=self.request,
-                        scope=self.params.scope,
+                        user=self.request.user, request=self.request,
                     )
                     id_token.nonce = self.params.nonce
-                    id_token.scope = self.params.scope
+
                     # Include at_hash when access_token is being returned.
                     if "access_token" in query_fragment:
                         id_token.at_hash = token.at_hash
@@ -283,8 +281,6 @@ class OAuthFulfillmentStage(StageView):
                     ]:
                         query_fragment["id_token"] = id_token.encode(self.provider)
                     token.id_token = id_token
-                else:
-                    token.id_token = {}
 
                 # Store the token.
                 token.save()

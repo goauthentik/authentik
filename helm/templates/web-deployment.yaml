@@ -22,10 +22,27 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         k8s.passbook.beryju.org/component: web
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - {{ include "passbook.name" . }}
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: k8s.passbook.beryju.org/component
+                operator: In
+                values:
+                - web
+            topologyKey: "kubernetes.io/hostname"
       initContainers:
         - name: passbook-database-migrations
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Always
           args: [migrate]
           envFrom:
             - configMapRef:
@@ -50,7 +67,6 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: Always
           args: [server]
           envFrom:
             - configMapRef:

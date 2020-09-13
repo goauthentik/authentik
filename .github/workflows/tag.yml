@@ -21,7 +21,7 @@ jobs:
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test"
+          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test passbook"
       - name: Install Helm
         run: |
           apt update && apt install -y curl
@@ -31,7 +31,7 @@ jobs:
           helm dependency update helm/
           helm package helm/
           mv passbook-*.tgz passbook-chart.tgz
-      - name: Extract verison number
+      - name: Extract version number
         id: get_version
         uses: actions/github-script@0.2.0
         with:

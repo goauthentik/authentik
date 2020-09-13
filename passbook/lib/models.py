@@ -1,5 +1,9 @@
 """Generic models"""
+import re
+
+from django.core.validators import URLValidator
 from django.db import models
+from django.utils.regex_helper import _lazy_re_compile
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 
@@ -48,3 +52,21 @@ class InheritanceForeignKey(models.ForeignKey):
     """Custom ForeignKey that uses InheritanceForwardManyToOneDescriptor"""
 
     forward_related_accessor_class = InheritanceForwardManyToOneDescriptor
+
+
+class DomainlessURLValidator(URLValidator):
+    """Subclass of URLValidator which doesn't check the domain
+    (to allow hostnames without domain)"""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.host_re = "(" + self.hostname_re + self.domain_re + "|localhost)"
+        self.regex = _lazy_re_compile(
+            r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
+            r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
+            r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
+            r"(?::\d{2,5})?"  # port
+            r"(?:[/?#][^\s]*)?"  # resource path
+            r"\Z",
+            re.IGNORECASE,
+        )

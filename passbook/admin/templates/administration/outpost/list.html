@@ -69,6 +69,7 @@
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
                         <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <a href="https://passbook.beryju.org/outposts/outposts/#deploy">{% trans 'Deploy' %}</a>
                     </td>
                 </tr>
                 {% endfor %}

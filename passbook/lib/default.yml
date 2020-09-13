@@ -21,6 +21,10 @@ error_reporting:
   send_pii: false
 
 passbook:
+  branding:
+    title: passbook
+    title_show: true
+    logo: /static/passbook/logo.svg
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation
