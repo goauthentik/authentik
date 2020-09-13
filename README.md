@@ -1,4 +1,4 @@
-<img src="docs/images/logo.svg" height="50" alt="passbook logo"><img src="passbook/static/static/passbook/brand_inverted.svg" height="50" alt="passbook">
+<img src="docs/images/logo.svg" height="50" alt="passbook logo"><img src="docs/images/brand_inverted.svg" height="50" alt="passbook">
 
 [![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/passbook/1?style=flat-square)](https://dev.azure.com/beryjuorg/passbook/_build?definitionId=1)
 ![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/passbook/1?compact_message&style=flat-square)
