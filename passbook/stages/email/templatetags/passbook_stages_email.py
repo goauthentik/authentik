@@ -1,4 +1,5 @@
 """passbook core inlining template tags"""
+from base64 import b64encode
 from pathlib import Path
 
 from django import template
@@ -9,16 +10,23 @@ register = template.Library()
 
 @register.simple_tag()
 def inline_static_ascii(path: str) -> str:
-    """Inline static asset. Doesn't check file contents, plain text is assumed"""
+    """Inline static asset. Doesn't check file contents, plain text is assumed.
+    If no file could be found, original path is returned"""
     result = finders.find(path)
-    with open(result) as _file:
-        return _file.read()
+    if result:
+        with open(result) as _file:
+            return _file.read()
+    return path
 
 
 @register.simple_tag()
 def inline_static_binary(path: str) -> str:
-    """Inline static asset. Uses file extension for base64 block"""
+    """Inline static asset. Uses file extension for base64 block. If no file could be found,
+    path is returned."""
     result = finders.find(path)
     suffix = Path(path).suffix
-    with open(result) as _file:
-        return f"data:image/{suffix};base64," + _file.read()
+    if result:
+        with open(result) as _file:
+            b64content = b64encode(_file.read())
+            return f"data:image/{suffix};base64,{b64content.decode('utf-8')}"
+    return path
