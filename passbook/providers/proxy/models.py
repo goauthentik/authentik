@@ -4,12 +4,12 @@ from random import SystemRandom
 from typing import Iterable, Type
 from urllib.parse import urljoin
 
-from django.core.validators import URLValidator
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
 
 from passbook.crypto.models import CertificateKeyPair
+from passbook.lib.models import DomainlessURLValidator
 from passbook.outposts.models import OutpostModel
 from passbook.providers.oauth2.constants import (
     SCOPE_OPENID,
@@ -41,10 +41,10 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     Protocols by using a Reverse-Proxy."""
 
     internal_host = models.TextField(
-        validators=[URLValidator(schemes=("http", "https"))]
+        validators=[DomainlessURLValidator(schemes=("http", "https"))]
     )
     external_host = models.TextField(
-        validators=[URLValidator(schemes=("http", "https"))]
+        validators=[DomainlessURLValidator(schemes=("http", "https"))]
     )
 
     cookie_secret = models.TextField(default=get_cookie_secret)
