@@ -11,7 +11,7 @@ This installation automatically applies database migrations on startup. After th
 image:
   name: beryju/passbook
   name_static: beryju/passbook-static
-  tag: 0.9.0-stable
+  tag: 0.10.0-rc6
 
 nameOverride: ""
 
