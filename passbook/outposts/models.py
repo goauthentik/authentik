@@ -104,24 +104,21 @@ class Outpost(models.Model):
             return datetime.fromtimestamp(value)
         return None
 
-    def _create_user(self) -> User:
-        """Create user and assign permissions for all required objects"""
-        user: User = User.objects.create(username=f"pb-outpost-{self.uuid.hex}")
-        user.set_unusable_password()
-        user.save()
+    @property
+    def user(self) -> User:
+        """Get/create user with access to all required objects"""
+        users = User.objects.filter(username=f"pb-outpost-{self.uuid.hex}")
+        if not users.exists():
+            user: User = User.objects.create(username=f"pb-outpost-{self.uuid.hex}")
+            user.set_unusable_password()
+            user.save()
+        else:
+            user = users.first()
         for model in self.get_required_objects():
             assign_perm(
                 f"{model._meta.app_label}.view_{model._meta.model_name}", user, model
             )
         return user
-
-    @property
-    def user(self) -> User:
-        """Get/create user with access to all required objects"""
-        user = User.objects.filter(username=f"pb-outpost-{self.uuid.hex}")
-        if user.exists():
-            return user.first()
-        return self._create_user()
 
     @property
     def token(self) -> Token:

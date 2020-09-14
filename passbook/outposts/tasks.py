@@ -41,7 +41,7 @@ def outpost_send_update(model_class: str, model_pk: Any):
     """Send outpost update to all registered outposts, irregardless to which passbook
     instance they are connected"""
     model = path_to_class(model_class)
-    outpost_model: OutpostModel = model.objects.get(model_pk)
+    outpost_model: OutpostModel = model.objects.get(pk=model_pk)
     for outpost in outpost_model.outpost_set.all():
         channel_layer = get_channel_layer()
         for channel in outpost.channels:
