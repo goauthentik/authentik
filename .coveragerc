@@ -1,5 +1,6 @@
 [run]
 source = passbook
+relative_files = true
 omit =
     */asgi.py
     manage.py
