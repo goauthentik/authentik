@@ -193,7 +193,12 @@ ASGI_APPLICATION = "passbook.root.routing.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [(CONFIG.y("redis.host"), 6379)]},
+        "CONFIG": {
+            "hosts": [
+                f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}:6379"
+                f"/{CONFIG.y('redis.ws_db')}"
+            ],
+        },
     },
 }
 
