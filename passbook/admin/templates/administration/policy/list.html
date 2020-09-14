@@ -55,7 +55,7 @@
                     <th role="columnheader">
                         <div>
                             <div>{{ policy.name }}</div>
-                            {% if not policy.bindings.exists %}
+                            {% if not policy.bindings.exists and not policy.promptstage_set.exists %}
                             <i class="pf-icon pf-icon-warning-triangle"></i>
                             <small>{% trans 'Warning: Policy is not assigned.' %}</small>
                             {% else %}

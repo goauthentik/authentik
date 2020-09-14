@@ -58,7 +58,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
             application=None
         )
         kwargs["policies_without_binding"] = len(
-            Policy.objects.filter(bindings__isnull=True)
+            Policy.objects.filter(bindings__isnull=True, promptstage__isnull=True)
         )
         kwargs["cached_policies"] = len(cache.keys("policy_*"))
         kwargs["cached_flows"] = len(cache.keys("flow_*"))
