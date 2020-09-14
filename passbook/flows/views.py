@@ -54,7 +54,10 @@ class FlowExecutorView(View):
                 LOGGER.debug("f(exec): Redirecting to next on fail")
                 return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
-        return bad_request_message(self.request, message)
+        return to_stage_response(
+            self.request,
+            bad_request_message(self.request, message, template="error/embedded.html"),
+        )
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session

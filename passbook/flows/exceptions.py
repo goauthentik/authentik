@@ -2,8 +2,8 @@
 
 
 class FlowNonApplicableException(BaseException):
-    """Exception raised when a Flow does not apply to a user."""
+    """Flow does not apply to current user (denied by policy)."""
 
 
 class EmptyFlowException(BaseException):
-    """Exception raised when a Flow Plan is empty"""
+    """Flow has no stages."""
