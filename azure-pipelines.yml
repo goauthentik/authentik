@@ -225,11 +225,9 @@ stages:
               script: |
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
-                find .
                 pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
-                find .
           - task: PublishCodeCoverageResults@1
             inputs:
               codeCoverageTool: 'Cobertura'
