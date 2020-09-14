@@ -50,7 +50,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     cookie_secret = models.TextField(default=get_cookie_secret)
 
     certificate = models.ForeignKey(
-        CertificateKeyPair, on_delete=models.SET_NULL, null=True
+        CertificateKeyPair, on_delete=models.SET_NULL, null=True, blank=True,
     )
 
     def form(self) -> Type[ModelForm]:

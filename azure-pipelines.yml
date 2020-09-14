@@ -139,7 +139,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                pipenv run coverage run ./manage.py test passbook
+                pipenv run coverage run ./manage.py test passbook -v 3
                 mkdir output-unittest
                 mv unittest.xml output-unittest/unittest.xml
                 mv .coverage output-unittest/coverage
@@ -181,7 +181,7 @@ stages:
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
-              script: pipenv run coverage run ./manage.py test e2e
+              script: pipenv run coverage run ./manage.py test e2e -v 3
           - task: CmdLine@2
             displayName: Prepare unittests and coverage for upload
             inputs:

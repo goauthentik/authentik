@@ -1,7 +1,7 @@
 all: lint-fix lint coverage gen
 
 coverage:
-	coverage run --concurrency=multiprocessing manage.py test --failfast
+	coverage run --concurrency=multiprocessing manage.py test --failfast -v 3
 	coverage combine
 	coverage html
 	coverage report
