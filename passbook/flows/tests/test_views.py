@@ -1,12 +1,10 @@
 """flow views tests"""
-from json import loads
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.utils.encoding import force_str
 
-from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.markers import ReevaluateMarker, StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan

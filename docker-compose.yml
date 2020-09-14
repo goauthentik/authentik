@@ -14,6 +14,8 @@ services:
       - POSTGRES_DB=passbook
     labels:
       - traefik.enable=false
+    env_file:
+      - .env
   redis:
     image: redis
     networks:
@@ -25,9 +27,8 @@ services:
     command: server
     environment:
       PASSBOOK_REDIS__HOST: redis
-      PASSBOOK_ERROR_REPORTING: ${PASSBOOK_ERROR_REPORTING:-false}
       PASSBOOK_POSTGRESQL__HOST: postgresql
-      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
       PASSBOOK_LOG_LEVEL: debug
     ports:
       - 8000
@@ -37,6 +38,8 @@ services:
       - traefik.port=8000
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
+    env_file:
+      - .env
   worker:
     image: beryju/passbook:${PASSBOOK_TAG:-0.10.0-stable}
     command: worker
@@ -46,10 +49,11 @@ services:
       - traefik.enable=false
     environment:
       PASSBOOK_REDIS__HOST: redis
-      PASSBOOK_ERROR_REPORTING: ${PASSBOOK_ERROR_REPORTING:-false}
       PASSBOOK_POSTGRESQL__HOST: postgresql
-      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS:-thisisnotagoodpassword}
+      PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
       PASSBOOK_LOG_LEVEL: debug
+    env_file:
+      - .env
   static:
     image: beryju/passbook-static:${PASSBOOK_TAG:-0.10.0-stable}
     networks:

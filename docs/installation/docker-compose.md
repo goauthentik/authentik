@@ -11,14 +11,21 @@ This installation method is for test-setups and small-scale productive setups.
 
 Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml). Place it in a directory of your choice.
 
+To optionally enable error-reporting, run `echo PASSBOOK_ERROR_REPORTING=true >> .env`
+
+To optionally deploy a different version run `echo PASSBOOK_TAG=0.10.0-stable >> .env`
+
+If this is a fresh passbook install run the following commands to generate a password:
+
 ```
-wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
-# Optionally enable Error-reporting
-# export PASSBOOK_ERROR_REPORTING=true
-# Optionally deploy a different version
-# export PASSBOOK_TAG=0.10.0-stable
-# If this is a productive installation, set a different PostgreSQL Password
-# export PG_PASS=$(pwgen 40 1)
+sudo apt-get install -y pwgen
+echo "PG_PASS=$(pwgen 40 1)" >> .env
+echo "PASSBOOK_SECRET_KEY=$(pwgen 50 1)" >> .env
+```
+
+Afterwards, run these commands to finish
+
+```
 docker-compose pull
 docker-compose up -d
 docker-compose run --rm server migrate

@@ -93,6 +93,9 @@ jobs:
       - uses: actions/checkout@v1
       - name: Run test suite in final docker images
         run: |
+          sudo apt-get install -y pwgen
+          echo "PG_PASS=$(pwgen 40 1)" >> .env
+          echo "PASSBOOK_SECRET_KEY=$(pwgen 50 1)" >> .env
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
