@@ -1,5 +1,6 @@
 """passbook saml_idp Models"""
 from typing import Optional, Type
+from urllib.parse import urlparse
 
 from django.db import models
 from django.forms import ModelForm
@@ -101,6 +102,13 @@ class SAMLProvider(Provider):
             "Must match the Certificate selected in `Singing Keypair`."
         ),
     )
+
+    @property
+    def launch_url(self) -> Optional[str]:
+        """Guess launch_url based on acs URL"""
+        launch_url = urlparse(self.acs_url)
+        launch_url.path = ""
+        return launch_url.geturl()
 
     def form(self) -> Type[ModelForm]:
         from passbook.providers.saml.forms import SAMLProviderForm

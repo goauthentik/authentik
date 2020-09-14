@@ -24,7 +24,7 @@
     {% if applications %}
     <div class="pf-l-gallery pf-m-gutter">
         {% for app in applications %}
-        <a href="{{ app.meta_launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        <a href="{{ app.get_launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 {% if not app.meta_icon_url %}
                 <i class="pf-icon pf-icon-arrow"></i>

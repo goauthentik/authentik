@@ -92,6 +92,12 @@ class Provider(models.Model):
 
     objects = InheritanceManager()
 
+    @property
+    def launch_url(self) -> Optional[str]:
+        """URL to this provider and initiate authorization for the user.
+        Can return None for providers that are not URL-based"""
+        return None
+
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError
@@ -118,6 +124,14 @@ class Application(PolicyBindingModel):
     meta_icon_url = models.TextField(default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
+
+    def get_launch_url(self) -> Optional[str]:
+        """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+        if self.meta_launch_url:
+            return self.meta_launch_url
+        if self.provider:
+            return self.provider.launch_url
+        return None
 
     def get_provider(self) -> Optional[Provider]:
         """Get casted provider instance"""

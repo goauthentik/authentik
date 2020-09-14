@@ -6,6 +6,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from hashlib import sha256
 from typing import Any, Dict, List, Optional, Type
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.conf import settings
@@ -229,6 +230,16 @@ class OAuth2Provider(Provider):
             return request.build_absolute_uri(f"/{mountpoint}{self.application.slug}/")
         except Provider.application.RelatedObjectDoesNotExist:
             return None
+
+    @property
+    def launch_url(self) -> Optional[str]:
+        """Guess launch_url based on first redirect_uri"""
+        if not self.redirect_uris:
+            return None
+        main_url = self.redirect_uris[0]
+        launch_url = urlparse(main_url)
+        launch_url.path = ""
+        return launch_url.geturl()
 
     def form(self) -> Type[ModelForm]:
         from passbook.providers.oauth2.forms import OAuth2ProviderForm
