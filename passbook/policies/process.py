@@ -9,7 +9,7 @@ from sentry_sdk.tracing import Span
 from structlog import get_logger
 
 from passbook.policies.exceptions import PolicyException
-from passbook.policies.models import PolicyBinding
+from passbook.policies.models import Policy, PolicyBinding
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
@@ -63,6 +63,7 @@ class PolicyProcess(Process):
             except PolicyException as exc:
                 LOGGER.debug("P_ENG(proc): error", exc=exc)
                 policy_result = PolicyResult(False, str(exc))
+            policy_result.source_policy = self.binding.policy
             # Invert result if policy.negate is set
             if self.binding.negate:
                 policy_result.passing = not policy_result.passing

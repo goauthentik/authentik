@@ -1,13 +1,15 @@
 """policy structures"""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Tuple
+from dataclasses import field
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from django.db.models import Model
 from django.http import HttpRequest
 
 if TYPE_CHECKING:
     from passbook.core.models import User
+    from passbook.policies.models import Policy
 
 
 class PolicyRequest:
@@ -34,9 +36,14 @@ class PolicyResult:
     passing: bool
     messages: Tuple[str, ...]
 
+    source_policy: Optional[Policy]
+    source_results: Optional[List["PolicyResult"]]
+
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing
         self.messages = messages
+        self.source_policy = None
+        self.source_results = []
 
     def __repr__(self):
         return self.__str__()

@@ -109,19 +109,23 @@ class PolicyEngine:
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        messages: List[str] = []
         process_results: List[PolicyResult] = [
             x.result for x in self.__processes if x.result
         ]
+        final_result = PolicyResult(False)
+        final_result.messages = []
+        final_result.source_results = list(process_results + self.__cached_policies)
         for result in process_results + self.__cached_policies:
             LOGGER.debug(
                 "P_ENG: result", passing=result.passing, messages=result.messages
             )
             if result.messages:
-                messages += result.messages
+                final_result.messages.extend(result.messages)
             if not result.passing:
-                return PolicyResult(False, *messages)
-        return PolicyResult(True, *messages)
+                final_result.passing = False
+                return final_result
+        final_result.passing = True
+        return final_result
 
     @property
     def passing(self) -> bool:

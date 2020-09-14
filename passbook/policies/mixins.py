@@ -10,7 +10,11 @@ from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.core.models import Application, Provider, User
-from passbook.flows.views import SESSION_KEY_APPLICATION_PRE
+from passbook.flows.views import (
+    SESSION_KEY_APPLICATION_PRE,
+    SESSION_KEY_DENIED_ERROR,
+    SESSION_KEY_DENIED_POLICY_RESULT,
+)
 from passbook.policies.engine import PolicyEngine
 from passbook.policies.types import PolicyResult
 
@@ -36,8 +40,12 @@ class PolicyAccessMixin(BaseMixin, AccessMixin):
             self.get_redirect_field_name(),
         )
 
-    def handle_no_permission_authorized(self) -> HttpResponse:
-        """Function called when user has no permissions but is authorized"""
+    def handle_no_permission_authenticated(
+        self, result: Optional[PolicyResult] = None
+    ) -> HttpResponse:
+        """Function called when user has no permissions but is authenticated"""
+        if result:
+            self.request.session[SESSION_KEY_DENIED_POLICY_RESULT] = result
         # TODO: Remove this URL and render the view instead
         return redirect("passbook_flows:denied")
 
