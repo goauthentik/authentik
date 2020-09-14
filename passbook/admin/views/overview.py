@@ -45,7 +45,7 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         kwargs["application_count"] = len(Application.objects.all())
         kwargs["policy_count"] = len(Policy.objects.all())
-        kwargs["user_count"] = len(User.objects.all()) - 1 # Remove anonymous user
+        kwargs["user_count"] = len(User.objects.all()) - 1  # Remove anonymous user
         kwargs["provider_count"] = len(Provider.objects.all())
         kwargs["source_count"] = len(Source.objects.all())
         kwargs["stage_count"] = len(Stage.objects.all())
