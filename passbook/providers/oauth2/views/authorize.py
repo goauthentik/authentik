@@ -323,7 +323,7 @@ class AuthorizationFlowInitView(PolicyAccessMixin, View):
         try:
             application = self.provider_to_application(provider)
         except Application.DoesNotExist:
-            return self.handle_no_permission_authorized()
+            return self.handle_no_permission_authenticated()
         # Check if user is unauthenticated, so we pass the application
         # for the identification stage
         if not request.user.is_authenticated:
@@ -331,7 +331,7 @@ class AuthorizationFlowInitView(PolicyAccessMixin, View):
         # Check permissions
         result = self.user_has_access(application)
         if not result.passing:
-            return self.handle_no_permission_authorized()
+            return self.handle_no_permission_authenticated(result)
         # TODO: End block
         # Extract params so we can save them in the plan context
         try:

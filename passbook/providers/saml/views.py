@@ -62,8 +62,9 @@ class SAMLSSOView(PolicyAccessMixin, View):
         )
         if not request.user.is_authenticated:
             return self.handle_no_permission(self.application)
-        if not self.user_has_access(self.application).passing:
-            return self.handle_no_permission_authorized()
+        has_access = self.user_has_access(self.application)
+        if not has_access.passing:
+            return self.handle_no_permission_authenticated(has_access)
         # Call the method handler, which checks the SAML Request
         method_response = super().dispatch(request, *args, application_slug, **kwargs)
         if method_response:
