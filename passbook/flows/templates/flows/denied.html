@@ -1,0 +1,57 @@
+{% extends 'login/base_full.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load passbook_utils %}
+
+{% block card_title %}
+{% trans 'Permission denied' %}
+{% endblock %}
+
+{% block title %}
+{% trans 'Permission denied' %}
+{% endblock %}
+
+{% block card %}
+    <form method="POST" class="pf-c-form">
+        {% csrf_token %}
+        {% include 'partials/form.html' %}
+        <div class="pf-c-form__group">
+            <p>
+                <i class="pf-icon pf-icon-error-circle-o"></i>
+                {% trans 'Access denied' %}
+            </p>
+            {% if error %}
+            <hr>
+            <p>
+                {{ error }}
+            </p>
+            {% endif %}
+            {% if policy_result %}
+            <hr>
+            <em>
+                {% trans 'Explanation:' %}
+            </em>
+            <ul class="pf-c-list">
+                {% for source_result in policy_result.source_results %}
+                <li>
+                    {% blocktrans with name=source_result.source_policy.name result=source_result.passing %}
+                    Policy '{{ name }}' returned result '{{ result }}'
+                    {% endblocktrans %}
+                    {% if source_result.messages %}
+                    <ul class="pf-c-list">
+                        {% for message in source_result.messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% if 'back' in request.GET %}
+        <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
+        {% endif %}
+    </form>
+{% endblock %}

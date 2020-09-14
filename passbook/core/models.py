@@ -22,6 +22,7 @@ from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
+PASSBOOK_USER_DEBUG = "passbook_user_debug"
 
 
 def default_token_duration():

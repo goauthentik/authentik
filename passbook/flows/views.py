@@ -12,18 +12,18 @@ from django.http import (
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from structlog import get_logger
 
 from passbook.audit.models import cleanse_dict
-from passbook.core.views.utils import PermissionDeniedView
+from passbook.core.models import PASSBOOK_USER_DEBUG
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.utils.reflection import class_to_path
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
-from passbook.lib.views import bad_request_message
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -31,6 +31,8 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
 SESSION_KEY_APPLICATION_PRE = "passbook_flows_application_pre"
 SESSION_KEY_GET = "passbook_flows_get"
+SESSION_KEY_DENIED_ERROR = "passbook_flows_denied_error"
+SESSION_KEY_DENIED_POLICY_RESULT = "passbook_flows_denied_policy_result"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -54,9 +56,9 @@ class FlowExecutorView(View):
                 LOGGER.debug("f(exec): Redirecting to next on fail")
                 return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
+        self.cancel()
         return to_stage_response(
-            self.request,
-            bad_request_message(self.request, message, template="error/embedded.html"),
+            self.request, self.stage_invalid(error_message=message)
         )
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
@@ -196,11 +198,19 @@ class FlowExecutorView(View):
         )
         return self._flow_done()
 
-    def stage_invalid(self) -> HttpResponse:
+    def stage_invalid(self, error_message: Optional[str] = None) -> HttpResponse:
         """Callback used stage when data is correct but a policy denies access
-        or the user account is disabled."""
+        or the user account is disabled.
+
+        Optionally, an exception can be passed, which will be shown if the current user
+        is a superuser."""
         LOGGER.debug("f(exec): Stage invalid", flow_slug=self.flow.slug)
         self.cancel()
+        if self.request.user and self.request.user.is_authenticated:
+            if self.request.user.is_superuser or self.request.user.attributes.get(
+                PASSBOOK_USER_DEBUG, False
+            ):
+                self.request.session[SESSION_KEY_DENIED_ERROR] = error_message
         return redirect_with_qs("passbook_flows:denied", self.request.GET)
 
     def cancel(self):
@@ -215,8 +225,21 @@ class FlowExecutorView(View):
                 del self.request.session[key]
 
 
-class FlowPermissionDeniedView(PermissionDeniedView):
+class FlowPermissionDeniedView(TemplateView):
     """User could not be authenticated"""
+
+    template_name = "flows/denied.html"
+    title = _("Permission denied.")
+
+    def get_context_data(self, **kwargs):
+        kwargs["title"] = self.title
+        if SESSION_KEY_DENIED_ERROR in self.request.session:
+            kwargs["error"] = self.request.session[SESSION_KEY_DENIED_ERROR]
+        if SESSION_KEY_DENIED_POLICY_RESULT in self.request.session:
+            kwargs["policy_result"] = self.request.session[
+                SESSION_KEY_DENIED_POLICY_RESULT
+            ]
+        return super().get_context_data(**kwargs)
 
 
 class FlowExecutorShellView(TemplateView):
