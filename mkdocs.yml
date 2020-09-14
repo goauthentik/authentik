@@ -55,6 +55,8 @@ nav:
   - Upgrading:
     - to 0.9: upgrading/to-0.9.md
     - to 0.10: upgrading/to-0.10.md
+  - Troubleshooting:
+    - Access problems: troubleshooting/access.md
 
 repo_name: "BeryJu/passbook"
 repo_url: https://github.com/BeryJu/passbook

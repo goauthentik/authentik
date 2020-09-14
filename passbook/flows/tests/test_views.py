@@ -1,4 +1,5 @@
 """flow views tests"""
+from json import loads
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.shortcuts import reverse
@@ -48,8 +49,8 @@ class TestFlowExecutor(TestCase):
                     "passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}
                 ),
             )
-            self.assertEqual(response.status_code, 400)
-            self.assertEqual(cancel_mock.call_count, 1)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
         "passbook.policies.engine.PolicyEngine.result", POLICY_RETURN_FALSE,
@@ -66,8 +67,11 @@ class TestFlowExecutor(TestCase):
         response = self.client.get(
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertInHTML(FlowNonApplicableException.__doc__, response.rendered_content)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_invalid_empty_flow(self):
         """Tests that an empty flow returns the correct error message"""
@@ -81,8 +85,11 @@ class TestFlowExecutor(TestCase):
         response = self.client.get(
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 400)
-        self.assertInHTML(EmptyFlowException.__doc__, response.rendered_content)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {"type": "redirect", "to": reverse("passbook_flows:denied")},
+        )
 
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""

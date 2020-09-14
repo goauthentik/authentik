@@ -1,7 +1,6 @@
 """policy structures"""
 from __future__ import annotations
 
-from dataclasses import field
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from django.db.models import Model

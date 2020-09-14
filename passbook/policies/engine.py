@@ -122,8 +122,10 @@ class PolicyEngine:
             if result.messages:
                 final_result.messages.extend(result.messages)
             if not result.passing:
+                final_result.messages = tuple(final_result.messages)
                 final_result.passing = False
                 return final_result
+        final_result.messages = tuple(final_result.messages)
         final_result.passing = True
         return final_result
 

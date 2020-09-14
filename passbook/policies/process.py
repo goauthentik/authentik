@@ -9,7 +9,7 @@ from sentry_sdk.tracing import Span
 from structlog import get_logger
 
 from passbook.policies.exceptions import PolicyException
-from passbook.policies.models import Policy, PolicyBinding
+from passbook.policies.models import PolicyBinding
 from passbook.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()

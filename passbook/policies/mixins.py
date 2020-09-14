@@ -12,7 +12,6 @@ from structlog import get_logger
 from passbook.core.models import Application, Provider, User
 from passbook.flows.views import (
     SESSION_KEY_APPLICATION_PRE,
-    SESSION_KEY_DENIED_ERROR,
     SESSION_KEY_DENIED_POLICY_RESULT,
 )
 from passbook.policies.engine import PolicyEngine

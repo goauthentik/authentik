@@ -56,7 +56,6 @@ class FlowExecutorView(View):
                 LOGGER.debug("f(exec): Redirecting to next on fail")
                 return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
-        self.cancel()
         return to_stage_response(
             self.request, self.stage_invalid(error_message=message)
         )
