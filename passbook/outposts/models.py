@@ -7,9 +7,10 @@ from uuid import uuid4
 from dacite import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
-from django.db import models
+from django.db import models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
+from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 
 from passbook.core.models import Provider, Token, TokenIntents, User
@@ -114,10 +115,13 @@ class Outpost(models.Model):
             user.save()
         else:
             user = users.first()
-        for model in self.get_required_objects():
-            assign_perm(
-                f"{model._meta.app_label}.view_{model._meta.model_name}", user, model
-            )
+        # To ensure the user only has the correct permissions, we delete all of them and re-add
+        # the ones the user needs
+        with transaction.atomic():
+            UserObjectPermission.objects.filter(user=user).delete()
+            for model in self.get_required_objects():
+                code_name = f"{model._meta.app_label}.view_{model._meta.model_name}"
+                assign_perm(code_name, user, model)
         return user
 
     @property

@@ -6,8 +6,8 @@
 
 <html lang="en">
     <head>
-        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff2' %}" as="font" type="font/woff2">
-        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff' %}" as="font" type="font/woff">
+        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff2' %}" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff' %}" as="font" type="font/woff" crossorigin>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{% block title %}{% trans title|default:config.passbook.branding.title %}{% endblock %}</title>
