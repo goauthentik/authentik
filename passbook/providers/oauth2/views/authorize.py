@@ -220,9 +220,11 @@ class OAuthFulfillmentStage(StageView):
                 )
             return redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
+            self.executor.stage_invalid()
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
+            self.executor.stage_invalid()
             uri = error.create_uri(self.params.redirect_uri, self.params.state)
             return redirect(uri)
 
