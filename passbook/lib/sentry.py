@@ -1,6 +1,7 @@
 """passbook sentry integration"""
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
+from celery.exceptions import CeleryError
 from django.core.exceptions import DisallowedHost, ValidationError
 from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
@@ -8,6 +9,7 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
+from websockets.exceptions import WebSocketException
 
 LOGGER = get_logger()
 
@@ -35,6 +37,8 @@ def before_send(event, hint):
         OSError,
         RedisError,
         SentryIgnoredException,
+        WebSocketException,
+        CeleryError,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
