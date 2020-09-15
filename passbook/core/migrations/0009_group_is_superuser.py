@@ -13,7 +13,7 @@ def create_default_admin_group(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     group, _ = Group.objects.using(db_alias).get_or_create(
         is_superuser=True, defaults={"name": "passbook Admins",}
     )
-    group.users.add(User.objects.get(username="pbadmin"))
+    group.users.set(User.objects.filter(username="pbadmin"))
     group.save()
 
 

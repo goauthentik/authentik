@@ -1,6 +1,6 @@
-# VMware vSphere Integration
+# VMware vCenter Integration
 
-## What is vSphere
+## What is vCenter
 
 From https://en.wikipedia.org/wiki/VCenter
 
@@ -11,6 +11,10 @@ From https://en.wikipedia.org/wiki/VCenter
 !!! warning
 
     This requires passbook 0.10.3 or newer.
+
+!!! warning
+
+    This requires VMware vCenter 7.0.0 or newer.
 
 ## Preparation
 
@@ -23,7 +27,7 @@ Since vCenter only allows OpenID-Connect in combination with Active Directory, i
 
 ### Step 1
 
-Under *Property Mappings*, create a *Scope Mapping*. Give it a name like "OIDC-Scope-VMware-vSphere". Set the scope name to `openid` and the expression to the following
+Under *Property Mappings*, create a *Scope Mapping*. Give it a name like "OIDC-Scope-VMware-vCenter". Set the scope name to `openid` and the expression to the following
 
 ```python
 return {
