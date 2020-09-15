@@ -5,16 +5,13 @@ from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.core.models import Application, Provider, User
-from passbook.flows.views import (
-    SESSION_KEY_APPLICATION_PRE,
-    SESSION_KEY_DENIED_POLICY_RESULT,
-)
+from passbook.flows.views import SESSION_KEY_APPLICATION_PRE
 from passbook.policies.engine import PolicyEngine
+from passbook.policies.http import AccessDeniedResponse
 from passbook.policies.types import PolicyResult
 
 LOGGER = get_logger()
@@ -31,6 +28,9 @@ class PolicyAccessMixin(BaseMixin, AccessMixin):
     Provider functions to check application access, etc"""
 
     def handle_no_permission(self, application: Optional[Application] = None):
+        """User has no access and is not authenticated, so we remember the application
+        they try to access and redirect to the login URL. The application is saved to show
+        a hint on the Identification Stage what the user should login for."""
         if application:
             self.request.session[SESSION_KEY_APPLICATION_PRE] = application
         return redirect_to_login(
@@ -43,10 +43,10 @@ class PolicyAccessMixin(BaseMixin, AccessMixin):
         self, result: Optional[PolicyResult] = None
     ) -> HttpResponse:
         """Function called when user has no permissions but is authenticated"""
+        response = AccessDeniedResponse(self.request)
         if result:
-            self.request.session[SESSION_KEY_DENIED_POLICY_RESULT] = result
-        # TODO: Remove this URL and render the view instead
-        return redirect("passbook_flows:denied")
+            response.policy_result = result
+        return response
 
     def provider_to_application(self, provider: Provider) -> Application:
         """Lookup application assigned to provider, throw error if no application assigned"""
