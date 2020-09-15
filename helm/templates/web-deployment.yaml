@@ -25,21 +25,23 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - {{ include "passbook.name" . }}
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - {{ .Release.Name }}
-              - key: k8s.passbook.beryju.org/component
-                operator: In
-                values:
-                - web
-            topologyKey: "kubernetes.io/hostname"
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ include "passbook.name" . }}
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: k8s.passbook.beryju.org/component
+                  operator: In
+                  values:
+                  - web
+              topologyKey: "kubernetes.io/hostname"
       initContainers:
         - name: passbook-database-migrations
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -109,7 +111,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 200M
+              memory: 300M
             limits:
               cpu: 300m
-              memory: 350M
+              memory: 500M

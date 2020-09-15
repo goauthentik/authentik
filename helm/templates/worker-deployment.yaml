@@ -25,21 +25,23 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - {{ include "passbook.name" . }}
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - {{ .Release.Name }}
-              - key: k8s.passbook.beryju.org/component
-                operator: In
-                values:
-                - worker
-            topologyKey: "kubernetes.io/hostname"
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ include "passbook.name" . }}
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: k8s.passbook.beryju.org/component
+                  operator: In
+                  values:
+                  - worker
+              topologyKey: "kubernetes.io/hostname"
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -68,7 +70,7 @@ spec:
           resources:
             requests:
               cpu: 150m
-              memory: 300M
+              memory: 400M
             limits:
               cpu: 300m
-              memory: 500M
+              memory: 600M
