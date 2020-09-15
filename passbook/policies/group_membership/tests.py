@@ -24,7 +24,7 @@ class TestGroupMembershipPolicy(TestCase):
     def test_valid(self):
         """user in group"""
         group = Group.objects.create(name="test")
-        group.user_set.add(get_anonymous_user())
+        group.users.add(get_anonymous_user())
         group.save()
         policy: GroupMembershipPolicy = GroupMembershipPolicy.objects.create(
             group=group

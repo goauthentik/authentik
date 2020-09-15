@@ -11,7 +11,7 @@ class GroupSerializer(ModelSerializer):
     class Meta:
 
         model = Group
-        fields = ["pk", "name", "parent", "user_set", "attributes"]
+        fields = ["pk", "name", "is_superuser", "parent", "users", "attributes"]
 
 
 class GroupViewSet(ModelViewSet):

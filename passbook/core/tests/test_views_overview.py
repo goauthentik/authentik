@@ -13,7 +13,7 @@ class TestOverviewViews(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_superuser(
+        self.user = User.objects.create_user(
             username="unittest user",
             email="unittest@example.com",
             password="".join(

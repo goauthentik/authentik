@@ -30,7 +30,7 @@ class GroupMembershipPolicy(Policy):
         return GroupMembershipPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        return PolicyResult(self.group.user_set.filter(pk=request.user.pk).exists())
+        return PolicyResult(self.group.users.filter(pk=request.user.pk).exists())
 
     class Meta:
 

@@ -151,7 +151,7 @@ class Connector:
                     group_cache[group_dn] = groups.first()
                 group = group_cache[group_dn]
                 users = User.objects.filter(attributes__ldap_uniq=uniq)
-                group.user_set.add(*list(users))
+                group.users.add(*list(users))
         # Now that all users are added, lets write everything
         for _, group in group_cache.items():
             group.save()

@@ -8,7 +8,7 @@ from django.test import Client, TestCase
 from django.urls.exceptions import NoReverseMatch
 
 from passbook.admin.urls import urlpatterns
-from passbook.core.models import User
+from passbook.core.models import Group, User
 from passbook.lib.utils.reflection import get_apps
 
 
@@ -16,7 +16,9 @@ class TestAdmin(TestCase):
     """Generic admin tests"""
 
     def setUp(self):
-        self.user = User.objects.create_superuser(username="test")
+        self.user = User.objects.create_user(username="test")
+        self.user.pb_groups.add(Group.objects.filter(is_superuser=True).first())
+        self.user.save()
         self.client = Client()
         self.client.force_login(self.user)
 

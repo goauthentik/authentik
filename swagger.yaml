@@ -5922,7 +5922,7 @@ definitions:
     required:
       - name
       - parent
-      - user_set
+      - users
     type: object
     properties:
       pk:
@@ -5935,11 +5935,15 @@ definitions:
         type: string
         maxLength: 80
         minLength: 1
+      is_superuser:
+        title: Is superuser
+        description: Users added to this group will be superusers.
+        type: boolean
       parent:
         title: Parent
         type: string
         format: uuid
-      user_set:
+      users:
         type: array
         items:
           type: integer
@@ -5970,6 +5974,10 @@ definitions:
         description: User's display name.
         type: string
         minLength: 1
+      is_superuser:
+        title: Is superuser
+        type: boolean
+        readOnly: true
       email:
         title: Email address
         type: string

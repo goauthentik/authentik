@@ -4,6 +4,7 @@ from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.forms import ModelForm
@@ -34,7 +35,12 @@ class Group(models.Model):
     """Custom Group model which supports a basic hierarchy"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
     name = models.CharField(_("name"), max_length=80)
+    is_superuser = models.BooleanField(
+        default=False, help_text=_("Users added to this group will be superusers.")
+    )
+
     parent = models.ForeignKey(
         "Group",
         blank=True,
@@ -52,6 +58,14 @@ class Group(models.Model):
         unique_together = (("name", "parent",),)
 
 
+class UserManager(DjangoUserManager):
+    """Custom user manager that doesn't assign is_superuser and is_staff"""
+
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        """Custom user manager that doesn't assign is_superuser and is_staff"""
+        return self._create_user(username, email, password, **extra_fields)
+
+
 class User(GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding o f user-based settings"""
 
@@ -59,10 +73,22 @@ class User(GuardianUserMixin, AbstractUser):
     name = models.TextField(help_text=_("User's display name."))
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    pb_groups = models.ManyToManyField("Group")
+    pb_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     attributes = models.JSONField(default=dict, blank=True)
+
+    objects = UserManager()
+
+    @property
+    def is_superuser(self) -> bool:
+        """Get supseruser status based on membership in a group with superuser status"""
+        return self.pb_groups.filter(is_superuser=True).exists()
+
+    @property
+    def is_staff(self) -> bool:
+        """superuser == staff user"""
+        return self.is_superuser
 
     def set_password(self, password):
         if self.pk:
