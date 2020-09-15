@@ -6,10 +6,10 @@ version: "0.10.2-stable"
 icon: https://github.com/BeryJu/passbook/blob/master/docs/images/logo.svg
 dependencies:
   - name: postgresql
-    version: 9.3.2
+    version: 9.4.1
     repository: https://charts.bitnami.com/bitnami
     condition: install.postgresql
   - name: redis
-    version: 10.7.16
+    version: 10.9.0
     repository: https://charts.bitnami.com/bitnami
     condition: install.redis
