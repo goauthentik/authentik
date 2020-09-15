@@ -13,20 +13,7 @@ passbook is an open-source Identity Provider focused on flexibility and versatil
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose.
-
-```
-wget https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml
-# Optionally enable Error-reporting
-# export PASSBOOK_ERROR_REPORTING=true
-# Optionally deploy a different version
-# export PASSBOOK_TAG=0.10.2-stable
-# If this is a productive installation, set a different PostgreSQL Password
-# export PG_PASS=$(pwgen 40 1)
-docker-compose pull
-docker-compose up -d
-docker-compose run --rm server migrate
-```
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/installation/docker-compose/)
 
 For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org//installation/kubernetes/)
 
