@@ -49,7 +49,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ steps.get_version.outputs.result }}
-          draft: false
+          draft: true
           prerelease: false
       - name: Upload packaged Helm Chart
         id: upload-release-asset
