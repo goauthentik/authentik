@@ -6,6 +6,7 @@ from unittest.case import skipUnless
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as ec
 
 from e2e.utils import USER, SeleniumTestCase
 from passbook.core.models import Application
@@ -214,7 +215,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.url("passbook_flows:denied"))
+
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
+        )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",

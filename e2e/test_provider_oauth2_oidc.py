@@ -285,7 +285,10 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.url("passbook_flows:denied"))
+
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
+        )
         self.assertEqual(
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",
