@@ -169,7 +169,13 @@ class Connector:
                 value = mapping.evaluate(user=None, request=None, ldap=attributes)
                 if value is None:
                     continue
-                properties[mapping.object_field] = value
+                object_field = mapping.object_field
+                if object_field.startswith("attributes."):
+                    properties["attributes"][
+                        object_field.replace("attributes.", "")
+                    ] = value
+                else:
+                    properties[object_field] = value
             except PropertyMappingExpressionException as exc:
                 LOGGER.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
                 continue
