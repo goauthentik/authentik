@@ -6646,6 +6646,16 @@ definitions:
         title: Post Logout Redirect URIs
         description: Enter each URI on a new line.
         type: string
+      sub_mode:
+        title: Sub mode
+        description: Configure what data should be used as unique User Identifier.
+          For most cases, the default should be fine.
+        type: string
+        enum:
+          - hashed_user_id
+          - user_username
+          - user_email
+          - user_upn
       property_mappings:
         type: array
         items:

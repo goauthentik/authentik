@@ -281,7 +281,9 @@ class OAuthFulfillmentStage(StageView):
                         ResponseTypes.CODE_ID_TOKEN,
                         ResponseTypes.CODE_ID_TOKEN_TOKEN,
                     ]:
-                        query_fragment["id_token"] = id_token.encode(self.provider)
+                        query_fragment["id_token"] = self.provider.encode(
+                            id_token.to_dict()
+                        )
                     token.id_token = id_token
 
                 # Store the token.

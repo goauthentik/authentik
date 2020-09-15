@@ -46,6 +46,26 @@ class GrantTypes(models.TextChoices):
     HYBRID = "hybrid"
 
 
+class SubModes(models.TextChoices):
+    """Mode after which 'sub' attribute is generateed, for compatibility reasons"""
+
+    HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
+    USER_USERNAME = "user_username", _("Based on the username")
+    USER_EMAIL = (
+        "user_email",
+        _("Based on the User's Email. This is recommended over the UPN method."),
+    )
+    USER_UPN = (
+        "user_upn",
+        _(
+            (
+                "Based on the User's UPN, only works if user has a 'upn' attribute set. "
+                "Use this method only if you have different UPN and Mail domains."
+            )
+        ),
+    )
+
+
 class ResponseTypes(models.TextChoices):
     """Response Type required by the client."""
 
@@ -84,7 +104,7 @@ class ScopeMapping(PropertyMapping):
         return ScopeMappingForm
 
     def __str__(self):
-        return f"Scope Mapping '{self.scope_name}'"
+        return f"Scope Mapping {self.name} ({self.scope_name})"
 
     class Meta:
 
@@ -158,6 +178,17 @@ class OAuth2Provider(Provider):
             (
                 "Tokens not valid on or after current time + this value "
                 "(Format: hours=1;minutes=2;seconds=3)."
+            )
+        ),
+    )
+
+    sub_mode = models.TextField(
+        choices=SubModes.choices,
+        default=SubModes.HASHED_USER_ID,
+        help_text=_(
+            (
+                "Configure what data should be used as unique User Identifier. For most cases, "
+                "the default should be fine."
             )
         ),
     )
@@ -248,6 +279,14 @@ class OAuth2Provider(Provider):
 
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
+
+    def encode(self, payload: Dict[str, Any]) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT)."""
+        keys = self.get_jwt_keys()
+        # If the provider does not have an RSA Key assigned, it was switched to Symmetric
+        self.refresh_from_db()
+        jws = JWS(payload, alg=self.jwt_alg)
+        return jws.sign_compact(keys)
 
     def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
         """return template and context modal with URLs for authorize, token, openid-config, etc"""
@@ -368,14 +407,6 @@ class IDToken:
         dic.update(self.claims)
         return dic
 
-    def encode(self, provider: OAuth2Provider) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
-        keys = provider.get_jwt_keys()
-        # If the provider does not have an RSA Key assigned, it was switched to Symmetric
-        provider.refresh_from_db()
-        jws = JWS(self.to_dict(), alg=provider.jwt_alg)
-        return jws.sign_compact(keys)
-
 
 class RefreshToken(ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token"""
@@ -424,7 +455,22 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
     def create_id_token(self, user: User, request: HttpRequest) -> IDToken:
         """Creates the id_token.
         See: http://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
-        sub = sha256(f"{user.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
+        sub = ""
+        if self.provider.sub_mode == SubModes.HASHED_USER_ID:
+            sub = sha256(f"{user.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
+        elif self.provider.sub_mode == SubModes.USER_EMAIL:
+            sub = user.email
+        elif self.provider.sub_mode == SubModes.USER_USERNAME:
+            sub = user.username
+        elif self.provider.sub_mode == SubModes.USER_UPN:
+            sub = user.attributes["upn"]
+        else:
+            raise ValueError(
+                (
+                    f"Provider {self.provider} has invalid sub_mode "
+                    f"selected: {self.provider.sub_mode}"
+                )
+            )
 
         # Convert datetimes into timestamps.
         now = int(time.time())

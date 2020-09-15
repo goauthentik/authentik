@@ -193,11 +193,11 @@ class TokenView(View):
         dic = {
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,
-            "token_type": "bearer",
+            "token_type": "Bearer",
             "expires_in": timedelta_from_string(
                 self.params.provider.token_validity
             ).seconds,
-            "id_token": refresh_token.id_token.encode(refresh_token.provider),
+            "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
         return dic
@@ -237,8 +237,8 @@ class TokenView(View):
             "expires_in": timedelta_from_string(
                 refresh_token.provider.token_validity
             ).seconds,
-            "id_token": refresh_token.id_token.encode(
-                self.params.refresh_token.provider
+            "id_token": self.params.provider.encode(
+                self.params.refresh_token.id_token.to_dict()
             ),
         }
 
