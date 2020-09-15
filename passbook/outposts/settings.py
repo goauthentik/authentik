@@ -1,5 +1,5 @@
 """Outposts Settings"""
-from celery.schedules import crontab
+# from celery.schedules import crontab
 
 # CELERY_BEAT_SCHEDULE = {
 #     "outposts_k8s": {
