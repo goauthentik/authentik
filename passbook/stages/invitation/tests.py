@@ -10,7 +10,9 @@ from passbook.core.models import User
 from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.policies.http import AccessDeniedResponse
 from passbook.stages.invitation.forms import InvitationStageForm
 from passbook.stages.invitation.models import Invitation, InvitationStage
 from passbook.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
@@ -38,6 +40,9 @@ class TestUserLoginStage(TestCase):
         data = {"name": "test"}
         self.assertEqual(InvitationStageForm(data).is_valid(), True)
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""
         plan = FlowPlan(
@@ -56,12 +61,8 @@ class TestUserLoginStage(TestCase):
                 "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
         )
-
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
 
     def test_without_invitation_continue(self):
         """Test without any invitation, continue_flow_without_invitation is set."""

@@ -1,22 +1,34 @@
 """flow views tests"""
 from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.utils.encoding import force_str
 
+from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.markers import ReevaluateMarker, StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import FlowPlan
 from passbook.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from passbook.lib.config import CONFIG
 from passbook.policies.dummy.models import DummyPolicy
+from passbook.policies.http import AccessDeniedResponse
 from passbook.policies.models import PolicyBinding
 from passbook.policies.types import PolicyResult
 from passbook.stages.dummy.models import DummyStage
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
+
+
+def to_stage_response(request: HttpRequest, source: HttpResponse):
+    """Mock for to_stage_response that returns the original response, so we can check
+    inheritance and member attributes"""
+    return source
+
+
+TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
 
 
 class TestFlowExecutor(TestCase):
@@ -51,6 +63,9 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
+    @patch(
         "passbook.policies.engine.PolicyEngine.result", POLICY_RETURN_FALSE,
     )
     def test_invalid_non_applicable_flow(self):
@@ -66,11 +81,12 @@ class TestFlowExecutor(TestCase):
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertInHTML(FlowNonApplicableException.__doc__, response.rendered_content)
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_invalid_empty_flow(self):
         """Tests that an empty flow returns the correct error message"""
         flow = Flow.objects.create(
@@ -84,10 +100,8 @@ class TestFlowExecutor(TestCase):
             reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertInHTML(EmptyFlowException.__doc__, response.rendered_content)
 
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""
@@ -101,8 +115,10 @@ class TestFlowExecutor(TestCase):
         dest = "/unique-string"
         url = reverse("passbook_flows:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, dest)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content), {"type": "redirect", "to": dest},
+        )
 
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""

@@ -1,4 +1,6 @@
 """delete tests"""
+from unittest.mock import patch
+
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.utils.encoding import force_str
@@ -7,7 +9,9 @@ from passbook.core.models import User
 from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.policies.http import AccessDeniedResponse
 from passbook.stages.user_delete.models import UserDeleteStage
 
 
@@ -28,6 +32,9 @@ class TestUserDeleteStage(TestCase):
         self.stage = UserDeleteStage.objects.create(name="delete")
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_no_user(self):
         """Test without user set"""
         plan = FlowPlan(
@@ -43,10 +50,7 @@ class TestUserDeleteStage(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
 
     def test_user_delete_get(self):
         """Test Form render"""

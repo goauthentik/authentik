@@ -6,12 +6,10 @@ from passbook.flows.views import (
     CancelView,
     FlowExecutorShellView,
     FlowExecutorView,
-    FlowPermissionDeniedView,
     ToDefaultFlow,
 )
 
 urlpatterns = [
-    path("-/denied/", FlowPermissionDeniedView.as_view(), name="denied"),
     path(
         "-/default/authentication/",
         ToDefaultFlow.as_view(designation=FlowDesignation.AUTHENTICATION),

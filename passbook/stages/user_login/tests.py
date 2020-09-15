@@ -1,4 +1,6 @@
 """login tests"""
+from unittest.mock import patch
+
 from django.shortcuts import reverse
 from django.test import Client, TestCase
 from django.utils.encoding import force_str
@@ -7,7 +9,9 @@ from passbook.core.models import User
 from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.policies.http import AccessDeniedResponse
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from passbook.stages.user_login.forms import UserLoginStageForm
 from passbook.stages.user_login.models import UserLoginStage
@@ -54,6 +58,9 @@ class TestUserLoginStage(TestCase):
             {"type": "redirect", "to": reverse("passbook_core:overview")},
         )
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_without_user(self):
         """Test a plan without any pending user, resulting in a denied"""
         plan = FlowPlan(
@@ -70,11 +77,11 @@ class TestUserLoginStage(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_without_backend(self):
         """Test a plan with pending user, without backend, resulting in a denied"""
         plan = FlowPlan(
@@ -92,10 +99,7 @@ class TestUserLoginStage(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
 
     def test_form(self):
         """Test Form"""

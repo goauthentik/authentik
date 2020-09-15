@@ -9,10 +9,9 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse,
 )
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from structlog import get_logger
@@ -24,6 +23,7 @@ from passbook.flows.models import Flow, FlowDesignation, Stage
 from passbook.flows.planner import FlowPlan, FlowPlanner
 from passbook.lib.utils.reflection import class_to_path
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
+from passbook.policies.http import AccessDeniedResponse
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -31,8 +31,6 @@ NEXT_ARG_NAME = "next"
 SESSION_KEY_PLAN = "passbook_flows_plan"
 SESSION_KEY_APPLICATION_PRE = "passbook_flows_application_pre"
 SESSION_KEY_GET = "passbook_flows_get"
-SESSION_KEY_DENIED_ERROR = "passbook_flows_denied_error"
-SESSION_KEY_DENIED_POLICY_RESULT = "passbook_flows_denied_policy_result"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -56,9 +54,7 @@ class FlowExecutorView(View):
                 LOGGER.debug("f(exec): Redirecting to next on fail")
                 return redirect(self.request.GET.get(NEXT_ARG_NAME))
         message = exc.__doc__ if exc.__doc__ else str(exc)
-        return to_stage_response(
-            self.request, self.stage_invalid(error_message=message)
-        )
+        return self.stage_invalid(error_message=message)
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
@@ -83,10 +79,10 @@ class FlowExecutorView(View):
                 self.plan = self._initiate_plan()
             except FlowNonApplicableException as exc:
                 LOGGER.warning("f(exec): Flow not applicable to current user", exc=exc)
-                return self.handle_invalid_flow(exc)
+                return to_stage_response(self.request, self.handle_invalid_flow(exc))
             except EmptyFlowException as exc:
                 LOGGER.warning("f(exec): Flow is empty", exc=exc)
-                return self.handle_invalid_flow(exc)
+                return to_stage_response(self.request, self.handle_invalid_flow(exc))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         next_stage = self.plan.next()
@@ -119,14 +115,7 @@ class FlowExecutorView(View):
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.exception(exc)
-            return to_stage_response(
-                request,
-                render(
-                    request,
-                    "flows/error.html",
-                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
-                ),
-            )
+            return to_stage_response(request, FlowErrorResponse(request, exc))
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """pass post request to current stage"""
@@ -141,14 +130,7 @@ class FlowExecutorView(View):
             return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.exception(exc)
-            return to_stage_response(
-                request,
-                render(
-                    request,
-                    "flows/error.html",
-                    {"error": exc, "tb": "".join(format_tb(exc.__traceback__))},
-                ),
-            )
+            return to_stage_response(request, FlowErrorResponse(request, exc))
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
@@ -205,12 +187,9 @@ class FlowExecutorView(View):
         is a superuser."""
         LOGGER.debug("f(exec): Stage invalid", flow_slug=self.flow.slug)
         self.cancel()
-        if self.request.user and self.request.user.is_authenticated:
-            if self.request.user.is_superuser or self.request.user.attributes.get(
-                PASSBOOK_USER_DEBUG, False
-            ):
-                self.request.session[SESSION_KEY_DENIED_ERROR] = error_message
-        return redirect_with_qs("passbook_flows:denied", self.request.GET)
+        response = AccessDeniedResponse(self.request)
+        response.error_message = error_message
+        return response
 
     def cancel(self):
         """Cancel current execution and return a redirect"""
@@ -224,21 +203,30 @@ class FlowExecutorView(View):
                 del self.request.session[key]
 
 
-class FlowPermissionDeniedView(TemplateView):
-    """User could not be authenticated"""
+class FlowErrorResponse(TemplateResponse):
+    """Response class when an unhandled error occurs during a stage. Normal users
+    are shown an error message, superusers are shown a full stacktrace."""
 
-    template_name = "flows/denied.html"
-    title = _("Permission denied.")
+    error: Exception
 
-    def get_context_data(self, **kwargs):
-        kwargs["title"] = self.title
-        if SESSION_KEY_DENIED_ERROR in self.request.session:
-            kwargs["error"] = self.request.session[SESSION_KEY_DENIED_ERROR]
-        if SESSION_KEY_DENIED_POLICY_RESULT in self.request.session:
-            kwargs["policy_result"] = self.request.session[
-                SESSION_KEY_DENIED_POLICY_RESULT
-            ]
-        return super().get_context_data(**kwargs)
+    def __init__(self, request: HttpRequest, error: Exception) -> None:
+        # For some reason pyright complains about keyword argument usage here
+        # pyright: reportGeneralTypeIssues=false
+        super().__init__(request=request, template="flows/error.html")
+        self.error = error
+
+    def resolve_context(
+        self, context: Optional[Dict[str, Any]]
+    ) -> Optional[Dict[str, Any]]:
+        if not context:
+            context = {}
+        context["error"] = self.error
+        if self._request.user and self._request.user.is_authenticated:
+            if self._request.user.is_superuser or self._request.user.attributes.get(
+                PASSBOOK_USER_DEBUG, False
+            ):
+                context["tb"] = "".join(format_tb(self.error.__traceback__))
+        return context
 
 
 class FlowExecutorShellView(TemplateView):

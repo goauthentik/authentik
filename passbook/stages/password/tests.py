@@ -12,7 +12,9 @@ from passbook.core.models import User
 from passbook.flows.markers import StageMarker
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from passbook.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from passbook.flows.views import SESSION_KEY_PLAN
+from passbook.policies.http import AccessDeniedResponse
 from passbook.stages.password.models import PasswordStage
 
 MOCK_BACKEND_AUTHENTICATE = MagicMock(side_effect=PermissionDenied("test"))
@@ -42,6 +44,9 @@ class TestPasswordStage(TestCase):
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+    @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
     def test_without_user(self):
         """Test without user"""
         plan = FlowPlan(
@@ -60,10 +65,7 @@ class TestPasswordStage(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
 
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
@@ -130,6 +132,9 @@ class TestPasswordStage(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @patch(
+        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+    )
+    @patch(
         "django.contrib.auth.backends.ModelBackend.authenticate",
         MOCK_BACKEND_AUTHENTICATE,
     )
@@ -153,7 +158,4 @@ class TestPasswordStage(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_flows:denied")},
-        )
+        self.assertIsInstance(response, AccessDeniedResponse)
