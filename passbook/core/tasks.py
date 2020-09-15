@@ -1,4 +1,5 @@
 """passbook core tasks"""
+from django.utils.timezone import now
 from structlog import get_logger
 
 from passbook.core.models import ExpiringModel
@@ -12,5 +13,10 @@ def clean_expired_models():
     """Remove expired objects"""
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
-        amount, _ = cls.filter_not_expired().delete()
+        amount, _ = (
+            cls.objects.all()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
+            .delete()
+        )
         LOGGER.debug("Deleted expired models", model=cls, amount=amount)
