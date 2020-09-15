@@ -13,7 +13,7 @@ Download the latest `docker-compose.yml` from [here](https://raw.githubuserconte
 
 To optionally enable error-reporting, run `echo PASSBOOK_ERROR_REPORTING=true >> .env`
 
-To optionally deploy a different version run `echo PASSBOOK_TAG=0.10.1-stable >> .env`
+To optionally deploy a different version run `echo PASSBOOK_TAG=0.10.2-stable >> .env`
 
 If this is a fresh passbook install run the following commands to generate a password:
 
