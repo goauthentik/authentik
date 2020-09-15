@@ -190,7 +190,7 @@ class TokenView(View):
         # We don't need to store the code anymore.
         self.params.authorization_code.delete()
 
-        dic = {
+        response_dict = {
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,
             "token_type": "Bearer",
@@ -200,7 +200,14 @@ class TokenView(View):
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
-        return dic
+        if self.params.authorization_code.is_open_id:
+            # This seems to be expected by some OIDC Clients
+            # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
+            # Maybe this should be a setting
+            # in the future?
+            response_dict["access_token"] = response_dict["id_token"]
+
+        return response_dict
 
     def create_refresh_response_dic(self) -> Dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-6"""
