@@ -31,8 +31,8 @@ from passbook.providers.oauth2.generators import (
 
 
 class ClientTypes(models.TextChoices):
-    """<b>Confidential</b> clients are capable of maintaining the confidentiality
-    of their credentials. <b>Public</b> clients are incapable."""
+    """Confidential clients are capable of maintaining the confidentiality
+    of their credentials. Public clients are incapable."""
 
     CONFIDENTIAL = "confidential", _("Confidential")
     PUBLIC = "public", _("Public")
@@ -70,6 +70,7 @@ class ResponseTypes(models.TextChoices):
     """Response Type required by the client."""
 
     CODE = "code", _("code (Authorization Code Flow)")
+    CODE_ADFS = "code_adfs", _("code (ADFS Compatibility Mode, sends id_token as access_token)")
     ID_TOKEN = "id_token", _("id_token (Implicit Flow)")
     ID_TOKEN_TOKEN = "id_token token", _("id_token token (Implicit Flow)")
     CODE_TOKEN = "code token", _("code token (Hybrid Flow)")

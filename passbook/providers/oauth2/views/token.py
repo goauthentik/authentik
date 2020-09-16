@@ -17,7 +17,7 @@ from passbook.providers.oauth2.errors import TokenError, UserAuthError
 from passbook.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
-    RefreshToken,
+    RefreshToken, ResponseTypes,
 )
 from passbook.providers.oauth2.utils import TokenResponse, extract_client_auth
 
@@ -200,7 +200,7 @@ class TokenView(View):
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
-        if self.params.authorization_code.is_open_id:
+        if self.params.provider.response_type == ResponseTypes.CODE_ADFS:
             # This seems to be expected by some OIDC Clients
             # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
             # Maybe this should be a setting

@@ -90,7 +90,7 @@ class OAuthAuthorizationParams:
         response_type = query_dict.get("response_type", "")
         grant_type = None
         # Determine which flow to use.
-        if response_type in [ResponseTypes.CODE]:
+        if response_type in [ResponseTypes.CODE, ResponseTypes.CODE_ADFS]:
             grant_type = GrantTypes.AUTHORIZATION_CODE
         elif response_type in [
             ResponseTypes.ID_TOKEN,

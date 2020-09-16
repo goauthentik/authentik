@@ -41,4 +41,10 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunPython(create_default_admin_group),
+        migrations.AlterModelManagers(
+            name='user',
+            managers=[
+                ('objects', passbook.core.models.UserManager()),
+            ],
+        ),
     ]
