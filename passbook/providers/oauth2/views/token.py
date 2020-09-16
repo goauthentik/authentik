@@ -17,7 +17,8 @@ from passbook.providers.oauth2.errors import TokenError, UserAuthError
 from passbook.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
-    RefreshToken, ResponseTypes,
+    RefreshToken,
+    ResponseTypes,
 )
 from passbook.providers.oauth2.utils import TokenResponse, extract_client_auth
 

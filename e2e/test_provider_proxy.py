@@ -1,6 +1,8 @@
 """Proxy and Outpost e2e tests"""
+from sys import platform
 from time import sleep
 from typing import Any, Dict, Optional
+from unittest.case import skipUnless
 
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
@@ -14,6 +16,7 @@ from passbook.outposts.models import Outpost, OutpostDeploymentType, OutpostType
 from passbook.providers.proxy.models import ProxyProvider
 
 
+@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 

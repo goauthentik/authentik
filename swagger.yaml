@@ -6605,8 +6605,8 @@ definitions:
       client_type:
         title: Client Type
         description: |-
-          <b>Confidential</b> clients are capable of maintaining the confidentiality
-              of their credentials. <b>Public</b> clients are incapable.
+          Confidential clients are capable of maintaining the confidentiality
+              of their credentials. Public clients are incapable.
         type: string
         enum:
           - confidential
@@ -6626,6 +6626,7 @@ definitions:
         type: string
         enum:
           - code
+          - code_adfs
           - id_token
           - id_token token
           - code token

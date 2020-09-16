@@ -3,6 +3,8 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
+import passbook.core.models
+
 
 def create_default_admin_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
@@ -42,9 +44,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(create_default_admin_group),
         migrations.AlterModelManagers(
-            name='user',
-            managers=[
-                ('objects', passbook.core.models.UserManager()),
-            ],
+            name="user", managers=[("objects", passbook.core.models.UserManager()),],
         ),
     ]

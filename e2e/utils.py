@@ -17,7 +17,6 @@ from docker.models.containers import Container
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog import get_logger
 
@@ -91,7 +90,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def wait_for_url(self, desired_url):
         """Wait until URL is `desired_url`."""
         self.wait.until(
-            ec.url_to_be(desired_url),
+            lambda driver: driver.current_url == desired_url,
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 

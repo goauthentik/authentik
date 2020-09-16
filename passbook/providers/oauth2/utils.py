@@ -61,11 +61,12 @@ def extract_access_token(request: HttpRequest) -> str:
     auth_header = request.META.get("HTTP_AUTHORIZATION", "")
 
     if re.compile(r"^[Bb]earer\s{1}.+$").match(auth_header):
-        access_token = auth_header.split()[1]
-    else:
-        access_token = request.GET.get("access_token", "")
-
-    return access_token
+        return auth_header.split()[1]
+    if "access_token" in request.POST:
+        return request.POST.get("access_token")
+    if "access_token" in request.GET:
+        return request.GET.get("access_token")
+    return ""
 
 
 def extract_client_auth(request: HttpRequest) -> Tuple[str, str]:

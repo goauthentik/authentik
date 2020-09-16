@@ -6,18 +6,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_providers_oauth2', '0002_oauth2provider_sub_mode'),
+        ("passbook_providers_oauth2", "0002_oauth2provider_sub_mode"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='oauth2provider',
-            name='client_type',
-            field=models.CharField(choices=[('confidential', 'Confidential'), ('public', 'Public')], default='confidential', help_text='Confidential clients are capable of maintaining the confidentiality\n    of their credentials. Public clients are incapable.', max_length=30, verbose_name='Client Type'),
+            model_name="oauth2provider",
+            name="client_type",
+            field=models.CharField(
+                choices=[("confidential", "Confidential"), ("public", "Public")],
+                default="confidential",
+                help_text="Confidential clients are capable of maintaining the confidentiality\n    of their credentials. Public clients are incapable.",
+                max_length=30,
+                verbose_name="Client Type",
+            ),
         ),
         migrations.AlterField(
-            model_name='oauth2provider',
-            name='response_type',
-            field=models.TextField(choices=[('code', 'code (Authorization Code Flow)'), ('code_adfs', 'code (ADFS Compatibility Mode, sends id_token as access_token)'), ('id_token', 'id_token (Implicit Flow)'), ('id_token token', 'id_token token (Implicit Flow)'), ('code token', 'code token (Hybrid Flow)'), ('code id_token', 'code id_token (Hybrid Flow)'), ('code id_token token', 'code id_token token (Hybrid Flow)')], default='code', help_text='Response Type required by the client.'),
+            model_name="oauth2provider",
+            name="response_type",
+            field=models.TextField(
+                choices=[
+                    ("code", "code (Authorization Code Flow)"),
+                    (
+                        "code_adfs",
+                        "code (ADFS Compatibility Mode, sends id_token as access_token)",
+                    ),
+                    ("id_token", "id_token (Implicit Flow)"),
+                    ("id_token token", "id_token token (Implicit Flow)"),
+                    ("code token", "code token (Hybrid Flow)"),
+                    ("code id_token", "code id_token (Hybrid Flow)"),
+                    ("code id_token token", "code id_token token (Hybrid Flow)"),
+                ],
+                default="code",
+                help_text="Response Type required by the client.",
+            ),
         ),
     ]
