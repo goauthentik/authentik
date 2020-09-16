@@ -1,8 +1,10 @@
 """passbook administration overview"""
+from typing import Union
+
 from django.core.cache import cache
 from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
-from packaging.version import Version, parse
+from packaging.version import LegacyVersion, Version, parse
 from requests import RequestException, get
 
 from passbook import __version__
@@ -16,7 +18,7 @@ from passbook.stages.invitation.models import Invitation
 VERSION_CACHE_KEY = "passbook_latest_version"
 
 
-def latest_version() -> Version:
+def latest_version() -> Union[LegacyVersion, Version]:
     """Get latest release from GitHub, cached"""
     if not cache.get(VERSION_CACHE_KEY):
         try:
