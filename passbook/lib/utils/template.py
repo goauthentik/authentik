@@ -1,11 +1,5 @@
 """passbook lib template utilities"""
-from django.template import Context, Template, loader
-
-
-def render_from_string(tmpl: str, ctx: Context) -> str:
-    """Render template from string to string"""
-    template = Template(tmpl)
-    return template.render(ctx)
+from django.template import Context, loader
 
 
 def render_to_string(template_path: str, ctx: Context) -> str:

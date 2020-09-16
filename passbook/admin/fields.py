@@ -15,11 +15,8 @@ class CodeMirrorWidget(forms.Textarea):
         self.mode = mode
 
     def render(self, *args, **kwargs):
-        if "attrs" not in kwargs:
-            kwargs["attrs"] = {}
-        attrs = kwargs["attrs"]
-        if "class" not in attrs:
-            attrs["class"] = ""
+        attrs = kwargs.setdefault("attrs", {})
+        attrs.setdefault("class", "")
         attrs["class"] += " codemirror"
         attrs["data-cm-mode"] = self.mode
         return super().render(*args, **kwargs)

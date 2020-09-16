@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, no_translations
 from passbook.flows.transfer.importer import FlowImporter
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     """Apply flow from commandline"""
 
     @no_translations

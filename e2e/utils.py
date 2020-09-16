@@ -17,6 +17,7 @@ from docker.models.containers import Container
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog import get_logger
 
@@ -50,6 +51,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def _start_container(self, specs: Dict[str, Any]) -> Container:
         client: DockerClient = from_env()
         container = client.containers.run(**specs)
+        if "healthcheck" not in specs:
+            return container
         while True:
             container.reload()
             status = container.attrs.get("State", {}).get("Health", {}).get("Status")
@@ -88,7 +91,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def wait_for_url(self, desired_url):
         """Wait until URL is `desired_url`."""
         self.wait.until(
-            lambda driver: driver.current_url == desired_url,
+            ec.url_to_be(desired_url),
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 

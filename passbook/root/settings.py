@@ -25,6 +25,19 @@ from passbook.lib.config import CONFIG
 from passbook.lib.logging import add_process_id
 from passbook.lib.sentry import before_send
 
+
+def j_print(event: str, log_level: str = "info", **kwargs):
+    """Print event in the same format as structlog with JSON.
+    Used before structlog is configured."""
+    data = {
+        "event": event,
+        "level": log_level,
+        "logger": __name__,
+    }
+    data.update(**kwargs)
+    print(dumps(data))
+
+
 LOGGER = structlog.get_logger()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -276,16 +289,7 @@ if CONFIG.y("postgresql.backup"):
     AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
     AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
     AWS_DEFAULT_ACL = None
-    print(
-        dumps(
-            {
-                "event": "Database backup is configured.",
-                "level": "info",
-                "logger": __name__,
-                "host": CONFIG.y("postgresql.backup.host"),
-            }
-        )
-    )
+    j_print("Database backup is configured.", host=CONFIG.y("postgresql.backup.host"))
     # Add automatic task to backup
     CELERY_BEAT_SCHEDULE["db_backup"] = {
         "task": "passbook.lib.tasks.backup_database",
@@ -295,15 +299,6 @@ if CONFIG.y("postgresql.backup"):
 # Sentry integration
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
 if not DEBUG and _ERROR_REPORTING:
-    print(
-        dumps(
-            {
-                "event": "Error reporting is enabled.",
-                "level": "info",
-                "logger": __name__,
-            }
-        )
-    )
     sentry_init(
         dsn="https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
         integrations=[
@@ -315,6 +310,10 @@ if not DEBUG and _ERROR_REPORTING:
         traces_sample_rate=1.0,
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
+    )
+    j_print(
+        "Error reporting is enabled.",
+        env=CONFIG.y("error_reporting.environment", "customer"),
     )
 
 
@@ -434,3 +433,5 @@ if DEBUG:
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
+
+j_print("Booting passbook", version=__version__)
