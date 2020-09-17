@@ -27,11 +27,8 @@ require (
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20200819021114-67c6ae64274f // indirect
 	github.com/recws-org/recws v1.2.1
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/afero v1.4.0 // indirect
-	github.com/spf13/cast v1.3.1 // indirect
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1 // indirect
 	github.com/stretchr/testify v1.6.1
 	go.mongodb.org/mongo-driver v1.4.1 // indirect
@@ -40,5 +37,4 @@ require (
 	golang.org/x/sys v0.0.0-20200917061948-648f2a039071 // indirect
 	golang.org/x/tools v0.0.0-20200917050209-655488c8ae71 // indirect
 	gopkg.in/ini.v1 v1.61.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )
