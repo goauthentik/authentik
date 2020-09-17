@@ -11,7 +11,7 @@ This installation method is for test-setups and small-scale productive setups.
 
 Download the latest `docker-compose.yml` from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml). Place it in a directory of your choice.
 
-To optionally enable error-reporting, run `echo PASSBOOK_ERROR_REPORTING=true >> .env`
+To optionally enable error-reporting, run `echo PASSBOOK_ERROR_REPORTING__ENABLED=true >> .env`
 
 To optionally deploy a different version run `echo PASSBOOK_TAG=0.10.3-stable >> .env`
 
