@@ -160,7 +160,7 @@ class Application(PolicyBindingModel):
         if self.meta_launch_url:
             return self.meta_launch_url
         if self.provider:
-            return self.provider.launch_url
+            return self.get_provider().launch_url
         return None
 
     def get_provider(self) -> Optional[Provider]:

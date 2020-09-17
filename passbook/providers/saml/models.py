@@ -107,8 +107,7 @@ class SAMLProvider(Provider):
     def launch_url(self) -> Optional[str]:
         """Guess launch_url based on acs URL"""
         launch_url = urlparse(self.acs_url)
-        launch_url.path = ""
-        return launch_url.geturl()
+        return self.acs_url.replace(launch_url.path, "")
 
     def form(self) -> Type[ModelForm]:
         from passbook.providers.saml.forms import SAMLProviderForm

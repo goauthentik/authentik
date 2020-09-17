@@ -269,12 +269,11 @@ class OAuth2Provider(Provider):
     @property
     def launch_url(self) -> Optional[str]:
         """Guess launch_url based on first redirect_uri"""
-        if not self.redirect_uris:
+        if self.redirect_uris == "":
             return None
-        main_url = self.redirect_uris[0]
+        main_url = self.redirect_uris.split("\n")[0]
         launch_url = urlparse(main_url)
-        launch_url.path = ""
-        return launch_url.geturl()
+        return main_url.replace(launch_url.path, "")
 
     def form(self) -> Type[ModelForm]:
         from passbook.providers.oauth2.forms import OAuth2ProviderForm
