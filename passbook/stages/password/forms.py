@@ -14,10 +14,7 @@ def get_authentication_backends():
             "django.contrib.auth.backends.ModelBackend",
             _("passbook-internal Userdatabase"),
         ),
-        (
-            "passbook.sources.ldap.auth.LDAPBackend",
-            _("passbook LDAP (Only needed when User-Sync is not enabled."),
-        ),
+        ("passbook.sources.ldap.auth.LDAPBackend", _("passbook LDAP"),),
     ]
 
 
