@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import importlib
 import os
+import sys
 from json import dumps
 
 import structlog
@@ -35,7 +36,7 @@ def j_print(event: str, log_level: str = "info", **kwargs):
         "logger": __name__,
     }
     data.update(**kwargs)
-    print(dumps(data))
+    print(dumps(data), file=sys.stderr)
 
 
 LOGGER = structlog.get_logger()
