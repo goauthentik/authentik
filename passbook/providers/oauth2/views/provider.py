@@ -32,7 +32,10 @@ class ProviderInfoView(View):
                 reverse("passbook_providers_oauth2:userinfo")
             ),
             "end_session_endpoint": self.request.build_absolute_uri(
-                reverse("passbook_providers_oauth2:end-session")
+                reverse(
+                    "passbook_providers_oauth2:end-session",
+                    kwargs={"application_slug": provider.application.slug},
+                )
             ),
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse("passbook_providers_oauth2:token-introspection")

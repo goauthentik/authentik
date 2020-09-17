@@ -33,6 +33,7 @@ from passbook.providers.oauth2.models import (
 )
 
 LOGGER = get_logger()
+APPLICATION_SLUG = "grafana"
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -69,6 +70,12 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_API_URL": (
                     self.url("passbook_providers_oauth2:userinfo")
                 ),
+                "GF_AUTH_SIGNOUT_REDIRECT_URL": (
+                    self.url(
+                        "passbook_providers_oauth2:end-session",
+                        application_slug=APPLICATION_SLUG,
+                    )
+                ),
                 "GF_LOG_LEVEL": "debug",
             },
         }
@@ -97,7 +104,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -137,7 +144,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -171,6 +178,72 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             USER().email,
         )
 
+    def test_authorization_logout(self):
+        """test OpenID Provider flow with logout"""
+        sleep(1)
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        provider = OAuth2Provider.objects.create(
+            name="grafana",
+            client_type=ClientTypes.CONFIDENTIAL,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            rsa_key=CertificateKeyPair.objects.first(),
+            redirect_uris="http://localhost:3000/login/generic_oauth",
+            authorization_flow=authorization_flow,
+            response_type=ResponseTypes.CODE,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE]
+            )
+        )
+        provider.save()
+        Application.objects.create(
+            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+        )
+
+        self.driver.get("http://localhost:3000")
+        self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
+        self.driver.find_element(By.ID, "id_uid_field").click()
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
+        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
+        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.assertEqual(
+            self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
+            USER().name,
+        )
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute(
+                "value"
+            ),
+            USER().name,
+        )
+        self.assertEqual(
+            self.driver.find_element(
+                By.CSS_SELECTOR, "input[name=email]"
+            ).get_attribute("value"),
+            USER().email,
+        )
+        self.assertEqual(
+            self.driver.find_element(
+                By.CSS_SELECTOR, "input[name=login]"
+            ).get_attribute("value"),
+            USER().email,
+        )
+        self.driver.find_element(By.CSS_SELECTOR, "[href='/logout']").click()
+        self.wait_for_url(
+            self.url(
+                "passbook_providers_oauth2:end-session",
+                application_slug=APPLICATION_SLUG,
+            )
+        )
+        self.driver.find_element(By.ID, "logout").click()
+
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -195,7 +268,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -271,7 +344,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
         )
 
         negative_policy = ExpressionPolicy.objects.create(

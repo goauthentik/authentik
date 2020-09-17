@@ -20,11 +20,15 @@ urlpatterns = [
         csrf_exempt(protected_resource_view([SCOPE_OPENID])(UserInfoView.as_view())),
         name="userinfo",
     ),
-    path("end-session/", EndSessionView.as_view(), name="end-session",),
     path(
         "introspect/",
         csrf_exempt(TokenIntrospectionView.as_view()),
         name="token-introspection",
+    ),
+    path(
+        "<slug:application_slug>/end-session/",
+        EndSessionView.as_view(),
+        name="end-session",
     ),
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
     path(

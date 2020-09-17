@@ -1,0 +1,36 @@
+{% extends 'login/base_full.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load passbook_utils %}
+
+{% block title %}
+{% trans 'End session' %}
+{% endblock %}
+
+{% block card_title %}
+{% blocktrans with application=application.name %}
+You've logged out of {{ application }}.
+{% endblocktrans %}
+{% endblock %}
+
+{% block card %}
+<form method="POST" class="pf-c-form">
+    {% if message %}
+    <h3>{% trans message %}</h3>
+    {% endif %}
+
+    <a id="pb-back-home" href="{% url 'passbook_core:overview' %}" class="pf-c-button pf-m-primary">{% trans 'Go back to passbook' %}</a>
+
+    <a id="logout" href="{% url 'passbook_flows:default-invalidation' %}" class="pf-c-button pf-m-secondary">{% trans 'Log out of passbook' %}</a>
+
+    {% if application.get_launch_url %}
+    <a href="{{ application.get_launch_url }}" class="pf-c-button pf-m-secondary">
+        {% blocktrans with application=application.name %}
+            Log back into {{ application }}
+        {% endblocktrans %}
+    </a>
+    {% endif %}
+
+</form>
+{% endblock %}
