@@ -47,5 +47,5 @@ logconfig_dict = {
 if Path("/var/run/secrets/kubernetes.io").exists():
     workers = 2
 else:
-    worker = cpu_count()
+    worker = cpu_count() * 2 + 1
 threads = 4
