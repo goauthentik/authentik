@@ -98,7 +98,10 @@ class User(GuardianUserMixin, AbstractUser):
 
     class Meta:
 
-        permissions = (("reset_user_password", "Reset Password"),)
+        permissions = (
+            ("reset_user_password", "Reset Password"),
+            ("impersonate", "Can impersonate other users"),
+        )
         verbose_name = _("User")
         verbose_name_plural = _("Users")
 

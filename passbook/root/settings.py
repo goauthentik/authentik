@@ -179,6 +179,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "passbook.core.middleware.ImpersonateMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 

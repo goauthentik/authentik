@@ -21,13 +21,13 @@
         {% endblock %}
     </head>
     <body>
-        {% if 'impersonate_id' in request.session %}
+        {% if 'passbook_impersonate_user' in request.session %}
         <div class="pf-c-banner pf-m-warning pf-c-alert pf-m-sticky">
             <div class="pf-l-flex pf-m-justify-content-center pf-m-justify-content-space-between-on-lg pf-m-nowrap" style="height: 100%;">
                 <div class=""></div>
                 <div class="pf-u-display-none pf-u-display-block-on-lg">
                     {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
-                    <a href="?__unimpersonate=True" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
+                    <a href="{% url 'passbook_core:impersonate-end' %}?back={{ request.get_full_path }}" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
                 </div>
                 <div class=""></div>
             </div>
