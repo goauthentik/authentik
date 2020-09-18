@@ -9,12 +9,14 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 
 from passbook.core.models import Provider, Token, TokenIntents, User
 from passbook.lib.config import CONFIG
+from passbook.lib.utils.template import render_to_string
 
 
 @dataclass
@@ -148,6 +150,13 @@ class Outpost(models.Model):
             else:
                 objects.append(provider)
         return objects
+
+    def html_deployment_view(self, request: HttpRequest) -> Optional[str]:
+        """return template and context modal to view token and other config info"""
+        return render_to_string(
+            "outposts/deployment_modal.html",
+            {"outpost": self, "full_url": request.build_absolute_uri("/")},
+        )
 
     def __str__(self) -> str:
         return f"Outpost {self.name}"

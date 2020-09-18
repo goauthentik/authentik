@@ -129,7 +129,7 @@ class SAMLProvider(Provider):
             return None
 
     def html_metadata_view(self, request: HttpRequest) -> Optional[str]:
-        """return template and context modal with to view Metadata without downloading it"""
+        """return template and context modal to view Metadata without downloading it"""
         from passbook.providers.saml.views import DescriptorDownloadView
 
         try:

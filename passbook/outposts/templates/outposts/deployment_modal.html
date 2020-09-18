@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load static %}
+<button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="saml-{{ provider.pk }}">{% trans 'View Deployment Info' %}</button>
+
+<div class="pf-c-backdrop" id="saml-{{ provider.pk }}" hidden>
+    <div class="pf-l-bullseye">
+        <div class="pf-c-modal-box pf-m-lg" role="dialog">
+            <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="pf-c-modal-box__header">
+                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Outpost Deployment Info' %}</h1>
+            </div>
+            <div class="pf-c-modal-box__body" id="modal-description">
+                <p><a href="https://passbook.beryju.org/outposts/outposts/#deploy">{% trans 'View deployment documentation' %}</a></p>
+                <form class="pf-c-form">
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                            <span class="pf-c-form__label-text">PASSBOOK_HOST</span>
+                        </label>
+                        <input class="pf-c-form-control" readonly type="text" value="{{ full_url }}" />
+                    </div>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                            <span class="pf-c-form__label-text">PASSBOOK_TOKEN</span>
+                        </label>
+                        <input class="pf-c-form-control" readonly type="text" value="{{ outpost.token.token_uuid.hex }}" />
+                    </div>
+                    <h3>{% trans 'If your passbook Instance is using a self-signed certificate, set this value.' %}</h3>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                            <span class="pf-c-form__label-text">PASSBOOK_INSECURE</span>
+                        </label>
+                        <input class="pf-c-form-control" readonly type="text" value="true" />
+                    </div>
+                </form>
+            </div>
+            <footer class="pf-c-modal-box__footer pf-m-align-left">
+                <button data-modal-close class="pf-c-button pf-m-primary" type="button">{% trans 'Close' %}</button>
+            </footer>
+        </div>
+    </div>
+</div>
