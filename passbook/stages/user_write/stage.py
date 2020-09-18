@@ -60,7 +60,7 @@ class UserWriteStageView(StageView):
                 if not key.startswith("attribute_"):
                     LOGGER.debug("discarding key", key=key)
                     continue
-                user.attributes[key] = value
+                user.attributes[key.replace("attribute_", "", 1)] = value
         user.save()
         user_write.send(sender=self, request=request, user=user, data=data)
         # Check if the password has been updated, and update the session auth hash

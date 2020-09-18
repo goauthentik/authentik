@@ -86,7 +86,7 @@ class TestUserWriteStage(TestCase):
         plan.context[PLAN_CONTEXT_PROMPT] = {
             "username": "test-user-new",
             "password": new_password,
-            "some-custom-attribute": "test",
+            "attribute_some-custom-attribute": "test",
         }
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
