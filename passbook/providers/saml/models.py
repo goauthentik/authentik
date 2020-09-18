@@ -160,7 +160,8 @@ class SAMLPropertyMapping(PropertyMapping):
         return SAMLPropertyMappingForm
 
     def __str__(self):
-        return f"SAML Property Mapping {self.saml_name}"
+        name = self.friendly_name if self.friendly_name != "" else self.saml_name
+        return f"SAML Property Mapping {self.name} ({name})"
 
     class Meta:
 
