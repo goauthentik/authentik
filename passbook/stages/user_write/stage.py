@@ -36,6 +36,11 @@ class UserWriteStageView(StageView):
                 "Created new user", flow_slug=self.executor.flow.slug,
             )
         user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        # Before we change anything, check if the user is the same as in the request
+        # and we're updating a password. In that case we need to update the session hash
+        should_update_seesion = False
+        if any(["password" in x for x in data.keys()]) and self.request.user.pk == user.pk:
+            should_update_seesion = True
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
@@ -52,7 +57,7 @@ class UserWriteStageView(StageView):
         user.save()
         user_write.send(sender=self, request=request, user=user, data=data)
         # Check if the password has been updated, and update the session auth hash
-        if any(["password" in x for x in data.keys()]):
+        if should_update_seesion:
             update_session_auth_hash(self.request, user)
             LOGGER.debug("Updated session hash", user=user)
         LOGGER.debug(
