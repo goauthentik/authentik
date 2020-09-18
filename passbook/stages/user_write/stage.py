@@ -51,8 +51,12 @@ class UserWriteStageView(StageView):
             # User has this key already
             elif hasattr(user, key):
                 setattr(user, key, value)
-            # Otherwise we just save it as custom attribute
+            # Otherwise we just save it as custom attribute, but only if the value is prefixed with
+            # `attribute_`, to prevent accidentally saving values
             else:
+                if not key.startswith("attribute_"):
+                    LOGGER.debug("discarding key", key=key)
+                    continue
                 user.attributes[key] = value
         user.save()
         user_write.send(sender=self, request=request, user=user, data=data)
