@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 from uuid import uuid4
 
 from dacite import from_dict
@@ -10,13 +10,18 @@ from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
 from django.http import HttpRequest
+from django.utils import version
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
+from packaging.version import InvalidVersion, parse
 
+from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.template import render_to_string
+
+OUR_VERSION = parse(__version__)
 
 
 @dataclass
@@ -93,19 +98,32 @@ class Outpost(models.Model):
         """Dump config into json"""
         self._config = asdict(value)
 
-    @property
-    def health_cache_key(self) -> str:
-        """Key by which the outposts health status is saved"""
-        return f"outpost_{self.uuid.hex}_health"
+    def state_cache_prefix(self, suffix: str) -> str:
+        """Key by which the outposts status is saved"""
+        return f"outpost_{self.uuid.hex}_state_{suffix}"
 
     @property
-    def health(self) -> Optional[datetime]:
+    def deployment_health(self) -> Optional[datetime]:
         """Get outpost's health status"""
-        key = self.health_cache_key
+        key = self.state_cache_prefix("health")
         value = cache.get(key, None)
         if value:
             return datetime.fromtimestamp(value)
         return None
+
+    @property
+    def deployment_version(self) -> Dict[str, Any]:
+        """Get deployed outposts version, and if the version is behind ours.
+        Returns a dict with keys version and outdated."""
+        key = self.state_cache_prefix("version")
+        value = cache.get(key, None)
+        if not value:
+            return {"version": "", "outdated": False}
+        try:
+            outpost_version = parse(value)
+            return {"version": value, "outdated": outpost_version < OUR_VERSION}
+        except InvalidVersion:
+            return {"version": version, "outdated": False}
 
     @property
     def user(self) -> User:

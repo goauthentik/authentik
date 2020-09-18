@@ -83,7 +83,11 @@ class OutpostConsumer(JsonWebsocketConsumer):
     def receive_json(self, content: Data):
         msg = from_dict(WebsocketMessage, content)
         if msg.instruction == WebsocketMessageInstruction.HELLO:
-            cache.set(self.outpost.health_cache_key, time(), timeout=60)
+            cache.set(self.outpost.state_cache_prefix("health"), time(), timeout=60)
+            if "version" in msg.args:
+                cache.set(
+                    self.outpost.state_cache_prefix("version"), msg.args["version"]
+                )
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
 

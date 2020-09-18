@@ -44,6 +44,7 @@
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Providers' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Health' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Version' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
@@ -59,13 +60,24 @@
                         </span>
                     </td>
                     <td role="cell">
-                        {% with health=outpost.health %}
+                        {% with health=outpost.deployment_health %}
                         {% if health %}
                             <i class="fas fa-check pf-m-success"></i> {{ health|naturaltime }}
                         {% else %}
                             <i class="fas fa-times pf-m-danger"></i> Unhealthy
                         {% endif %}
                         {% endwith %}
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {% with ver=outpost.deployment_version %}
+                            {% if ver.outdated or ver.version == "" %}
+                            <i class="fas fa-times pf-m-danger"></i> {{ ver.version|default:"-" }}
+                            {% else %}
+                            <i class="fas fa-check pf-m-success"></i> {{ ver.version }}
+                            {% endif %}
+                            {% endwith %}
+                        </span>
                     </td>
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
