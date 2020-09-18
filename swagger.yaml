@@ -5846,6 +5846,8 @@ definitions:
           - PASSWORD_RESET
           - INVITE_CREATED
           - INVITE_USED
+          - IMPERSONATION_STARTED
+          - IMPERSONATION_ENDED
           - CUSTOM
       date:
         title: Date

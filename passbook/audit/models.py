@@ -6,15 +6,16 @@ from uuid import UUID, uuid4
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.base import Model
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
+from passbook.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
@@ -36,6 +37,19 @@ def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     return final_dict
 
 
+def model_to_dict(model: Model) -> Dict[str, Any]:
+    """Convert model to dict"""
+    name = str(model)
+    if hasattr(model, "name"):
+        name = model.name
+    return {
+        "app": model._meta.app_label,
+        "model_name": model._meta.model_name,
+        "pk": model.pk,
+        "name": name,
+    }
+
+
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     """clean source of all Models that would interfere with the JSONField.
     Models are replaced with a dictionary of {
@@ -48,18 +62,7 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
-            model_content_type = ContentType.objects.get_for_model(value)
-            name = str(value)
-            if hasattr(value, "name"):
-                name = value.name
-            final_dict[key] = sanitize_dict(
-                {
-                    "app": model_content_type.app_label,
-                    "model_name": model_content_type.model,
-                    "pk": value.pk,
-                    "name": name,
-                }
-            )
+            final_dict[key] = sanitize_dict(model_to_dict(value))
         elif isinstance(value, UUID):
             final_dict[key] = value.hex
         else:
@@ -79,6 +82,8 @@ class EventAction(Enum):
     PASSWORD_RESET = "password_reset"  # noqa # nosec
     INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
+    IMPERSONATION_STARTED = "impersonation_started"
+    IMPERSONATION_ENDED = "impersonation_ended"
     CUSTOM = "custom"
 
     @staticmethod
@@ -140,6 +145,12 @@ class Event(models.Model):
                 self.user = request.user
         if user:
             self.user = user
+        # Check if we're currently impersonating, and add that user
+        if hasattr(request, "session"):
+            if SESSION_IMPERSONATE_ORIGINAL_USER in request.session:
+                self.context["on_behalf_of"] = model_to_dict(
+                    request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+                )
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = get_client_ip(request) or "255.255.255.255"
         # If there's no app set, we get it from the requests too

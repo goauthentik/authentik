@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from structlog import get_logger
 
+from passbook.audit.models import Event, EventAction
 from passbook.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
@@ -30,7 +31,7 @@ class ImpersonateInitView(View):
         request.session[SESSION_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_IMPERSONATE_USER] = user_to_be
 
-        # TODO Audit log entry
+        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request)
 
         return redirect("passbook_core:overview")
 
@@ -50,6 +51,6 @@ class ImpersonateEndView(View):
         del request.session[SESSION_IMPERSONATE_USER]
         del request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
 
-        # TODO: Audit log entry
+        Event.new(EventAction.IMPERSONATION_ENDED).from_http(request)
 
         return redirect("passbook_core:overview")
