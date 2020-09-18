@@ -293,6 +293,7 @@ class OAuth2Provider(Provider):
                 "providers/oauth2/setup_url_modal.html",
                 {
                     "provider": self,
+                    "issuer": self.get_issuer(request),
                     "authorize": request.build_absolute_uri(
                         reverse("passbook_providers_oauth2:authorize",)
                     ),
@@ -339,7 +340,6 @@ class BaseGrantModel(models.Model):
         abstract = True
 
 
-# pylint: disable=too-many-instance-attributes
 class AuthorizationCode(ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
@@ -366,7 +366,7 @@ class AuthorizationCode(ExpiringModel, BaseGrantModel):
 
 
 @dataclass
-# plyint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
     Authenticated is the ID Token data structure. The ID Token is a security token that contains

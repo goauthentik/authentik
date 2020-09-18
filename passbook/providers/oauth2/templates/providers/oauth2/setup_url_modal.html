@@ -15,6 +15,19 @@
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label" for="help-text-simple-form-name">
+                            <span class="pf-c-form__label-text">{% trans 'OpenID Configuration URL' %}</span>
+                        </label>
+                        <input class="pf-c-form-control" readonly type="text" value="{{ provider_info }}" />
+                    </div>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="help-text-simple-form-name">
+                            <span class="pf-c-form__label-text">{% trans 'OpenID Configuration Issuer' %}</span>
+                        </label>
+                        <input class="pf-c-form-control" readonly type="text" value="{{ issuer }}" />
+                    </div>
+                    <hr>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="help-text-simple-form-name">
                             <span class="pf-c-form__label-text">{% trans 'Authorize URL' %}</span>
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="{{ authorize }}" />
@@ -30,13 +43,6 @@
                             <span class="pf-c-form__label-text">{% trans 'Userinfo Endpoint' %}</span>
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="{{ userinfo }}" />
-                    </div>
-                    <hr>
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'OpenID Configuration URL' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ provider_info }}" />
                     </div>
                 </form>
             </div>
