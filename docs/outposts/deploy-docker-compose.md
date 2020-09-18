@@ -15,6 +15,6 @@ services:
       - 4443:4443
     environment:
       PASSBOOK_HOST: https://your-passbook.tld
-      PASSBOOK_INSECURE: 'true'
+      PASSBOOK_INSECURE: 'false'
       PASSBOOK_TOKEN: token-generated-by-passbook
 ```

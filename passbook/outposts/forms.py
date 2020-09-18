@@ -4,8 +4,8 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.fields import CodeMirrorWidget, YAMLField
-from passbook.core.models import Provider
 from passbook.outposts.models import Outpost
+from passbook.providers.proxy.models import ProxyProvider
 
 
 class OutpostForm(forms.ModelForm):
@@ -13,7 +13,7 @@ class OutpostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["providers"].queryset = Provider.objects.all().select_subclasses()
+        self.fields["providers"].queryset = ProxyProvider.objects.all()
 
     class Meta:
 
