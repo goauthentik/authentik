@@ -39,7 +39,10 @@ class UserWriteStageView(StageView):
         # Before we change anything, check if the user is the same as in the request
         # and we're updating a password. In that case we need to update the session hash
         should_update_seesion = False
-        if any(["password" in x for x in data.keys()]) and self.request.user.pk == user.pk:
+        if (
+            any(["password" in x for x in data.keys()])
+            and self.request.user.pk == user.pk
+        ):
             should_update_seesion = True
         for key, value in data.items():
             setter_name = f"set_{key}"
