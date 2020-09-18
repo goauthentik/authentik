@@ -66,7 +66,9 @@ class ProviderInfoView(View):
         provider: OAuth2Provider = get_object_or_404(
             OAuth2Provider, pk=application.provider_id
         )
-        response = JsonResponse(self.get_info(provider))
+        response = JsonResponse(
+            self.get_info(provider), json_dumps_params={"indent": 2}
+        )
         response["Access-Control-Allow-Origin"] = "*"
 
         return response
