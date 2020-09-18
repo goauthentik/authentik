@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BeryJu/passbook/proxy/pkg"
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"
@@ -22,20 +23,33 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 		"Authorization": []string{ac.token},
 	}
 
-	_, set := os.LookupEnv("PASSBOOK_INSECURE")
+	value, set := os.LookupEnv("PASSBOOK_INSECURE")
+	if !set {
+		value = "false"
+	}
 
-	ws := recws.RecConn{
-		// KeepAliveTimeout: 10 * time.Second,
+	ws := &recws.RecConn{
 		NonVerbose: true,
 		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: set,
+			InsecureSkipVerify: strings.ToLower(value) == "true",
 		},
 	}
 	ws.Dial(fmt.Sprintf(pathTemplate, scheme, pbURL.Host, outpostUUID.String()), header)
 
-	ac.logger.WithField("outpost", outpostUUID.String()).Debug("connecting to passbook")
+	ac.logger.WithField("component", "ws").WithField("outpost", outpostUUID.String()).Debug("connecting to passbook")
 
 	ac.wsConn = ws
+	// Send hello message with our version
+	msg := websocketMessage{
+		Instruction: WebsocketInstructionHello,
+		Args: map[string]interface{}{
+			"version": pkg.VERSION,
+		},
+	}
+	err := ws.WriteJSON(msg)
+	if err != nil {
+		ac.logger.WithField("component", "ws").WithError(err).Warning("Failed to hello to passbook")
+	}
 }
 
 // Shutdown Gracefully stops all workers, disconnects from websocket
@@ -52,12 +66,15 @@ func (ac *APIController) Shutdown() {
 
 func (ac *APIController) startWSHandler() {
 	for {
+		if !ac.wsConn.IsConnected() {
+			continue
+		}
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			ac.logger.WithField("loop", "ws-handler").Println("read:", err)
 			ac.wsConn.CloseAndReconnect()
-			return
+			continue
 		}
 		if wsMsg.Instruction != WebsocketInstructionAck {
 			ac.logger.Debugf("%+v\n", wsMsg)
@@ -73,15 +90,21 @@ func (ac *APIController) startWSHandler() {
 
 func (ac *APIController) startWSHealth() {
 	for ; true; <-time.Tick(time.Second * 10) {
+		if !ac.wsConn.IsConnected() {
+			continue
+		}
 		aliveMsg := websocketMessage{
 			Instruction: WebsocketInstructionHello,
-			Args:        make(map[string]interface{}),
+			Args: map[string]interface{}{
+				"version": pkg.VERSION,
+			},
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
+		ac.logger.WithField("loop", "ws-health").Debug("hello'd")
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").Println("write:", err)
 			ac.wsConn.CloseAndReconnect()
-			return
+			continue
 		}
 	}
 }

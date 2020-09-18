@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/BeryJu/passbook/proxy/pkg/client"
@@ -37,7 +38,7 @@ type APIController struct {
 	lastBundleHash string
 	logger         *log.Entry
 
-	wsConn recws.RecConn
+	wsConn *recws.RecConn
 }
 
 func getCommonOptions() *options.Options {
@@ -85,9 +86,12 @@ func doGlobalSetup(config map[string]interface{}) {
 }
 
 func getTLSTransport() http.RoundTripper {
-	_, set := os.LookupEnv("PASSBOOK_INSECURE")
+	value, set := os.LookupEnv("PASSBOOK_INSECURE")
+	if !set {
+		value = "false"
+	}
 	tlsTransport, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
-		InsecureSkipVerify: set,
+		InsecureSkipVerify: strings.ToLower(value) == "true",
 	})
 	if err != nil {
 		panic(err)

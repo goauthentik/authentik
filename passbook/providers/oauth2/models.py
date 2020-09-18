@@ -340,6 +340,7 @@ class BaseGrantModel(models.Model):
         abstract = True
 
 
+# pylint: disable=too-many-instance-attributes
 class AuthorizationCode(ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
