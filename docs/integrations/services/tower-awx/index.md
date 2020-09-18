@@ -16,14 +16,15 @@ From https://docs.ansible.com/ansible/2.5/reference_appendices/tower.html
 
 The following placeholders will be used:
 
--   `awx.company` is the FQDN of the AWX/Tower install.
--   `passbook.company` is the FQDN of the passbook install.
+- `awx.company` is the FQDN of the AWX/Tower install.
+- `passbook.company` is the FQDN of the passbook install.
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://awx.company/sso/complete/saml/`
--   Audience: `awx`
--   Issuer: `https://awx.company/sso/metadata/saml/`
+- ACS URL: `https://awx.company/sso/complete/saml/`
+- Audience: `awx`
+- Service Provider Binding: Post
+- Issuer: `https://awx.company/sso/metadata/saml/`
 
 You can of course use a custom signing certificate, and adjust durations.
 
