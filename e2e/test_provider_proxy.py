@@ -77,7 +77,7 @@ class TestProviderProxy(SeleniumTestCase):
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
         while healthcheck_retries < 50:
-            if outpost.health:
+            if outpost.deployment_health:
                 break
             healthcheck_retries += 1
             sleep(0.5)
