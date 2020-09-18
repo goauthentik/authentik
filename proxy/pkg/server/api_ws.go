@@ -55,7 +55,8 @@ func (ac *APIController) startWSHandler() {
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
-			ac.logger.Println("read:", err)
+			ac.logger.WithField("loop", "ws-handler").Println("read:", err)
+			ac.wsConn.CloseAndReconnect()
 			return
 		}
 		if wsMsg.Instruction != WebsocketInstructionAck {
@@ -64,7 +65,7 @@ func (ac *APIController) startWSHandler() {
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			err := ac.UpdateIfRequired()
 			if err != nil {
-				ac.logger.WithError(err).Debug("Failed to update")
+				ac.logger.WithField("loop", "ws-handler").WithError(err).Debug("Failed to update")
 			}
 		}
 	}
@@ -78,7 +79,8 @@ func (ac *APIController) startWSHealth() {
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
 		if err != nil {
-			ac.logger.Println("write:", err)
+			ac.logger.WithField("loop", "ws-health").Println("write:", err)
+			ac.wsConn.CloseAndReconnect()
 			return
 		}
 	}
