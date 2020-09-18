@@ -53,6 +53,7 @@ nav:
         - Sentry: integrations/services/sentry/index.md
         - Ansible Tower/AWX: integrations/services/tower-awx/index.md
         - VMware vCenter: integrations/services/vmware-vcenter/index.md
+        - Ubuntu Landscape: integrations/services/landscape/index.md
   - Upgrading:
     - to 0.9: upgrading/to-0.9.md
     - to 0.10: upgrading/to-0.10.md
