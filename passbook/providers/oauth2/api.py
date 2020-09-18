@@ -22,7 +22,6 @@ class OAuth2ProviderSerializer(ModelSerializer):
             "jwt_alg",
             "rsa_key",
             "redirect_uris",
-            "post_logout_redirect_uris",
             "sub_mode",
             "property_mappings",
         ]

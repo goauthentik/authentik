@@ -6651,10 +6651,6 @@ definitions:
         description: Enter each URI on a new line.
         type: string
         minLength: 1
-      post_logout_redirect_uris:
-        title: Post Logout Redirect URIs
-        description: Enter each URI on a new line.
-        type: string
       sub_mode:
         title: Sub mode
         description: Configure what data should be used as unique User Identifier.

@@ -157,12 +157,6 @@ class OAuth2Provider(Provider):
         verbose_name=_("Redirect URIs"),
         help_text=_("Enter each URI on a new line."),
     )
-    post_logout_redirect_uris = models.TextField(
-        blank=True,
-        default="",
-        verbose_name=_("Post Logout Redirect URIs"),
-        help_text=_("Enter each URI on a new line."),
-    )
 
     include_claims_in_id_token = models.BooleanField(
         default=True,
