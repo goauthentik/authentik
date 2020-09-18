@@ -53,6 +53,8 @@ class YAMLField(forms.JSONField):
             )
         if isinstance(converted, str):
             return YAMLString(converted)
+        if converted is None:
+            return {}
         return converted
 
     def bound_data(self, data, initial):
