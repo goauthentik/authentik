@@ -121,7 +121,11 @@ class Outpost(models.Model):
             return {"version": "", "outdated": False, "should": OUR_VERSION}
         try:
             outpost_version = parse(value)
-            return {"version": value, "outdated": outpost_version < OUR_VERSION, "should": OUR_VERSION}
+            return {
+                "version": value,
+                "outdated": outpost_version < OUR_VERSION,
+                "should": OUR_VERSION,
+            }
         except InvalidVersion:
             return {"version": version, "outdated": False, "should": OUR_VERSION}
 
