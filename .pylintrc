@@ -1,9 +1,16 @@
 [MASTER]
 
 disable=arguments-differ,no-self-use,fixme,locally-disabled,too-many-ancestors,too-few-public-methods,import-outside-toplevel,bad-continuation,signature-differs,similarities,cyclic-import
+
 load-plugins=pylint_django,pylint.extensions.bad_builtin
+
 extension-pkg-whitelist=lxml
+
+# Allow constants to be shorter than normal (and lowercase, for settings.py)
 const-rgx=[a-zA-Z0-9_]{1,40}$
+
 ignored-modules=django-otp
-jobs=12
 ignore=migrations
+max-attributes=12
+
+jobs=12

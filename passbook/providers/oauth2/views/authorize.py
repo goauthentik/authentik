@@ -57,7 +57,6 @@ ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET}
 
 
 @dataclass
-# pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
     """Parameteres required to authorize an OAuth Client"""
 

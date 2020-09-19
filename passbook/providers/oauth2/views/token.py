@@ -26,7 +26,6 @@ LOGGER = get_logger()
 
 
 @dataclass
-# pylint: disable=too-many-instance-attributes
 class TokenParams:
     """Token params"""
 
