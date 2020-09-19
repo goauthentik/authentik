@@ -47,7 +47,6 @@ func getCommonOptions() *options.Options {
 	commonOpts.EmailDomains = []string{"*"}
 	commonOpts.ProviderType = "oidc"
 	commonOpts.ProxyPrefix = "/pbprox"
-	commonOpts.PingPath = "/pbprox/ping"
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
 	commonOpts.SetXAuthRequest = true

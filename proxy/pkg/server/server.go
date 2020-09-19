@@ -82,6 +82,10 @@ func (s *Server) ServeHTTPS() {
 }
 
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/pbprox/ping" {
+		w.WriteHeader(204)
+		return
+	}
 	handler, ok := s.Handlers[r.Host]
 	if !ok {
 		// If we only have one handler, host name switching doesn't matter
