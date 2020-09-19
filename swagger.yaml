@@ -7428,6 +7428,20 @@ definitions:
           title: Backends
           type: string
           minLength: 1
+      change_flow:
+        title: Change flow
+        description: Flow used by an authenticated user to change their password.
+          If empty, user will be unable to change their password.
+        type: string
+        format: uuid
+        x-nullable: true
+      failed_attempts_before_cancel:
+        title: Failed attempts before cancel
+        description: How many attempts a user has before the flow is canceled. To
+          lock the user out, use a reputation policy and a user_write stage.
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
   Prompt:
     required:
       - field_key
