@@ -10,6 +10,7 @@ from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
 from websockets.exceptions import WebSocketException
+from ldap3.core.exceptions import LDAPException
 
 LOGGER = get_logger()
 
@@ -39,6 +40,7 @@ def before_send(event, hint):
         SentryIgnoredException,
         WebSocketException,
         CeleryError,
+        LDAPException,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]

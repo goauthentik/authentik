@@ -39,7 +39,6 @@ This designates a flow for unenrollment. This flow can contain any amount of ver
 This designates a flow for recovery. This flow normally contains an [**identification**](stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md).
 Afterwards, use the [**prompt**](stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
 
-### Change Password
+### Setup
 
-This designates a flow for password changes. This flow can contain any amount of verification stages, such as [**email**](stages/email/index.md) or [**captcha**](stages/captcha/index.md).
-Afterwards, use the [**prompt**](stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](stages/user_write.md) stage to update the password.
+This designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.
