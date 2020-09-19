@@ -49,6 +49,13 @@
     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
 }
 
+.pf-m-success {
+    color: var(--pf-global--success-color--100);
+}
+.pf-m-danger {
+    color: var(--pf-global--danger-color--100);
+}
+
 /* fix multiple selects height */
 select[multiple] {
     height: initial;
