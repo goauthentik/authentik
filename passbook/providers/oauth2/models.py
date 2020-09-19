@@ -71,7 +71,7 @@ class ResponseTypes(models.TextChoices):
 
     CODE = "code", _("code (Authorization Code Flow)")
     CODE_ADFS = (
-        "code_adfs",
+        "code#adfs",
         _("code (ADFS Compatibility Mode, sends id_token as access_token)"),
     )
     ID_TOKEN = "id_token", _("id_token (Implicit Flow)")

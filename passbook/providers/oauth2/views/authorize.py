@@ -163,8 +163,15 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type)
 
         # Response type parameter validation.
-        if is_open_id and self.response_type != self.provider.response_type:
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type)
+        if is_open_id:
+            actual_response_type = self.provider.response_type
+            if "#" in self.provider.response_type:
+                hash_index = actual_response_type.index("#")
+                actual_response_type = actual_response_type[:hash_index]
+            if self.response_type != actual_response_type:
+                raise AuthorizeError(
+                    self.redirect_uri, "invalid_request", self.grant_type
+                )
 
         # PKCE validation of the transformation method.
         if self.code_challenge:

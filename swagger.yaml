@@ -6633,7 +6633,7 @@ definitions:
         type: string
         enum:
           - code
-          - code_adfs
+          - code#adfs
           - id_token
           - id_token token
           - code token
