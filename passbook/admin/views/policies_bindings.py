@@ -9,11 +9,12 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.shortcuts import get_objects_for_user
 
 from passbook.admin.views.utils import DeleteMessageView
 from passbook.lib.views import CreateAssignPermView
 from passbook.policies.forms import PolicyBindingForm
-from passbook.policies.models import PolicyBinding, PolicyBindingModel
+from passbook.policies.models import PolicyBinding
 
 
 class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, ListView):
@@ -29,13 +30,18 @@ class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, ListView):
         # Since `select_subclasses` does not work with a foreign key, we have to do two queries here
         # First, get all pbm objects that have bindings attached
         objects = (
-            PolicyBindingModel.objects.filter(policies__isnull=False)
+            get_objects_for_user(
+                self.request.user, "passbook_policies.view_policybindingmodel"
+            )
+            .filter(policies__isnull=False)
             .select_subclasses()
             .select_related()
             .order_by("pk")
         )
         for pbm in objects:
-            pbm.bindings = PolicyBinding.objects.filter(target__pk=pbm.pbm_uuid)
+            pbm.bindings = get_objects_for_user(
+                self.request.user, self.permission_required
+            ).filter(target__pk=pbm.pbm_uuid)
         return objects
 
 
