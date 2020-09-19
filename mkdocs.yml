@@ -32,6 +32,7 @@ nav:
     - Proxy: providers/proxy.md
   - Outposts:
     - Overview: outposts/outposts.md
+    - Upgrading: outposts/upgrading.md
     - Deploy on docker-compose: outposts/deploy-docker-compose.md
     - Deploy on Kubernetes: outposts/deploy-kubernetes.md
   - Expressions:
