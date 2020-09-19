@@ -91,7 +91,7 @@ class TokenParams:
 
             try:
                 self.refresh_token = RefreshToken.objects.get(
-                    refresh_token=raw_token, client=self.provider
+                    refresh_token=raw_token, provider=self.provider
                 )
 
             except RefreshToken.DoesNotExist:
