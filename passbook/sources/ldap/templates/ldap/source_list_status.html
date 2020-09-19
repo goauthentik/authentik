@@ -1,0 +1,8 @@
+{% load humanize %}
+{% load i18n %}
+
+{% if last_sync %}
+<i class="fas fa-check pf-m-success"></i> {% blocktrans with last_sync=last_sync|naturaltime %}Synced {{ last_sync }}.{% endblocktrans %}
+{% else %}
+<i class="fas fa-times pf-m-danger"></i> Not synced yet/Sync in Progress
+{% endif %}
