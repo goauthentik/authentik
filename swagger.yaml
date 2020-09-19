@@ -6232,6 +6232,11 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      skip_path_regex:
+        title: Skip path regex
+        description: Regular expression for which authentication is not required.
+          Each new line is interpreted as a new Regular Expression.
+        type: string
   Policy:
     type: object
     properties:
@@ -6697,6 +6702,11 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      skip_path_regex:
+        title: Skip path regex
+        description: Regular expression for which authentication is not required.
+          Each new line is interpreted as a new Regular Expression.
+        type: string
   SAMLProvider:
     required:
       - name

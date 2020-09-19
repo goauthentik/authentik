@@ -55,6 +55,7 @@ class ProxyProviderSerializer(ModelSerializer):
             "internal_host",
             "external_host",
             "certificate",
+            "skip_path_regex",
         ]
 
 
@@ -93,6 +94,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "oidc_configuration",
             "cookie_secret",
             "certificate",
+            "skip_path_regex",
         ]
 
     @swagger_serializer_method(serializer_or_field=OpenIDConnectConfigurationSerializer)

@@ -35,6 +35,7 @@ class ProxyProviderForm(forms.ModelForm):
             "internal_host",
             "external_host",
             "certificate",
+            "skip_path_regex",
         ]
         widgets = {
             "name": forms.TextInput(),
