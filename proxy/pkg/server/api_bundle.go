@@ -51,8 +51,10 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 	providerOpts.OIDCJwksURL = *provider.OidcConfiguration.JwksURI
 	providerOpts.ProfileURL = *provider.OidcConfiguration.UserinfoEndpoint
 
-	skipRegexes := strings.Split(provider.SkipPathRegex, "\n")
-	providerOpts.SkipAuthRegex = skipRegexes
+	if provider.SkipPathRegex != "" {
+		skipRegexes := strings.Split(provider.SkipPathRegex, "\n")
+		providerOpts.SkipAuthRegex = skipRegexes
+	}
 
 	providerOpts.UpstreamServers = []options.Upstream{
 		{
