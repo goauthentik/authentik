@@ -15,7 +15,10 @@ from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
-from passbook.core.middleware import SESSION_IMPERSONATE_ORIGINAL_USER
+from passbook.core.middleware import (
+    SESSION_IMPERSONATE_ORIGINAL_USER,
+    SESSION_IMPERSONATE_USER,
+)
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
@@ -148,8 +151,9 @@ class Event(models.Model):
         # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
             if SESSION_IMPERSONATE_ORIGINAL_USER in request.session:
+                self.user = request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
                 self.context["on_behalf_of"] = model_to_dict(
-                    request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+                    request.session[SESSION_IMPERSONATE_USER]
                 )
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = get_client_ip(request) or "255.255.255.255"
