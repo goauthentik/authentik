@@ -71,8 +71,12 @@
                     <td role="cell">
                         <span>
                             {% with ver=outpost.deployment_version %}
-                            {% if ver.outdated or ver.version == "" %}
-                            <i class="fas fa-times pf-m-danger"></i> {{ ver.version|default:"-" }}
+                            {% if ver.outdated %}
+                                {% if ver.version == "" %}
+                                <i class="fas fa-times pf-m-danger"></i> -
+                                {% else %}
+                                <i class="fas fa-times pf-m-danger"></i> {% blocktrans with is=ver.version should=ver.should %}{{ is }}, should be {{ should }}{% endblocktrans %}
+                                {% endif %}
                             {% else %}
                             <i class="fas fa-check pf-m-success"></i> {{ ver.version }}
                             {% endif %}

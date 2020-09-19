@@ -118,12 +118,12 @@ class Outpost(models.Model):
         key = self.state_cache_prefix("version")
         value = cache.get(key, None)
         if not value:
-            return {"version": "", "outdated": False}
+            return {"version": "", "outdated": False, "should": OUR_VERSION}
         try:
             outpost_version = parse(value)
-            return {"version": value, "outdated": outpost_version < OUR_VERSION}
+            return {"version": value, "outdated": outpost_version < OUR_VERSION, "should": OUR_VERSION}
         except InvalidVersion:
-            return {"version": version, "outdated": False}
+            return {"version": version, "outdated": False, "should": OUR_VERSION}
 
     @property
     def user(self) -> User:

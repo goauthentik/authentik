@@ -63,7 +63,7 @@ class OutpostUpdateView(
 
     template_name = "generic/update.html"
     success_url = reverse_lazy("passbook_admin:outposts")
-    success_message = _("Successfully updated Certificate-Key Pair")
+    success_message = _("Successfully updated Outpost")
 
 
 class OutpostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
@@ -74,4 +74,4 @@ class OutpostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessa
 
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:outposts")
-    success_message = _("Successfully deleted Certificate-Key Pair")
+    success_message = _("Successfully deleted Outpost")
