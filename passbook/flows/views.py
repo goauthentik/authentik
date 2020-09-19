@@ -187,9 +187,11 @@ class FlowExecutorView(View):
         is a superuser."""
         LOGGER.debug("f(exec): Stage invalid", flow_slug=self.flow.slug)
         self.cancel()
-        response = AccessDeniedResponse(self.request)
+        response = AccessDeniedResponse(
+            self.request, template="flows/denied_shell.html"
+        )
         response.error_message = error_message
-        return response
+        return to_stage_response(self.request, response)
 
     def cancel(self):
         """Cancel current execution and return a redirect"""

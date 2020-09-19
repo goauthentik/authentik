@@ -18,10 +18,9 @@ class AccessDeniedResponse(TemplateResponse):
     error_message: Optional[str] = None
     policy_result: Optional[PolicyResult] = None
 
-    def __init__(self, request: HttpRequest) -> None:
-        # For some reason pyright complains about keyword argument usage here
-        # pyright: reportGeneralTypeIssues=false
-        super().__init__(request=request, template="policies/denied.html")
+    # pyright: reportGeneralTypeIssues=false
+    def __init__(self, request: HttpRequest, template="policies/denied.html") -> None:
+        super().__init__(request, template)
         self.title = _("Access denied")
 
     def resolve_context(
