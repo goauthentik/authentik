@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_providers_proxy', '0005_auto_20200914_1536'),
+        ("passbook_providers_proxy", "0005_auto_20200914_1536"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='proxyprovider',
-            name='skip_path_regex',
-            field=models.TextField(blank=True, default='', help_text='Regular expression for which authentication is not required. Each new line is interpreted as a new Regular Expression.'),
+            model_name="proxyprovider",
+            name="skip_path_regex",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="Regular expression for which authentication is not required. Each new line is interpreted as a new Regular Expression.",
+            ),
         ),
     ]

@@ -52,10 +52,12 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     skip_path_regex = models.TextField(
         default="",
         blank=True,
-        help_text=_((
-            "Regular expression for which authentication is not required. "
-            "Each new line is interpreted as a new Regular Expression."
-        ))
+        help_text=_(
+            (
+                "Regular expression for which authentication is not required. "
+                "Each new line is interpreted as a new Regular Expression."
+            )
+        ),
     )
 
     certificate = models.ForeignKey(
