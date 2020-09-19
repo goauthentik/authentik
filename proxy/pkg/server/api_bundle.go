@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/BeryJu/passbook/proxy/pkg/client/crypto"
 	"github.com/BeryJu/passbook/proxy/pkg/models"
@@ -49,6 +50,9 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 	providerOpts.RedeemURL = *provider.OidcConfiguration.TokenEndpoint
 	providerOpts.OIDCJwksURL = *provider.OidcConfiguration.JwksURI
 	providerOpts.ProfileURL = *provider.OidcConfiguration.UserinfoEndpoint
+
+	skipRegexes := strings.Split(provider.SkipPathRegex, "\n")
+	providerOpts.SkipAuthRegex = skipRegexes
 
 	providerOpts.UpstreamServers = []options.Upstream{
 		{

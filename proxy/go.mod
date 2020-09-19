@@ -38,7 +38,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
 	golang.org/x/sys v0.0.0-20200918174421-af09f7315aff // indirect
-	golang.org/x/tools v0.0.0-20200918201133-e94ab7288189 // indirect
+	golang.org/x/tools v0.0.0-20200918232735-d647fc253266 // indirect
 	gopkg.in/ini.v1 v1.61.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )
