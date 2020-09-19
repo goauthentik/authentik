@@ -15,6 +15,8 @@ class PasswordStageSerializer(ModelSerializer):
             "pk",
             "name",
             "backends",
+            "change_flow",
+            "failed_attempts_before_cancel",
         ]
 
 

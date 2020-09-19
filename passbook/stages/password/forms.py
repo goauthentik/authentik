@@ -48,7 +48,7 @@ class PasswordStageForm(forms.ModelForm):
     class Meta:
 
         model = PasswordStage
-        fields = ["name", "backends", "change_flow"]
+        fields = ["name", "backends", "change_flow", "failed_attempts_before_cancel"]
         widgets = {
             "name": forms.TextInput(),
             "backends": FilteredSelectMultiple(

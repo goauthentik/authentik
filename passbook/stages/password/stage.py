@@ -17,9 +17,11 @@ from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
 from passbook.lib.utils.reflection import path_to_class
 from passbook.stages.password.forms import PasswordForm
+from passbook.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
+SESSION_INVALID_TRIES = "user_invalid_tries"
 
 
 def authenticate(
@@ -70,6 +72,20 @@ class PasswordStageView(FormView, StageView):
         if recovery_flow.exists():
             kwargs["recovery_flow"] = recovery_flow.first()
         return kwargs
+
+    def form_invalid(self, form: PasswordForm) -> HttpResponse:
+        if SESSION_INVALID_TRIES not in self.request.session:
+            self.request.session[SESSION_INVALID_TRIES] = 0
+        self.request.session[SESSION_INVALID_TRIES] += 1
+        current_stage: PasswordStage = self.executor.current_stage
+        if (
+            self.request.session[SESSION_INVALID_TRIES]
+            > current_stage.failed_attempts_before_cancel
+        ):
+            LOGGER.debug("User has exceeded maximum tries")
+            del self.request.session[SESSION_INVALID_TRIES]
+            return self.executor.stage_invalid()
+        return super().form_invalid(form)
 
     def form_valid(self, form: PasswordForm) -> HttpResponse:
         """Authenticate against django's authentication backend"""

@@ -131,6 +131,37 @@ class TestPasswordStage(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_invalid_password_lockout(self):
+        """Test with a valid pending user and invalid password (trigger logout counter)"""
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        for _ in range(self.stage.failed_attempts_before_cancel):
+            response = self.client.post(
+                reverse(
+                    "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                ),
+                # Form data
+                {"password": self.password + "test"},
+            )
+            self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse(
+                "passbook_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            ),
+            # Form data
+            {"password": self.password + "test"},
+        )
+        self.assertEqual(response.status_code, 200)
+        # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+
     @patch(
         "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
     )

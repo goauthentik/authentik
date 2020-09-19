@@ -22,6 +22,15 @@ class PasswordStage(Stage):
         models.TextField(),
         help_text=_("Selection of backends to test the password against."),
     )
+    failed_attempts_before_cancel = models.IntegerField(
+        default=5,
+        help_text=_(
+            (
+                "How many attempts a user has before the flow is canceled. "
+                "To lock the user out, use a reputation policy and a user_write stage."
+            )
+        ),
+    )
 
     change_flow = models.ForeignKey(
         Flow,
