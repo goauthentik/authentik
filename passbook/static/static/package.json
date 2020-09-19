@@ -2,7 +2,7 @@
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
-    "@patternfly/patternfly": "^4.35.2",
+    "@patternfly/patternfly": "^4.42.2",
     "codemirror": "^5.57.0"
   }
 }
