@@ -102,11 +102,14 @@ class ASGILogger:
         await self.app(scope, receive, send_hooked)
 
     def _get_ip(self) -> str:
+        client_ip = None
         for header in ASGI_IP_HEADERS:
             if header in self.headers:
-                return self.headers[header].decode()
-        client_ip, _ = self.scope.get("client", ("", 0))
-        return client_ip
+                client_ip = self.headers[header].decode()
+        if not client_ip:
+            client_ip, _ = self.scope.get("client", ("", 0))
+        # Check if header has multiple values, and use the first one
+        return client_ip.split(", ")[0]
 
     def log(self, runtime: float):
         """Outpot access logs in a structured format"""

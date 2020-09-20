@@ -14,7 +14,7 @@ def _get_client_ip_from_meta(meta: Dict[str, Any]) -> Optional[str]:
     )
     for _header in headers:
         if _header in meta:
-            return meta.get(_header)
+            return meta.get(_header).split(", ")[0]
     return None
 
 
