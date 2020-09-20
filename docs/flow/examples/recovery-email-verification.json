@@ -57,16 +57,6 @@
         },
         {
             "identifiers": {
-                "pk": "cd042fc6-cc92-4b98-b7e6-f4729df798d8"
-            },
-            "model": "passbook_policies_expression.expressionpolicy",
-            "attrs": {
-                "name": "default-password-change-password-equal",
-                "expression": "# Check that both passwords are equal.\nreturn request.context['password'] == request.context['password_repeat']"
-            }
-        },
-        {
-            "identifiers": {
                 "pk": "e54045a7-6ecb-4ad9-ad37-28e72d8e565e",
                 "name": "default-recovery-identification"
             },
@@ -118,9 +108,6 @@
                 "fields": [
                     "7db91ee8-4290-4e08-8d39-63f132402515",
                     "d30b5eb4-7787-4072-b1ba-65b46e928920"
-                ],
-                "validation_policies": [
-                    "cd042fc6-cc92-4b98-b7e6-f4729df798d8"
                 ]
             }
         },

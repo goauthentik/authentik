@@ -1,9 +1,11 @@
 """Prompt forms"""
 from email.policy import Policy
-from typing import Callable, Iterator, List
+from types import MethodType
+from typing import Any, Callable, Iterator, List
 
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
@@ -13,6 +15,7 @@ from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from passbook.policies.engine import PolicyEngine
 from passbook.policies.models import PolicyBinding, PolicyBindingModel
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
+from passbook.stages.prompt.signals import password_validate
 
 
 class PromptStageForm(forms.ModelForm):
@@ -86,12 +89,35 @@ class PromptForm(forms.Form):
                 setattr(
                     self,
                     f"clean_{field.field_key}",
-                    username_field_cleaner_generator(field),
+                    MethodType(username_field_cleaner_factory(field), self),
                 )
+            # Check if we have a password field, add a handler that sends a signal
+            # to validate it
+            if field.type == FieldTypes.PASSWORD:
+                setattr(
+                    self,
+                    f"clean_{field.field_key}",
+                    MethodType(password_single_cleaner_factory(field), self),
+                )
+
         self.field_order = sorted(fields, key=lambda x: x.order)
+
+    def _clean_password_fields(self, *field_names):
+        """Check if the value of all password fields match by merging them into a set
+        and checking the length"""
+        all_passwords = {self.cleaned_data[x] for x in field_names}
+        if len(all_passwords) > 1:
+            raise forms.ValidationError(_("Passwords don't match."))
 
     def clean(self):
         cleaned_data = super().clean()
+        # Check if we have two password fields, and make sure they are the same
+        password_fields: QuerySet[Prompt] = self.stage.fields.filter(
+            type=FieldTypes.PASSWORD
+        )
+        if password_fields.exists() and password_fields.count() == 2:
+            self._clean_password_fields(*[field.field_key for field in password_fields])
+
         user = self.plan.context.get(PLAN_CONTEXT_PENDING_USER, get_anonymous_user())
         engine = ListPolicyEngine(self.stage.validation_policies.all(), user)
         engine.request.context = cleaned_data
@@ -101,13 +127,28 @@ class PromptForm(forms.Form):
             raise forms.ValidationError(list(result.messages))
 
 
-def username_field_cleaner_generator(field: Prompt) -> Callable:
+def username_field_cleaner_factory(field: Prompt) -> Callable:
     """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
 
-    def username_field_cleaner(self: PromptForm):
+    def username_field_cleaner(self: PromptForm) -> Any:
         """Check for duplicate usernames"""
         username = self.cleaned_data.get(field.field_key)
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Username is already taken.")
+        return username
 
     return username_field_cleaner
+
+
+def password_single_cleaner_factory(field: Prompt) -> Callable[[PromptForm], Any]:
+    """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
+
+    def password_single_clean(self: PromptForm) -> Any:
+        """Send password validation signals for e.g. LDAP Source"""
+        password = self.cleaned_data[field.field_key]
+        password_validate.send(
+            sender=self, password=password, plan_context=self.plan.context
+        )
+        return password
+
+    return password_single_clean

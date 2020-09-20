@@ -31,7 +31,16 @@ class FieldTypes(models.TextChoices):
         ),
     )
     EMAIL = "email", _("Email: Text field with Email type.")
-    PASSWORD = "password"  # noqa # nosec
+    PASSWORD = (
+        "password",  # noqa # nosec
+        _(
+            (
+                "Password: Masked input, password is validated against sources. Policies still "
+                "have to be applied to this Stage. If two of these are used in the same stage, "
+                "they are ensured to be identical."
+            )
+        ),
+    )
     NUMBER = "number"
     CHECKBOX = "checkbox"
     DATE = "data"

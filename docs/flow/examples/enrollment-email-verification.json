@@ -85,15 +85,6 @@
         },
         {
             "identifiers": {
-                "pk": "9922212c-47a2-475a-9905-abeb5e621652"
-            },
-            "model": "passbook_policies_expression.expressionpolicy",
-            "attrs": {
-                "name": "policy-enrollment-password-equals",
-                "expression": "# Verifies that the passwords are equal\r\nreturn request.context['password'] == request.context['password_repeat']"
-            }
-        },{
-            "identifiers": {
                 "pk": "096e6282-6b30-4695-bd03-3b143eab5580",
                 "name": "default-enrollment-email-verficiation"
             },
@@ -135,9 +126,6 @@
                     "cb954fd4-65a5-4ad9-b1ee-180ee9559cf4",
                     "7db91ee8-4290-4e08-8d39-63f132402515",
                     "d30b5eb4-7787-4072-b1ba-65b46e928920"
-                ],
-                "validation_policies": [
-                    "9922212c-47a2-475a-9905-abeb5e621652"
                 ]
             }
         },

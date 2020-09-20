@@ -8,17 +8,10 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from passbook.flows.models import FlowDesignation
 from passbook.stages.prompt.models import FieldTypes
 
-PROMPT_POLICY_EXPRESSION = """# Check that both passwords are equal.
-return request.context['password'] == request.context['password_repeat']"""
-
 
 def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     Flow = apps.get_model("passbook_flows", "Flow")
     FlowStageBinding = apps.get_model("passbook_flows", "FlowStageBinding")
-
-    ExpressionPolicy = apps.get_model(
-        "passbook_policies_expression", "ExpressionPolicy"
-    )
 
     PromptStage = apps.get_model("passbook_stages_prompt", "PromptStage")
     Prompt = apps.get_model("passbook_stages_prompt", "Prompt")
@@ -57,15 +50,8 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
         },
     )
 
-    # Policy to only trigger prompt when no username is given
-    prompt_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
-        name="default-password-change-password-equal",
-        defaults={"expression": PROMPT_POLICY_EXPRESSION},
-    )
-
     prompt_stage.fields.add(password_prompt)
     prompt_stage.fields.add(password_rep_prompt)
-    prompt_stage.validation_policies.add(prompt_policy)
     prompt_stage.save()
 
     user_write, _ = UserWriteStage.objects.using(db_alias).update_or_create(
@@ -100,7 +86,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("passbook_flows", "0006_auto_20200629_0857"),
-        ("passbook_policies_expression", "0001_initial"),
         ("passbook_stages_password", "0001_initial"),
         ("passbook_stages_prompt", "0001_initial"),
         ("passbook_stages_user_write", "0001_initial"),

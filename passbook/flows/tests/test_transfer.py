@@ -105,15 +105,10 @@ class TestFlowTransfer(TransactionTestCase):
                 order=2,
                 type=FieldTypes.PASSWORD,
             )
-            # Password checking policy
-            password_policy = ExpressionPolicy.objects.create(
-                name=generate_client_id(), expression="return True",
-            )
 
             # Stages
             first_stage = PromptStage.objects.create(name=generate_client_id())
             first_stage.fields.set([username_prompt, password, password_repeat])
-            first_stage.validation_policies.set([password_policy])
             first_stage.save()
 
             flow = Flow.objects.create(
