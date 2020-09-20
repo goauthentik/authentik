@@ -1,16 +1,28 @@
 #!/usr/bin/env python
 """This file needs to be run from the root of the project to correctly
 import passbook. This is done by the dockerfile."""
+from json import dumps
+from sys import stderr
 from time import sleep
 
 from psycopg2 import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
-from structlog import get_logger
 
 from passbook.lib.config import CONFIG
 
-LOGGER = get_logger()
+
+def j_print(event: str, log_level: str = "info", **kwargs):
+    """Print event in the same format as structlog with JSON.
+    Used before structlog is configured."""
+    data = {
+        "event": event,
+        "level": log_level,
+        "logger": __name__,
+    }
+    data.update(**kwargs)
+    print(dumps(data), file=stderr)
+
 
 while True:
     try:
@@ -24,7 +36,7 @@ while True:
         break
     except OperationalError:
         sleep(1)
-        LOGGER.warning("PostgreSQL Connection failed, retrying...")
+        j_print("PostgreSQL Connection failed, retrying...")
 
 while True:
     try:
@@ -38,4 +50,4 @@ while True:
         break
     except RedisError:
         sleep(1)
-        LOGGER.warning("Redis Connection failed, retrying...")
+        j_print("Redis Connection failed, retrying...")
