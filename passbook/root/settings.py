@@ -22,8 +22,9 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from passbook import __version__
+from passbook.core.middleware import structlog_add_request_id
 from passbook.lib.config import CONFIG
-from passbook.lib.logging import add_process_id
+from passbook.lib.logging import add_common_fields, add_process_id
 from passbook.lib.sentry import before_send
 
 
@@ -175,6 +176,7 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "passbook.core.middleware.RequestIDMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -330,6 +332,8 @@ structlog.configure_once(
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
         add_process_id,
+        add_common_fields(CONFIG.y("error_reporting.environment", "customer")),
+        structlog_add_request_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(),
         structlog.processors.StackInfoRenderer(),
