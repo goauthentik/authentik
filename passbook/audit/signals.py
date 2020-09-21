@@ -25,10 +25,13 @@ class EventNewThread(Thread):
     kwargs: Dict[str, Any]
     user: Optional[User] = None
 
-    def __init__(self, action: str, request: HttpRequest, **kwargs):
+    def __init__(
+        self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs
+    ):
         super().__init__()
         self.action = action
         self.request = request
+        self.user = user
         self.kwargs = kwargs
 
     def run(self):

@@ -66,9 +66,7 @@ class AuditMiddleware:
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
-        EventNewThread(
-            action, request, user=user, kwargs={"model": model_to_dict(instance)}
-        ).run()
+        EventNewThread(action, request, user=user, model=model_to_dict(instance)).run()
 
     @staticmethod
     # pylint: disable=unused-argument
@@ -83,5 +81,5 @@ class AuditMiddleware:
             EventAction.MODEL_DELETED,
             request,
             user=user,
-            kwargs={"model": model_to_dict(instance)},
+            model=model_to_dict(instance),
         ).run()
