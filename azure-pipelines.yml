@@ -149,7 +149,7 @@ stages:
             inputs:
               script: |
                 set -x
-                export BRANCH_NAME=$(echo $Build.SourceBranch | sed 's/refs\/heads\///g')
+                export BRANCH_NAME=$(echo ${Build.SourceBranch} | sed 's/refs\/heads\///g')
                 git checkout ${BRANCH_NAME}
                 pipenv install --dev
           - task: CmdLine@2
