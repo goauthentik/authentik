@@ -5831,8 +5831,7 @@ definitions:
         readOnly: true
       user:
         title: User
-        type: integer
-        x-nullable: true
+        type: string
       action:
         title: Action
         type: string
