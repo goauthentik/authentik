@@ -4,6 +4,14 @@ trigger:
 resources:
   - repo: self
 
+# Using conditions to set the variable value.
+# I guess if both conditions return true the last will be used.
+variables:
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
+    branchName: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    branchName: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
+
 variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
@@ -147,7 +155,7 @@ stages:
             inputs:
               script: |
                 set -x
-                git checkout $(Build.SourceBranchName)
+                git checkout $[ variables['branchName'] ]
                 pipenv install --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
@@ -301,7 +309,7 @@ stages:
             repository: 'beryju/passbook'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: 'gh-$[ variables['branchName'] ]'
       - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
@@ -318,14 +326,14 @@ stages:
             repository: 'beryju/passbook-static'
             command: 'build'
             Dockerfile: 'static.Dockerfile'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: 'gh-$[ variables['branchName'] ]'
             arguments: "--network=beryjupassbook_default"
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-static'
             command: 'push'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: 'gh-$[ variables['branchName'] ]'
   - stage: Deploy
     jobs:
       - job: deploy_dev
