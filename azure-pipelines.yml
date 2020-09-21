@@ -8,6 +8,10 @@ variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
+    branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') }}
 
 stages:
   - stage: Lint
@@ -115,6 +119,41 @@ stages:
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
+            inputs:
+              script: pipenv run ./manage.py migrate
+      - job: migrations_from_previous_release
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            displayName: Prepare Last tagged release
+            inputs:
+              script: |
+                git checkout $(git describe --abbrev=0 --match 'version/*')
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Migrate to last tagged release
+            inputs:
+              script: pipenv run ./manage.py migrate
+          - task: CmdLine@2
+            displayName: Install current branch
+            inputs:
+              script: |
+                set -x
+                git checkout ${{ variables.branchName }}
+                pipenv sync --dev
+          - task: CmdLine@2
+            displayName: Migrate to current branch
             inputs:
               script: pipenv run ./manage.py migrate
       - job: coverage_unittest
@@ -265,7 +304,7 @@ stages:
             repository: 'beryju/passbook'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: "gh-${{ variables.branchName }}"
       - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
@@ -282,14 +321,14 @@ stages:
             repository: 'beryju/passbook-static'
             command: 'build'
             Dockerfile: 'static.Dockerfile'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: "gh-${{ variables.branchName }}"
             arguments: "--network=beryjupassbook_default"
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-static'
             command: 'push'
-            tags: 'gh-$(Build.SourceBranchName)'
+            tags: "gh-${{ variables.branchName }}"
   - stage: Deploy
     jobs:
       - job: deploy_dev
