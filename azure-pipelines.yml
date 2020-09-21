@@ -117,6 +117,40 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run ./manage.py migrate
+      - job: migrations-from-previous-release
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.8'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            displayName: Prepare Last tagged release
+            input:
+              script: |
+                git checkout $(git describe --abbrev=0 --match 'version/*')
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Migrate to last tagged release
+            inputs:
+              script: pipenv run ./manage.py migrate
+          - task: CmdLine@2
+            displayName: Install current branch
+            inputs:
+              script: |
+                git checkout $(Build.SourceBranch)
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Migrate to current branch
+            inputs:
+              script: pipenv run ./manage.py migrate
       - job: coverage_unittest
         pool:
           vmImage: 'ubuntu-latest'
