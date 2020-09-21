@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
-from ldap3 import Connection, Server
+from ldap3 import ALL, Connection, Server
 
 from passbook.core.models import Group, PropertyMapping, Source
 from passbook.lib.models import DomainlessURLValidator
@@ -52,6 +52,16 @@ class LDAPSource(Source):
     )
 
     sync_users = models.BooleanField(default=True)
+    sync_users_password = models.BooleanField(
+        default=True,
+        help_text=_(
+            (
+                "When a user changes their password, sync it back to LDAP. "
+                "This can only be enabled on a single LDAP source."
+            )
+        ),
+        unique=True,
+    )
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
@@ -82,7 +92,7 @@ class LDAPSource(Source):
     def connection(self) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         if not self._connection:
-            server = Server(self.server_uri)
+            server = Server(self.server_uri, get_info=ALL)
             self._connection = Connection(
                 server,
                 raise_exceptions=True,
@@ -112,7 +122,7 @@ class LDAPPropertyMapping(PropertyMapping):
         return LDAPPropertyMappingForm
 
     def __str__(self):
-        return f"LDAP Property Mapping {self.expression} -> {self.object_field}"
+        return self.name
 
     class Meta:
 

@@ -90,8 +90,8 @@ class User(GuardianUserMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser
 
-    def set_password(self, password):
-        if self.pk:
+    def set_password(self, password, signal=True):
+        if self.pk and signal:
             password_changed.send(sender=self, user=self, password=password)
         self.password_change_date = now()
         return super().set_password(password)

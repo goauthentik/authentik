@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("passbook_core", "0002_auto_20200523_1133"),
+        ("passbook_sources_ldap", "0007_ldapsource_sync_users_password"),
     ]
 
     operations = [

@@ -24,6 +24,7 @@ class LDAPSourceSerializer(ModelSerializer):
             "user_group_membership_field",
             "object_uniqueness_field",
             "sync_users",
+            "sync_users_password",
             "sync_groups",
             "sync_parent_group",
             "property_mappings",

@@ -6945,6 +6945,11 @@ definitions:
       sync_users:
         title: Sync users
         type: boolean
+      sync_users_password:
+        title: Sync users password
+        description: When a user changes their password, sync it back to LDAP. This
+          can only be enabled on a single LDAP source.
+        type: boolean
       sync_groups:
         title: Sync groups
         type: boolean
