@@ -10,8 +10,8 @@ from ldap3.core.exceptions import LDAPException
 from passbook.core.models import User
 from passbook.core.signals import password_changed
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
-from passbook.sources.ldap.connector import Connector
 from passbook.sources.ldap.models import LDAPSource
+from passbook.sources.ldap.password import LDAPPasswordChanger
 from passbook.sources.ldap.tasks import sync_single
 from passbook.stages.prompt.signals import password_validate
 
@@ -32,9 +32,9 @@ def ldap_password_validate(sender, password: str, plan_context: Dict[str, Any], 
     if not sources.exists():
         return
     source = sources.first()
-    connector = Connector(source)
-    if connector.check_ad_password_complexity_enabled():
-        passing = connector.ad_password_complexity(
+    changer = LDAPPasswordChanger(source)
+    if changer.check_ad_password_complexity_enabled():
+        passing = changer.ad_password_complexity(
             password, plan_context.get(PLAN_CONTEXT_PENDING_USER, None)
         )
         if not passing:
@@ -52,8 +52,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     if not sources.exists():
         return
     source = sources.first()
-    connector = Connector(source)
+    changer = LDAPPasswordChanger(source)
     try:
-        connector.change_password(user, password)
+        changer.change_password(user, password)
     except LDAPException as exc:
         raise ValidationError("Failed to set password") from exc

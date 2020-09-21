@@ -5836,18 +5836,22 @@ definitions:
         title: Action
         type: string
         enum:
-          - LOGIN
-          - LOGIN_FAILED
-          - LOGOUT
-          - AUTHORIZE_APPLICATION
-          - SUSPICIOUS_REQUEST
-          - SIGN_UP
-          - PASSWORD_RESET
-          - INVITE_CREATED
-          - INVITE_USED
-          - IMPERSONATION_STARTED
-          - IMPERSONATION_ENDED
-          - CUSTOM
+          - login
+          - login_failed
+          - logout
+          - sign_up
+          - authorize_application
+          - suspicious_request
+          - password_set
+          - invitation_created
+          - invitation_used
+          - source_linked
+          - impersonation_started
+          - impersonation_ended
+          - model_created
+          - model_updated
+          - model_deleted
+          - custom_
       date:
         title: Date
         type: string
