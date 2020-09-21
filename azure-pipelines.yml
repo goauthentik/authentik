@@ -11,7 +11,7 @@ variables:
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
     branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/pull/', '') }}
+    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') }}
 
 stages:
   - stage: Lint
