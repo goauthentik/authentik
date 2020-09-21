@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 
-from passbook.audit.models import Event, EventAction
+from passbook.audit.models import Event
 
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -36,6 +36,6 @@ class DisableView(LoginRequiredMixin, View):
         messages.success(request, "Successfully disabled Static OTP Tokens")
         # Create event with email notification
         Event.new(
-            EventAction.CUSTOM, message="User disabled Static OTP Tokens."
+            "static_otp_disable", message="User disabled Static OTP Tokens."
         ).from_http(request)
         return redirect("passbook_stages_otp:otp-user-settings")

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from passbook.audit.models import Event, EventAction
+from passbook.audit.models import Event
 from passbook.policies.dummy.models import DummyPolicy
 
 

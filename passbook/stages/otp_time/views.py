@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from passbook.audit.models import Event, EventAction
+from passbook.audit.models import Event
 
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -32,7 +32,7 @@ class DisableView(LoginRequiredMixin, View):
         totp.delete()
         messages.success(request, "Successfully disabled Time-based OTP")
         # Create event with email notification
-        Event.new(
-            EventAction.CUSTOM, message="User disabled Time-based OTP."
-        ).from_http(request)
+        Event.new("totp_disable", message="User disabled Time-based OTP.").from_http(
+            request
+        )
         return redirect("passbook_stages_otp:otp-user-settings")

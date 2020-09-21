@@ -57,9 +57,7 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
 # pylint: disable=unused-argument
 def on_user_write(sender, request: HttpRequest, user: User, data: Dict[str, Any], **_):
     """Log User write"""
-    thread = EventNewThread(
-        EventAction.CUSTOM, request, caller="stages/user_write", **data
-    )
+    thread = EventNewThread("stages/user_write", request, **data)
     thread.user = user
     thread.run()
 

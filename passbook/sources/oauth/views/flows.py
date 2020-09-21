@@ -23,6 +23,8 @@ class PostUserEnrollmentStage(StageView):
         access.save()
         UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
         Event.new(
-            EventAction.CUSTOM, message="Linked OAuth Source", source=access.source
+            EventAction.SOURCE_LINKED,
+            message="Linked OAuth Source",
+            source=access.source,
         ).from_http(self.request)
         return self.executor.stage_ok()

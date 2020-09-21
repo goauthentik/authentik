@@ -104,6 +104,8 @@ class EventAction(models.TextChoices):
     INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
 
+    SOURCE_LINKED = "source_linked"
+
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
 

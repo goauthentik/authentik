@@ -182,7 +182,7 @@ class OAuthCallback(OAuthClientMixin, View):
         access.save()
         UserOAuthSourceConnection.objects.filter(pk=access.pk).update(user=user)
         Event.new(
-            EventAction.CUSTOM, message="Linked OAuth Source", source=source
+            EventAction.SOURCE_LINKED, message="Linked OAuth Source", source=source
         ).from_http(self.request)
         messages.success(
             self.request,
