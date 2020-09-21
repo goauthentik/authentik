@@ -218,10 +218,10 @@ class TokenView(View):
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
 
-        refresh_token = self.params.refresh_token.provider.create_token(
-            user=self.params.refresh_token.user,
-            provider=self.params.refresh_token.provider,
-            scope=self.params.scope,
+        provider: OAuth2Provider = self.params.refresh_token.provider
+
+        refresh_token: RefreshToken = provider.create_refresh_token(
+            user=self.params.refresh_token.user, scope=self.params.scope,
         )
 
         # If the Token has an id_token it's an Authentication request.
