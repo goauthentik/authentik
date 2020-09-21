@@ -132,7 +132,7 @@ stages:
               buildImages: false
           - task: CmdLine@2
             displayName: Prepare Last tagged release
-            input:
+            inputs:
               script: |
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo pip install -U wheel pipenv
