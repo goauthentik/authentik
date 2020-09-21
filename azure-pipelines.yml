@@ -7,15 +7,13 @@ resources:
 # Using conditions to set the variable value.
 # I guess if both conditions return true the last will be used.
 variables:
+  POSTGRES_DB: passbook
+  POSTGRES_USER: passbook
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
     branchName: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
     branchName: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
-
-variables:
-  POSTGRES_DB: passbook
-  POSTGRES_USER: passbook
-  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 stages:
   - stage: Lint
