@@ -134,7 +134,8 @@ stages:
             displayName: Prepare Last tagged release
             inputs:
               script: |
-                set -x
+                echo ##vso[task.setvariable variable=currentBranch]$(git branch --show-current)
+                export CURRENT_BRANCH=$(git branch --show-current)
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -147,8 +148,7 @@ stages:
             inputs:
               script: |
                 set -x
-                export BRANCH_NAME=$(echo $(Build.SourceBranch) | sed 's/refs\/heads\///g' | sed 's/refs\/pulls\///g')
-                git checkout ${BRANCH_NAME}
+                git checkout $(CURRENT_BRANCH)
                 pipenv sync --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
