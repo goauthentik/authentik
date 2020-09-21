@@ -10,10 +10,6 @@ variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
-    branchName: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
 
 stages:
   - stage: Lint
@@ -153,7 +149,8 @@ stages:
             inputs:
               script: |
                 set -x
-                git checkout ${branchName}
+                export BRANCH_NAME=$(echo $Build.SourceBranch | sed 's/refs\/heads\///g')
+                git checkout ${BRANCH_NAME}
                 pipenv install --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
