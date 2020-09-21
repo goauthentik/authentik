@@ -20,12 +20,12 @@ from passbook.stages.user_write.signals import user_write
 class EventNewThread(Thread):
     """Create Event in background thread"""
 
-    action: EventAction
+    action: str
     request: HttpRequest
     kwargs: Dict[str, Any]
     user: Optional[User] = None
 
-    def __init__(self, action: EventAction, request: HttpRequest, **kwargs):
+    def __init__(self, action: str, request: HttpRequest, **kwargs):
         super().__init__()
         self.action = action
         self.request = request

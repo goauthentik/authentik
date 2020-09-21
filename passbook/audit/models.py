@@ -1,7 +1,6 @@
 """passbook audit models"""
-from enum import Enum
 from inspect import getmodule, stack
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
 from django.conf import settings
@@ -22,7 +21,7 @@ from passbook.core.middleware import (
 from passbook.core.models import User
 from passbook.lib.utils.http import get_client_ip
 
-LOGGER = get_logger()
+LOGGER = get_logger("passbook.audit")
 
 
 def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -90,28 +89,29 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     return final_dict
 
 
-class EventAction(Enum):
+class EventAction(models.TextChoices):
     """All possible actions to save into the audit log"""
 
     LOGIN = "login"
     LOGIN_FAILED = "login_failed"
     LOGOUT = "logout"
+
+    SIGN_UP = "sign_up"
     AUTHORIZE_APPLICATION = "authorize_application"
     SUSPICIOUS_REQUEST = "suspicious_request"
-    SIGN_UP = "sign_up"
-    PASSWORD_RESET = "password_reset"  # noqa # nosec
+    PASSWORD_SET = "password_set"  # noqa # nosec
+
     INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
+
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
-    CUSTOM = "custom"
 
-    @staticmethod
-    def as_choices():
-        """Generate choices of actions used for database"""
-        return tuple(
-            (x, y.value) for x, y in getattr(EventAction, "__members__").items()
-        )
+    MODEL_CREATED = "model_created"
+    MODEL_UPDATED = "model_updated"
+    MODEL_DELETED = "model_deleted"
+
+    CUSTOM_PREFIX = "custom_"
 
 
 class Event(models.Model):
@@ -119,7 +119,7 @@ class Event(models.Model):
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
-    action = models.TextField(choices=EventAction.as_choices())
+    action = models.TextField(choices=EventAction.choices)
     date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
@@ -134,20 +134,18 @@ class Event(models.Model):
 
     @staticmethod
     def new(
-        action: EventAction,
+        action: Union[str, EventAction],
         app: Optional[str] = None,
         _inspect_offset: int = 1,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
         if not isinstance(action, EventAction):
-            raise ValueError(
-                f"action must be EventAction instance but was {type(action)}"
-            )
+            action = EventAction.CUSTOM_PREFIX + action
         if not app:
             app = getmodule(stack()[_inspect_offset][0]).__name__
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
-        event = Event(action=action.value, app=app, context=cleaned_kwargs)
+        event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
 
     def from_http(

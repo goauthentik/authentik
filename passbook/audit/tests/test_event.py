@@ -13,7 +13,7 @@ class TestAuditEvent(TestCase):
 
     def test_new_with_model(self):
         """Create a new Event passing a model as kwarg"""
-        event = Event.new(EventAction.CUSTOM, test={"model": get_anonymous_user()})
+        event = Event.new("unittest", test={"model": get_anonymous_user()})
         event.save()  # We save to ensure nothing is un-saveable
         model_content_type = ContentType.objects.get_for_model(get_anonymous_user())
         self.assertEqual(
@@ -24,7 +24,7 @@ class TestAuditEvent(TestCase):
     def test_new_with_uuid_model(self):
         """Create a new Event passing a model (with UUID PK) as kwarg"""
         temp_model = DummyPolicy.objects.create(name="test", result=True)
-        event = Event.new(EventAction.CUSTOM, model=temp_model)
+        event = Event.new("unittest", model=temp_model)
         event.save()  # We save to ensure nothing is un-saveable
         model_content_type = ContentType.objects.get_for_model(temp_model)
         self.assertEqual(
