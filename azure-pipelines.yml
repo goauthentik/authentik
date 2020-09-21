@@ -117,7 +117,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run ./manage.py migrate
-      - job: migrations-from-previous-release
+      - job: migrations_from_previous_release
         pool:
           vmImage: 'ubuntu-latest'
         steps:
