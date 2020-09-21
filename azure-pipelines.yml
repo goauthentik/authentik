@@ -134,6 +134,7 @@ stages:
             displayName: Prepare Last tagged release
             inputs:
               script: |
+                set -x
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -145,7 +146,8 @@ stages:
             displayName: Install current branch
             inputs:
               script: |
-                git checkout $(Build.SourceBranch)
+                set -x
+                git checkout $(Build.SourceBranchName)
                 pipenv install --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
