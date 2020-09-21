@@ -4,9 +4,7 @@ trigger:
 resources:
   - repo: self
 
-# Using conditions to set the variable value.
-# I guess if both conditions return true the last will be used.
-variables:
+  variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
@@ -149,9 +147,9 @@ stages:
             inputs:
               script: |
                 set -x
-                export BRANCH_NAME=$(echo $(Build.SourceBranch) | sed 's/refs\/heads\///g')
+                export BRANCH_NAME=$(echo $(Build.SourceBranch) | sed 's/refs\/heads\///g' | sed 's/refs\/pulls\///g')
                 git checkout ${BRANCH_NAME}
-                pipenv install --dev
+                pipenv sync --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
             inputs:
