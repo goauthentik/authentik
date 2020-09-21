@@ -9,9 +9,9 @@ variables:
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
-    branchName: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
+    branchName: ${{ replace(variables['Build.SourceBranch'], 'refs/heads/', '') }}
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: $[ replace(variables['Build.SourceBranch'], 'refs/pull/', '') ]
+    branchName: ${{ replace(variables['Build.SourceBranch'], 'refs/pull/', '') }}
 
 stages:
   - stage: Lint
