@@ -4,7 +4,7 @@ trigger:
 resources:
   - repo: self
 
-  variables:
+variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
