@@ -8,6 +8,10 @@ variables:
   POSTGRES_DB: passbook
   POSTGRES_USER: passbook
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
+    branchName: $[ replace(variables['Build.SourceBranch'], 'refs/heads/', '') ]
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    branchName: $[ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') ]
 
 stages:
   - stage: Lint
@@ -134,8 +138,6 @@ stages:
             displayName: Prepare Last tagged release
             inputs:
               script: |
-                echo ##vso[task.setvariable variable=currentBranch]$(git branch --show-current)
-                export CURRENT_BRANCH=$(git branch --show-current)
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
@@ -148,7 +150,7 @@ stages:
             inputs:
               script: |
                 set -x
-                git checkout $(CURRENT_BRANCH)
+                git checkout ${{ variables.branchName }}
                 pipenv sync --dev
           - task: CmdLine@2
             displayName: Migrate to current branch
@@ -302,7 +304,7 @@ stages:
             repository: 'beryju/passbook'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
-            tags: "gh-${branchName}"
+            tags: "gh-${{ variables.branchName }}"
       - job: build_static
         pool:
           vmImage: 'ubuntu-latest'
@@ -319,14 +321,14 @@ stages:
             repository: 'beryju/passbook-static'
             command: 'build'
             Dockerfile: 'static.Dockerfile'
-            tags: "gh-${branchName}"
+            tags: "gh-${{ variables.branchName }}"
             arguments: "--network=beryjupassbook_default"
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-static'
             command: 'push'
-            tags: "gh-${branchName}"
+            tags: "gh-${{ variables.branchName }}"
   - stage: Deploy
     jobs:
       - job: deploy_dev
