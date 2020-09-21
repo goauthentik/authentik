@@ -12,13 +12,14 @@ from django.db.models.base import Model
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from django.views.debug import SafeExceptionReporterFilter
-from guardian.shortcuts import get_anonymous_user
+from guardian.utils import get_anonymous_user
 from structlog import get_logger
 
 from passbook.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
+from passbook.core.models import User
 from passbook.lib.utils.http import get_client_ip
 
 LOGGER = get_logger()
@@ -51,6 +52,22 @@ def model_to_dict(model: Model) -> Dict[str, Any]:
         "pk": model.pk,
         "name": name,
     }
+
+
+def get_user(user: User, original_user: Optional[User] = None) -> Dict[str, Any]:
+    """Convert user object to dictionary, optionally including the original user"""
+    if isinstance(user, AnonymousUser):
+        user = get_anonymous_user()
+    user_data = {
+        "username": user.username,
+        "pk": user.pk,
+        "email": user.email,
+    }
+    if original_user:
+        original_data = get_user(original_user)
+        original_data["on_behalf_of"] = user_data
+        return original_data
+    return user_data
 
 
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -101,9 +118,7 @@ class Event(models.Model):
     """An individual audit log event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
-    )
+    user = models.JSONField(default=dict)
     action = models.TextField(choices=EventAction.as_choices())
     date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
@@ -142,17 +157,17 @@ class Event(models.Model):
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
         if hasattr(request, "user"):
-            if isinstance(request.user, AnonymousUser):
-                self.user = get_anonymous_user()
-            else:
-                self.user = request.user
+            self.user = get_user(
+                request.user,
+                request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None),
+            )
         if user:
-            self.user = user
+            self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
             if SESSION_IMPERSONATE_ORIGINAL_USER in request.session:
-                self.user = request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
-                self.context["on_behalf_of"] = model_to_dict(
+                self.user = get_user(request.session[SESSION_IMPERSONATE_ORIGINAL_USER])
+                self.user["on_behalf_of"] = get_user(
                     request.session[SESSION_IMPERSONATE_USER]
                 )
         # User 255.255.255.255 as fallback if IP cannot be determined

@@ -40,12 +40,28 @@
                             </div>
                         </th>
                         <td role="cell">
-                            <code>{{ entry.context }}</code>
+                            <div>
+                                <div>
+                                    <code>{{ entry.context }}</code>
+                                </div>
+                                {% if entry.user.on_behalf_of %}
+                                <small>
+                                    {% blocktrans with username=entry.user.on_behalf_of.username %}
+                                    On behalf of {{ username }}
+                                    {% endblocktrans %}
+                                </small>
+                                {% endif %}
+                            </div>
                         </td>
                         <td role="cell">
-                            <span>
-                                {{ entry.user }}
-                            </span>
+                            <div>
+                                <div>{{ entry.user.username }}</div>
+                                <small>
+                                    {% blocktrans with pk=entry.user.pk %}
+                                    ID: {{ pk }}
+                                    {% endblocktrans %}
+                                </small>
+                            </div>
                         </td>
                         <td role="cell">
                             <span>
