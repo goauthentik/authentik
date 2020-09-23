@@ -20,7 +20,7 @@ require (
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/justinas/alice v1.2.0
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/magiconair/properties v1.8.3 // indirect
+	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/oauth2-proxy/oauth2-proxy v1.1.2-0.20200817154438-5fa5b3186f39
@@ -37,8 +37,8 @@ require (
 	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
-	golang.org/x/sys v0.0.0-20200918174421-af09f7315aff // indirect
-	golang.org/x/tools v0.0.0-20200918232735-d647fc253266 // indirect
+	golang.org/x/sys v0.0.0-20200922070232-aee5d888a860 // indirect
+	golang.org/x/tools v0.0.0-20200923053713-ba800b16d873 // indirect
 	gopkg.in/ini.v1 v1.61.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )

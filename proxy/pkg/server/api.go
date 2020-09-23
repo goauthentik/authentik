@@ -50,7 +50,7 @@ func getCommonOptions() *options.Options {
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
 	commonOpts.SetXAuthRequest = true
-	commonOpts.SetAuthorization = true
+	commonOpts.SetAuthorization = false
 	return commonOpts
 }
 
