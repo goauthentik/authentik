@@ -47,7 +47,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         validators=[DomainlessURLValidator(schemes=("http", "https"))]
     )
     internal_host_ssl_validation = models.BooleanField(
-        default=True, help_text=_("Validate SSL Certificates of upstream servers"))
+        default=True, help_text=_("Validate SSL Certificates of upstream servers")
+    )
 
     skip_path_regex = models.TextField(
         default="",

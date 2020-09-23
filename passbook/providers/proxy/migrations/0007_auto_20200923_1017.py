@@ -6,18 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_providers_proxy', '0006_proxyprovider_skip_path_regex'),
+        ("passbook_providers_proxy", "0006_proxyprovider_skip_path_regex"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='proxyprovider',
-            name='internal_host_ssl_validation',
-            field=models.BooleanField(default=True, help_text='Validate SSL Certificates of upstream servers'),
+            model_name="proxyprovider",
+            name="internal_host_ssl_validation",
+            field=models.BooleanField(
+                default=True, help_text="Validate SSL Certificates of upstream servers"
+            ),
         ),
         migrations.AlterField(
-            model_name='proxyprovider',
-            name='skip_path_regex',
-            field=models.TextField(blank=True, default='', help_text='Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.'),
+            model_name="proxyprovider",
+            name="skip_path_regex",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.",
+            ),
         ),
     ]
