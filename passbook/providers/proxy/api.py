@@ -54,6 +54,7 @@ class ProxyProviderSerializer(ModelSerializer):
             "name",
             "internal_host",
             "external_host",
+            "internal_host_ssl_validation",
             "certificate",
             "skip_path_regex",
         ]
@@ -89,6 +90,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "name",
             "internal_host",
             "external_host",
+            "internal_host_ssl_validation",
             "client_id",
             "client_secret",
             "oidc_configuration",

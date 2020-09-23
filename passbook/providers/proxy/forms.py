@@ -33,6 +33,7 @@ class ProxyProviderForm(forms.ModelForm):
             "name",
             "authorization_flow",
             "internal_host",
+            "internal_host_ssl_validation",
             "external_host",
             "certificate",
             "skip_path_regex",

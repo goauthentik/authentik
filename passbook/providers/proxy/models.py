@@ -46,15 +46,15 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     external_host = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))]
     )
-
-    cookie_secret = models.TextField(default=get_cookie_secret)
+    internal_host_ssl_validation = models.BooleanField(
+        default=True, help_text=_("Validate SSL Certificates of upstream servers"))
 
     skip_path_regex = models.TextField(
         default="",
         blank=True,
         help_text=_(
             (
-                "Regular expression for which authentication is not required. "
+                "Regular expressions for which authentication is not required. "
                 "Each new line is interpreted as a new Regular Expression."
             )
         ),
@@ -63,6 +63,8 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     certificate = models.ForeignKey(
         CertificateKeyPair, on_delete=models.SET_NULL, null=True, blank=True,
     )
+
+    cookie_secret = models.TextField(default=get_cookie_secret)
 
     def form(self) -> Type[ModelForm]:
         from passbook.providers.proxy.forms import ProxyProviderForm

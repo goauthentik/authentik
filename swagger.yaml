@@ -6215,6 +6215,10 @@ definitions:
         title: External host
         type: string
         minLength: 1
+      internal_host_ssl_validation:
+        title: Internal host ssl validation
+        description: Validate SSL Certificates of upstream servers
+        type: boolean
       client_id:
         title: Client ID
         type: string
@@ -6237,7 +6241,7 @@ definitions:
         x-nullable: true
       skip_path_regex:
         title: Skip path regex
-        description: Regular expression for which authentication is not required.
+        description: Regular expressions for which authentication is not required.
           Each new line is interpreted as a new Regular Expression.
         type: string
   Policy:
@@ -6700,6 +6704,10 @@ definitions:
         title: External host
         type: string
         minLength: 1
+      internal_host_ssl_validation:
+        title: Internal host ssl validation
+        description: Validate SSL Certificates of upstream servers
+        type: boolean
       certificate:
         title: Certificate
         type: string
@@ -6707,7 +6715,7 @@ definitions:
         x-nullable: true
       skip_path_regex:
         title: Skip path regex
-        description: Regular expression for which authentication is not required.
+        description: Regular expressions for which authentication is not required.
           Each new line is interpreted as a new Regular Expression.
         type: string
   SAMLProvider:
