@@ -1,6 +1,7 @@
 """passbook multi-stage authentication engine"""
 from traceback import format_tb
 from typing import Any, Dict, Optional
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.http import (
     Http404,
@@ -19,8 +20,8 @@ from structlog import get_logger
 from passbook.audit.models import cleanse_dict
 from passbook.core.models import PASSBOOK_USER_DEBUG
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from passbook.flows.models import Flow, FlowDesignation, Stage
-from passbook.flows.planner import FlowPlan, FlowPlanner
+from passbook.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
+from passbook.flows.planner import FlowPlan, FlowPlanner, PLAN_CONTEXT_PENDING_USER
 from passbook.lib.utils.reflection import class_to_path
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
 from passbook.policies.http import AccessDeniedResponse
@@ -295,3 +296,32 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             {"type": "template", "body": source.content.decode("utf-8")}
         )
     return source
+
+
+class ConfigureFlowInitView(LoginRequiredMixin, View):
+    """Initiate planner for selected change flow and redirect to flow executor,
+    or raise Http404 if no configure_flow has been set."""
+
+    def get(self, request: HttpRequest, stage_uuid: str) -> HttpResponse:
+        """Initiate planner for selected change flow and redirect to flow executor,
+        or raise Http404 if no configure_flow has been set."""
+        try:
+            stage: Stage = Stage.objects.get_subclass(pk=stage_uuid)
+        except Stage.DoesNotExist as exc:
+            raise Http404 from exc
+        if not issubclass(stage, ConfigurableStage):
+            LOGGER.debug("Stage does not inherit ConfigurableStage", stage=stage)
+            raise Http404
+        if not stage.configure_flow:
+            LOGGER.debug("Stage has no configure_flow set", stage=stage)
+            raise Http404
+
+        plan = FlowPlanner(stage.configure_flow).plan(
+            request, {PLAN_CONTEXT_PENDING_USER: request.user}
+        )
+        request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "passbook_flows:flow-executor-shell",
+            self.request.GET,
+            flow_slug=stage.configure_flow.slug,
+        )

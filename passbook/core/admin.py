@@ -20,5 +20,5 @@ def admin_autoregister(app: AppConfig):
 
 for _app in apps.get_app_configs():
     if _app.label.startswith("passbook_"):
-        LOGGER.debug("Registering application for dj-admin", app=_app.label)
+        LOGGER.debug("Registering application for dj-admin", application=_app.label)
         admin_autoregister(_app)

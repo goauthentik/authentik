@@ -37,7 +37,7 @@ class FlowDesignation(models.TextChoices):
     ENROLLMENT = "enrollment"
     UNRENOLLMENT = "unenrollment"
     RECOVERY = "recovery"
-    STAGE_SETUP = "stage_setup"
+    STAGE_CONFIGURATION = "stage_configuration"
 
 
 class Stage(SerializerModel):
@@ -71,6 +71,29 @@ class Stage(SerializerModel):
         if hasattr(self, "__in_memory_type"):
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
+
+
+class ConfigurableStage(models.Model):
+    """Abstract base class for a Stage that can be configured by the enduser.
+    The stage should create a default flow with the configure_stage designation during
+    migration."""
+
+    configure_flow = models.ForeignKey(
+        'passbook_flows.Flow',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text=_(
+            (
+                "Flow used by an authenticated user to change their password. "
+                "If empty, user will be unable to change their password."
+            )
+        ),
+    )
+
+    class Meta:
+
+        abstract = True
 
 
 def in_memory_stage(view: Type["StageView"]) -> Stage:

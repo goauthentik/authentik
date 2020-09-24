@@ -8,4 +8,3 @@ class PassbookStagePasswordConfig(AppConfig):
     name = "passbook.stages.password"
     label = "passbook_stages_password"
     verbose_name = "passbook Stages.Password"
-    mountpoint = "-/user/stage/password/"

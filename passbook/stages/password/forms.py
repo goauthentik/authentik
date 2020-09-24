@@ -41,14 +41,14 @@ class PasswordStageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["change_flow"].queryset = Flow.objects.filter(
-            designation=FlowDesignation.STAGE_SETUP
+        self.fields["configure_flow"].queryset = Flow.objects.filter(
+            designation=FlowDesignation.STAGE_CONFIGURATION
         )
 
     class Meta:
 
         model = PasswordStage
-        fields = ["name", "backends", "change_flow", "failed_attempts_before_cancel"]
+        fields = ["name", "backends", "configure_flow", "failed_attempts_before_cancel"]
         widgets = {
             "name": forms.TextInput(),
             "backends": FilteredSelectMultiple(

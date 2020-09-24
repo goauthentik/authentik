@@ -11,11 +11,11 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from passbook.core.types import UIUserSettings
-from passbook.flows.models import Flow, Stage
+from passbook.flows.models import ConfigurableStage, Stage
 from passbook.flows.views import NEXT_ARG_NAME
 
 
-class PasswordStage(Stage):
+class PasswordStage(ConfigurableStage, Stage):
     """Prompts the user for their password, and validates it against the configured backends."""
 
     backends = ArrayField(
@@ -28,19 +28,6 @@ class PasswordStage(Stage):
             (
                 "How many attempts a user has before the flow is canceled. "
                 "To lock the user out, use a reputation policy and a user_write stage."
-            )
-        ),
-    )
-
-    change_flow = models.ForeignKey(
-        Flow,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        help_text=_(
-            (
-                "Flow used by an authenticated user to change their password. "
-                "If empty, user will be unable to change their password."
             )
         ),
     )
@@ -66,7 +53,7 @@ class PasswordStage(Stage):
         if not self.change_flow:
             return None
         base_url = reverse(
-            "passbook_stages_password:change", kwargs={"stage_uuid": self.pk}
+            "passbook_flows:configure", kwargs={"stage_uuid": self.pk}
         )
         args = urlencode({NEXT_ARG_NAME: reverse("passbook_core:user-settings")})
         return UIUserSettings(name=_("Change password"), url=f"{base_url}?{args}")
