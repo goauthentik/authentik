@@ -11,14 +11,15 @@ From https://about.gitlab.com/what-is-gitlab/
 
 The following placeholders will be used:
 
--   `gitlab.company` is the FQDN of the GitLab Install
--   `passbook.company` is the FQDN of the passbook Install
+- `gitlab.company` is the FQDN of the GitLab Install
+- `passbook.company` is the FQDN of the passbook Install
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://gitlab.company/users/auth/saml/callback`
--   Audience: `https://gitlab.company`
--   Issuer: `https://gitlab.company`
+- ACS URL: `https://gitlab.company/users/auth/saml/callback`
+- Audience: `https://gitlab.company`
+- Issuer: `https://gitlab.company`
+- Binding: `Post`
 
 You can of course use a custom signing certificate, and adjust durations. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
 
@@ -41,7 +42,7 @@ gitlab_rails['omniauth_providers'] = [
     args: {
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
       idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
-      idp_sso_target_url: 'https://passbook.company/application/saml/<passbook application slug>/login/',
+      idp_sso_target_url: 'https://passbook.company/application/saml/<passbook application slug>/sso/binding/post/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       attribute_statements: {
