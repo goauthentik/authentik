@@ -66,8 +66,7 @@ class ConsentStage(Stage):
 class UserConsent(ExpiringModel):
     """Consent given by a user for an application"""
 
-    # TODO: Remove related_name when oidc provider is v2
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pb_consent")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     application = models.ForeignKey(Application, on_delete=models.CASCADE)
 
     def __str__(self):

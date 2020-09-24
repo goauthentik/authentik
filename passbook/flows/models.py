@@ -79,14 +79,14 @@ class ConfigurableStage(models.Model):
     migration."""
 
     configure_flow = models.ForeignKey(
-        'passbook_flows.Flow',
+        "passbook_flows.Flow",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         help_text=_(
             (
-                "Flow used by an authenticated user to change their password. "
-                "If empty, user will be unable to change their password."
+                "Flow used by an authenticated user to configure this Stage. "
+                "If empty, user will not be able to configure this stage."
             )
         ),
     )

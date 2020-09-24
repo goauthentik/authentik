@@ -1,8 +1,8 @@
 """passbook multi-stage authentication engine"""
 from traceback import format_tb
 from typing import Any, Dict, Optional
-from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     Http404,
     HttpRequest,
@@ -21,7 +21,7 @@ from passbook.audit.models import cleanse_dict
 from passbook.core.models import PASSBOOK_USER_DEBUG
 from passbook.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from passbook.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
-from passbook.flows.planner import FlowPlan, FlowPlanner, PLAN_CONTEXT_PENDING_USER
+from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
 from passbook.lib.utils.reflection import class_to_path
 from passbook.lib.utils.urls import is_url_absolute, redirect_with_qs
 from passbook.policies.http import AccessDeniedResponse
@@ -309,7 +309,7 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
             stage: Stage = Stage.objects.get_subclass(pk=stage_uuid)
         except Stage.DoesNotExist as exc:
             raise Http404 from exc
-        if not issubclass(stage, ConfigurableStage):
+        if not isinstance(stage, ConfigurableStage):
             LOGGER.debug("Stage does not inherit ConfigurableStage", stage=stage)
             raise Http404
         if not stage.configure_flow:

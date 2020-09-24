@@ -50,7 +50,7 @@ class PasswordStage(ConfigurableStage, Stage):
 
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:
-        if not self.change_flow:
+        if not self.configure_flow:
             return None
         base_url = reverse(
             "passbook_flows:configure", kwargs={"stage_uuid": self.pk}
