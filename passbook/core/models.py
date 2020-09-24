@@ -1,6 +1,6 @@
 """passbook core models"""
 from datetime import timedelta
-from typing import Any, Optional, Type
+from typing import Any, Dict, Optional, Type
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
@@ -79,6 +79,13 @@ class User(GuardianUserMixin, AbstractUser):
     attributes = models.JSONField(default=dict, blank=True)
 
     objects = UserManager()
+
+    def group_attributes(self) -> Dict[str, Any]:
+        """Get a dictionary containing the attributes from all groups the user belongs to"""
+        final_attributes = {}
+        for group in self.pb_groups.all().order_by("name"):
+            final_attributes.update(group.attributes)
+        return final_attributes
 
     @property
     def is_superuser(self) -> bool:
