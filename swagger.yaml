@@ -6088,7 +6088,7 @@ definitions:
           - enrollment
           - unenrollment
           - recovery
-          - stage_setup
+          - stage_configuration
       stages:
         type: array
         items:
@@ -7412,6 +7412,13 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
+        type: string
+        format: uuid
+        x-nullable: true
       digits:
         title: Digits
         type: integer
@@ -7454,10 +7461,10 @@ definitions:
           title: Backends
           type: string
           minLength: 1
-      change_flow:
-        title: Change flow
-        description: Flow used by an authenticated user to change their password.
-          If empty, user will be unable to change their password.
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
         type: string
         format: uuid
         x-nullable: true
