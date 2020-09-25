@@ -11,13 +11,19 @@ from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.lib.views import CreateAssignPermView
 from passbook.policies.forms import PolicyBindingForm
 from passbook.policies.models import PolicyBinding
 
 
-class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class PolicyBindingListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all policies"""
 
     model = PolicyBinding
@@ -46,6 +52,7 @@ class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, UserPaginat
 
 class PolicyBindingCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -62,7 +69,11 @@ class PolicyBindingCreateView(
 
 
 class PolicyBindingUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update policybinding"""
 

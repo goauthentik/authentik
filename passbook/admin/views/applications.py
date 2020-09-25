@@ -9,13 +9,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.core.forms.applications import ApplicationForm
 from passbook.core.models import Application
 from passbook.lib.views import CreateAssignPermView
 
 
-class ApplicationListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class ApplicationListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all applications"""
 
     model = Application
@@ -26,6 +32,7 @@ class ApplicationListView(LoginRequiredMixin, PermissionListMixin, UserPaginateL
 
 class ApplicationCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -42,7 +49,11 @@ class ApplicationCreateView(
 
 
 class ApplicationUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update application"""
 

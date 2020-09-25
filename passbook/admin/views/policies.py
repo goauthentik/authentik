@@ -17,16 +17,20 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.forms.policies import PolicyTestForm
 from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView, UserPaginateListMixin,
+    InheritanceUpdateView,
+    UserPaginateListMixin,
 )
 from passbook.policies.models import Policy, PolicyBinding
 from passbook.policies.process import PolicyProcess, PolicyRequest
 
 
-class PolicyListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
+class PolicyListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+):
     """Show list of all policies"""
 
     model = Policy
@@ -37,6 +41,7 @@ class PolicyListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMi
 
 class PolicyCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -53,6 +58,7 @@ class PolicyCreateView(
 
 class PolicyUpdateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

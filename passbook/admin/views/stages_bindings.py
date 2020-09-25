@@ -9,13 +9,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.flows.forms import FlowStageBindingForm
 from passbook.flows.models import FlowStageBinding
 from passbook.lib.views import CreateAssignPermView
 
 
-class StageBindingListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class StageBindingListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all flows"""
 
     model = FlowStageBinding
@@ -26,6 +32,7 @@ class StageBindingListView(LoginRequiredMixin, PermissionListMixin, UserPaginate
 
 class StageBindingCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -42,7 +49,11 @@ class StageBindingCreateView(
 
 
 class StageBindingUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update FlowStageBinding"""
 

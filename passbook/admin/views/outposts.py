@@ -12,13 +12,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.lib.views import CreateAssignPermView
 from passbook.outposts.forms import OutpostForm
 from passbook.outposts.models import Outpost, OutpostConfig
 
 
-class OutpostListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class OutpostListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all outposts"""
 
     model = Outpost
@@ -29,6 +35,7 @@ class OutpostListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListM
 
 class OutpostCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -52,7 +59,11 @@ class OutpostCreateView(
 
 
 class OutpostUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update outpost"""
 

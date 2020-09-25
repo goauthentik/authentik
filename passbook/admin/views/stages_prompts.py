@@ -9,13 +9,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.prompt.forms import PromptAdminForm
 from passbook.stages.prompt.models import Prompt
 
 
-class PromptListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class PromptListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all prompts"""
 
     model = Prompt
@@ -26,6 +32,7 @@ class PromptListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMi
 
 class PromptCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -42,7 +49,11 @@ class PromptCreateView(
 
 
 class PromptUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update prompt"""
 

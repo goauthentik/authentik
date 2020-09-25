@@ -9,15 +9,19 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView, UserPaginateListMixin,
+    InheritanceUpdateView,
+    UserPaginateListMixin,
 )
 from passbook.flows.models import Stage
 
 
-class StageListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
+class StageListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+):
     """Show list of all stages"""
 
     model = Stage
@@ -28,6 +32,7 @@ class StageListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMix
 
 class StageCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -44,6 +49,7 @@ class StageCreateView(
 
 class StageUpdateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

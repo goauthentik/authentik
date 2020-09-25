@@ -11,7 +11,11 @@ from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.flows.forms import FlowForm, FlowImportForm
 from passbook.flows.models import Flow
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -23,7 +27,9 @@ from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import CreateAssignPermView
 
 
-class FlowListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin,  ListView):
+class FlowListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all flows"""
 
     model = Flow
@@ -34,6 +40,7 @@ class FlowListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixi
 
 class FlowCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -50,7 +57,11 @@ class FlowCreateView(
 
 
 class FlowUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update flow"""
 

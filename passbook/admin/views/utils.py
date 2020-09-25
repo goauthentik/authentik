@@ -1,5 +1,6 @@
 """passbook admin util views"""
-from typing import Any, Dict
+from typing import Any, Dict, Optional
+from urllib.parse import urlparse
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -73,10 +74,29 @@ class InheritanceUpdateView(UpdateView):
         )
 
 
+class BackSuccessUrlMixin:
+    """Checks if a relative URL has been given as ?back param, and redirect to it. Otherwise
+    default to self.success_url."""
+
+    request: HttpRequest
+
+    success_url: Optional[str]
+
+    def get_success_url(self) -> str:
+        """get_success_url from FormMixin"""
+        back_param = self.request.GET.get("back")
+        if back_param:
+            if not bool(urlparse(back_param).netloc):
+                return back_param
+        return str(self.success_url)
+
+
 class UserPaginateListMixin:
     """Get paginate_by value from user's attributes, defaulting to 15"""
 
     request: HttpRequest
 
+    # pylint: disable=unused-argument
     def get_paginate_by(self, queryset: QuerySet) -> int:
+        """get_paginate_by Function of ListView"""
         return self.request.user.attributes.get("paginate_by", 15)

@@ -9,7 +9,9 @@ from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.core.models import Token
 
 
-class TokenListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class TokenListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all tokens"""
 
     model = Token

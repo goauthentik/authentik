@@ -9,15 +9,19 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView, UserPaginateListMixin,
+    InheritanceUpdateView,
+    UserPaginateListMixin,
 )
 from passbook.core.models import Source
 
 
-class SourceListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
+class SourceListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+):
     """Show list of all sources"""
 
     model = Source
@@ -28,6 +32,7 @@ class SourceListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMi
 
 class SourceCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -44,6 +49,7 @@ class SourceCreateView(
 
 class SourceUpdateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

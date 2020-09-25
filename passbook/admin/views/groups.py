@@ -9,13 +9,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.core.forms.groups import GroupForm
 from passbook.core.models import Group
 from passbook.lib.views import CreateAssignPermView
 
 
-class GroupListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class GroupListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all groups"""
 
     model = Group
@@ -26,6 +32,7 @@ class GroupListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMix
 
 class GroupCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -42,7 +49,11 @@ class GroupCreateView(
 
 
 class GroupUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update group"""
 

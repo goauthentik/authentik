@@ -9,15 +9,19 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView, UserPaginateListMixin,
+    InheritanceUpdateView,
+    UserPaginateListMixin,
 )
 from passbook.core.models import Provider
 
 
-class ProviderListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
+class ProviderListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+):
     """Show list of all providers"""
 
     model = Provider
@@ -28,6 +32,7 @@ class ProviderListView(LoginRequiredMixin, PermissionListMixin, UserPaginateList
 
 class ProviderCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -44,6 +49,7 @@ class ProviderCreateView(
 
 class ProviderUpdateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

@@ -18,12 +18,18 @@ from guardian.mixins import (
 )
 
 from passbook.admin.forms.users import UserForm
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.core.models import Token, User
 from passbook.lib.views import CreateAssignPermView
 
 
-class UserListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class UserListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all users"""
 
     model = User
@@ -37,6 +43,7 @@ class UserListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixi
 
 class UserCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -53,7 +60,11 @@ class UserCreateView(
 
 
 class UserUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update user"""
 

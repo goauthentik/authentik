@@ -9,13 +9,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
+from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
+    DeleteMessageView,
+    UserPaginateListMixin,
+)
 from passbook.crypto.forms import CertificateKeyPairForm
 from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.views import CreateAssignPermView
 
 
-class CertificateKeyPairListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
+class CertificateKeyPairListView(
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+):
     """Show list of all keypairs"""
 
     model = CertificateKeyPair
@@ -26,6 +32,7 @@ class CertificateKeyPairListView(LoginRequiredMixin, PermissionListMixin, UserPa
 
 class CertificateKeyPairCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -42,7 +49,11 @@ class CertificateKeyPairCreateView(
 
 
 class CertificateKeyPairUpdateView(
-    SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView
+    SuccessMessageMixin,
+    BackSuccessUrlMixin,
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UpdateView,
 ):
     """Update certificatekeypair"""
 

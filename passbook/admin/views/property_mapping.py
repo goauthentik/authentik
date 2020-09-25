@@ -4,16 +4,17 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import QuerySet
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from passbook.admin.views.utils import (
+    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView, UserPaginateListMixin,
+    InheritanceUpdateView,
+    UserPaginateListMixin,
 )
 from passbook.core.models import PropertyMapping
 
@@ -31,6 +32,7 @@ class PropertyMappingListView(
 
 class PropertyMappingCreateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -47,6 +49,7 @@ class PropertyMappingCreateView(
 
 class PropertyMappingUpdateView(
     SuccessMessageMixin,
+    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,
