@@ -26,7 +26,7 @@
         </ul>
         {% if not state %}
             {% if stage.configure_flow %}
-                <a href="{% url 'passbook-flows:configure' stage_uuid=stage.stage_uuid %}" class="pf-c-button pf-m-primary">{% trans "Enable Static Tokens" %}</a>
+                <a href="{% url 'passbook_flows:configure' stage_uuid=stage.stage_uuid %}" class="pf-c-button pf-m-primary">{% trans "Enable Static Tokens" %}</a>
             {% endif %}
         {% else %}
         <a href="{% url 'passbook_stages_otp_static:disable' stage_uuid=stage.stage_uuid %}" class="pf-c-button pf-m-danger">{% trans "Disable Static Tokens" %}</a>
