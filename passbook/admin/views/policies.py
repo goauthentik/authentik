@@ -20,18 +20,17 @@ from passbook.admin.views.utils import (
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView,
+    InheritanceUpdateView, UserPaginateListMixin,
 )
 from passbook.policies.models import Policy, PolicyBinding
 from passbook.policies.process import PolicyProcess, PolicyRequest
 
 
-class PolicyListView(LoginRequiredMixin, PermissionListMixin, InheritanceListView):
+class PolicyListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
     """Show list of all policies"""
 
     model = Policy
     permission_required = "passbook_policies.view_policy"
-    paginate_by = 10
     ordering = "name"
     template_name = "administration/policy/list.html"
 

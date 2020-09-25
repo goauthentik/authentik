@@ -3,7 +3,9 @@ from typing import Any, Dict
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import QuerySet
 from django.http import Http404
+from django.http.request import HttpRequest
 from django.views.generic import DeleteView, ListView, UpdateView
 
 from passbook.lib.utils.reflection import all_subclasses
@@ -69,3 +71,12 @@ class InheritanceUpdateView(UpdateView):
             .select_subclasses()
             .first()
         )
+
+
+class UserPaginateListMixin:
+    """Get paginate_by value from user's attributes, defaulting to 15"""
+
+    request: HttpRequest
+
+    def get_paginate_by(self, queryset: QuerySet) -> int:
+        return self.request.user.attributes.get("paginate_by", 15)

@@ -9,19 +9,18 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.core.forms.groups import GroupForm
 from passbook.core.models import Group
 from passbook.lib.views import CreateAssignPermView
 
 
-class GroupListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class GroupListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all groups"""
 
     model = Group
     permission_required = "passbook_core.view_group"
     ordering = "name"
-    paginate_by = 40
     template_name = "administration/group/list.html"
 
 

@@ -12,19 +12,18 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.lib.views import CreateAssignPermView
 from passbook.outposts.forms import OutpostForm
 from passbook.outposts.models import Outpost, OutpostConfig
 
 
-class OutpostListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class OutpostListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all outposts"""
 
     model = Outpost
     permission_required = "passbook_outposts.view_outpost"
     ordering = "name"
-    paginate_by = 40
     template_name = "administration/outpost/list.html"
 
 

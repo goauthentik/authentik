@@ -12,18 +12,17 @@ from passbook.admin.views.utils import (
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView,
+    InheritanceUpdateView, UserPaginateListMixin,
 )
 from passbook.core.models import Provider
 
 
-class ProviderListView(LoginRequiredMixin, PermissionListMixin, InheritanceListView):
+class ProviderListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
     """Show list of all providers"""
 
     model = Provider
     permission_required = "passbook_core.add_provider"
     template_name = "administration/provider/list.html"
-    paginate_by = 10
     ordering = "id"
 
 

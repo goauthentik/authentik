@@ -9,19 +9,18 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.prompt.forms import PromptAdminForm
 from passbook.stages.prompt.models import Prompt
 
 
-class PromptListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class PromptListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all prompts"""
 
     model = Prompt
     permission_required = "passbook_stages_prompt.view_prompt"
     ordering = "order"
-    paginate_by = 40
     template_name = "administration/stage_prompt/list.html"
 
 

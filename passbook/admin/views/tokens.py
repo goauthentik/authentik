@@ -5,17 +5,16 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.core.models import Token
 
 
-class TokenListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class TokenListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all tokens"""
 
     model = Token
     permission_required = "passbook_core.view_token"
     ordering = "expires"
-    paginate_by = 40
     template_name = "administration/token/list.html"
 
 

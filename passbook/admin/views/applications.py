@@ -9,19 +9,18 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.core.forms.applications import ApplicationForm
 from passbook.core.models import Application
 from passbook.lib.views import CreateAssignPermView
 
 
-class ApplicationListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class ApplicationListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all applications"""
 
     model = Application
     permission_required = "passbook_core.view_application"
     ordering = "name"
-    paginate_by = 40
     template_name = "administration/application/list.html"
 
 

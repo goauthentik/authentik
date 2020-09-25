@@ -17,7 +17,7 @@ LOGGER = get_logger()
 
 @register.simple_tag(takes_context=True)
 def back(context: Context) -> str:
-    """Return a link back (either from GET paramter or referer."""
+    """Return a link back (either from GET parameter or referer."""
     if "request" not in context:
         return ""
     request = context.get("request")

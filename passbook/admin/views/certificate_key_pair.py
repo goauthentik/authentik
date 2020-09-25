@@ -9,19 +9,18 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.crypto.forms import CertificateKeyPairForm
 from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.views import CreateAssignPermView
 
 
-class CertificateKeyPairListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class CertificateKeyPairListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all keypairs"""
 
     model = CertificateKeyPair
     permission_required = "passbook_crypto.view_certificatekeypair"
     ordering = "name"
-    paginate_by = 40
     template_name = "administration/certificatekeypair/list.html"
 
 

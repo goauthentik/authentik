@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
@@ -12,13 +13,13 @@ from passbook.admin.views.utils import (
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView,
+    InheritanceUpdateView, UserPaginateListMixin,
 )
 from passbook.core.models import PropertyMapping
 
 
 class PropertyMappingListView(
-    LoginRequiredMixin, PermissionListMixin, InheritanceListView
+    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
 ):
     """Show list of all property_mappings"""
 
@@ -26,7 +27,6 @@ class PropertyMappingListView(
     permission_required = "passbook_core.view_propertymapping"
     template_name = "administration/property_mapping/list.html"
     ordering = "name"
-    paginate_by = 40
 
 
 class PropertyMappingCreateView(

@@ -10,20 +10,19 @@ from django.utils.translation import gettext as _
 from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.lib.views import CreateAssignPermView
 from passbook.stages.invitation.forms import InvitationForm
 from passbook.stages.invitation.models import Invitation
 from passbook.stages.invitation.signals import invitation_created
 
 
-class InvitationListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class InvitationListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all invitations"""
 
     model = Invitation
     permission_required = "passbook_stages_invitation.view_invitation"
     template_name = "administration/stage_invitation/list.html"
-    paginate_by = 10
     ordering = "-expires"
 
 

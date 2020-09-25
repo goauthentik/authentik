@@ -11,18 +11,17 @@ from django.views.generic import ListView, UpdateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.lib.views import CreateAssignPermView
 from passbook.policies.forms import PolicyBindingForm
 from passbook.policies.models import PolicyBinding
 
 
-class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class PolicyBindingListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all policies"""
 
     model = PolicyBinding
     permission_required = "passbook_policies.view_policybinding"
-    paginate_by = 10
     ordering = ["order", "target"]
     template_name = "administration/policy_binding/list.html"
 

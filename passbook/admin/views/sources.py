@@ -12,18 +12,17 @@ from passbook.admin.views.utils import (
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceListView,
-    InheritanceUpdateView,
+    InheritanceUpdateView, UserPaginateListMixin,
 )
 from passbook.core.models import Source
 
 
-class SourceListView(LoginRequiredMixin, PermissionListMixin, InheritanceListView):
+class SourceListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView):
     """Show list of all sources"""
 
     model = Source
     permission_required = "passbook_core.view_source"
     ordering = "name"
-    paginate_by = 40
     template_name = "administration/source/list.html"
 
 

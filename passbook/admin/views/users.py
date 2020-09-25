@@ -18,18 +18,17 @@ from guardian.mixins import (
 )
 
 from passbook.admin.forms.users import UserForm
-from passbook.admin.views.utils import DeleteMessageView
+from passbook.admin.views.utils import DeleteMessageView, UserPaginateListMixin
 from passbook.core.models import Token, User
 from passbook.lib.views import CreateAssignPermView
 
 
-class UserListView(LoginRequiredMixin, PermissionListMixin, ListView):
+class UserListView(LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView):
     """Show list of all users"""
 
     model = User
     permission_required = "passbook_core.view_user"
     ordering = "username"
-    paginate_by = 40
     template_name = "administration/user/list.html"
 
     def get_queryset(self):
