@@ -73,29 +73,6 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-class ConfigurableStage(models.Model):
-    """Abstract base class for a Stage that can be configured by the enduser.
-    The stage should create a default flow with the configure_stage designation during
-    migration."""
-
-    configure_flow = models.ForeignKey(
-        "passbook_flows.Flow",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        help_text=_(
-            (
-                "Flow used by an authenticated user to configure this Stage. "
-                "If empty, user will not be able to configure this stage."
-            )
-        ),
-    )
-
-    class Meta:
-
-        abstract = True
-
-
 def in_memory_stage(view: Type["StageView"]) -> Stage:
     """Creates an in-memory stage instance, based on a `_type` as view."""
     stage = Stage()
@@ -202,3 +179,26 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         verbose_name = _("Flow Stage Binding")
         verbose_name_plural = _("Flow Stage Bindings")
         unique_together = (("target", "stage", "order"),)
+
+
+class ConfigurableStage(models.Model):
+    """Abstract base class for a Stage that can be configured by the enduser.
+    The stage should create a default flow with the configure_stage designation during
+    migration."""
+
+    configure_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text=_(
+            (
+                "Flow used by an authenticated user to configure this Stage. "
+                "If empty, user will not be able to configure this stage."
+            )
+        ),
+    )
+
+    class Meta:
+
+        abstract = True
