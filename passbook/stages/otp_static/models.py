@@ -9,10 +9,10 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from passbook.core.types import UIUserSettings
-from passbook.flows.models import Stage
+from passbook.flows.models import ConfigurableStage, Stage
 
 
-class OTPStaticStage(Stage):
+class OTPStaticStage(ConfigurableStage, Stage):
     """Generate static tokens for the user as a backup."""
 
     token_count = models.IntegerField(default=6)
@@ -36,7 +36,11 @@ class OTPStaticStage(Stage):
     @property
     def ui_user_settings(self) -> Optional[UIUserSettings]:
         return UIUserSettings(
-            name="Static OTP", url=reverse("passbook_stages_otp_static:user-settings"),
+            name="Static OTP",
+            url=reverse(
+                "passbook_stages_otp_static:user-settings",
+                kwargs={"stage_uuid": self.stage_uuid},
+            ),
         )
 
     def __str__(self) -> str:

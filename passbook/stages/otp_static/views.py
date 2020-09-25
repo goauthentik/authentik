@@ -21,6 +21,7 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
         static_devices = StaticDevice.objects.filter(
             user=self.request.user, confirmed=True
         )
+        kwargs["state"] = static_devices.exists()
         if static_devices.exists():
             kwargs["tokens"] = StaticToken.objects.filter(device=static_devices.first())
         return kwargs
