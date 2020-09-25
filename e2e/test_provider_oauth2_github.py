@@ -140,6 +140,8 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
+        sleep(1)
+
         self.assertIn(
             app.name,
             self.driver.find_element(
@@ -159,8 +161,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "[type=submit]"
             ),
         ).click()
-
-        sleep(1)
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
