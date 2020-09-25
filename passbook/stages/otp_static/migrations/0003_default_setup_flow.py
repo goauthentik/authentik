@@ -18,7 +18,10 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-otp-static-configure",
         designation=FlowDesignation.STAGE_CONFIGURATION,
-        defaults={"name": "Setup Static OTP Tokens"},
+        defaults={
+            "name": "default-otp-static-configure",
+            "title": "Setup Static OTP Tokens",
+        },
     )
 
     stage, _ = OTPStaticStage.objects.using(db_alias).update_or_create(

@@ -19,7 +19,10 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-otp-time-configure",
         designation=FlowDesignation.STAGE_CONFIGURATION,
-        defaults={"name": "Setup Two-Factor authentication"},
+        defaults={
+            "name": "default-otp-time-configure",
+            "title": "Setup Two-Factor authentication",
+        },
     )
 
     stage, _ = OTPTimeStage.objects.using(db_alias).update_or_create(
