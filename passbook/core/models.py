@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models import Q, QuerySet
 from django.forms import ModelForm
 from django.http import HttpRequest
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
@@ -87,7 +88,7 @@ class User(GuardianUserMixin, AbstractUser):
             final_attributes.update(group.attributes)
         return final_attributes
 
-    @property
+    @cached_property
     def is_superuser(self) -> bool:
         """Get supseruser status based on membership in a group with superuser status"""
         return self.pb_groups.filter(is_superuser=True).exists()
@@ -95,7 +96,7 @@ class User(GuardianUserMixin, AbstractUser):
     @property
     def is_staff(self) -> bool:
         """superuser == staff user"""
-        return self.is_superuser
+        return self.is_superuser  # type: ignore
 
     def set_password(self, password, signal=True):
         if self.pk and signal:
