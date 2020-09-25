@@ -54,7 +54,7 @@ class OAuthCallback(OAuthClientMixin, View):
         client = self.get_client(self.source)
         callback = self.get_callback_url(self.source)
         # Fetch access token
-        token = client.get_access_token(self.request, callback=callback)
+        token = client.get_access_token(callback=callback)
         if token is None:
             return self.handle_login_failure(self.source, "Could not retrieve token.")
         if "error" in token:

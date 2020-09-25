@@ -1,15 +1,18 @@
 """OAuth Clients"""
-from typing import Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 from urllib.parse import parse_qs
 
+from django.db.models.expressions import Value
 from django.http import HttpRequest
 from django.utils.encoding import force_str
 from requests.exceptions import RequestException
+from requests.models import Response
 from requests_oauthlib import OAuth1
 from structlog import get_logger
 
 from passbook import __version__
 from passbook.sources.oauth.clients.base import BaseOAuthClient
+from passbook.sources.oauth.exceptions import OAuthSourceException
 
 LOGGER = get_logger()
 
@@ -21,16 +24,14 @@ class OAuthClient(BaseOAuthClient):
         "Accept": "application/json",
     }
 
-    def get_access_token(
-        self, request: HttpRequest, callback=None
-    ) -> Optional[Dict[str, str]]:
+    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
         "Fetch access token from callback request."
-        raw_token = request.session.get(self.session_key, None)
-        verifier = request.GET.get("oauth_verifier", None)
+        raw_token = self.request.session.get(self.session_key, None)
+        verifier = self.request.GET.get("oauth_verifier", None)
         if raw_token is not None and verifier is not None:
             data = {
                 "oauth_verifier": verifier,
-                "oauth_callback": callback,
+                "oauth_callback": self.callback,
                 "token": raw_token,
             }
             try:
@@ -48,9 +49,9 @@ class OAuthClient(BaseOAuthClient):
                 return response.json()
         return None
 
-    def get_request_token(self, request: HttpRequest, callback):
+    def get_request_token(self) -> str:
         "Fetch the OAuth request token. Only required for OAuth 1.0."
-        callback = request.build_absolute_uri(callback)
+        callback = self.request.build_absolute_uri(self.callback)
         try:
             response = self.session.request(
                 "post",
@@ -63,33 +64,29 @@ class OAuthClient(BaseOAuthClient):
             )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch request token", exc=exc)
-            return None
+            raise OAuthSourceException from exc
         else:
             return response.text
 
-    def get_redirect_args(self, request: HttpRequest, callback):
+    def get_redirect_args(self) -> Dict[str, Any]:
         "Get request parameters for redirect url."
-        callback = force_str(request.build_absolute_uri(callback))
-        raw_token = self.get_request_token(request, callback)
-        token, secret = self.parse_raw_token(raw_token)
-        if token is not None and secret is not None:
-            request.session[self.session_key] = raw_token
+        callback = self.request.build_absolute_uri(self.callback)
+        raw_token = self.get_request_token()
+        token, _ = self.parse_raw_token(raw_token)
+        self.request.session[self.session_key] = raw_token
         return {
             "oauth_token": token,
             "oauth_callback": callback,
         }
 
-    def parse_raw_token(self, raw_token):
+    def parse_raw_token(self, raw_token: str) -> Tuple[str, Optional[str]]:
         "Parse token and secret from raw token response."
-        if raw_token is None:
-            return (None, None)
         query_string = parse_qs(raw_token)
-        token = query_string.get("oauth_token", [None])[0]
-        secret = query_string.get("oauth_token_secret", [None])[0]
+        token = query_string["oauth_token"][0]
+        secret = query_string["oauth_token_secret"][0]
         return (token, secret)
 
-    def request(self, method, url, **kwargs):
+    def do_request(self, method: str, url: str, **kwargs) -> Response:
         "Build remote url request. Constructs necessary auth."
         user_token = kwargs.pop("token", self.token)
         token, secret = self.parse_raw_token(user_token)
@@ -104,8 +101,8 @@ class OAuthClient(BaseOAuthClient):
             callback_uri=callback,
         )
         kwargs["auth"] = oauth
-        return super(OAuthClient, self).session.request(method, url, **kwargs)
+        return super().do_request(method, url, **kwargs)
 
     @property
-    def session_key(self):
-        return "oauth-client-{0}-request-token".format(self.source.name)
+    def session_key(self) -> str:
+        return f"oauth-client-{self.source.name}-request-token"

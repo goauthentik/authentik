@@ -1,11 +1,12 @@
 """OAuth Clients"""
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 from urllib.parse import parse_qs
 
 from django.http import HttpRequest
 from django.utils.crypto import constant_time_compare, get_random_string
 from requests.exceptions import RequestException
+from requests.models import Response
 from structlog import get_logger
 
 from passbook import __version__
@@ -23,11 +24,10 @@ class OAuth2Client(BaseOAuthClient):
         "Accept": "application/json",
     }
 
-    # pylint: disable=unused-argument
-    def check_application_state(self, request: HttpRequest, callback: str):
+    def check_application_state(self) -> bool:
         "Check optional state parameter."
-        stored = request.session.get(self.session_key, None)
-        returned = request.GET.get("state", None)
+        stored = self.request.session.get(self.session_key, None)
+        returned = self.request.GET.get("state", None)
         check = False
         if stored is not None:
             if returned is not None:
@@ -35,21 +35,25 @@ class OAuth2Client(BaseOAuthClient):
             else:
                 LOGGER.warning("No state parameter returned by the source.")
         else:
-            LOGGER.warning("No state stored in the sesssion.")
+            LOGGER.warning("No state stored in the session.")
         return check
 
-    def get_access_token(self, request: HttpRequest, callback=None, **request_kwargs):
+    def get_application_state(self) -> str:
+        "Generate state optional parameter."
+        return get_random_string(32)
+
+    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
         "Fetch access token from callback request."
-        callback = request.build_absolute_uri(callback or request.path)
-        if not self.check_application_state(request, callback):
+        callback = self.request.build_absolute_uri(self.callback or self.request.path)
+        if not self.check_application_state():
             LOGGER.warning("Application state check failed.")
             return None
-        if "code" in request.GET:
+        if "code" in self.request.GET:
             args = {
                 "client_id": self.source.consumer_key,
                 "redirect_uri": callback,
                 "client_secret": self.source.consumer_secret,
-                "code": request.GET["code"],
+                "code": self.request.GET["code"],
                 "grant_type": "authorization_code",
             }
         else:
@@ -61,7 +65,6 @@ class OAuth2Client(BaseOAuthClient):
                 self.source.access_token_url,
                 data=args,
                 headers=self._default_headers,
-                **request_kwargs,
             )
             response.raise_for_status()
         except RequestException as exc:
@@ -70,39 +73,33 @@ class OAuth2Client(BaseOAuthClient):
         else:
             return response.json()
 
-    # pylint: disable=unused-argument
-    def get_application_state(self, request: HttpRequest, callback):
-        "Generate state optional parameter."
-        return get_random_string(32)
-
-    def get_redirect_args(self, request, callback):
+    def get_redirect_args(self) -> Dict[str, str]:
         "Get request parameters for redirect url."
-        callback = request.build_absolute_uri(callback)
-        args = {
-            "client_id": self.source.consumer_key,
+        callback = self.request.build_absolute_uri(self.callback)
+        client_id: str = self.source.consumer_key
+        args: Dict[str, str] = {
+            "client_id": client_id,
             "redirect_uri": callback,
             "response_type": "code",
         }
-        state = self.get_application_state(request, callback)
+        state = self.get_application_state()
         if state is not None:
             args["state"] = state
-            request.session[self.session_key] = state
+            self.request.session[self.session_key] = state
         return args
 
-    def parse_raw_token(self, raw_token):
+    def parse_raw_token(self, raw_token: str) -> Tuple[str, Optional[str]]:
         "Parse token and secret from raw token response."
-        if raw_token is None:
-            return (None, None)
         # Load as json first then parse as query string
         try:
             token_data = json.loads(raw_token)
         except ValueError:
-            token = parse_qs(raw_token).get("access_token", [None])[0]
+            token = parse_qs(raw_token)["access_token"][0]
         else:
-            token = token_data.get("access_token", None)
+            token = token_data["access_token"]
         return (token, None)
 
-    def request(self, method, url, **kwargs):
+    def do_request(self, method: str, url: str, **kwargs) -> Response:
         "Build remote url request. Constructs necessary auth."
         user_token = kwargs.pop("token", self.token)
         token, _ = self.parse_raw_token(user_token)
@@ -110,7 +107,7 @@ class OAuth2Client(BaseOAuthClient):
             params = kwargs.get("params", {})
             params["access_token"] = token
             kwargs["params"] = params
-        return super(OAuth2Client, self).session.request(method, url, **kwargs)
+        return super().do_request(method, url, **kwargs)
 
     @property
     def session_key(self):

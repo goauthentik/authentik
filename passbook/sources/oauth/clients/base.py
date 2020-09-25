@@ -1,34 +1,41 @@
 """OAuth Clients"""
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
 from requests import Session
 from requests.exceptions import RequestException
+from requests.models import Response
 from structlog import get_logger
 
 from passbook import __version__
+from passbook.sources.oauth.models import OAuthSource
 
 LOGGER = get_logger()
-if TYPE_CHECKING:
-    from passbook.sources.oauth.models import OAuthSource
 
 
 class BaseOAuthClient:
     """Base OAuth Client"""
 
     session: Session
-    source: "OAuthSource"
+    source: OAuthSource
 
-    def __init__(self, source: "OAuthSource", token=""):  # nosec
+    token: str
+
+    request: HttpRequest
+    callback: Optional[str]
+
+    def __init__(
+        self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None
+    ):
         self.source = source
-        self.token = token
+        self.token = ""
         self.session = Session()
-        self.session.headers.update({"User-Agent": "passbook %s" % __version__})
+        self.request = request
+        self.callback = callback
+        self.session.headers.update({"User-Agent": f"passbook {__version__}"})
 
-    def get_access_token(
-        self, request: HttpRequest, callback=None
-    ) -> Optional[Dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
         "Fetch access token from callback request."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
@@ -48,24 +55,28 @@ class BaseOAuthClient:
         else:
             return response.json()
 
-    def get_redirect_args(self, request, callback) -> Dict[str, str]:
+    def get_redirect_args(self) -> Dict[str, str]:
         "Get request parameters for redirect url."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
-    def get_redirect_url(self, request: HttpRequest, callback: str, parameters=None):
+    def get_redirect_url(self, parameters=None):
         "Build authentication redirect url."
-        args = self.get_redirect_args(request, callback=callback)
+        args = self.get_redirect_args()
         additional = parameters or {}
         args.update(additional)
         params = urlencode(args)
         LOGGER.info("redirect args", **args)
-        return "{0}?{1}".format(self.source.authorization_url, params)
+        return f"{self.source.authorization_url}?{params}"
 
-    def parse_raw_token(self, raw_token):
+    def parse_raw_token(self, raw_token: str) -> Tuple[str, Optional[str]]:
         "Parse token and secret from raw token response."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
+    def do_request(self, method: str, url: str, **kwargs) -> Response:
+        """Wrapper around self.session.request, which can add special headers"""
+        return self.session.request(method, url, **kwargs)
+
     @property
-    def session_key(self):
+    def session_key(self) -> str:
         """Return Session Key"""
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover

@@ -27,9 +27,7 @@ class RedditOAuth2Client(OAuth2Client):
     def get_access_token(self, request, callback=None, **request_kwargs):
         "Fetch access token from callback request."
         auth = HTTPBasicAuth(self.source.consumer_key, self.source.consumer_secret)
-        return super(RedditOAuth2Client, self).get_access_token(
-            request, callback, auth=auth
-        )
+        return super().get_access_token(auth=auth)
 
 
 @MANAGER.source(kind=RequestKind.callback, name="reddit")
