@@ -20,7 +20,8 @@ class TestFlowsStageSetup(SeleniumTestCase):
         """test password change flow"""
         # Ensure that password stage has change_flow set
         flow = Flow.objects.get(
-            slug="default-password-change", designation=FlowDesignation.STAGE_CONFIGURATION,
+            slug="default-password-change",
+            designation=FlowDesignation.STAGE_CONFIGURATION,
         )
 
         stage = PasswordStage.objects.get(name="default-authentication-password")

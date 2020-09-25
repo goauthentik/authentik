@@ -16,7 +16,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="passwordstage", old_name="change_flow", new_name="configure_flow"
+            model_name="passwordstage",
+            old_name="change_flow",
+            new_name="configure_flow",
         ),
         migrations.AlterField(
             model_name="passwordstage",
