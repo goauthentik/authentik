@@ -1,5 +1,5 @@
 """OAuth Clients"""
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
@@ -18,18 +18,16 @@ class BaseOAuthClient:
     """Base OAuth Client"""
 
     session: Session
+
     source: OAuthSource
-
-    token: str
-
     request: HttpRequest
+
     callback: Optional[str]
 
     def __init__(
         self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None
     ):
         self.source = source
-        self.token = ""
         self.session = Session()
         self.request = request
         self.callback = callback
@@ -42,12 +40,7 @@ class BaseOAuthClient:
     def get_profile_info(self, token: Dict[str, str]) -> Optional[Dict[str, Any]]:
         "Fetch user profile information."
         try:
-            headers = {
-                "Authorization": f"{token['token_type']} {token['access_token']}"
-            }
-            response = self.session.request(
-                "get", self.source.profile_url, headers=headers,
-            )
+            response = self.do_request("get", self.source.profile_url, token=token,)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)
@@ -68,7 +61,7 @@ class BaseOAuthClient:
         LOGGER.info("redirect args", **args)
         return f"{self.source.authorization_url}?{params}"
 
-    def parse_raw_token(self, raw_token: str) -> Tuple[str, Optional[str]]:
+    def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
         "Parse token and secret from raw token response."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 

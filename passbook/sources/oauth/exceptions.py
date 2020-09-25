@@ -1,3 +1,4 @@
+"""OAuth Source Exception"""
 from passbook.lib.sentry import SentryIgnoredException
 
 

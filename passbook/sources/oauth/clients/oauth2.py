@@ -1,9 +1,8 @@
-"""OAuth Clients"""
-import json
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
-from urllib.parse import parse_qs
+"""OAuth 2 Clients"""
+from json import loads
+from typing import Any, Dict, Optional
+from urllib.parse import parse_qsl
 
-from django.http import HttpRequest
 from django.utils.crypto import constant_time_compare, get_random_string
 from requests.exceptions import RequestException
 from requests.models import Response
@@ -13,8 +12,6 @@ from passbook import __version__
 from passbook.sources.oauth.clients.base import BaseOAuthClient
 
 LOGGER = get_logger()
-if TYPE_CHECKING:
-    from passbook.sources.oauth.models import OAuthSource
 
 
 class OAuth2Client(BaseOAuthClient):
@@ -88,25 +85,27 @@ class OAuth2Client(BaseOAuthClient):
             self.request.session[self.session_key] = state
         return args
 
-    def parse_raw_token(self, raw_token: str) -> Tuple[str, Optional[str]]:
+    def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
         "Parse token and secret from raw token response."
         # Load as json first then parse as query string
         try:
-            token_data = json.loads(raw_token)
+            token_data = loads(raw_token)
         except ValueError:
-            token = parse_qs(raw_token)["access_token"][0]
+            return dict(parse_qsl(raw_token))
         else:
-            token = token_data["access_token"]
-        return (token, None)
+            return token_data
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
         "Build remote url request. Constructs necessary auth."
-        user_token = kwargs.pop("token", self.token)
-        token, _ = self.parse_raw_token(user_token)
-        if token is not None:
+        if "token" in kwargs:
+            token = self.parse_raw_token(kwargs.pop("token"))
+
             params = kwargs.get("params", {})
-            params["access_token"] = token
+            params["access_token"] = token["access_token"]
             kwargs["params"] = params
+
+            headers = kwargs.get("headers", {})
+            headers["Authorization"] = f"{token['token_type']} {token['access_token']}"
         return super().do_request(method, url, **kwargs)
 
     @property

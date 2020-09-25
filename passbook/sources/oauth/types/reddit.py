@@ -24,7 +24,7 @@ class RedditOAuthRedirect(OAuthRedirect):
 class RedditOAuth2Client(OAuth2Client):
     """Reddit OAuth2 Client"""
 
-    def get_access_token(self, request, callback=None, **request_kwargs):
+    def get_access_token(self, **request_kwargs):
         "Fetch access token from callback request."
         auth = HTTPBasicAuth(self.source.consumer_key, self.source.consumer_secret)
         return super().get_access_token(auth=auth)
