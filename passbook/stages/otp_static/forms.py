@@ -32,7 +32,7 @@ class OTPStaticStageForm(forms.ModelForm):
     class Meta:
 
         model = OTPStaticStage
-        fields = ["name", "token_count"]
+        fields = ["name", "configure_flow", "token_count"]
 
         widgets = {
             "name": forms.TextInput(),

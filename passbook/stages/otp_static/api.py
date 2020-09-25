@@ -11,7 +11,7 @@ class OTPStaticStageSerializer(ModelSerializer):
     class Meta:
 
         model = OTPStaticStage
-        fields = ["pk", "name", "token_count"]
+        fields = ["pk", "name", "configure_flow", "token_count"]
 
 
 class OTPStaticStageViewSet(ModelViewSet):
