@@ -7,7 +7,6 @@ from requests.models import Response
 from requests_oauthlib import OAuth1
 from structlog import get_logger
 
-from passbook import __version__
 from passbook.sources.oauth.clients.base import BaseOAuthClient
 from passbook.sources.oauth.exceptions import OAuthSourceException
 

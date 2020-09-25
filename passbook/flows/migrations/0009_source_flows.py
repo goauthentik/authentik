@@ -80,7 +80,9 @@ def create_default_source_enrollment_flow(
     )
 
     binding, _ = FlowStageBinding.objects.using(db_alias).update_or_create(
-        target=flow, stage=prompt_stage, defaults={"order": 0}
+        target=flow,
+        stage=prompt_stage,
+        defaults={"order": 0, "re_evaluate_policies": True},
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         policy=prompt_policy, target=binding, defaults={"order": 0}

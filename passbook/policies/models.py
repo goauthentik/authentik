@@ -64,7 +64,7 @@ class PolicyBinding(SerializerModel):
         return PolicyBindingSerializer
 
     def __str__(self) -> str:
-        return f"PolicyBinding policy={self.policy} target={self.target} order={self.order}"
+        return f"Policy Binding {self.target} #{self.order} {self.policy}"
 
     class Meta:
 

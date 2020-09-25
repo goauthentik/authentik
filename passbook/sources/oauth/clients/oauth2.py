@@ -8,7 +8,6 @@ from requests.exceptions import RequestException
 from requests.models import Response
 from structlog import get_logger
 
-from passbook import __version__
 from passbook.sources.oauth.clients.base import BaseOAuthClient
 
 LOGGER = get_logger()

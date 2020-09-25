@@ -155,7 +155,10 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     re_evaluate_policies = models.BooleanField(
         default=False,
         help_text=_(
-            "When this option is enabled, the planner will re-evaluate policies bound to this."
+            (
+                "When this option is enabled, the planner will re-evaluate "
+                "policies bound to this binding."
+            )
         ),
     )
 
@@ -170,11 +173,11 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"'{self.target}' -> '{self.stage}' # {self.order}"
+        return f"{self.target} #{self.order} -> {self.stage}"
 
     class Meta:
 
-        ordering = ["order", "target"]
+        ordering = ["target", "order"]
 
         verbose_name = _("Flow Stage Binding")
         verbose_name_plural = _("Flow Stage Bindings")
