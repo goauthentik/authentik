@@ -23,9 +23,8 @@ class TestFlowsStageSetup(SeleniumTestCase):
             slug="default-password-change", designation=FlowDesignation.STAGE_CONFIGURATION,
         )
 
-        stages = PasswordStage.objects.filter(name="default-authentication-password")
-        stage = stages.first()
-        stage.change_flow = flow
+        stage = PasswordStage.objects.get(name="default-authentication-password")
+        stage.configure_flow = flow
         stage.save()
 
         new_password = generate_client_secret()

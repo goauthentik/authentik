@@ -15,8 +15,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="passwordstage", name="change_flow",),
-        migrations.AddField(
+        migrations.RenameField(
+            model_name="passwordstage", old_name="change_flow", new_name="configure_flow"
+        ),
+        migrations.AlterField(
             model_name="passwordstage",
             name="configure_flow",
             field=models.ForeignKey(
