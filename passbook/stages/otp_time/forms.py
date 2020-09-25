@@ -57,7 +57,7 @@ class OTPTimeStageForm(forms.ModelForm):
     class Meta:
 
         model = OTPTimeStage
-        fields = ["name", "digits"]
+        fields = ["name", "configure_flow", "digits"]
 
         widgets = {
             "name": forms.TextInput(),

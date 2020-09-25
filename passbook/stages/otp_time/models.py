@@ -9,7 +9,7 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from passbook.core.types import UIUserSettings
-from passbook.flows.models import Stage
+from passbook.flows.models import ConfigurableStage, Stage
 
 
 class TOTPDigits(models.IntegerChoices):
@@ -19,7 +19,7 @@ class TOTPDigits(models.IntegerChoices):
     EIGHT = 8, _("8 digits, not compatible with apps like Google Authenticator")
 
 
-class OTPTimeStage(Stage):
+class OTPTimeStage(ConfigurableStage, Stage):
     """Enroll a user's device into Time-based OTP."""
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
@@ -44,7 +44,10 @@ class OTPTimeStage(Stage):
     def ui_user_settings(self) -> Optional[UIUserSettings]:
         return UIUserSettings(
             name="Time-based OTP",
-            url=reverse("passbook_stages_otp_time:user-settings"),
+            url=reverse(
+                "passbook_stages_otp_time:user-settings",
+                kwargs={"stage_uuid": self.stage_uuid},
+            ),
         )
 
     def __str__(self) -> str:

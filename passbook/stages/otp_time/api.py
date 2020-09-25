@@ -11,7 +11,7 @@ class OTPTimeStageSerializer(ModelSerializer):
     class Meta:
 
         model = OTPTimeStage
-        fields = ["pk", "name", "digits"]
+        fields = ["pk", "name", "configure_flow", "digits"]
 
 
 class OTPTimeStageViewSet(ModelViewSet):

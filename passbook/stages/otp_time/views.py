@@ -2,12 +2,13 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from passbook.audit.models import Event
+from passbook.stages.otp_time.models import OTPTimeStage
 
 
 class UserSettingsView(LoginRequiredMixin, TemplateView):
@@ -18,6 +19,9 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
     # TODO: Check if OTP Stage exists and applies to user
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
+        stage = get_object_or_404(OTPTimeStage, pk=self.kwargs["stage_uuid"])
+        kwargs["stage"] = stage
+
         totp_devices = TOTPDevice.objects.filter(user=self.request.user, confirmed=True)
         kwargs["state"] = totp_devices.exists()
         return kwargs
