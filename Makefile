@@ -13,7 +13,7 @@ lint-fix:
 lint:
 	pyright
 	bandit -r .
-	pylint passbook
+	pylint passbook e2e lifecycle
 	prospector
 
 gen: coverage

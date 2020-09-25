@@ -5,6 +5,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
+from passbook.flows.models import FlowDesignation
 from passbook.stages.otp_time.models import TOTPDigits
 
 
@@ -18,11 +19,11 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-otp-time-configure",
-        designation=FlowDesignation.STAGE_SETUP,
+        designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={"name": "Setup Two-Factor authentication"},
     )
 
-    stage = OTPTimeStage.objects.using(db_alias).update_or_create(
+    stage, _ = OTPTimeStage.objects.using(db_alias).update_or_create(
         name="default-otp-time-configure", defaults={"digits": TOTPDigits.SIX}
     )
 

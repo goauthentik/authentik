@@ -52,9 +52,7 @@ class PasswordStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UIUserSettings]:
         if not self.configure_flow:
             return None
-        base_url = reverse(
-            "passbook_flows:configure", kwargs={"stage_uuid": self.pk}
-        )
+        base_url = reverse("passbook_flows:configure", kwargs={"stage_uuid": self.pk})
         args = urlencode({NEXT_ARG_NAME: reverse("passbook_core:user-settings")})
         return UIUserSettings(name=_("Change password"), url=f"{base_url}?{args}")
 

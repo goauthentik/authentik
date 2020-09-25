@@ -22,7 +22,7 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-password-change",
-        designation=FlowDesignation.STAGE_SETUP,
+        designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={"name": "Change Password"},
     )
 
@@ -71,7 +71,7 @@ def update_default_stage_change(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
     Flow = apps.get_model("passbook_flows", "Flow")
 
     flow = Flow.objects.get(
-        slug="default-password-change", designation=FlowDesignation.STAGE_SETUP,
+        slug="default-password-change", designation=FlowDesignation.STAGE_CONFIGURATION,
     )
 
     stages = PasswordStage.objects.filter(name="default-authentication-password")
