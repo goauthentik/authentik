@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 from facebook import GraphAPI
 
-from passbook.sources.oauth.clients import OAuth2Client
+from passbook.sources.oauth.clients.oauth2 import OAuth2Client
 from passbook.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from passbook.sources.oauth.types.manager import MANAGER, RequestKind
 from passbook.sources.oauth.views.callback import OAuthCallback

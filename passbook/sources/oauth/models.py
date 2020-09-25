@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source, UserSourceConnection
 from passbook.core.types import UILoginButton, UIUserSettings
-from passbook.sources.oauth.clients import get_client
 
 
 class OAuthSource(Source):
@@ -96,18 +95,19 @@ class GitHubOAuthSource(OAuthSource):
         verbose_name_plural = _("GitHub OAuth Sources")
 
 
-# class TwitterOAuthSource(OAuthSource):
-#     """Social Login using Twitter.com"""
+class TwitterOAuthSource(OAuthSource):
+    """Social Login using Twitter.com"""
 
-#     def form(self) -> Type[ModelForm]:
-#         from passbook.sources.oauth.forms import TwitterOAuthSourceForm
-#         return TwitterOAuthSourceForm
+    def form(self) -> Type[ModelForm]:
+        from passbook.sources.oauth.forms import TwitterOAuthSourceForm
 
-#     class Meta:
+        return TwitterOAuthSourceForm
 
-#         abstract = True
-#         verbose_name = _("Twitter OAuth Source")
-#         verbose_name_plural = _("Twitter OAuth Sources")
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Twitter OAuth Source")
+        verbose_name_plural = _("Twitter OAuth Sources")
 
 
 class FacebookOAuthSource(OAuthSource):
@@ -194,11 +194,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
     def save(self, *args, **kwargs):
         self.access_token = self.access_token or None
         super().save(*args, **kwargs)
-
-    @property
-    def api_client(self):
-        """Get API Client"""
-        return get_client(self.source, self.access_token or "")
 
     class Meta:
 
