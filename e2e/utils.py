@@ -1,5 +1,4 @@
 """passbook e2e testing utilities"""
-from functools import lru_cache
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
@@ -23,7 +22,6 @@ from structlog import get_logger
 from passbook.core.models import User
 
 
-@lru_cache
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
     """Cached function that always returns pbadmin"""

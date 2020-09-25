@@ -7392,6 +7392,13 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
+        type: string
+        format: uuid
+        x-nullable: true
       token_count:
         title: Token count
         type: integer
