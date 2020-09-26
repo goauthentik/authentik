@@ -27,4 +27,11 @@ return False
     - `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
 - `pb_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
 - `pb_client_ip`: Client's IP Address or '255.255.255.255' if no IP Address could be extracted. Can be [compared](../expressions/index.md#comparing-ip-addresses)
-- `pb_flow_plan`: Current Plan if Policy is called from the Flow Planner.
+
+Additionally, when the policy is executed from a flow, every variable from the flow's current context is accessible under the `context` object.
+
+This includes the following:
+
+- `prompt_data`: Data which has been saved from a prompt stage or an external source.
+- `application`: The application the user is in the process of authorizing.
+- `pending_user`: The currently pending user

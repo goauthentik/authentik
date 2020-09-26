@@ -6,7 +6,6 @@ from django.http import HttpRequest
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_SSO
-from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.expression.evaluator import BaseEvaluator
 from passbook.lib.utils.http import get_client_ip
 from passbook.policies.types import PolicyRequest, PolicyResult
@@ -31,23 +30,20 @@ class PolicyEvaluator(BaseEvaluator):
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
-        # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
         self._context["pb_is_sso_flow"] = request.context.get(PLAN_CONTEXT_SSO, False)
         if request.http_request:
             self.set_http_request(request.http_request)
         self._context["request"] = request
+        self._context["context"] = request.context
 
     def set_http_request(self, request: HttpRequest):
         """Update context based on http request"""
-        # update passbook/policies/expression/templates/policy/expression/form.html
         # update docs/policies/expression/index.md
         self._context["pb_client_ip"] = ip_address(
             get_client_ip(request) or "255.255.255.255"
         )
         self._context["request"] = request
-        if SESSION_KEY_PLAN in request.session:
-            self._context["pb_flow_plan"] = request.session[SESSION_KEY_PLAN]
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.

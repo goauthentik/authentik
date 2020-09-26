@@ -12,7 +12,7 @@ FLOW_POLICY_EXPRESSION = """# This policy ensures that this flow can only be use
 return pb_is_sso_flow"""
 PROMPT_POLICY_EXPRESSION = """# Check if we've not been given a username by the external IdP
 # and trigger the enrollment flow
-return 'username' not in pb_flow_plan.context.get('prompt_data', {})"""
+return 'username' not in context.get('prompt_data', {})"""
 
 
 def create_default_source_enrollment_flow(
