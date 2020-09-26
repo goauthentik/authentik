@@ -49,9 +49,7 @@ class ConsentStageView(FormView, StageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        if UserConsent.filter_not_expired(
-            user=user, application=application
-        ).exists():
+        if UserConsent.filter_not_expired(user=user, application=application).exists():
             return self.executor.stage_ok()
 
         # No consent found, show form
