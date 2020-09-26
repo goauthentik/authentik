@@ -6036,7 +6036,7 @@ definitions:
       re_evaluate_policies:
         title: Re evaluate policies
         description: When this option is enabled, the planner will re-evaluate policies
-          bound to this.
+          bound to this binding.
         type: boolean
       order:
         title: Order
