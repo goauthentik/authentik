@@ -157,10 +157,6 @@ class FlowExecutorView(View):
             stage_class=class_to_path(self.current_stage_view.__class__),
             flow_slug=self.flow.slug,
         )
-        # We call plan.next here to check for re-evaluate markers
-        # this is important so we can save the result
-        # and we don't have to re-evaluate the policies each request
-        self.plan.next()
         self.plan.pop()
         self.request.session[SESSION_KEY_PLAN] = self.plan
         if self.plan.stages:
