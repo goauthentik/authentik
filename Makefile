@@ -14,7 +14,7 @@ lint:
 	pyright pyright e2e lifecycle
 	bandit -r passbook e2e lifecycle
 	pylint passbook e2e lifecycle
-	prospector passbook e2e lifecycle
+	prospector
 
 gen: coverage
 	./manage.py generate_swagger -o swagger.yaml -f yaml

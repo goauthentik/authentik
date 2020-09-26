@@ -61,7 +61,7 @@ stages:
                 pipenv install --dev prospector --skip-lock
           - task: CmdLine@2
             inputs:
-              script: pipenv run prospector passbook e2e lifecycle
+              script: pipenv run prospector
       - job: bandit
         pool:
           vmImage: 'ubuntu-latest'
