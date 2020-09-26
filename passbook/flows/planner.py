@@ -46,22 +46,24 @@ class FlowPlan:
         self.stages.append(stage)
         self.markers.append(marker or StageMarker())
 
-    def next(self, offset=0) -> Optional[Stage]:
+    def next(self) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
             return None
-        stage = self.stages[offset]
-        marker = self.markers[offset]
+        stage = self.stages[0]
+        marker = self.markers[0]
 
         if marker.__class__ is not StageMarker:
             LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
         marked_stage = marker.process(self, stage)
         if not marked_stage:
             LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
+            self.stages.remove(stage)
+            self.markers.remove(marker)
             if not self.has_stages:
                 return None
             # pylint: disable=not-callable
-            return self.next(offset + 1)
+            return self.next()
         return marked_stage
 
     def pop(self):
