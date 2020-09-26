@@ -53,7 +53,7 @@
             <div class="pf-c-empty-state__body">
                 {% trans "Either no applications are defined, or you don't have access to any." %}
             </div>
-            {% if user.is_superuser %} {# TODO:use guardian permissions instead #}
+            {% if perms.passbook_core.add_application %}
             <a href="{% url 'passbook_admin:application-create' %}" class="pf-c-button pf-m-primary" type="button">
                 {% trans 'Create Application' %}
             </a>
