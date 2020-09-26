@@ -16,7 +16,10 @@ from yaml import safe_dump
 
 from e2e.utils import SeleniumTestCase
 from passbook.flows.models import Flow
-from passbook.providers.oauth2.generators import generate_client_id, generate_client_secret
+from passbook.providers.oauth2.generators import (
+    generate_client_id,
+    generate_client_secret,
+)
 from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"
@@ -244,7 +247,6 @@ class TestSourceOAuth2(SeleniumTestCase):
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceOAuth1(SeleniumTestCase):
-
     def setUp(self) -> None:
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
@@ -324,10 +326,12 @@ class TestSourceOAuth1(SeleniumTestCase):
             "example-user",
         )
         self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "example-user"
+            self.driver.find_element(By.ID, "id_username").get_attribute("value"),
+            "example-user",
         )
         self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"), "test name",
+            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
+            "test name",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_email").get_attribute("value"),

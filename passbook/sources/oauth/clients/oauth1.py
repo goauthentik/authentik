@@ -34,7 +34,7 @@ class OAuthClient(BaseOAuthClient):
                     token=token,
                     headers=self._default_headers,
                     oauth_verifier=verifier,
-                    oauth_callback=callback
+                    oauth_callback=callback,
                 )
                 response.raise_for_status()
             except RequestException as exc:
