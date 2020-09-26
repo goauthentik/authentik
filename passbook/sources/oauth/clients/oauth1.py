@@ -76,9 +76,6 @@ class OAuthClient(BaseOAuthClient):
     def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
         "Parse token and secret from raw token response."
         return dict(parse_qsl(raw_token))
-        # token = query_string["oauth_token"]
-        # secret = query_string["oauth_token_secret"]
-        # return (token, secret)
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
         "Build remote url request. Constructs necessary auth."

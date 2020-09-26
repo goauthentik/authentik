@@ -40,7 +40,7 @@ class BaseOAuthClient:
     def get_profile_info(self, token: Dict[str, str]) -> Optional[Dict[str, Any]]:
         "Fetch user profile information."
         try:
-            response = self.do_request("get", self.source.profile_url, token=token,)
+            response = self.do_request("get", self.source.profile_url, token=token)
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc)

@@ -97,7 +97,7 @@ class OAuth2Client(BaseOAuthClient):
     def do_request(self, method: str, url: str, **kwargs) -> Response:
         "Build remote url request. Constructs necessary auth."
         if "token" in kwargs:
-            token = self.parse_raw_token(kwargs.pop("token"))
+            token = kwargs.pop("token")
 
             params = kwargs.get("params", {})
             params["access_token"] = token["access_token"]
@@ -105,6 +105,7 @@ class OAuth2Client(BaseOAuthClient):
 
             headers = kwargs.get("headers", {})
             headers["Authorization"] = f"{token['token_type']} {token['access_token']}"
+            kwargs["headers"] = headers
         return super().do_request(method, url, **kwargs)
 
     @property
