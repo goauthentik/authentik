@@ -16,7 +16,6 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
 
     template_name = "stages/otp_time/user_settings.html"
 
-    # TODO: Check if OTP Stage exists and applies to user
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         stage = get_object_or_404(OTPTimeStage, pk=self.kwargs["stage_uuid"])

@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from django.views.generic import FormView
 
-from passbook.flows.planner import PLAN_CONTEXT_APPLICATION
+from passbook.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
 from passbook.lib.utils.time import timedelta_from_string
 from passbook.stages.consent.forms import ConsentForm
@@ -26,6 +26,8 @@ class ConsentStageView(FormView, StageView):
         return kwargs
 
     def get_template_names(self) -> List[str]:
+        # PLAN_CONTEXT_CONSENT_TEMPLATE has to be set by a template that calls this stage
+        # TODO: Add a default template in case a user directly implements this stage
         if PLAN_CONTEXT_CONSENT_TEMPLATE in self.executor.plan.context:
             template_name = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TEMPLATE]
             return [template_name]
@@ -42,9 +44,13 @@ class ConsentStageView(FormView, StageView):
             return super().get(request, *args, **kwargs)
 
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
-        # TODO: Check for user in plan?
+
+        user = self.request.user
+        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
+            user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+
         if UserConsent.filter_not_expired(
-            user=self.request.user, application=application
+            user=user, application=application
         ).exists():
             return self.executor.stage_ok()
 
