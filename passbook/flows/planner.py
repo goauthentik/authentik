@@ -46,7 +46,7 @@ class FlowPlan:
         self.stages.append(stage)
         self.markers.append(marker or StageMarker())
 
-    def next(self, offset = 0) -> Optional[Stage]:
+    def next(self, offset=0) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
             return None
