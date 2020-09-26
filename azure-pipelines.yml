@@ -30,7 +30,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run pylint passbook
+              script: pipenv run pylint passbook e2e lifecycle
       - job: black
         pool:
           vmImage: 'ubuntu-latest'
@@ -45,7 +45,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run black --check passbook
+              script: pipenv run black --check passbook e2e lifecycle
       - job: prospector
         pool:
           vmImage: 'ubuntu-latest'
@@ -61,7 +61,7 @@ stages:
                 pipenv install --dev prospector --skip-lock
           - task: CmdLine@2
             inputs:
-              script: pipenv run prospector passbook
+              script: pipenv run prospector passbook e2e lifecycle
       - job: bandit
         pool:
           vmImage: 'ubuntu-latest'
@@ -76,7 +76,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run bandit -r passbook
+              script: pipenv run bandit -r passbook e2e lifecycle
       - job: pyright
         pool:
           vmImage: ubuntu-latest
@@ -97,7 +97,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run pyright
+              script: pipenv run pyright e2e lifecycle
   - stage: Test
     jobs:
       - job: migrations

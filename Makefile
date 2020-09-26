@@ -8,13 +8,13 @@ coverage:
 
 lint-fix:
 	isort -rc .
-	black .
+	black passbook e2e lifecycle
 
 lint:
-	pyright
-	bandit -r .
+	pyright pyright e2e lifecycle
+	bandit -r passbook e2e lifecycle
 	pylint passbook e2e lifecycle
-	prospector
+	prospector passbook e2e lifecycle
 
 gen: coverage
 	./manage.py generate_swagger -o swagger.yaml -f yaml

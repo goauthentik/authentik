@@ -22,7 +22,6 @@ from passbook.providers.oauth2.generators import (
 )
 from passbook.sources.oauth.models import OAuthSource
 
-TOKEN_URL = "http://127.0.0.1:5556/dex/token"
 CONFIG_PATH = "/tmp/dex.yml"
 LOGGER = get_logger()
 
@@ -94,14 +93,14 @@ class TestSourceOAuth2(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
-        OAuthSource.objects.create(
+        OAuthSource.objects.create(  # nosec
             name="dex",
             slug="dex",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
             provider_type="openid-connect",
             authorization_url="http://127.0.0.1:5556/dex/auth",
-            access_token_url=TOKEN_URL,
+            access_token_url="http://127.0.0.1:5556/dex/token",
             profile_url="http://127.0.0.1:5556/dex/userinfo",
             consumer_key="example-app",
             consumer_secret=self.client_secret,
@@ -247,6 +246,8 @@ class TestSourceOAuth2(SeleniumTestCase):
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestSourceOAuth1(SeleniumTestCase):
+    """Test OAuth1 Source"""
+
     def setUp(self) -> None:
         self.client_id = generate_client_id()
         self.client_secret = generate_client_secret()
@@ -277,7 +278,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
 
-        OAuthSource.objects.create(
+        OAuthSource.objects.create(  # nosec
             name="oauth1",
             slug=self.source_slug,
             authentication_flow=authentication_flow,
