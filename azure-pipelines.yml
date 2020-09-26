@@ -179,6 +179,9 @@ stages:
             inputs:
               script: |
                 pipenv run coverage run ./manage.py test passbook -v 3
+          - task: CmdLine@2
+            inputs:
+              script: |
                 mkdir output-unittest
                 mv unittest.xml output-unittest/unittest.xml
                 mv .coverage output-unittest/coverage
