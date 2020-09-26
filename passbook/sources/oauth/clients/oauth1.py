@@ -24,19 +24,17 @@ class OAuthClient(BaseOAuthClient):
         "Fetch access token from callback request."
         raw_token = self.request.session.get(self.session_key, None)
         verifier = self.request.GET.get("oauth_verifier", None)
+        callback = self.request.build_absolute_uri(self.callback)
         if raw_token is not None and verifier is not None:
-            data = {
-                "oauth_verifier": verifier,
-                "oauth_callback": self.callback,
-            }
             token = self.parse_raw_token(raw_token)
             try:
                 response = self.do_request(
                     "post",
                     self.source.access_token_url,
-                    data=data,
                     token=token,
                     headers=self._default_headers,
+                    oauth_verifier=verifier,
+                    oauth_callback=callback
                 )
                 response.raise_for_status()
             except RequestException as exc:
@@ -53,8 +51,8 @@ class OAuthClient(BaseOAuthClient):
             response = self.do_request(
                 "post",
                 self.source.request_token_url,
-                data={"oauth_callback": callback},
                 headers=self._default_headers,
+                oauth_callback=callback,
             )
             response.raise_for_status()
         except RequestException as exc:
@@ -87,7 +85,7 @@ class OAuthClient(BaseOAuthClient):
             resource_owner_secret = user_token["oauth_token_secret"]
 
         callback = kwargs.pop("oauth_callback", None)
-        verifier = kwargs.get("data", {}).pop("oauth_verifier", None)
+        verifier = kwargs.pop("oauth_verifier", None)
         oauth = OAuth1(
             resource_owner_key=resource_owner_key,
             resource_owner_secret=resource_owner_secret,
