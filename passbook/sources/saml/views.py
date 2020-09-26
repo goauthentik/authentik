@@ -90,17 +90,12 @@ class SLOView(LoginRequiredMixin, View):
     """Single-Logout-View"""
 
     def dispatch(self, request: HttpRequest, source_slug: str) -> HttpResponse:
-        """Replies with an XHTML SSO Request."""
-        # TODO: Replace with flows
+        """Log user out and redirect them to the IdP's SLO URL."""
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
         logout(request)
-        return render(
-            request,
-            "saml/sp/sso_single_logout.html",
-            {"idp_logout_url": source.slo_url},
-        )
+        return redirect(source.slo_url)
 
 
 class MetadataView(View):
