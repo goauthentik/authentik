@@ -16,7 +16,7 @@ from yaml import safe_dump
 
 from e2e.utils import SeleniumTestCase
 from passbook.flows.models import Flow
-from passbook.providers.oauth2.generators import generate_client_secret
+from passbook.providers.oauth2.generators import generate_client_id, generate_client_secret
 from passbook.sources.oauth.models import OAuthSource
 
 TOKEN_URL = "http://127.0.0.1:5556/dex/token"
@@ -25,7 +25,7 @@ LOGGER = get_logger()
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
-class TestSourceOAuth(SeleniumTestCase):
+class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
 
     container: Container
@@ -239,4 +239,97 @@ class TestSourceOAuth(SeleniumTestCase):
         self.assertEqual(
             self.driver.find_element(By.ID, "id_email").get_attribute("value"),
             "admin@example.com",
+        )
+
+
+@skipUnless(platform.startswith("linux"), "requires local docker")
+class TestSourceOAuth1(SeleniumTestCase):
+
+    def setUp(self) -> None:
+        self.client_id = generate_client_id()
+        self.client_secret = generate_client_secret()
+        self.source_slug = "oauth1-test"
+        super().setUp()
+
+    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+        return {
+            "image": "beryju/oauth1-test-server",
+            "detach": True,
+            "network_mode": "host",
+            "auto_remove": True,
+            "environment": {
+                "OAUTH1_CLIENT_ID": self.client_id,
+                "OAUTH1_CLIENT_SECRET": self.client_secret,
+                "OAUTH1_REDIRECT_URI": (
+                    self.url(
+                        "passbook_sources_oauth:oauth-client-callback",
+                        source_slug=self.source_slug,
+                    )
+                ),
+            },
+        }
+
+    def create_objects(self):
+        """Create required objects"""
+        # Bootstrap all needed objects
+        authentication_flow = Flow.objects.get(slug="default-source-authentication")
+        enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+
+        OAuthSource.objects.create(
+            name="oauth1",
+            slug=self.source_slug,
+            authentication_flow=authentication_flow,
+            enrollment_flow=enrollment_flow,
+            provider_type="twitter",
+            request_token_url="http://localhost:5000/oauth/request_token",
+            access_token_url="http://localhost:5000/oauth/access_token",
+            authorization_url="http://localhost:5000/oauth/authorize",
+            profile_url="http://localhost:5000/api/me",
+            consumer_key=self.client_id,
+            consumer_secret=self.client_secret,
+        )
+
+    def test_oauth_enroll(self):
+        """test OAuth Source With With OIDC"""
+        self.create_objects()
+        self.driver.get(self.live_server_url)
+
+        self.wait.until(
+            ec.presence_of_element_located(
+                (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
+            )
+        )
+        self.driver.find_element(
+            By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
+        ).click()
+
+        # Now we should be at the IDP, wait for the login field
+        self.wait.until(ec.presence_of_element_located((By.NAME, "username")))
+        self.driver.find_element(By.NAME, "username").send_keys("example-user")
+        self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "[name='confirm']"))
+        )
+        self.driver.find_element(By.CSS_SELECTOR, "[name='confirm']").click()
+
+        # Wait until we've loaded the user info page
+        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "example-user")))
+        self.driver.find_element(By.LINK_TEXT, "example-user").click()
+
+        self.wait_for_url(self.url("passbook_core:user-settings"))
+        self.assertEqual(
+            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
+            "example-user",
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "example-user"
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_name").get_attribute("value"), "test name",
+        )
+        self.assertEqual(
+            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
+            "foo@example.com",
         )
