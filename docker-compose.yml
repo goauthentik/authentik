@@ -29,7 +29,6 @@ services:
       PASSBOOK_REDIS__HOST: redis
       PASSBOOK_POSTGRESQL__HOST: postgresql
       PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      PASSBOOK_LOG_LEVEL: debug
     ports:
       - 8000
     networks:
@@ -51,7 +50,6 @@ services:
       PASSBOOK_REDIS__HOST: redis
       PASSBOOK_POSTGRESQL__HOST: postgresql
       PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      PASSBOOK_LOG_LEVEL: debug
     env_file:
       - .env
   static:
