@@ -89,7 +89,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
             USER().username,
@@ -142,17 +142,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         sleep(1)
 
-        self.assertIn(
-            app.name,
-            self.driver.find_element(
-                By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
-            ).text,
+        self.assertEqual(
+            app.name, self.driver.find_element(By.ID, "application-name").text,
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
-            self.driver.find_element(
-                By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/ul/li[1]"
-            ).text,
+            self.driver.find_element(By.ID, "scope-user:email").text,
         )
         self.driver.find_element(
             By.CSS_SELECTOR,
@@ -163,7 +158,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
             USER().username,

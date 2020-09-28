@@ -104,8 +104,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            "foo",
+            self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -205,16 +204,11 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         # We're now logged in
-        self.wait.until(
-            ec.presence_of_element_located(
-                (By.XPATH, "//a[contains(@href, '/-/user/')]")
-            )
-        )
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.find_element(By.ID, "user-settings").click()
 
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            "foo",
+            self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"

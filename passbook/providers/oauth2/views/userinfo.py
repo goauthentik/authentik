@@ -22,14 +22,14 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    def get_scope_descriptions(self, scopes: List[str]) -> List[str]:
+    def get_scope_descriptions(self, scopes: List[str]) -> Dict[str, str]:
         """Get a list of all Scopes's descriptions"""
-        scope_descriptions = []
+        scope_descriptions = {}
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by(
             "scope_name"
         ):
             if scope.description != "":
-                scope_descriptions.append(scope.description)
+                scope_descriptions[scope.scope_name] = scope.description
         # GitHub Compatibility Scopes are handeled differently, since they required custom paths
         # Hence they don't exist as Scope objects
         github_scope_map = {
@@ -44,7 +44,7 @@ class UserInfoView(View):
         }
         for scope in scopes:
             if scope in github_scope_map:
-                scope_descriptions.append(github_scope_map[scope])
+                scope_descriptions[scope] = github_scope_map[scope]
         return scope_descriptions
 
     def get_claims(self, token: RefreshToken) -> Dict[str, Any]:

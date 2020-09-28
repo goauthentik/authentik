@@ -44,12 +44,12 @@
         </div>
         <div class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group pf-m-icons">
-                <a href="{% url 'passbook_flows:default-invalidation' %}" class="pf-c-button pf-m-plain" type="button" aria-label="logout">
+                <a href="{% url 'passbook_flows:default-invalidation' %}" class="pf-c-button pf-m-plain" type="button" id="logout">
                     <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                 </a>
             </div>
             <div class="pf-c-page__header-tools-group">
-                <a href="{% url 'passbook_core:user-settings' %}" class="pf-c-button">
+                <a href="{% url 'passbook_core:user-settings' %}" id="user-settings" class="pf-c-button">
                     {{ user.username }}
                 </a>
             </div>

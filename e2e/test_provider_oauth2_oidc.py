@@ -200,11 +200,8 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
-        self.assertIn(
-            app.name,
-            self.driver.find_element(
-                By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
-            ).text,
+        self.assertEqual(
+            app.name, self.driver.find_element(By.ID, "application-name").text,
         )
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))

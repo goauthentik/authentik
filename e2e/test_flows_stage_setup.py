@@ -38,7 +38,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+        self.driver.find_element(By.ID, "user-settings").click()
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.driver.find_element(By.LINK_TEXT, "Change password").click()
         self.driver.find_element(By.ID, "id_password").send_keys(new_password)

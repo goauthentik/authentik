@@ -130,12 +130,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located(
-                (By.XPATH, "//a[contains(@href, '/-/user/')]")
-            )
-        )
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.find_element(By.ID, "user-settings").click()
 
         # Wait until we've loaded the user info page
         self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
@@ -183,12 +179,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located(
-                (By.XPATH, "//a[contains(@href, '/-/user/')]")
-            )
-        )
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.find_element(By.ID, "user-settings").click()
 
         # Wait until we've loaded the user info page
         self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
@@ -234,12 +226,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(
-            ec.presence_of_element_located(
-                (By.XPATH, "//a[contains(@href, '/-/user/')]")
-            )
-        )
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.find_element(By.ID, "user-settings").click()
 
         # Wait until we've loaded the user info page
         self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))

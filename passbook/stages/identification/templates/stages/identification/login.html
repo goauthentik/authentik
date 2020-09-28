@@ -14,7 +14,7 @@
             {% if application_pre %}
             <p>
                 {% blocktrans with app_name=application_pre.name %}
-                Login to continue to <strong>{{ app_name }}</strong>.
+                Login to continue to <strong id="application-name">{{ app_name }}</strong>.
                 {% endblocktrans %}
             </p>
             {% endif %}

@@ -93,7 +93,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.wait_for_url("http://localhost:9009/")
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "/html/body/pre").text,
+            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
             f"Hello, {USER().name}!",
         )
 
@@ -124,17 +124,14 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.assertIn(
-            app.name,
-            self.driver.find_element(
-                By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
-            ).text,
+        self.assertEqual(
+            app.name, self.driver.find_element(By.ID, "application-name").text,
         )
         sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
         self.wait_for_url("http://localhost:9009/")
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "/html/body/pre").text,
+            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
             f"Hello, {USER().name}!",
         )
 
@@ -172,7 +169,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.wait_for_url("http://localhost:9009/")
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "/html/body/pre").text,
+            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
             f"Hello, {USER().name}!",
         )
 

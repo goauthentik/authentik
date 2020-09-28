@@ -6,7 +6,7 @@
 <div class="pf-c-form__group">
     <p>
         {% blocktrans with name=context.application.name %}
-        You're about to sign into {{ name }}.
+        You're about to sign into <strong id="application-name">{{ name }}</strong>.
         {% endblocktrans %}
     </p>
     {{ hidden_inputs }}

@@ -36,9 +36,7 @@ class OTPTimeStageView(FormView, StageView):
         qr_code = QRCode(image_factory=SvgFillImage)
         qr_code.add_data(device.config_url)
         svg_image = tostring(qr_code.make_image().get_image())
-        sr_wrapper = (
-            f'<div aria-label="{device.config_url}">{force_str(svg_image)}</div>'
-        )
+        sr_wrapper = f'<div id="qr" data-otpuri="{device.config_url}">{force_str(svg_image)}</div>'
         return sr_wrapper
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

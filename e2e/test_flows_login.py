@@ -21,6 +21,5 @@ class TestFlowsLogin(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            USER().username,
+            self.driver.find_element(By.ID, "user-settings").text, USER().username,
         )

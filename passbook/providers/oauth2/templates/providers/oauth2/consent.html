@@ -6,13 +6,13 @@
 <div class="pf-c-form__group">
     <p>
         {% blocktrans with name=context.application.name %}
-        You're about to sign into {{ name }}.
+        You're about to sign into <strong id="application-name">{{ name }}</strong>.
         {% endblocktrans %}
     </p>
     <p>{% trans "Application requires following permissions" %}</p>
-    <ul class="pf-c-list">
-        {% for scope in context.scope_descriptions %}
-        <li>{{ scope }}</li>
+    <ul class="pf-c-list" id="scopes">
+        {% for scope_name, description in context.scope_descriptions.items %}
+        <li id="scope-{{ scope_name }}">{{ description }}</li>
         {% endfor %}
     </ul>
     {{ hidden_inputs }}

@@ -145,8 +145,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            "foo",
+            self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -199,7 +198,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
         # We're logged in at the end of this, log out and re-login
-        self.driver.find_element(By.CSS_SELECTOR, "[aria-label=logout]").click()
+        self.driver.find_element(By.ID, "logout").click()
 
         self.wait.until(
             ec.presence_of_element_located(
@@ -229,8 +228,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            "foo",
+            self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -324,8 +322,7 @@ class TestSourceOAuth1(SeleniumTestCase):
 
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
-            self.driver.find_element(By.XPATH, "//a[contains(@href, '/-/user/')]").text,
-            "example-user",
+            self.driver.find_element(By.ID, "user-settings").text, "example-user",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"),

@@ -154,7 +154,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.wait_for_url("http://localhost:3000/?orgId=1")
+        self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
             USER().name,
@@ -212,7 +213,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.wait_for_url("http://localhost:3000/?orgId=1")
+        self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
             USER().name,
@@ -235,7 +237,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             ).get_attribute("value"),
             USER().email,
         )
-        self.driver.find_element(By.CSS_SELECTOR, "[href='/logout']").click()
+        self.driver.get("http://localhost:3000/logout")
         self.wait_for_url(
             self.url(
                 "passbook_providers_oauth2:end-session",
@@ -279,11 +281,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
-        self.assertIn(
-            app.name,
-            self.driver.find_element(
-                By.XPATH, "/html/body/div[2]/div/main/div/form/div[2]/p[1]"
-            ).text,
+        self.assertEqual(
+            app.name, self.driver.find_element(By.ID, "application-name").text,
         )
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
@@ -291,12 +290,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
-        self.wait.until(
-            ec.presence_of_element_located(
-                (By.XPATH, "//a[contains(@href, '/profile')]")
-            )
-        )
-        self.driver.find_element(By.XPATH, "//a[contains(@href, '/profile')]").click()
+        self.wait_for_url("http://localhost:3000/?orgId=1")
+        self.driver.get("http://localhost:3000/profile")
+
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
             USER().name,
