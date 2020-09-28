@@ -140,10 +140,9 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
 
         # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
-        self.driver.find_element(By.LINK_TEXT, "foo").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
             self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
@@ -222,11 +221,9 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
-        self.driver.find_element(By.LINK_TEXT, "foo").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
             self.driver.find_element(By.ID, "user-settings").text, "foo",
         )
@@ -316,11 +313,9 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "[name='confirm']").click()
 
         # Wait until we've loaded the user info page
-        sleep(1)
-        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "example-user")))
-        self.driver.find_element(By.LINK_TEXT, "example-user").click()
+        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
             self.driver.find_element(By.ID, "user-settings").text, "example-user",
         )

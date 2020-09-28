@@ -149,13 +149,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             "GitHub Compatibility: Access you Email addresses",
             self.driver.find_element(By.ID, "scope-user:email").text,
         )
-        self.driver.find_element(
-            By.CSS_SELECTOR,
-            (
-                "form[action='/flows/b/default-provider-authorization-explicit-consent/'] "
-                "[type=submit]"
-            ),
-        ).click()
+        self.driver.find_element(By.CSS_SELECTOR, ("[type=submit]"),).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")

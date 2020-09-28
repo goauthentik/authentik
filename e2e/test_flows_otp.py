@@ -66,8 +66,7 @@ class TestFlowsOTP(SeleniumTestCase):
         )
 
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
-        self.driver.find_element(By.ID, "user-settings").click()
-        self.wait_for_url(self.url("passbook_core:user-settings"))
+        self.driver.get(self.url("passbook_core:user-settings"))
 
         self.driver.find_element(By.LINK_TEXT, "Time-based OTP").click()
 

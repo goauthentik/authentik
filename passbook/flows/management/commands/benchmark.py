@@ -18,7 +18,7 @@ from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 LOGGER = get_logger()
 
 
-class FlowPlanProcess(Process):
+class FlowPlanProcess(Process):  # pragma: no cover
     """Test process which executes flow planner"""
 
     def __init__(self, index, return_dict, flow, user) -> None:
@@ -46,7 +46,7 @@ class FlowPlanProcess(Process):
         self.return_dict[self.index] = diffs
 
 
-class Command(BaseCommand):
+class Command(BaseCommand):  # pragma: no cover
     """Benchmark passbook"""
 
     def add_arguments(self, parser):
