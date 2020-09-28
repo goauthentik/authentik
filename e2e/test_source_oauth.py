@@ -315,6 +315,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[name='confirm']"))
         )
+        sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[name='confirm']").click()
 
         # Wait until we've loaded the user info page
