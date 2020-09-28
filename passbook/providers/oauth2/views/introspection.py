@@ -34,7 +34,7 @@ class TokenIntrospectionParams:
         except RefreshToken.DoesNotExist:
             LOGGER.debug("Token does not exist", token=raw_token)
             raise TokenIntrospectionError()
-        if self.token.has_expired():
+        if self.token.is_expired:
             LOGGER.debug("Token is not valid", token=raw_token)
             raise TokenIntrospectionError()
         try:
@@ -97,9 +97,9 @@ class TokenIntrospectionView(View):
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Introspection handler"""
-        self.params = TokenIntrospectionParams.from_request(request)
-
         try:
+            self.params = TokenIntrospectionParams.from_request(request)
+
             response_dic = {}
             if self.id_token:
                 token_dict = self.id_token.to_dict()
