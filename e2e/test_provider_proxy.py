@@ -4,14 +4,14 @@ from time import sleep
 from typing import Any, Dict, Optional
 from unittest.case import skipUnless
 
+from channels.testing import ChannelsLiveServerTestCase
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from channels.testing import ChannelsLiveServerTestCase
 
-from passbook import __version__
 from e2e.utils import USER, SeleniumTestCase
+from passbook import __version__
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.outposts.models import Outpost, OutpostDeploymentType, OutpostType
@@ -124,6 +124,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         return container
 
     def test_proxy_connectivity(self):
+        """Test proxy connectivity over websocket"""
         SeleniumTestCase().apply_default_data()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",

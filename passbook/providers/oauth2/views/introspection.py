@@ -1,15 +1,17 @@
 """passbook OAuth2 Token Introspection Views"""
-from dataclasses import InitVar, dataclass
-from typing import Optional
+from dataclasses import dataclass, field
 
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from structlog import get_logger
 
-from passbook.providers.oauth2.constants import SCOPE_OPENID_INTROSPECTION
 from passbook.providers.oauth2.errors import TokenIntrospectionError
 from passbook.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken
-from passbook.providers.oauth2.utils import TokenResponse, extract_client_auth
+from passbook.providers.oauth2.utils import (
+    TokenResponse,
+    extract_access_token,
+    extract_client_auth,
+)
 
 LOGGER = get_logger()
 
@@ -18,39 +20,17 @@ LOGGER = get_logger()
 class TokenIntrospectionParams:
     """Parameters for Token Introspection"""
 
-    client_id: str
-    client_secret: str
+    token: RefreshToken
 
-    raw_token: InitVar[str]
+    provider: OAuth2Provider = field(init=False)
+    id_token: IDToken = field(init=False)
 
-    token: Optional[RefreshToken] = None
-
-    provider: Optional[OAuth2Provider] = None
-    id_token: Optional[IDToken] = None
-
-    def __post_init__(self, raw_token: str):
-        try:
-            self.token = RefreshToken.objects.get(access_token=raw_token)
-        except RefreshToken.DoesNotExist:
-            LOGGER.debug("Token does not exist", token=raw_token)
-            raise TokenIntrospectionError()
+    def __post_init__(self):
         if self.token.is_expired:
-            LOGGER.debug("Token is not valid", token=raw_token)
-            raise TokenIntrospectionError()
-        try:
-            self.provider = OAuth2Provider.objects.get(
-                client_id=self.client_id, client_secret=self.client_secret,
-            )
-        except OAuth2Provider.DoesNotExist:
-            LOGGER.debug("provider for ID not found", client_id=self.client_id)
-            raise TokenIntrospectionError()
-        if SCOPE_OPENID_INTROSPECTION not in self.provider.scope_names:
-            LOGGER.debug(
-                "OAuth2Provider does not have introspection scope",
-                client_id=self.client_id,
-            )
+            LOGGER.debug("Token is not valid")
             raise TokenIntrospectionError()
 
+        self.provider = self.token.provider
         self.id_token = self.token.id_token
 
         if not self.token.id_token:
@@ -59,31 +39,61 @@ class TokenIntrospectionParams:
             )
             raise TokenIntrospectionError()
 
-        audience = self.token.id_token.aud
-        if not audience:
-            LOGGER.debug(
-                "No audience found for token", token=self.token,
-            )
+    def authenticate_basic(self, request: HttpRequest) -> bool:
+        """Attempt to authenticate via Basic auth of client_id:client_secret"""
+        client_id, client_secret = extract_client_auth(request)
+        if client_id == client_secret == "":
+            return False
+        if (
+            client_id != self.provider.client_id
+            or client_secret != self.provider.client_secret
+        ):
+            LOGGER.debug("(basic) Provider for basic auth does not exist")
             raise TokenIntrospectionError()
+        return True
 
-        if audience not in self.provider.scope_names:
-            LOGGER.debug(
-                "provider does not audience scope",
-                client_id=self.client_id,
-                audience=audience,
-            )
+    def authenticate_bearer(self, request: HttpRequest) -> bool:
+        """Attempt to authenticate via token sent as bearer header"""
+        body_token = extract_access_token(request)
+        if not body_token:
+            return False
+        tokens = RefreshToken.objects.filter(access_token=body_token).select_related(
+            "provider"
+        )
+        if not tokens.exists():
+            LOGGER.debug("(bearer) Token does not exist")
             raise TokenIntrospectionError()
+        if tokens.first().provider != self.provider:
+            LOGGER.debug("(bearer) Token providers don't match")
+            raise TokenIntrospectionError()
+        return True
 
     @staticmethod
     def from_request(request: HttpRequest) -> "TokenIntrospectionParams":
         """Extract required Parameters from HTTP Request"""
-        # Introspection only supports POST requests
-        client_id, client_secret = extract_client_auth(request)
-        return TokenIntrospectionParams(
-            raw_token=request.POST.get("token"),
-            client_id=client_id,
-            client_secret=client_secret,
-        )
+        raw_token = request.POST.get("token")
+        token_type_hint = request.POST.get("token_type_hint", "access_token")
+        token_filter = {token_type_hint: raw_token}
+
+        if token_type_hint not in ["access_token", "refresh_token"]:
+            LOGGER.debug("token_type_hint has invalid value", value=token_type_hint)
+            raise TokenIntrospectionError()
+
+        try:
+            token: RefreshToken = RefreshToken.objects.select_related("provider").get(
+                **token_filter
+            )
+        except RefreshToken.DoesNotExist:
+            LOGGER.debug("Token does not exist", token=raw_token)
+            raise TokenIntrospectionError()
+
+        params = TokenIntrospectionParams(token=token)
+        if not any(
+            [params.authenticate_basic(request), params.authenticate_bearer(request)]
+        ):
+            LOGGER.debug("Not authenticated")
+            raise TokenIntrospectionError()
+        return params
 
 
 class TokenIntrospectionView(View):
@@ -101,12 +111,12 @@ class TokenIntrospectionView(View):
             self.params = TokenIntrospectionParams.from_request(request)
 
             response_dic = {}
-            if self.id_token:
-                token_dict = self.id_token.to_dict()
+            if self.params.id_token:
+                token_dict = self.params.id_token.to_dict()
                 for k in ("aud", "sub", "exp", "iat", "iss"):
                     response_dic[k] = token_dict[k]
             response_dic["active"] = True
-            response_dic["client_id"] = self.token.provider.client_id
+            response_dic["client_id"] = self.params.token.provider.client_id
 
             return TokenResponse(response_dic)
         except TokenIntrospectionError:

@@ -7,7 +7,6 @@ PROMPT_CONSNET = "consent"
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
-SCOPE_OPENID_INTROSPECTION = "token_introspection"
 
 # Read/write full user (including email)
 SCOPE_GITHUB_USER = "user"

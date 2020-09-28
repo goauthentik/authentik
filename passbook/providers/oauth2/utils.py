@@ -2,7 +2,7 @@
 import re
 from base64 import b64decode
 from binascii import Error
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils.cache import patch_vary_headers
@@ -50,7 +50,7 @@ def cors_allow_any(request, response):
     return response
 
 
-def extract_access_token(request: HttpRequest) -> str:
+def extract_access_token(request: HttpRequest) -> Optional[str]:
     """
     Get the access token using Authorization Request Header Field method.
     Or try getting via GET.
@@ -66,7 +66,7 @@ def extract_access_token(request: HttpRequest) -> str:
         return request.POST.get("access_token")
     if "access_token" in request.GET:
         return request.GET.get("access_token")
-    return ""
+    return None
 
 
 def extract_client_auth(request: HttpRequest) -> Tuple[str, str]:
@@ -103,9 +103,12 @@ def protected_resource_view(scopes: List[str]):
 
     def wrapper(view):
         def view_wrapper(request, *args, **kwargs):
-            access_token = extract_access_token(request)
-
             try:
+                access_token = extract_access_token(request)
+                if not access_token:
+                    LOGGER.debug("No token passed")
+                    raise BearerTokenError("invalid_token")
+
                 try:
                     kwargs["token"] = RefreshToken.objects.get(
                         access_token=access_token

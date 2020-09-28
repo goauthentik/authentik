@@ -202,11 +202,6 @@ class OAuth2Provider(Provider):
         ),
     )
 
-    @property
-    def scope_names(self) -> List[str]:
-        """Return list of assigned scopes seperated with a space"""
-        return [pm.scope_name for pm in self.property_mappings.all()]
-
     def create_refresh_token(
         self, user: User, scope: List[str], id_token: Optional["IDToken"] = None
     ) -> "RefreshToken":
