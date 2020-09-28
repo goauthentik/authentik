@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
+from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
@@ -21,6 +22,11 @@ POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False))
 CACHE_MOCK = Mock(wraps=cache)
 
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
+
+
+def dummy_get_response(request: HttpRequest):  # pragma: no cover
+    """Dummy get_response for SessionMiddleware"""
+    return None
 
 
 class TestFlowPlanner(TestCase):
@@ -164,7 +170,7 @@ class TestFlowPlanner(TestCase):
         )
         request.user = get_anonymous_user()
 
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
 

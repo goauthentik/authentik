@@ -1,6 +1,6 @@
 """Test AuthN Request generator and parser"""
 from django.contrib.sessions.middleware import SessionMiddleware
-from django.http.request import QueryDict
+from django.http.request import HttpRequest, QueryDict
 from django.test import RequestFactory, TestCase
 from guardian.utils import get_anonymous_user
 
@@ -17,6 +17,11 @@ from passbook.sources.saml.processors.request import (
     RequestProcessor,
 )
 from passbook.sources.saml.processors.response import ResponseProcessor
+
+
+def dummy_get_response(request: HttpRequest):  # pragma: no cover
+    """Dummy get_response for SessionMiddleware"""
+    return None
 
 
 class TestAuthNRequest(TestCase):
@@ -41,7 +46,7 @@ class TestAuthNRequest(TestCase):
         """Test generated AuthNRequest with valid signature"""
         http_request = self.factory.get("/")
 
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(http_request)
         http_request.session.save()
 
@@ -59,7 +64,7 @@ class TestAuthNRequest(TestCase):
         """Test generated AuthNRequest with valid signature (detached)"""
         http_request = self.factory.get("/")
 
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(http_request)
         http_request.session.save()
 
@@ -78,7 +83,7 @@ class TestAuthNRequest(TestCase):
         http_request = self.factory.get("/")
         http_request.user = get_anonymous_user()
 
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(http_request)
         http_request.session.save()
 
