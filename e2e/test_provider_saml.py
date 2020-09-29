@@ -1,4 +1,5 @@
 """test SAML Provider flow"""
+from json import loads
 from sys import platform
 from time import sleep
 from unittest.case import skipUnless
@@ -35,6 +36,7 @@ class TestProviderSAML(SeleniumTestCase):
     def setup_client(self, provider: SAMLProvider) -> Container:
         """Setup client saml-sp container which we test SAML against"""
         client: DockerClient = from_env()
+        client.images.pull("beryju/oidc-test-client")
         container = client.containers.run(
             image="beryju/saml-test-sp",
             detach=True,
@@ -92,10 +94,14 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.wait_for_url("http://localhost:9009/")
-        self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
-            f"Hello, {USER().name}!",
-        )
+
+        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+
+        self.assertEqual(body["attr"]["cn"], [USER().name])
+        self.assertEqual(body["attr"]["displayName"], [USER().username])
+        self.assertEqual(body["attr"]["eduPersonPrincipalName"], [USER().email])
+        self.assertEqual(body["attr"]["mail"], [USER().email])
+        self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
     def test_sp_initiated_explicit(self):
         """test SAML Provider flow SP-initiated flow (explicit consent)"""
@@ -130,10 +136,14 @@ class TestProviderSAML(SeleniumTestCase):
         sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
         self.wait_for_url("http://localhost:9009/")
-        self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
-            f"Hello, {USER().name}!",
-        )
+
+        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+
+        self.assertEqual(body["attr"]["cn"], [USER().name])
+        self.assertEqual(body["attr"]["displayName"], [USER().username])
+        self.assertEqual(body["attr"]["eduPersonPrincipalName"], [USER().email])
+        self.assertEqual(body["attr"]["mail"], [USER().email])
+        self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
@@ -169,10 +179,14 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         sleep(1)
         self.wait_for_url("http://localhost:9009/")
-        self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, "pre").text,
-            f"Hello, {USER().name}!",
-        )
+
+        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+
+        self.assertEqual(body["attr"]["cn"], [USER().name])
+        self.assertEqual(body["attr"]["displayName"], [USER().username])
+        self.assertEqual(body["attr"]["eduPersonPrincipalName"], [USER().email])
+        self.assertEqual(body["attr"]["mail"], [USER().email])
+        self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
     def test_sp_initiated_denied(self):
         """test SAML Provider flow SP-initiated flow (Policy denies access)"""

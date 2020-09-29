@@ -39,6 +39,7 @@ class TestProviderProxy(SeleniumTestCase):
     def start_proxy(self, outpost: Outpost) -> Container:
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
+        client.images.pull("beryju/oidc-test-client")
         container = client.containers.run(
             image="beryju/passbook-proxy:latest",
             detach=True,
@@ -111,6 +112,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     def start_proxy(self, outpost: Outpost) -> Container:
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
+        client.images.pull("beryju/oidc-test-client")
         container = client.containers.run(
             image="beryju/passbook-proxy:latest",
             detach=True,

@@ -51,6 +51,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         """Setup client saml-sp container which we test SAML against"""
         sleep(1)
         client: DockerClient = from_env()
+        client.images.pull("beryju/oidc-test-client")
         container = client.containers.run(
             image="beryju/oidc-test-client",
             detach=True,
