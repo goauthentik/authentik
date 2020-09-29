@@ -43,7 +43,7 @@ class InheritanceCreateView(CreateAssignPermView):
             )
         except StopIteration as exc:
             raise Http404 from exc
-        return model.form(model)
+        return model().form
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
