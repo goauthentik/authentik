@@ -47,7 +47,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def _start_container(self, specs: Dict[str, Any]) -> Container:
         client: DockerClient = from_env()
-        client.images.pull(specs['image'])
+        client.images.pull(specs["image"])
         container = client.containers.run(**specs)
         if "healthcheck" not in specs:
             return container
