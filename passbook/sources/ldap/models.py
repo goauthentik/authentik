@@ -67,6 +67,7 @@ class LDAPSource(Source):
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.ldap.forms import LDAPSourceForm
 
@@ -116,6 +117,7 @@ class LDAPPropertyMapping(PropertyMapping):
 
     object_field = models.TextField()
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.ldap.forms import LDAPPropertyMappingForm
 

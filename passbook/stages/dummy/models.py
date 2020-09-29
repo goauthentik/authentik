@@ -20,11 +20,13 @@ class DummyStage(Stage):
 
         return DummyStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.dummy.stage import DummyStageView
 
         return DummyStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.dummy.forms import DummyStageForm
 

@@ -22,6 +22,7 @@ class ExpressionPolicy(Policy):
 
         return ExpressionPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.expression.forms import ExpressionPolicyForm
 

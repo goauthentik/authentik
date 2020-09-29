@@ -50,6 +50,7 @@ class Stage(SerializerModel):
 
     objects = InheritanceManager()
 
+    @property
     def type(self) -> Type["StageView"]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
@@ -57,6 +58,7 @@ class Stage(SerializerModel):
             return getattr(self, "__in_memory_type")
         raise NotImplementedError
 
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError

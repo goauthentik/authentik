@@ -30,11 +30,13 @@ class CaptchaStage(Stage):
 
         return CaptchaStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.captcha.stage import CaptchaStageView
 
         return CaptchaStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.captcha.forms import CaptchaStageForm
 

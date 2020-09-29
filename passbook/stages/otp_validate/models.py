@@ -23,11 +23,13 @@ class OTPValidateStage(Stage):
 
         return OTPValidateStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.otp_validate.stage import OTPValidateStageView
 
         return OTPValidateStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.otp_validate.forms import OTPValidateStageForm
 

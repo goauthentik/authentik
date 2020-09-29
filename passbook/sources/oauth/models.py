@@ -40,6 +40,7 @@ class OAuthSource(Source):
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import OAuthSourceForm
 
@@ -83,6 +84,7 @@ class OAuthSource(Source):
 class GitHubOAuthSource(OAuthSource):
     """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import GitHubOAuthSourceForm
 
@@ -98,6 +100,7 @@ class GitHubOAuthSource(OAuthSource):
 class TwitterOAuthSource(OAuthSource):
     """Social Login using Twitter.com"""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import TwitterOAuthSourceForm
 
@@ -113,6 +116,7 @@ class TwitterOAuthSource(OAuthSource):
 class FacebookOAuthSource(OAuthSource):
     """Social Login using Facebook.com."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import FacebookOAuthSourceForm
 
@@ -128,6 +132,7 @@ class FacebookOAuthSource(OAuthSource):
 class DiscordOAuthSource(OAuthSource):
     """Social Login using Discord."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import DiscordOAuthSourceForm
 
@@ -143,6 +148,7 @@ class DiscordOAuthSource(OAuthSource):
 class GoogleOAuthSource(OAuthSource):
     """Social Login using Google or Gsuite."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import GoogleOAuthSourceForm
 
@@ -158,6 +164,7 @@ class GoogleOAuthSource(OAuthSource):
 class AzureADOAuthSource(OAuthSource):
     """Social Login using Azure AD."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import AzureADOAuthSourceForm
 
@@ -173,6 +180,7 @@ class AzureADOAuthSource(OAuthSource):
 class OpenIDOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.oauth.forms import OAuthSourceForm
 

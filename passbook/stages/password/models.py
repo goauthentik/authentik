@@ -38,11 +38,13 @@ class PasswordStage(ConfigurableStage, Stage):
 
         return PasswordStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.password.stage import PasswordStageView
 
         return PasswordStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.password.forms import PasswordStageForm
 

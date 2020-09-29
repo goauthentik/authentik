@@ -50,7 +50,7 @@ class PolicyEngine:
     def __init__(
         self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None
     ):
-        if not isinstance(pbm, PolicyBindingModel):
+        if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
             raise ValueError(f"{pbm} is not instance of PolicyBindingModel")
         self.__pbm = pbm
         self.request = PolicyRequest(user)

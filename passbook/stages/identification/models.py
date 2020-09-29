@@ -63,11 +63,13 @@ class IdentificationStage(Stage):
 
         return IdentificationStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.identification.stage import IdentificationStageView
 
         return IdentificationStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.identification.forms import IdentificationStageForm
 

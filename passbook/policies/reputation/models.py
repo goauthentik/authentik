@@ -29,6 +29,7 @@ class ReputationPolicy(Policy):
 
         return ReputationPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.reputation.forms import ReputationPolicyForm
 

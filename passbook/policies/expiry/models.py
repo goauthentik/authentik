@@ -28,6 +28,7 @@ class PasswordExpiryPolicy(Policy):
 
         return PasswordExpiryPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.expiry.forms import PasswordExpiryPolicyForm
 

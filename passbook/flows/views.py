@@ -96,7 +96,7 @@ class FlowExecutorView(View):
             current_stage=self.current_stage,
             flow_slug=self.flow.slug,
         )
-        stage_cls = self.current_stage.type()
+        stage_cls = self.current_stage.type
         self.current_stage_view = stage_cls(self)
         self.current_stage_view.args = self.args
         self.current_stage_view.kwargs = self.kwargs

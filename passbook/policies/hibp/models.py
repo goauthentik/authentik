@@ -34,6 +34,7 @@ class HaveIBeenPwendPolicy(Policy):
 
         return HaveIBeenPwendPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.hibp.forms import HaveIBeenPwnedPolicyForm
 

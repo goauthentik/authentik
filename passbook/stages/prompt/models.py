@@ -145,11 +145,13 @@ class PromptStage(Stage):
 
         return PromptStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.prompt.stage import PromptStageView
 
         return PromptStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.prompt.forms import PromptStageForm
 

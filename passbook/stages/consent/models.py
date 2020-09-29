@@ -44,11 +44,13 @@ class ConsentStage(Stage):
 
         return ConsentStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.consent.stage import ConsentStageView
 
         return ConsentStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.consent.forms import ConsentStageForm
 

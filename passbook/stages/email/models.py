@@ -51,11 +51,13 @@ class EmailStage(Stage):
 
         return EmailStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.email.stage import EmailStageView
 
         return EmailStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.email.forms import EmailStageForm
 

@@ -83,14 +83,15 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 
     objects = InheritanceAutoManager()
 
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError
 
     def __str__(self):
-        return f"Policy {self.name}"
+        return f"{self.__class__.__name__} {self.name}"
 
-    def passes(self, request: PolicyRequest) -> PolicyResult:
+    def passes(self, request: PolicyRequest) -> PolicyResult:  # pragma: no cover
         """Check if user instance passes this policy"""
         raise PolicyException()
 

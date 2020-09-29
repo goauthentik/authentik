@@ -67,6 +67,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     cookie_secret = models.TextField(default=get_cookie_secret)
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.providers.proxy.forms import ProxyProviderForm
 

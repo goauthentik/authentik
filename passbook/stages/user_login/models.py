@@ -27,11 +27,13 @@ class UserLoginStage(Stage):
 
         return UserLoginStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.user_login.stage import UserLoginStageView
 
         return UserLoginStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.user_login.forms import UserLoginStageForm
 

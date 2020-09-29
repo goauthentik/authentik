@@ -33,11 +33,13 @@ class InvitationStage(Stage):
 
         return InvitationStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.invitation.stage import InvitationStageView
 
         return InvitationStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.invitation.forms import InvitationStageForm
 

@@ -103,6 +103,7 @@ class SAMLSource(Source):
         on_delete=models.PROTECT,
     )
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.sources.saml.forms import SAMLSourceForm
 

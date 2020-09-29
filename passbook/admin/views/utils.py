@@ -64,7 +64,7 @@ class InheritanceUpdateView(UpdateView):
         return kwargs
 
     def get_form_class(self):
-        return self.get_object().form()
+        return self.get_object().form
 
     def get_object(self, queryset=None):
         return (

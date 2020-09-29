@@ -136,6 +136,7 @@ class Provider(models.Model):
         Can return None for providers that are not URL-based"""
         return None
 
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError
@@ -220,6 +221,7 @@ class Source(PolicyBindingModel):
 
     objects = InheritanceManager()
 
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError
@@ -321,6 +323,7 @@ class PropertyMapping(models.Model):
 
     objects = InheritanceManager()
 
+    @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
         raise NotImplementedError

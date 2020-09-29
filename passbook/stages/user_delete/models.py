@@ -19,11 +19,13 @@ class UserDeleteStage(Stage):
 
         return UserDeleteStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.user_delete.stage import UserDeleteStageView
 
         return UserDeleteStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.user_delete.forms import UserDeleteStageForm
 

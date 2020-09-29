@@ -37,6 +37,7 @@ class PasswordPolicy(Policy):
 
         return PasswordPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.password.forms import PasswordPolicyForm
 

@@ -109,6 +109,7 @@ class SAMLProvider(Provider):
         launch_url = urlparse(self.acs_url)
         return self.acs_url.replace(launch_url.path, "")
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.providers.saml.forms import SAMLProviderForm
 
@@ -154,6 +155,7 @@ class SAMLPropertyMapping(PropertyMapping):
     saml_name = models.TextField(verbose_name="SAML Name")
     friendly_name = models.TextField(default=None, blank=True, null=True)
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.providers.saml.forms import SAMLPropertyMappingForm
 

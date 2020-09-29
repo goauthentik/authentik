@@ -19,11 +19,13 @@ class UserWriteStage(Stage):
 
         return UserWriteStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.user_write.stage import UserWriteStageView
 
         return UserWriteStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.user_write.forms import UserWriteStageForm
 

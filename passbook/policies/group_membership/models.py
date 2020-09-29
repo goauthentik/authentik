@@ -24,6 +24,7 @@ class GroupMembershipPolicy(Policy):
 
         return GroupMembershipPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.group_membership.forms import GroupMembershipPolicyForm
 

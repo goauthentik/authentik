@@ -18,11 +18,13 @@ class UserLogoutStage(Stage):
 
         return UserLogoutStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.user_logout.stage import UserLogoutStageView
 
         return UserLogoutStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.user_logout.forms import UserLogoutStageForm
 

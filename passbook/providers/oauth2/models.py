@@ -102,6 +102,7 @@ class ScopeMapping(PropertyMapping):
         ),
     )
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.providers.oauth2.forms import ScopeMappingForm
 
@@ -264,6 +265,7 @@ class OAuth2Provider(Provider):
         launch_url = urlparse(main_url)
         return main_url.replace(launch_url.path, "")
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.providers.oauth2.forms import OAuth2ProviderForm
 

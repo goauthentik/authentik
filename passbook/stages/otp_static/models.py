@@ -23,11 +23,13 @@ class OTPStaticStage(ConfigurableStage, Stage):
 
         return OTPStaticStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.otp_static.stage import OTPStaticStageView
 
         return OTPStaticStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.otp_static.forms import OTPStaticStageForm
 

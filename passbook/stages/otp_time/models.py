@@ -30,11 +30,13 @@ class OTPTimeStage(ConfigurableStage, Stage):
 
         return OTPTimeStageSerializer
 
+    @property
     def type(self) -> Type[View]:
         from passbook.stages.otp_time.stage import OTPTimeStageView
 
         return OTPTimeStageView
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.stages.otp_time.forms import OTPTimeStageForm
 

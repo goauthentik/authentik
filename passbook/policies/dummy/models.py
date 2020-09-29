@@ -31,6 +31,7 @@ class DummyPolicy(Policy):
 
         return DummyPolicySerializer
 
+    @property
     def form(self) -> Type[ModelForm]:
         from passbook.policies.dummy.forms import DummyPolicyForm
 
