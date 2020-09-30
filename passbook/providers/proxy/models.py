@@ -1,11 +1,12 @@
 """passbook proxy models"""
 import string
 from random import SystemRandom
-from typing import Iterable, Type
+from typing import Iterable, Optional, Type
 from urllib.parse import urljoin
 
 from django.db import models
 from django.forms import ModelForm
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from passbook.crypto.models import CertificateKeyPair
@@ -49,7 +50,9 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         validators=[DomainlessURLValidator(schemes=("http", "https"))]
     )
     internal_host_ssl_validation = models.BooleanField(
-        default=True, help_text=_("Validate SSL Certificates of upstream servers")
+        default=True,
+        help_text=_("Validate SSL Certificates of upstream servers"),
+        verbose_name=_("Internal host SSL Validation"),
     )
 
     skip_path_regex = models.TextField(
@@ -74,6 +77,15 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         from passbook.providers.proxy.forms import ProxyProviderForm
 
         return ProxyProviderForm
+
+    @property
+    def launch_url(self) -> Optional[str]:
+        """Use external_host as launch URL"""
+        return self.external_host
+
+    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
+        """Overwrite Setup URLs as they are not needed for proxy"""
+        return None
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""

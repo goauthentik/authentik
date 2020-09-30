@@ -39,28 +39,40 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='proxyprovider',
-            name='internal_host_ssl_validation',
+            model_name="proxyprovider",
+            name="internal_host_ssl_validation",
             field=models.BooleanField(
-                default=True, help_text='Validate SSL Certificates of upstream servers', verbose_name='Internal host SSL Validation'),
+                default=True,
+                help_text="Validate SSL Certificates of upstream servers",
+                verbose_name="Internal host SSL Validation",
+            ),
         ),
         migrations.AddField(
-            model_name='proxyprovider',
-            name='basic_auth_enabled',
+            model_name="proxyprovider",
+            name="basic_auth_enabled",
             field=models.BooleanField(
-                default=False, help_text='Set a custom HTTP-Basic Authentication header based on values from passbook.', verbose_name='Set HTTP-Basic Authentication'),
+                default=False,
+                help_text="Set a custom HTTP-Basic Authentication header based on values from passbook.",
+                verbose_name="Set HTTP-Basic Authentication",
+            ),
         ),
         migrations.AddField(
-            model_name='proxyprovider',
-            name='basic_auth_password_attribute',
+            model_name="proxyprovider",
+            name="basic_auth_password_attribute",
             field=models.TextField(
-                blank=True, help_text='User Attribute used for the password part of the HTTP-Basic Header.', verbose_name='HTTP-Basic Password'),
+                blank=True,
+                help_text="User Attribute used for the password part of the HTTP-Basic Header.",
+                verbose_name="HTTP-Basic Password",
+            ),
         ),
         migrations.AddField(
-            model_name='proxyprovider',
-            name='basic_auth_user_attribute',
+            model_name="proxyprovider",
+            name="basic_auth_user_attribute",
             field=models.TextField(
-                blank=True, help_text="User Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.", verbose_name='HTTP-Basic Username'),
+                blank=True,
+                help_text="User Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                verbose_name="HTTP-Basic Username",
+            ),
         ),
         migrations.RunPython(create_proxy_scope),
     ]
