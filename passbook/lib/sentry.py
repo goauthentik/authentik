@@ -10,7 +10,6 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
-from websockets.exceptions import WebSocketException
 
 LOGGER = get_logger()
 
@@ -38,7 +37,6 @@ def before_send(event, hint):
         OSError,
         RedisError,
         SentryIgnoredException,
-        WebSocketException,
         CeleryError,
         LDAPException,
     )
