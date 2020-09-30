@@ -82,10 +82,12 @@ class User(GuardianUserMixin, AbstractUser):
     objects = UserManager()
 
     def group_attributes(self) -> Dict[str, Any]:
-        """Get a dictionary containing the attributes from all groups the user belongs to"""
+        """Get a dictionary containing the attributes from all groups the user belongs to,
+        including the users attributes"""
         final_attributes = {}
         for group in self.pb_groups.all().order_by("name"):
             final_attributes.update(group.attributes)
+        final_attributes.update(self.attributes)
         return final_attributes
 
     @cached_property
