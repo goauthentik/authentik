@@ -337,14 +337,15 @@ stages:
       - job: deploy_dev
         pool:
           vmImage: 'ubuntu-latest'
-          steps:
-          - task: HelmDeploy@0
-            inputs:
-              connectionType: 'Kubernetes Service Connection'
-              kubernetesServiceConnection: 'k8s-beryjuorg-prd'
-              namespace: 'passbook-dev'
-              command: 'upgrade'
-              chartType: 'FilePath'
-              chartPath: 'helm/'
-              releaseName: 'passbook-dev'
-              recreate: true
+        steps:
+        - task: HelmDeploy@0
+          condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+          inputs:
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceConnection: 'k8s-beryjuorg-prd'
+            namespace: 'passbook-dev'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'helm/'
+            releaseName: 'passbook-dev'
+            recreate: true
