@@ -16,7 +16,7 @@ The following placeholders will be used:
 
 ## passbook Setup
 
-Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in passbook. The recommended way to do this, is to create a Group, called for example "Tautulli Users". For this group, add the following attributes:
+Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in passbook. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
 
 ```yaml
 tautulli_user: username
@@ -31,13 +31,13 @@ Create an application in passbook. Create a Proxy provider with the following pa
 
     If Tautulli is running in docker, and you're deploying the passbook proxy on the same host, set the value to `http://tautulli:3579`, where tautulli is the name of your container.
 
-    If Tautulli is running on a different server than where you are deploying the passbook proxy, set the value to `http://tautulli.company:3579`.
+    If Tautulli is running on a different server to where you are deploying the passbook proxy, set the value to `http://tautulli.company:3579`.
 
 - External host
 
     Set this to the external URL you will be accessing Tautulli from.
 
-Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `tautulli_user` and `tautulli_password` respectively. These values can be chosen freely, `tautulli_` is just used a prefix for clarity.
+Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `tautulli_user` and `tautulli_password` respectively. These values can be chosen freely, `tautulli_` is just used as a prefix for clarity.
 
 ## Tautulli Setup
 
@@ -47,4 +47,4 @@ In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigat
 
 Save the settings, and restart Tautulli if prompted.
 
-Afterwards, you need to deploy an Outpost in front of Tautulli, just like descried [here](../sonarr/index.md)
+Afterwards, you need to deploy an Outpost in front of Tautulli, as descried [here](../sonarr/index.md)
