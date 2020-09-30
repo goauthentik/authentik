@@ -35,7 +35,8 @@ class TokenIntrospectionParams:
 
         if not self.token.id_token:
             LOGGER.debug(
-                "token not an authentication token", token=self.token,
+                "token not an authentication token",
+                token=self.token,
             )
             raise TokenIntrospectionError()
 

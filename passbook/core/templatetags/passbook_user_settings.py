@@ -30,9 +30,9 @@ def user_stages(context: RequestContext) -> List[UIUserSettings]:
 def user_sources(context: RequestContext) -> List[UIUserSettings]:
     """Return a list of all sources which are enabled for the user"""
     user = context.get("request").user
-    _all_sources: Iterable[Source] = (
-        Source.objects.filter(enabled=True).select_subclasses()
-    )
+    _all_sources: Iterable[Source] = Source.objects.filter(
+        enabled=True
+    ).select_subclasses()
     matching_sources: List[UIUserSettings] = []
     for source in _all_sources:
         user_settings = source.ui_user_settings

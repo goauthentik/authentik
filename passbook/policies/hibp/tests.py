@@ -12,7 +12,9 @@ class TestHIBPPolicy(TestCase):
 
     def test_false(self):
         """Failing password case"""
-        policy = HaveIBeenPwendPolicy.objects.create(name="test_false",)
+        policy = HaveIBeenPwendPolicy.objects.create(
+            name="test_false",
+        )
         request = PolicyRequest(get_anonymous_user())
         request.context["password"] = "password"
         result: PolicyResult = policy.passes(request)
@@ -21,7 +23,9 @@ class TestHIBPPolicy(TestCase):
 
     def test_true(self):
         """Positive password case"""
-        policy = HaveIBeenPwendPolicy.objects.create(name="test_true",)
+        policy = HaveIBeenPwendPolicy.objects.create(
+            name="test_true",
+        )
         request = PolicyRequest(get_anonymous_user())
         request.context["password"] = generate_client_secret()
         result: PolicyResult = policy.passes(request)

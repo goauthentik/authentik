@@ -47,7 +47,7 @@ SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
 class SAMLSSOView(PolicyAccessMixin, View):
-    """"SAML SSO Base View, which plans a flow and injects our final stage.
+    """ "SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
     application: Application

@@ -47,7 +47,10 @@ class Migration(migrations.Migration):
                 ),
                 ("date", models.DateTimeField(auto_now_add=True)),
                 ("app", models.TextField()),
-                ("context", models.JSONField(blank=True, default=dict),),
+                (
+                    "context",
+                    models.JSONField(blank=True, default=dict),
+                ),
                 ("client_ip", models.GenericIPAddressField(null=True)),
                 ("created", models.DateTimeField(auto_now_add=True)),
                 (

@@ -71,7 +71,8 @@ def update_default_stage_change(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
     Flow = apps.get_model("passbook_flows", "Flow")
 
     flow = Flow.objects.get(
-        slug="default-password-change", designation=FlowDesignation.STAGE_CONFIGURATION,
+        slug="default-password-change",
+        designation=FlowDesignation.STAGE_CONFIGURATION,
     )
 
     stages = PasswordStage.objects.filter(name="default-authentication-password")

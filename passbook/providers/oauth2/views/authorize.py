@@ -257,7 +257,8 @@ class OAuthFulfillmentStage(StageView):
                 ]
             elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
                 token = self.provider.create_refresh_token(
-                    user=self.request.user, scope=self.params.scope,
+                    user=self.request.user,
+                    scope=self.params.scope,
                 )
 
                 # Check if response_type must include access_token in the response.
@@ -272,7 +273,8 @@ class OAuthFulfillmentStage(StageView):
                 # We don't need id_token if it's an OAuth2 request.
                 if SCOPE_OPENID in self.params.scope:
                     id_token = token.create_id_token(
-                        user=self.request.user, request=self.request,
+                        user=self.request.user,
+                        request=self.request,
                     )
                     id_token.nonce = self.params.nonce
 

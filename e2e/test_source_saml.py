@@ -98,7 +98,9 @@ class TestSourceSAML(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert", certificate_data=IDP_CERT, key_data=IDP_KEY,
+            name="test-idp-cert",
+            certificate_data=IDP_CERT,
+            key_data=IDP_KEY,
         )
 
         SAMLSource.objects.create(
@@ -145,7 +147,9 @@ class TestSourceSAML(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert", certificate_data=IDP_CERT, key_data=IDP_KEY,
+            name="test-idp-cert",
+            certificate_data=IDP_CERT,
+            key_data=IDP_KEY,
         )
 
         SAMLSource.objects.create(
@@ -194,7 +198,9 @@ class TestSourceSAML(SeleniumTestCase):
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
         keypair = CertificateKeyPair.objects.create(
-            name="test-idp-cert", certificate_data=IDP_CERT, key_data=IDP_KEY,
+            name="test-idp-cert",
+            certificate_data=IDP_CERT,
+            key_data=IDP_KEY,
         )
 
         SAMLSource.objects.create(

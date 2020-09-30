@@ -58,7 +58,9 @@ class Command(BaseCommand):  # pragma: no cover
             help="How many processes should be started.",
         )
         parser.add_argument(
-            "--csv", action="store_true", help="Output results as CSV",
+            "--csv",
+            action="store_true",
+            help="Output results as CSV",
         )
 
     def benchmark_flows(self, proc_count) -> str:

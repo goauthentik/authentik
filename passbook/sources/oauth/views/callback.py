@@ -147,7 +147,9 @@ class OAuthCallback(OAuthClientMixin, View):
         plan = planner.plan(self.request, kwargs)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
-            "passbook_flows:flow-executor-shell", self.request.GET, flow_slug=flow.slug,
+            "passbook_flows:flow-executor-shell",
+            self.request.GET,
+            flow_slug=flow.slug,
         )
 
     # pylint: disable=unused-argument

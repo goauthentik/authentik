@@ -32,7 +32,9 @@ class TestIdentificationStage(TestCase):
             template=Templates.DEFAULT_LOGIN,
         )
         FlowStageBinding.objects.create(
-            target=self.flow, stage=self.stage, order=0,
+            target=self.flow,
+            stage=self.stage,
+            order=0,
         )
 
         # OAuthSource for the login view
@@ -92,7 +94,9 @@ class TestIdentificationStage(TestCase):
         self.stage.enrollment_flow = flow
         self.stage.save()
         FlowStageBinding.objects.create(
-            target=flow, stage=self.stage, order=0,
+            target=flow,
+            stage=self.stage,
+            order=0,
         )
 
         response = self.client.get(
@@ -113,7 +117,9 @@ class TestIdentificationStage(TestCase):
         self.stage.recovery_flow = flow
         self.stage.save()
         FlowStageBinding.objects.create(
-            target=flow, stage=self.stage, order=0,
+            target=flow,
+            stage=self.stage,
+            order=0,
         )
 
         response = self.client.get(

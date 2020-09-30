@@ -34,5 +34,8 @@ def bad_request_message(
 ) -> TemplateResponse:
     """Return generic error page with message, with status code set to 400"""
     return TemplateResponse(
-        request, template, {"message": message, "card_title": _(title)}, status=400,
+        request,
+        template,
+        {"message": message, "card_title": _(title)},
+        status=400,
     )

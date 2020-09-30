@@ -42,16 +42,30 @@ def create_default_authentication_flow(
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-authentication-flow",
         designation=FlowDesignation.AUTHENTICATION,
-        defaults={"name": "Welcome to passbook!",},
+        defaults={
+            "name": "Welcome to passbook!",
+        },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        target=flow, stage=identification_stage, defaults={"order": 0,},
+        target=flow,
+        stage=identification_stage,
+        defaults={
+            "order": 0,
+        },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        target=flow, stage=password_stage, defaults={"order": 1,},
+        target=flow,
+        stage=password_stage,
+        defaults={
+            "order": 1,
+        },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
-        target=flow, stage=login_stage, defaults={"order": 2,},
+        target=flow,
+        stage=login_stage,
+        defaults={
+            "order": 2,
+        },
     )
 
 
@@ -70,12 +84,16 @@ def create_default_invalidation_flow(
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-invalidation-flow",
         designation=FlowDesignation.INVALIDATION,
-        defaults={"name": "Logout",},
+        defaults={
+            "name": "Logout",
+        },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
         target=flow,
         stage=UserLogoutStage.objects.using(db_alias).first(),
-        defaults={"order": 0,},
+        defaults={
+            "order": 0,
+        },
     )
 
 

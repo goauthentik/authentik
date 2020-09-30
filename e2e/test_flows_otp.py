@@ -48,7 +48,8 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
         self.wait_for_url(self.url("passbook_core:overview"))
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, USER().username,
+            self.driver.find_element(By.ID, "user-settings").text,
+            USER().username,
         )
 
     def test_otp_totp_setup(self):
@@ -62,7 +63,8 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, USER().username,
+            self.driver.find_element(By.ID, "user-settings").text,
+            USER().username,
         )
 
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
@@ -107,7 +109,8 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, USER().username,
+            self.driver.find_element(By.ID, "user-settings").text,
+            USER().username,
         )
 
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()

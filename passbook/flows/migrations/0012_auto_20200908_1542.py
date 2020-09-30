@@ -21,6 +21,8 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="stage", name="name", field=models.TextField(unique=True),
+            model_name="stage",
+            name="name",
+            field=models.TextField(unique=True),
         ),
     ]

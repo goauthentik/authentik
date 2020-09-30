@@ -29,7 +29,9 @@ class DockerComposeView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, outpost_pk: str) -> HttpResponse:
         """Render docker-compose file"""
         outpost: Outpost = get_object_for_user_or_404(
-            request.user, "passbook_outposts.view_outpost", pk=outpost_pk,
+            request.user,
+            "passbook_outposts.view_outpost",
+            pk=outpost_pk,
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
@@ -45,7 +47,9 @@ class KubernetesManifestView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, outpost_pk: str) -> HttpResponse:
         """Render deployment template"""
         outpost: Outpost = get_object_for_user_or_404(
-            request.user, "passbook_outposts.view_outpost", pk=outpost_pk,
+            request.user,
+            "passbook_outposts.view_outpost",
+            pk=outpost_pk,
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:

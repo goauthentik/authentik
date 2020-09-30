@@ -15,8 +15,12 @@ class TestHelperView(TestCase):
 
     def test_default_view(self):
         """Test that ToDefaultFlow returns the expected URL"""
-        flow = Flow.objects.filter(designation=FlowDesignation.INVALIDATION,).first()
-        response = self.client.get(reverse("passbook_flows:default-invalidation"),)
+        flow = Flow.objects.filter(
+            designation=FlowDesignation.INVALIDATION,
+        ).first()
+        response = self.client.get(
+            reverse("passbook_flows:default-invalidation"),
+        )
         expected_url = reverse(
             "passbook_flows:flow-executor-shell", kwargs={"flow_slug": flow.slug}
         )
@@ -25,13 +29,17 @@ class TestHelperView(TestCase):
 
     def test_default_view_invalid_plan(self):
         """Test that ToDefaultFlow returns the expected URL (with an invalid plan)"""
-        flow = Flow.objects.filter(designation=FlowDesignation.INVALIDATION,).first()
+        flow = Flow.objects.filter(
+            designation=FlowDesignation.INVALIDATION,
+        ).first()
         plan = FlowPlan(flow_pk=flow.pk.hex + "aa")
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        response = self.client.get(reverse("passbook_flows:default-invalidation"),)
+        response = self.client.get(
+            reverse("passbook_flows:default-invalidation"),
+        )
         expected_url = reverse(
             "passbook_flows:flow-executor-shell", kwargs={"flow_slug": flow.slug}
         )

@@ -114,7 +114,9 @@ info = openapi.Info(
     license=openapi.License(name="MIT License"),
 )
 SchemaView = get_schema_view(
-    info, public=True, permission_classes=(CustomObjectPermissions,),
+    info,
+    public=True,
+    permission_classes=(CustomObjectPermissions,),
 )
 
 urlpatterns = [

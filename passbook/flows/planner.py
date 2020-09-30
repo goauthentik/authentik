@@ -177,6 +177,7 @@ class FlowPlanner:
                         marker = ReevaluateMarker(binding=binding, user=user)
                     plan.markers.append(marker)
         LOGGER.debug(
-            "f(plan): Finished building", flow=self.flow,
+            "f(plan): Finished building",
+            flow=self.flow,
         )
         return plan

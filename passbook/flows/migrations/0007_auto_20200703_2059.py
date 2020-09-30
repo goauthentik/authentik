@@ -21,13 +21,18 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RenameField(
-            model_name="flowstagebinding", old_name="flow", new_name="target",
+            model_name="flowstagebinding",
+            old_name="flow",
+            new_name="target",
         ),
         migrations.RenameField(
-            model_name="flow", old_name="pbm", new_name="policybindingmodel_ptr",
+            model_name="flow",
+            old_name="pbm",
+            new_name="policybindingmodel_ptr",
         ),
         migrations.AlterUniqueTogether(
-            name="flowstagebinding", unique_together={("target", "stage", "order")},
+            name="flowstagebinding",
+            unique_together={("target", "stage", "order")},
         ),
         migrations.AlterField(
             model_name="flow",

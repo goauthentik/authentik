@@ -21,9 +21,18 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "Policies",
             },
         ),
-        migrations.RemoveField(model_name="policy", name="negate",),
-        migrations.RemoveField(model_name="policy", name="order",),
-        migrations.RemoveField(model_name="policy", name="timeout",),
+        migrations.RemoveField(
+            model_name="policy",
+            name="negate",
+        ),
+        migrations.RemoveField(
+            model_name="policy",
+            name="order",
+        ),
+        migrations.RemoveField(
+            model_name="policy",
+            name="timeout",
+        ),
         migrations.AddField(
             model_name="policybinding",
             name="negate",
@@ -41,7 +50,9 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterField(
-            model_name="policybinding", name="order", field=models.IntegerField(),
+            model_name="policybinding",
+            name="order",
+            field=models.IntegerField(),
         ),
         migrations.AlterField(
             model_name="policybinding",
@@ -53,6 +64,7 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="policybinding", unique_together={("policy", "target", "order")},
+            name="policybinding",
+            unique_together={("policy", "target", "order")},
         ),
     ]

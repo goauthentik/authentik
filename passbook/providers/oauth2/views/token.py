@@ -96,7 +96,8 @@ class TokenParams:
 
             except RefreshToken.DoesNotExist:
                 LOGGER.warning(
-                    "Refresh token does not exist", token=raw_token,
+                    "Refresh token does not exist",
+                    token=raw_token,
                 )
                 raise TokenError("invalid_grant")
 
@@ -178,7 +179,8 @@ class TokenView(View):
 
         if self.params.authorization_code.is_open_id:
             id_token = refresh_token.create_id_token(
-                user=self.params.authorization_code.user, request=self.request,
+                user=self.params.authorization_code.user,
+                request=self.request,
             )
             id_token.nonce = self.params.authorization_code.nonce
             id_token.at_hash = refresh_token.at_hash
@@ -221,13 +223,15 @@ class TokenView(View):
         provider: OAuth2Provider = self.params.refresh_token.provider
 
         refresh_token: RefreshToken = provider.create_refresh_token(
-            user=self.params.refresh_token.user, scope=self.params.scope,
+            user=self.params.refresh_token.user,
+            scope=self.params.scope,
         )
 
         # If the Token has an id_token it's an Authentication request.
         if self.params.refresh_token.id_token:
             refresh_token.id_token = refresh_token.create_id_token(
-                user=self.params.refresh_token.user, request=self.request,
+                user=self.params.refresh_token.user,
+                request=self.request,
             )
             refresh_token.id_token.at_hash = refresh_token.at_hash
 

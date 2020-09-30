@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name="oauth2provider", name="post_logout_redirect_uris",
+            model_name="oauth2provider",
+            name="post_logout_redirect_uris",
         ),
     ]

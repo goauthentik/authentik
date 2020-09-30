@@ -100,7 +100,9 @@ class FlowDebugExecuteView(LoginRequiredMixin, PermissionRequiredMixin, DetailVi
         plan = planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: request.user})
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
-            "passbook_flows:flow-executor-shell", self.request.GET, flow_slug=flow.slug,
+            "passbook_flows:flow-executor-shell",
+            self.request.GET,
+            flow_slug=flow.slug,
         )
 
 

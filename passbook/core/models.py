@@ -56,7 +56,12 @@ class Group(models.Model):
 
     class Meta:
 
-        unique_together = (("name", "parent",),)
+        unique_together = (
+            (
+                "name",
+                "parent",
+            ),
+        )
 
 
 class UserManager(DjangoUserManager):

@@ -72,7 +72,10 @@ class SAMLProvider(Provider):
 
     digest_algorithm = models.CharField(
         max_length=50,
-        choices=(("sha1", _("SHA1")), ("sha256", _("SHA256")),),
+        choices=(
+            ("sha1", _("SHA1")),
+            ("sha256", _("SHA256")),
+        ),
         default="sha256",
     )
     signature_algorithm = models.CharField(

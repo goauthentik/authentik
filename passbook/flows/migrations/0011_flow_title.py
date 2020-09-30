@@ -47,6 +47,8 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(add_title_for_defaults),
         migrations.AlterField(
-            model_name="flow", name="title", field=models.TextField(),
+            model_name="flow",
+            name="title",
+            field=models.TextField(),
         ),
     ]

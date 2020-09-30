@@ -38,7 +38,11 @@ for _passbook_app in get_apps():
     for module, mountpoint in mountpoints.items():
         namespace = _passbook_app.label + module.replace(base_url_module, "")
         _path = path(
-            mountpoint, include((module, _passbook_app.label), namespace=namespace,),
+            mountpoint,
+            include(
+                (module, _passbook_app.label),
+                namespace=namespace,
+            ),
         )
         urlpatterns.append(_path)
         LOGGER.debug(

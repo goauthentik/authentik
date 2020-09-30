@@ -21,7 +21,8 @@ class SAMLSourceForm(forms.ModelForm):
             designation=FlowDesignation.ENROLLMENT
         )
         self.fields["signing_kp"].queryset = CertificateKeyPair.objects.filter(
-            certificate_data__isnull=False, key_data__isnull=False,
+            certificate_data__isnull=False,
+            key_data__isnull=False,
         )
 
     class Meta:

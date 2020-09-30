@@ -58,7 +58,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("expires", models.DateTimeField(blank=True, default=None, null=True)),
-                ("fixed_data", models.JSONField(default=dict),),
+                (
+                    "fixed_data",
+                    models.JSONField(default=dict),
+                ),
                 (
                     "created_by",
                     models.ForeignKey(

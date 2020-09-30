@@ -64,7 +64,10 @@ class Migration(migrations.Migration):
                 ("placeholder", models.TextField(blank=True)),
                 ("order", models.IntegerField(default=0)),
             ],
-            options={"verbose_name": "Prompt", "verbose_name_plural": "Prompts",},
+            options={
+                "verbose_name": "Prompt",
+                "verbose_name_plural": "Prompts",
+            },
         ),
         migrations.CreateModel(
             name="PromptStage",

@@ -44,7 +44,9 @@ def create_default_source_enrollment_flow(
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-source-enrollment",
         designation=FlowDesignation.ENROLLMENT,
-        defaults={"name": "Welcome to passbook!",},
+        defaults={
+            "name": "Welcome to passbook!",
+        },
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         policy=flow_policy, target=flow, defaults={"order": 0}
@@ -114,14 +116,18 @@ def create_default_source_authentication_flow(
     # Create a policy that only allows this flow when doing an SSO Request
     flow_policy, _ = ExpressionPolicy.objects.using(db_alias).update_or_create(
         name="default-source-authentication-if-sso",
-        defaults={"expression": FLOW_POLICY_EXPRESSION,},
+        defaults={
+            "expression": FLOW_POLICY_EXPRESSION,
+        },
     )
 
     # This creates a Flow used by sources to authenticate users
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-source-authentication",
         designation=FlowDesignation.AUTHENTICATION,
-        defaults={"name": "Welcome to passbook!",},
+        defaults={
+            "name": "Welcome to passbook!",
+        },
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         policy=flow_policy, target=flow, defaults={"order": 0}

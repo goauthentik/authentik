@@ -49,10 +49,15 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddField(
-            model_name="event", name="user_json", field=models.JSONField(default=dict),
+            model_name="event",
+            name="user_json",
+            field=models.JSONField(default=dict),
         ),
         migrations.RunPython(convert_user_to_json),
-        migrations.RemoveField(model_name="event", name="user",),
+        migrations.RemoveField(
+            model_name="event",
+            name="user",
+        ),
         migrations.RenameField(
             model_name="event", old_name="user_json", new_name="user"
         ),

@@ -33,7 +33,8 @@ class UserWriteStageView(StageView):
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND
             ] = class_to_path(ModelBackend)
             LOGGER.debug(
-                "Created new user", flow_slug=self.executor.flow.slug,
+                "Created new user",
+                flow_slug=self.executor.flow.slug,
             )
         user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         # Before we change anything, check if the user is the same as in the request
@@ -68,6 +69,8 @@ class UserWriteStageView(StageView):
             update_session_auth_hash(self.request, user)
             LOGGER.debug("Updated session hash", user=user)
         LOGGER.debug(
-            "Updated existing user", user=user, flow_slug=self.executor.flow.slug,
+            "Updated existing user",
+            user=user,
+            flow_slug=self.executor.flow.slug,
         )
         return self.executor.stage_ok()

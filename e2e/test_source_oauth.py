@@ -144,13 +144,15 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.url("passbook_core:user-settings"))
 
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, "foo",
+            self.driver.find_element(By.ID, "user-settings").text,
+            "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
         )
         self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"), "admin",
+            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
+            "admin",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_email").get_attribute("value"),
@@ -225,13 +227,15 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.url("passbook_core:user-settings"))
 
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, "foo",
+            self.driver.find_element(By.ID, "user-settings").text,
+            "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
         )
         self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"), "admin",
+            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
+            "admin",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_email").get_attribute("value"),
@@ -317,7 +321,8 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.driver.get(self.url("passbook_core:user-settings"))
 
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, "example-user",
+            self.driver.find_element(By.ID, "user-settings").text,
+            "example-user",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"),

@@ -33,7 +33,8 @@ class TestUserDeleteStage(TestCase):
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_no_user(self):
         """Test without user set"""

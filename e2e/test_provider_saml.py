@@ -84,7 +84,9 @@ class TestProviderSAML(SeleniumTestCase):
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
         Application.objects.create(
-            name="SAML", slug="passbook-saml", provider=provider,
+            name="SAML",
+            slug="passbook-saml",
+            provider=provider,
         )
         self.container = self.setup_client(provider)
         self.driver.get("http://localhost:9009")
@@ -121,7 +123,9 @@ class TestProviderSAML(SeleniumTestCase):
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
         app = Application.objects.create(
-            name="SAML", slug="passbook-saml", provider=provider,
+            name="SAML",
+            slug="passbook-saml",
+            provider=provider,
         )
         self.container = self.setup_client(provider)
         self.driver.get("http://localhost:9009")
@@ -131,7 +135,8 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         self.assertEqual(
-            app.name, self.driver.find_element(By.ID, "application-name").text,
+            app.name,
+            self.driver.find_element(By.ID, "application-name").text,
         )
         sleep(1)
         self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
@@ -163,7 +168,9 @@ class TestProviderSAML(SeleniumTestCase):
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
         Application.objects.create(
-            name="SAML", slug="passbook-saml", provider=provider,
+            name="SAML",
+            slug="passbook-saml",
+            provider=provider,
         )
         self.container = self.setup_client(provider)
         self.driver.get(
@@ -209,7 +216,9 @@ class TestProviderSAML(SeleniumTestCase):
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         provider.save()
         app = Application.objects.create(
-            name="SAML", slug="passbook-saml", provider=provider,
+            name="SAML",
+            slug="passbook-saml",
+            provider=provider,
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
         self.container = self.setup_client(provider)

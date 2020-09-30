@@ -191,10 +191,20 @@ urlpatterns = [
     ),
     # Flows
     path("flows/", flows.FlowListView.as_view(), name="flows"),
-    path("flows/create/", flows.FlowCreateView.as_view(), name="flow-create",),
-    path("flows/import/", flows.FlowImportView.as_view(), name="flow-import",),
     path(
-        "flows/<uuid:pk>/update/", flows.FlowUpdateView.as_view(), name="flow-update",
+        "flows/create/",
+        flows.FlowCreateView.as_view(),
+        name="flow-create",
+    ),
+    path(
+        "flows/import/",
+        flows.FlowImportView.as_view(),
+        name="flow-import",
+    ),
+    path(
+        "flows/<uuid:pk>/update/",
+        flows.FlowUpdateView.as_view(),
+        name="flow-update",
     ),
     path(
         "flows/<uuid:pk>/execute/",
@@ -202,10 +212,14 @@ urlpatterns = [
         name="flow-execute",
     ),
     path(
-        "flows/<uuid:pk>/export/", flows.FlowExportView.as_view(), name="flow-export",
+        "flows/<uuid:pk>/export/",
+        flows.FlowExportView.as_view(),
+        name="flow-export",
     ),
     path(
-        "flows/<uuid:pk>/delete/", flows.FlowDeleteView.as_view(), name="flow-delete",
+        "flows/<uuid:pk>/delete/",
+        flows.FlowDeleteView.as_view(),
+        name="flow-delete",
     ),
     # Property Mappings
     path(
@@ -273,9 +287,15 @@ urlpatterns = [
         name="certificatekeypair-delete",
     ),
     # Outposts
-    path("outposts/", outposts.OutpostListView.as_view(), name="outposts",),
     path(
-        "outposts/create/", outposts.OutpostCreateView.as_view(), name="outpost-create",
+        "outposts/",
+        outposts.OutpostListView.as_view(),
+        name="outposts",
+    ),
+    path(
+        "outposts/create/",
+        outposts.OutpostCreateView.as_view(),
+        name="outpost-create",
     ),
     path(
         "outposts/<uuid:pk>/update/",

@@ -36,7 +36,8 @@ class CertificateBuilder:
                 x509.Name(
                     [
                         x509.NameAttribute(
-                            NameOID.COMMON_NAME, "passbook Self-signed Certificate",
+                            NameOID.COMMON_NAME,
+                            "passbook Self-signed Certificate",
                         ),
                         x509.NameAttribute(NameOID.ORGANIZATION_NAME, "passbook"),
                         x509.NameAttribute(
@@ -49,7 +50,8 @@ class CertificateBuilder:
                 x509.Name(
                     [
                         x509.NameAttribute(
-                            NameOID.COMMON_NAME, "passbook Self-signed Certificate",
+                            NameOID.COMMON_NAME,
+                            "passbook Self-signed Certificate",
                         ),
                     ]
                 )

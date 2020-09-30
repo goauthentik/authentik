@@ -49,7 +49,9 @@ class YAMLField(forms.JSONField):
             converted = yaml.safe_load(value)
         except yaml.YAMLError:
             raise forms.ValidationError(
-                self.error_messages["invalid"], code="invalid", params={"value": value},
+                self.error_messages["invalid"],
+                code="invalid",
+                params={"value": value},
             )
         if isinstance(converted, str):
             return YAMLString(converted)

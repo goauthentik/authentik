@@ -41,7 +41,8 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(InvitationStageForm(data).is_valid(), True)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_invitation_fail(self):
         """Test without any invitation, continue_flow_without_invitation not set."""

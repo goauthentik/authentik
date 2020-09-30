@@ -63,10 +63,12 @@ class TestFlowExecutor(TestCase):
             self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     @patch(
-        "passbook.policies.engine.PolicyEngine.result", POLICY_RETURN_FALSE,
+        "passbook.policies.engine.PolicyEngine.result",
+        POLICY_RETURN_FALSE,
     )
     def test_invalid_non_applicable_flow(self):
         """Tests that a non-applicable flow returns the correct error message"""
@@ -85,7 +87,8 @@ class TestFlowExecutor(TestCase):
         self.assertInHTML(FlowNonApplicableException.__doc__, response.rendered_content)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_invalid_empty_flow(self):
         """Tests that an empty flow returns the correct error message"""
@@ -117,7 +120,8 @@ class TestFlowExecutor(TestCase):
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
-            force_str(response.content), {"type": "redirect", "to": dest},
+            force_str(response.content),
+            {"type": "redirect", "to": dest},
         )
 
     def test_multi_stage_flow(self):

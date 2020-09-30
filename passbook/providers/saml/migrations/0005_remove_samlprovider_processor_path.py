@@ -10,5 +10,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="samlprovider", name="processor_path",),
+        migrations.RemoveField(
+            model_name="samlprovider",
+            name="processor_path",
+        ),
     ]

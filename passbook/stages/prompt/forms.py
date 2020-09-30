@@ -65,7 +65,9 @@ class ListPolicyEngine(PolicyEngine):
 
     def _iter_bindings(self) -> Iterator[PolicyBinding]:
         for policy in self.__list:
-            yield PolicyBinding(policy=policy,)
+            yield PolicyBinding(
+                policy=policy,
+            )
 
 
 class PromptForm(forms.Form):

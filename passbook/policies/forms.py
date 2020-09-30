@@ -16,7 +16,9 @@ class PolicyBindingForm(forms.ModelForm):
         queryset=PolicyBindingModel.objects.all().select_subclasses(),
         to_field_name="pbm_uuid",
     )
-    policy = GroupedModelChoiceField(queryset=Policy.objects.all().select_subclasses(),)
+    policy = GroupedModelChoiceField(
+        queryset=Policy.objects.all().select_subclasses(),
+    )
 
     class Meta:
 

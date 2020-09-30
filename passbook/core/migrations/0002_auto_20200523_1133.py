@@ -12,7 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="application", name="skip_authorization",),
+        migrations.RemoveField(
+            model_name="application",
+            name="skip_authorization",
+        ),
         migrations.AddField(
             model_name="source",
             name="authentication_flow",

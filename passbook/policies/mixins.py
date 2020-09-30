@@ -73,7 +73,10 @@ class PolicyAccessMixin(BaseMixin, AccessMixin):
         policy_engine.build()
         result = policy_engine.result
         LOGGER.debug(
-            "AccessMixin user_has_access", user=user, app=application, result=result,
+            "AccessMixin user_has_access",
+            user=user,
+            app=application,
+            result=result,
         )
         if not result.passing:
             for message in result.messages:

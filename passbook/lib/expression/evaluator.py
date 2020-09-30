@@ -103,7 +103,9 @@ class BaseEvaluator:
         param_keys = self._context.keys()
         try:
             compile(
-                self.wrap_expression(expression, param_keys), self._filename, "exec",
+                self.wrap_expression(expression, param_keys),
+                self._filename,
+                "exec",
             )
             return True
         except (ValueError, SyntaxError) as exc:

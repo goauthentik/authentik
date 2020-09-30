@@ -100,7 +100,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name=self.application_slug, slug=self.application_slug, provider=provider,
+            name=self.application_slug,
+            slug=self.application_slug,
+            provider=provider,
         )
         self.container = self.setup_client()
 
@@ -141,7 +143,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name=self.application_slug, slug=self.application_slug, provider=provider,
+            name=self.application_slug,
+            slug=self.application_slug,
+            provider=provider,
         )
         self.container = self.setup_client()
 
@@ -189,7 +193,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name=self.application_slug, slug=self.application_slug, provider=provider,
+            name=self.application_slug,
+            slug=self.application_slug,
+            provider=provider,
         )
         self.container = self.setup_client()
 
@@ -202,7 +208,8 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
         self.assertEqual(
-            app.name, self.driver.find_element(By.ID, "application-name").text,
+            app.name,
+            self.driver.find_element(By.ID, "application-name").text,
         )
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
@@ -246,7 +253,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name=self.application_slug, slug=self.application_slug, provider=provider,
+            name=self.application_slug,
+            slug=self.application_slug,
+            provider=provider,
         )
 
         negative_policy = ExpressionPolicy.objects.create(

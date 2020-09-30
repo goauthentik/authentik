@@ -108,11 +108,18 @@ class Migration(migrations.Migration):
                 ("uuid", models.UUIDField(default=uuid.uuid4, editable=False)),
                 ("name", models.TextField(help_text="User's display name.")),
                 ("password_change_date", models.DateTimeField(auto_now_add=True)),
-                ("attributes", models.JSONField(blank=True, default=dict),),
+                (
+                    "attributes",
+                    models.JSONField(blank=True, default=dict),
+                ),
             ],
-            options={"permissions": (("reset_user_password", "Reset Password"),),},
+            options={
+                "permissions": (("reset_user_password", "Reset Password"),),
+            },
             bases=(guardian.mixins.GuardianUserMixin, models.Model),
-            managers=[("objects", django.contrib.auth.models.UserManager()),],
+            managers=[
+                ("objects", django.contrib.auth.models.UserManager()),
+            ],
         ),
         migrations.CreateModel(
             name="PropertyMapping",
@@ -192,7 +199,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("user", "source")},},
+            options={
+                "unique_together": {("user", "source")},
+            },
         ),
         migrations.CreateModel(
             name="Token",
@@ -223,7 +232,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "Token", "verbose_name_plural": "Tokens",},
+            options={
+                "verbose_name": "Token",
+                "verbose_name_plural": "Tokens",
+            },
         ),
         migrations.CreateModel(
             name="Provider",
@@ -258,7 +270,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=80, verbose_name="name")),
-                ("attributes", models.JSONField(blank=True, default=dict),),
+                (
+                    "attributes",
+                    models.JSONField(blank=True, default=dict),
+                ),
                 (
                     "parent",
                     models.ForeignKey(
@@ -270,7 +285,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"unique_together": {("name", "parent")},},
+            options={
+                "unique_together": {("name", "parent")},
+            },
         ),
         migrations.CreateModel(
             name="Application",

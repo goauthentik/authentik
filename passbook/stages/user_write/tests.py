@@ -111,7 +111,8 @@ class TestUserWriteStage(TestCase):
         self.assertEqual(user_qs.first().attributes["some-custom-attribute"], "test")
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_data(self):
         """Test without data results in error"""

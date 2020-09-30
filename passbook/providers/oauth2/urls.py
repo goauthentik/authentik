@@ -13,7 +13,11 @@ from passbook.providers.oauth2.views.token import TokenView
 from passbook.providers.oauth2.views.userinfo import UserInfoView
 
 urlpatterns = [
-    path("authorize/", AuthorizationFlowInitView.as_view(), name="authorize",),
+    path(
+        "authorize/",
+        AuthorizationFlowInitView.as_view(),
+        name="authorize",
+    ),
     path("token/", csrf_exempt(TokenView.as_view()), name="token"),
     path(
         "userinfo/",

@@ -14,12 +14,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="samlsource", name="auto_logout",),
-        migrations.RenameField(
-            model_name="samlsource", old_name="idp_url", new_name="sso_url",
+        migrations.RemoveField(
+            model_name="samlsource",
+            name="auto_logout",
         ),
         migrations.RenameField(
-            model_name="samlsource", old_name="idp_logout_url", new_name="slo_url",
+            model_name="samlsource",
+            old_name="idp_url",
+            new_name="sso_url",
+        ),
+        migrations.RenameField(
+            model_name="samlsource",
+            old_name="idp_logout_url",
+            new_name="slo_url",
         ),
         migrations.AddField(
             model_name="samlsource",

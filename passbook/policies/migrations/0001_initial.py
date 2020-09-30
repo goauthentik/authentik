@@ -32,7 +32,9 @@ class Migration(migrations.Migration):
                 ("order", models.IntegerField(default=0)),
                 ("timeout", models.IntegerField(default=30)),
             ],
-            options={"abstract": False,},
+            options={
+                "abstract": False,
+            },
         ),
         migrations.CreateModel(
             name="PolicyBinding",

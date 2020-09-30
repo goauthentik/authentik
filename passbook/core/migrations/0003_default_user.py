@@ -25,8 +25,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="user", name="is_superuser",),
-        migrations.RemoveField(model_name="user", name="is_staff",),
+        migrations.RemoveField(
+            model_name="user",
+            name="is_superuser",
+        ),
+        migrations.RemoveField(
+            model_name="user",
+            name="is_staff",
+        ),
         migrations.RunPython(create_default_user),
         migrations.AddField(
             model_name="user",

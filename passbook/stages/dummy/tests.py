@@ -22,9 +22,13 @@ class TestDummyStage(TestCase):
             slug="test-dummy",
             designation=FlowDesignation.AUTHENTICATION,
         )
-        self.stage = DummyStage.objects.create(name="dummy",)
+        self.stage = DummyStage.objects.create(
+            name="dummy",
+        )
         FlowStageBinding.objects.create(
-            target=self.flow, stage=self.stage, order=0,
+            target=self.flow,
+            stage=self.stage,
+            order=0,
         )
 
     def test_valid_render(self):

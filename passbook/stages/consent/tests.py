@@ -23,7 +23,8 @@ class TestConsentStage(TestCase):
             username="unittest", email="test@beryju.org"
         )
         self.application = Application.objects.create(
-            name="test-application", slug="test-application",
+            name="test-application",
+            slug="test-application",
         )
         self.client = Client()
 

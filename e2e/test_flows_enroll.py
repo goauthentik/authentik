@@ -104,7 +104,8 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.wait_for_url(self.url("passbook_core:user-settings"))
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, "foo",
+            self.driver.find_element(By.ID, "user-settings").text,
+            "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -208,7 +209,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.find_element(By.ID, "user-settings").click()
 
         self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text, "foo",
+            self.driver.find_element(By.ID, "user-settings").text,
+            "foo",
         )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"

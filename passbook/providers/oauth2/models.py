@@ -292,13 +292,19 @@ class OAuth2Provider(Provider):
                     "provider": self,
                     "issuer": self.get_issuer(request),
                     "authorize": request.build_absolute_uri(
-                        reverse("passbook_providers_oauth2:authorize",)
+                        reverse(
+                            "passbook_providers_oauth2:authorize",
+                        )
                     ),
                     "token": request.build_absolute_uri(
-                        reverse("passbook_providers_oauth2:token",)
+                        reverse(
+                            "passbook_providers_oauth2:token",
+                        )
                     ),
                     "userinfo": request.build_absolute_uri(
-                        reverse("passbook_providers_oauth2:userinfo",)
+                        reverse(
+                            "passbook_providers_oauth2:userinfo",
+                        )
                     ),
                     "provider_info": request.build_absolute_uri(
                         reverse(

@@ -53,7 +53,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "Flow", "verbose_name_plural": "Flows",},
+            options={
+                "verbose_name": "Flow",
+                "verbose_name_plural": "Flows",
+            },
             bases=("passbook_policies.policybindingmodel",),
         ),
         migrations.CreateModel(

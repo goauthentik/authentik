@@ -59,7 +59,8 @@ class TestUserLoginStage(TestCase):
         )
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_user(self):
         """Test a plan without any pending user, resulting in a denied"""
@@ -80,7 +81,8 @@ class TestUserLoginStage(TestCase):
         self.assertIsInstance(response, AccessDeniedResponse)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_backend(self):
         """Test a plan with pending user, without backend, resulting in a denied"""

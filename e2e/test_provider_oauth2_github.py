@@ -77,7 +77,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana",
+            slug="grafana",
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -129,7 +131,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana",
+            slug="grafana",
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -143,13 +147,17 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         sleep(1)
 
         self.assertEqual(
-            app.name, self.driver.find_element(By.ID, "application-name").text,
+            app.name,
+            self.driver.find_element(By.ID, "application-name").text,
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
             self.driver.find_element(By.ID, "scope-user:email").text,
         )
-        self.driver.find_element(By.CSS_SELECTOR, ("[type=submit]"),).click()
+        self.driver.find_element(
+            By.CSS_SELECTOR,
+            ("[type=submit]"),
+        ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")
@@ -192,7 +200,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana", slug="grafana", provider=provider,
+            name="Grafana",
+            slug="grafana",
+            provider=provider,
         )
 
         negative_policy = ExpressionPolicy.objects.create(

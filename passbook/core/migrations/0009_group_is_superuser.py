@@ -13,7 +13,10 @@ def create_default_admin_group(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
     # Creates a default admin group
     group, _ = Group.objects.using(db_alias).get_or_create(
-        is_superuser=True, defaults={"name": "passbook Admins",}
+        is_superuser=True,
+        defaults={
+            "name": "passbook Admins",
+        },
     )
     group.users.set(User.objects.filter(username="pbadmin"))
     group.save()
@@ -26,8 +29,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="user", name="is_superuser",),
-        migrations.RemoveField(model_name="user", name="is_staff",),
+        migrations.RemoveField(
+            model_name="user",
+            name="is_superuser",
+        ),
+        migrations.RemoveField(
+            model_name="user",
+            name="is_staff",
+        ),
         migrations.AlterField(
             model_name="user",
             name="pb_groups",
@@ -44,6 +53,9 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(create_default_admin_group),
         migrations.AlterModelManagers(
-            name="user", managers=[("objects", passbook.core.models.UserManager()),],
+            name="user",
+            managers=[
+                ("objects", passbook.core.models.UserManager()),
+            ],
         ),
     ]

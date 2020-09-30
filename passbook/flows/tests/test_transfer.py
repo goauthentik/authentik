@@ -39,7 +39,9 @@ class TestFlowTransfer(TransactionTestCase):
                 title=generate_client_id(),
             )
             FlowStageBinding.objects.update_or_create(
-                target=flow, stage=login_stage, order=0,
+                target=flow,
+                stage=login_stage,
+                order=0,
             )
 
             exporter = FlowExporter(flow)
@@ -59,7 +61,8 @@ class TestFlowTransfer(TransactionTestCase):
         stage_name = generate_client_id()
         with transaction_rollback():
             flow_policy = ExpressionPolicy.objects.create(
-                name=generate_client_id(), expression="return True",
+                name=generate_client_id(),
+                expression="return True",
             )
             flow = Flow.objects.create(
                 slug=flow_slug,

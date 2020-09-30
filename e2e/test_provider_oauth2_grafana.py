@@ -104,7 +104,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+            name="Grafana",
+            slug=APPLICATION_SLUG,
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -144,7 +146,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+            name="Grafana",
+            slug=APPLICATION_SLUG,
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -203,7 +207,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider.save()
         Application.objects.create(
-            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+            name="Grafana",
+            slug=APPLICATION_SLUG,
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -270,7 +276,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+            name="Grafana",
+            slug=APPLICATION_SLUG,
+            provider=provider,
         )
 
         self.driver.get("http://localhost:3000")
@@ -282,7 +290,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
 
         self.assertEqual(
-            app.name, self.driver.find_element(By.ID, "application-name").text,
+            app.name,
+            self.driver.find_element(By.ID, "application-name").text,
         )
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
@@ -340,7 +349,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider.save()
         app = Application.objects.create(
-            name="Grafana", slug=APPLICATION_SLUG, provider=provider,
+            name="Grafana",
+            slug=APPLICATION_SLUG,
+            provider=provider,
         )
 
         negative_policy = ExpressionPolicy.objects.create(

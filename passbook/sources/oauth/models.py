@@ -69,7 +69,8 @@ class OAuthSource(Source):
     def ui_user_settings(self) -> Optional[UIUserSettings]:
         view_name = "passbook_sources_oauth:oauth-client-user"
         return UIUserSettings(
-            name=self.name, url=reverse(view_name, kwargs={"source_slug": self.slug}),
+            name=self.name,
+            url=reverse(view_name, kwargs={"source_slug": self.slug}),
         )
 
     def __str__(self) -> str:

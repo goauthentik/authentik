@@ -283,7 +283,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "Token", "verbose_name_plural": "Tokens",},
+            options={
+                "verbose_name": "Token",
+                "verbose_name_plural": "Tokens",
+            },
         ),
         migrations.CreateModel(
             name="AuthorizationCode",

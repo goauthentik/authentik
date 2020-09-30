@@ -23,7 +23,12 @@ def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
 
 
 @CELERY_APP.task(
-    bind=True, autoretry_for=(SMTPException, ConnectionError,), retry_backoff=True
+    bind=True,
+    autoretry_for=(
+        SMTPException,
+        ConnectionError,
+    ),
+    retry_backoff=True,
 )
 # pylint: disable=unused-argument
 def _send_mail_task(self, email_stage_pk: int, message: Dict[Any, Any]):

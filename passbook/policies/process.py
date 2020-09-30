@@ -48,7 +48,9 @@ class PolicyProcess(Process):
 
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
-        with Hub.current.start_span(op="policy.process.execute",) as span:
+        with Hub.current.start_span(
+            op="policy.process.execute",
+        ) as span:
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)

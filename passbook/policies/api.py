@@ -47,7 +47,8 @@ class PolicyBindingSerializer(ModelSerializer):
     # Because we're not interested in the PolicyBindingModel's PK but rather the subclasses PK,
     # we have to manually declare this field
     target = PolicyBindingModelForeignKey(
-        queryset=PolicyBindingModel.objects.select_subclasses(), required=True,
+        queryset=PolicyBindingModel.objects.select_subclasses(),
+        required=True,
     )
 
     class Meta:

@@ -91,7 +91,8 @@ class LDAPSynchronizer:
             try:
                 defaults = self._build_object_properties(attributes)
                 user, created = User.objects.update_or_create(
-                    attributes__ldap_uniq=uniq, defaults=defaults,
+                    attributes__ldap_uniq=uniq,
+                    defaults=defaults,
                 )
             except IntegrityError as exc:
                 LOGGER.warning("Failed to create user", exc=exc)

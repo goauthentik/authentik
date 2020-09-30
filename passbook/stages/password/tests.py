@@ -45,7 +45,8 @@ class TestPasswordStage(TestCase):
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     def test_without_user(self):
         """Test without user"""
@@ -163,7 +164,8 @@ class TestPasswordStage(TestCase):
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
 
     @patch(
-        "passbook.flows.views.to_stage_response", TO_STAGE_RESPONSE_MOCK,
+        "passbook.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
     )
     @patch(
         "django.contrib.auth.backends.ModelBackend.authenticate",

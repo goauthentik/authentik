@@ -52,7 +52,8 @@ class TestFlowPlanner(TestCase):
             planner.plan(request)
 
     @patch(
-        "passbook.policies.engine.PolicyEngine.result", POLICY_RETURN_FALSE,
+        "passbook.policies.engine.PolicyEngine.result",
+        POLICY_RETURN_FALSE,
     )
     def test_non_applicable_plan(self):
         """Test that empty plan raises exception"""
