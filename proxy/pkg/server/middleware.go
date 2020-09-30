@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/oauth2-proxy/oauth2-proxy/pkg/logger"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -114,7 +113,7 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		"RequestMethod":   req.Method,
 		"ResponseSize":    responseLogger.Size(),
 		"StatusCode":      responseLogger.Status(),
-		"Timestamp":       logger.FormatTimestamp(t),
+		"Timestamp":       t,
 		"Upstream":        responseLogger.upstream,
 		"UserAgent":       req.UserAgent(),
 		"Username":        responseLogger.authInfo,

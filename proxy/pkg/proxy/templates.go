@@ -2,27 +2,9 @@ package proxy
 
 import (
 	"html/template"
-	"path"
-	"strings"
 
-	"github.com/oauth2-proxy/oauth2-proxy/pkg/logger"
+	log "github.com/sirupsen/logrus"
 )
-
-func loadTemplates(dir string) *template.Template {
-	if dir == "" {
-		return getTemplates()
-	}
-	logger.Printf("using custom template directory %q", dir)
-	funcMap := template.FuncMap{
-		"ToUpper": strings.ToUpper,
-		"ToLower": strings.ToLower,
-	}
-	t, err := template.New("").Funcs(funcMap).ParseFiles(path.Join(dir, "sign_in.html"), path.Join(dir, "error.html"))
-	if err != nil {
-		logger.Fatalf("failed parsing template %s", err)
-	}
-	return t
-}
 
 func getTemplates() *template.Template {
 	t, err := template.New("foo").Parse(`{{define "sign_in.html"}}
@@ -163,7 +145,7 @@ func getTemplates() *template.Template {
 </html>
 {{end}}`)
 	if err != nil {
-		logger.Fatalf("failed parsing template %s", err)
+		log.Fatalf("failed parsing template %s", err)
 	}
 
 	t, err = t.Parse(`{{define "error.html"}}
@@ -181,7 +163,7 @@ func getTemplates() *template.Template {
 </body>
 </html>{{end}}`)
 	if err != nil {
-		logger.Fatalf("failed parsing template %s", err)
+		log.Fatalf("failed parsing template %s", err)
 	}
 	return t
 }
