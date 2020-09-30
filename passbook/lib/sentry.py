@@ -9,6 +9,7 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError
 from rest_framework.exceptions import APIException
+from channels_redis.core import ChannelFull
 from structlog import get_logger
 
 LOGGER = get_logger()
@@ -39,6 +40,7 @@ def before_send(event, hint):
         SentryIgnoredException,
         CeleryError,
         LDAPException,
+        ChannelFull,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
