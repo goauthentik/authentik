@@ -125,6 +125,12 @@ func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
 		os.Exit(1)
 	}
 
+	if *&provider.BasicAuthEnabled {
+		oauthproxy.SetBasicAuth = true
+		oauthproxy.BasicAuthUserAttribute = provider.BasicAuthUserAttribute
+		oauthproxy.BasicAuthPasswordAttribute = provider.BasicAuthPasswordAttribute
+	}
+
 	pb.proxy = oauthproxy
 	pb.Handler = chain.Then(oauthproxy)
 }

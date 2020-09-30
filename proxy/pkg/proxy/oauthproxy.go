@@ -70,38 +70,39 @@ type OAuthProxy struct {
 	AuthOnlyPath      string
 	UserInfoPath      string
 
-	redirectURL             *url.URL // the url to receive requests at
-	whitelistDomains        []string
-	provider                providers.Provider
-	providerNameOverride    string
-	sessionStore            sessionsapi.SessionStore
-	ProxyPrefix             string
-	SignInMessage           string
-	basicAuthValidator      basic.Validator
-	displayHtpasswdForm     bool
-	serveMux                http.Handler
-	SetXAuthRequest         bool
-	PassBasicAuth           bool
-	SetBasicAuth            bool
-	SkipProviderButton      bool
-	PassUserHeaders         bool
-	BasicAuthPassword       string
-	PassAccessToken         bool
-	SetAuthorization        bool
-	PassAuthorization       bool
-	PreferEmailToUser       bool
-	skipAuthRegex           []string
-	skipAuthPreflight       bool
-	skipAuthStripHeaders    bool
-	skipJwtBearerTokens     bool
-	mainJwtBearerVerifier   *oidc.IDTokenVerifier
-	extraJwtBearerVerifiers []*oidc.IDTokenVerifier
-	compiledRegex           []*regexp.Regexp
-	templates               *template.Template
-	realClientIPParser      ipapi.RealClientIPParser
-	trustedIPs              *ip.NetSet
-	Banner                  string
-	Footer                  string
+	redirectURL                *url.URL // the url to receive requests at
+	whitelistDomains           []string
+	provider                   providers.Provider
+	providerNameOverride       string
+	sessionStore               sessionsapi.SessionStore
+	ProxyPrefix                string
+	SignInMessage              string
+	basicAuthValidator         basic.Validator
+	displayHtpasswdForm        bool
+	serveMux                   http.Handler
+	SetXAuthRequest            bool
+	PassBasicAuth              bool
+	SetBasicAuth               bool
+	SkipProviderButton         bool
+	PassUserHeaders            bool
+	BasicAuthUserAttribute     string
+	BasicAuthPasswordAttribute string
+	PassAccessToken            bool
+	SetAuthorization           bool
+	PassAuthorization          bool
+	PreferEmailToUser          bool
+	skipAuthRegex              []string
+	skipAuthPreflight          bool
+	skipAuthStripHeaders       bool
+	skipJwtBearerTokens        bool
+	mainJwtBearerVerifier      *oidc.IDTokenVerifier
+	extraJwtBearerVerifiers    []*oidc.IDTokenVerifier
+	compiledRegex              []*regexp.Regexp
+	templates                  *template.Template
+	realClientIPParser         ipapi.RealClientIPParser
+	trustedIPs                 *ip.NetSet
+	Banner                     string
+	Footer                     string
 
 	sessionChain alice.Chain
 
@@ -200,7 +201,6 @@ func NewOAuthProxy(opts *options.Options) (*OAuthProxy, error) {
 		PassBasicAuth:           opts.PassBasicAuth,
 		SetBasicAuth:            opts.SetBasicAuth,
 		PassUserHeaders:         opts.PassUserHeaders,
-		BasicAuthPassword:       opts.BasicAuthPassword,
 		PassAccessToken:         opts.PassAccessToken,
 		SetAuthorization:        opts.SetAuthorization,
 		PassAuthorization:       opts.PassAuthorization,
@@ -891,27 +891,6 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 
 // addHeadersForProxying adds the appropriate headers the request / response for proxying
 func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Request, session *sessionsapi.SessionState) {
-	if p.PassBasicAuth {
-		if p.PreferEmailToUser && session.Email != "" {
-			req.SetBasicAuth(session.Email, p.BasicAuthPassword)
-			req.Header["X-Forwarded-User"] = []string{session.Email}
-			req.Header.Del("X-Forwarded-Email")
-		} else {
-			req.SetBasicAuth(session.User, p.BasicAuthPassword)
-			req.Header["X-Forwarded-User"] = []string{session.User}
-			if session.Email != "" {
-				req.Header["X-Forwarded-Email"] = []string{session.Email}
-			} else {
-				req.Header.Del("X-Forwarded-Email")
-			}
-		}
-		if session.PreferredUsername != "" {
-			req.Header["X-Forwarded-Preferred-Username"] = []string{session.PreferredUsername}
-		} else {
-			req.Header.Del("X-Forwarded-Preferred-Username")
-		}
-	}
-
 	if p.PassUserHeaders {
 		if p.PreferEmailToUser && session.Email != "" {
 			req.Header["X-Forwarded-User"] = []string{session.Email}
@@ -970,16 +949,25 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 		}
 	}
 	if p.SetBasicAuth {
-		switch {
-		case p.PreferEmailToUser && session.Email != "":
-			authVal := b64.StdEncoding.EncodeToString([]byte(session.Email + ":" + p.BasicAuthPassword))
-			rw.Header().Set("Authorization", "Basic "+authVal)
-		case session.User != "":
-			authVal := b64.StdEncoding.EncodeToString([]byte(session.User + ":" + p.BasicAuthPassword))
-			rw.Header().Set("Authorization", "Basic "+authVal)
-		default:
-			rw.Header().Del("Authorization")
+		claims := Claims{}
+		err := claims.FromIDToken(session.IDToken)
+		if err != nil {
+			log.WithError(err).Warning("Failed to parse IDToken")
 		}
+
+		userAttributes := claims.Proxy.UserAttributes
+		var ok bool
+		var password string
+		if password, ok = userAttributes[p.BasicAuthPasswordAttribute]; !ok {
+			password = ""
+		}
+		// Check if we should use email or a custom attribute as username
+		var username string
+		if username, ok = userAttributes[p.BasicAuthUserAttribute]; !ok {
+			username = session.Email
+		}
+		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
 	}
 	if p.SetAuthorization {
 		if session.IDToken != "" {
