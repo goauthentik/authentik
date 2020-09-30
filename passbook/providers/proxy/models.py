@@ -66,6 +66,31 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         ),
     )
 
+    basic_auth_enabled = models.BooleanField(
+        default=False,
+        verbose_name=_("Set HTTP-Basic Authentication"),
+        help_text=_(
+            "Set a custom HTTP-Basic Authentication header based on values from passbook."
+        ),
+    )
+    basic_auth_user_attribute = models.TextField(
+        blank=True,
+        verbose_name=_("HTTP-Basic Username"),
+        help_text=_(
+            (
+                "User Attribute used for the user part of the HTTP-Basic Header. "
+                "If not set, the user's Email address is used."
+            )
+        ),
+    )
+    basic_auth_password_attribute = models.TextField(
+        blank=True,
+        verbose_name=_("HTTP-Basic Password"),
+        help_text=_(
+            ("User Attribute used for the password part of the HTTP-Basic Header.")
+        ),
+    )
+
     certificate = models.ForeignKey(
         CertificateKeyPair, on_delete=models.SET_NULL, null=True, blank=True,
     )

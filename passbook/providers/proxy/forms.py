@@ -37,9 +37,14 @@ class ProxyProviderForm(forms.ModelForm):
             "external_host",
             "certificate",
             "skip_path_regex",
+            "basic_auth_enabled",
+            "basic_auth_user_attribute",
+            "basic_auth_password_attribute",
         ]
         widgets = {
             "name": forms.TextInput(),
             "internal_host": forms.TextInput(),
             "external_host": forms.TextInput(),
+            "basic_auth_user_attribute": forms.TextInput(),
+            "basic_auth_password_attribute": forms.TextInput(),
         }

@@ -6216,7 +6216,7 @@ definitions:
         type: string
         minLength: 1
       internal_host_ssl_validation:
-        title: Internal host ssl validation
+        title: Internal host SSL Validation
         description: Validate SSL Certificates of upstream servers
         type: boolean
       client_id:
@@ -6243,6 +6243,20 @@ definitions:
         title: Skip path regex
         description: Regular expressions for which authentication is not required.
           Each new line is interpreted as a new Regular Expression.
+        type: string
+      basic_auth_enabled:
+        title: Set HTTP-Basic Authentication
+        description: Set a custom HTTP-Basic Authentication header based on values
+          from passbook.
+        type: boolean
+      basic_auth_password_attribute:
+        title: HTTP-Basic Password
+        description: User Attribute used for the password part of the HTTP-Basic Header.
+        type: string
+      basic_auth_user_attribute:
+        title: HTTP-Basic Username
+        description: User Attribute used for the user part of the HTTP-Basic Header.
+          If not set, the user's Email address is used.
         type: string
   Policy:
     type: object
@@ -6705,7 +6719,7 @@ definitions:
         type: string
         minLength: 1
       internal_host_ssl_validation:
-        title: Internal host ssl validation
+        title: Internal host SSL Validation
         description: Validate SSL Certificates of upstream servers
         type: boolean
       certificate:
@@ -6717,6 +6731,20 @@ definitions:
         title: Skip path regex
         description: Regular expressions for which authentication is not required.
           Each new line is interpreted as a new Regular Expression.
+        type: string
+      basic_auth_enabled:
+        title: Set HTTP-Basic Authentication
+        description: Set a custom HTTP-Basic Authentication header based on values
+          from passbook.
+        type: boolean
+      basic_auth_password_attribute:
+        title: HTTP-Basic Password
+        description: User Attribute used for the password part of the HTTP-Basic Header.
+        type: string
+      basic_auth_user_attribute:
+        title: HTTP-Basic Username
+        description: User Attribute used for the user part of the HTTP-Basic Header.
+          If not set, the user's Email address is used.
         type: string
   SAMLProvider:
     required:

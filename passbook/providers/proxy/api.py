@@ -57,6 +57,9 @@ class ProxyProviderSerializer(ModelSerializer):
             "internal_host_ssl_validation",
             "certificate",
             "skip_path_regex",
+            "basic_auth_enabled",
+            "basic_auth_password_attribute",
+            "basic_auth_user_attribute",
         ]
 
 
@@ -97,6 +100,9 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "cookie_secret",
             "certificate",
             "skip_path_regex",
+            "basic_auth_enabled",
+            "basic_auth_password_attribute",
+            "basic_auth_user_attribute",
         ]
 
     @swagger_serializer_method(serializer_or_field=OpenIDConnectConfigurationSerializer)
