@@ -28,7 +28,7 @@ packaging = "*"
 psycopg2-binary = "*"
 pycryptodome = "*"
 pyjwkest = "*"
-uvicorn = "*"
+uvicorn = {extras = ["standard"],version = "*"}
 gunicorn = "*"
 pyyaml = "*"
 qrcode = "*"
@@ -43,8 +43,6 @@ dacite = "*"
 channels = "*"
 channels-redis = "*"
 kubernetes = "*"
-uvloop = "*"
-httptools = "*"
 
 [requires]
 python_version = "3.8"
