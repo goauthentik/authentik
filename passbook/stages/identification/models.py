@@ -34,6 +34,13 @@ class IdentificationStage(Stage):
     )
     template = models.TextField(choices=Templates.choices)
 
+    case_insensitive_matching = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, user fields are matched regardless of their casing."
+        ),
+    )
+
     enrollment_flow = models.ForeignKey(
         Flow,
         on_delete=models.SET_DEFAULT,

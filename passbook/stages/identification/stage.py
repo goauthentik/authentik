@@ -70,7 +70,12 @@ class IdentificationStageView(FormView, StageView):
         current_stage: IdentificationStage = self.executor.current_stage
         query = Q()
         for search_field in current_stage.user_fields:
-            query |= Q(**{search_field: uid_value})
+            model_field = search_field
+            if current_stage.case_insensitive_matching:
+                model_field += "__iexact"
+            else:
+                model_field += "__exact"
+            query |= Q(**{model_field: uid_value})
         users = User.objects.filter(query)
         if users.exists():
             LOGGER.debug("Found user", user=users.first(), query=query)

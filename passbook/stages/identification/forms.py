@@ -27,7 +27,14 @@ class IdentificationStageForm(forms.ModelForm):
     class Meta:
 
         model = IdentificationStage
-        fields = ["name", "user_fields", "template", "enrollment_flow", "recovery_flow"]
+        fields = [
+            "name",
+            "user_fields",
+            "case_insensitive_matching",
+            "template",
+            "enrollment_flow",
+            "recovery_flow",
+        ]
         widgets = {
             "name": forms.TextInput(),
             "user_fields": FilteredSelectMultiple(
