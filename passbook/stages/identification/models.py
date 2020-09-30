@@ -30,7 +30,12 @@ class IdentificationStage(Stage):
 
     user_fields = ArrayField(
         models.CharField(max_length=100, choices=UserFields.choices),
-        help_text=_("Fields of the user object to match against."),
+        help_text=_(
+            (
+                "Fields of the user object to match against. "
+                "(Hold shift to select multiple options)"
+            )
+        ),
     )
     template = models.TextField(choices=Templates.choices)
 

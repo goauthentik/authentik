@@ -7342,7 +7342,8 @@ definitions:
         type: string
         minLength: 1
       user_fields:
-        description: Fields of the user object to match against.
+        description: Fields of the user object to match against. (Hold shift to select
+          multiple options)
         type: array
         items:
           title: User fields
@@ -7350,6 +7351,10 @@ definitions:
           enum:
             - email
             - username
+      case_insensitive_matching:
+        title: Case insensitive matching
+        description: When enabled, user fields are matched regardless of their casing.
+        type: boolean
       template:
         title: Template
         type: string

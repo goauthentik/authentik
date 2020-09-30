@@ -1,10 +1,10 @@
 """passbook flows identification forms"""
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
 
+from passbook.admin.fields import ArrayFieldSelectMultiple
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.lib.utils.ui import human_list
 from passbook.stages.identification.models import IdentificationStage, UserFields
@@ -37,9 +37,7 @@ class IdentificationStageForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(),
-            "user_fields": FilteredSelectMultiple(
-                _("fields"), False, choices=UserFields.choices
-            ),
+            "user_fields": ArrayFieldSelectMultiple(choices=UserFields.choices),
         }
 
 
