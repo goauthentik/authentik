@@ -24,6 +24,8 @@ from passbook.providers.oauth2.models import (
     ScopeMapping,
 )
 
+SCOPE_PB_PROXY = "pb_proxy"
+
 
 def get_cookie_secret():
     """Generate random 32-character string for cookie-secret"""
@@ -80,7 +82,12 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         self.jwt_alg = JWTAlgorithms.RS256
         self.rsa_key = CertificateKeyPair.objects.first()
         scopes = ScopeMapping.objects.filter(
-            scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL]
+            scope_name__in=[
+                SCOPE_OPENID,
+                SCOPE_OPENID_PROFILE,
+                SCOPE_OPENID_EMAIL,
+                SCOPE_PB_PROXY,
+            ]
         )
         self.property_mappings.set(scopes)
         self.redirect_uris = "\n".join(
