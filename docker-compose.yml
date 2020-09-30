@@ -23,7 +23,7 @@ services:
     labels:
       - traefik.enable=false
   server:
-    image: beryju/passbook:${PASSBOOK_TAG:-0.10.7-stable}
+    image: beryju/passbook:${PASSBOOK_TAG:-0.10.8-stable}
     command: server
     environment:
       PASSBOOK_REDIS__HOST: redis
@@ -40,7 +40,7 @@ services:
     env_file:
       - .env
   worker:
-    image: beryju/passbook:${PASSBOOK_TAG:-0.10.7-stable}
+    image: beryju/passbook:${PASSBOOK_TAG:-0.10.8-stable}
     command: worker
     networks:
       - internal
@@ -53,7 +53,7 @@ services:
     env_file:
       - .env
   static:
-    image: beryju/passbook-static:${PASSBOOK_TAG:-0.10.7-stable}
+    image: beryju/passbook-static:${PASSBOOK_TAG:-0.10.8-stable}
     networks:
       - internal
     labels:
