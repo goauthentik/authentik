@@ -3,7 +3,7 @@ version: '3.2'
 
 services:
   postgresql:
-    image: postgres
+    image: postgres:12
     volumes:
       - database:/var/lib/postgresql/data
     networks:
