@@ -1,6 +1,7 @@
 """passbook OAuth2 Provider Forms"""
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
 from passbook.admin.fields import CodeMirrorWidget
@@ -28,6 +29,14 @@ class OAuth2ProviderForm(forms.ModelForm):
             key_data__exact=""
         )
         self.fields["property_mappings"].queryset = ScopeMapping.objects.all()
+
+    def clean_jwt_alg(self):
+        """Ensure that when RS256 is selected, a certificate-key-pair is selected"""
+        if "rsa_key" not in self.cleaned_data:
+            raise ValidationError(
+                _("RS256 requires a Certificate-Key-Pair to be selected.")
+            )
+        return self.cleaned_data["jwt_alg"]
 
     class Meta:
         model = OAuth2Provider
