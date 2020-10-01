@@ -18,6 +18,7 @@ class OAuth2ProviderSerializer(ModelSerializer):
             "client_type",
             "client_id",
             "client_secret",
+            "token_validity",
             "response_type",
             "jwt_alg",
             "rsa_key",

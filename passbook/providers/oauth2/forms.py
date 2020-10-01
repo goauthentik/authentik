@@ -38,6 +38,7 @@ class OAuth2ProviderForm(forms.ModelForm):
             "client_id",
             "client_secret",
             "response_type",
+            "token_validity",
             "jwt_alg",
             "rsa_key",
             "redirect_uris",
@@ -46,6 +47,7 @@ class OAuth2ProviderForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(),
+            "token_validity": forms.TextInput(),
         }
         labels = {"property_mappings": _("Scopes")}
         help_texts = {

@@ -6648,6 +6648,12 @@ definitions:
         title: Client Secret
         type: string
         maxLength: 255
+      token_validity:
+        title: Token validity
+        description: 'Tokens not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
       response_type:
         title: Response type
         description: Response Type required by the client.
