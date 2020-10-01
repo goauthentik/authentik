@@ -47,7 +47,7 @@ class AuthNRequestParser:
 
         request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
-        if self.provider.acs_url != request_acs_url:
+        if self.provider.acs_url.lower() != request_acs_url.lower():
             msg = (
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
