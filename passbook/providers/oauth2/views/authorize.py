@@ -142,7 +142,9 @@ class OAuthAuthorizationParams:
         if is_open_id and not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError()
-        if self.redirect_uri not in self.provider.redirect_uris.split():
+        if self.redirect_uri.lower() not in [
+            x.lower() for x in self.provider.redirect_uris.split()
+        ]:
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,
