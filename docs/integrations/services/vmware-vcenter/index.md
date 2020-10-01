@@ -60,6 +60,8 @@ Under *Providers*, create an OAuth2/OpenID Provider with these settings:
 
 Create an application which uses this provider. Optionally apply access restrictions to the application.
 
+Set the Launch URL to `https://vcenter.company/ui/login/oauth2`. This will skip vCenter's User Prompt and directly log you in.
+
 ## vCenter Setup
 
 Login as local Administrator account (most likely ends with vsphere.local). Using the Menu in the Navigation bar, navigate to *Administration -> Single Sing-on -> Configuration*.
