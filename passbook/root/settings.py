@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     "guardian",
     "django_prometheus",
     "channels",
+    "dbbackup",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.audit.apps.PassbookAuditConfig",
@@ -284,7 +285,6 @@ CELERY_RESULT_BACKEND = (
 
 # Database backup
 if CONFIG.y("postgresql.backup"):
-    INSTALLED_APPS.append("dbbackup")
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_CONNECTOR_MAPPING = {
         "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
@@ -294,7 +294,9 @@ if CONFIG.y("postgresql.backup"):
     AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
     AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
     AWS_DEFAULT_ACL = None
-    j_print("Database backup is configured.", host=CONFIG.y("postgresql.backup.host"))
+    j_print(
+        "Database backup to S3 is configured.", host=CONFIG.y("postgresql.backup.host")
+    )
     # Add automatic task to backup
     CELERY_BEAT_SCHEDULE["db_backup"] = {
         "task": "passbook.lib.tasks.backup_database",
