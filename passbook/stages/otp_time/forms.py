@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from django_otp.models import Device
 
 from passbook.stages.otp_time.models import OTPTimeStage
-from passbook.stages.otp_validate.forms import OTP_CODE_VALIDATOR
 
 
 class PictureWidget(forms.widgets.Widget):
@@ -28,7 +27,6 @@ class SetupForm(forms.Form):
     )
     code = forms.CharField(
         label=_("Please enter the Token on your device."),
-        validators=[OTP_CODE_VALIDATOR],
         widget=forms.TextInput(
             attrs={
                 "autocomplete": "off",
