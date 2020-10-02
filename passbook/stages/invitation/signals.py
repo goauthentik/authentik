@@ -1,5 +1,7 @@
 """passbook invitation signals"""
 from django.core.signals import Signal
 
-invitation_created = Signal(providing_args=["request", "invitation"])
-invitation_used = Signal(providing_args=["request", "invitation"])
+# Arguments: request: HttpRequest, invitation: Invitation
+invitation_created = Signal()
+# Arguments: request: HttpRequest, invitation: Invitation
+invitation_used = Signal()

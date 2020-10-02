@@ -1,4 +1,5 @@
 """passbook user_write signals"""
 from django.core.signals import Signal
 
-user_write = Signal(providing_args=["request", "user", "data"])
+# Arguments: request: HttpRequest, user: User, data: Dict[str, Any]
+user_write = Signal()
