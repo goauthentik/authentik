@@ -11,7 +11,7 @@ from guardian.shortcuts import get_objects_for_user
 from structlog import get_logger
 
 from passbook.core.models import User
-from passbook.outposts.controllers.compose import DockerComposeController
+from passbook.outposts.controllers.docker import DockerController
 from passbook.outposts.models import Outpost, OutpostType
 from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 
@@ -35,7 +35,7 @@ class DockerComposeView(LoginRequiredMixin, View):
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
-            controller = DockerComposeController(outpost_pk)
+            controller = DockerController(outpost_pk)
             manifest = controller.get_static_deployment()
 
         return HttpResponse(manifest, content_type="text/vnd.yaml")
