@@ -7,6 +7,14 @@ document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
     });
 });
 
+document.querySelectorAll("input[type=search]").forEach((si) => {
+    si.addEventListener("search", (e) => {
+        if (si.value === "") {
+            si.parentElement.submit();
+        }
+    });
+});
+
 // Modal
 document.querySelectorAll("[data-target='modal']").forEach((m) => {
     m.addEventListener("click", (e) => {

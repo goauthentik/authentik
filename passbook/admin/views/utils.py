@@ -1,13 +1,15 @@
 """passbook admin util views"""
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import QuerySet
 from django.http import Http404
 from django.http.request import HttpRequest
 from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic.list import MultipleObjectMixin
 
 from passbook.lib.utils.reflection import all_subclasses
 from passbook.lib.views import CreateAssignPermView
@@ -30,6 +32,26 @@ class InheritanceListView(ListView):
 
     def get_queryset(self):
         return super().get_queryset().select_subclasses()
+
+
+class SearchListMixin(MultipleObjectMixin):
+    """Accept search query using `search` querystring parameter. Requires self.search_fields,
+    a list of all fields to search. Can contain special lookups like __icontains"""
+
+    search_fields: List[str]
+
+    def get_queryset(self) -> QuerySet:
+        queryset = super().get_queryset()
+        if "search" in self.request.GET:
+            raw_query = self.request.GET["search"]
+            if raw_query == "":
+                # Empty query, don't search at all
+                return queryset
+            search = SearchQuery(raw_query, search_type="websearch")
+            return queryset.annotate(search=SearchVector(*self.search_fields)).filter(
+                search=search
+            )
+        return queryset
 
 
 class InheritanceCreateView(CreateAssignPermView):
