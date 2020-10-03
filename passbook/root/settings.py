@@ -272,7 +272,7 @@ CELERY_BEAT_SCHEDULE = {
         "options": {"queue": "passbook_scheduled"},
     }
 }
-CELERY_CREATE_MISSING_QUEUES = True
+CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "passbook"
 CELERY_BROKER_URL = (
     f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"
@@ -284,24 +284,25 @@ CELERY_RESULT_BACKEND = (
 )
 
 # Database backup
-if CONFIG.y("postgresql.backup"):
+DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
+DBBACKUP_CONNECTOR_MAPPING = {
+    "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
+}
+if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-    DBBACKUP_CONNECTOR_MAPPING = {
-        "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
+    DBBACKUP_STORAGE_OPTIONS = {
+        "access_key": CONFIG.y("postgresql.s3_backup.access_key"),
+        "secret_key": CONFIG.y("postgresql.s3_backup.secret_key"),
+        "bucket_name": CONFIG.y("postgresql.s3_backup.bucket"),
+        "region_name": CONFIG.y("postgresql.s3_backup.region", "eu-central-1"),
+        "default_acl": "private",
+        "endpoint_url": CONFIG.y("postgresql.s3_backup.host"),
     }
-    AWS_ACCESS_KEY_ID = CONFIG.y("postgresql.backup.access_key")
-    AWS_SECRET_ACCESS_KEY = CONFIG.y("postgresql.backup.secret_key")
-    AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
-    AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
-    AWS_DEFAULT_ACL = None
     j_print(
-        "Database backup to S3 is configured.", host=CONFIG.y("postgresql.backup.host")
+        "Database backup to S3 is configured.",
+        host=CONFIG.y("postgresql.s3_backup.host"),
     )
-    # Add automatic task to backup
-    CELERY_BEAT_SCHEDULE["db_backup"] = {
-        "task": "passbook.lib.tasks.backup_database",
-        "schedule": crontab(minute=0, hour=0),  # Run every day, midnight
-    }
 
 # Sentry integration
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
@@ -400,6 +401,7 @@ _LOGGING_HANDLER_MAP = {
     "urllib3": "WARNING",
     "websockets": "WARNING",
     "daphne": "WARNING",
+    "dbbackup": "ERROR",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

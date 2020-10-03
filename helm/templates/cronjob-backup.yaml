@@ -1,0 +1,42 @@
+{{- if .Values.backup }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "passbook.fullname" . }}-backup
+  labels:
+    app.kubernetes.io/name: {{ include "passbook.name" . }}
+    helm.sh/chart: {{ include "passbook.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: {{ .Chart.Name }}
+            image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+            args: [server]
+            envFrom:
+              - configMapRef:
+                  name: {{ include "passbook.fullname" . }}-config
+                prefix: PASSBOOK_
+            env:
+              - name: PASSBOOK_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ include "passbook.fullname" . }}-secret-key"
+                    key: "secret_key"
+              - name: PASSBOOK_REDIS__PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-redis"
+                    key: "redis-password"
+              - name: PASSBOOK_POSTGRESQL__PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-postgresql"
+                    key: "postgresql-password"
+{{- end}}

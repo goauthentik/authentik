@@ -57,6 +57,8 @@ nav:
         - Ubuntu Landscape: integrations/services/ubuntu-landscape/index.md
         - Sonarr: integrations/services/sonarr/index.md
         - Tautulli: integrations/services/tautulli/index.md
+  - Maintenance:
+    - Backups: maintenance/backups/index.md
   - Upgrading:
     - to 0.9: upgrading/to-0.9.md
     - to 0.10: upgrading/to-0.10.md
