@@ -21,6 +21,7 @@ from passbook.admin.forms.users import UserForm
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.models import Token, User
@@ -28,7 +29,11 @@ from passbook.lib.views import CreateAssignPermView
 
 
 class UserListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all users"""
 
@@ -36,6 +41,7 @@ class UserListView(
     permission_required = "passbook_core.view_user"
     ordering = "username"
     template_name = "administration/user/list.html"
+    search_fields = ["username", "name", "attributes"]
 
     def get_queryset(self):
         return super().get_queryset().exclude(pk=get_anonymous_user().pk)

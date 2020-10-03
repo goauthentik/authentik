@@ -12,6 +12,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.forms.applications import ApplicationForm
@@ -20,7 +21,11 @@ from passbook.lib.views import CreateAssignPermView
 
 
 class ApplicationListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all applications"""
 
@@ -28,6 +33,15 @@ class ApplicationListView(
     permission_required = "passbook_core.view_application"
     ordering = "name"
     template_name = "administration/application/list.html"
+
+    search_fields = [
+        "name",
+        "slug",
+        "meta_launch_url",
+        "meta_icon_url",
+        "meta_description",
+        "meta_publisher",
+    ]
 
 
 class ApplicationCreateView(

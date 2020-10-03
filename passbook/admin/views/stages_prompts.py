@@ -12,6 +12,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.lib.views import CreateAssignPermView
@@ -20,7 +21,11 @@ from passbook.stages.prompt.models import Prompt
 
 
 class PromptListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all prompts"""
 
@@ -28,6 +33,12 @@ class PromptListView(
     permission_required = "passbook_stages_prompt.view_prompt"
     ordering = "order"
     template_name = "administration/stage_prompt/list.html"
+    search_fields = [
+        "field_key",
+        "label",
+        "type",
+        "placeholder",
+    ]
 
 
 class PromptCreateView(

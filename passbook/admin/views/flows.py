@@ -14,6 +14,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.flows.forms import FlowForm, FlowImportForm
@@ -28,7 +29,11 @@ from passbook.lib.views import CreateAssignPermView
 
 
 class FlowListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all flows"""
 
@@ -36,6 +41,7 @@ class FlowListView(
     permission_required = "passbook_flows.view_flow"
     ordering = "name"
     template_name = "administration/flow/list.html"
+    search_fields = ["name", "slug", "designation", "title"]
 
 
 class FlowCreateView(

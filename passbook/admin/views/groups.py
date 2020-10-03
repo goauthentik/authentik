@@ -12,6 +12,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.forms.groups import GroupForm
@@ -20,7 +21,11 @@ from passbook.lib.views import CreateAssignPermView
 
 
 class GroupListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all groups"""
 
@@ -28,6 +33,7 @@ class GroupListView(
     permission_required = "passbook_core.view_group"
     ordering = "name"
     template_name = "administration/group/list.html"
+    search_fields = ["name", "attributes"]
 
 
 class GroupCreateView(

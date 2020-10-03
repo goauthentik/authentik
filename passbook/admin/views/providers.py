@@ -14,13 +14,18 @@ from passbook.admin.views.utils import (
     InheritanceCreateView,
     InheritanceListView,
     InheritanceUpdateView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.models import Provider
 
 
 class ProviderListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    InheritanceListView,
 ):
     """Show list of all providers"""
 
@@ -28,6 +33,7 @@ class ProviderListView(
     permission_required = "passbook_core.add_provider"
     template_name = "administration/provider/list.html"
     ordering = "id"
+    search_fields = ["id", "name"]
 
 
 class ProviderCreateView(

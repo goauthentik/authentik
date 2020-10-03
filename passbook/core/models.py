@@ -124,6 +124,8 @@ class User(GuardianUserMixin, AbstractUser):
 class Provider(models.Model):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
+    name = models.TextField()
+
     authorization_flow = models.ForeignKey(
         Flow,
         on_delete=models.CASCADE,
@@ -148,11 +150,8 @@ class Provider(models.Model):
         """Return Form class used to edit this object"""
         raise NotImplementedError
 
-    # This class defines no field for easier inheritance
     def __str__(self):
-        if hasattr(self, "name"):
-            return getattr(self, "name")
-        return super().__str__()
+        return self.name
 
 
 class Application(PolicyBindingModel):

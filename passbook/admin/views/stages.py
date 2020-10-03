@@ -14,13 +14,18 @@ from passbook.admin.views.utils import (
     InheritanceCreateView,
     InheritanceListView,
     InheritanceUpdateView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.flows.models import Stage
 
 
 class StageListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    InheritanceListView,
 ):
     """Show list of all stages"""
 
@@ -28,6 +33,7 @@ class StageListView(
     template_name = "administration/stage/list.html"
     permission_required = "passbook_flows.view_stage"
     ordering = "name"
+    search_fields = ["name"]
 
 
 class StageCreateView(
