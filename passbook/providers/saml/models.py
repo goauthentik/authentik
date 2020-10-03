@@ -27,8 +27,6 @@ class SAMLBindings(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    name = models.TextField()
-
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(default="")
     issuer = models.TextField(help_text=_("Also known as EntityID"))

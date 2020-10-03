@@ -120,8 +120,6 @@ class ScopeMapping(PropertyMapping):
 class OAuth2Provider(Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
-    name = models.TextField()
-
     client_type = models.CharField(
         max_length=30,
         choices=ClientTypes.choices,

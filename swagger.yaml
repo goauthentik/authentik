@@ -6589,6 +6589,7 @@ definitions:
         minLength: 1
   Provider:
     required:
+      - name
       - authorization_flow
     type: object
     properties:
@@ -6596,6 +6597,10 @@ definitions:
         title: ID
         type: integer
         readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
