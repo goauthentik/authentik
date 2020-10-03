@@ -12,6 +12,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.crypto.forms import CertificateKeyPairForm
@@ -20,7 +21,11 @@ from passbook.lib.views import CreateAssignPermView
 
 
 class CertificateKeyPairListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all keypairs"""
 
@@ -28,6 +33,8 @@ class CertificateKeyPairListView(
     permission_required = "passbook_crypto.view_certificatekeypair"
     ordering = "name"
     template_name = "administration/certificatekeypair/list.html"
+
+    search_fields = ["name"]
 
 
 class CertificateKeyPairCreateView(

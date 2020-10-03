@@ -13,6 +13,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.lib.views import CreateAssignPermView
@@ -22,7 +23,11 @@ from passbook.stages.invitation.signals import invitation_created
 
 
 class InvitationListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all invitations"""
 
@@ -30,6 +35,7 @@ class InvitationListView(
     permission_required = "passbook_stages_invitation.view_invitation"
     template_name = "administration/stage_invitation/list.html"
     ordering = "-expires"
+    search_fields = ["created_by__username", "expires", "fixed_data"]
 
 
 class InvitationCreateView(

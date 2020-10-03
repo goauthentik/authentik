@@ -14,13 +14,18 @@ from passbook.admin.views.utils import (
     InheritanceCreateView,
     InheritanceListView,
     InheritanceUpdateView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.models import Source
 
 
 class SourceListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    InheritanceListView,
 ):
     """Show list of all sources"""
 
@@ -28,6 +33,7 @@ class SourceListView(
     permission_required = "passbook_core.view_source"
     ordering = "name"
     template_name = "administration/source/list.html"
+    search_fields = ["name", "slug"]
 
 
 class SourceCreateView(

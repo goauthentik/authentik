@@ -14,13 +14,18 @@ from passbook.admin.views.utils import (
     InheritanceCreateView,
     InheritanceListView,
     InheritanceUpdateView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.core.models import PropertyMapping
 
 
 class PropertyMappingListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    InheritanceListView,
 ):
     """Show list of all property_mappings"""
 
@@ -28,6 +33,7 @@ class PropertyMappingListView(
     permission_required = "passbook_core.view_propertymapping"
     template_name = "administration/property_mapping/list.html"
     ordering = "name"
+    search_fields = ["name", "expression"]
 
 
 class PropertyMappingCreateView(

@@ -18,6 +18,7 @@
         {% if object_list %}
         <div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
                 {% include 'partials/pagination.html' %}
             </div>
         </div>
@@ -69,14 +70,23 @@
             {% include 'partials/pagination.html' %}
         </div>
         {% else %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+            </div>
+        </div>
         <div class="pf-c-empty-state">
             <div class="pf-c-empty-state__content">
-                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <i class="fas fa-key pf-c-empty-state__icon" aria-hidden="true"></i>
                 <h1 class="pf-c-title pf-m-lg">
                     {% trans 'No Tokens.' %}
                 </h1>
                 <div class="pf-c-empty-state__body">
+                {% if request.GET.search != "" %}
+                    {% trans "Your search query doesn't match any token." %}
+                {% else %}
                     {% trans 'Currently no tokens exist.' %}
+                {% endif %}
                 </div>
             </div>
         </div>

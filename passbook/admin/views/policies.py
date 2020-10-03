@@ -22,6 +22,7 @@ from passbook.admin.views.utils import (
     InheritanceCreateView,
     InheritanceListView,
     InheritanceUpdateView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.policies.models import Policy, PolicyBinding
@@ -29,7 +30,11 @@ from passbook.policies.process import PolicyProcess, PolicyRequest
 
 
 class PolicyListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, InheritanceListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    InheritanceListView,
 ):
     """Show list of all policies"""
 
@@ -37,6 +42,7 @@ class PolicyListView(
     permission_required = "passbook_policies.view_policy"
     ordering = "name"
     template_name = "administration/policy/list.html"
+    search_fields = ["name"]
 
 
 class PolicyCreateView(

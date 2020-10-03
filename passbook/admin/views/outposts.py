@@ -15,6 +15,7 @@ from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from passbook.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
+    SearchListMixin,
     UserPaginateListMixin,
 )
 from passbook.lib.views import CreateAssignPermView
@@ -23,7 +24,11 @@ from passbook.outposts.models import Outpost, OutpostConfig
 
 
 class OutpostListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
+    LoginRequiredMixin,
+    PermissionListMixin,
+    UserPaginateListMixin,
+    SearchListMixin,
+    ListView,
 ):
     """Show list of all outposts"""
 
@@ -31,6 +36,7 @@ class OutpostListView(
     permission_required = "passbook_outposts.view_outpost"
     ordering = "name"
     template_name = "administration/outpost/list.html"
+    search_fields = ["name", "_config"]
 
 
 class OutpostCreateView(
