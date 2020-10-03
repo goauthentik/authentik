@@ -7,11 +7,22 @@ document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
     });
 });
 
+// Search clearing
 document.querySelectorAll("input[type=search]").forEach((si) => {
     si.addEventListener("search", (e) => {
         if (si.value === "") {
             si.parentElement.submit();
         }
+    });
+});
+
+// Fetch from data-attributes
+document.querySelectorAll("[data-pb-fetch-fill]").forEach((el) => {
+    const url = el.dataset.pbFetchFill;
+    const key = el.dataset.pbFetchKey;
+    fetch(url).then(r => r.json()).then(r => {
+        el.textContent = r[key];
+        el.value = r[key];
     });
 });
 
