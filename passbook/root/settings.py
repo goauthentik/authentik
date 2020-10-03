@@ -272,7 +272,7 @@ CELERY_BEAT_SCHEDULE = {
         "options": {"queue": "passbook_scheduled"},
     }
 }
-CELERY_CREATE_MISSING_QUEUES = True
+CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "passbook"
 CELERY_BROKER_URL = (
     f"redis://:{CONFIG.y('redis.password')}@{CONFIG.y('redis.host')}"

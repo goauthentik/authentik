@@ -12,7 +12,7 @@ from passbook.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from passbook.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from passbook.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, ScopeMapping
 
 
 class OAuth2ProviderForm(forms.ModelForm):
@@ -32,7 +32,10 @@ class OAuth2ProviderForm(forms.ModelForm):
 
     def clean_jwt_alg(self):
         """Ensure that when RS256 is selected, a certificate-key-pair is selected"""
-        if "rsa_key" not in self.cleaned_data:
+        if (
+            self.data["rsa_key"] == ""
+            and self.cleaned_data["jwt_alg"] == JWTAlgorithms.RS256
+        ):
             raise ValidationError(
                 _("RS256 requires a Certificate-Key-Pair to be selected.")
             )
