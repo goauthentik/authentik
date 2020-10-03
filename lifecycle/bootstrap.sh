@@ -10,7 +10,7 @@ elif [[ "$1" == "migrate" ]]; then
     python -m lifecycle.migrate
     python -m manage migrate
 elif [[ "$1" == "backup" ]]; then
-    python -m manage dbbackup
+    python -m manage dbbackup --clean
 elif [[ "$1" == "restore" ]]; then
     python -m manage dbrestore ${@:2}
 elif [[ "$1" == "bash" ]]; then
