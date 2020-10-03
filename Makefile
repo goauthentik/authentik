@@ -11,7 +11,7 @@ lint-fix:
 	black passbook e2e lifecycle
 
 lint:
-	pyright pyright e2e lifecycle
+	pyright passbook e2e lifecycle
 	bandit -r passbook e2e lifecycle
 	pylint passbook e2e lifecycle
 	prospector

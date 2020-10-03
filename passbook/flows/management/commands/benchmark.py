@@ -3,7 +3,6 @@ from csv import DictWriter
 from multiprocessing import Manager, Process, cpu_count
 from sys import stdout
 from time import time
-from typing import List
 
 from django import db
 from django.core.management.base import BaseCommand
@@ -63,7 +62,7 @@ class Command(BaseCommand):  # pragma: no cover
             help="Output results as CSV",
         )
 
-    def benchmark_flows(self, proc_count) -> str:
+    def benchmark_flows(self, proc_count):
         """Get full recovery link"""
         flow = Flow.objects.get(slug="default-authentication-flow")
         user = User.objects.get(username="pbadmin")
@@ -90,7 +89,7 @@ class Command(BaseCommand):  # pragma: no cover
         else:
             self.output_overview(all_values)
 
-    def output_overview(self, values: List[List[int]]):
+    def output_overview(self, values):
         """Output results human readable"""
         total_max = max([max(inner) for inner in values])
         total_min = min([min(inner) for inner in values])
@@ -104,7 +103,7 @@ class Command(BaseCommand):  # pragma: no cover
         print(f"\tMin: {total_min * 100}ms")
         print(f"\tAvg: {total_avg * 100}ms")
 
-    def output_csv(self, values: List[List[int]]):
+    def output_csv(self, values):
         """Output results as CSV"""
         proc_count = len(values)
         fieldnames = [f"proc_{idx}" for idx in range(proc_count)]
