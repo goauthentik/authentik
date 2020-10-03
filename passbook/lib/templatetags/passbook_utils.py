@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 
 from django import template
 from django.db.models import Model
+from django.http.request import HttpRequest
 from django.template import Context
 from django.utils.html import escape, mark_safe
 from structlog import get_logger
@@ -115,3 +116,15 @@ def debug(obj) -> str:
 def doc(obj) -> str:
     """Return docstring of object"""
     return mark_safe(obj.__doc__.replace("\n", "<br>"))
+
+
+@register.simple_tag(takes_context=True)
+def query_transform(context: Context, **kwargs) -> str:
+    """Append objects to the current querystring"""
+    if "request" not in context:
+        return ""
+    request: HttpRequest = context["request"]
+    updated = request.GET.copy()
+    for key, value in kwargs.items():
+        updated[key] = value
+    return updated.urlencode()

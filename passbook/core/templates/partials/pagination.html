@@ -1,43 +1,42 @@
 {% load i18n %}
+{% load passbook_utils %}
 
-<div class="pf-c-toolbar__item pf-m-pagination">
-    <div class="pf-c-pagination">
-        <div class="pf-c-pagination__total-items">
-            <b>{{ page_obj.start_index }} - {{ page_obj.end_index }}</b>of
-            <b>{{ page_obj.count }}</b>
-        </div>
-        {% with param=get_param|default:'page' %}
-        <nav class="pf-c-pagination__nav" aria-label="Pagination">
-            <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to first page" href="?{{ param }}=1">
-                <i class="fas fa-angle-double-left" aria-hidden="true"></i>
-            </a>
-            <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to previous page"
-                {% if page_obj.has_previous %}
-                href="?{{ param }}={{ page_obj.previous_page_number }}"
-                {% else %}
-                disabled
-                {% endif %}>
-                <i class="fas fa-angle-left" aria-hidden="true"></i>
-            </a>
-            <div class="pf-c-pagination__nav-page-select">
-                <span>
-                    {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
-                    {{ current }} of {{ total }}
-                    {% endblocktrans %}
-                </span>
+<div class="pf-c-toolbar__item pf-m-pagination ">
+    <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
+        <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
+            <div class="pf-c-options-menu">
+                <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
+                    <span class="pf-c-options-menu__toggle-text">
+                        {% blocktrans with start_index=page_obj.start_index end_index=page_obj.end_index total_items=paginator.count %}
+                            {{ start_index }} - {{ end_index }} of {{ total_items }}
+                        {% endblocktrans %}
+                    </span>
+                </div>
             </div>
-            <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to next page"
-                {% if page_obj.has_next %}
-                href="?{{ param }}={{ page_obj.next_page_number }}"
-                {% else %}
-                disabled
-                {% endif %}>
-                <i class="fas fa-angle-right" aria-hidden="true"></i>
-            </a>
-            <a class="pf-c-button pf-m-plain" type="button" aria-label="Go to last page" href="?{{ param }}={{ page_obj.num_pages }}">
-                <i class="fas fa-angle-double-right" aria-hidden="true"></i>
-            </a>
-        </nav>
-        {% endwith %}
+            <nav class="pf-c-pagination__nav" aria-label="Pagination">
+                <div class="pf-c-pagination__nav-control pf-m-prev">
+                    <a class="pf-c-button pf-m-plain"
+                        {% if page_obj.has_previous %}
+                        href="?{% query_transform page=page_obj.previous_page_number %}"
+                        {% else %}
+                        disabled
+                        {% endif %}
+                        aria-label="{% trans 'Go to previous page' %}">
+                        <i class="fas fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="pf-c-pagination__nav-control pf-m-next">
+                    <a class="pf-c-button pf-m-plain"
+                        {% if page_obj.has_next %}
+                        href="?{% query_transform page=page_obj.next_page_number %}"
+                        {% else %}
+                        disabled
+                        {% endif %}
+                        aria-label="{% trans 'Go to next page' %}">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </nav>
+        </div>
     </div>
 </div>
