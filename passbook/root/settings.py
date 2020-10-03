@@ -83,13 +83,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "rest_framework",
-    "django_filters",
-    "drf_yasg",
-    "guardian",
-    "django_prometheus",
-    "channels",
-    "dbbackup",
     "passbook.admin.apps.PassbookAdminConfig",
     "passbook.api.apps.PassbookAPIConfig",
     "passbook.audit.apps.PassbookAuditConfig",
@@ -128,6 +121,13 @@ INSTALLED_APPS = [
     "passbook.stages.otp_validate.apps.PassbookStageOTPValidateConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
     "passbook.static.apps.PassbookStaticConfig",
+    "rest_framework",
+    "django_filters",
+    "drf_yasg",
+    "guardian",
+    "django_prometheus",
+    "channels",
+    "dbbackup",
 ]
 
 GUARDIAN_MONKEY_PATCH = False
