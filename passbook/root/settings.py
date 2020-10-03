@@ -284,18 +284,21 @@ CELERY_RESULT_BACKEND = (
 )
 
 # Database backup
-if CONFIG.y("postgresql.backup"):
+DBBACKUP_STORAGE = "django.core.files.storage.FileSystemStorage"
+DBBACKUP_STORAGE_OPTIONS = {"location": "./backups" if DEBUG else "/backups"}
+if CONFIG.y("postgresql.s3_backup"):
     DBBACKUP_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     DBBACKUP_CONNECTOR_MAPPING = {
         "django_prometheus.db.backends.postgresql": "dbbackup.db.postgresql.PgDumpConnector"
     }
-    AWS_ACCESS_KEY_ID = CONFIG.y("postgresql.backup.access_key")
-    AWS_SECRET_ACCESS_KEY = CONFIG.y("postgresql.backup.secret_key")
-    AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.backup.bucket")
-    AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.backup.host")
+    AWS_ACCESS_KEY_ID = CONFIG.y("postgresql.s3_backup.access_key")
+    AWS_SECRET_ACCESS_KEY = CONFIG.y("postgresql.s3_backup.secret_key")
+    AWS_STORAGE_BUCKET_NAME = CONFIG.y("postgresql.s3_backup.bucket")
+    AWS_S3_ENDPOINT_URL = CONFIG.y("postgresql.s3_backup.host")
     AWS_DEFAULT_ACL = None
     j_print(
-        "Database backup to S3 is configured.", host=CONFIG.y("postgresql.backup.host")
+        "Database backup to S3 is configured.",
+        host=CONFIG.y("postgresql.s3_backup.host"),
     )
     # Add automatic task to backup
     CELERY_BEAT_SCHEDULE["db_backup"] = {
@@ -400,6 +403,7 @@ _LOGGING_HANDLER_MAP = {
     "urllib3": "WARNING",
     "websockets": "WARNING",
     "daphne": "WARNING",
+    "dbbackup": "ERROR"
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
