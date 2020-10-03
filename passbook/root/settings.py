@@ -303,12 +303,6 @@ if CONFIG.y("postgresql.s3_backup"):
         "Database backup to S3 is configured.",
         host=CONFIG.y("postgresql.s3_backup.host"),
     )
-if CONFIG.y_bool("postgresql.backup_scheduled"):
-    # Add automatic task to backup
-    CELERY_BEAT_SCHEDULE["db_backup"] = {
-        "task": "passbook.lib.tasks.backup_database",
-        "schedule": crontab(minute=0, hour=0),  # Run every day, midnight
-    }
 
 # Sentry integration
 _ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
