@@ -292,17 +292,20 @@ class ExpiringModel(models.Model):
 class TokenIntents(models.TextChoices):
     """Intents a Token can be created for."""
 
-    # Single user token
+    # Single use token
     INTENT_VERIFICATION = "verification"
 
     # Allow access to API
     INTENT_API = "api"
+
+    INTENT_RECOVERY = "recovery"
 
 
 class Token(ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    identifier = models.TextField()
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
     )
@@ -318,6 +321,7 @@ class Token(ExpiringModel):
 
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
+        unique_together = (("identifier", "user"),)
 
 
 class PropertyMapping(models.Model):

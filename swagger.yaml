@@ -343,6 +343,131 @@ paths:
         required: true
         type: string
         format: uuid
+  /core/tokens/:
+    get:
+      operationId: core_tokens_list
+      description: Token Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Token'
+      tags:
+        - core
+    post:
+      operationId: core_tokens_create
+      description: Token Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Token'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Token'
+      tags:
+        - core
+    parameters: []
+  /core/tokens/{identifier}/:
+    get:
+      operationId: core_tokens_read
+      description: Token Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Token'
+      tags:
+        - core
+    put:
+      operationId: core_tokens_update
+      description: Token Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Token'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Token'
+      tags:
+        - core
+    patch:
+      operationId: core_tokens_partial_update
+      description: Token Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Token'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Token'
+      tags:
+        - core
+    delete:
+      operationId: core_tokens_delete
+      description: Token Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - core
+    parameters:
+      - name: identifier
+        in: path
+        required: true
+        type: string
   /core/users/:
     get:
       operationId: core_users_list
@@ -5955,6 +6080,34 @@ definitions:
         uniqueItems: true
       attributes:
         title: Attributes
+        type: string
+  Token:
+    required:
+      - identifier
+      - user
+    type: object
+    properties:
+      pk:
+        title: Token uuid
+        type: string
+        format: uuid
+        readOnly: true
+      identifier:
+        title: Identifier
+        type: string
+        minLength: 1
+      intent:
+        title: Intent
+        type: string
+        enum:
+          - verification
+          - api
+          - recovery
+      user:
+        title: User
+        type: integer
+      description:
+        title: Description
         type: string
   User:
     required:

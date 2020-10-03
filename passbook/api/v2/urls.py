@@ -12,6 +12,7 @@ from passbook.core.api.groups import GroupViewSet
 from passbook.core.api.propertymappings import PropertyMappingViewSet
 from passbook.core.api.providers import ProviderViewSet
 from passbook.core.api.sources import SourceViewSet
+from passbook.core.api.tokens import TokenViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.crypto.api import CertificateKeyPairViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
@@ -49,9 +50,12 @@ from passbook.stages.user_write.api import UserWriteStageViewSet
 router = routers.DefaultRouter()
 
 router.register("root/messages", MessagesViewSet, basename="messages")
+
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
+router.register("core/tokens", TokenViewSet)
+
 router.register("outposts/outposts", OutpostViewSet)
 router.register("outposts/proxy", OutpostConfigViewSet)
 
