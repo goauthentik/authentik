@@ -1,6 +1,7 @@
 """passbook administration overview"""
 from typing import Union
 
+from django.conf import settings
 from django.core.cache import cache
 from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
@@ -32,7 +33,8 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         """Get latest version from cache"""
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:
-            update_latest_version.delay()
+            if not settings.DEBUG:
+                update_latest_version.delay()
             return parse(__version__)
         return parse(version_in_cache)
 

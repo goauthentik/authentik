@@ -4,6 +4,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers
 
+from passbook.admin.api.overview import AdministrationOverviewViewSet
 from passbook.api.permissions import CustomObjectPermissions
 from passbook.api.v2.messages import MessagesViewSet
 from passbook.audit.api import EventViewSet
@@ -50,6 +51,10 @@ from passbook.stages.user_write.api import UserWriteStageViewSet
 router = routers.DefaultRouter()
 
 router.register("root/messages", MessagesViewSet, basename="messages")
+
+router.register(
+    "admin/overview", AdministrationOverviewViewSet, basename="admin_overview"
+)
 
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)

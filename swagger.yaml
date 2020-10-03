@@ -19,6 +19,21 @@ securityDefinitions:
 security:
   - token: []
 paths:
+  /admin/overview/:
+    get:
+      operationId: admin_overview_list
+      description: Return single instance of AdministrationOverviewSerializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AdministrationOverview'
+      tags:
+        - admin
+    parameters: []
   /audit/events/:
     get:
       operationId: audit_events_list
@@ -5943,6 +5958,37 @@ paths:
         type: string
         format: uuid
 definitions:
+  AdministrationOverview:
+    type: object
+    properties:
+      version:
+        title: Version
+        type: string
+        readOnly: true
+      version_latest:
+        title: Version latest
+        type: string
+        readOnly: true
+      worker_count:
+        title: Worker count
+        type: integer
+        readOnly: true
+      providers_without_application:
+        title: Providers without application
+        type: integer
+        readOnly: true
+      policies_without_binding:
+        title: Policies without binding
+        type: integer
+        readOnly: true
+      cached_policies:
+        title: Cached policies
+        type: integer
+        readOnly: true
+      cached_flows:
+        title: Cached flows
+        type: integer
+        readOnly: true
   Event:
     required:
       - action
