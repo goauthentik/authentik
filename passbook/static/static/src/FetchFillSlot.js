@@ -10,10 +10,6 @@ class FetchFillSlot extends LitElement {
         };
     }
 
-    constructor() {
-        super();
-    }
-
     comparison(slotName) {
         var comparisonOperatorsHash = {
             '<': function (a, b) { return a < b; },
