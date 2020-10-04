@@ -167,18 +167,26 @@
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Workers' %}
                 </div>
             </div>
-            <div class="pf-c-card__body">
-                {% if worker_count < 1 %}
-                <p class="aggregate-status">
-                    <i class="fa fa-exclamation-triangle"></i> {{ worker_count }}
-                </p>
-                <p>{% trans 'No workers connected.' %}</p>
-                {% else %}
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ worker_count }}
-                </p>
-                {% endif %}
-            </div>
+            <fetch-fill-slot class="pf-c-card__body" url="{% url 'passbook_api:admin_overview-list' %}" key="worker_count">
+                <div slot="value < 1">
+                    <p class="aggregate-status">
+                        <i class="fa fa-exclamation-triangle"></i> <span data-value></span>
+                    </p>
+                    <p>{% trans 'No workers connected.' %}</p>
+                </div>
+                <div slot="value >= 1">
+                    <p class="aggregate-status">
+                        <i class="fa fa-check-circle"></i> <span data-value></span>
+                    </p>
+                </div>
+                <div>
+                    <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
+                        <span class="pf-c-spinner__clipper"></span>
+                        <span class="pf-c-spinner__lead-ball"></span>
+                        <span class="pf-c-spinner__tail-ball"></span>
+                    </span>
+                </div>
+            </fetch-fill-slot>
         </div>
 
         <a class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">

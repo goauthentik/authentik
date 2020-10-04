@@ -13,7 +13,6 @@ from passbook.admin.tasks import VERSION_CACHE_KEY, update_latest_version
 from passbook.core.models import Application, Provider, Source, User
 from passbook.flows.models import Flow, Stage
 from passbook.policies.models import Policy
-from passbook.root.celery import CELERY_APP
 from passbook.stages.invitation.models import Invitation
 
 
@@ -49,7 +48,6 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
         kwargs["invitation_count"] = len(Invitation.objects.all())
         kwargs["version"] = parse(__version__)
         kwargs["version_latest"] = self.get_latest_version()
-        kwargs["worker_count"] = len(CELERY_APP.control.ping(timeout=0.5))
         kwargs["providers_without_application"] = Provider.objects.filter(
             application=None
         )

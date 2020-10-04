@@ -1,3 +1,5 @@
+import './FetchFillSlot.js';
+
 // Button Dropdowns
 document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
     b.addEventListener('click', (e) => {

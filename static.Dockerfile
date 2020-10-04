@@ -41,7 +41,7 @@ FROM node as npm-packager
 COPY --from=static-build /app/static/package.json /static/package.json
 COPY --from=static-build /app/static/yarn.lock /static/yarn.lock
 
-RUN cd /static && yarn
+RUN cd /static && npm i && npm run build
 
 FROM nginx
 
