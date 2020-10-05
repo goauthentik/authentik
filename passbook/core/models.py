@@ -313,9 +313,7 @@ class Token(ExpiringModel):
     description = models.TextField(default="", blank=True)
 
     def __str__(self):
-        return (
-            f"Token {self.identifier} (expires={self.expires})"
-        )
+        return f"Token {self.identifier} (expires={self.expires})"
 
     class Meta:
 
