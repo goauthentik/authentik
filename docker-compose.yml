@@ -37,8 +37,6 @@ services:
       - traefik.port=8000
       - traefik.docker.network=internal
       - traefik.frontend.rule=PathPrefix:/
-    volumes:
-      - ./backups:/backups
     env_file:
       - .env
   worker:

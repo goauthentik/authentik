@@ -9,7 +9,7 @@
 Local backups can be created by running the following command in your passbook installation directory
 
 ```
-docker-compose run --rm server backup
+docker-compose run --rm worker backup
 ```
 
 This will dump the current database into the `./backups` folder. By defaults, the last 10 Backups are kept.
@@ -17,7 +17,7 @@ This will dump the current database into the `./backups` folder. By defaults, th
 To schedule these backups, use the following snippet in a crontab
 
 ```
-0 0 * * * bash -c "cd <passbook install location> && docker-compose run --rm server backup" >/dev/null
+0 0 * * * bash -c "cd <passbook install location> && docker-compose run --rm worker backup" >/dev/null
 ```
 
 !!! notice
@@ -29,13 +29,13 @@ To schedule these backups, use the following snippet in a crontab
 Run this command in your passbook installation directory
 
 ```
-docker-compose run --rm server backup
+docker-compose run --rm worker restore
 ```
 
 This will prompt you to restore from your last backup. If you want to restore from a specific file, use the `-i` flag with the filename:
 
 ```
-docker-compose run --rm server backup -i default-2020-10-03-115557.psql
+docker-compose run --rm worker restore -i default-2020-10-03-115557.psql
 ```
 
 After you've restored the backup, it is recommended to restart all services with `docker-compose restart`.
