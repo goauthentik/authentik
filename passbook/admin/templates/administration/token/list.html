@@ -25,7 +25,7 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">{% trans 'Token' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Identifier' %}</th>
                     <th role="columnheader" scope="col">{% trans 'User' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Expires?' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Expiry Date' %}</th>
@@ -36,9 +36,7 @@
                 {% for token in object_list %}
                 <tr role="row">
                     <th role="columnheader">
-                        <div>
-                            <div>{{ token.pk.hex }}</div>
-                        </div>
+                        <div>{{ token.identifier }}</div>
                     </th>
                     <td role="cell">
                         <span>

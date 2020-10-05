@@ -27,6 +27,7 @@ class TokenListView(
     ordering = "expires"
     template_name = "administration/token/list.html"
     search_fields = [
+        "identifier",
         "intent",
         "user__username",
         "description",

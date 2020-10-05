@@ -314,7 +314,7 @@ class Token(ExpiringModel):
 
     def __str__(self):
         return (
-            f"Token {self.token_uuid.hex} {self.description} (expires={self.expires})"
+            f"Token {self.identifier} (expires={self.expires})"
         )
 
     class Meta:
