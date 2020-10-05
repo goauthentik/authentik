@@ -6036,12 +6036,12 @@ definitions:
           - login
           - login_failed
           - logout
-          - sign_up
-          - authorize_application
+          - user_write
           - suspicious_request
           - password_set
           - invitation_created
           - invitation_used
+          - authorize_application
           - source_linked
           - impersonation_started
           - impersonation_ended

@@ -1,7 +1,7 @@
 {
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c ./rollup.config.js",
     "watch": "rollup -c -w"
   },
   "dependencies": {
