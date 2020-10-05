@@ -39,7 +39,7 @@ RUN ./manage.py collectstatic --no-input
 FROM node as npm-packager
 
 COPY --from=static-build /app/static/package.json /static/package.json
-COPY --from=static-build /app/static/yarn.lock /static/yarn.lock
+COPY --from=static-build /app/static/package-lock.json /static/package-lock.json
 
 RUN cd /static && npm i && npm run build
 
