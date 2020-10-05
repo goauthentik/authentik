@@ -27,6 +27,7 @@ class UserWriteStageView(StageView):
             LOGGER.debug(message)
             return self.executor.stage_invalid()
         data = self.executor.plan.context[PLAN_CONTEXT_PROMPT]
+        user_created = False
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User()
             self.executor.plan.context[
@@ -36,6 +37,7 @@ class UserWriteStageView(StageView):
                 "Created new user",
                 flow_slug=self.executor.flow.slug,
             )
+            user_created = True
         user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         # Before we change anything, check if the user is the same as in the request
         # and we're updating a password. In that case we need to update the session hash
@@ -63,7 +65,9 @@ class UserWriteStageView(StageView):
                     continue
                 user.attributes[key.replace("attribute_", "", 1)] = value
         user.save()
-        user_write.send(sender=self, request=request, user=user, data=data)
+        user_write.send(
+            sender=self, request=request, user=user, data=data, created=user_created
+        )
         # Check if the password has been updated, and update the session auth hash
         if should_update_seesion:
             update_session_auth_hash(self.request, user)

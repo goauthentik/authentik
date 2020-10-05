@@ -12,6 +12,7 @@ from django.http import HttpRequest
 
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import User
+from passbook.core.signals import password_changed
 from passbook.stages.invitation.models import Invitation
 from passbook.stages.invitation.signals import invitation_created, invitation_used
 from passbook.stages.user_write.signals import user_write
@@ -58,9 +59,12 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
 
 @receiver(user_write)
 # pylint: disable=unused-argument
-def on_user_write(sender, request: HttpRequest, user: User, data: Dict[str, Any], **_):
+def on_user_write(
+    sender, request: HttpRequest, user: User, data: Dict[str, Any], **kwargs
+):
     """Log User write"""
-    thread = EventNewThread("stages/user_write", request, **data)
+    thread = EventNewThread(EventAction.USER_WRITE, request, **data)
+    thread.kwargs["created"] = kwargs.get("created", False)
     thread.user = user
     thread.run()
 
@@ -92,4 +96,12 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
     thread = EventNewThread(
         EventAction.INVITE_USED, request, invitation_uuid=invitation.invite_uuid.hex
     )
+    thread.run()
+
+
+@receiver(password_changed)
+# pylint: disable=unused-argument
+def on_password_changed(sender, user: User, password: str, **_):
+    """Log password change"""
+    thread = EventNewThread(EventAction.PASSWORD_SET, None, user=user)
     thread.run()

@@ -96,14 +96,14 @@ class EventAction(models.TextChoices):
     LOGIN_FAILED = "login_failed"
     LOGOUT = "logout"
 
-    SIGN_UP = "sign_up"
-    AUTHORIZE_APPLICATION = "authorize_application"
+    USER_WRITE = "user_write"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
     INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
 
+    AUTHORIZE_APPLICATION = "authorize_application"
     SOURCE_LINKED = "source_linked"
 
     IMPERSONATION_STARTED = "impersonation_started"
