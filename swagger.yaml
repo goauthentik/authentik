@@ -19,6 +19,21 @@ securityDefinitions:
 security:
   - token: []
 paths:
+  /admin/metrics/:
+    get:
+      operationId: admin_metrics_list
+      description: Return single instance of AdministrationMetricsSerializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AdministrationMetrics'
+      tags:
+        - admin
+    parameters: []
   /admin/overview/:
     get:
       operationId: admin_overview_list
@@ -5958,6 +5973,17 @@ paths:
         type: string
         format: uuid
 definitions:
+  AdministrationMetrics:
+    type: object
+    properties:
+      logins_per_1h:
+        title: Logins per 1h
+        type: string
+        readOnly: true
+      logins_failed_per_1h:
+        title: Logins failed per 1h
+        type: string
+        readOnly: true
   AdministrationOverview:
     type: object
     properties:

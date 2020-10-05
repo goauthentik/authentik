@@ -1,6 +1,7 @@
 {% extends "administration/base.html" %}
 
 {% load i18n %}
+{% load static %}
 
 {% block content %}
 <section class="pf-c-page__main-section pf-m-light">
@@ -10,33 +11,51 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <a href="{% url 'passbook_admin:applications' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-applications"></i> {% trans 'Applications' %}
+                    <i class="pf-icon pf-icon-server"></i> {% trans 'Logins over the last 24 hours' %}
+                </div>
+            </div>
+            <div class="pf-c-card__body" style="position: relative; height:100%; width:100%">
+                <canvas id="logins-last-metrics"></canvas>
+            </div>
+        </div>
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 2;grid-row-end: span 3;">
+            <div class="pf-c-card__header">
+                <div class="pf-c-card__header-main">
+                    <i class="pf-icon pf-icon-server"></i> {% trans 'Apps with most usage' %}
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ application_count }}
-                </p>
+                <table class="pf-c-table pf-m-compact" role="grid">
+                    <thead>
+                        <tr role="row">
+                            <th role="columnheader" scope="col">{% trans 'Application' %}</th>
+                            <th role="columnheader" scope="col">{% trans 'Logins' %}</th>
+                            <th role="columnheader" scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody role="rowgroup">
+                        {% for app in most_used_applications %}
+                        <tr role="row">
+                            <td role="cell">
+                                {{ app.application.name }}
+                            </td>
+                            <td role="cell">
+                                {{ app.total_logins }}
+                            </td>
+                            <td role="cell">
+                                <progress value="{{ app.total_logins }}" max="{{ most_used_applications.0.total_logins }}"></progress>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </a>
+        </div>
 
-        <a href="{% url 'passbook_admin:sources' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-middleware"></i> {% trans 'Sources' %}
-                </div>
-            </div>
-            <div class="pf-c-card__body">
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ source_count }}
-                </p>
-            </div>
-        </a>
-
-        <a href="{% url 'passbook_admin:providers' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-plugged"></i> {% trans 'Providers' %}
@@ -54,42 +73,9 @@
                 </p>
                 {% endif %}
             </div>
-        </a>
+        </div>
 
-        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-plugged"></i> {% trans 'Stages' %}
-                </div>
-            </div>
-            <div class="pf-c-card__body">
-                {% if stage_count < 1 %}
-                <p class="aggregate-status">
-                    <i class="pficon-error-circle-o"></i> {{ stage_count }}
-                </p>
-                <p>{% trans 'No Stages configured. No Users will be able to login.' %}"></p>
-                {% else %}
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ stage_count }}
-                </p>
-                {% endif %}
-            </div>
-        </a>
-
-        <a href="{% url 'passbook_admin:stages' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-topology"></i> {% trans 'Flows' %}
-                </div>
-            </div>
-            <div class="pf-c-card__body">
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ flow_count }}
-                </p>
-            </div>
-        </a>
-
-        <a href="{% url 'passbook_admin:policies' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-infrastructure"></i> {% trans 'Policies' %}
@@ -107,22 +93,9 @@
                 </p>
                 {% endif %}
             </div>
-        </a>
+        </div>
 
-        <a href="{% url 'passbook_admin:stage-invitations' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
-            <div class="pf-c-card__header">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-migration"></i> {% trans 'Invitation' %}
-                </div>
-            </div>
-            <div class="pf-c-card__body">
-                <p class="aggregate-status">
-                    <i class="fa fa-check-circle"></i> {{ invitation_count }}
-                </p>
-            </div>
-        </a>
-
-        <a href="{% url 'passbook_admin:users' %}" class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-user"></i> {% trans 'Users' %}
@@ -133,9 +106,9 @@
                     <i class="fa fa-check-circle"></i> {{ user_count }}
                 </p>
             </div>
-        </a>
+        </div>
 
-        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-bundle"></i> {% trans 'Version' %}
@@ -161,7 +134,7 @@
             </div>
         </div>
 
-        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Workers' %}
@@ -189,7 +162,7 @@
             </fetch-fill-slot>
         </div>
 
-        <a class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
+        <a class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
@@ -209,7 +182,7 @@
             </div>
         </a>
 
-        <div class="pf-c-card pf-c-card-aggregate pf-m-hoverable pf-m-compact">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Flows' %}
@@ -262,4 +235,65 @@
         </div>
     </div>
 </div>
+
+<script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>
+<script>
+var ctx = document.getElementById('logins-last-metrics').getContext('2d');
+fetch("{% url 'passbook_api:admin_metrics-list' %}").then(r => r.json()).then(r => {
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            datasets: [
+                {
+                    label: 'Failed Logins',
+                    backgroundColor: "rgba(201, 25, 11, .5)",
+                    spanGaps: true,
+                    data: r.logins_failed_per_1h,
+                },
+                {
+                    label: 'Successful Logins',
+                    backgroundColor: "rgba(189, 229, 184, .5)",
+                    spanGaps: true,
+                    data: r.logins_per_1h,
+                },
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            spanGaps: true,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)",
+                    },
+                    type: 'time',
+                    offset: true,
+                    ticks: {
+                        callback: function (value, index, values) {
+                            const date = new Date();
+                            const delta = (date - values[index].value);
+                            const ago = Math.round(delta / 1000 / 3600);
+                            console.log(ago);
+                            return `${ago} Hours ago`;
+                        },
+                        autoSkip: true,
+                        maxTicksLimit: 8
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        stepSize: 1
+                    },
+                    stacked: true,
+                    gridLines: {
+                        color: "rgba(0, 0, 0, 0)",
+                    }
+                }]
+            }
+        }
+    });
+});
+</script>
+
 {% endblock %}

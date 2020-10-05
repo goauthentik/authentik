@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.views import View
 from structlog import get_logger
 
+from passbook.audit.models import Event, EventAction
 from passbook.core.models import Application
 from passbook.flows.models import in_memory_stage
 from passbook.flows.planner import (
@@ -226,6 +227,11 @@ class OAuthFulfillmentStage(StageView):
                     "consent_required",
                     self.params.grant_type,
                 )
+            Event.new(
+                EventAction.AUTHORIZE_APPLICATION,
+                authorized_application=application,
+                flow=self.executor.plan.flow_pk,
+            ).from_http(self.request)
             return redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
             self.executor.stage_invalid()
