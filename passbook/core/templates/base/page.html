@@ -19,7 +19,7 @@
                     <i class="fas fa-bars" aria-hidden="true"></i>
                 </button>
             </div>
-            <a class="pf-c-page__header-brand-link">
+            <a href="{% url 'passbook_core:overview' %}" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand pb-brand">
                     <img src="{{ config.passbook.branding.logo }}" alt="passbook icon">
                     {% if config.passbook.branding.title_show %}
