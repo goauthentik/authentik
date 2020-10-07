@@ -6475,13 +6475,14 @@ definitions:
           from passbook.
         type: boolean
       basic_auth_password_attribute:
-        title: HTTP-Basic Password
-        description: User Attribute used for the password part of the HTTP-Basic Header.
+        title: HTTP-Basic Password Key
+        description: User/Group Attribute used for the password part of the HTTP-Basic
+          Header.
         type: string
       basic_auth_user_attribute:
-        title: HTTP-Basic Username
-        description: User Attribute used for the user part of the HTTP-Basic Header.
-          If not set, the user's Email address is used.
+        title: HTTP-Basic Username Key
+        description: User/Group Attribute used for the user part of the HTTP-Basic
+          Header. If not set, the user's Email address is used.
         type: string
   Policy:
     type: object
@@ -6974,13 +6975,14 @@ definitions:
           from passbook.
         type: boolean
       basic_auth_password_attribute:
-        title: HTTP-Basic Password
-        description: User Attribute used for the password part of the HTTP-Basic Header.
+        title: HTTP-Basic Password Key
+        description: User/Group Attribute used for the password part of the HTTP-Basic
+          Header.
         type: string
       basic_auth_user_attribute:
-        title: HTTP-Basic Username
-        description: User Attribute used for the user part of the HTTP-Basic Header.
-          If not set, the user's Email address is used.
+        title: HTTP-Basic Username Key
+        description: User/Group Attribute used for the user part of the HTTP-Basic
+          Header. If not set, the user's Email address is used.
         type: string
   SAMLProvider:
     required:

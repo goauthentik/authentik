@@ -75,19 +75,21 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     )
     basic_auth_user_attribute = models.TextField(
         blank=True,
-        verbose_name=_("HTTP-Basic Username"),
+        verbose_name=_("HTTP-Basic Username Key"),
         help_text=_(
             (
-                "User Attribute used for the user part of the HTTP-Basic Header. "
+                "User/Group Attribute used for the user part of the HTTP-Basic Header. "
                 "If not set, the user's Email address is used."
             )
         ),
     )
     basic_auth_password_attribute = models.TextField(
         blank=True,
-        verbose_name=_("HTTP-Basic Password"),
+        verbose_name=_("HTTP-Basic Password Key"),
         help_text=_(
-            ("User Attribute used for the password part of the HTTP-Basic Header.")
+            (
+                "User/Group Attribute used for the password part of the HTTP-Basic Header."
+            )
         ),
     )
 
