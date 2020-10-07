@@ -890,63 +890,30 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 
 // addHeadersForProxying adds the appropriate headers the request / response for proxying
 func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Request, session *sessionsapi.SessionState) {
-	if p.PassUserHeaders {
-		if p.PreferEmailToUser && session.Email != "" {
-			req.Header["X-Forwarded-User"] = []string{session.Email}
-			req.Header.Del("X-Forwarded-Email")
-		} else {
-			req.Header["X-Forwarded-User"] = []string{session.User}
-			if session.Email != "" {
-				req.Header["X-Forwarded-Email"] = []string{session.Email}
-			} else {
-				req.Header.Del("X-Forwarded-Email")
-			}
-		}
-
-		if session.PreferredUsername != "" {
-			req.Header["X-Forwarded-Preferred-Username"] = []string{session.PreferredUsername}
-		} else {
-			req.Header.Del("X-Forwarded-Preferred-Username")
-		}
+	req.Header["X-Forwarded-User"] = []string{session.User}
+	if session.Email != "" {
+		req.Header["X-Forwarded-Email"] = []string{session.Email}
 	}
 
-	if p.SetXAuthRequest {
-		rw.Header().Set("X-Auth-Request-User", session.User)
-		if session.Email != "" {
-			rw.Header().Set("X-Auth-Request-Email", session.Email)
-		} else {
-			rw.Header().Del("X-Auth-Request-Email")
-		}
-		if session.PreferredUsername != "" {
-			rw.Header().Set("X-Auth-Request-Preferred-Username", session.PreferredUsername)
-		} else {
-			rw.Header().Del("X-Auth-Request-Preferred-Username")
-		}
-
-		if p.PassAccessToken {
-			if session.AccessToken != "" {
-				rw.Header().Set("X-Auth-Request-Access-Token", session.AccessToken)
-			} else {
-				rw.Header().Del("X-Auth-Request-Access-Token")
-			}
-		}
+	if session.PreferredUsername != "" {
+		req.Header["X-Forwarded-Preferred-Username"] = []string{session.PreferredUsername}
+		req.Header["X-Auth-Username"] = []string{session.PreferredUsername}
+	} else {
+		req.Header.Del("X-Forwarded-Preferred-Username")
+		req.Header.Del("X-Auth-Username")
 	}
 
-	if p.PassAccessToken {
-		if session.AccessToken != "" {
-			req.Header["X-Forwarded-Access-Token"] = []string{session.AccessToken}
-		} else {
-			req.Header.Del("X-Forwarded-Access-Token")
-		}
+	if session.Email != "" {
+		rw.Header().Set("X-Auth-Request-Email", session.Email)
+	} else {
+		rw.Header().Del("X-Auth-Request-Email")
+	}
+	if session.PreferredUsername != "" {
+		rw.Header().Set("X-Auth-Request-Preferred-Username", session.PreferredUsername)
+	} else {
+		rw.Header().Del("X-Auth-Request-Preferred-Username")
 	}
 
-	if p.PassAuthorization {
-		if session.IDToken != "" {
-			req.Header["Authorization"] = []string{fmt.Sprintf("Bearer %s", session.IDToken)}
-		} else {
-			req.Header.Del("Authorization")
-		}
-	}
 	if p.SetBasicAuth {
 		claims := Claims{}
 		err := claims.FromIDToken(session.IDToken)
@@ -967,13 +934,6 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 		}
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
-	}
-	if p.SetAuthorization {
-		if session.IDToken != "" {
-			rw.Header().Set("Authorization", fmt.Sprintf("Bearer %s", session.IDToken))
-		} else {
-			rw.Header().Del("Authorization")
-		}
 	}
 
 	if session.Email == "" {

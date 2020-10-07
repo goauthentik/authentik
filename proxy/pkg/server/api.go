@@ -49,7 +49,6 @@ func getCommonOptions() *options.Options {
 	commonOpts.ProxyPrefix = "/pbprox"
 	commonOpts.SkipProviderButton = true
 	commonOpts.Logging.SilencePing = true
-	commonOpts.SetXAuthRequest = true
 	commonOpts.SetAuthorization = false
 	commonOpts.Scope = "openid email profile pb_proxy"
 	return commonOpts
