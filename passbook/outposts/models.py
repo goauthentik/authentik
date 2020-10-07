@@ -119,7 +119,7 @@ class Outpost(models.Model):
         key = self.state_cache_prefix("version")
         value = cache.get(key, None)
         if not value:
-            return {"version": "", "outdated": False, "should": OUR_VERSION}
+            return {"version": None, "outdated": False, "should": OUR_VERSION}
         try:
             outpost_version = parse(value)
             return {
