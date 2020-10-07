@@ -3,10 +3,10 @@ from django.urls import path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import routers
+from rest_framework.permissions import AllowAny
 
 from passbook.admin.api.overview import AdministrationOverviewViewSet
 from passbook.admin.api.overview_metrics import AdministrationMetricsViewSet
-from passbook.api.permissions import CustomObjectPermissions
 from passbook.api.v2.messages import MessagesViewSet
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
@@ -127,7 +127,7 @@ info = openapi.Info(
 SchemaView = get_schema_view(
     info,
     public=True,
-    permission_classes=(CustomObjectPermissions,),
+    permission_classes=(AllowAny,),
 )
 
 urlpatterns = [
