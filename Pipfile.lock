@@ -82,10 +82,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:12b2381ee82ff32d5135c0887eadec18d38c8ff7fac06405ba6a8584f2159c3c",
-                "sha256:368f85992b0c7fda95b216776d475791c59e4c4415325fda683a02c5c110cf35"
+                "sha256:570609095c992732cf6158c3dd0a38619c77818fa700d6779b27277b34f98959",
+                "sha256:90e76683807896a28bbefd6e9bc3a2dc44ecd88fc6f6737fa0e3b20d5b7223ea"
             ],
-            "version": "==1.18.12"
+            "version": "==1.18.13"
         },
         "cachetools": {
             "hashes": [
@@ -310,11 +310,11 @@
         },
         "django-otp": {
             "hashes": [
-                "sha256:0c9edbb3f4abc9ac6e43daf0a9e0e293e99ad917641cf8d7dbc49d613bcb5cd4",
-                "sha256:ace831f3a0f2c2267e4f7219c78deeb3b41c2dc8ae44b03daebb4fb85dabeb43"
+                "sha256:2fb1c8dbd7e7ae76a65b63d89d3d8c3e1105a48bc29830b81c6e417a89380658",
+                "sha256:fef1f2de9a52bc37e16211b98b4323e5b34fa24739116fbe3d1ff018c17ebea8"
             ],
             "index": "pypi",
-            "version": "==1.0.0"
+            "version": "==1.0.1"
         },
         "django-prometheus": {
             "hashes": [
