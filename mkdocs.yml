@@ -8,23 +8,24 @@ nav:
   - Installation:
     - docker-compose: installation/docker-compose.md
     - Kubernetes: installation/kubernetes.md
+    - Reverse Proxy: installation/reverse-proxy.md
   - Flows:
       Overview: flow/flows.md
       Examples: flow/examples/examples.md
   - Stages:
-      - Captcha Stage: flow/stages/captcha/index.md
-      - Dummy Stage: flow/stages/dummy/index.md
-      - Email Stage: flow/stages/email/index.md
-      - Identification Stage: flow/stages/identification/index.md
-      - Invitation Stage: flow/stages/invitation/index.md
-      - OTP Stage: flow/stages/otp/index.md
-      - Password Stage: flow/stages/password/index.md
-      - Prompt Stage: flow/stages/prompt/index.md
-      - Prompt Stage Validation: flow/stages/prompt/validation.md
-      - User Delete Stage: flow/stages/user_delete.md
-      - User Login Stage: flow/stages/user_login.md
-      - User Logout Stage: flow/stages/user_logout.md
-      - User Write Stage: flow/stages/user_write.md
+    - Captcha Stage: flow/stages/captcha/index.md
+    - Dummy Stage: flow/stages/dummy/index.md
+    - Email Stage: flow/stages/email/index.md
+    - Identification Stage: flow/stages/identification/index.md
+    - Invitation Stage: flow/stages/invitation/index.md
+    - OTP Stage: flow/stages/otp/index.md
+    - Password Stage: flow/stages/password/index.md
+    - Prompt Stage: flow/stages/prompt/index.md
+    - Prompt Stage Validation: flow/stages/prompt/validation.md
+    - User Delete Stage: flow/stages/user_delete.md
+    - User Login Stage: flow/stages/user_login.md
+    - User Logout Stage: flow/stages/user_logout.md
+    - User Write Stage: flow/stages/user_write.md
   - Sources: sources.md
   - Providers:
     - OAuth2: providers/oauth2.md

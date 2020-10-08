@@ -5,7 +5,7 @@ To deploy an outpost with docker-compose, use  this snippet in your docker-compo
 You can also run the outpost in a separate docker-compose project, you just have to ensure that the outpost container can reach your application container.
 
 ```yaml
-version: 3.5
+version: '3.5'
 
 services:
   passbook_proxy:
