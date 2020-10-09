@@ -219,7 +219,8 @@ stages:
             inputs:
               script: |
                 cd passbook/static/static
-                yarn
+                npm i
+                npm run build
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
