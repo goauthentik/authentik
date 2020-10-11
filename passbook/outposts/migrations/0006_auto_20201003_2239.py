@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
             name="deployment_type",
             field=models.TextField(
                 choices=[
-                    ("kubernetes", "Kubernetes"),
                     ("docker", "Docker"),
                     ("custom", "Custom"),
                 ],
