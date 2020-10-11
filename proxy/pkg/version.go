@@ -1,3 +1,3 @@
 package pkg
 
-const VERSION = "0.10.9-stable"
+const VERSION = "0.11.0-stable"
