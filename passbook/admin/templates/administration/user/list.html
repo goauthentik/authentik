@@ -54,7 +54,11 @@
                     </td>
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:user-update' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:user-delete' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        {% if user.is_active %}
+                        <a class="pf-c-button pf-m-warning" href="{% url 'passbook_admin:user-disable' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Disable' %}</a>
+                        {% else %}
+                        <a class="pf-c-button pf-m-primary" href="{% url 'passbook_admin:user-enable' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Enable' %}</a>
+                        {% endif %}
                         <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
                         <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
                     </td>

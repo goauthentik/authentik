@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
@@ -96,6 +97,53 @@ class UserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageV
     template_name = "generic/delete.html"
     success_url = reverse_lazy("passbook_admin:users")
     success_message = _("Successfully deleted User")
+
+
+class UserDisableView(
+    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DeleteMessageView
+):
+    """Disable user"""
+
+    object: User
+
+    model = User
+    permission_required = "passbook_core.update_user"
+
+    # By default the object's name is user which is used by other checks
+    context_object_name = "object"
+    template_name = "administration/user/disable.html"
+    success_url = reverse_lazy("passbook_admin:users")
+    success_message = _("Successfully disabled User")
+
+    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.object: User = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+
+class UserEnableView(
+    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DetailView
+):
+    """Enable user"""
+
+    object: User
+
+    model = User
+    permission_required = "passbook_core.update_user"
+
+    # By default the object's name is user which is used by other checks
+    context_object_name = "object"
+    success_url = reverse_lazy("passbook_admin:users")
+    success_message = _("Successfully enabled User")
+
+    def get(self, request: HttpRequest, *args, **kwargs):
+        self.object: User = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = True
+        self.object.save()
+        return HttpResponseRedirect(success_url)
 
 
 class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
