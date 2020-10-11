@@ -21,7 +21,7 @@
             </div>
             <a href="{% url 'passbook_core:overview' %}" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand pb-brand">
-                    <img src="{{ config.passbook.branding.logo }}" alt="passbook icon">
+                    <img src="{{ config.passbook.branding.logo }}" style="width: 100px;" alt="passbook icon">
                     {% if config.passbook.branding.title_show %}
                     <small><small>{{ config.passbook.branding.title }}</small></small>
                     {% endif %}
