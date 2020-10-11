@@ -75,6 +75,8 @@ class OAuth2ProviderForm(forms.ModelForm):
 class ScopeMappingForm(forms.ModelForm):
     """Form to edit ScopeMappings"""
 
+    template_name = "providers/oauth2/property_mapping_form.html"
+
     def clean_expression(self):
         """Test Syntax"""
         expression = self.cleaned_data.get("expression")
