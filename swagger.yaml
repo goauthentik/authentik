@@ -122,7 +122,7 @@ paths:
   /core/applications/:
     get:
       operationId: core_applications_list
-      description: Application Viewset
+      description: Custom list method that checks Policy based access instead of guardian
       parameters:
         - name: ordering
           in: query
@@ -186,7 +186,7 @@ paths:
       tags:
         - core
     parameters: []
-  /core/applications/{pbm_uuid}/:
+  /core/applications/{slug}/:
     get:
       operationId: core_applications_read
       description: Application Viewset
@@ -240,12 +240,13 @@ paths:
       tags:
         - core
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this Application.
+        description: Internal application name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/groups/:
     get:
       operationId: core_groups_list

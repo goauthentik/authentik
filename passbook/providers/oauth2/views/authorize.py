@@ -7,7 +7,6 @@ from uuid import uuid4
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
-from django.views import View
 from structlog import get_logger
 
 from passbook.audit.models import Event, EventAction
@@ -24,7 +23,7 @@ from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.time import timedelta_from_string
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.lib.views import bad_request_message
-from passbook.policies.mixins import PolicyAccessMixin
+from passbook.policies.views import PolicyAccessView
 from passbook.providers.oauth2.constants import (
     PROMPT_CONSNET,
     PROMPT_NONE,
@@ -329,28 +328,17 @@ class OAuthFulfillmentStage(StageView):
         return urlunsplit(uri)
 
 
-class AuthorizationFlowInitView(PolicyAccessMixin, View):
+class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
+
+    def resolve_provider_application(self):
+        client_id = self.request.GET.get("client_id")
+        self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
+        self.application = self.provider.application
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check access to application, start FlowPLanner, return to flow executor shell"""
-        client_id = request.GET.get("client_id")
-        # TODO: This whole block should be moved to a base class
-        provider = get_object_or_404(OAuth2Provider, client_id=client_id)
-        try:
-            application = self.provider_to_application(provider)
-        except Application.DoesNotExist:
-            return self.handle_no_permission_authenticated()
-        # Check if user is unauthenticated, so we pass the application
-        # for the identification stage
-        if not request.user.is_authenticated:
-            return self.handle_no_permission(application)
-        # Check permissions
-        result = self.user_has_access(application)
-        if not result.passing:
-            return self.handle_no_permission_authenticated(result)
-        # TODO: End block
         # Extract params so we can save them in the plan context
         try:
             params = OAuthAuthorizationParams.from_request(request)
@@ -358,14 +346,14 @@ class AuthorizationFlowInitView(PolicyAccessMixin, View):
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         # Regardless, we start the planner and return to it
-        planner = FlowPlanner(provider.authorization_flow)
+        planner = FlowPlanner(self.provider.authorization_flow)
         # planner.use_cache = False
         planner.allow_empty_flows = True
         plan: FlowPlan = planner.plan(
             self.request,
             {
                 PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_APPLICATION: application,
+                PLAN_CONTEXT_APPLICATION: self.application,
                 # OAuth2 related params
                 PLAN_CONTEXT_PARAMS: params,
                 PLAN_CONTEXT_SCOPE_DESCRIPTIONS: UserInfoView().get_scope_descriptions(
@@ -390,5 +378,5 @@ class AuthorizationFlowInitView(PolicyAccessMixin, View):
         return redirect_with_qs(
             "passbook_flows:flow-executor-shell",
             self.request.GET,
-            flow_slug=provider.authorization_flow.slug,
+            flow_slug=self.provider.authorization_flow.slug,
         )
