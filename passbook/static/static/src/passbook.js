@@ -1,4 +1,5 @@
 import './FetchFillSlot.js';
+import './FlowShellCard.js';
 
 // Button Dropdowns
 document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
