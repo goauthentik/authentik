@@ -16,6 +16,10 @@ From https://en.wikipedia.org/wiki/VCenter
 
     This requires VMware vCenter 7.0.0 or newer.
 
+!!! note
+
+    It seems that the vCenter still needs to be joined to the Active Directory Domain, otherwise group membership does not work correctly. We're working on a fix for this, for the meantime your vCenter should be part of your Domain.
+
 ## Preparation
 
 The following placeholders will be used:
