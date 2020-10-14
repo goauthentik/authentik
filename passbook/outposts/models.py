@@ -36,6 +36,9 @@ class OutpostConfig:
         "error_reporting.environment", "customer"
     )
 
+    kubernetes_replicas: int = field(default=1)
+    kubernetes_namespace: str = field(default="default")
+
 
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
@@ -58,7 +61,7 @@ class OutpostType(models.TextChoices):
 class OutpostDeploymentType(models.TextChoices):
     """Deployment types that are managed through passbook"""
 
-    # KUBERNETES = "kubernetes"
+    KUBERNETES = "kubernetes"
     DOCKER = "docker"
     CUSTOM = "custom"
 
