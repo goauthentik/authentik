@@ -55,7 +55,7 @@ class OutpostConsumer(AuthJsonConsumer):
         self.outpost = outpost.first()
         OutpostState(
             uid=self.channel_name, last_seen=datetime.now(), _outpost=self.outpost
-        ).save(timeout=OUTPOST_HELLO_INTERVAL * 2)
+        ).save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
         LOGGER.debug("added channel to cache", channel_name=self.channel_name)
 
     # pylint: disable=unused-argument
@@ -72,9 +72,9 @@ class OutpostConsumer(AuthJsonConsumer):
         )
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.get("version", None)
-            state.save(timeout=OUTPOST_HELLO_INTERVAL * 2)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
+        state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
 
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
         self.send_json(asdict(response))

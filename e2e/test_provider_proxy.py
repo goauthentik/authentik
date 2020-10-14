@@ -79,8 +79,10 @@ class TestProviderProxy(SeleniumTestCase):
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
         while healthcheck_retries < 50:
-            if outpost.deployment_health:
-                break
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen:
+                    break
             healthcheck_retries += 1
             sleep(0.5)
 
@@ -152,10 +154,13 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
         while healthcheck_retries < 50:
-            if outpost.deployment_health:
-                break
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen and state.version:
+                    break
             healthcheck_retries += 1
             sleep(0.5)
 
-        self.assertIsNotNone(outpost.deployment_health)
-        self.assertEqual(outpost.deployment_version.get("version"), __version__)
+        state = outpost.state
+        self.assertTrue(len(state), 1)
+        self.assertEqual(state[0].version, __version__)
