@@ -18,6 +18,7 @@ class AuthJsonConsumer(JsonWebsocketConsumer):
         if b"authorization" not in headers:
             LOGGER.warning("WS Request without authorization header")
             self.close()
+            return False
 
         token = headers[b"authorization"]
         try:

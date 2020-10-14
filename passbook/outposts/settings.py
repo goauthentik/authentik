@@ -2,9 +2,9 @@
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    "outposts_k8s": {
+    "outposts_controller": {
         "task": "passbook.outposts.tasks.outpost_controller",
-        "schedule": crontab(minute="*/5"),  # Run every 5 minutes
+        "schedule": crontab(minute="*/5"),
         "options": {"queue": "passbook_scheduled"},
-    }
+    },
 }

@@ -23,8 +23,10 @@ def ensure_user_and_token(sender, instance: Model, **_):
 def post_save_update(sender, instance: Model, **_):
     """If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
     we send a message down the relevant OutpostModels WS connection to trigger an update"""
-    if isinstance(instance, OutpostModel):
-        LOGGER.debug("triggering outpost update from outpostmodel", instance=instance)
+    if isinstance(instance, (OutpostModel, Outpost)):
+        LOGGER.debug(
+            "triggering outpost update from outpostmodel/outpost", instance=instance
+        )
         outpost_send_update.delay(class_to_path(instance.__class__), instance.pk)
         return
 

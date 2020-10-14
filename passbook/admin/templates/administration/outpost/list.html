@@ -48,28 +48,41 @@
                             {{ outpost.providers.all.select_subclasses|join:", " }}
                         </span>
                     </td>
-                    <td role="cell">
-                        {% with health=outpost.deployment_health %}
-                        {% if health %}
-                            <i class="fas fa-check pf-m-success"></i> {{ health|naturaltime }}
-                        {% else %}
-                            <i class="fas fa-times pf-m-danger"></i> Unhealthy
-                        {% endif %}
-                        {% endwith %}
-                    </td>
-                    <td role="cell">
-                        <span>
-                            {% with ver=outpost.deployment_version %}
-                            {% if not ver.version %}
+                    {% with states=outpost.state %}
+                    {% if states|length > 1 %}
+                        <td role="cell">
+                            {% for state in states %}
+                            <div>
+                                {% if state.last_seen %}
+                                <i class="fas fa-check pf-m-success"></i> {{ state.last_seen|naturaltime }}
+                                {% else %}
+                                <i class="fas fa-times pf-m-danger"></i> {% trans 'Unhealthy' %}
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </td>
+                        <td role="cell">
+                            {% for state in states %}
+                                <div>
+                                    {% if not state.version %}
+                                    <i class="fas fa-question-circle"></i>
+                                    {% elif state.version_outdated %}
+                                    <i class="fas fa-times pf-m-danger"></i> {% blocktrans with is=state.version should=state.version_should %}{{ is }}, should be {{ should }}{% endblocktrans %}
+                                    {% else %}
+                                    <i class="fas fa-check pf-m-success"></i> {{ state.version }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td role="cell">
                             <i class="fas fa-question-circle"></i>
-                            {% elif ver.outdated %}
-                            <i class="fas fa-times pf-m-danger"></i> {% blocktrans with is=ver.version should=ver.should %}{{ is }}, should be {{ should }}{% endblocktrans %}
-                            {% else %}
-                            <i class="fas fa-check pf-m-success"></i> {{ ver.version }}
-                            {% endif %}
-                            {% endwith %}
-                        </span>
-                    </td>
+                        </td>
+                        <td role="cell">
+                            <i class="fas fa-question-circle"></i>
+                        </td>
+                    {% endif %}
+                    {% endwith %}
                     <td>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
                         <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>

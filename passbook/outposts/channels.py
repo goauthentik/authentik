@@ -1,17 +1,16 @@
 """Outpost websocket handler"""
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from enum import IntEnum
-from time import time
 from typing import Any, Dict
 
 from dacite import from_dict
 from dacite.data import Data
-from django.core.cache import cache
 from guardian.shortcuts import get_objects_for_user
 from structlog import get_logger
 
 from passbook.core.channels import AuthJsonConsumer
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
 LOGGER = get_logger()
 
@@ -54,24 +53,26 @@ class OutpostConsumer(AuthJsonConsumer):
             return
         self.accept()
         self.outpost = outpost.first()
-        self.outpost.channels.append(self.channel_name)
-        LOGGER.debug("added channel to outpost", channel_name=self.channel_name)
-        self.outpost.save()
+        OutpostState(
+            uid=self.channel_name, last_seen=datetime.now(), _outpost=self.outpost
+        ).save(timeout=OUTPOST_HELLO_INTERVAL * 2)
+        LOGGER.debug("added channel to cache", channel_name=self.channel_name)
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
-        self.outpost.channels.remove(self.channel_name)
-        self.outpost.save()
-        LOGGER.debug("removed channel from outpost", channel_name=self.channel_name)
+        OutpostState.for_channel(self.outpost, self.channel_name).delete()
+        LOGGER.debug("removed channel from cache", channel_name=self.channel_name)
 
     def receive_json(self, content: Data):
         msg = from_dict(WebsocketMessage, content)
+        state = OutpostState(
+            uid=self.channel_name,
+            last_seen=datetime.now(),
+            _outpost=self.outpost,
+        )
         if msg.instruction == WebsocketMessageInstruction.HELLO:
-            cache.set(self.outpost.state_cache_prefix("health"), time(), timeout=60)
-            if "version" in msg.args:
-                cache.set(
-                    self.outpost.state_cache_prefix("version"), msg.args["version"]
-                )
+            state.version = msg.args.get("version", None)
+            state.save(timeout=OUTPOST_HELLO_INTERVAL * 2)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
 
@@ -80,7 +81,7 @@ class OutpostConsumer(AuthJsonConsumer):
 
     # pylint: disable=unused-argument
     def event_update(self, event):
-        """Event handler which is called by post_save signals"""
+        """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
             asdict(
                 WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE)

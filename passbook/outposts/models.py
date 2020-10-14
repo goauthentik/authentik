@@ -1,20 +1,18 @@
 """Outpost models"""
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Any, Dict, Iterable, Optional
+from typing import Iterable, List, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
-from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
 from django.http import HttpRequest
-from django.utils import version
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
-from packaging.version import InvalidVersion, parse
+from packaging.version import LegacyVersion, Version, parse
 
 from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
@@ -22,6 +20,7 @@ from passbook.lib.config import CONFIG
 from passbook.lib.utils.template import render_to_string
 
 OUR_VERSION = parse(__version__)
+OUTPOST_HELLO_INTERVAL = 10
 
 
 @dataclass
@@ -87,8 +86,6 @@ class Outpost(models.Model):
 
     providers = models.ManyToManyField(Provider)
 
-    channels = ArrayField(models.TextField(), default=list)
-
     @property
     def config(self) -> OutpostConfig:
         """Load config as OutpostConfig object"""
@@ -99,36 +96,15 @@ class Outpost(models.Model):
         """Dump config into json"""
         self._config = asdict(value)
 
-    def state_cache_prefix(self, suffix: str) -> str:
+    @property
+    def state_cache_prefix(self) -> str:
         """Key by which the outposts status is saved"""
-        return f"outpost_{self.uuid.hex}_state_{suffix}"
+        return f"outpost_{self.uuid.hex}_state"
 
     @property
-    def deployment_health(self) -> Optional[datetime]:
+    def state(self) -> List["OutpostState"]:
         """Get outpost's health status"""
-        key = self.state_cache_prefix("health")
-        value = cache.get(key, None)
-        if value:
-            return datetime.fromtimestamp(value)
-        return None
-
-    @property
-    def deployment_version(self) -> Dict[str, Any]:
-        """Get deployed outposts version, and if the version is behind ours.
-        Returns a dict with keys version and outdated."""
-        key = self.state_cache_prefix("version")
-        value = cache.get(key, None)
-        if not value:
-            return {"version": None, "outdated": False, "should": OUR_VERSION}
-        try:
-            outpost_version = parse(value)
-            return {
-                "version": value,
-                "outdated": outpost_version < OUR_VERSION,
-                "should": OUR_VERSION,
-            }
-        except InvalidVersion:
-            return {"version": version, "outdated": False, "should": OUR_VERSION}
+        return OutpostState.for_outpost(self)
 
     @property
     def user(self) -> User:
@@ -189,3 +165,53 @@ class Outpost(models.Model):
 
     def __str__(self) -> str:
         return f"Outpost {self.name}"
+
+
+@dataclass
+class OutpostState:
+    """Outpost instance state, last_seen and version"""
+
+    uid: str
+    last_seen: Optional[datetime] = field(default=None)
+    version: Optional[str] = field(default=None)
+    version_should: Union[Version, LegacyVersion] = field(default=OUR_VERSION)
+
+    _outpost: Optional[Outpost] = field(default=None)
+
+    @property
+    def version_outdated(self) -> bool:
+        """Check if outpost version matches our version"""
+        if not self.version:
+            return False
+        return parse(self.version) < OUR_VERSION
+
+    @staticmethod
+    def for_outpost(outpost: Outpost) -> List["OutpostState"]:
+        """Get all states for an outpost"""
+        keys = cache.keys(f"{outpost.state_cache_prefix}_*")
+        states = []
+        for key in keys:
+            channel = key.replace(f"{outpost.state_cache_prefix}_", "")
+            states.append(OutpostState.for_channel(outpost, channel))
+        return states
+
+    @staticmethod
+    def for_channel(outpost: Outpost, channel: str) -> "OutpostState":
+        """Get state for a single channel"""
+        key = f"{outpost.state_cache_prefix}_{channel}"
+        data = cache.get(key, {"uid": channel})
+        state = from_dict(OutpostState, data)
+        state.uid = channel
+        # pylint: disable=protected-access
+        state._outpost = outpost
+        return state
+
+    def save(self, timeout=OUTPOST_HELLO_INTERVAL):
+        """Save current state to cache"""
+        full_key = f"{self._outpost.state_cache_prefix}_{self.uid}"
+        return cache.set(full_key, asdict(self), timeout=timeout)
+
+    def delete(self):
+        """Manually delete from cache, used on channel disconnect"""
+        full_key = f"{self._outpost.state_cache_prefix}_{self.uid}"
+        cache.delete(full_key)
