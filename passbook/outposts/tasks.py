@@ -3,6 +3,7 @@ from typing import Any
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.db.models.base import Model
 from structlog import get_logger
 
 from passbook.lib.utils.reflection import path_to_class
@@ -42,11 +43,54 @@ def outpost_controller_single(outpost_pk: str, deployment_type: str, outpost_typ
 
 
 @CELERY_APP.task()
-def outpost_send_update(model_class: str, model_pk: Any):
+def outpost_post_save(model_class: str, model_pk: Any):
+    """If an Outpost is saved, Ensure that token is created/updated
+
+    If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
+    we send a message down the relevant OutpostModels WS connection to trigger an update"""
+    model: Model = path_to_class(model_class)
+    try:
+        instance = model.objects.get(pk=model_pk)
+    except model.DoesNotExist:
+        LOGGER.warning("Model does not exist", model=model, pk=model_pk)
+        return
+
+    if isinstance(instance, Outpost):
+        LOGGER.debug("Ensuring token for outpost", instance=instance)
+        _ = instance.token
+        return
+
+    if isinstance(instance, (OutpostModel, Outpost)):
+        LOGGER.debug(
+            "triggering outpost update from outpostmodel/outpost", instance=instance
+        )
+        outpost_send_update(instance)
+        return
+
+    for field in instance._meta.get_fields():
+        # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
+        # are used, and if it has a value
+        if not hasattr(field, "related_model"):
+            continue
+        if not field.related_model:
+            continue
+        if not issubclass(field.related_model, OutpostModel):
+            continue
+
+        field_name = f"{field.name}_set"
+        if not hasattr(instance, field_name):
+            continue
+
+        LOGGER.debug("triggering outpost update from from field", field=field.name)
+        # Because the Outpost Model has an M2M to Provider,
+        # we have to iterate over the entire QS
+        for reverse in getattr(instance, field_name).all():
+            outpost_send_update(reverse)
+
+
+def outpost_send_update(model_instace: Model):
     """Send outpost update to all registered outposts, irregardless to which passbook
     instance they are connected"""
-    model = path_to_class(model_class)
-    model_instace = model.objects.get(pk=model_pk)
     channel_layer = get_channel_layer()
     if isinstance(model_instace, OutpostModel):
         for outpost in model_instace.outpost_set.all():
