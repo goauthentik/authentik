@@ -170,8 +170,16 @@ stages:
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
+            displayName: Install K3d and prepare
+            input:
+              script: |
+                wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+                k3d cluster create
+                k3d kubeconfig write -o ~/.kube/config --overwrite
+          - task: CmdLine@2
             inputs:
               script: |
+                export PB_TEST_K8S=true
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -204,8 +212,16 @@ stages:
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
+            displayName: Install K3d and prepare
+            input:
+              script: |
+                wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+                k3d cluster create
+                k3d kubeconfig write -o ~/.kube/config --overwrite
+          - task: CmdLine@2
             inputs:
               script: |
+                export PB_TEST_K8S=true
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: DockerCompose@0
