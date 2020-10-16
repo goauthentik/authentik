@@ -33,7 +33,7 @@ class TestReputationPolicy(TestCase):
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_IP_PREFIX + self.test_ip), -1)
         # Save cache and check db values
-        save_ip_reputation.delay()
+        save_ip_reputation.delay().get()
         self.assertEqual(IPReputation.objects.get(ip=self.test_ip).score, -1)
 
     def test_user_reputation(self):
@@ -43,7 +43,7 @@ class TestReputationPolicy(TestCase):
         # Test value in cache
         self.assertEqual(cache.get(CACHE_KEY_USER_PREFIX + self.test_username), -1)
         # Save cache and check db values
-        save_user_reputation.delay()
+        save_user_reputation.delay().get()
         self.assertEqual(UserReputation.objects.get(user=self.user).score, -1)
 
     def test_policy(self):

@@ -18,7 +18,7 @@ LOGGER = get_logger()
 def save_ip_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []
-    for key, score in cache.get_many(CACHE_KEY_IP_PREFIX + "*").items():
+    for key, score in cache.get_many(cache.keys(CACHE_KEY_IP_PREFIX + "*")).items():
         remote_ip = key.replace(CACHE_KEY_IP_PREFIX, "")
         rep, _ = IPReputation.objects.get_or_create(ip=remote_ip)
         rep.score = score
@@ -33,7 +33,7 @@ def save_ip_reputation(self: MonitoredTask):
 def save_user_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
     objects_to_update = []
-    for key, score in cache.get_many(CACHE_KEY_USER_PREFIX + "*").items():
+    for key, score in cache.get_many(cache.keys(CACHE_KEY_USER_PREFIX + "*")).items():
         username = key.replace(CACHE_KEY_USER_PREFIX, "")
         users = User.objects.filter(username=username)
         if not users.exists():

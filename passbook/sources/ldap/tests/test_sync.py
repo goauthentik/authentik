@@ -48,4 +48,4 @@ class LDAPSyncTests(TestCase):
     @patch("passbook.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
     def test_tasks(self):
         """Test Scheduled tasks"""
-        ldap_sync_all.delay()
+        ldap_sync_all.delay().get()

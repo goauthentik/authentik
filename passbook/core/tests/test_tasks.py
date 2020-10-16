@@ -14,5 +14,5 @@ class TestTasks(TestCase):
         """Test Token cleanup task"""
         Token.objects.create(expires=now(), user=get_anonymous_user())
         self.assertEqual(Token.objects.all().count(), 1)
-        clean_expired_models.delay()
+        clean_expired_models.delay().get()
         self.assertEqual(Token.objects.all().count(), 0)
