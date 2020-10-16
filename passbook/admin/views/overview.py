@@ -5,9 +5,9 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Count
 from django.db.models.fields.json import KeyTextTransform
-from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
 from packaging.version import LegacyVersion, Version, parse
+from structlog import get_logger
 
 from passbook import __version__
 from passbook.admin.mixins import AdminRequiredMixin
@@ -15,6 +15,8 @@ from passbook.admin.tasks import VERSION_CACHE_KEY, update_latest_version
 from passbook.audit.models import Event, EventAction
 from passbook.core.models import Provider, User
 from passbook.policies.models import Policy
+
+LOGGER = get_logger()
 
 
 class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
@@ -24,9 +26,14 @@ class AdministrationOverviewView(AdminRequiredMixin, TemplateView):
 
     def post(self, *args, **kwargs):
         """Handle post (clear cache from modal)"""
-        if "clear" in self.request.POST:
-            cache.clear()
-            return redirect(reverse("passbook_flows:default-authentication"))
+        if "clear_policies" in self.request.POST:
+            keys = cache.keys("policy_*")
+            cache.delete_many(keys)
+            LOGGER.debug("Cleared Policy cache", keys=len(keys))
+        if "clear_flows" in self.request.POST:
+            keys = cache.keys("flow_*")
+            cache.delete_many(keys)
+            LOGGER.debug("Cleared flow cache", keys=len(keys))
         return self.get(*args, **kwargs)
 
     def get_latest_version(self) -> Union[LegacyVersion, Version]:

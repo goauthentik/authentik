@@ -11,7 +11,7 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 5;">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Logins over the last 24 hours' %}
@@ -56,19 +56,22 @@
         </div>
 
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-plugged"></i> {% trans 'Providers' %}
                 </div>
+                <a href="{% url 'passbook_admin:providers' %}">
+                    <i class="fa fa-external-link-alt"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
                 {% if providers_without_application.exists %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ provider_count }}
                 </p>
                 <p>{% trans 'Warning: At least one Provider has no application assigned.' %}</p>
                 {% else %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ provider_count }}
                 </p>
                 {% endif %}
@@ -76,19 +79,22 @@
         </div>
 
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-infrastructure"></i> {% trans 'Policies' %}
                 </div>
+                <a href="{% url 'passbook_admin:policies' %}">
+                    <i class="fa fa-external-link-alt"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
                 {% if policies_without_binding %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ policy_count }}
                 </p>
                 <p>{% trans 'Policies without binding exist.' %}</p>
                 {% else %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ policy_count }}
                 </p>
                 {% endif %}
@@ -96,26 +102,32 @@
         </div>
 
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-user"></i> {% trans 'Users' %}
                 </div>
+                <a href="{% url 'passbook_admin:users' %}">
+                    <i class="fa fa-external-link-alt"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ user_count }}
                 </p>
             </div>
         </div>
 
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-bundle"></i> {% trans 'Version' %}
                 </div>
+                <a href="https://github.com/BeryJu/passbook/releases" target="_blank">
+                    <i class="fa fa-external-link-alt"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     {% if version >= version_latest %}
                     <i class="fa fa-check-circle"></i> {{ version }}
                     {% else %}
@@ -142,13 +154,13 @@
             </div>
             <fetch-fill-slot class="pf-c-card__body" url="{% url 'passbook_api:admin_overview-list' %}" key="worker_count">
                 <div slot="value < 1">
-                    <p class="aggregate-status">
+                    <p class="pb-aggregate-card">
                         <i class="fa fa-exclamation-triangle"></i> <span data-value></span>
                     </p>
                     <p>{% trans 'No workers connected.' %}</p>
                 </div>
                 <div slot="value >= 1">
-                    <p class="aggregate-status">
+                    <p class="pb-aggregate-card">
                         <i class="fa fa-check-circle"></i> <span data-value></span>
                     </p>
                 </div>
@@ -162,40 +174,46 @@
             </fetch-fill-slot>
         </div>
 
-        <a class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-hoverable pf-m-compact" data-target="modal" data-modal="clearCacheModalRoot">
-            <div class="pf-c-card__header">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
                 </div>
+                <a data-target="modal" data-modal="clearPolicyCache">
+                    <i class="fa fa-trash"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
                 {% if cached_policies < 1 %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ cached_policies }}
                 </p>
                 <p>{% trans 'No policies cached. Users may experience slow response times.' %}</p>
                 {% else %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ cached_policies }}
                 </p>
                 {% endif %}
             </div>
-        </a>
+        </div>
 
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header">
+            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Flows' %}
                 </div>
+                <a data-target="modal" data-modal="clearFlowCache">
+                    <i class="fa fa-trash"> </i>
+                </a>
             </div>
             <div class="pf-c-card__body">
                 {% if cached_flows < 1 %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <span class="fa fa-exclamation-triangle"></span> {{ cached_flows }}
                 </p>
                 <p>{% trans 'No flows cached.' %}</p>
                 {% else %}
-                <p class="aggregate-status">
+                <p class="pb-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ cached_flows }}
                 </p>
                 {% endif %}
@@ -203,33 +221,57 @@
         </div>
     </section>
 </div>
-<div class="pf-c-backdrop" id="clearCacheModalRoot" hidden>
+
+<div class="pf-c-backdrop" id="clearPolicyCache" hidden>
     <div class="pf-l-bullseye">
         <div class="pf-c-modal-box pf-m-sm" role="dialog">
             <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
             <div class="pf-c-modal-box__header">
-                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Clear Cache' %}?</h1>
+                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Clear Policy Cache' %}?</h1>
             </div>
             <div class="pf-c-modal-box__body" id="modal-description">
-                <form method="post" id="clearForm">
+                <form method="post" id="clear_policies">
                     {% csrf_token %}
-                    <input type="hidden" name="clear">
+                    <input type="hidden" name="clear_policies">
                     <p>
                         {% blocktrans %}
-                        Are you sure you want to clear the cache? This includes all user sessions and all cached Policy results.
+                        Are you sure you want to clear the policy cache? This will cause all policies to be re-evaluated on their next usage.
                         {% endblocktrans %}
                     </p>
-                    <h3>
-                        {% blocktrans %}
-                        This will also log you out.
-                        {% endblocktrans %}
-                    </h3>
                 </form>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <button form="clearForm" class="pf-c-button pf-m-primary" type="submit">{% trans 'Clear' %}</button>
+                <button form="clear_policies" class="pf-c-button pf-m-primary" type="submit">{% trans 'Clear' %}</button>
+                <button data-modal-close class="pf-c-button pf-m-link" type="button">{% trans 'Cancel' %}</button>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<div class="pf-c-backdrop" id="clearFlowCache" hidden>
+    <div class="pf-l-bullseye">
+        <div class="pf-c-modal-box pf-m-sm" role="dialog">
+            <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="pf-c-modal-box__header">
+                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Clear Flow Cache' %}?</h1>
+            </div>
+            <div class="pf-c-modal-box__body" id="modal-description">
+                <form method="post" id="clear_flows">
+                    {% csrf_token %}
+                    <input type="hidden" name="clear_flows">
+                    <p>
+                        {% blocktrans %}
+                        Are you sure you want to clear the flow cache? This will cause all flows to be re-evaluated on their next usage.
+                        {% endblocktrans %}
+                    </p>
+                </form>
+            </div>
+            <footer class="pf-c-modal-box__footer pf-m-align-left">
+                <button form="clear_flows" class="pf-c-button pf-m-primary" type="submit">{% trans 'Clear' %}</button>
                 <button data-modal-close class="pf-c-button pf-m-link" type="button">{% trans 'Cancel' %}</button>
             </footer>
         </div>
@@ -274,7 +316,6 @@ fetch("{% url 'passbook_api:admin_metrics-list' %}").then(r => r.json()).then(r 
                             const date = new Date();
                             const delta = (date - values[index].value);
                             const ago = Math.round(delta / 1000 / 3600);
-                            console.log(ago);
                             return `${ago} Hours ago`;
                         },
                         autoSkip: true,

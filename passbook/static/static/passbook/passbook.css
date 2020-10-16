@@ -291,7 +291,7 @@ input[data-is-monospace] {
 }
 
 /* Aggregate Cards */
-.pf-c-card.pf-c-card-aggregate > .pf-c-card__body .aggregate-status {
+.pb-aggregate-card {
     font-size: var(--pf-global--icon--FontSize--lg);
     text-align: center;
 }
