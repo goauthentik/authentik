@@ -35,7 +35,11 @@ class BaseController:
         """Call .up() but capture all log output and return it."""
         with capture_logs() as logs:
             self.up()
-        return [f"{x['controller']}: {x['event']}" for x in logs]
+        log_messages = []
+        for log in logs:
+            self.logger.debug(**log)
+            log_messages.append(f"{log['controller']}: {log['event']}")
+        return log_messages
 
     def down(self):
         """Handler to delete everything we've created"""
