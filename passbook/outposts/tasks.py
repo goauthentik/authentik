@@ -57,6 +57,17 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
 
 
 @CELERY_APP.task()
+def outpost_pre_delete(outpost_pk: str):
+    """Delete outpost objects before deleting the DB Object"""
+    outpost = Outpost.objects.get(pk=outpost_pk)
+    if outpost.type == OutpostType.PROXY:
+        if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
+            ProxyKubernetesController(outpost).down()
+        if outpost.deployment_type == OutpostDeploymentType.DOCKER:
+            ProxyDockerController(outpost).down()
+
+
+@CELERY_APP.task()
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 

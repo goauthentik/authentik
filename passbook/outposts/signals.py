@@ -6,7 +6,7 @@ from structlog import get_logger
 
 from passbook.lib.utils.reflection import class_to_path
 from passbook.outposts.models import Outpost
-from passbook.outposts.tasks import outpost_post_save
+from passbook.outposts.tasks import outpost_post_save, outpost_pre_delete
 
 LOGGER = get_logger()
 
@@ -30,3 +30,7 @@ def post_save_update(sender, instance: Model, **_):
 def pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()
+    # To ensure that deployment is cleaned up *consistently* we call the controller, and wait
+    # for it to finish. We don't want to call it in this thread, as we don't have the K8s
+    # credentials here
+    outpost_pre_delete.delay(instance.pk.hex).get()

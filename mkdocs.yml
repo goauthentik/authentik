@@ -64,6 +64,7 @@ nav:
     - to 0.9: upgrading/to-0.9.md
     - to 0.10: upgrading/to-0.10.md
     - to 0.11: upgrading/to-0.11.md
+    - to 0.12: upgrading/to-0.12.md
   - Troubleshooting:
     - Access problems: troubleshooting/access.md
 
