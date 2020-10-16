@@ -3,6 +3,7 @@ from django.core.cache import cache
 from structlog import get_logger
 
 from passbook.core.models import User
+from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from passbook.policies.reputation.models import IPReputation, UserReputation
 from passbook.policies.reputation.signals import (
     CACHE_KEY_IP_PREFIX,
@@ -13,27 +14,26 @@ from passbook.root.celery import CELERY_APP
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
-def save_ip_reputation():
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def save_ip_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
-    keys = cache.keys(CACHE_KEY_IP_PREFIX + "*")
     objects_to_update = []
-    for key in keys:
-        score = cache.get(key)
+    for key, score in cache.get_many(CACHE_KEY_IP_PREFIX + "*").items():
         remote_ip = key.replace(CACHE_KEY_IP_PREFIX, "")
         rep, _ = IPReputation.objects.get_or_create(ip=remote_ip)
         rep.score = score
         objects_to_update.append(rep)
     IPReputation.objects.bulk_update(objects_to_update, ["score"])
+    self.set_status(
+        TaskResult(TaskResultStatus.SUCCESSFUL, ["Successfully updated IP Reputation"])
+    )
 
 
-@CELERY_APP.task()
-def save_user_reputation():
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def save_user_reputation(self: MonitoredTask):
     """Save currently cached reputation to database"""
-    keys = cache.keys(CACHE_KEY_USER_PREFIX + "*")
     objects_to_update = []
-    for key in keys:
-        score = cache.get(key)
+    for key, score in cache.get_many(CACHE_KEY_USER_PREFIX + "*").items():
         username = key.replace(CACHE_KEY_USER_PREFIX, "")
         users = User.objects.filter(username=username)
         if not users.exists():
@@ -43,3 +43,8 @@ def save_user_reputation():
         rep.score = score
         objects_to_update.append(rep)
     UserReputation.objects.bulk_update(objects_to_update, ["score"])
+    self.set_status(
+        TaskResult(
+            TaskResultStatus.SUCCESSFUL, ["Successfully updated User Reputation"]
+        )
+    )
