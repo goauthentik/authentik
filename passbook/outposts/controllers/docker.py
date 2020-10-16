@@ -1,6 +1,8 @@
 """Docker controller"""
+from time import sleep
 from typing import Dict, Tuple
 
+from django.conf import settings
 from docker import DockerClient, from_env
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
@@ -58,6 +60,7 @@ class DockerController(BaseController):
                     detach=True,
                     ports={x: x for _, x in self.deployment_ports.items()},
                     environment=self._get_env(),
+                    network_mode="host" if settings.TEST else "bridge",
                 ),
                 True,
             )
@@ -65,8 +68,6 @@ class DockerController(BaseController):
     def up(self):
         try:
             container, has_been_created = self._get_container()
-            if has_been_created:
-                return None
             # Check if the container is out of date, delete it and retry
             if len(container.image.tags) > 0:
                 tag: str = container.image.tags[0]
@@ -94,12 +95,19 @@ class DockerController(BaseController):
             ):
                 # At this point we know the config is correct, but the container isn't healthy,
                 # so we just restart it with the same config
+                if has_been_created:
+                    # Since we've just created the container, give it some time to start.
+                    # If its still not up by then, restart it
+                    self.logger.info("Container is unhealthy and new, giving it time to boot.")
+                    sleep(60)
                 self.logger.info("Container is unhealthy, restarting...")
                 container.restart()
+                return None
             # Check that container is running
             if container.status != "running":
                 self.logger.info("Container is not running, restarting...")
                 container.start()
+                return None
             return None
         except DockerException as exc:
             raise ControllerException from exc
