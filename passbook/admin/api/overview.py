@@ -1,7 +1,7 @@
 """passbook administration overview"""
 from django.core.cache import cache
 from django.http import response
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.fields import SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request

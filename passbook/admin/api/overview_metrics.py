@@ -9,7 +9,7 @@ from django.db.models.fields import DurationField
 from django.db.models.functions import ExtractHour
 from django.http import response
 from django.utils.timezone import now
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.fields import SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request

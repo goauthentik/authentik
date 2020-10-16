@@ -123,7 +123,7 @@ INSTALLED_APPS = [
     "passbook.static.apps.PassbookStaticConfig",
     "rest_framework",
     "django_filters",
-    "drf_yasg",
+    "drf_yasg2",
     "guardian",
     "django_prometheus",
     "channels",
