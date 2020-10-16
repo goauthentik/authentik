@@ -34,7 +34,13 @@ class Messages extends LitElement {
     }
 
     firstUpdated() {
-        return fetch(this.url).then(r => r.json()).then(r => this.messages = r);
+        return fetch(this.url).then(r => r.json()).then(r => this.messages = r).then((r) => {
+            const container = this.querySelector(".pf-c-alert-group");
+            r.forEach(message => {
+                const messageElement = this.renderMessage(message);
+                container.appendChild(messageElement);
+            });
+        });
     }
 
     renderMessage(message) {
@@ -57,10 +63,7 @@ class Messages extends LitElement {
     }
 
     render() {
-        if (this.messages === undefined) {
-            return html`<ul class="pf-c-alert-group pf-m-toast"></ul>`;
-        }
-        return html`<ul class="pf-c-alert-group pf-m-toast">${this.messages.map(item => this.renderMessage(item))}</ul>`;
+        return html`<ul class="pf-c-alert-group pf-m-toast"></ul>`;
     }
 }
 
