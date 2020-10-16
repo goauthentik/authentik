@@ -1,7 +1,7 @@
 """passbook password stage"""
 from typing import Any, Dict, List, Optional
-from django.contrib import messages
 
+from django.contrib import messages
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.signals import user_login_failed

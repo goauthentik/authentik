@@ -32,7 +32,10 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,
                 [f"Synced {user_count} users", f"Synced {group_count} groups"],
+                uid=source.name,
             )
         )
     except LDAPException as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        self.set_status(
+            TaskResult(TaskResultStatus.ERROR, uid=source.name).with_error(exc)
+        )
