@@ -53,7 +53,7 @@ class TaskViewSet(ViewSet):
         task_module = import_module(task.task_call_module)
         task_func = getattr(task_module, task.task_call_func)
         task_func.delay(*task.task_call_args, **task.task_call_kwargs)
-        messages.success(self.request, _("Successfully re-scheduled Task!"))
+        messages.success(self.request, _("Successfully re-scheduled Task %(name)s!" % {'name': task.task_name}))
         return Response(
             {
                 "successful": True,

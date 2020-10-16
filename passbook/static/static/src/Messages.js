@@ -7,8 +7,8 @@ const LEVEL_ICON_MAP = {
     "info": "fas fa-info",
 };
 
-let ID = function () {
-    return '_' + Math.random().toString(36).substr(2, 9);
+let ID = function (prefix) {
+    return prefix + Math.random().toString(36).substr(2, 9);
 };
 
 class Messages extends LitElement {
@@ -17,7 +17,12 @@ class Messages extends LitElement {
         return {
             url: { type: String },
             messages: { type: Array },
+            touch: { type: Object },
         };
+    }
+
+    set touch(value) {
+        this.firstUpdated();
     }
 
     createRenderRoot() {
@@ -25,15 +30,16 @@ class Messages extends LitElement {
     }
 
     firstUpdated() {
-        fetch(this.url).then(r => r.json()).then(r => this.messages = r);
+        return fetch(this.url).then(r => r.json()).then(r => this.messages = r);
     }
 
     renderMessage(message) {
-        const id = `pb-message-${ID()}`;
-        const item = html`<li id=${id} class="pf-c-alert-group__item">
+        const id = ID("pb-message");
+        const el = document.createElement("template");
+        el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
             <div class="pf-c-alert pf-m-${message.level_tag} ${message.level_tag === 'error' ? 'pf-m-danger': ''}">
                 <div class="pf-c-alert__icon">
-                    <i class="${LEVEL_ICON_MAP[message.level_tag]}">
+                    <i class="${LEVEL_ICON_MAP[message.level_tag]}"></i>
                 </div>
                 <p class="pf-c-alert__title">
                     ${message.message}
@@ -43,7 +49,7 @@ class Messages extends LitElement {
         setTimeout(() => {
             this.querySelector(`#${id}`).remove();
         }, 1500);
-        return item;
+        return el.content.firstChild;
     }
 
     render() {

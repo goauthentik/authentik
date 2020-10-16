@@ -32,8 +32,9 @@ class ActionButton extends HTMLButtonElement {
         this.classList.remove(...PROGRESS_CLASSES);
         this.innerText = this.oldBody;
         this.classList.replace(PRIMARY_CLASS, statusClass);
+        // Trigger messages to update
+        document.querySelector("pb-messages").setAttribute("touch", Date.now());
         setTimeout(() => {
-            console.log('test');
             this.classList.replace(statusClass, PRIMARY_CLASS);
         }, 1000);
     }
