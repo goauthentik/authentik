@@ -2,12 +2,12 @@
 from typing import Dict, Tuple
 
 from docker import DockerClient, from_env
-from docker.errors import NotFound
+from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from yaml import safe_dump
 
 from passbook import __version__
-from passbook.outposts.controllers.base import BaseController
+from passbook.outposts.controllers.base import BaseController, ControllerException
 
 
 class DockerController(BaseController):
@@ -62,43 +62,46 @@ class DockerController(BaseController):
             )
 
     def run(self):
-        container, has_been_created = self._get_container()
-        if has_been_created:
-            return None
-        # Check if the container is out of date, delete it and retry
-        if len(container.image.tags) > 0:
-            tag: str = container.image.tags[0]
-            _, _, version = tag.partition(":")
-            if version != __version__:
-                self.logger.info(
-                    "Container has mismatched version, re-creating...",
-                    has=version,
-                    should=__version__,
-                )
+        try:
+            container, has_been_created = self._get_container()
+            if has_been_created:
+                return None
+            # Check if the container is out of date, delete it and retry
+            if len(container.image.tags) > 0:
+                tag: str = container.image.tags[0]
+                _, _, version = tag.partition(":")
+                if version != __version__:
+                    self.logger.info(
+                        "Container has mismatched version, re-creating...",
+                        has=version,
+                        should=__version__,
+                    )
+                    container.kill()
+                    container.remove(force=True)
+                    return self.run()
+            # Check that container values match our values
+            if self._comp_env(container):
+                self.logger.info("Container has outdated config, re-creating...")
                 container.kill()
                 container.remove(force=True)
                 return self.run()
-        # Check that container values match our values
-        if self._comp_env(container):
-            self.logger.info("Container has outdated config, re-creating...")
-            container.kill()
-            container.remove(force=True)
-            return self.run()
-        # Check that container is healthy
-        if (
-            container.status == "running"
-            and container.attrs.get("State", {}).get("Health", {}).get("Status", "")
-            != "healthy"
-        ):
-            # At this point we know the config is correct, but the container isn't healthy,
-            # so we just restart it with the same config
-            self.logger.info("Container is unhealthy, restarting...")
-            container.restart()
-        # Check that container is running
-        if container.status != "running":
-            self.logger.info("Container is not running, restarting...")
-            container.start()
-        return None
+            # Check that container is healthy
+            if (
+                container.status == "running"
+                and container.attrs.get("State", {}).get("Health", {}).get("Status", "")
+                != "healthy"
+            ):
+                # At this point we know the config is correct, but the container isn't healthy,
+                # so we just restart it with the same config
+                self.logger.info("Container is unhealthy, restarting...")
+                container.restart()
+            # Check that container is running
+            if container.status != "running":
+                self.logger.info("Container is not running, restarting...")
+                container.start()
+            return None
+        except DockerException as exc:
+            raise ControllerException from exc
 
     def get_static_deployment(self) -> str:
         """Generate docker-compose yaml for proxy, version 3.5"""

@@ -3,7 +3,12 @@ from typing import Dict
 
 from structlog import get_logger
 
+from passbook.lib.sentry import SentryIgnoredException
 from passbook.outposts.models import Outpost
+
+
+class ControllerException(SentryIgnoredException):
+    """Exception raise when anything fails during controller run"""
 
 
 class BaseController:
