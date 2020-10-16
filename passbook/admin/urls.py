@@ -17,6 +17,7 @@ from passbook.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
+    tasks,
     tokens,
     users,
 )
@@ -310,5 +311,11 @@ urlpatterns = [
         "outposts/<uuid:pk>/delete/",
         outposts.OutpostDeleteView.as_view(),
         name="outpost-delete",
+    ),
+    # Tasks
+    path(
+        "tasks/",
+        tasks.TaskListView.as_view(),
+        name="tasks",
     ),
 ]

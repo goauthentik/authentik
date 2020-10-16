@@ -52,6 +52,9 @@
 .pf-m-success {
     color: var(--pf-global--success-color--100);
 }
+.pf-m-warning {
+    color: var(--pf-global--warning-color--100);
+}
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
 }

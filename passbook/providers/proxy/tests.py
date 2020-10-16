@@ -7,9 +7,7 @@ from django.test import TestCase
 
 from passbook.flows.models import Flow
 from passbook.outposts.models import Outpost, OutpostDeploymentType, OutpostType
-from passbook.providers.proxy.controllers.kubernetes import (
-    ProxyKubernetesController,
-)
+from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from passbook.providers.proxy.models import ProxyProvider
 
 

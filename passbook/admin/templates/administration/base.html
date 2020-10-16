@@ -146,6 +146,12 @@
                         {% trans 'Groups' %}
                     </a>
                 </li>
+                <li class="pf-c-nav__item">
+                    <a href="{% url 'passbook_admin:tasks' %}"
+                        class="pf-c-nav__link {% is_active 'passbook_admin:tasks' %}">
+                        {% trans 'System Tasks' %}
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

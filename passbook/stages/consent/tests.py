@@ -127,7 +127,7 @@ class TestConsentStage(TestCase):
             ).exists()
         )
         sleep(1)
-        clean_expired_models()
+        clean_expired_models.delay()
         self.assertFalse(
             UserConsent.objects.filter(
                 user=self.user, application=self.application

@@ -1,0 +1,71 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+{% load passbook_utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="fas fa-key"></i>
+            {% trans 'System Tasks' %}
+        </h1>
+        <p>{% trans "Background tasks." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Identifier' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Description' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Last Status' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Status' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Messages' %}</th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for key, task in object_list.items %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <pre>{{ key }}</pre>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ task.task_description }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ task.finish_timestamp|naturaltime }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {% if task.result.status == task_successful %}
+                            <i class="fas fa-check pf-m-success"></i> {% trans 'Successful' %}
+                            {% elif task.result.status == task_warning %}
+                            <i class="fas fa-exclamation-triangle pf-m-warning"></i> {% trans 'Warning' %}
+                            {% elif task.result.status == task_error %}
+                            <i class="fas fa-times pf-m-danger"></i> {% trans 'Error' %}
+                            {% else %}
+                            <i class="fas fa-question-circle"></i> {% trans 'Unknown' %}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% for message in task.result.messages %}
+                        <div>
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
