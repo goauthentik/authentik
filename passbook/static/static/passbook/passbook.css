@@ -40,6 +40,11 @@
     z-index: 0;
 }
 
+/* Ensure card is displayed on small screens */
+.pf-c-login__main {
+    display: block;
+}
+
 /* login page's icons */
 .pf-c-login__main-footer-links-item-link img {
     fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
