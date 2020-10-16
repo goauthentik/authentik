@@ -24,6 +24,7 @@
                     <th role="columnheader" scope="col">{% trans 'Last Status' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Status' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Messages' %}</th>
+                    <th role="cell"></th>
                 </tr>
             </thead>
             <tbody role="rowgroup">
@@ -61,6 +62,11 @@
                             {{ message }}
                         </div>
                         {% endfor %}
+                    </td>
+                    <td>
+                        <button is="action-button" class="pf-c-button pf-m-primary" url="{% url 'passbook_api:admin_system_tasks-retry' pk=task.task_name %}">
+                            {% trans 'Retry Task' %}
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -65,7 +65,7 @@ LOGIN_URL = "passbook_flows:default-authentication"
 AUTH_USER_MODEL = "passbook_core.User"
 
 _cookie_suffix = "_debug" if DEBUG else ""
-CSRF_COOKIE_NAME = f"passbook_csrf{_cookie_suffix}"
+CSRF_COOKIE_NAME = f"passbook_csrf"
 LANGUAGE_COOKIE_NAME = f"passbook_language{_cookie_suffix}"
 SESSION_COOKIE_NAME = f"passbook_session{_cookie_suffix}"
 
