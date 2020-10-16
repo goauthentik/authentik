@@ -62,5 +62,5 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
             )
         )
     except (SMTPException, ConnectionError) as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR, [str(exc)], exc))
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc

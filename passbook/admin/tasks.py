@@ -27,4 +27,4 @@ def update_latest_version(self: MonitoredTask):
         )
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskResult(TaskResultStatus.ERROR, [str(exc)]))
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

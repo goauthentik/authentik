@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from traceback import format_tb
 from typing import Any, Dict, List, Optional
 
 from celery import Task
@@ -25,10 +26,14 @@ class TaskResult:
 
     messages: List[str] = field(default_factory=list)
 
-    error: Optional[Exception] = field(default=None)
-
     # Optional UID used in cache for tasks that run in different instances
     uid: Optional[str] = field(default=None)
+
+    def with_error(self, exc: Exception) -> "TaskResult":
+        """Since errors might not always be pickle-able, set the traceback"""
+        self.messages.extend(format_tb(exc.__traceback__))
+        self.messages.append(str(exc))
+        return self
 
 
 @dataclass

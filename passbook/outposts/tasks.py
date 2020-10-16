@@ -45,7 +45,7 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
                 logs = ProxyDockerController(outpost).run_with_logs()
     except ControllerException as exc:
         self.set_status(
-            TaskResult(TaskResultStatus.ERROR, [str(exc)], exc, uid=outpost.name)
+            TaskResult(TaskResultStatus.ERROR, uid=outpost.name).with_error(exc)
         )
     else:
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs, uid=outpost.name))

@@ -35,4 +35,4 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
             )
         )
     except LDAPException as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR, [str(exc)], exc))
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
