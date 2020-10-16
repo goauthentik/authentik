@@ -53,7 +53,7 @@ class KubernetesManifestView(LoginRequiredMixin, View):
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
-            controller = ProxyKubernetesController(outpost_pk)
+            controller = ProxyKubernetesController(outpost)
             manifest = controller.get_static_deployment()
 
         return HttpResponse(manifest, content_type="text/vnd.yaml")

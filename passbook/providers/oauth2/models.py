@@ -417,8 +417,8 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
     _id_token = models.TextField(verbose_name=_("ID Token"))
 
     class Meta:
-        verbose_name = _("Token")
-        verbose_name_plural = _("Tokens")
+        verbose_name = _("OAuth2 Token")
+        verbose_name_plural = _("OAuth2 Tokens")
 
     @property
     def id_token(self) -> IDToken:
