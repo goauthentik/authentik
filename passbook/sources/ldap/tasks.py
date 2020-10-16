@@ -2,6 +2,7 @@
 from time import time
 
 from django.core.cache import cache
+from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
 
 from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
@@ -32,10 +33,10 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,
                 [f"Synced {user_count} users", f"Synced {group_count} groups"],
-                uid=source.name,
+                uid=slugify(source.name),
             )
         )
     except LDAPException as exc:
         self.set_status(
-            TaskResult(TaskResultStatus.ERROR, uid=source.name).with_error(exc)
+            TaskResult(TaskResultStatus.ERROR, uid=slugify(source.name)).with_error(exc)
         )

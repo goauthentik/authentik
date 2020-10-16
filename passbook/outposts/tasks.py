@@ -4,6 +4,7 @@ from typing import Any
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models.base import Model
+from django.utils.text import slugify
 from structlog import get_logger
 
 from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
@@ -45,10 +46,14 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
                 logs = ProxyDockerController(outpost).run_with_logs()
     except ControllerException as exc:
         self.set_status(
-            TaskResult(TaskResultStatus.ERROR, uid=outpost.name).with_error(exc)
+            TaskResult(TaskResultStatus.ERROR, uid=slugify(outpost.name)).with_error(
+                exc
+            )
         )
     else:
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs, uid=outpost.name))
+        self.set_status(
+            TaskResult(TaskResultStatus.SUCCESSFUL, logs, uid=slugify(outpost.name))
+        )
 
 
 @CELERY_APP.task()
