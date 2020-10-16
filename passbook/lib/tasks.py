@@ -69,10 +69,14 @@ class TaskInfo:
 class MonitoredTask(Task):
     """Task which can save its state to the cache"""
 
+    # For tasks that should only be listed if they failed, set this to False
+    save_on_success: bool
+
     _result: TaskResult
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.save_on_success = True
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
 
     def set_status(self, result: TaskResult):
@@ -83,16 +87,17 @@ class MonitoredTask(Task):
     def after_return(
         self, status, retval, task_id, args: List[Any], kwargs: Dict[str, Any], einfo
     ):
-        TaskInfo(
-            task_name=self.__name__,
-            task_description=self.__doc__,
-            finish_timestamp=datetime.now(),
-            result=self._result,
-            task_call_module=self.__module__,
-            task_call_func=self.__name__,
-            task_call_args=args,
-            task_call_kwargs=kwargs,
-        ).save()
+        if self.save_on_success:
+            TaskInfo(
+                task_name=self.__name__,
+                task_description=self.__doc__,
+                finish_timestamp=datetime.now(),
+                result=self._result,
+                task_call_module=self.__module__,
+                task_call_func=self.__name__,
+                task_call_args=args,
+                task_call_kwargs=kwargs,
+            ).save()
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
