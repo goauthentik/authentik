@@ -31,9 +31,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def __init__(self, outpost: Outpost):
         self.outpost = outpost
         self.namespace = ""
-        self.logger = get_logger(
-            component=f"k8s-reconciler-{self.__class__.__name__}", outpost=outpost
-        )
+        self.logger = get_logger(controller=self.__class__.__name__, outpost=outpost)
 
     def run(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""

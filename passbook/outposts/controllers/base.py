@@ -34,7 +34,7 @@ class BaseController:
         """Call .run() but capture all log output and return it."""
         with capture_logs() as logs:
             self.run()
-        return logs
+        return [f"{x['controller']}: {x['event']}" for x in logs]
 
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""
