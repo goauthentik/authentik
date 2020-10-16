@@ -12,7 +12,7 @@ let ID = function (prefix) {
 };
 
 export function updateMessages() {
-    document.querySelector("pb-messages").setAttribute("touch", Date.now());
+    document.querySelector("pb-messages").fetchMessages();
 }
 
 class Messages extends LitElement {
@@ -21,12 +21,7 @@ class Messages extends LitElement {
         return {
             url: { type: String },
             messages: { type: Array },
-            touch: { type: Object },
         };
-    }
-
-    set touch(value) {
-        this.firstUpdated();
     }
 
     createRenderRoot() {
@@ -34,6 +29,10 @@ class Messages extends LitElement {
     }
 
     firstUpdated() {
+        this.fetchMessages();
+    }
+
+    fetchMessages() {
         return fetch(this.url).then(r => r.json()).then(r => this.messages = r).then((r) => {
             const container = this.querySelector(".pf-c-alert-group");
             r.forEach(message => {
