@@ -8,10 +8,10 @@
 <section class="pf-c-page__main-section pf-m-light">
     <div class="pf-c-content">
         <h1>
-            <i class="fas fa-key"></i>
+            <i class="pf-icon pf-icon-automation"></i>
             {% trans 'System Tasks' %}
         </h1>
-        <p>{% trans "Background tasks." %}</p>
+        <p>{% trans "Long-running operations which passbook executes in the background." %}</p>
     </div>
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody role="rowgroup">
-                {% for key, task in object_list.items %}
+                {% for task in object_list %}
                 <tr role="row">
                     <th role="columnheader">
                         <pre>{{ task.task_name }}</pre>
