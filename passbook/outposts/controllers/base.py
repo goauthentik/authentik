@@ -19,8 +19,8 @@ class BaseController:
 
     outpost: Outpost
 
-    def __init__(self, outpost_pk: str):
-        self.outpost = Outpost.objects.get(pk=outpost_pk)
+    def __init__(self, outpost: Outpost):
+        self.outpost = outpost
         self.logger = get_logger(
             controller=self.__class__.__name__, outpost=self.outpost
         )

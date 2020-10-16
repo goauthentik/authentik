@@ -10,13 +10,14 @@ from passbook.outposts.controllers.base import BaseController, ControllerExcepti
 from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
 from passbook.outposts.controllers.k8s.secret import SecretReconciler
 from passbook.outposts.controllers.k8s.service import ServiceReconciler
+from passbook.outposts.models import Outpost
 
 
 class KubernetesController(BaseController):
     """Manage deployment of outpost in kubernetes"""
 
-    def __init__(self, outpost_pk: str) -> None:
-        super().__init__(outpost_pk)
+    def __init__(self, outpost: Outpost) -> None:
+        super().__init__(outpost)
         try:
             load_incluster_config()
         except ConfigException:

@@ -8,6 +8,7 @@ from yaml import safe_dump
 
 from passbook import __version__
 from passbook.outposts.controllers.base import BaseController, ControllerException
+from passbook.outposts.models import Outpost
 
 
 class DockerController(BaseController):
@@ -19,8 +20,8 @@ class DockerController(BaseController):
 
     image_base = "beryju/passbook"
 
-    def __init__(self, outpost_pk: str) -> None:
-        super().__init__(outpost_pk)
+    def __init__(self, outpost: Outpost) -> None:
+        super().__init__(outpost)
         self.client = from_env()
 
     def _get_env(self) -> Dict[str, str]:

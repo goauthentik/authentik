@@ -35,7 +35,7 @@ class DockerComposeView(LoginRequiredMixin, View):
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
-            controller = DockerController(outpost_pk)
+            controller = DockerController(outpost)
             manifest = controller.get_static_deployment()
 
         return HttpResponse(manifest, content_type="text/vnd.yaml")

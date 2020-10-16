@@ -29,25 +29,26 @@ def outpost_controller_all():
     for outpost in Outpost.objects.exclude(
         deployment_type=OutpostDeploymentType.CUSTOM
     ):
-        outpost_controller.delay(outpost.pk.hex, outpost.deployment_type, outpost.type)
+        outpost_controller.delay(outpost.pk.hex)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-def outpost_controller(
-    self: MonitoredTask, outpost_pk: str, deployment_type: str, outpost_type: str
-):
+def outpost_controller(self: MonitoredTask, outpost_pk: str):
     """Launch controller and reconcile deployment/service/etc"""
     logs = []
+    outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     try:
-        if outpost_type == OutpostType.PROXY:
-            if deployment_type == OutpostDeploymentType.KUBERNETES:
-                logs = ProxyKubernetesController(outpost_pk).run_with_logs()
-            if deployment_type == OutpostDeploymentType.DOCKER:
-                logs = ProxyDockerController(outpost_pk).run_with_logs()
+        if outpost.type == OutpostType.PROXY:
+            if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
+                logs = ProxyKubernetesController(outpost).run_with_logs()
+            if outpost.deployment_type == OutpostDeploymentType.DOCKER:
+                logs = ProxyDockerController(outpost).run_with_logs()
     except ControllerException as exc:
-        self.set_status(TaskResult(TaskResultStatus.ERROR, [str(exc)], exc))
+        self.set_status(
+            TaskResult(TaskResultStatus.ERROR, [str(exc)], exc, uid=outpost.name)
+        )
     else:
-        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs, uid=outpost.name))
 
 
 @CELERY_APP.task()
