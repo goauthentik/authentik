@@ -7,7 +7,7 @@
 {% load passbook_utils %}
 
 {% block body %}
-{% include 'partials/messages.html' %}
+<pb-messages url="{% url 'passbook_api:messages-list' %}"></pb-messages>
 <div class="pf-c-page" id="page-default-nav-example">
     <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content">{% trans 'Skip to content' %}</a>
     <header role="banner" class="pf-c-page__header ws-page-header">
