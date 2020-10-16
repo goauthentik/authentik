@@ -11,17 +11,19 @@ nameOverride: ""
 serverReplicas: 1
 workerReplicas: 1
 
+kubernetesIntegration: true
+
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
-  # secret_key: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
+  # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
   # Enable error reporting
-  error_reporting:
+  errorReporting:
     enabled: false
     environment: customer
-    send_pii: false
+    sendPii: false
   # Log level used by web and worker
   # Can be either debug, info, warning, error
-  log_level: warning
+  logLevel: warning
 
 # Enable Database Backups to S3
 # backup:

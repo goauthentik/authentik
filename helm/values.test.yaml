@@ -1,0 +1,21 @@
+image:
+  tag: gh-master
+
+serverReplicas: 1
+workerReplicas: 1
+
+config:
+  # Log level used by web and worker
+  # Can be either debug, info, warning, error
+  logLevel: debug
+
+ingress:
+  hosts:
+    - passbook.127.0.0.1.nip.io
+
+# These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
+postgresql:
+  postgresqlPassword: EK-5jnKfjrGRm<77
+
+redis:
+  password: password

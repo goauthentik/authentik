@@ -22,6 +22,9 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         k8s.passbook.beryju.org/component: worker
     spec:
+      {{- if .Values.kubernetesIntegration }}
+      serviceAccountName: {{ include "passbook.fullname" . }}-sa
+      {{- end }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
