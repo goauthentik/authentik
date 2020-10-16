@@ -34,7 +34,7 @@ def outpost_controller_all():
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def outpost_controller(self: MonitoredTask, outpost_pk: str):
-    """Launch controller and reconcile deployment/service/etc"""
+    """Launch controller deployment of Outpost"""
     logs = []
     outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     try:
@@ -67,6 +67,8 @@ def outpost_post_save(model_class: str, model_pk: Any):
     if isinstance(instance, Outpost):
         LOGGER.debug("Ensuring token for outpost", instance=instance)
         _ = instance.token
+        LOGGER.debug("Trigger reconcile for outpost")
+        outpost_controller.delay(instance.pk)
         return
 
     if isinstance(instance, (OutpostModel, Outpost)):
