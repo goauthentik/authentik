@@ -1,7 +1,8 @@
 """Base Controller"""
-from typing import Dict
+from typing import Dict, List
 
 from structlog import get_logger
+from structlog.testing import capture_logs
 
 from passbook.lib.sentry import SentryIgnoredException
 from passbook.outposts.models import Outpost
@@ -28,6 +29,12 @@ class BaseController:
     def run(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
         raise NotImplementedError
+
+    def run_with_logs(self) -> List[str]:
+        """Call .run() but capture all log output and return it."""
+        with capture_logs() as logs:
+            self.run()
+        return logs
 
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""

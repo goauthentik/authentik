@@ -6,7 +6,9 @@ from channels.layers import get_channel_layer
 from django.db.models.base import Model
 from structlog import get_logger
 
+from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from passbook.lib.utils.reflection import path_to_class
+from passbook.outposts.controllers.base import ControllerException
 from passbook.outposts.models import (
     Outpost,
     OutpostDeploymentType,
@@ -22,24 +24,30 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task()
-def outpost_controller():
+def outpost_controller_all():
     """Launch Controller for all Outposts which support it"""
     for outpost in Outpost.objects.exclude(
         deployment_type=OutpostDeploymentType.CUSTOM
     ):
-        outpost_controller_single.delay(
-            outpost.pk.hex, outpost.deployment_type, outpost.type
-        )
+        outpost_controller.delay(outpost.pk.hex, outpost.deployment_type, outpost.type)
 
 
-@CELERY_APP.task()
-def outpost_controller_single(outpost_pk: str, deployment_type: str, outpost_type: str):
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def outpost_controller(
+    self: MonitoredTask, outpost_pk: str, deployment_type: str, outpost_type: str
+):
     """Launch controller and reconcile deployment/service/etc"""
-    if outpost_type == OutpostType.PROXY:
-        if deployment_type == OutpostDeploymentType.KUBERNETES:
-            ProxyKubernetesController(outpost_pk).run()
-        if deployment_type == OutpostDeploymentType.DOCKER:
-            ProxyDockerController(outpost_pk).run()
+    logs = []
+    try:
+        if outpost_type == OutpostType.PROXY:
+            if deployment_type == OutpostDeploymentType.KUBERNETES:
+                logs = ProxyKubernetesController(outpost_pk).run_with_logs()
+            if deployment_type == OutpostDeploymentType.DOCKER:
+                logs = ProxyDockerController(outpost_pk).run_with_logs()
+    except ControllerException as exc:
+        self.set_status(TaskResult(TaskResultStatus.ERROR, [str(exc)], exc))
+    else:
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
 
 
 @CELERY_APP.task()
