@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from passbook.admin.api.overview import AdministrationOverviewViewSet
 from passbook.admin.api.overview_metrics import AdministrationMetricsViewSet
+from passbook.admin.api.tasks import TaskViewSet
 from passbook.api.v2.messages import MessagesViewSet
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
@@ -57,6 +58,7 @@ router.register(
     "admin/overview", AdministrationOverviewViewSet, basename="admin_overview"
 )
 router.register("admin/metrics", AdministrationMetricsViewSet, basename="admin_metrics")
+router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)

@@ -49,6 +49,36 @@ paths:
       tags:
         - admin
     parameters: []
+  /admin/system_tasks/:
+    get:
+      operationId: admin_system_tasks_list
+      description: List current messages and pass into Serializer
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+      tags:
+        - admin
+    parameters: []
+  /admin/system_tasks/{id}/retry/:
+    post:
+      operationId: admin_system_tasks_retry
+      description: Retry task
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - admin
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
   /audit/events/:
     get:
       operationId: audit_events_list
@@ -6016,6 +6046,34 @@ definitions:
         title: Cached flows
         type: integer
         readOnly: true
+  Task:
+    required:
+      - task_name
+      - task_description
+      - task_finish_timestamp
+      - status
+      - messages
+    type: object
+    properties:
+      task_name:
+        title: Task name
+        type: string
+        minLength: 1
+      task_description:
+        title: Task description
+        type: string
+        minLength: 1
+      task_finish_timestamp:
+        title: Task finish timestamp
+        type: string
+        format: date-time
+      status:
+        title: Status
+        type: integer
+      messages:
+        type: array
+        items:
+          type: string
   Event:
     required:
       - action
