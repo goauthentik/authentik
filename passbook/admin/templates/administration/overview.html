@@ -11,7 +11,7 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 5;">
+        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Logins over the last 24 hours' %}
@@ -323,9 +323,6 @@ fetch("{% url 'passbook_api:admin_metrics-list' %}").then(r => r.json()).then(r 
                     }
                 }],
                 yAxes: [{
-                    ticks: {
-                        stepSize: 1
-                    },
                     stacked: true,
                     gridLines: {
                         color: "rgba(0, 0, 0, 0)",
