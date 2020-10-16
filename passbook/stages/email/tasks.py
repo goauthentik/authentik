@@ -35,8 +35,7 @@ def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
     base=MonitoredTask,
 )
 def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any]):
-    """Send Email according to EmailStage parameters from background worker.
-    Automatically retries if message couldn't be sent."""
+    """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     try:
         stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
@@ -49,7 +48,7 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
             setattr(message_object, key, value)
         message_object.from_email = stage.from_address
         # Because we use the Message-ID as UID for the task, manually assign it
-        message_id = make_msgid(DNS_NAME)
+        message_id = make_msgid(domain=DNS_NAME)
         message_object.extra_headers["Message-ID"] = message_id
 
         LOGGER.debug("Sending mail", to=message_object.to)
