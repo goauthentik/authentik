@@ -18,6 +18,10 @@ def post_save_update(sender, instance: Model, **_):
 
     If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
     we send a message down the relevant OutpostModels WS connection to trigger an update"""
+    if instance.__module__ == "django.db.migrations.recorder":
+        return
+    if instance.__module__ == "__fake__":
+        return
     outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
 
 
