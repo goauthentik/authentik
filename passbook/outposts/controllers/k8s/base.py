@@ -33,7 +33,7 @@ class KubernetesObjectReconciler(Generic[T]):
         self.namespace = ""
         self.logger = get_logger(controller=self.__class__.__name__, outpost=outpost)
 
-    def run(self):
+    def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None
         reference = self.get_reference_object()
@@ -45,6 +45,7 @@ class KubernetesObjectReconciler(Generic[T]):
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
                 self.logger.debug("Other unhandled error", exc=exc)
+                raise exc
             else:
                 self.logger.debug("Got current, running reconcile")
                 self.reconcile(current, reference)
@@ -62,6 +63,19 @@ class KubernetesObjectReconciler(Generic[T]):
             self.update(current, reference)
         else:
             self.logger.debug("Nothing to do...")
+
+    def down(self):
+        """Delete object if found"""
+        try:
+            current = self.retrieve()
+            self.delete(current)
+            self.logger.debug("Removing")
+        except ApiException as exc:
+            if exc.status == 404:
+                self.logger.debug("Failed to get current, assuming non-existant")
+                return
+            self.logger.debug("Other unhandled error", exc=exc)
+            raise exc
 
     def get_reference_object(self) -> T:
         """Return object as it should be"""

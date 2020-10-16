@@ -62,7 +62,7 @@ class DockerController(BaseController):
                 True,
             )
 
-    def run(self):
+    def up(self):
         try:
             container, has_been_created = self._get_container()
             if has_been_created:
@@ -79,13 +79,13 @@ class DockerController(BaseController):
                     )
                     container.kill()
                     container.remove(force=True)
-                    return self.run()
+                    return self.up()
             # Check that container values match our values
             if self._comp_env(container):
                 self.logger.info("Container has outdated config, re-creating...")
                 container.kill()
                 container.remove(force=True)
-                return self.run()
+                return self.up()
             # Check that container is healthy
             if (
                 container.status == "running"
@@ -101,6 +101,13 @@ class DockerController(BaseController):
                 self.logger.info("Container is not running, restarting...")
                 container.start()
             return None
+        except DockerException as exc:
+            raise ControllerException from exc
+
+    def down(self):
+        try:
+            container, _ = self._get_container()
+            container.kill()
         except DockerException as exc:
             raise ControllerException from exc
 

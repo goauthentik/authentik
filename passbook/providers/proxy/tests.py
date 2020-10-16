@@ -52,4 +52,4 @@ class TestControllers(TestCase):
         outpost.save()
 
         controller = ProxyKubernetesController(outpost.pk)
-        controller.run()
+        controller.up()

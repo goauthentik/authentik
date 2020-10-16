@@ -26,15 +26,20 @@ class BaseController:
         )
         self.deployment_ports = {}
 
-    def run(self):
+    # pylint: disable=invalid-name
+    def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
         raise NotImplementedError
 
-    def run_with_logs(self) -> List[str]:
-        """Call .run() but capture all log output and return it."""
+    def up_with_logs(self) -> List[str]:
+        """Call .up() but capture all log output and return it."""
         with capture_logs() as logs:
-            self.run()
+            self.up()
         return [f"{x['controller']}: {x['event']}" for x in logs]
+
+    def down(self):
+        """Handler to delete everything we've created"""
+        raise NotImplementedError
 
     def get_static_deployment(self) -> str:
         """Return a static deployment configuration"""

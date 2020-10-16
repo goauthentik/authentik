@@ -23,24 +23,43 @@ class KubernetesController(BaseController):
         except ConfigException:
             load_kube_config()
 
-    def run(self):
-        """Called by scheduled task to reconcile deployment/service/etc"""
+    def up(self):
         try:
             namespace = self.outpost.config.kubernetes_namespace
 
             secret_reconciler = SecretReconciler(self.outpost)
             secret_reconciler.namespace = namespace
-            secret_reconciler.run()
+            secret_reconciler.up()
 
             deployment_reconciler = DeploymentReconciler(self.outpost)
             deployment_reconciler.namespace = namespace
             deployment_reconciler.deployment_ports = self.deployment_ports
-            deployment_reconciler.run()
+            deployment_reconciler.up()
 
             service_reconciler = ServiceReconciler(self.outpost)
             service_reconciler.namespace = namespace
             service_reconciler.deployment_ports = self.deployment_ports
-            service_reconciler.run()
+            service_reconciler.up()
+        except OpenApiException as exc:
+            raise ControllerException from exc
+
+    def down(self):
+        try:
+            namespace = self.outpost.config.kubernetes_namespace
+
+            secret_reconciler = SecretReconciler(self.outpost)
+            secret_reconciler.namespace = namespace
+            secret_reconciler.down()
+
+            deployment_reconciler = DeploymentReconciler(self.outpost)
+            deployment_reconciler.namespace = namespace
+            deployment_reconciler.deployment_ports = self.deployment_ports
+            deployment_reconciler.down()
+
+            service_reconciler = ServiceReconciler(self.outpost)
+            service_reconciler.namespace = namespace
+            service_reconciler.deployment_ports = self.deployment_ports
+            service_reconciler.down()
         except OpenApiException as exc:
             raise ControllerException from exc
 

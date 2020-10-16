@@ -41,9 +41,9 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
     try:
         if outpost.type == OutpostType.PROXY:
             if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
-                logs = ProxyKubernetesController(outpost).run_with_logs()
+                logs = ProxyKubernetesController(outpost).up_with_logs()
             if outpost.deployment_type == OutpostDeploymentType.DOCKER:
-                logs = ProxyDockerController(outpost).run_with_logs()
+                logs = ProxyDockerController(outpost).up_with_logs()
     except ControllerException as exc:
         self.set_status(
             TaskResult(TaskResultStatus.ERROR, uid=slugify(outpost.name)).with_error(
