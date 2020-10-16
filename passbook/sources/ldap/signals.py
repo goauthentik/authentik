@@ -12,7 +12,7 @@ from passbook.core.signals import password_changed
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.sources.ldap.models import LDAPSource
 from passbook.sources.ldap.password import LDAPPasswordChanger
-from passbook.sources.ldap.tasks import sync_single
+from passbook.sources.ldap.tasks import ldap_sync
 from passbook.stages.prompt.signals import password_validate
 
 
@@ -21,7 +21,7 @@ from passbook.stages.prompt.signals import password_validate
 def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     """Ensure that source is synced on save (if enabled)"""
     if instance.enabled:
-        sync_single.delay(instance.pk)
+        ldap_sync.delay(instance.pk)
 
 
 @receiver(password_validate)

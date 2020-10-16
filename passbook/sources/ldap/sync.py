@@ -35,17 +35,18 @@ class LDAPSynchronizer:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
 
-    def sync_groups(self):
+    def sync_groups(self) -> int:
         """Iterate over all LDAP Groups and create passbook_core.Group instances"""
         if not self._source.sync_groups:
             LOGGER.warning("Group syncing is disabled for this Source")
-            return
+            return -1
         groups = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=ldap3.SUBTREE,
             attributes=ldap3.ALL_ATTRIBUTES,
         )
+        group_count = 0
         for group in groups:
             attributes = group.get("attributes", {})
             if self._source.object_uniqueness_field not in attributes:
@@ -68,18 +69,21 @@ class LDAPSynchronizer:
             LOGGER.debug(
                 "Synced group", group=attributes.get("name", ""), created=created
             )
+            group_count += 1
+        return group_count
 
-    def sync_users(self):
+    def sync_users(self) -> int:
         """Iterate over all LDAP Users and create passbook_core.User instances"""
         if not self._source.sync_users:
             LOGGER.warning("User syncing is disabled for this Source")
-            return
+            return -1
         users = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=ldap3.SUBTREE,
             attributes=ldap3.ALL_ATTRIBUTES,
         )
+        user_count = 0
         for user in users:
             attributes = user.get("attributes", {})
             if self._source.object_uniqueness_field not in attributes:
@@ -109,6 +113,8 @@ class LDAPSynchronizer:
                 LOGGER.debug(
                     "Synced User", user=attributes.get("name", ""), created=created
                 )
+                user_count += 1
+        return user_count
 
     def sync_membership(self):
         """Iterate over all Users and assign Groups using memberOf Field"""

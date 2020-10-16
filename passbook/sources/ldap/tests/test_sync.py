@@ -7,7 +7,7 @@ from passbook.core.models import Group, User
 from passbook.providers.oauth2.generators import generate_client_secret
 from passbook.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from passbook.sources.ldap.sync import LDAPSynchronizer
-from passbook.sources.ldap.tasks import sync
+from passbook.sources.ldap.tasks import ldap_sync_all
 from passbook.sources.ldap.tests.utils import _build_mock_connection
 
 LDAP_PASSWORD = generate_client_secret()
@@ -48,4 +48,4 @@ class LDAPSyncTests(TestCase):
     @patch("passbook.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
     def test_tasks(self):
         """Test Scheduled tasks"""
-        sync()
+        ldap_sync_all.delay()
