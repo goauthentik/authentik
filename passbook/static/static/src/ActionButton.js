@@ -1,4 +1,5 @@
 import { getCookie } from "./utils.js";
+import { updateMessages } from "./Messages.js";
 
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
@@ -33,7 +34,7 @@ class ActionButton extends HTMLButtonElement {
         this.innerText = this.oldBody;
         this.classList.replace(PRIMARY_CLASS, statusClass);
         // Trigger messages to update
-        document.querySelector("pb-messages").setAttribute("touch", Date.now());
+        updateMessages();
         setTimeout(() => {
             this.classList.replace(statusClass, PRIMARY_CLASS);
         }, 1000);

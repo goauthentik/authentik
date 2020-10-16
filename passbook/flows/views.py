@@ -236,7 +236,6 @@ class FlowExecutorShellView(TemplateView):
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
-        kwargs["msg_url"] = reverse("passbook_api:messages-list")
         self.request.session[SESSION_KEY_GET] = self.request.GET
         return kwargs
 
