@@ -65,8 +65,13 @@ func (ac *APIController) Shutdown() {
 }
 
 func (ac *APIController) startWSHandler() {
+	notConnectedBackoff := 1
 	for {
 		if !ac.wsConn.IsConnected() {
+			notConnectedWait := time.Duration(notConnectedBackoff) * time.Second
+			ac.logger.WithField("loop", "ws-handler").WithField("wait", notConnectedWait).Info("Not connected loop")
+			time.Sleep(notConnectedWait)
+			notConnectedBackoff += notConnectedBackoff
 			continue
 		}
 		var wsMsg websocketMessage
@@ -75,9 +80,6 @@ func (ac *APIController) startWSHandler() {
 			ac.logger.WithField("loop", "ws-handler").Println("read:", err)
 			ac.wsConn.CloseAndReconnect()
 			continue
-		}
-		if wsMsg.Instruction != WebsocketInstructionAck {
-			ac.logger.Debugf("%+v\n", wsMsg)
 		}
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			err := ac.UpdateIfRequired()
