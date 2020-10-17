@@ -118,7 +118,7 @@ class DockerController(BaseController):
         try:
             container, _ = self._get_container()
             container.kill()
-            container.remove(force=True)
+            container.remove()
         except DockerException as exc:
             raise ControllerException from exc
 
