@@ -27,11 +27,10 @@ class ConsentStageView(FormView, StageView):
 
     def get_template_names(self) -> List[str]:
         # PLAN_CONTEXT_CONSENT_TEMPLATE has to be set by a template that calls this stage
-        # TODO: Add a default template in case a user directly implements this stage
         if PLAN_CONTEXT_CONSENT_TEMPLATE in self.executor.plan.context:
             template_name = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TEMPLATE]
             return [template_name]
-        return super().get_template_names()
+        return ["stages/consent/fallback.html"]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         current_stage: ConsentStage = self.executor.current_stage

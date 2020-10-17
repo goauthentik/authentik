@@ -6087,7 +6087,7 @@ definitions:
         readOnly: true
       user:
         title: User
-        type: string
+        type: object
       action:
         title: Action
         type: string
@@ -6119,7 +6119,7 @@ definitions:
         minLength: 1
       context:
         title: Context
-        type: string
+        type: object
       client_ip:
         title: Client ip
         type: string
@@ -6211,7 +6211,7 @@ definitions:
         uniqueItems: true
       attributes:
         title: Attributes
-        type: string
+        type: object
   Token:
     required:
       - identifier
@@ -7707,7 +7707,7 @@ definitions:
         x-nullable: true
       fixed_data:
         title: Fixed data
-        type: string
+        type: object
   OTPStaticStage:
     required:
       - name

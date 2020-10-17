@@ -20,9 +20,7 @@ from passbook.outposts.models import (
     OutpostConfig,
     OutpostDeploymentType,
     OutpostType,
-    default_outpost_config,
 )
-from passbook.providers.proxy.controllers.docker import ProxyDockerController
 from passbook.providers.proxy.models import ProxyProvider
 
 
