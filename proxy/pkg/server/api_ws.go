@@ -82,6 +82,7 @@ func (ac *APIController) startWSHandler() {
 			continue
 		}
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
+			time.Sleep(ac.reloadOffset)
 			err := ac.UpdateIfRequired()
 			if err != nil {
 				ac.logger.WithField("loop", "ws-handler").WithError(err).Debug("Failed to update")

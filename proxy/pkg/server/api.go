@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -37,6 +38,8 @@ type APIController struct {
 
 	lastBundleHash string
 	logger         *log.Entry
+
+	reloadOffset time.Duration
 
 	wsConn *recws.RecConn
 }
@@ -130,8 +133,11 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 		commonOpts: getCommonOptions(),
 		server:     NewServer(),
 
+		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
+
 		lastBundleHash: "",
 	}
+	ac.logger.Debugf("HA Reload offset: %s", ac.reloadOffset)
 	ac.initWS(pbURL, outpost.Pk)
 	return ac
 }
