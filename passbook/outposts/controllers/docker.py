@@ -98,7 +98,9 @@ class DockerController(BaseController):
                 if has_been_created:
                     # Since we've just created the container, give it some time to start.
                     # If its still not up by then, restart it
-                    self.logger.info("Container is unhealthy and new, giving it time to boot.")
+                    self.logger.info(
+                        "Container is unhealthy and new, giving it time to boot."
+                    )
                     sleep(60)
                 self.logger.info("Container is unhealthy, restarting...")
                 container.restart()
@@ -116,6 +118,7 @@ class DockerController(BaseController):
         try:
             container, _ = self._get_container()
             container.kill()
+            container.remove(force=True)
         except DockerException as exc:
             raise ControllerException from exc
 
