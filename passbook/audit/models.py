@@ -100,6 +100,8 @@ class EventAction(models.TextChoices):
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
+    TOKEN_VIEW = "token_view"
+
     INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
 
@@ -122,7 +124,6 @@ class Event(models.Model):
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
     action = models.TextField(choices=EventAction.choices)
-    date = models.DateTimeField(auto_now_add=True)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)

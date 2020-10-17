@@ -6,6 +6,7 @@ This update brings these headline features:
 - Add Kubernetes Integration for Outposts, which deploys and maintains Outposts with High Availability in a Kubernetes Cluster
 - Add System Task Overview to see all background tasks, their status, the log output, and retry them
 - Alerts now disappear automatically
+- Audit Logs are now searchable
 
 Fixes:
 
