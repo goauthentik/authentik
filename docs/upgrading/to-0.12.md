@@ -7,6 +7,10 @@ This update brings these headline features:
 - Add System Task Overview to see all background tasks, their status, the log output, and retry them
 - Alerts now disappear automatically
 
+Fixes:
+
+- Fix high CPU Usage of the proxy when Websocket connections fail
+
 ## Upgrading
 
 Docker-compose users can upgrade just as usual.
