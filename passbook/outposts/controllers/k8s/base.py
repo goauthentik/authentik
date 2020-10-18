@@ -1,5 +1,5 @@
 """Base Kubernetes Reconciler"""
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from kubernetes.client import V1ObjectMeta
 from kubernetes.client.rest import ApiException
@@ -7,7 +7,9 @@ from structlog import get_logger
 
 from passbook import __version__
 from passbook.lib.sentry import SentryIgnoredException
-from passbook.outposts.models import Outpost
+
+if TYPE_CHECKING:
+    from passbook.outposts.controllers.kubernetes import KubernetesController
 
 # pylint: disable=invalid-name
 T = TypeVar("T")
@@ -28,10 +30,19 @@ class NeedsUpdate(ReconcileTrigger):
 class KubernetesObjectReconciler(Generic[T]):
     """Base Kubernetes Reconciler, handles the basic logic."""
 
-    def __init__(self, outpost: Outpost):
-        self.outpost = outpost
-        self.namespace = ""
-        self.logger = get_logger(controller=self.__class__.__name__, outpost=outpost)
+    controller: "KubernetesController"
+
+    def __init__(self, controller: "KubernetesController"):
+        self.controller = controller
+        self.namespace = controller.outpost.config.kubernetes_namespace
+        self.logger = get_logger(
+            controller=self.__class__.__name__, outpost=controller.outpost
+        )
+
+    @property
+    def name(self) -> str:
+        """Get the name of the object this reconciler manages"""
+        raise NotImplementedError
 
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
@@ -107,11 +118,11 @@ class KubernetesObjectReconciler(Generic[T]):
         return V1ObjectMeta(
             namespace=self.namespace,
             labels={
-                "app.kubernetes.io/name": f"passbook-{self.outpost.type.lower()}",
-                "app.kubernetes.io/instance": self.outpost.name,
+                "app.kubernetes.io/name": f"passbook-{self.controller.outpost.type.lower()}",
+                "app.kubernetes.io/instance": self.controller.outpost.name,
                 "app.kubernetes.io/version": __version__,
                 "app.kubernetes.io/managed-by": "passbook.beryju.org",
-                "passbook.beryju.org/outpost-uuid": self.outpost.uuid.hex,
+                "passbook.beryju.org/outpost-uuid": self.controller.outpost.uuid.hex,
             },
             **kwargs,
         )

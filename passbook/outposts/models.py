@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, List, Optional, Union
+from typing import Dict, Iterable, List, Optional, Union
 from uuid import uuid4
 
 from dacite import from_dict
@@ -38,6 +38,8 @@ class OutpostConfig:
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default="default")
+    kubernetes_ingress_annotations: Dict[str, str] = field(default_factory=dict)
+    kubernetes_ingress_secret_name: str = field(default="passbook-outpost")
 
 
 class OutpostModel(Model):

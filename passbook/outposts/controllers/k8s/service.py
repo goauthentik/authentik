@@ -1,5 +1,5 @@
 """Kubernetes Service Reconciler"""
-from typing import Dict
+from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
 
@@ -7,18 +7,21 @@ from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from passbook.outposts.models import Outpost
+
+if TYPE_CHECKING:
+    from passbook.outposts.controllers.kubernetes import KubernetesController
 
 
 class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
     """Kubernetes Service Reconciler"""
 
-    deployment_ports: Dict[str, int]
-
-    def __init__(self, outpost: Outpost) -> None:
-        super().__init__(outpost)
+    def __init__(self, controller: "KubernetesController") -> None:
+        super().__init__(controller)
         self.api = CoreV1Api()
-        self.deployment_ports = {}
+
+    @property
+    def name(self) -> str:
+        return f"passbook-outpost-{self.controller.outpost.name}"
 
     def reconcile(self, current: V1Service, reference: V1Service):
         if len(current.spec.ports) != len(reference.spec.ports):
@@ -29,9 +32,9 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
 
     def get_reference_object(self) -> V1Service:
         """Get deployment object for outpost"""
-        meta = self.get_object_meta(name=f"passbook-outpost-{self.outpost.name}")
+        meta = self.get_object_meta(name=self.name)
         ports = []
-        for port_name, port in self.deployment_ports.items():
+        for port_name, port in self.controller.deployment_ports.items():
             ports.append(V1ServicePort(name=port_name, port=port))
         return V1Service(
             metadata=meta,
@@ -48,7 +51,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
 
     def retrieve(self) -> V1Service:
         return self.api.read_namespaced_service(
-            f"passbook-outpost-{self.outpost.name}", self.namespace
+            f"passbook-outpost-{self.controller.outpost.name}", self.namespace
         )
 
     def update(self, current: V1Service, reference: V1Service):

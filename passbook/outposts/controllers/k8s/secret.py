@@ -1,5 +1,6 @@
 """Kubernetes Secret Reconciler"""
 from base64 import b64encode
+from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Secret
 
@@ -7,7 +8,9 @@ from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from passbook.outposts.models import Outpost
+
+if TYPE_CHECKING:
+    from passbook.outposts.controllers.kubernetes import KubernetesController
 
 
 def b64string(source: str) -> str:
@@ -18,9 +21,13 @@ def b64string(source: str) -> str:
 class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
     """Kubernetes Secret Reconciler"""
 
-    def __init__(self, outpost: Outpost) -> None:
-        super().__init__(outpost)
+    def __init__(self, controller: "KubernetesController") -> None:
+        super().__init__(controller)
         self.api = CoreV1Api()
+
+    @property
+    def name(self) -> str:
+        return f"passbook-outpost-{self.controller.outpost.name}-api"
 
     def reconcile(self, current: V1Secret, reference: V1Secret):
         for key in reference.data.keys():
@@ -29,15 +36,17 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
 
     def get_reference_object(self) -> V1Secret:
         """Get deployment object for outpost"""
-        meta = self.get_object_meta(name=f"passbook-outpost-{self.outpost.name}-api")
+        meta = self.get_object_meta(name=self.name)
         return V1Secret(
             metadata=meta,
             data={
-                "passbook_host": b64string(self.outpost.config.passbook_host),
-                "passbook_host_insecure": b64string(
-                    str(self.outpost.config.passbook_host_insecure)
+                "passbook_host": b64string(
+                    self.controller.outpost.config.passbook_host
                 ),
-                "token": b64string(self.outpost.token.token_uuid.hex),
+                "passbook_host_insecure": b64string(
+                    str(self.controller.outpost.config.passbook_host_insecure)
+                ),
+                "token": b64string(self.controller.outpost.token.token_uuid.hex),
             },
         )
 
@@ -51,7 +60,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
 
     def retrieve(self) -> V1Secret:
         return self.api.read_namespaced_secret(
-            f"passbook-outpost-{self.outpost.name}-api", self.namespace
+            f"passbook-outpost-{self.controller.outpost.name}-api", self.namespace
         )
 
     def update(self, current: V1Secret, reference: V1Secret):

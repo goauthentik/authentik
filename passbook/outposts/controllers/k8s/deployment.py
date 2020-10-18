@@ -1,5 +1,5 @@
 """Kubernetes Deployment Reconciler"""
-from typing import Dict
+from typing import TYPE_CHECKING
 
 from kubernetes.client import (
     AppsV1Api,
@@ -23,18 +23,25 @@ from passbook.outposts.controllers.k8s.base import (
 )
 from passbook.outposts.models import Outpost
 
+if TYPE_CHECKING:
+    from passbook.outposts.controllers.kubernetes import KubernetesController
+
 
 class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
     """Kubernetes Deployment Reconciler"""
 
     image_base = "beryju/passbook"
 
-    deployment_ports: Dict[str, int]
+    outpost: Outpost
 
-    def __init__(self, outpost: Outpost) -> None:
-        super().__init__(outpost)
+    def __init__(self, controller: "KubernetesController") -> None:
+        super().__init__(controller)
         self.api = AppsV1Api()
-        self.deployment_ports = {}
+        self.outpost = self.controller.outpost
+
+    @property
+    def name(self) -> str:
+        return f"passbook-outpost-{self.outpost.name}"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
         if current.spec.replicas != reference.spec.replicas:
@@ -49,9 +56,9 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         """Get deployment object for outpost"""
         # Generate V1ContainerPort objects
         container_ports = []
-        for port_name, port in self.deployment_ports.items():
+        for port_name, port in self.controller.deployment_ports.items():
             container_ports.append(V1ContainerPort(container_port=port, name=port_name))
-        meta = self.get_object_meta(name=f"passbook-outpost-{self.outpost.name}")
+        meta = self.get_object_meta(name=self.name)
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
