@@ -26,6 +26,9 @@ class DockerController(BaseController):
         super().__init__(outpost)
         self.client = from_env()
 
+    def _get_labels(self) -> Dict[str, str]:
+        return {}
+
     def _get_env(self) -> Dict[str, str]:
         return {
             "PASSBOOK_HOST": self.outpost.config.passbook_host,
@@ -61,6 +64,7 @@ class DockerController(BaseController):
                     ports={x: x for _, x in self.deployment_ports.items()},
                     environment=self._get_env(),
                     network_mode="host" if settings.TEST else "bridge",
+                    labels=self._get_labels(),
                 ),
                 True,
             )
