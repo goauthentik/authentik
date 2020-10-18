@@ -8,6 +8,7 @@ This update brings these headline features:
 - Alerts now disappear automatically
 - Audit Logs are now searchable
 - Users can now create their own Tokens to access the API
+- docker-compose deployment now uses traefik 2.3
 
 Fixes:
 
@@ -15,7 +16,11 @@ Fixes:
 
 ## Upgrading
 
-Docker-compose users can upgrade just as usual.
+### docker-compose
+
+Docker-compose users should download the latest docker-compose file. This includes the new traefik 2.3.
+
+### Kubernetes
 
 For Kubernetes users, there are some changes to the helm values.
 

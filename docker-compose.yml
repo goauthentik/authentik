@@ -12,16 +12,12 @@ services:
       - POSTGRES_PASSWORD=${PG_PASS:-thisisnotagoodpassword}
       - POSTGRES_USER=passbook
       - POSTGRES_DB=passbook
-    labels:
-      - traefik.enable=false
     env_file:
       - .env
   redis:
     image: redis
     networks:
       - internal
-    labels:
-      - traefik.enable=false
   server:
     image: beryju/passbook:${PASSBOOK_TAG:-0.11.0-stable}
     command: server
@@ -34,9 +30,13 @@ services:
     networks:
       - internal
     labels:
-      - traefik.port=8000
-      - traefik.docker.network=internal
-      - traefik.frontend.rule=PathPrefix:/
+      traefik.enable: 'true'
+      traefik.docker.network: internal
+      traefik.http.routers.app-router.rule: PathPrefix(`/`)
+      traefik.http.routers.app-router.service: app-service
+      traefik.http.routers.app-router.tls: 'true'
+      traefik.http.services.app-service.loadbalancer.healthcheck.hostname: passbook-healthcheck-host
+      traefik.http.services.app-service.loadbalancer.server.port: '8000'
     env_file:
       - .env
   worker:
@@ -44,8 +44,6 @@ services:
     command: worker
     networks:
       - internal
-    labels:
-      - traefik.enable=false
     environment:
       PASSBOOK_REDIS__HOST: redis
       PASSBOOK_POSTGRESQL__HOST: postgresql
@@ -60,12 +58,22 @@ services:
     networks:
       - internal
     labels:
-      - traefik.frontend.rule=PathPrefix:/static, /robots.txt, /favicon.ico
-      - traefik.port=80
-      - traefik.docker.network=internal
+      traefik.enable: 'true'
+      traefik.docker.network: internal
+      traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/robots.txt`, `/favicon.ico`)
+      traefik.http.routers.static-router.tls: 'true'
+      traefik.http.routers.static-router.service: static-service
+      traefik.http.services.static-service.loadbalancer.healthcheck.path: /
+      traefik.http.services.static-service.loadbalancer.server.port: '80'
   traefik:
-    image: traefik:1.7
-    command: --api --docker --defaultentrypoints=https --entryPoints='Name:http Address::80 Redirect.EntryPoint:https' --entryPoints='Name:https Address::443 TLS'
+    image: traefik:2.3
+    command:
+      - "--accesslog=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:

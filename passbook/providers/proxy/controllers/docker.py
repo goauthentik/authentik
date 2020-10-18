@@ -22,8 +22,13 @@ class ProxyDockerController(DockerController):
         for proxy_provider in ProxyProvider.objects.filter(outpost__in=[self.outpost]):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
-            hosts.append(external_host_name)
+            hosts.append(f"`{external_host_name}`")
+        traefik_name = f"pb-outpost-{self.outpost.pk.hex}"
         return {
-            "traefik.frontend.rule": f"Host:{','.join(hosts)}",
-            "traefik.port": "4180",
+            "traefik.enable": "true",
+            f"traefik.http.routers.{traefik_name}-router.rule": f"Host({','.join(hosts)})",
+            f"traefik.http.routers.{traefik_name}-router.tls": "true",
+            f"traefik.http.routers.{traefik_name}-router.service": f"{traefik_name}-service",
+            f"traefik.http.services.{traefik_name}-service.loadbalancer.healthcheck.path": "/",
+            f"traefik.http.services.{traefik_name}-service.loadbalancer.server.port": "4180",
         }

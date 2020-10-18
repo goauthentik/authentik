@@ -100,14 +100,14 @@ spec:
               port: http
               httpHeaders:
                 - name: Host
-                  value: kubernetes-healthcheck-host
+                  value: passbook-healthcheck-host
           readinessProbe:
             httpGet:
               path: /
               port: http
               httpHeaders:
                 - name: Host
-                  value: kubernetes-healthcheck-host
+                  value: passbook-healthcheck-host
           resources:
             requests:
               cpu: 100m
