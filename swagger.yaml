@@ -529,6 +529,23 @@ paths:
         in: path
         required: true
         type: string
+  /core/tokens/{identifier}/view_key/:
+    get:
+      operationId: core_tokens_view_key
+      description: Return token key and log access
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Token'
+      tags:
+        - core
+    parameters:
+      - name: identifier
+        in: path
+        required: true
+        type: string
   /core/users/:
     get:
       operationId: core_users_list
@@ -6098,6 +6115,7 @@ definitions:
           - user_write
           - suspicious_request
           - password_set
+          - token_view
           - invitation_created
           - invitation_used
           - authorize_application
@@ -6108,11 +6126,6 @@ definitions:
           - model_updated
           - model_deleted
           - custom_
-      date:
-        title: Date
-        type: string
-        format: date-time
-        readOnly: true
       app:
         title: App
         type: string
@@ -6214,7 +6227,6 @@ definitions:
         type: object
   Token:
     required:
-      - identifier
       - user
     type: object
     properties:
@@ -6226,6 +6238,7 @@ definitions:
       identifier:
         title: Identifier
         type: string
+        readOnly: true
         minLength: 1
       intent:
         title: Intent

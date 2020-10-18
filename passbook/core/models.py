@@ -32,6 +32,11 @@ def default_token_duration():
     return now() + timedelta(minutes=30)
 
 
+def default_token_key():
+    """Default token key"""
+    return uuid4().hex
+
+
 class Group(models.Model):
     """Custom Group model which supports a basic hierarchy"""
 
@@ -274,10 +279,8 @@ class ExpiringModel(models.Model):
     def filter_not_expired(cls, **kwargs) -> QuerySet:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        query = Q(**kwargs)
-        query_not_expired_yet = Q(expires__lt=now(), expiring=True)
-        query_not_expiring = Q(expiring=False)
-        return cls.objects.filter(query & (query_not_expired_yet | query_not_expiring))
+        expired = Q(expires__lt=now(), expiring=True)
+        return cls.objects.exclude(expired).filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
@@ -298,6 +301,7 @@ class TokenIntents(models.TextChoices):
     # Allow access to API
     INTENT_API = "api"
 
+    # Recovery use for the recovery app
     INTENT_RECOVERY = "recovery"
 
 
@@ -305,7 +309,8 @@ class Token(ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    identifier = models.TextField()
+    identifier = models.CharField(max_length=255)
+    key = models.TextField(default=default_token_key)
     intent = models.TextField(
         choices=TokenIntents.choices, default=TokenIntents.INTENT_VERIFICATION
     )
@@ -313,13 +318,19 @@ class Token(ExpiringModel):
     description = models.TextField(default="", blank=True)
 
     def __str__(self):
-        return f"Token {self.identifier} (expires={self.expires})"
+        description = f"{self.identifier}"
+        if self.expiring:
+            description += f" (expires={self.expires})"
+        return description
 
     class Meta:
 
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        unique_together = (("identifier", "user"),)
+        indexes = [
+            models.Index(fields=["identifier"]),
+            models.Index(fields=["key"]),
+        ]
 
 
 class PropertyMapping(models.Model):

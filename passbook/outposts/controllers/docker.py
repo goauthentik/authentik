@@ -30,7 +30,7 @@ class DockerController(BaseController):
         return {
             "PASSBOOK_HOST": self.outpost.config.passbook_host,
             "PASSBOOK_INSECURE": str(self.outpost.config.passbook_host_insecure),
-            "PASSBOOK_TOKEN": self.outpost.token.token_uuid.hex,
+            "PASSBOOK_TOKEN": self.outpost.token.key,
         }
 
     def _comp_env(self, container: Container) -> bool:
@@ -136,7 +136,7 @@ class DockerController(BaseController):
                         "PASSBOOK_INSECURE": str(
                             self.outpost.config.passbook_host_insecure
                         ),
-                        "PASSBOOK_TOKEN": self.outpost.token.token_uuid.hex,
+                        "PASSBOOK_TOKEN": self.outpost.token.key,
                     },
                 }
             },

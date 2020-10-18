@@ -158,7 +158,7 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
         token, _ = Token.objects.get_or_create(
             identifier="password-reset-temp", user=self.object
         )
-        querystring = urlencode({"token": token.token_uuid})
+        querystring = urlencode({"token": token.key})
         link = request.build_absolute_uri(
             reverse("passbook_flows:default-recovery") + f"?{querystring}"
         )

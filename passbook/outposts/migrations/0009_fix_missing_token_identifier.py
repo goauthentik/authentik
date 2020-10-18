@@ -18,6 +18,7 @@ def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEd
 class Migration(migrations.Migration):
 
     dependencies = [
+        ("passbook_core", "0014_auto_20201018_1158"),
         ("passbook_outposts", "0008_auto_20201014_1547"),
     ]
 

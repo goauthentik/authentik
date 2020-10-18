@@ -1,9 +1,9 @@
 """Channels base classes"""
 from channels.generic.websocket import JsonWebsocketConsumer
-from django.core.exceptions import ValidationError
 from structlog import get_logger
 
-from passbook.core.models import Token, TokenIntents, User
+from passbook.api.auth import token_from_header
+from passbook.core.models import User
 
 LOGGER = get_logger()
 
@@ -20,19 +20,13 @@ class AuthJsonConsumer(JsonWebsocketConsumer):
             self.close()
             return False
 
-        token = headers[b"authorization"]
-        try:
-            token_uuid = token.decode("utf-8")
-            tokens = Token.filter_not_expired(
-                token_uuid=token_uuid, intent=TokenIntents.INTENT_API
-            )
-            if not tokens.exists():
-                LOGGER.warning("WS Request with invalid token")
-                self.close()
-                return False
-        except ValidationError:
-            LOGGER.warning("WS Invalid UUID")
+        raw_header = headers[b"authorization"]
+
+        token = token_from_header(raw_header)
+        if not token:
+            LOGGER.warning("Failed to authenticate")
             self.close()
             return False
-        self.user = tokens.first().user
+
+        self.user = token.user
         return True

@@ -24,7 +24,7 @@
                         <label class="pf-c-form__label" for="help-text-simple-form-name">
                             <span class="pf-c-form__label-text">PASSBOOK_TOKEN</span>
                         </label>
-                        <input class="pf-c-form-control" data-pb-fetch-key="pk" data-pb-fetch-fill="{% url 'passbook_api:token-detail' identifier=outpost.token_identifier %}" readonly type="text" value="" />
+                        <input class="pf-c-form-control" data-pb-fetch-key="key" data-pb-fetch-fill="{% url 'passbook_api:token-view-key' identifier=outpost.token_identifier %}" readonly type="text" value="" />
                     </div>
                     <h3>{% trans 'If your passbook Instance is using a self-signed certificate, set this value.' %}</h3>
                     <div class="pf-c-form__group">
