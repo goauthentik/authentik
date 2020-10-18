@@ -52,7 +52,7 @@ class TestProviderProxy(SeleniumTestCase):
             auto_remove=True,
             environment={
                 "PASSBOOK_HOST": self.live_server_url,
-                "PASSBOOK_TOKEN": outpost.token.token_uuid.hex,
+                "PASSBOOK_TOKEN": outpost.token.key,
             },
         )
         return container

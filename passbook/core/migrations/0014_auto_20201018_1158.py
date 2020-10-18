@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="token",
             name="identifier",
-            field=models.CharField(max_length=255),
+            field=models.SlugField(max_length=255),
         ),
         migrations.AddIndex(
             model_name="token",

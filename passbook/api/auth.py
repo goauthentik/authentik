@@ -28,7 +28,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
         # TODO: Remove this workaround
         # temporary fallback for 0.11 to 0.12 upgrade
         # 0.11 and below proxy sends authorization header not base64 encoded
-        auth_credentials = auth_credentials
+        pass
     # Accept credentials with username and without
     if ":" in auth_credentials:
         _, password = auth_credentials.split(":")
