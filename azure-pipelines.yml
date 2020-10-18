@@ -248,6 +248,7 @@ stages:
             inputs:
               script: |
                 docker stop $(docker ps -aq)
+                docker container prune -f
           - task: CmdLine@2
             displayName: Prepare unittests and coverage for upload
             inputs:
