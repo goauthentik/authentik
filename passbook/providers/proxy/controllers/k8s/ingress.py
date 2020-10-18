@@ -39,11 +39,30 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
     def reconcile(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
-        if len(current.spec.ports) != len(reference.spec.ports):
+        # Create a list of all expected host and tls hosts
+        expected_hosts = []
+        expected_hosts_tls = []
+        for proxy_provider in ProxyProvider.objects.filter(
+            outpost__in=[self.controller.outpost]
+        ):
+            proxy_provider: ProxyProvider
+            external_host_name = urlparse(proxy_provider.external_host)
+            expected_hosts.append(external_host_name.hostname)
+            if external_host_name.scheme == "https":
+                expected_hosts_tls.append(external_host_name.hostname)
+        expected_hosts.sort()
+        expected_hosts_tls.sort()
+
+        have_hosts = [rule.host for rule in reference.spec.rules]
+        have_hosts.sort()
+
+        have_hosts_tls = reference.spec.tls.hosts
+        have_hosts_tls.sort()
+
+        if have_hosts != expected_hosts:
             raise NeedsUpdate()
-        for port in reference.spec.ports:
-            if port not in current.spec.ports:
-                raise NeedsUpdate()
+        if have_hosts_tls != expected_hosts_tls:
+            raise NeedsUpdate()
 
     def get_reference_object(self) -> NetworkingV1beta1Ingress:
         """Get deployment object for outpost"""
