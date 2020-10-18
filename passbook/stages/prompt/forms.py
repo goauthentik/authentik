@@ -113,6 +113,8 @@ class PromptForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
+        if cleaned_data == {}:
+            return {}
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage.fields.filter(
             type=FieldTypes.PASSWORD
@@ -127,6 +129,7 @@ class PromptForm(forms.Form):
         result = engine.result
         if not result.passing:
             raise forms.ValidationError(list(result.messages))
+        return cleaned_data
 
 
 def username_field_cleaner_factory(field: Prompt) -> Callable:

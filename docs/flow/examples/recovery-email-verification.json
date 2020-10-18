@@ -101,7 +101,7 @@
         {
             "identifiers": {
                 "pk": "975d5502-1e22-4d10-b560-fbc5bd70ff4d",
-                "name": "default-password-change-prompt"
+                "name": "Change your password"
             },
             "model": "passbook_stages_prompt.promptstage",
             "attrs": {

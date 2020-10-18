@@ -27,7 +27,7 @@ def create_default_password_change(apps: Apps, schema_editor: BaseDatabaseSchema
     )
 
     prompt_stage, _ = PromptStage.objects.using(db_alias).update_or_create(
-        name="default-password-change-prompt",
+        name="Change your password",
     )
     password_prompt, _ = Prompt.objects.using(db_alias).update_or_create(
         field_key="password",
