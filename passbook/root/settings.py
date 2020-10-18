@@ -18,6 +18,7 @@ from json import dumps
 import structlog
 from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
+from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -312,6 +313,7 @@ if not DEBUG and _ERROR_REPORTING:
         integrations=[
             DjangoIntegration(transaction_style="function_name"),
             CeleryIntegration(),
+            RedisIntegration(),
         ],
         before_send=before_send,
         release="passbook@%s" % __version__,
