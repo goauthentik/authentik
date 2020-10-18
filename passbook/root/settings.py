@@ -18,9 +18,9 @@ from json import dumps
 import structlog
 from celery.schedules import crontab
 from sentry_sdk import init as sentry_init
-from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 from passbook import __version__
 from passbook.core.middleware import structlog_add_request_id

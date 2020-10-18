@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
+from passbook.core.middleware import SESSION_IMPERSONATE_USER
 from passbook.core.models import User
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
@@ -41,10 +42,12 @@ class UserWriteStageView(StageView):
         user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         # Before we change anything, check if the user is the same as in the request
         # and we're updating a password. In that case we need to update the session hash
+        # Also check that we're not currently impersonating, so we don't update the session
         should_update_seesion = False
         if (
             any(["password" in x for x in data.keys()])
             and self.request.user.pk == user.pk
+            and SESSION_IMPERSONATE_USER not in self.request.session
         ):
             should_update_seesion = True
         for key, value in data.items():
