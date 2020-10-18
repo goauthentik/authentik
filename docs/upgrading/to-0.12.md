@@ -7,6 +7,7 @@ This update brings these headline features:
 - Add System Task Overview to see all background tasks, their status, the log output, and retry them
 - Alerts now disappear automatically
 - Audit Logs are now searchable
+- Users can now create their own Tokens to access the API
 
 Fixes:
 

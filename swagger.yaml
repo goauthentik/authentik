@@ -529,6 +529,8 @@ paths:
         in: path
         required: true
         type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/tokens/{identifier}/view_key/:
     get:
       operationId: core_tokens_view_key
@@ -546,6 +548,8 @@ paths:
         in: path
         required: true
         type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/users/:
     get:
       operationId: core_users_list
@@ -6227,6 +6231,7 @@ definitions:
         type: object
   Token:
     required:
+      - identifier
       - user
     type: object
     properties:
@@ -6238,7 +6243,9 @@ definitions:
       identifier:
         title: Identifier
         type: string
-        readOnly: true
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 255
         minLength: 1
       intent:
         title: Intent
