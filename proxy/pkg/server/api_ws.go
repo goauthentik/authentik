@@ -2,6 +2,7 @@ package server
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -19,8 +20,10 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	pathTemplate := "%s://%s/ws/outpost/%s/"
 	scheme := strings.ReplaceAll(pbURL.Scheme, "http", "ws")
 
+	authHeader := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("Basic :%s", ac.token)))
+
 	header := http.Header{
-		"Authorization": []string{ac.token},
+		"Authorization": []string{authHeader},
 	}
 
 	value, set := os.LookupEnv("PASSBOOK_INSECURE")
@@ -69,7 +72,7 @@ func (ac *APIController) startWSHandler() {
 	for {
 		if !ac.wsConn.IsConnected() {
 			notConnectedWait := time.Duration(notConnectedBackoff) * time.Second
-			ac.logger.WithField("loop", "ws-handler").WithField("wait", notConnectedWait).Info("Not connected loop")
+			ac.logger.WithField("loop", "ws-handler").WithField("wait", notConnectedWait).Info("Not connected, trying again...")
 			time.Sleep(notConnectedWait)
 			notConnectedBackoff += notConnectedBackoff
 			continue

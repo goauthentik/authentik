@@ -15,7 +15,6 @@ class EventSerializer(ModelSerializer):
             "pk",
             "user",
             "action",
-            "date",
             "app",
             "context",
             "client_ip",
