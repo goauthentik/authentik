@@ -22,6 +22,7 @@ def ldap_sync_all():
 def ldap_sync(self: MonitoredTask, source_pk: int):
     """Sync a single source"""
     source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
+    self.set_uid(slugify(source.name))
     try:
         syncer = LDAPSynchronizer(source)
         user_count = syncer.sync_users()
@@ -33,10 +34,7 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,
                 [f"Synced {user_count} users", f"Synced {group_count} groups"],
-                uid=slugify(source.name),
             )
         )
     except LDAPException as exc:
-        self.set_status(
-            TaskResult(TaskResultStatus.ERROR, uid=slugify(source.name)).with_error(exc)
-        )
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

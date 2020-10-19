@@ -79,10 +79,17 @@ class MonitoredTask(Task):
 
     _result: TaskResult
 
+    _uid: Optional[str]
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.save_on_success = True
+        self._uid = None
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
+
+    def set_uid(self, uid: str):
+        """Set UID, so in the case of an unexpected error its saved correctly"""
+        self._uid = uid
 
     def set_status(self, result: TaskResult):
         """Set result for current run, will overwrite previous result."""
@@ -92,6 +99,8 @@ class MonitoredTask(Task):
     def after_return(
         self, status, retval, task_id, args: List[Any], kwargs: Dict[str, Any], einfo
     ):
+        if not self._result.uid:
+            self._result.uid = self._uid
         if self.save_on_success:
             TaskInfo(
                 task_name=self.__name__,
@@ -107,6 +116,8 @@ class MonitoredTask(Task):
 
     # pylint: disable=too-many-arguments
     def on_failure(self, exc, task_id, args, kwargs, einfo):
+        if not self._result.uid:
+            self._result.uid = self._uid
         TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
