@@ -11,6 +11,7 @@ nameOverride: ""
 serverReplicas: 1
 workerReplicas: 1
 
+# Enable the Kubernetes integration which lets passbook deploy outposts into kubernetes
 kubernetesIntegration: true
 
 config:
