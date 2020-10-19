@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from kubernetes.client import V1ObjectMeta
 from kubernetes.client.rest import ApiException
-from structlog import get_logger, wrap_logger
+from structlog import get_logger
 
 from passbook import __version__
 from passbook.lib.sentry import SentryIgnoredException
@@ -35,9 +35,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def __init__(self, controller: "KubernetesController"):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
-        self.logger = wrap_logger(
-            get_logger(), controller=self.__class__.__name__, outpost=controller.outpost
-        )
+        self.logger = get_logger()
 
     @property
     def name(self) -> str:
