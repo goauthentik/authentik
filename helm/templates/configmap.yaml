@@ -7,8 +7,8 @@ data:
   POSTGRESQL__NAME: "{{ .Values.postgresql.postgresqlDatabase }}"
   POSTGRESQL__USER: "{{ .Values.postgresql.postgresqlUsername }}"
   {{- if .Values.backup }}
-  POSTGRESQL__S3_BACKUP__ACCESS_KEY: "{{ .Values.backup.access_key }}"
-  POSTGRESQL__S3_BACKUP__SECRET_KEY: "{{ .Values.backup.secret_key }}"
+  POSTGRESQL__S3_BACKUP__ACCESS_KEY: "{{ .Values.backup.accessKey }}"
+  POSTGRESQL__S3_BACKUP__SECRET_KEY: "{{ .Values.backup.secretKey }}"
   POSTGRESQL__S3_BACKUP__BUCKET: "{{ .Values.backup.bucket }}"
   POSTGRESQL__S3_BACKUP__REGION: "{{ .Values.backup.region }}"
   POSTGRESQL__S3_BACKUP__HOST: "{{ .Values.backup.host }}"

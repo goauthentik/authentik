@@ -28,8 +28,8 @@ config:
 
 # Enable Database Backups to S3
 # backup:
-#   access_key: access-key
-#   secret_key: secret-key
+#   accessKey: access-key
+#   secretKey: secret-key
 #   bucket: s3-bucket
 #   region: eu-central-1
 #   host: s3-host
