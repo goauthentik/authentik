@@ -204,7 +204,11 @@ class OutpostState:
     def for_channel(outpost: Outpost, channel: str) -> "OutpostState":
         """Get state for a single channel"""
         key = f"{outpost.state_cache_prefix}_{channel}"
-        data = cache.get(key, {"uid": channel})
+        default_data = {"uid": channel}
+        data = cache.get(key, default_data)
+        if isinstance(data, str):
+            cache.delete(key)
+            data = default_data
         state = from_dict(OutpostState, data)
         state.uid = channel
         # pylint: disable=protected-access
