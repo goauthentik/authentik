@@ -5,6 +5,7 @@ from typing import Dict, List, Type
 from kubernetes.client import OpenApiException
 from kubernetes.config import load_incluster_config, load_kube_config
 from kubernetes.config.config_exception import ConfigException
+from structlog.testing import capture_logs
 from yaml import dump_all
 
 from passbook.outposts.controllers.base import BaseController, ControllerException
@@ -40,6 +41,18 @@ class KubernetesController(BaseController):
                 reconciler = self.reconcilers[reconcile_key](self)
                 reconciler.up()
 
+        except OpenApiException as exc:
+            raise ControllerException from exc
+
+    def up_with_logs(self) -> List[str]:
+        try:
+            all_logs = []
+            for reconcile_key in self.reconcile_order:
+                with capture_logs() as logs:
+                    reconciler = self.reconcilers[reconcile_key](self)
+                    reconciler.up()
+                all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
+            return all_logs
         except OpenApiException as exc:
             raise ControllerException from exc
 

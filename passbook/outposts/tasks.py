@@ -38,6 +38,7 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
     """Launch controller deployment of Outpost"""
     logs = []
     outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
+    self.set_uid(slugify(outpost.name))
     try:
         if outpost.type == OutpostType.PROXY:
             if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
@@ -45,15 +46,9 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
             if outpost.deployment_type == OutpostDeploymentType.DOCKER:
                 logs = ProxyDockerController(outpost).up_with_logs()
     except ControllerException as exc:
-        self.set_status(
-            TaskResult(TaskResultStatus.ERROR, uid=slugify(outpost.name)).with_error(
-                exc
-            )
-        )
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
-        self.set_status(
-            TaskResult(TaskResultStatus.SUCCESSFUL, logs, uid=slugify(outpost.name))
-        )
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
 
 
 @CELERY_APP.task()
