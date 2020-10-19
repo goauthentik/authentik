@@ -1,4 +1,5 @@
-from pickle import loads  # nosec
+from pickle import loads
+from typing import Any  # nosec
 
 from redis import Redis
 
@@ -6,8 +7,10 @@ from lifecycle.migrate import BaseMigration
 from passbook.lib.config import CONFIG
 
 
-class To012Migration(BaseMigration):
-    def __init__(self) -> None:
+class Migration(BaseMigration):
+
+    def __init__(self, cur: Any, con: Any):
+        super().__init__(cur, con)
         self.redis = Redis(
             host=CONFIG.y("redis.host"),
             port=6379,

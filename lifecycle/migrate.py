@@ -47,7 +47,9 @@ if __name__ == "__main__":
         # pyright: reportGeneralTypeIssues=false
         spec.loader.exec_module(mod)
 
-        for _, sub in getmembers(mod, isclass):
+        for name, sub in getmembers(mod, isclass):
+            if name != "Migration":
+                continue
             migration = sub(curr, conn)
             if migration.needs_migration():
                 LOGGER.info("Migration needs to be applied", migration=sub)
