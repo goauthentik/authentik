@@ -1,7 +1,7 @@
 """Base Controller"""
 from typing import Dict, List
 
-from structlog import get_logger
+from structlog import get_logger, wrap_logger
 from structlog.testing import capture_logs
 
 from passbook.lib.sentry import SentryIgnoredException
@@ -21,8 +21,8 @@ class BaseController:
 
     def __init__(self, outpost: Outpost):
         self.outpost = outpost
-        self.logger = get_logger(
-            controller=self.__class__.__name__, outpost=self.outpost
+        self.logger = wrap_logger(
+            get_logger(), controller=self.__class__.__name__, outpost=self.outpost
         )
         self.deployment_ports = {}
 

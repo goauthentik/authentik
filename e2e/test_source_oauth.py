@@ -317,6 +317,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "[name='confirm']").click()
 
         # Wait until we've loaded the user info page
+        sleep(2)
         self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
         self.driver.get(self.url("passbook_core:user-settings"))
 
