@@ -269,9 +269,14 @@ CELERY_TASK_SOFT_TIME_LIMIT = 600
 CELERY_BEAT_SCHEDULE = {
     "clean_expired_models": {
         "task": "passbook.core.tasks.clean_expired_models",
-        "schedule": crontab(minute="*/5"),  # Run every 5 minutes
+        "schedule": crontab(minute="*/5"),
         "options": {"queue": "passbook_scheduled"},
-    }
+    },
+    "db_backup": {
+        "task": "passbook.lib.tasks.backup.backup_database",
+        "schedule": crontab(minute=0, hour=0),
+        "options": {"queue": "passbook_scheduled"},
+    },
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "passbook"
@@ -445,6 +450,7 @@ for _app in INSTALLED_APPS:
 if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    CELERY_TASK_ALWAYS_EAGER = True
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
 

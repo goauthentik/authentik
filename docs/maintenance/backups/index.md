@@ -6,6 +6,10 @@
 
 ### Backup
 
+!!! notice
+
+    Local backups are **enabled** by default, and will be run daily at 00:00
+
 Local backups can be created by running the following command in your passbook installation directory
 
 ```
@@ -14,15 +18,6 @@ docker-compose run --rm worker backup
 
 This will dump the current database into the `./backups` folder. By defaults, the last 10 Backups are kept.
 
-To schedule these backups, use the following snippet in a crontab
-
-```
-0 0 * * * bash -c "cd <passbook install location> && docker-compose run --rm worker backup" >/dev/null
-```
-
-!!! notice
-
-    passbook does support automatic backups on a schedule, however this is currently not recommended, as there is no way to monitor these scheduled tasks.
 
 ### Restore
 
@@ -42,11 +37,7 @@ After you've restored the backup, it is recommended to restart all services with
 
 ### S3 Configuration
 
-!!! notice
-
-    To trigger backups with S3 enabled, use the same commands as above.
-
-#### S3 Preparation
+#### Preparation
 
 passbook expects the bucket you select to already exist. The IAM User given to passbook should have the following permissions
 
@@ -101,11 +92,11 @@ Simply enable these options in your values.yaml file
 ```yaml
 # Enable Database Backups to S3
 backup:
-  access_key: access-key
-  secret_key: secret-key
+  accessKey: access-key
+  secretKey: secret-key
   bucket: s3-bucket
   region: eu-central-1
   host: s3-host
 ```
 
-Afterwards, run a `helm upgrade` to update the ConfigMap. Because passbook-scheduled backups are not recommended currently, a Kubernetes CronJob is created that runs the backup daily.
+Afterwards, run a `helm upgrade` to update the ConfigMap. Backups are done automatically as above, at 00:00 every day.
