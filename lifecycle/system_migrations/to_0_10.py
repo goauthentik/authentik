@@ -26,7 +26,6 @@ name = '0002_passwordstage_change_flow';"""
 
 
 class Migration(BaseMigration):
-
     def needs_migration(self) -> bool:
         self.cur.execute(
             "select * from information_schema.tables where table_name='oidc_provider_client'"
