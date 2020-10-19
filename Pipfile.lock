@@ -373,11 +373,11 @@
         },
         "drf-yasg2": {
             "hashes": [
-                "sha256:54dd641dc2bd283e2b3fe3d1d4d2a03fa7d50ebec5c68004813149034acd9946",
-                "sha256:6d248c52d0e861537fdfd6870b7a62cd12819174be0a5f62f228786492e64c68"
+                "sha256:c4aa21d52f3964f99748eed68eb24be0fdad65e55bb56b99ae85c950718bac64",
+                "sha256:e880b3fa298a614360f4d882e8bc1712b51e1b28696acbd2684ac0ab18275a62"
             ],
             "index": "pypi",
-            "version": "==1.18.5"
+            "version": "==1.19.2"
         },
         "eight": {
             "hashes": [
