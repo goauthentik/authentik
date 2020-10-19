@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BeryJu/passbook/proxy/pkg"
 	"github.com/BeryJu/passbook/proxy/pkg/client"
 	"github.com/BeryJu/passbook/proxy/pkg/client/outposts"
 	"github.com/getsentry/sentry-go"
@@ -70,6 +71,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
+	log.WithField("version", pkg.VERSION).Info("Starting passbook proxy")
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
