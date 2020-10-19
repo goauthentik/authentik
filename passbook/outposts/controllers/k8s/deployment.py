@@ -19,6 +19,7 @@ from kubernetes.client import (
 from passbook import __version__
 from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
+    NeedsRecreate,
     NeedsUpdate,
 )
 from passbook.outposts.models import Outpost
@@ -44,6 +45,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return f"passbook-outpost-{self.outpost.name}"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
+        if current.spec.selector.match_labels != reference.spec.selector.match_labels:
+            raise NeedsRecreate()
         if current.spec.replicas != reference.spec.replicas:
             raise NeedsUpdate()
         if (
