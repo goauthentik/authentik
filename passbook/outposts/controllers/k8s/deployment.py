@@ -69,7 +69,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                     spec=V1PodSpec(
                         containers=[
                             V1Container(
-                                name=self.outpost.type,
+                                name=str(self.outpost.type),
                                 image=f"{self.image_base}-{self.outpost.type}:{__version__}",
                                 ports=container_ports,
                                 env=[

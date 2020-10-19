@@ -31,9 +31,9 @@ class TestControllers(TestCase):
         outpost.providers.add(provider)
         outpost.save()
 
-        controller = ProxyKubernetesController(outpost.pk)
+        controller = ProxyKubernetesController(outpost)
         manifest = controller.get_static_deployment()
-        self.assertEqual(len(list(yaml.load_all(manifest, Loader=yaml.SafeLoader))), 3)
+        self.assertEqual(len(list(yaml.load_all(manifest, Loader=yaml.SafeLoader))), 4)
 
     def test_kubernetes_controller_deploy(self):
         """Test Kubernetes Controller"""
@@ -51,5 +51,6 @@ class TestControllers(TestCase):
         outpost.providers.add(provider)
         outpost.save()
 
-        controller = ProxyKubernetesController(outpost.pk)
+        controller = ProxyKubernetesController(outpost)
         controller.up()
+        controller.down()

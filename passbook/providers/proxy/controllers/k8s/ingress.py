@@ -56,7 +56,10 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         have_hosts = [rule.host for rule in reference.spec.rules]
         have_hosts.sort()
 
-        have_hosts_tls = reference.spec.tls.hosts
+        have_hosts_tls = []
+        for tls_config in reference.spec.tls:
+            if tls_config:
+                have_hosts_tls += tls_config.hosts
         have_hosts_tls.sort()
 
         if have_hosts != expected_hosts:
@@ -102,7 +105,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             )
         return NetworkingV1beta1Ingress(
             metadata=meta,
-            spec=NetworkingV1beta1IngressSpec(rules=rules, tls=tls_config),
+            spec=NetworkingV1beta1IngressSpec(rules=rules, tls=[tls_config]),
         )
 
     def create(self, reference: NetworkingV1beta1Ingress):

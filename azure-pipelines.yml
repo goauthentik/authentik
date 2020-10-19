@@ -179,13 +179,13 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                export PB_TEST_K8S=true
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
             displayName: Run full test suite
             inputs:
               script: |
+                export PB_TEST_K8S=true
                 pipenv run coverage run ./manage.py test passbook -v 3
           - task: CmdLine@2
             inputs:
@@ -221,7 +221,6 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                export PB_TEST_K8S=true
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: DockerCompose@0
@@ -241,6 +240,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
+                export PB_TEST_K8S=true
                 pipenv run coverage run ./manage.py test e2e -v 3 --failfast
           - task: CmdLine@2
             condition: always()

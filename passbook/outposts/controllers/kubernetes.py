@@ -56,7 +56,6 @@ class KubernetesController(BaseController):
         documents = []
         for reconcile_key in self.reconcile_order:
             reconciler = self.reconcilers[reconcile_key](self)
-            reconciler.up()
             documents.append(reconciler.get_reference_object().to_dict())
 
         with StringIO() as _str:
