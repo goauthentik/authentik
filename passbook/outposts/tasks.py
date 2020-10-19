@@ -35,7 +35,7 @@ def outpost_controller_all():
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def outpost_controller(self: MonitoredTask, outpost_pk: str):
-    """Launch controller deployment of Outpost"""
+    """Create/update/monitor the deployment of an Outpost"""
     logs = []
     outpost: Outpost = Outpost.objects.get(pk=outpost_pk)
     self.set_uid(slugify(outpost.name))

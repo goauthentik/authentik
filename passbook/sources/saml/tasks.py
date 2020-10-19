@@ -13,7 +13,7 @@ LOGGER = get_logger()
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def clean_temporary_users(self: MonitoredTask):
-    """Remove old temporary users"""
+    """Remove temporary users created by SAML Sources"""
     _now = now()
     messages = []
     deleted_users = 0

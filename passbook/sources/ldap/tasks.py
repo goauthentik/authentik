@@ -20,7 +20,7 @@ def ldap_sync_all():
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def ldap_sync(self: MonitoredTask, source_pk: int):
-    """Sync a single source"""
+    """Synchronization of an LDAP Source"""
     source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
     self.set_uid(slugify(source.name))
     try:
