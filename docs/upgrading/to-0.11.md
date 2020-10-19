@@ -15,6 +15,6 @@ This update brings these headline features:
 
 ## Upgrading
 
-This upgrade can be done as with minor upgrades, the only external change is the new docker-compose file, which enabled the Docker Integration for Outposts. To use this feature, please download the latest docker-compose from `https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml`.
+This upgrade can be done as with minor upgrades, the only external change is the new docker-compose file, which enabled the Docker Integration for Outposts. To use this feature, please download the latest docker-compose from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml).
 
 Afterwards, you can simply run `docker-compose up -d` and then the normal upgrade command of `docker-compose run --rm server migrate`.
