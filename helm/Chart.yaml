@@ -1,8 +1,8 @@
 apiVersion: v2
-appVersion: "0.12.1-stable"
+appVersion: "0.12.2-stable"
 description: A Helm chart for passbook.
 name: passbook
-version: "0.12.1-stable"
+version: "0.12.2-stable"
 icon: https://github.com/BeryJu/passbook/blob/master/docs/images/logo.svg
 dependencies:
   - name: postgresql
