@@ -404,6 +404,7 @@ _LOGGING_HANDLER_MAP = {
     "websockets": "WARNING",
     "daphne": "WARNING",
     "dbbackup": "ERROR",
+    "kubernetes": "INFO",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false

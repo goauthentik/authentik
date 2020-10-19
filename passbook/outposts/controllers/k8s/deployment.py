@@ -1,5 +1,5 @@
 """Kubernetes Deployment Reconciler"""
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from kubernetes.client import (
     AppsV1Api,
@@ -19,7 +19,6 @@ from kubernetes.client import (
 from passbook import __version__
 from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
-    NeedsRecreate,
     NeedsUpdate,
 )
 from passbook.outposts.models import Outpost
@@ -42,11 +41,9 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
 
     @property
     def name(self) -> str:
-        return f"passbook-outpost-{self.outpost.name}"
+        return f"passbook-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
-        if current.spec.selector.match_labels != reference.spec.selector.match_labels:
-            raise NeedsRecreate()
         if current.spec.replicas != reference.spec.replicas:
             raise NeedsUpdate()
         if (
@@ -55,6 +52,14 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         ):
             raise NeedsUpdate()
 
+    def get_pod_meta(self) -> Dict[str, str]:
+        """Get common object metadata"""
+        return {
+            "app.kubernetes.io/name": "passbook-outpost",
+            "app.kubernetes.io/managed-by": "passbook.beryju.org",
+            "passbook.beryju.org/outpost-uuid": self.controller.outpost.uuid.hex,
+        }
+
     def get_reference_object(self) -> V1Deployment:
         """Get deployment object for outpost"""
         # Generate V1ContainerPort objects
@@ -62,13 +67,14 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         for port_name, port in self.controller.deployment_ports.items():
             container_ports.append(V1ContainerPort(container_port=port, name=port_name))
         meta = self.get_object_meta(name=self.name)
+        secret_name = f"passbook-outpost-{self.controller.outpost.uuid.hex}-api"
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
                 replicas=self.outpost.config.kubernetes_replicas,
-                selector=V1LabelSelector(match_labels=meta.labels),
+                selector=V1LabelSelector(match_labels=self.get_pod_meta()),
                 template=V1PodTemplateSpec(
-                    metadata=V1ObjectMeta(labels=meta.labels),
+                    metadata=V1ObjectMeta(labels=self.get_pod_meta()),
                     spec=V1PodSpec(
                         containers=[
                             V1Container(
@@ -80,7 +86,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="PASSBOOK_HOST",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=f"passbook-outpost-{self.outpost.name}-api",
+                                                name=secret_name,
                                                 key="passbook_host",
                                             )
                                         ),
@@ -89,7 +95,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="PASSBOOK_TOKEN",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=f"passbook-outpost-{self.outpost.name}-api",
+                                                name=secret_name,
                                                 key="token",
                                             )
                                         ),
@@ -98,7 +104,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         name="PASSBOOK_INSECURE",
                                         value_from=V1EnvVarSource(
                                             secret_key_ref=V1SecretKeySelector(
-                                                name=f"passbook-outpost-{self.outpost.name}-api",
+                                                name=secret_name,
                                                 key="passbook_host_insecure",
                                             )
                                         ),
@@ -120,9 +126,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         )
 
     def retrieve(self) -> V1Deployment:
-        return self.api.read_namespaced_deployment(
-            f"passbook-outpost-{self.outpost.name}", self.namespace
-        )
+        return self.api.read_namespaced_deployment(self.name, self.namespace)
 
     def update(self, current: V1Deployment, reference: V1Deployment):
         return self.api.patch_namespaced_deployment(

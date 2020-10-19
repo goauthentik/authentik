@@ -21,7 +21,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
 
     @property
     def name(self) -> str:
-        return f"passbook-outpost-{self.controller.outpost.name}"
+        return f"passbook-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(self, current: V1Service, reference: V1Service):
         if len(current.spec.ports) != len(reference.spec.ports):
@@ -50,9 +50,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         )
 
     def retrieve(self) -> V1Service:
-        return self.api.read_namespaced_service(
-            f"passbook-outpost-{self.controller.outpost.name}", self.namespace
-        )
+        return self.api.read_namespaced_service(self.name, self.namespace)
 
     def update(self, current: V1Service, reference: V1Service):
         return self.api.patch_namespaced_service(

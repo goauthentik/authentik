@@ -34,7 +34,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
 
     @property
     def name(self) -> str:
-        return f"passbook-outpost-{self.controller.outpost.name}"
+        return f"passbook-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
@@ -117,9 +117,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         )
 
     def retrieve(self) -> NetworkingV1beta1Ingress:
-        return self.api.read_namespaced_ingress(
-            f"passbook-outpost-{self.controller.outpost.name}", self.namespace
-        )
+        return self.api.read_namespaced_ingress(self.name, self.namespace)
 
     def update(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress

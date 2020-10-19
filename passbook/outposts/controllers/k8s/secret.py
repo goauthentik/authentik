@@ -27,7 +27,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
 
     @property
     def name(self) -> str:
-        return f"passbook-outpost-{self.controller.outpost.name}-api"
+        return f"passbook-outpost-{self.controller.outpost.uuid.hex}-api"
 
     def reconcile(self, current: V1Secret, reference: V1Secret):
         for key in reference.data.keys():
@@ -59,9 +59,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         )
 
     def retrieve(self) -> V1Secret:
-        return self.api.read_namespaced_secret(
-            f"passbook-outpost-{self.controller.outpost.name}-api", self.namespace
-        )
+        return self.api.read_namespaced_secret(self.name, self.namespace)
 
     def update(self, current: V1Secret, reference: V1Secret):
         return self.api.patch_namespaced_secret(
