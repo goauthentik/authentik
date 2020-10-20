@@ -1,5 +1,5 @@
 """passbook expression policy evaluator"""
-from ipaddress import ip_address
+from ipaddress import ip_address, ip_network
 from typing import List
 
 from django.http import HttpRequest
@@ -22,6 +22,8 @@ class PolicyEvaluator(BaseEvaluator):
         super().__init__()
         self._messages = []
         self._context["pb_message"] = self.expr_func_message
+        self._context["ip_address"] = ip_address
+        self._context["ip_network"] = ip_network
         self._filename = policy_name or "PolicyEvaluator"
 
     def expr_func_message(self, message: str):
