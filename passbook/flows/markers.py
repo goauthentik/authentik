@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
+from django.http.request import HttpRequest
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -20,7 +21,9 @@ class StageMarker:
     """Base stage marker class, no extra attributes, and has no special handler."""
 
     # pylint: disable=unused-argument
-    def process(self, plan: "FlowPlan", stage: Stage) -> Optional[Stage]:
+    def process(
+        self, plan: "FlowPlan", stage: Stage, http_request: Optional[HttpRequest]
+    ) -> Optional[Stage]:
         """Process callback for this marker. This should be overridden by sub-classes.
         If a stage should be removed, return None."""
         return stage
@@ -33,10 +36,14 @@ class ReevaluateMarker(StageMarker):
     binding: PolicyBinding
     user: User
 
-    def process(self, plan: "FlowPlan", stage: Stage) -> Optional[Stage]:
+    def process(
+        self, plan: "FlowPlan", stage: Stage, http_request: Optional[HttpRequest]
+    ) -> Optional[Stage]:
         """Re-evaluate policies bound to stage, and if they fail, remove from plan"""
         engine = PolicyEngine(self.binding, self.user)
         engine.use_cache = False
+        if http_request:
+            engine.request.http_request = http_request
         engine.request.context = plan.context
         engine.build()
         result = engine.result

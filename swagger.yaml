@@ -833,7 +833,12 @@ paths:
           description: ''
           required: false
           type: string
-        - name: re_evaluate_policies
+        - name: evaluate_on_plan
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: evaluate_on_call
           in: query
           description: ''
           required: false
@@ -6337,10 +6342,14 @@ definitions:
         title: Stage
         type: string
         format: uuid
-      re_evaluate_policies:
-        title: Re evaluate policies
-        description: When this option is enabled, the planner will re-evaluate policies
-          bound to this binding.
+      evaluate_on_plan:
+        title: Evaluate on plan
+        description: Evaluate policies during the Flow planning process. Disable this
+          for input-based policies.
+        type: boolean
+      evaluate_on_call:
+        title: Evaluate on call
+        description: Evaluate policies when the Stage is present to the user.
         type: boolean
       order:
         title: Order

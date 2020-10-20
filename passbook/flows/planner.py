@@ -46,7 +46,7 @@ class FlowPlan:
         self.stages.append(stage)
         self.markers.append(marker or StageMarker())
 
-    def next(self) -> Optional[Stage]:
+    def next(self, http_request: Optional[HttpRequest]) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
             return None
@@ -55,7 +55,7 @@ class FlowPlan:
 
         if marker.__class__ is not StageMarker:
             LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
-        marked_stage = marker.process(self, stage)
+        marked_stage = marker.process(self, stage, http_request)
         if not marked_stage:
             LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
             self.stages.remove(stage)
@@ -63,7 +63,7 @@ class FlowPlan:
             if not self.has_stages:
                 return None
             # pylint: disable=not-callable
-            return self.next()
+            return self.next(http_request)
         return marked_stage
 
     def pop(self):
@@ -159,23 +159,41 @@ class FlowPlanner:
             for binding in FlowStageBinding.objects.filter(
                 target__pk=self.flow.pk
             ).order_by("order"):
-                engine = PolicyEngine(binding, user, request)
-                engine.request.context = plan.context
-                engine.build()
-                if engine.passing:
+                binding: FlowStageBinding
+                stage = binding.stage
+                marker = StageMarker()
+                if binding.evaluate_on_plan:
                     LOGGER.debug(
-                        "f(plan): Stage passing", stage=binding.stage, flow=self.flow
+                        "f(plan): evaluating on plan",
+                        stage=binding.stage,
+                        flow=self.flow,
                     )
-                    plan.stages.append(binding.stage)
-                    marker = StageMarker()
-                    if binding.re_evaluate_policies:
+                    engine = PolicyEngine(binding, user, request)
+                    engine.request.context = plan.context
+                    engine.build()
+                    if engine.passing:
                         LOGGER.debug(
-                            "f(plan): Stage has re-evaluate marker",
+                            "f(plan): Stage passing",
                             stage=binding.stage,
                             flow=self.flow,
                         )
-                        marker = ReevaluateMarker(binding=binding, user=user)
-                    plan.markers.append(marker)
+                    else:
+                        stage = None
+                else:
+                    LOGGER.debug(
+                        "f(plan): not evaluating on plan",
+                        stage=binding.stage,
+                        flow=self.flow,
+                    )
+                if binding.evaluate_on_call and stage:
+                    LOGGER.debug(
+                        "f(plan): Stage has re-evaluate marker",
+                        stage=binding.stage,
+                        flow=self.flow,
+                    )
+                    marker = ReevaluateMarker(binding=binding, user=user)
+                if stage:
+                    plan.append(stage, marker)
         LOGGER.debug(
             "f(plan): Finished building",
             flow=self.flow,

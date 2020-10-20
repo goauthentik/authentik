@@ -154,14 +154,18 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     target = models.ForeignKey("Flow", on_delete=models.CASCADE)
     stage = InheritanceForeignKey(Stage, on_delete=models.CASCADE)
 
-    re_evaluate_policies = models.BooleanField(
-        default=False,
+    evaluate_on_plan = models.BooleanField(
+        default=True,
         help_text=_(
             (
-                "When this option is enabled, the planner will re-evaluate "
-                "policies bound to this binding."
+                "Evaluate policies during the Flow planning process. "
+                "Disable this for input-based policies."
             )
         ),
+    )
+    evaluate_on_call = models.BooleanField(
+        default=False,
+        help_text=_("Evaluate policies when the Stage is present to the user."),
     )
 
     order = models.IntegerField()

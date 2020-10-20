@@ -86,7 +86,7 @@ class FlowExecutorView(View):
                 return to_stage_response(self.request, self.handle_invalid_flow(exc))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
-        next_stage = self.plan.next()
+        next_stage = self.plan.next(self.request)
         if not next_stage:
             LOGGER.debug("f(exec): no more stages, flow is done.")
             return self._flow_done()

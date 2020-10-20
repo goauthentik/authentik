@@ -71,7 +71,7 @@
             },
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_call_policies": false
             }
         },
         {
@@ -83,7 +83,7 @@
             },
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_call_policies": false
             }
         },
         {
@@ -95,7 +95,7 @@
             },
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_call_policies": false
             }
         },
         {
@@ -107,7 +107,7 @@
             },
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
-                "re_evaluate_policies": false
+                "evaluate_on_call_policies": false
             }
         },
         {

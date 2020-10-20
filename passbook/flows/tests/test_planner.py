@@ -132,7 +132,7 @@ class TestFlowPlanner(TestCase):
             target=flow,
             stage=DummyStage.objects.create(name="dummy1"),
             order=0,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
 
         request = self.request_factory.get(
@@ -161,7 +161,7 @@ class TestFlowPlanner(TestCase):
             target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)

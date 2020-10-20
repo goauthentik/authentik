@@ -174,7 +174,7 @@ class TestFlowExecutor(TestCase):
             target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -225,7 +225,7 @@ class TestFlowExecutor(TestCase):
             target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
         binding3 = FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
@@ -292,13 +292,13 @@ class TestFlowExecutor(TestCase):
             target=flow,
             stage=DummyStage.objects.create(name="dummy2"),
             order=1,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
         binding3 = FlowStageBinding.objects.create(
             target=flow,
             stage=DummyStage.objects.create(name="dummy3"),
             order=2,
-            re_evaluate_policies=True,
+            evaluate_on_call=True,
         )
         binding4 = FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy4"), order=2
