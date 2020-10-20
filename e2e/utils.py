@@ -1,19 +1,22 @@
 """passbook e2e testing utilities"""
+from functools import wraps
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
 from os import environ, makedirs
 from time import sleep, time
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
 from django.shortcuts import reverse
+from django.test.testcases import TestCase
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -123,3 +126,35 @@ class SeleniumTestCase(StaticLiveServerTestCase):
                             func(apps, schema_editor)
                         except IntegrityError:
                             pass
+
+
+def retry(max_retires=3, exceptions=None):
+    """Retry test multiple times. Default to catching Selenium Timeout Exception"""
+
+    if not exceptions:
+        exceptions = [TimeoutException]
+
+    def retry_actual(func: Callable):
+        """Retry test multiple times"""
+        count = 1
+
+        @wraps(func)
+        def wrapper(self: TestCase, *args, **kwargs):
+            """Run test again if we're below max_retries, including tearDown and
+            setUp. Otherwise raise the error"""
+            nonlocal count
+            try:
+                return func(self, *args, **kwargs)
+            # pylint: disable=catching-non-exception
+            except tuple(exceptions) as exc:
+                count += 1
+                if count > max_retires:
+                    # pylint: disable=raising-non-exception
+                    raise exc
+                self.tearDown()
+                self.setUp()
+                return wrapper(self, *args, **kwargs)
+
+        return wrapper
+
+    return retry_actual

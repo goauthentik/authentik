@@ -11,7 +11,7 @@ from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook import __version__
 from passbook.core.models import Application
 from passbook.flows.models import Flow
@@ -57,6 +57,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
         return container
 
+    @retry()
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
         proxy: ProxyProvider = ProxyProvider.objects.create(
@@ -110,6 +111,7 @@ class TestProviderProxy(SeleniumTestCase):
 class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
 
+    @retry()
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
         SeleniumTestCase().apply_default_data()

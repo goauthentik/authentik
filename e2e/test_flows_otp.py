@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.flows.models import Flow, FlowStageBinding
 from passbook.stages.otp_validate.models import OTPValidateStage
 
@@ -21,6 +21,7 @@ from passbook.stages.otp_validate.models import OTPValidateStage
 class TestFlowsOTP(SeleniumTestCase):
     """test flow with otp stages"""
 
+    @retry()
     def test_otp_validate(self):
         """test flow with otp stages"""
         sleep(1)
@@ -52,6 +53,7 @@ class TestFlowsOTP(SeleniumTestCase):
             USER().username,
         )
 
+    @retry()
     def test_otp_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
@@ -98,6 +100,7 @@ class TestFlowsOTP(SeleniumTestCase):
 
         self.assertTrue(TOTPDevice.objects.filter(user=USER(), confirmed=True).exists())
 
+    @retry()
     def test_otp_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")

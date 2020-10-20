@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from e2e.utils import SeleniumTestCase
+from e2e.utils import SeleniumTestCase, retry
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
 from passbook.sources.saml.models import SAMLBindingTypes, SAMLSource
@@ -92,6 +92,7 @@ class TestSourceSAML(SeleniumTestCase):
             },
         }
 
+    @retry()
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
         # Bootstrap all needed objects
@@ -141,6 +142,7 @@ class TestSourceSAML(SeleniumTestCase):
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )
 
+    @retry()
     def test_idp_post(self):
         """test SAML Source With post binding"""
         # Bootstrap all needed objects
@@ -192,6 +194,7 @@ class TestSourceSAML(SeleniumTestCase):
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )
 
+    @retry()
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""
         # Bootstrap all needed objects

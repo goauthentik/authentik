@@ -8,7 +8,7 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.stages.email.models import EmailStage, EmailTemplates
 from passbook.stages.identification.models import IdentificationStage
@@ -34,6 +34,7 @@ class TestFlowsEnroll(SeleniumTestCase):
             ),
         }
 
+    @retry()
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # First stage fields
@@ -119,6 +120,7 @@ class TestFlowsEnroll(SeleniumTestCase):
             "foo@bar.baz",
         )
 
+    @retry()
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
     def test_enroll_email(self):
         """Test enroll with Email verification"""

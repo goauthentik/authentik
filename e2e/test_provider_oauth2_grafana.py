@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import Application
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
@@ -80,6 +80,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             },
         }
 
+    @retry()
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
         sleep(1)
@@ -122,6 +123,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             "Redirect URI Error",
         )
 
+    @retry()
     def test_authorization_consent_implied(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         sleep(1)
@@ -183,6 +185,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             USER().email,
         )
 
+    @retry()
     def test_authorization_logout(self):
         """test OpenID Provider flow with logout"""
         sleep(1)
@@ -252,6 +255,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         self.driver.find_element(By.ID, "logout").click()
 
+    @retry()
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -325,6 +329,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             USER().email,
         )
 
+    @retry()
     def test_authorization_denied(self):
         """test OpenID Provider flow (default authorization with access deny)"""
         sleep(1)

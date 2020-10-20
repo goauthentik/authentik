@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.policies.expression.models import ExpressionPolicy
@@ -61,6 +61,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             },
         }
 
+    @retry()
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects
@@ -115,6 +116,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             USER().username,
         )
 
+    @retry()
     def test_authorization_consent_explicit(self):
         """test OAuth Provider flow (default authorization flow with explicit consent)"""
         # Bootstrap all needed objects
@@ -184,6 +186,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             USER().username,
         )
 
+    @retry()
     def test_denied(self):
         """test OAuth Provider flow (default authorization flow, denied)"""
         # Bootstrap all needed objects

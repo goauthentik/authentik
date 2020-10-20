@@ -12,7 +12,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import Application
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
@@ -66,6 +66,7 @@ class TestProviderSAML(SeleniumTestCase):
             LOGGER.info("Container failed healthcheck")
             sleep(1)
 
+    @retry()
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -105,6 +106,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.assertEqual(body["attr"]["mail"], [USER().email])
         self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
+    @retry()
     def test_sp_initiated_explicit(self):
         """test SAML Provider flow SP-initiated flow (explicit consent)"""
         # Bootstrap all needed objects
@@ -150,6 +152,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.assertEqual(body["attr"]["mail"], [USER().email])
         self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
+    @retry()
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -195,6 +198,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.assertEqual(body["attr"]["mail"], [USER().email])
         self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
 
+    @retry()
     def test_sp_initiated_denied(self):
         """test SAML Provider flow SP-initiated flow (Policy denies access)"""
         # Bootstrap all needed objects

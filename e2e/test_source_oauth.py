@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 from yaml import safe_dump
 
-from e2e.utils import SeleniumTestCase
+from e2e.utils import SeleniumTestCase, retry
 from passbook.flows.models import Flow
 from passbook.providers.oauth2.generators import (
     generate_client_id,
@@ -106,6 +106,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             consumer_secret=self.client_secret,
         )
 
+    @retry()
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()
@@ -159,6 +160,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             "admin@example.com",
         )
 
+    @retry()
     @override_settings(SESSION_COOKIE_SAMESITE="strict")
     def test_oauth_samesite_strict(self):
         """test OAuth Source With SameSite set to strict
@@ -195,6 +197,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             "Authentication Failed.",
         )
 
+    @retry()
     def test_oauth_enroll_auth(self):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
@@ -291,6 +294,7 @@ class TestSourceOAuth1(SeleniumTestCase):
             consumer_secret=self.client_secret,
         )
 
+    @retry()
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()

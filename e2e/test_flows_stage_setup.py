@@ -5,7 +5,7 @@ from unittest.case import skipUnless
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from e2e.utils import USER, SeleniumTestCase
+from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.providers.oauth2.generators import generate_client_secret
@@ -16,6 +16,7 @@ from passbook.stages.password.models import PasswordStage
 class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
+    @retry()
     def test_password_change(self):
         """test password change flow"""
         # Ensure that password stage has change_flow set

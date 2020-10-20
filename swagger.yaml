@@ -6348,7 +6348,7 @@ definitions:
           for input-based policies.
         type: boolean
       re_evaluate_policies:
-        title: Evaluate on call
+        title: Re evaluate policies
         description: Evaluate policies when the Stage is present to the user.
         type: boolean
       order:
