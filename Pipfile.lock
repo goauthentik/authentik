@@ -1100,12 +1100,12 @@
                 "secure"
             ],
             "hashes": [
-                "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a",
-                "sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461"
+                "sha256:8d7eaa5a82a1cac232164990f04874c594c9453ec55eef02eab885aa02fc17a2",
+                "sha256:f5321fbe4bf3fefa0efd0bfe7fb14e90909eb62a48ccda331726b4319897dd5e"
             ],
             "index": "pypi",
             "markers": null,
-            "version": "==1.25.10"
+            "version": "==1.25.11"
         },
         "uvicorn": {
             "extras": [
@@ -1745,12 +1745,12 @@
                 "secure"
             ],
             "hashes": [
-                "sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a",
-                "sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461"
+                "sha256:8d7eaa5a82a1cac232164990f04874c594c9453ec55eef02eab885aa02fc17a2",
+                "sha256:f5321fbe4bf3fefa0efd0bfe7fb14e90909eb62a48ccda331726b4319897dd5e"
             ],
             "index": "pypi",
             "markers": null,
-            "version": "==1.25.10"
+            "version": "==1.25.11"
         },
         "wrapt": {
             "hashes": [
