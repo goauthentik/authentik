@@ -39,4 +39,5 @@ class UserLoginStageView(StageView):
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
         )
+        messages.success(self.request, _("Successfully logged in!"))
         return self.executor.stage_ok()

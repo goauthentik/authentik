@@ -1,7 +1,6 @@
 """passbook password stage"""
 from typing import Any, Dict, List, Optional
 
-from django.contrib import messages
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.signals import user_login_failed
@@ -122,5 +121,4 @@ class PasswordStageView(FormView, StageView):
             self.executor.plan.context[
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND
             ] = user.backend
-            messages.success(self.request, _("Successfully logged in!"))
             return self.executor.stage_ok()
