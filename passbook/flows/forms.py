@@ -51,7 +51,7 @@ class FlowStageBindingForm(forms.ModelForm):
             "target",
             "stage",
             "evaluate_on_plan",
-            "evaluate_on_call",
+            "re_evaluate_policies",
             "order",
         ]
         widgets = {

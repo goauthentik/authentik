@@ -30,7 +30,7 @@
             },
             "model": "passbook_flows.flowstagebinding",
             "attrs": {
-                "evaluate_on_call": false
+                "re_evaluate_policies": false
             }
         }
     ]

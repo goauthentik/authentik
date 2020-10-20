@@ -10,14 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name="flowstagebinding",
-            old_name="re_evaluate_policies",
-            new_name="evaluate_on_call",
-        ),
         migrations.AlterField(
             model_name="flowstagebinding",
-            name="evaluate_on_call",
+            name="re_evaluate_policies",
             field=models.BooleanField(
                 default=False,
                 help_text="Evaluate policies when the Stage is present to the user.",

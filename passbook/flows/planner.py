@@ -185,7 +185,7 @@ class FlowPlanner:
                         stage=binding.stage,
                         flow=self.flow,
                     )
-                if binding.evaluate_on_call and stage:
+                if binding.re_evaluate_policies and stage:
                     LOGGER.debug(
                         "f(plan): Stage has re-evaluate marker",
                         stage=binding.stage,

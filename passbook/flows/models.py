@@ -163,7 +163,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
             )
         ),
     )
-    evaluate_on_call = models.BooleanField(
+    re_evaluate_policies = models.BooleanField(
         default=False,
         help_text=_("Evaluate policies when the Stage is present to the user."),
     )

@@ -32,7 +32,7 @@ class FlowStageBindingSerializer(ModelSerializer):
             "target",
             "stage",
             "evaluate_on_plan",
-            "evaluate_on_call",
+            "re_evaluate_policies",
             "order",
             "policies",
         ]

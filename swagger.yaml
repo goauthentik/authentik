@@ -838,7 +838,7 @@ paths:
           description: ''
           required: false
           type: string
-        - name: evaluate_on_call
+        - name: re_evaluate_policies
           in: query
           description: ''
           required: false
@@ -6347,7 +6347,7 @@ definitions:
         description: Evaluate policies during the Flow planning process. Disable this
           for input-based policies.
         type: boolean
-      evaluate_on_call:
+      re_evaluate_policies:
         title: Evaluate on call
         description: Evaluate policies when the Stage is present to the user.
         type: boolean
