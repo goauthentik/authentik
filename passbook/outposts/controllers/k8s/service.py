@@ -7,6 +7,7 @@ from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
+from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
 
 if TYPE_CHECKING:
     from passbook.outposts.controllers.kubernetes import KubernetesController
@@ -36,9 +37,10 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         ports = []
         for port_name, port in self.controller.deployment_ports.items():
             ports.append(V1ServicePort(name=port_name, port=port))
+        selector_labels = DeploymentReconciler(self.controller).get_pod_meta()
         return V1Service(
             metadata=meta,
-            spec=V1ServiceSpec(ports=ports, selector=meta.labels, type="ClusterIP"),
+            spec=V1ServiceSpec(ports=ports, selector=selector_labels, type="ClusterIP"),
         )
 
     def create(self, reference: V1Service):
