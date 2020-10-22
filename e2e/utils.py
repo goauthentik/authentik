@@ -12,7 +12,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
 from django.shortcuts import reverse
-from django.test.testcases import TestCase
+from django.test.testcases import TransactionTestCase
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
@@ -134,12 +134,14 @@ def retry(max_retires=3, exceptions=None):
     if not exceptions:
         exceptions = [TimeoutException]
 
+    logger = get_logger()
+
     def retry_actual(func: Callable):
         """Retry test multiple times"""
         count = 1
 
         @wraps(func)
-        def wrapper(self: TestCase, *args, **kwargs):
+        def wrapper(self: TransactionTestCase, *args, **kwargs):
             """Run test again if we're below max_retries, including tearDown and
             setUp. Otherwise raise the error"""
             nonlocal count
@@ -149,9 +151,13 @@ def retry(max_retires=3, exceptions=None):
             except tuple(exceptions) as exc:
                 count += 1
                 if count > max_retires:
+                    logger.debug("Exceeded retry count", exc=exc, test=self)
                     # pylint: disable=raising-non-exception
                     raise exc
+                logger.debug("Retrying on error", exc=exc, test=self)
                 self.tearDown()
+                # pylint: disable=protected-access
+                self._post_teardown()
                 self.setUp()
                 return wrapper(self, *args, **kwargs)
 
