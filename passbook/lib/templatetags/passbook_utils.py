@@ -6,14 +6,18 @@ from django import template
 from django.db.models import Model
 from django.http.request import HttpRequest
 from django.template import Context
+from django.templatetags.static import static
 from django.utils.html import escape, mark_safe
 from structlog import get_logger
 
+from passbook.core.models import User
 from passbook.lib.config import CONFIG
 from passbook.lib.utils.urls import is_url_absolute
 
 register = template.Library()
 LOGGER = get_logger()
+
+GRAVATAR_URL = "https://secure.gravatar.com"
 
 
 @register.simple_tag(takes_context=True)
@@ -54,37 +58,23 @@ def css_class(field, css):
 
 
 @register.simple_tag
-def gravatar(email, size=None, rating=None):
-    """
-    Generates a Gravatar URL for the given email address.
-
-    Syntax::
-
-        {% gravatar <email> [size] [rating] %}
-
-    Example::
-
-        {% gravatar someone@example.com 48 pg %}
-    """
-    # gravatar uses md5 for their URLs, so md5 can't be avoided
-    gravatar_url = "%savatar/%s" % (
-        "https://secure.gravatar.com/",
-        md5(email.encode("utf-8")).hexdigest(),  # nosec
-    )
-
-    parameters = [
-        p
-        for p in (
-            ("s", size or "158"),
-            ("r", rating or "g"),
+def avatar(user: User) -> str:
+    """Get avatar, depending on passbook.avatar setting"""
+    mode = CONFIG.raw.get("passbook").get("avatars")
+    if mode == "none":
+        return static("passbook/user-default.png")
+    if mode == "gravatar":
+        parameters = [
+            ("s", "158"),
+            ("r", "g"),
+        ]
+        # gravatar uses md5 for their URLs, so md5 can't be avoided
+        mail_hash = md5(user.email.encode("utf-8")).hexdigest()  # nosec
+        gravatar_url = (
+            f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
         )
-        if p[1]
-    ]
-
-    if parameters:
-        gravatar_url += "?" + urlencode(parameters, doseq=True)
-
-    return escape(gravatar_url)
+        return escape(gravatar_url)
+    raise ValueError(f"Invalid avatar mode {mode}")
 
 
 @register.filter

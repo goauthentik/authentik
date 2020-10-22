@@ -1,6 +1,8 @@
 """Integrate ./manage.py test with pytest"""
 from django.conf import settings
 
+from passbook.lib.config import CONFIG
+
 
 class PytestTestRunner:
     """Runs pytest to discover and run tests."""
@@ -11,6 +13,7 @@ class PytestTestRunner:
         self.keepdb = keepdb
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
+        CONFIG.raw.get("passbook")["avatars"] = "none"
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.
