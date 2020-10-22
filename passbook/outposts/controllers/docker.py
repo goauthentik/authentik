@@ -24,7 +24,10 @@ class DockerController(BaseController):
 
     def __init__(self, outpost: Outpost) -> None:
         super().__init__(outpost)
-        self.client = from_env()
+        try:
+            self.client = from_env()
+        except DockerException as exc:
+            raise ControllerException from exc
 
     def _get_labels(self) -> Dict[str, str]:
         return {}

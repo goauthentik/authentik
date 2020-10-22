@@ -24,6 +24,7 @@
                         <label class="pf-c-form__label" for="help-text-simple-form-name">
                             <span class="pf-c-form__label-text">PASSBOOK_TOKEN</span>
                         </label>
+                        {# TODO: Only load key on modal open #}
                         <input class="pf-c-form-control" data-pb-fetch-key="key" data-pb-fetch-fill="{% url 'passbook_api:token-view-key' identifier=outpost.token_identifier %}" readonly type="text" value="" />
                     </div>
                     <h3>{% trans 'If your passbook Instance is using a self-signed certificate, set this value.' %}</h3>
