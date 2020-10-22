@@ -50,7 +50,7 @@ services:
       PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
     volumes:
       - ./backups:/backups
-      - /var/run/docker.socket:/var/run/docker.socket
+      - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - .env
   static:
