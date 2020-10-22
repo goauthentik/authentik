@@ -25,7 +25,14 @@ RUN apt-get update && \
     pip install -r /requirements.txt --no-cache-dir && \
     apt-get remove --purge -y build-essential && \
     apt-get autoremove --purge -y && \
-    adduser --system --no-create-home --uid 1000 --group --home /passbook passbook
+    # This is quite hacky, but docker has no guaranteed Group ID
+    # we could instead check for the GID of the socket and add the user dynamically,
+    # but then we have to drop permmissions later
+    groupadd -g 998 docker_998 && \
+    groupadd -g 999 docker_999 && \
+    adduser --system --no-create-home --uid 1000 --group --home /passbook passbook && \
+    usermod -a -G docker_998 passbook && \
+    usermod -a -G docker_999 passbook
 
 COPY ./passbook/ /passbook
 COPY ./manage.py /
