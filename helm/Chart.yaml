@@ -1,9 +1,11 @@
 apiVersion: v2
-appVersion: "0.12.5-stable"
-description: A Helm chart for passbook.
+description: passbook is an open-source Identity Provider focused on flexibility and versatility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
 name: passbook
+home: https://passbook.beryju.org
+sources:
+  - https://github.com/BeryJu/passbook
 version: "0.12.5-stable"
-icon: https://github.com/BeryJu/passbook/blob/master/docs/images/logo.svg
+icon: https://raw.githubusercontent.com/BeryJu/passbook/master/docs/images/logo.svg
 dependencies:
   - name: postgresql
     version: 9.4.1

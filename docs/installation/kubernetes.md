@@ -13,8 +13,6 @@ image:
   name_static: beryju/passbook-static
   tag: 0.12.5-stable
 
-nameOverride: ""
-
 serverReplicas: 1
 workerReplicas: 1
 
@@ -45,7 +43,6 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
   hosts:
     - passbook.k8s.local
   tls: []

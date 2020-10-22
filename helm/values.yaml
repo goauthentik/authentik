@@ -6,8 +6,6 @@ image:
   name_static: beryju/passbook-static
   tag: 0.12.5-stable
 
-nameOverride: ""
-
 serverReplicas: 1
 workerReplicas: 1
 
@@ -38,7 +36,6 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
   hosts:
     - passbook.k8s.local
   tls: []
@@ -57,12 +54,3 @@ install:
 # These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
 postgresql:
   postgresqlDatabase: passbook
-
-redis:
-  cluster:
-    enabled: false
-  master:
-    persistence:
-      enabled: false
-    # https://stackoverflow.com/a/59189742
-    disableCommands: []
