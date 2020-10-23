@@ -54,3 +54,10 @@ install:
 # These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
 postgresql:
   postgresqlDatabase: passbook
+
+redis:
+  cluster:
+    enabled: false
+  master:
+    # https://stackoverflow.com/a/59189742
+    disableCommands: []
