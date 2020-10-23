@@ -273,7 +273,7 @@ CELERY_BEAT_SCHEDULE = {
         "options": {"queue": "passbook_scheduled"},
     },
     "db_backup": {
-        "task": "passbook.lib.tasks.backup.backup_database",
+        "task": "passbook.core.tasks.backup_database",
         "schedule": crontab(minute=0, hour=0),
         "options": {"queue": "passbook_scheduled"},
     },

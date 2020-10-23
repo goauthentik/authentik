@@ -50,15 +50,23 @@ class TaskViewSet(ViewSet):
         task = TaskInfo.by_name(pk)
         if not task:
             raise Http404
-        task_module = import_module(task.task_call_module)
-        task_func = getattr(task_module, task.task_call_func)
-        task_func.delay(*task.task_call_args, **task.task_call_kwargs)
-        messages.success(
-            self.request,
-            _("Successfully re-scheduled Task %(name)s!" % {"name": task.task_name}),
-        )
-        return Response(
-            {
-                "successful": True,
-            }
-        )
+        try:
+            task_module = import_module(task.task_call_module)
+            task_func = getattr(task_module, task.task_call_func)
+            task_func.delay(*task.task_call_args, **task.task_call_kwargs)
+            messages.success(
+                self.request,
+                _(
+                    "Successfully re-scheduled Task %(name)s!"
+                    % {"name": task.task_name}
+                ),
+            )
+            return Response(
+                {
+                    "successful": True,
+                }
+            )
+        except ImportError:
+            # if we get an import error, the module path has probably changed
+            task.delete()
+            return Response({"successful": False})

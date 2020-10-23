@@ -68,6 +68,9 @@ router.register("core/tokens", TokenViewSet)
 router.register("outposts/outposts", OutpostViewSet)
 router.register("outposts/proxy", OutpostConfigViewSet)
 
+router.register("flows/instances", FlowViewSet)
+router.register("flows/bindings", FlowStageBindingViewSet)
+
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
 router.register("audit/events", EventViewSet)
@@ -113,9 +116,6 @@ router.register("stages/user_delete", UserDeleteStageViewSet)
 router.register("stages/user_login", UserLoginStageViewSet)
 router.register("stages/user_logout", UserLogoutStageViewSet)
 router.register("stages/user_write", UserWriteStageViewSet)
-
-router.register("flows/instances", FlowViewSet)
-router.register("flows/bindings", FlowStageBindingViewSet)
 
 router.register("stages/dummy", DummyStageViewSet)
 router.register("policies/dummy", DummyPolicyViewSet)

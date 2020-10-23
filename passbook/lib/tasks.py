@@ -62,6 +62,10 @@ class TaskInfo:
         """Get TaskInfo Object by name"""
         return cache.get(f"task_{name}")
 
+    def delete(self):
+        """Delete task info from cache"""
+        return cache.delete(f"task_{self.task_name}")
+
     def save(self):
         """Save task into cache"""
         key = f"task_{self.task_name}"
