@@ -14,10 +14,7 @@ def update_duration(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     for stage in UserLoginStage.objects.using(db_alias).all():
         if stage.session_duration.isdigit():
-            if stage.session_duration == 0:
-                stage.session_duration = "seconds=1"
-            else:
-                stage.session_duration = f"seconds={stage.session_duration}"
+            stage.session_duration = f"seconds={stage.session_duration}"
             stage.save()
 
 
@@ -32,8 +29,8 @@ class Migration(migrations.Migration):
             model_name="userloginstage",
             name="session_duration",
             field=models.TextField(
-                default="seconds=-1",
-                help_text="Determines how long a session lasts. Default of -1 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)",
+                default="seconds=0",
+                help_text="Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)",
                 validators=[passbook.lib.utils.time.timedelta_string_validator],
             ),
         ),

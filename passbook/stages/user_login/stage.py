@@ -2,7 +2,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
-from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
@@ -35,11 +34,10 @@ class UserLoginStageView(StageView):
             backend=backend,
         )
         delta = timedelta_from_string(self.executor.current_stage.session_duration)
-        if delta.seconds == -1:
+        if delta.seconds == 0:
             self.request.session.set_expiry(0)
         else:
-            expiry = now() + delta
-            self.request.session.set_expiry(expiry)
+            self.request.session.set_expiry(delta)
         LOGGER.debug(
             "Logged in",
             user=self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],

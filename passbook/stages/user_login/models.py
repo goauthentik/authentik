@@ -15,10 +15,10 @@ class UserLoginStage(Stage):
     """Attaches the currently pending user to the current session."""
 
     session_duration = models.TextField(
-        default="seconds=-1",
+        default="seconds=0",
         validators=[timedelta_string_validator],
         help_text=_(
-            "Determines how long a session lasts. Default of -1 means "
+            "Determines how long a session lasts. Default of 0 means "
             "that the sessions lasts until the browser is closed. "
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
