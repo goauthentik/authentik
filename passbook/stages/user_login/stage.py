@@ -2,11 +2,13 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from structlog import get_logger
 
 from passbook.flows.planner import PLAN_CONTEXT_PENDING_USER
 from passbook.flows.stage import StageView
+from passbook.lib.utils.time import timedelta_from_string
 from passbook.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
 LOGGER = get_logger()
@@ -32,7 +34,12 @@ class UserLoginStageView(StageView):
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],
             backend=backend,
         )
-        self.request.session.set_expiry(self.executor.current_stage.session_duration)
+        delta = timedelta_from_string(self.executor.current_stage.session_duration)
+        if delta.seconds == -1:
+            self.request.session.set_expiry(0)
+        else:
+            expiry = now() + delta
+            self.request.session.set_expiry(expiry)
         LOGGER.debug(
             "Logged in",
             user=self.executor.plan.context[PLAN_CONTEXT_PENDING_USER],

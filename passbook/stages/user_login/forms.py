@@ -13,4 +13,5 @@ class UserLoginStageForm(forms.ModelForm):
         fields = ["name", "session_duration"]
         widgets = {
             "name": forms.TextInput(),
+            "session_duration": forms.TextInput(),
         }

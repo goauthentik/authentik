@@ -105,5 +105,7 @@ class TestUserLoginStage(TestCase):
 
     def test_form(self):
         """Test Form"""
-        data = {"name": "test", "session_duration": 0}
+        data = {"name": "test", "session_duration": "seconds=0"}
         self.assertEqual(UserLoginStageForm(data).is_valid(), True)
+        data = {"name": "test", "session_duration": "123"}
+        self.assertEqual(UserLoginStageForm(data).is_valid(), False)

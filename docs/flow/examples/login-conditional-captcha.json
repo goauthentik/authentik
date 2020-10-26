@@ -20,7 +20,7 @@
             },
             "model": "passbook_stages_user_login.userloginstage",
             "attrs": {
-                "session_duration": 0
+                "session_duration": "seconds=-1"
             }
         },
         {
