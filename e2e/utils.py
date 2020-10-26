@@ -16,7 +16,7 @@ from django.test.testcases import TransactionTestCase
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -132,7 +132,7 @@ def retry(max_retires=3, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
-        exceptions = [TimeoutException]
+        exceptions = [TimeoutException, NoSuchElementException]
 
     logger = get_logger()
 
