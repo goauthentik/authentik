@@ -7948,11 +7948,10 @@ definitions:
         minLength: 1
       session_duration:
         title: Session duration
-        description: Determines how long a session lasts, in seconds. Default of 0
-          means that the sessions lasts until the browser is closed.
-        type: integer
-        maximum: 2147483647
-        minimum: 0
+        description: 'Determines how long a session lasts. Default of -1 means that
+          the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        type: string
+        minLength: 1
   UserLogoutStage:
     required:
       - name

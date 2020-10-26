@@ -18,7 +18,7 @@ The following placeholders will be used:
 - `sonarr.company` is the FQDN of the Sonarr install.
 - `passbook.company` is the FQDN of the passbook install.
 
-Create an application in passbook. Create a Proxy Provider with the following values
+Create a Proxy Provider with the following values
 
 - Internal host
 
@@ -29,6 +29,8 @@ Create an application in passbook. Create a Proxy Provider with the following va
 - External host
 
     Set this to the external URL you will be accessing Sonarr from.
+
+Create an application in passbook and select the provider you've created above.
 
 ## Deployment
 
