@@ -19,6 +19,7 @@ class FetchFillSlot extends LitElement {
             if (!r.ok) {
                 throw Error(r.statusText);
             }
+            return r;
         }).then((r) => {
             return r.json()
         }).then((r) => {
