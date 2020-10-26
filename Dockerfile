@@ -32,7 +32,9 @@ RUN apt-get update && \
     groupadd -g 999 docker_999 && \
     adduser --system --no-create-home --uid 1000 --group --home /passbook passbook && \
     usermod -a -G docker_998 passbook && \
-    usermod -a -G docker_999 passbook
+    usermod -a -G docker_999 passbook && \
+    mkdir /backups && \
+    chown passbook:passbook /backups
 
 COPY ./passbook/ /passbook
 COPY ./manage.py /

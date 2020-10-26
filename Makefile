@@ -12,7 +12,7 @@ lint-fix:
 
 lint:
 	pyright passbook e2e lifecycle
-	bandit -r passbook e2e lifecycle
+	bandit -r passbook e2e lifecycle -x node_modules
 	pylint passbook e2e lifecycle
 	prospector
 

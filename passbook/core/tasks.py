@@ -4,6 +4,7 @@ from io import StringIO
 
 from boto3.exceptions import Boto3Error
 from botocore.exceptions import BotoCoreError, ClientError
+from dbbackup.db.exceptions import CommandConnectorError
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core import management
 from django.utils.timezone import now
@@ -50,5 +51,12 @@ def backup_database(self: MonitoredTask):  # pragma: no cover
             )
         )
         LOGGER.info("Successfully backed up database.")
-    except (IOError, BotoCoreError, ClientError, Boto3Error) as exc:
+    except (
+        IOError,
+        BotoCoreError,
+        ClientError,
+        Boto3Error,
+        PermissionError,
+        CommandConnectorError,
+    ) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
