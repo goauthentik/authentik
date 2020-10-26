@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { updateMessages } from "./Messages.js";
 
-class FetchFillSlot extends LitElement {
+class FlowShellCard extends LitElement {
 
     static get properties() {
         return {
@@ -147,4 +147,4 @@ class FetchFillSlot extends LitElement {
     }
 }
 
-customElements.define('flow-shell-card', FetchFillSlot);
+customElements.define('flow-shell-card', FlowShellCard);
