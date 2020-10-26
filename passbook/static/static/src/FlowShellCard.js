@@ -15,7 +15,18 @@ class FetchFillSlot extends LitElement {
     }
 
     firstUpdated() {
-        fetch(this.flowBodyUrl).then(r => r.json()).then(r => this.updateCard(r));
+        fetch(this.flowBodyUrl).then(r => {
+            if (!r.ok) {
+                throw Error(r.statusText);
+            }
+        }).then((r) => {
+            return r.json()
+        }).then((r) => {
+            this.updateCard(r)
+        }).catch((e) => {
+            // Catch JSON or Update errors
+            this.errorMessage(e);
+        });
     }
 
     async updateCard(data) {
@@ -83,12 +94,37 @@ class FetchFillSlot extends LitElement {
                 fetch(this.flowBodyUrl, {
                     method: 'post',
                     body: formData,
-                }).then(response => response.json()).then(data => {
+                }).then((response) => {
+                    return response.json()
+                }).then(data => {
                     this.updateCard(data);
+                }).catch((e) => {
+                    this.errorMessage(e);
                 });
             });
             form.classList.add("pb-flow-wrapped");
         });
+    }
+
+    errorMessage(error) {
+        this.flowBody = `
+            <style>
+                .pb-exception {
+                    font-family: monospace;
+                    overflow-x: scroll;
+                }
+            </style>
+            <header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">
+                    Whoops!
+                </h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                <h3>
+                    Something went wrong! Please try again later.
+                </h3>
+                <pre class="pb-exception">${error}</pre>
+            </div>`;
     }
 
     loading() {
