@@ -36,7 +36,7 @@ class TestProviderProxy(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "traefik/whoami:latest",
+            "image": "docker.beryju.org/proxy/traefik/whoami:latest",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

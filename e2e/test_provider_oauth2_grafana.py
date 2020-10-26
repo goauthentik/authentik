@@ -47,7 +47,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "grafana/grafana:7.1.0",
+            "image": "docker.beryju.org/proxy/grafana/grafana:7.1.0",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

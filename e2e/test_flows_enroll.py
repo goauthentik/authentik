@@ -23,7 +23,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "mailhog/mailhog:v1.0.1",
+            "image": "docker.beryju.org/proxy/mailhog/mailhog:v1.0.1",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

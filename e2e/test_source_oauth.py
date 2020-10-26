@@ -74,7 +74,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "quay.io/dexidp/dex:v2.24.0",
+            "image": "docker.beryju.org/proxy/quay.io/dexidp/dex:v2.24.0",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
@@ -258,7 +258,7 @@ class TestSourceOAuth1(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "beryju/oauth1-test-server",
+            "image": "docker.beryju.org/proxy/beryju/oauth1-test-server",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
