@@ -72,7 +72,7 @@ class TaskInfo:
         if self.result.uid:
             key += f"_{self.result.uid}"
             self.task_name += f"_{self.result.uid}"
-        cache.set(key, self, timeout=6 * 60 * 60)
+        cache.set(key, self, timeout=13 * 60 * 60)
 
 
 class MonitoredTask(Task):
