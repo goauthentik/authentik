@@ -1,4 +1,5 @@
 """passbook sentry integration"""
+from aioredis.errors import ReplyError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
 from celery.exceptions import CeleryError
@@ -8,7 +9,7 @@ from django.db import InternalError, OperationalError, ProgrammingError
 from django_redis.exceptions import ConnectionInterrupted
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
-from redis.exceptions import RedisError
+from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
 from structlog import get_logger
 from websockets.exceptions import WebSocketException
@@ -23,26 +24,36 @@ class SentryIgnoredException(Exception):
 def before_send(event, hint):
     """Check if error is database error, and ignore if so"""
     ignored_classes = (
+        # Inbuilt types
+        KeyboardInterrupt,
+        ConnectionResetError,
+        OSError,
+        # Django DB Errors
         OperationalError,
         InternalError,
         ProgrammingError,
-        ConnectionInterrupted,
-        APIException,
-        ConnectionResetError,
-        RedisConnectionError,
-        WorkerLostError,
         DisallowedHost,
-        ConnectionResetError,
-        KeyboardInterrupt,
-        ClientError,
         ValidationError,
-        OSError,
+        # Redis errors
+        RedisConnectionError,
+        ConnectionInterrupted,
         RedisError,
-        SentryIgnoredException,
-        CeleryError,
-        LDAPException,
+        ResponseError,
+        ReplyError,
+        # websocket errors
         ChannelFull,
         WebSocketException,
+        # rest_framework error
+        APIException,
+        # celery errors
+        WorkerLostError,
+        CeleryError,
+        # S3 errors
+        ClientError,
+        # custom baseclass
+        SentryIgnoredException,
+        # ldap errors
+        LDAPException,
     )
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
