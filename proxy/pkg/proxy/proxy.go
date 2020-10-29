@@ -413,26 +413,35 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 		req.Header.Del("X-Auth-Username")
 	}
 
+	claims := Claims{}
+	err := claims.FromIDToken(session.IDToken)
+	if err != nil {
+		log.WithError(err).Warning("Failed to parse IDToken")
+	}
+	userAttributes := claims.Proxy.UserAttributes
+	// Attempt to set basic auth based on user's attributes
 	if p.SetBasicAuth {
-		claims := Claims{}
-		err := claims.FromIDToken(session.IDToken)
-		if err != nil {
-			log.WithError(err).Warning("Failed to parse IDToken")
-		}
-
-		userAttributes := claims.Proxy.UserAttributes
 		var ok bool
 		var password string
-		if password, ok = userAttributes[p.BasicAuthPasswordAttribute]; !ok {
+		if password, ok = userAttributes[p.BasicAuthPasswordAttribute].(string); !ok {
 			password = ""
 		}
 		// Check if we should use email or a custom attribute as username
 		var username string
-		if username, ok = userAttributes[p.BasicAuthUserAttribute]; !ok {
+		if username, ok = userAttributes[p.BasicAuthUserAttribute].(string); !ok {
 			username = session.Email
 		}
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
+	}
+	// Check if user has additional headers set that we should sent
+	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]string); ok {
+		if additionalHeaders == nil {
+			return
+		}
+		for key, value := range additionalHeaders {
+			req.Header.Set(key, value)
+		}
 	}
 }
 

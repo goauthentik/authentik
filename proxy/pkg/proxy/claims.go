@@ -8,7 +8,7 @@ import (
 
 type Claims struct {
 	Proxy struct {
-		UserAttributes map[string]string `json:"user_attributes"`
+		UserAttributes map[string]interface{} `json:"user_attributes"`
 	} `json:"pb_proxy"`
 }
 
