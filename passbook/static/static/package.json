@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
-    "@patternfly/patternfly": "^4.50.4",
+    "@patternfly/patternfly": "^4.59.1",
     "chart.js": "^2.9.4",
     "codemirror": "^5.58.2",
     "lit-element": "^2.4.0",
