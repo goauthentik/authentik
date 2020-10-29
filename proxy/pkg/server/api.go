@@ -168,7 +168,7 @@ func (a *APIController) bundleProviders() ([]*providerBundle, error) {
 		}
 		bundles[idx] = &providerBundle{
 			a:    a,
-			Host: externalHost.Hostname(),
+			Host: externalHost.Host,
 		}
 		bundles[idx].Build(provider)
 	}
