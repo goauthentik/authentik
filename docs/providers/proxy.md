@@ -11,6 +11,14 @@ The Proxy these extra headers to the application:
 
 Header Name | Value
 -------------|-------
-X-Auth-Request-User | The user's unique identifier
-X-Auth-Request-Email | The user's email address
-X-Auth-Request-Preferred-Username | The user's username
+X-Forwarded-User | The user's unique identifier (**not the username**)
+X-Forwarded-Email | The user's email address
+X-Forwarded-Preferred-Username | The user's username
+X-Auth-Username | The user's username
+
+Additionally, you can add more custom headers using `additionalHeaders` in the User or Group Properties, for example
+
+```yaml
+additionalHeaders:
+  X-additional-header: bar
+```
