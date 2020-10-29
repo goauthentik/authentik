@@ -123,6 +123,9 @@ def outpost_send_update(model_instace: Model):
 
 def _outpost_single_update(outpost: Outpost, layer=None):
     """Update outpost instances connected to a single outpost"""
+    # Ensure token again, because this function is called when anything related to an
+    # OutpostModel is saved, so we can be sure permissions are right
+    _ = outpost.token
     if not layer:  # pragma: no cover
         layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):
