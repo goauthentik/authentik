@@ -1,5 +1,5 @@
 """Kubernetes Ingress Reconciler"""
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 from urllib.parse import urlparse
 
 from kubernetes.client import (
@@ -67,11 +67,24 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         if have_hosts_tls != expected_hosts_tls:
             raise NeedsUpdate()
 
+    def get_ingress_annotations(self) -> Dict[str, str]:
+        """Get ingress annotations"""
+        annotations = {
+            # Ensure that with multiple proxy replicas deployed, the same CSRF request
+            # goes to the same pod
+            "nginx.ingress.kubernetes.io/affinity": "cookie",
+            "traefik.ingress.kubernetes.io/affinity": "true",
+        }
+        annotations.update(
+            self.controller.outpost.config.kubernetes_ingress_annotations
+        )
+        return dict()
+
     def get_reference_object(self) -> NetworkingV1beta1Ingress:
         """Get deployment object for outpost"""
         meta = self.get_object_meta(
             name=self.name,
-            annotations=self.controller.outpost.config.kubernetes_ingress_annotations,
+            annotations=self.get_ingress_annotations(),
         )
         rules = []
         tls_hosts = []
