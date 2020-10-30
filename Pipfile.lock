@@ -160,11 +160,11 @@
         },
         "channels-redis": {
             "hashes": [
-                "sha256:3ce9832b64a2d7f950dd11e4f0dca784de7cbee99e95a3c345a1460c8878b682",
-                "sha256:41ee0af352d3b6b31a6b613985b51dc5695d2da60688c38e6caa0a1772735a9f"
+                "sha256:18d63f6462a58011740dc8eeb57ea4b31ec220eb551cb71b27de9c6779a549de",
+                "sha256:2fb31a63b05373f6402da2e6a91a22b9e66eb8b56626c6bfc93e156c734c5ae6"
             ],
             "index": "pypi",
-            "version": "==3.1.0"
+            "version": "==3.2.0"
         },
         "chardet": {
             "hashes": [
