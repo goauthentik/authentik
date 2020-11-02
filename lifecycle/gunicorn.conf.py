@@ -1,4 +1,5 @@
 """Gunicorn config"""
+import warnings
 from multiprocessing import cpu_count
 from pathlib import Path
 
@@ -49,3 +50,5 @@ if Path("/var/run/secrets/kubernetes.io").exists():
 else:
     worker = cpu_count() * 2 + 1
 threads = 4
+
+warnings.simplefilter("once")
