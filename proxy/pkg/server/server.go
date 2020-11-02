@@ -9,8 +9,6 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-
-	sentryhttp "github.com/getsentry/sentry-go/http"
 )
 
 // Server represents an HTTP server
@@ -105,9 +103,7 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) serve(listener net.Listener) {
-	sentryHandler := sentryhttp.New(sentryhttp.Options{})
-
-	srv := &http.Server{Handler: sentryHandler.HandleFunc(s.handler)}
+	srv := &http.Server{Handler: http.HandlerFunc(s.handler)}
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

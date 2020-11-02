@@ -7,12 +7,13 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.7.0
-	github.com/go-openapi/errors v0.19.7
-	github.com/go-openapi/runtime v0.19.22
-	github.com/go-openapi/spec v0.19.9 // indirect
-	github.com/go-openapi/strfmt v0.19.5
-	github.com/go-openapi/swag v0.19.9
-	github.com/go-openapi/validate v0.19.11
+	github.com/go-openapi/analysis v0.19.11 // indirect
+	github.com/go-openapi/errors v0.19.8
+	github.com/go-openapi/runtime v0.19.23
+	github.com/go-openapi/spec v0.19.12 // indirect
+	github.com/go-openapi/strfmt v0.19.8
+	github.com/go-openapi/swag v0.19.11
+	github.com/go-openapi/validate v0.19.12
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-swagger/go-swagger v0.25.0 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect
@@ -28,17 +29,16 @@ require (
 	github.com/pquerna/cachecontrol v0.0.0-20200819021114-67c6ae64274f // indirect
 	github.com/recws-org/recws v1.2.1
 	github.com/sirupsen/logrus v1.7.0
-	github.com/spf13/afero v1.4.0 // indirect
+	github.com/spf13/afero v1.4.1 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1 // indirect
-	github.com/stretchr/testify v1.6.1
-	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
-	golang.org/x/net v0.0.0-20200927032502-5d4f70055728 // indirect
-	golang.org/x/sys v0.0.0-20200929083018-4d22bbb62b3c // indirect
-	golang.org/x/tools v0.0.0-20200929223013-bf155c11ec6f // indirect
-	gopkg.in/ini.v1 v1.61.0 // indirect
+	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102 // indirect
+	golang.org/x/sys v0.0.0-20201101102859-da207088b7d1 // indirect
+	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/tools v0.0.0-20201102043006-b53d4cbd60a6 // indirect
+	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )
