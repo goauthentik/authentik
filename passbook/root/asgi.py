@@ -13,8 +13,8 @@ from typing import Any, ByteString, Dict
 
 import django
 from asgiref.compatibility import guarantee_single_callable
-from channels.routing import get_default_application
 from defusedxml import defuse_stdlib
+from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from structlog import get_logger
 
@@ -129,5 +129,5 @@ class ASGILogger:
 
 
 application = ASGILogger(
-    guarantee_single_callable(SentryAsgiMiddleware(get_default_application()))
+    guarantee_single_callable(SentryAsgiMiddleware(get_asgi_application()))
 )

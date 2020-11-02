@@ -7,6 +7,8 @@ from passbook.outposts.channels import OutpostConsumer
 application = ProtocolTypeRouter(
     {
         # (http->django views is added by default)
-        "websocket": URLRouter([path("ws/outpost/<uuid:pk>/", OutpostConsumer)]),
+        "websocket": URLRouter(
+            [path("ws/outpost/<uuid:pk>/", OutpostConsumer.as_asgi())]
+        ),
     }
 )
