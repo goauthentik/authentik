@@ -37,6 +37,7 @@ def clean_expired_models(self: MonitoredTask):
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def backup_database(self: MonitoredTask):  # pragma: no cover
     """Database backup"""
+    self.result_timeout_hours = 25
     try:
         start = datetime.now()
         out = StringIO()

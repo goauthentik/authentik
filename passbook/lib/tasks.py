@@ -66,13 +66,13 @@ class TaskInfo:
         """Delete task info from cache"""
         return cache.delete(f"task_{self.task_name}")
 
-    def save(self):
+    def save(self, timeout_hours=6):
         """Save task into cache"""
         key = f"task_{self.task_name}"
         if self.result.uid:
             key += f"_{self.result.uid}"
             self.task_name += f"_{self.result.uid}"
-        cache.set(key, self, timeout=13 * 60 * 60)
+        cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 
 class MonitoredTask(Task):
@@ -90,6 +90,7 @@ class MonitoredTask(Task):
         self.save_on_success = True
         self._uid = None
         self._result = TaskResult(status=TaskResultStatus.ERROR, messages=[])
+        self.result_timeout_hours = 6
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
@@ -115,7 +116,7 @@ class MonitoredTask(Task):
                 task_call_func=self.__name__,
                 task_call_args=args,
                 task_call_kwargs=kwargs,
-            ).save()
+            ).save(self.result_timeout_hours)
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
@@ -131,7 +132,7 @@ class MonitoredTask(Task):
             task_call_func=self.__name__,
             task_call_args=args,
             task_call_kwargs=kwargs,
-        ).save()
+        ).save(self.result_timeout_hours)
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
 
     def run(self, *args, **kwargs):

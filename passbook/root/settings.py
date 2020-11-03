@@ -322,7 +322,7 @@ if not DEBUG and _ERROR_REPORTING:
         ],
         before_send=before_send,
         release="passbook@%s" % __version__,
-        traces_sample_rate=1.0,
+        traces_sample_rate=0.6,
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
     )
