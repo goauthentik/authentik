@@ -6,7 +6,7 @@ import django.db.models.deletion
 from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
-
+from django.core.exceptions import FieldError
 import passbook.lib.models
 
 
@@ -27,14 +27,19 @@ def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaE
     docker = DockerServiceConnection.objects.filter(local=True)
     k8s = KubernetesServiceConnection.objects.filter(local=True)
 
-    for outpost in (
-        Outpost.objects.using(db_alias).all().exclude(deployment_type="custom")
-    ):
-        if outpost.deployment_type == "kubernetes":
-            outpost.service_connection = k8s
-        elif outpost.deployment_type == "docker":
-            outpost.service_connection = docker
-        outpost.save()
+    try:
+        for outpost in (
+            Outpost.objects.using(db_alias).all().exclude(deployment_type="custom")
+        ):
+            if outpost.deployment_type == "kubernetes":
+                outpost.service_connection = k8s
+            elif outpost.deployment_type == "docker":
+                outpost.service_connection = docker
+            outpost.save()
+    except FieldError:
+        # This is triggered during e2e tests when this function is called on an already-upgraded
+        # schema
+        pass
 
 
 class Migration(migrations.Migration):
