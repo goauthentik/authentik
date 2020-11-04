@@ -1,4 +1,6 @@
 #!/bin/bash -xe
+wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
 VERSION=3.8.5
 
 wget https://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz

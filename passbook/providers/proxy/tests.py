@@ -23,7 +23,7 @@ class TestControllers(TestCase):
             external_host="http://localhost",
             authorization_flow=Flow.objects.first(),
         )
-        service_connection = KubernetesServiceConnection.objects.get(local=True)
+        service_connection = KubernetesServiceConnection.objects.first()
         outpost: Outpost = Outpost.objects.create(
             name="test",
             type=OutpostType.PROXY,
@@ -44,7 +44,7 @@ class TestControllers(TestCase):
             external_host="http://localhost",
             authorization_flow=Flow.objects.first(),
         )
-        service_connection = KubernetesServiceConnection.objects.get(local=True)
+        service_connection = KubernetesServiceConnection.objects.first()
         outpost: Outpost = Outpost.objects.create(
             name="test",
             type=OutpostType.PROXY,
