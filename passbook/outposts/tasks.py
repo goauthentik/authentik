@@ -10,13 +10,7 @@ from structlog import get_logger
 from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from passbook.lib.utils.reflection import path_to_class
 from passbook.outposts.controllers.base import ControllerException
-from passbook.outposts.models import (
-    Outpost,
-    OutpostDeploymentType,
-    OutpostModel,
-    OutpostState,
-    OutpostType,
-)
+from passbook.outposts.models import Outpost, OutpostModel, OutpostState, OutpostType
 from passbook.providers.proxy.controllers.docker import ProxyDockerController
 from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from passbook.root.celery import CELERY_APP
@@ -27,9 +21,7 @@ LOGGER = get_logger()
 @CELERY_APP.task()
 def outpost_controller_all():
     """Launch Controller for all Outposts which support it"""
-    for outpost in Outpost.objects.exclude(
-        deployment_type=OutpostDeploymentType.CUSTOM
-    ):
+    for outpost in Outpost.objects.exclude(service_connection=None):
         outpost_controller.delay(outpost.pk.hex)
 
 

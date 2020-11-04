@@ -12,5 +12,4 @@ class PassbookPoliciesConfig(AppConfig):
     verbose_name = "passbook Policies"
 
     def ready(self):
-        """Load policy cache clearing signals"""
         import_module("passbook.policies.signals")

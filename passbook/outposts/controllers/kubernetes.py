@@ -5,6 +5,7 @@ from typing import Dict, List, Type
 from kubernetes.client import OpenApiException
 from kubernetes.config import load_incluster_config, load_kube_config
 from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.kube_config import load_kube_config_from_dict
 from structlog.testing import capture_logs
 from yaml import dump_all
 
@@ -13,7 +14,7 @@ from passbook.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
 from passbook.outposts.controllers.k8s.secret import SecretReconciler
 from passbook.outposts.controllers.k8s.service import ServiceReconciler
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import KubernetesServiceConnection, Outpost
 
 
 class KubernetesController(BaseController):
@@ -22,10 +23,15 @@ class KubernetesController(BaseController):
     reconcilers: Dict[str, Type[KubernetesObjectReconciler]]
     reconcile_order: List[str]
 
+    connection: KubernetesServiceConnection
+
     def __init__(self, outpost: Outpost) -> None:
         super().__init__(outpost)
         try:
-            load_incluster_config()
+            if self.connection.local:
+                load_incluster_config()
+            else:
+                load_kube_config_from_dict(self.connection.config)
         except ConfigException:
             load_kube_config()
         self.reconcilers = {

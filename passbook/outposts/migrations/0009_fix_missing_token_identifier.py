@@ -6,13 +6,18 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    User = apps.get_model("passbook_core", "User")
+    Token = apps.get_model("passbook_core", "Token")
     from passbook.outposts.models import Outpost
 
-    for outpost in Outpost.objects.using(schema_editor.connection.alias).all():
-        token = outpost.token
-        if token.identifier != outpost.token_identifier:
-            token.identifier = outpost.token_identifier
-            token.save()
+    for outpost in Outpost.objects.using(schema_editor.connection.alias).all().only('pk'):
+        user_identifier = outpost.user_identifier
+        user = User.objects.get(username=user_identifier)
+        tokens = Token.objects.filter(user=user)
+        for token in tokens:
+            if token.identifier != outpost.token_identifier:
+                token.identifier = outpost.token_identifier
+                token.save()
 
 
 class Migration(migrations.Migration):

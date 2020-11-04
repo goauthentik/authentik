@@ -3,14 +3,14 @@ from time import sleep
 from typing import Dict, Tuple
 
 from django.conf import settings
-from docker import DockerClient, from_env
+from docker import DockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from yaml import safe_dump
 
 from passbook import __version__
 from passbook.outposts.controllers.base import BaseController, ControllerException
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import DockerServiceConnection, Outpost
 
 
 class DockerController(BaseController):
@@ -19,13 +19,20 @@ class DockerController(BaseController):
     client: DockerClient
 
     container: Container
+    connection: DockerServiceConnection
 
     image_base = "beryju/passbook"
 
     def __init__(self, outpost: Outpost) -> None:
         super().__init__(outpost)
         try:
-            self.client = from_env()
+            if self.connection.local:
+                self.client = DockerClient.from_env()
+            else:
+                self.client = DockerClient(
+                    base_url=self.connection.url,
+                    tls=self.connection.tls,
+                )
         except DockerException as exc:
             raise ControllerException from exc
 

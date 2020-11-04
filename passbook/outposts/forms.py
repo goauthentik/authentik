@@ -21,7 +21,7 @@ class OutpostForm(forms.ModelForm):
         fields = [
             "name",
             "type",
-            "deployment_type",
+            "service_connection",
             "providers",
             "_config",
         ]

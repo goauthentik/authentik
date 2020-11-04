@@ -5,7 +5,7 @@ from structlog import get_logger
 from structlog.testing import capture_logs
 
 from passbook.lib.sentry import SentryIgnoredException
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import Outpost, OutpostServiceConnection
 
 
 class ControllerException(SentryIgnoredException):
@@ -18,6 +18,7 @@ class BaseController:
     deployment_ports: Dict[str, int]
 
     outpost: Outpost
+    connection: OutpostServiceConnection
 
     def __init__(self, outpost: Outpost):
         self.outpost = outpost

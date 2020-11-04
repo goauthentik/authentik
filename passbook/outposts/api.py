@@ -13,7 +13,7 @@ class OutpostSerializer(ModelSerializer):
     class Meta:
 
         model = Outpost
-        fields = ["pk", "name", "providers", "_config"]
+        fields = ["pk", "name", "providers", "service_connection", "_config"]
 
 
 class OutpostViewSet(ModelViewSet):

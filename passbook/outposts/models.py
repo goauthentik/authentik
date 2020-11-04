@@ -12,6 +12,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
+from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 
 from passbook import __version__
@@ -60,17 +61,42 @@ class OutpostType(models.TextChoices):
     PROXY = "proxy"
 
 
-class OutpostDeploymentType(models.TextChoices):
-    """Deployment types that are managed through passbook"""
-
-    KUBERNETES = "kubernetes"
-    DOCKER = "docker"
-    CUSTOM = "custom"
-
-
 def default_outpost_config():
     """Get default outpost config"""
     return asdict(OutpostConfig(passbook_host=""))
+
+
+class OutpostServiceConnection(models.Model):
+    """Connection details for an Outpost Controller, like Docker or Kubernetes"""
+
+    uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
+    name = models.TextField()
+
+    local = models.BooleanField(
+        default=False,
+        unique=True,
+        help_text=_(
+            (
+                "If enabled, use the local connection. Required Docker "
+                "socket/Kubernetes Integration"
+            )
+        ),
+    )
+
+    objects = InheritanceManager()
+
+
+class DockerServiceConnection(OutpostServiceConnection):
+    """Service Connection to a docker endpoint"""
+
+    url = models.TextField()
+    tls = models.BooleanField()
+
+
+class KubernetesServiceConnection(OutpostServiceConnection):
+    """Service Connection to a kubernetes cluster"""
+
+    config = models.JSONField()
 
 
 class Outpost(models.Model):
@@ -80,13 +106,20 @@ class Outpost(models.Model):
     name = models.TextField()
 
     type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
-    deployment_type = models.TextField(
-        choices=OutpostDeploymentType.choices,
-        default=OutpostDeploymentType.CUSTOM,
+    service_connection = models.ForeignKey(
+        OutpostServiceConnection,
+        default=None,
+        null=True,
+        blank=True,
         help_text=_(
-            "Select between passbook-managed deployment types or a custom deployment."
+            (
+                "Select Service-Connection passbook should use to manage this outpost. "
+                "Leave empty if passbook should not handle the deployment."
+            )
         ),
+        on_delete=models.SET_DEFAULT,
     )
+
     _config = models.JSONField(default=default_outpost_config)
 
     providers = models.ManyToManyField(Provider)
@@ -112,11 +145,16 @@ class Outpost(models.Model):
         return OutpostState.for_outpost(self)
 
     @property
+    def user_identifier(self):
+        """Username for service user"""
+        return f"pb-outpost-{self.uuid.hex}"
+
+    @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
-        users = User.objects.filter(username=f"pb-outpost-{self.uuid.hex}")
+        users = User.objects.filter(username=self.user_identifier)
         if not users.exists():
-            user: User = User.objects.create(username=f"pb-outpost-{self.uuid.hex}")
+            user: User = User.objects.create(username=self.user_identifier)
             user.set_unusable_password()
             user.save()
         else:
