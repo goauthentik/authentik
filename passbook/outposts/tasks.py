@@ -10,7 +10,14 @@ from structlog import get_logger
 from passbook.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from passbook.lib.utils.reflection import path_to_class
 from passbook.outposts.controllers.base import ControllerException
-from passbook.outposts.models import Outpost, OutpostModel, OutpostState, OutpostType
+from passbook.outposts.models import (
+    DockerServiceConnection,
+    KubernetesServiceConnection,
+    Outpost,
+    OutpostModel,
+    OutpostState,
+    OutpostType,
+)
 from passbook.providers.proxy.controllers.docker import ProxyDockerController
 from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from passbook.root.celery import CELERY_APP
@@ -33,10 +40,13 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
     self.set_uid(slugify(outpost.name))
     try:
         if outpost.type == OutpostType.PROXY:
-            if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
-                logs = ProxyKubernetesController(outpost).up_with_logs()
-            if outpost.deployment_type == OutpostDeploymentType.DOCKER:
-                logs = ProxyDockerController(outpost).up_with_logs()
+            service_connection = outpost.service_connection
+            if isinstance(service_connection, DockerServiceConnection):
+                logs = ProxyDockerController(outpost, service_connection).up_with_logs()
+            if isinstance(service_connection, KubernetesServiceConnection):
+                logs = ProxyKubernetesController(
+                    outpost, service_connection
+                ).up_with_logs()
     except ControllerException as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
@@ -48,10 +58,11 @@ def outpost_pre_delete(outpost_pk: str):
     """Delete outpost objects before deleting the DB Object"""
     outpost = Outpost.objects.get(pk=outpost_pk)
     if outpost.type == OutpostType.PROXY:
-        if outpost.deployment_type == OutpostDeploymentType.KUBERNETES:
-            ProxyKubernetesController(outpost).down()
-        if outpost.deployment_type == OutpostDeploymentType.DOCKER:
-            ProxyDockerController(outpost).down()
+        service_connection = outpost.service_connection
+        if isinstance(service_connection, DockerServiceConnection):
+            ProxyDockerController(outpost, service_connection).down()
+        if isinstance(service_connection, KubernetesServiceConnection):
+            ProxyKubernetesController(outpost, service_connection).down()
 
 
 @CELERY_APP.task()

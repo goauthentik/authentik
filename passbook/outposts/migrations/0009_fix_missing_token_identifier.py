@@ -10,7 +10,9 @@ def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEd
     Token = apps.get_model("passbook_core", "Token")
     from passbook.outposts.models import Outpost
 
-    for outpost in Outpost.objects.using(schema_editor.connection.alias).all().only('pk'):
+    for outpost in (
+        Outpost.objects.using(schema_editor.connection.alias).all().only("pk")
+    ):
         user_identifier = outpost.user_identifier
         user = User.objects.get(username=user_identifier)
         tokens = Token.objects.filter(user=user)

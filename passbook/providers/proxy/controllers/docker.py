@@ -3,15 +3,15 @@ from typing import Dict
 from urllib.parse import urlparse
 
 from passbook.outposts.controllers.docker import DockerController
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import DockerServiceConnection, Outpost
 from passbook.providers.proxy.models import ProxyProvider
 
 
 class ProxyDockerController(DockerController):
     """Proxy Provider Docker Contoller"""
 
-    def __init__(self, outpost: Outpost):
-        super().__init__(outpost)
+    def __init__(self, outpost: Outpost, connection: DockerServiceConnection):
+        super().__init__(outpost, connection)
         self.deployment_ports = {
             "http": 4180,
             "https": 4443,

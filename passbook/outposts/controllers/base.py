@@ -20,8 +20,9 @@ class BaseController:
     outpost: Outpost
     connection: OutpostServiceConnection
 
-    def __init__(self, outpost: Outpost):
+    def __init__(self, outpost: Outpost, connection: OutpostServiceConnection):
         self.outpost = outpost
+        self.connection = connection
         self.logger = get_logger()
         self.deployment_ports = {}
 

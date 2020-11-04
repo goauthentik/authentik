@@ -18,6 +18,7 @@ from packaging.version import LegacyVersion, Version, parse
 from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
 from passbook.lib.config import CONFIG
+from passbook.lib.models import InheritanceForeignKey
 from passbook.lib.utils.template import render_to_string
 
 OUR_VERSION = parse(__version__)
@@ -106,7 +107,7 @@ class Outpost(models.Model):
     name = models.TextField()
 
     type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
-    service_connection = models.ForeignKey(
+    service_connection = InheritanceForeignKey(
         OutpostServiceConnection,
         default=None,
         null=True,

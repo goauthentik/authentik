@@ -23,8 +23,8 @@ class DockerController(BaseController):
 
     image_base = "beryju/passbook"
 
-    def __init__(self, outpost: Outpost) -> None:
-        super().__init__(outpost)
+    def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
+        super().__init__(outpost, connection)
         try:
             if self.connection.local:
                 self.client = DockerClient.from_env()

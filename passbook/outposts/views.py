@@ -12,7 +12,12 @@ from structlog import get_logger
 
 from passbook.core.models import User
 from passbook.outposts.controllers.docker import DockerController
-from passbook.outposts.models import Outpost, OutpostType
+from passbook.outposts.models import (
+    DockerServiceConnection,
+    KubernetesServiceConnection,
+    Outpost,
+    OutpostType,
+)
 from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 
 LOGGER = get_logger()
@@ -35,7 +40,7 @@ class DockerComposeView(LoginRequiredMixin, View):
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
-            controller = DockerController(outpost)
+            controller = DockerController(outpost, DockerServiceConnection())
             manifest = controller.get_static_deployment()
 
         return HttpResponse(manifest, content_type="text/vnd.yaml")
@@ -53,7 +58,9 @@ class KubernetesManifestView(LoginRequiredMixin, View):
         )
         manifest = ""
         if outpost.type == OutpostType.PROXY:
-            controller = ProxyKubernetesController(outpost)
+            controller = ProxyKubernetesController(
+                outpost, KubernetesServiceConnection()
+            )
             manifest = controller.get_static_deployment()
 
         return HttpResponse(manifest, content_type="text/vnd.yaml")

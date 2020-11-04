@@ -16,9 +16,9 @@ from passbook import __version__
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.outposts.models import (
+    DockerServiceConnection,
     Outpost,
     OutpostConfig,
-    OutpostDeploymentType,
     OutpostType,
 )
 from passbook.providers.proxy.models import ProxyProvider
@@ -76,7 +76,6 @@ class TestProviderProxy(SeleniumTestCase):
         outpost: Outpost = Outpost.objects.create(
             name="proxy_outpost",
             type=OutpostType.PROXY,
-            deployment_type=OutpostDeploymentType.CUSTOM,
         )
         outpost.providers.add(proxy)
         outpost.save()
@@ -128,10 +127,11 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         proxy.save()
         # we need to create an application to actually access the proxy
         Application.objects.create(name="proxy", slug="proxy", provider=proxy)
+        service_connection = DockerServiceConnection.objects.get(local=True)
         outpost: Outpost = Outpost.objects.create(
             name="proxy_outpost",
             type=OutpostType.PROXY,
-            deployment_type=OutpostDeploymentType.DOCKER,
+            service_connection=service_connection,
             _config=asdict(
                 OutpostConfig(passbook_host=self.live_server_url, log_level="debug")
             ),

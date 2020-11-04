@@ -25,8 +25,10 @@ class KubernetesController(BaseController):
 
     connection: KubernetesServiceConnection
 
-    def __init__(self, outpost: Outpost) -> None:
-        super().__init__(outpost)
+    def __init__(
+        self, outpost: Outpost, connection: KubernetesServiceConnection
+    ) -> None:
+        super().__init__(outpost, connection)
         try:
             if self.connection.local:
                 load_incluster_config()

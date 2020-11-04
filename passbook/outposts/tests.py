@@ -11,7 +11,7 @@ from passbook.flows.models import Flow
 from passbook.outposts.controllers.k8s.base import NeedsUpdate
 from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
 from passbook.outposts.controllers.kubernetes import KubernetesController
-from passbook.outposts.models import Outpost, OutpostDeploymentType, OutpostType
+from passbook.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 from passbook.providers.proxy.models import ProxyProvider
 
 
@@ -29,7 +29,6 @@ class OutpostTests(TestCase):
         outpost: Outpost = Outpost.objects.create(
             name="test",
             type=OutpostType.PROXY,
-            deployment_type=OutpostDeploymentType.CUSTOM,
         )
 
         # Before we add a provider, the user should only have access to the outpost
@@ -79,17 +78,18 @@ class OutpostKubernetesTests(TestCase):
             external_host="http://localhost",
             authorization_flow=Flow.objects.first(),
         )
+        self.service_connection = KubernetesServiceConnection.objects.get(local=True)
         self.outpost: Outpost = Outpost.objects.create(
             name="test",
             type=OutpostType.PROXY,
-            deployment_type=OutpostDeploymentType.KUBERNETES,
+            service_connection=self.service_connection,
         )
         self.outpost.providers.add(self.provider)
         self.outpost.save()
 
     def test_deployment_reconciler(self):
         """test that deployment requires update"""
-        controller = KubernetesController(self.outpost)
+        controller = KubernetesController(self.outpost, self.service_connection)
         deployment_reconciler = DeploymentReconciler(controller)
 
         self.assertIsNotNone(deployment_reconciler.retrieve())
