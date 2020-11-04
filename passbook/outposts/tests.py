@@ -78,7 +78,7 @@ class OutpostKubernetesTests(TestCase):
             external_host="http://localhost",
             authorization_flow=Flow.objects.first(),
         )
-        self.service_connection = KubernetesServiceConnection.objects.get(local=True)
+        self.service_connection = KubernetesServiceConnection.objects.first()
         self.outpost: Outpost = Outpost.objects.create(
             name="test",
             type=OutpostType.PROXY,
