@@ -112,7 +112,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
-class OutpostConfigViewSet(ModelViewSet):
+class ProxyOutpostConfigViewSet(ModelViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)

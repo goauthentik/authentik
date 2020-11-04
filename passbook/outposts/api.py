@@ -2,7 +2,11 @@
 from rest_framework.serializers import JSONField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import (
+    DockerServiceConnection,
+    KubernetesServiceConnection,
+    Outpost,
+)
 
 
 class OutpostSerializer(ModelSerializer):
@@ -21,3 +25,35 @@ class OutpostViewSet(ModelViewSet):
 
     queryset = Outpost.objects.all()
     serializer_class = OutpostSerializer
+
+
+class DockerServiceConnectionSerializer(ModelSerializer):
+    """DockerServiceConnection Serializer"""
+
+    class Meta:
+
+        model = DockerServiceConnection
+        fields = ["pk", "name", "local", "url", "tls"]
+
+
+class DockerServiceConnectionViewSet(ModelViewSet):
+    """DockerServiceConnection Viewset"""
+
+    queryset = DockerServiceConnection.objects.all()
+    serializer_class = DockerServiceConnectionSerializer
+
+
+class KubernetesServiceConnectionSerializer(ModelSerializer):
+    """KubernetesServiceConnection Serializer"""
+
+    class Meta:
+
+        model = KubernetesServiceConnection
+        fields = ["pk", "name", "local", "config"]
+
+
+class KubernetesServiceConnectionViewSet(ModelViewSet):
+    """KubernetesServiceConnection Viewset"""
+
+    queryset = KubernetesServiceConnection.objects.all()
+    serializer_class = KubernetesServiceConnectionSerializer

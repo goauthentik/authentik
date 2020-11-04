@@ -1353,6 +1353,260 @@ paths:
         description: A unique integer value identifying this Proxy Provider.
         required: true
         type: integer
+  /outposts/service_connections/docker/:
+    get:
+      operationId: outposts_service_connections_docker_list
+      description: DockerServiceConnection Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/DockerServiceConnection'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_service_connections_docker_create
+      description: DockerServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/service_connections/docker/{uuid}/:
+    get:
+      operationId: outposts_service_connections_docker_read
+      description: DockerServiceConnection Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_service_connections_docker_update
+      description: DockerServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_service_connections_docker_partial_update
+      description: DockerServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DockerServiceConnection'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_service_connections_docker_delete
+      description: DockerServiceConnection Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this docker service connection.
+        required: true
+        type: string
+        format: uuid
+  /outposts/service_connections/kubernetes/:
+    get:
+      operationId: outposts_service_connections_kubernetes_list
+      description: KubernetesServiceConnection Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/KubernetesServiceConnection'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_service_connections_kubernetes_create
+      description: KubernetesServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/service_connections/kubernetes/{uuid}/:
+    get:
+      operationId: outposts_service_connections_kubernetes_read
+      description: KubernetesServiceConnection Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_service_connections_kubernetes_update
+      description: KubernetesServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_service_connections_kubernetes_partial_update
+      description: KubernetesServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/KubernetesServiceConnection'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_service_connections_kubernetes_delete
+      description: KubernetesServiceConnection Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this kubernetes service connection.
+        required: true
+        type: string
+        format: uuid
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -6454,6 +6708,13 @@ definitions:
         items:
           type: integer
         uniqueItems: true
+      service_connection:
+        title: Service connection
+        description: Select Service-Connection passbook should use to manage this
+          outpost. Leave empty if passbook should not handle the deployment.
+        type: string
+        format: uuid
+        x-nullable: true
       _config:
         title: config
         type: object
@@ -6594,6 +6855,59 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+  DockerServiceConnection:
+    description: DockerServiceConnection Serializer
+    required:
+      - name
+      - url
+      - tls
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      local:
+        title: Local
+        description: If enabled, use the local connection. Required Docker socket/Kubernetes
+          Integration
+        type: boolean
+      url:
+        title: Url
+        type: string
+        minLength: 1
+      tls:
+        title: Tls
+        type: boolean
+  KubernetesServiceConnection:
+    description: KubernetesServiceConnection Serializer
+    required:
+      - name
+      - config
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      local:
+        title: Local
+        description: If enabled, use the local connection. Required Docker socket/Kubernetes
+          Integration
+        type: boolean
+      config:
+        title: Config
+        type: object
   Policy:
     description: Policy Serializer
     type: object

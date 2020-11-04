@@ -19,7 +19,7 @@ from passbook.core.api.tokens import TokenViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.crypto.api import CertificateKeyPairViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
-from passbook.outposts.api import OutpostViewSet
+from passbook.outposts.api import OutpostViewSet, DockerServiceConnectionViewSet, KubernetesServiceConnectionViewSet
 from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -29,7 +29,7 @@ from passbook.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from passbook.policies.password.api import PasswordPolicyViewSet
 from passbook.policies.reputation.api import ReputationPolicyViewSet
 from passbook.providers.oauth2.api import OAuth2ProviderViewSet, ScopeMappingViewSet
-from passbook.providers.proxy.api import OutpostConfigViewSet, ProxyProviderViewSet
+from passbook.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
 from passbook.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from passbook.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from passbook.sources.oauth.api import OAuthSourceViewSet
@@ -66,7 +66,9 @@ router.register("core/users", UserViewSet)
 router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)
-router.register("outposts/proxy", OutpostConfigViewSet)
+router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
+router.register("outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet)
+router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
 router.register("flows/bindings", FlowStageBindingViewSet)
