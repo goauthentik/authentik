@@ -1476,7 +1476,7 @@ paths:
     parameters:
       - name: uuid
         in: path
-        description: A UUID string identifying this docker service connection.
+        description: A UUID string identifying this Docker Service-Connection.
         required: true
         type: string
         format: uuid
@@ -1603,7 +1603,7 @@ paths:
     parameters:
       - name: uuid
         in: path
-        description: A UUID string identifying this kubernetes service connection.
+        description: A UUID string identifying this Kubernetes Service-Connection.
         required: true
         type: string
         format: uuid
@@ -6888,7 +6888,7 @@ definitions:
     description: KubernetesServiceConnection Serializer
     required:
       - name
-      - config
+      - kubeconfig
     type: object
     properties:
       pk:
@@ -6905,8 +6905,10 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
-      config:
-        title: Config
+      kubeconfig:
+        title: Kubeconfig
+        description: Paste your kubeconfig here. passbook will automatically use the
+          currently selected context.
         type: object
   Policy:
     description: Policy Serializer

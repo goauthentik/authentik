@@ -7,10 +7,11 @@ from passbook.admin.views import (
     flows,
     groups,
     outposts,
+    outposts_service_connections,
     overview,
     policies,
     policies_bindings,
-    property_mapping,
+    property_mappings,
     providers,
     sources,
     stages,
@@ -225,22 +226,22 @@ urlpatterns = [
     # Property Mappings
     path(
         "property-mappings/",
-        property_mapping.PropertyMappingListView.as_view(),
+        property_mappings.PropertyMappingListView.as_view(),
         name="property-mappings",
     ),
     path(
         "property-mappings/create/",
-        property_mapping.PropertyMappingCreateView.as_view(),
+        property_mappings.PropertyMappingCreateView.as_view(),
         name="property-mapping-create",
     ),
     path(
         "property-mappings/<uuid:pk>/update/",
-        property_mapping.PropertyMappingUpdateView.as_view(),
+        property_mappings.PropertyMappingUpdateView.as_view(),
         name="property-mapping-update",
     ),
     path(
         "property-mappings/<uuid:pk>/delete/",
-        property_mapping.PropertyMappingDeleteView.as_view(),
+        property_mappings.PropertyMappingDeleteView.as_view(),
         name="property-mapping-delete",
     ),
     # Users
@@ -311,6 +312,27 @@ urlpatterns = [
         "outposts/<uuid:pk>/delete/",
         outposts.OutpostDeleteView.as_view(),
         name="outpost-delete",
+    ),
+    # Outpost Service Connections
+    path(
+        "outposts/service_connections/",
+        outposts_service_connections.OutpostServiceConnectionListView.as_view(),
+        name="outpost-service-connections",
+    ),
+    path(
+        "outposts/service_connections/create/",
+        outposts_service_connections.OutpostServiceConnectionCreateView.as_view(),
+        name="outpost-service-connection-create",
+    ),
+    path(
+        "outposts/service_connections/<uuid:pk>/update/",
+        outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
+        name="outpost-service-connection-update",
+    ),
+    path(
+        "outposts/service_connections/<uuid:pk>/delete/",
+        outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
+        name="outpost-service-connection-delete",
     ),
     # Tasks
     path(

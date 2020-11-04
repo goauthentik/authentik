@@ -32,8 +32,8 @@ class ProviderListView(
     model = Provider
     permission_required = "passbook_core.add_provider"
     template_name = "administration/provider/list.html"
-    ordering = "id"
-    search_fields = ["id", "name"]
+    ordering = "pk"
+    search_fields = ["pk", "name"]
 
 
 class ProviderCreateView(

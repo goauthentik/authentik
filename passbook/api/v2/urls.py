@@ -19,7 +19,11 @@ from passbook.core.api.tokens import TokenViewSet
 from passbook.core.api.users import UserViewSet
 from passbook.crypto.api import CertificateKeyPairViewSet
 from passbook.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
-from passbook.outposts.api import OutpostViewSet, DockerServiceConnectionViewSet, KubernetesServiceConnectionViewSet
+from passbook.outposts.api import (
+    DockerServiceConnectionViewSet,
+    KubernetesServiceConnectionViewSet,
+    OutpostViewSet,
+)
 from passbook.policies.api import PolicyBindingViewSet, PolicyViewSet
 from passbook.policies.dummy.api import DummyPolicyViewSet
 from passbook.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -67,7 +71,9 @@ router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)
 router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
-router.register("outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet)
+router.register(
+    "outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet
+)
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)

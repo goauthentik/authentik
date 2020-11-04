@@ -4,7 +4,11 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.fields import CodeMirrorWidget, YAMLField
-from passbook.outposts.models import Outpost
+from passbook.outposts.models import (
+    DockerServiceConnection,
+    KubernetesServiceConnection,
+    Outpost,
+)
 from passbook.providers.proxy.models import ProxyProvider
 
 
@@ -33,3 +37,35 @@ class OutpostForm(forms.ModelForm):
             "_config": YAMLField,
         }
         labels = {"_config": _("Configuration")}
+
+
+class DockerServiceConnectionForm(forms.ModelForm):
+    """Docker service-connection form"""
+
+    class Meta:
+
+        model = DockerServiceConnection
+        fields = ["name", "local", "url", "tls"]
+        widgets = {
+            "name": forms.TextInput,
+        }
+
+
+class KubernetesServiceConnectionForm(forms.ModelForm):
+    """Kubernetes service-connection form"""
+
+    class Meta:
+
+        model = KubernetesServiceConnection
+        fields = [
+            "name",
+            "local",
+            "kubeconfig",
+        ]
+        widgets = {
+            "name": forms.TextInput,
+            "kubeconfig": CodeMirrorWidget,
+        }
+        field_classes = {
+            "kubeconfig": YAMLField,
+        }

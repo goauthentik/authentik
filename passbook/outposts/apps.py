@@ -6,6 +6,7 @@ from pathlib import Path
 from socket import gethostname
 from urllib.parse import urlparse
 
+import yaml
 from django.apps import AppConfig
 from django.db import ProgrammingError
 from docker.constants import DEFAULT_UNIX_SOCKET
@@ -43,19 +44,21 @@ class PassbookOutpostConfig(AppConfig):
             if not KubernetesServiceConnection.objects.filter(local=True).exists():
                 LOGGER.debug("Created Service Connection for in-cluster")
                 KubernetesServiceConnection.objects.create(
-                    name="Local Kubernetes Cluster", local=True, config={}
+                    name="Local Kubernetes Cluster", local=True, kubeconfig={}
                 )
         # For development, check for the existence of a kubeconfig file
         kubeconfig_path = expanduser(KUBE_CONFIG_DEFAULT_LOCATION)
         if Path(kubeconfig_path).exists():
             LOGGER.debug("Detected kubeconfig")
+            kubeconfig_local_name = f"k8s-{gethostname()}"
             if not KubernetesServiceConnection.objects.filter(
-                name=gethostname()
+                name=kubeconfig_local_name
             ).exists():
                 LOGGER.debug("Creating kubeconfig Service Connection")
                 with open(kubeconfig_path, "r") as _kubeconfig:
                     KubernetesServiceConnection.objects.create(
-                        name=gethostname(), config=_kubeconfig.read()
+                        name=kubeconfig_local_name,
+                        kubeconfig=yaml.safe_load(_kubeconfig),
                     )
         unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
         socket = Path(unix_socket_path)

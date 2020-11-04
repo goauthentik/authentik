@@ -46,11 +46,28 @@
                         {% trans 'Providers' %}
                     </a>
                 </li>
-                <li class="pf-c-nav__item">
-                    <a href="{% url 'passbook_admin:outposts' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:outposts' 'passbook_admin:outpost-create' 'passbook_admin:outpost-update' 'passbook_admin:outpost-delete' %}">
-                        {% trans 'Outposts' %}
+                <li class="pf-c-nav__item pf-m-expanded">
+                    <a href="#" class="pf-c-nav__link" aria-expanded="true">{% trans 'Outposts' %}
+                        <span class="pf-c-nav__toggle">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </span>
                     </a>
+                    <section class="pf-c-nav__subnav">
+                        <ul class="pf-c-nav__simple-list">
+                            <li class="pf-c-nav__item">
+                                <a href="{% url 'passbook_admin:outposts' %}"
+                                    class="pf-c-nav__link {% is_active 'passbook_admin:outposts' 'passbook_admin:outpost-create' 'passbook_admin:outpost-update' 'passbook_admin:outpost-delete' %}">
+                                    {% trans 'Outposts' %}
+                                </a>
+                            </li>
+                            <li class="pf-c-nav__item">
+                                <a href="{% url 'passbook_admin:outpost-service-connections' %}"
+                                    class="pf-c-nav__link {% is_active 'passbook_admin:outpost-service-connections' 'passbook_admin:outpost-service-connections-create' 'passbook_admin:outpost-service-connections-update' 'passbook_admin:outpost-service-connections-delete' %}">
+                                    {% trans 'Service Connections' %}
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="{% url 'passbook_admin:property-mappings' %}"

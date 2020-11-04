@@ -33,7 +33,7 @@ class KubernetesController(BaseController):
             if self.connection.local:
                 load_incluster_config()
             else:
-                load_kube_config_from_dict(self.connection.config)
+                load_kube_config_from_dict(self.connection.kubeconfig)
         except ConfigException:
             load_kube_config()
         self.reconcilers = {

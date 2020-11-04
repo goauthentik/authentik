@@ -49,7 +49,7 @@ class KubernetesServiceConnectionSerializer(ModelSerializer):
     class Meta:
 
         model = KubernetesServiceConnection
-        fields = ["pk", "name", "local", "config"]
+        fields = ["pk", "name", "local", "kubeconfig"]
 
 
 class KubernetesServiceConnectionViewSet(ModelViewSet):

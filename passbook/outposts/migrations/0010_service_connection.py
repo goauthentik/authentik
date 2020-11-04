@@ -7,6 +7,8 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
+import passbook.lib.models
+
 
 def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
@@ -98,7 +100,7 @@ class Migration(migrations.Migration):
                         to="passbook_outposts.outpostserviceconnection",
                     ),
                 ),
-                ("config", models.JSONField()),
+                ("kubeconfig", models.JSONField()),
             ],
             bases=("passbook_outposts.outpostserviceconnection",),
         ),
@@ -118,5 +120,47 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name="outpost",
             name="deployment_type",
+        ),
+        migrations.AlterModelOptions(
+            name="dockerserviceconnection",
+            options={
+                "verbose_name": "Docker Service-Connection",
+                "verbose_name_plural": "Docker Service-Connections",
+            },
+        ),
+        migrations.AlterModelOptions(
+            name="kubernetesserviceconnection",
+            options={
+                "verbose_name": "Kubernetes Service-Connection",
+                "verbose_name_plural": "Kubernetes Service-Connections",
+            },
+        ),
+        migrations.AlterField(
+            model_name="outpost",
+            name="service_connection",
+            field=passbook.lib.models.InheritanceForeignKey(
+                blank=True,
+                default=None,
+                help_text="Select Service-Connection passbook should use to manage this outpost. Leave empty if passbook should not handle the deployment.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_DEFAULT,
+                to="passbook_outposts.outpostserviceconnection",
+            ),
+        ),
+        migrations.AlterModelOptions(
+            name="outpostserviceconnection",
+            options={
+                "verbose_name": "Outpost Service-Connection",
+                "verbose_name_plural": "Outpost Service-Connections",
+            },
+        ),
+        migrations.AlterField(
+            model_name="kubernetesserviceconnection",
+            name="kubeconfig",
+            field=models.JSONField(
+                default=None,
+                help_text="Paste your kubeconfig here. passbook will automatically use the currently selected context.",
+            ),
+            preserve_default=False,
         ),
     ]

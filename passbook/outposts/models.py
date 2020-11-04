@@ -1,13 +1,14 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Dict, Iterable, List, Optional, Type, Union
 from uuid import uuid4
 
 from dacite import from_dict
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
+from django.forms.models import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
@@ -86,18 +87,63 @@ class OutpostServiceConnection(models.Model):
 
     objects = InheritanceManager()
 
+    @property
+    def form(self) -> Type[ModelForm]:
+        """Return Form class used to edit this object"""
+        raise NotImplementedError
+
+    class Meta:
+
+        verbose_name = _("Outpost Service-Connection")
+        verbose_name_plural = _("Outpost Service-Connections")
+
 
 class DockerServiceConnection(OutpostServiceConnection):
-    """Service Connection to a docker endpoint"""
+    """Service Connection to a Docker endpoint"""
 
     url = models.TextField()
     tls = models.BooleanField()
 
+    @property
+    def form(self) -> Type[ModelForm]:
+        from passbook.outposts.forms import DockerServiceConnectionForm
+
+        return DockerServiceConnectionForm
+
+    def __str__(self) -> str:
+        return f"Docker Service-Connection {self.name}"
+
+    class Meta:
+
+        verbose_name = _("Docker Service-Connection")
+        verbose_name_plural = _("Docker Service-Connections")
+
 
 class KubernetesServiceConnection(OutpostServiceConnection):
-    """Service Connection to a kubernetes cluster"""
+    """Service Connection to a Kubernetes cluster"""
 
-    config = models.JSONField()
+    kubeconfig = models.JSONField(
+        help_text=_(
+            (
+                "Paste your kubeconfig here. passbook will automatically use "
+                "the currently selected context."
+            )
+        )
+    )
+
+    @property
+    def form(self) -> Type[ModelForm]:
+        from passbook.outposts.forms import KubernetesServiceConnectionForm
+
+        return KubernetesServiceConnectionForm
+
+    def __str__(self) -> str:
+        return f"Kubernetes Service-Connection {self.name}"
+
+    class Meta:
+
+        verbose_name = _("Kubernetes Service-Connection")
+        verbose_name_plural = _("Kubernetes Service-Connections")
 
 
 class Outpost(models.Model):
