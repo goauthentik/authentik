@@ -69,10 +69,11 @@ class AuthNRequestParser:
         """Validate and parse raw request with enveloped signautre."""
         decoded_xml = decode_base64_and_inflate(saml_request)
 
-        if self.provider.signing_kp:
+        if self.provider.verification_kp:
             try:
                 XMLVerifier().verify(
-                    decoded_xml, x509_cert=self.provider.signing_kp.certificate_data
+                    decoded_xml,
+                    x509_cert=self.provider.verification_kp.certificate_data,
                 )
             except InvalidSignature as exc:
                 raise CannotHandleAssertion("Failed to verify signature") from exc
@@ -98,7 +99,11 @@ class AuthNRequestParser:
                 querystring += f"RelayState={quote_plus(relay_state)}&"
             querystring += f"SigAlg={sig_alg}"
 
-            public_key = self.provider.signing_kp.private_key.public_key()
+            if not self.provider.verification_kp:
+                raise CannotHandleAssertion(
+                    "Provider does not have a Validation Certificate configured."
+                )
+            public_key = self.provider.verification_kp.private_key.public_key()
             try:
                 public_key.verify(
                     b64decode(signature),

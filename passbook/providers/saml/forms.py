@@ -34,11 +34,12 @@ class SAMLProviderForm(forms.ModelForm):
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
-            "property_mappings",
             "digest_algorithm",
             "require_signing",
             "signature_algorithm",
             "signing_kp",
+            "verification_kp",
+            "property_mappings",
         ]
         widgets = {
             "name": forms.TextInput(),

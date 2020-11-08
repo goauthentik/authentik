@@ -87,6 +87,15 @@ class SAMLProvider(Provider):
         default="rsa-sha256",
     )
 
+    verification_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        help_text=_("If selected, incoming assertion's Signatures will be validated."),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Verification Keypair"),
+        related_name="+",
+    )
     signing_kp = models.ForeignKey(
         CertificateKeyPair,
         default=None,
