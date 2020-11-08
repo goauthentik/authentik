@@ -2,6 +2,7 @@ import './FetchFillSlot.js';
 import './ActionButton.js';
 import './Messages.js';
 import './FlowShellCard.js';
+import './Tabs.js';
 
 // Button Dropdowns
 document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
