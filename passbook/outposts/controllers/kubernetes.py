@@ -3,9 +3,7 @@ from io import StringIO
 from typing import Dict, List, Type
 
 from kubernetes.client import OpenApiException
-from kubernetes.config import load_incluster_config, load_kube_config
-from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.kube_config import load_kube_config_from_dict
+from kubernetes.client.api_client import ApiClient
 from structlog.testing import capture_logs
 from yaml import dump_all
 
@@ -23,19 +21,14 @@ class KubernetesController(BaseController):
     reconcilers: Dict[str, Type[KubernetesObjectReconciler]]
     reconcile_order: List[str]
 
+    config: ApiClient
     connection: KubernetesServiceConnection
 
     def __init__(
         self, outpost: Outpost, connection: KubernetesServiceConnection
     ) -> None:
         super().__init__(outpost, connection)
-        try:
-            if self.connection.local:
-                load_incluster_config()
-            else:
-                load_kube_config_from_dict(self.connection.kubeconfig)
-        except ConfigException:
-            load_kube_config()
+        self.client = connection.client()
         self.reconcilers = {
             "secret": SecretReconciler,
             "deployment": DeploymentReconciler,

@@ -5,14 +5,24 @@ from typing import Dict, Iterable, List, Optional, Type, Union
 from uuid import uuid4
 
 from dacite import from_dict
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
 from django.forms.models import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
+from docker.client import DockerClient
+from docker.errors import DockerException
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
+from kubernetes.client import VersionApi, VersionInfo
+from kubernetes.client.api_client import ApiClient
+from kubernetes.client.configuration import Configuration
+from kubernetes.client.exceptions import OpenApiException
+from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.incluster_config import load_incluster_config
+from kubernetes.config.kube_config import load_kube_config, load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 
@@ -20,10 +30,15 @@ from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
 from passbook.lib.config import CONFIG
 from passbook.lib.models import InheritanceForeignKey
+from passbook.lib.sentry import SentryIgnoredException
 from passbook.lib.utils.template import render_to_string
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
+
+
+class ServiceConnectionInvalid(SentryIgnoredException):
+    """"Exception raised when a Service Connection has invalid parameters"""
 
 
 @dataclass
@@ -68,6 +83,14 @@ def default_outpost_config():
     return asdict(OutpostConfig(passbook_host=""))
 
 
+@dataclass
+class OutpostServiceConnectionState:
+    """State of an Outpost Service Connection"""
+
+    version: str
+    healthy: bool
+
+
 class OutpostServiceConnection(models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 
@@ -86,6 +109,19 @@ class OutpostServiceConnection(models.Model):
     )
 
     objects = InheritanceManager()
+
+    @property
+    def state(self) -> OutpostServiceConnectionState:
+        """Get state of service connection"""
+        state_key = f"outpost_service_connection_{self.pk.hex}"
+        state = cache.get(state_key, None)
+        if state:
+            state = self._get_state()
+            cache.set(state_key, state)
+        return state
+
+    def _get_state(self) -> OutpostServiceConnectionState:
+        raise NotImplementedError
 
     @property
     def form(self) -> Type[ModelForm]:
@@ -113,6 +149,31 @@ class DockerServiceConnection(OutpostServiceConnection):
     def __str__(self) -> str:
         return f"Docker Service-Connection {self.name}"
 
+    def client(self) -> DockerClient:
+        """Get DockerClient"""
+        try:
+            client = None
+            if self.local:
+                client = DockerClient.from_env()
+            else:
+                client = DockerClient(
+                    base_url=self.url,
+                    tls=self.tls,
+                )
+            client.containers.list()
+        except DockerException as exc:
+            raise ServiceConnectionInvalid from exc
+        return client
+
+    def _get_state(self) -> OutpostServiceConnectionState:
+        try:
+            client = self.client()
+            return OutpostServiceConnectionState(
+                version=client.info()["ServerVersion"], healthy=True
+            )
+        except ServiceConnectionInvalid:
+            return OutpostServiceConnectionState(version="", healthy=False)
+
     class Meta:
 
         verbose_name = _("Docker Service-Connection")
@@ -139,6 +200,32 @@ class KubernetesServiceConnection(OutpostServiceConnection):
 
     def __str__(self) -> str:
         return f"Kubernetes Service-Connection {self.name}"
+
+    def _get_state(self) -> OutpostServiceConnectionState:
+        try:
+            client = self.client()
+            api_instance = VersionApi(client)
+            version: VersionInfo = api_instance.get_code()
+            return OutpostServiceConnectionState(
+                version=version.git_version, healthy=True
+            )
+        except OpenApiException:
+            return OutpostServiceConnectionState(version="", healthy=False)
+
+    def client(self) -> ApiClient:
+        """Get Kubernetes client configured from kubeconfig"""
+        config = Configuration()
+        try:
+            if self.local:
+                load_incluster_config(client_configuration=config)
+            else:
+                load_kube_config_from_dict(self.kubeconfig, client_configuration=config)
+            return ApiClient(config)
+        except ConfigException as exc:
+            if not settings.DEBUG:
+                raise ServiceConnectionInvalid from exc
+            load_kube_config(client_configuration=config)
+            return config
 
     class Meta:
 

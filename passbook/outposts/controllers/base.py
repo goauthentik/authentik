@@ -9,7 +9,7 @@ from passbook.outposts.models import Outpost, OutpostServiceConnection
 
 
 class ControllerException(SentryIgnoredException):
-    """Exception raise when anything fails during controller run"""
+    """Exception raised when anything fails during controller run"""
 
 
 class BaseController:

@@ -10,7 +10,11 @@ from yaml import safe_dump
 
 from passbook import __version__
 from passbook.outposts.controllers.base import BaseController, ControllerException
-from passbook.outposts.models import DockerServiceConnection, Outpost
+from passbook.outposts.models import (
+    DockerServiceConnection,
+    Outpost,
+    ServiceConnectionInvalid,
+)
 
 
 class DockerController(BaseController):
@@ -26,14 +30,8 @@ class DockerController(BaseController):
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
         super().__init__(outpost, connection)
         try:
-            if self.connection.local:
-                self.client = DockerClient.from_env()
-            else:
-                self.client = DockerClient(
-                    base_url=self.connection.url,
-                    tls=self.connection.tls,
-                )
-        except DockerException as exc:
+            self.client = connection.client()
+        except ServiceConnectionInvalid as exc:
             raise ControllerException from exc
 
     def _get_labels(self) -> Dict[str, str]:

@@ -4,9 +4,10 @@ import uuid
 
 import django.db.models.deletion
 from django.apps.registry import Apps
+from django.core.exceptions import FieldError
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
-from django.core.exceptions import FieldError
+
 import passbook.lib.models
 
 
