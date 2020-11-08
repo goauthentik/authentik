@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 
 from passbook.admin.fields import CodeMirrorWidget
 from passbook.core.expression import PropertyMappingEvaluator
+from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow, FlowDesignation
 from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 
@@ -20,6 +21,9 @@ class SAMLProviderForm(forms.ModelForm):
             designation=FlowDesignation.AUTHORIZATION
         )
         self.fields["property_mappings"].queryset = SAMLPropertyMapping.objects.all()
+        self.fields["signing_kp"].queryset = CertificateKeyPair.objects.exclude(
+            key_data__iexact=""
+        )
 
     class Meta:
 

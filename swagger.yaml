@@ -1100,6 +1100,25 @@ paths:
         required: true
         type: string
         format: uuid
+  /flows/instances/{flow_uuid}/cache_count/:
+    get:
+      operationId: flows_instances_cache_count
+      description: Get count of cached flows
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    parameters:
+      - name: flow_uuid
+        in: path
+        description: A UUID string identifying this Flow.
+        required: true
+        type: string
+        format: uuid
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
@@ -7506,6 +7525,12 @@ definitions:
         description: Require Requests to be signed by an X509 Certificate. Must match
           the Certificate selected in `Singing Keypair`.
         type: boolean
+      verification_kp:
+        title: Verification Keypair
+        description: If selected, incoming assertion's Signatures will be validated.
+        type: string
+        format: uuid
+        x-nullable: true
   Message:
     description: Serialize Django Message into DRF Object
     type: object

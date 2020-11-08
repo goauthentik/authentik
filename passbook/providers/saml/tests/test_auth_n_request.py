@@ -34,6 +34,7 @@ class TestAuthNRequest(TestCase):
             ),
             acs_url="http://testserver/source/saml/provider/acs/",
             signing_kp=CertificateKeyPair.objects.first(),
+            verification_kp=CertificateKeyPair.objects.first(),
         )
         self.source = SAMLSource.objects.create(
             slug="provider",
