@@ -50,6 +50,7 @@
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Type' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Local?' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Status' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
@@ -67,6 +68,15 @@
                     <td role="cell">
                         <span>
                             {{ sc.local|yesno:"Yes,No" }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {% if sc.state.healthy %}
+                            <i class="fas fa-check pf-m-success"></i> {{ sc.state.version }}
+                            {% else %}
+                            <i class="fas fa-times pf-m-danger"></i> {% trans 'Unhealthy' %}
+                            {% endif %}
                         </span>
                     </td>
                     <td>

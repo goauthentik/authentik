@@ -7,4 +7,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/5"),
         "options": {"queue": "passbook_scheduled"},
     },
+    "outposts_service_connection_check": {
+        "task": "passbook.outposts.tasks.outpost_service_connection_monitor",
+        "schedule": crontab(minute=0, hour="*"),
+        "options": {"queue": "passbook_scheduled"},
+    },
 }

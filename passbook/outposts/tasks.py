@@ -3,6 +3,7 @@ from typing import Any
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.core.cache import cache
 from django.db.models.base import Model
 from django.utils.text import slugify
 from structlog import get_logger
@@ -15,6 +16,7 @@ from passbook.outposts.models import (
     KubernetesServiceConnection,
     Outpost,
     OutpostModel,
+    OutpostServiceConnection,
     OutpostState,
     OutpostType,
 )
@@ -30,6 +32,25 @@ def outpost_controller_all():
     """Launch Controller for all Outposts which support it"""
     for outpost in Outpost.objects.exclude(service_connection=None):
         outpost_controller.delay(outpost.pk.hex)
+
+
+@CELERY_APP.task()
+def outpost_service_connection_state(state_pk: Any):
+    """Update cached state of a service connection"""
+    connection: OutpostServiceConnection = (
+        OutpostServiceConnection.objects.filter(pk=state_pk).select_subclasses().first()
+    )
+    cache.delete(f"outpost_service_connection_{connection.pk.hex}")
+    _ = connection.state
+
+
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def outpost_service_connection_monitor(self: MonitoredTask):
+    """Regularly check the state of Outpost Service Connections"""
+    for connection in OutpostServiceConnection.objects.select_subclasses():
+        cache.delete(f"outpost_service_connection_{connection.pk.hex}")
+        _ = connection.state
+    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -91,6 +112,10 @@ def outpost_post_save(model_class: str, model_pk: Any):
         )
         outpost_send_update(instance)
         return
+
+    if isinstance(instance, OutpostServiceConnection):
+        LOGGER.debug("triggering ServiceConnection state update", instance=instance)
+        outpost_service_connection_state.delay(instance.pk)
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)

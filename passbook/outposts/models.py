@@ -25,6 +25,7 @@ from kubernetes.config.incluster_config import load_incluster_config
 from kubernetes.config.kube_config import load_kube_config, load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
+from urllib3.exceptions import HTTPError
 
 from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
@@ -115,9 +116,9 @@ class OutpostServiceConnection(models.Model):
         """Get state of service connection"""
         state_key = f"outpost_service_connection_{self.pk.hex}"
         state = cache.get(state_key, None)
-        if state:
+        if not state:
             state = self._get_state()
-            cache.set(state_key, state)
+            cache.set(state_key, state, timeout=0)
         return state
 
     def _get_state(self) -> OutpostServiceConnectionState:
@@ -209,7 +210,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
             return OutpostServiceConnectionState(
                 version=version.git_version, healthy=True
             )
-        except OpenApiException:
+        except (OpenApiException, HTTPError):
             return OutpostServiceConnectionState(version="", healthy=False)
 
     def client(self) -> ApiClient:

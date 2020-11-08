@@ -48,6 +48,11 @@ class DockerServiceConnectionForm(forms.ModelForm):
         fields = ["name", "local", "url", "tls"]
         widgets = {
             "name": forms.TextInput,
+            "url": forms.TextInput,
+        }
+        labels = {
+            "url": _("URL"),
+            "tls": _("TLS"),
         }
 
 
