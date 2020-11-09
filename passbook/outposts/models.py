@@ -5,7 +5,6 @@ from typing import Dict, Iterable, List, Optional, Type, Union
 from uuid import uuid4
 
 from dacite import from_dict
-from django.conf import settings
 from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
@@ -22,7 +21,7 @@ from kubernetes.client.configuration import Configuration
 from kubernetes.client.exceptions import OpenApiException
 from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.incluster_config import load_incluster_config
-from kubernetes.config.kube_config import load_kube_config, load_kube_config_from_dict
+from kubernetes.config.kube_config import load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
 from urllib3.exceptions import HTTPError
@@ -223,10 +222,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
                 load_kube_config_from_dict(self.kubeconfig, client_configuration=config)
             return ApiClient(config)
         except ConfigException as exc:
-            if not settings.DEBUG:
-                raise ServiceConnectionInvalid from exc
-            load_kube_config(client_configuration=config)
-            return config
+            raise ServiceConnectionInvalid from exc
 
     class Meta:
 

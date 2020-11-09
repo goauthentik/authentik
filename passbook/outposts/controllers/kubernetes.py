@@ -21,7 +21,7 @@ class KubernetesController(BaseController):
     reconcilers: Dict[str, Type[KubernetesObjectReconciler]]
     reconcile_order: List[str]
 
-    config: ApiClient
+    client: ApiClient
     connection: KubernetesServiceConnection
 
     def __init__(

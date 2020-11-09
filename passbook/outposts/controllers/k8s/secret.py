@@ -23,7 +23,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
 
     def __init__(self, controller: "KubernetesController") -> None:
         super().__init__(controller)
-        self.api = CoreV1Api()
+        self.api = CoreV1Api(controller.client)
 
     @property
     def name(self) -> str:

@@ -36,7 +36,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
 
     def __init__(self, controller: "KubernetesController") -> None:
         super().__init__(controller)
-        self.api = AppsV1Api()
+        self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
     @property

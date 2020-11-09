@@ -30,7 +30,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
 
     def __init__(self, controller: "KubernetesController") -> None:
         super().__init__(controller)
-        self.api = NetworkingV1beta1Api()
+        self.api = NetworkingV1beta1Api(controller.client)
 
     @property
     def name(self) -> str:
