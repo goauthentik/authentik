@@ -4,7 +4,7 @@
 image:
   name: beryju/passbook
   name_static: beryju/passbook-static
-  tag: 0.12.8-stable
+  tag: 0.12.9-stable
 
 serverReplicas: 1
 workerReplicas: 1
