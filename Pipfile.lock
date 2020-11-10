@@ -152,11 +152,11 @@
         },
         "channels": {
             "hashes": [
-                "sha256:5cdd9c6b9ee663cdf1bbb00de7cdab885a3c418f9d32a29f04b09498828020f6",
-                "sha256:b02e150b48704ec3607d4168402ac5c26138dd183fcdb7f2aeb965e6e19fd558"
+                "sha256:74db79c9eca616be69d38013b22083ab5d3f9ccda1ab5e69096b1bb7da2d9b18",
+                "sha256:f50a6e79757a64c1e45e95e144a2ac5f1e99ee44a0718ab182c501f5e5abd268"
             ],
             "index": "pypi",
-            "version": "==3.0.1"
+            "version": "==3.0.2"
         },
         "channels-redis": {
             "hashes": [
