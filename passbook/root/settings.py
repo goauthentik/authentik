@@ -208,7 +208,7 @@ TEMPLATES = [
     },
 ]
 
-ASGI_APPLICATION = "passbook.root.routing.application"
+ASGI_APPLICATION = "passbook.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {

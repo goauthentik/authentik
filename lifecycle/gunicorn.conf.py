@@ -1,4 +1,5 @@
 """Gunicorn config"""
+import os
 import warnings
 from multiprocessing import cpu_count
 from pathlib import Path
@@ -13,6 +14,8 @@ group = "passbook"
 worker_class = "uvicorn.workers.UvicornWorker"
 # Docker containers don't have /tmp as tmpfs
 worker_tmp_dir = "/dev/shm"
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
 
 logconfig_dict = {
     "version": 1,

@@ -1,5 +1,5 @@
 """passbook sentry integration"""
-from aioredis.errors import ReplyError
+from aioredis.errors import ReplyError, ConnectionClosedError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
 from celery.exceptions import CeleryError
@@ -40,6 +40,7 @@ def before_send(event, hint):
         RedisError,
         ResponseError,
         ReplyError,
+        ConnectionClosedError,
         # websocket errors
         ChannelFull,
         WebSocketException,

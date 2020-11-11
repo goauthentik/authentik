@@ -6,19 +6,21 @@ It exposes the ASGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 """
-import os
 import typing
 from time import time
 from typing import Any, ByteString, Dict
 
 import django
 from asgiref.compatibility import guarantee_single_callable
+from channels.routing import ProtocolTypeRouter, URLRouter
 from defusedxml import defuse_stdlib
 from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from structlog import get_logger
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
+from passbook.root import websocket
+
+# DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
 
 defuse_stdlib()
 django.setup()
@@ -129,5 +131,14 @@ class ASGILogger:
 
 
 application = ASGILogger(
-    guarantee_single_callable(SentryAsgiMiddleware(get_asgi_application()))
+    guarantee_single_callable(
+        SentryAsgiMiddleware(
+            ProtocolTypeRouter(
+                {
+                    "http": get_asgi_application(),
+                    "websocket": URLRouter(websocket.websocket_urlpatterns),
+                }
+            )
+        )
+    )
 )
