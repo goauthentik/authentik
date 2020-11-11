@@ -4,12 +4,13 @@ disable=arguments-differ,no-self-use,fixme,locally-disabled,too-many-ancestors,t
 
 load-plugins=pylint_django,pylint.extensions.bad_builtin
 
-extension-pkg-whitelist=lxml
+extension-pkg-whitelist=lxml,xmlsec
 
 # Allow constants to be shorter than normal (and lowercase, for settings.py)
 const-rgx=[a-zA-Z0-9_]{1,40}$
 
 ignored-modules=django-otp
+generated-members=xmlsec.constants.*,xmlsec.tree.*
 ignore=migrations
 max-attributes=12
 

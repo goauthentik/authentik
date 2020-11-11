@@ -22,8 +22,8 @@ SAML_NAME_ID_FORMAT_TRANSIENT = "urn:oasis:names:tc:SAML:2.0:nameid-format:trans
 SAML_BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 SAML_BINDING_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
 
-DSA_SHA1 = 'http://www.w3.org/2000/09/xmldsig#dsa-sha1'
-RSA_SHA1 = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
-RSA_SHA256 = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
-RSA_SHA384 = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384'
-RSA_SHA512 = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512'
+DSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+RSA_SHA256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+RSA_SHA384 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
+RSA_SHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"

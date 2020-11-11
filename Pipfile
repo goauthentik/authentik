@@ -44,6 +44,7 @@ channels = "*"
 channels-redis = "*"
 kubernetes = "*"
 docker = "*"
+xmlsec = "*"
 
 [requires]
 python_version = "3.8"

@@ -4,22 +4,32 @@ from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import quote_plus
 
-from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
+import xmlsec
 from defusedxml import ElementTree
-from signxml import XMLVerifier
+from lxml import etree  # nosec
 from structlog import get_logger
 
 from passbook.providers.saml.exceptions import CannotHandleAssertion
 from passbook.providers.saml.models import SAMLProvider
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 from passbook.sources.saml.processors.constants import (
+    DSA_SHA1,
     NS_SAML_PROTOCOL,
+    RSA_SHA1,
+    RSA_SHA256,
+    RSA_SHA384,
+    RSA_SHA512,
     SAML_NAME_ID_FORMAT_EMAIL,
 )
 
 LOGGER = get_logger()
+ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
+    "Verification Certificate configured, but request is not signed."
+)
+ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER = (
+    "Provider does not have a Validation Certificate configured."
+)
+ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
 @dataclass
@@ -69,14 +79,30 @@ class AuthNRequestParser:
         """Validate and parse raw request with enveloped signautre."""
         decoded_xml = decode_base64_and_inflate(saml_request)
 
-        if self.provider.verification_kp:
+        verifier = self.provider.verification_kp
+
+        root = etree.fromstring(decoded_xml)  # nosec
+        xmlsec.tree.add_ids(root, ["ID"])
+        signature_node = xmlsec.tree.find_node(root, xmlsec.constants.NodeSignature)
+
+        if verifier and not signature_node:
+            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+
+        if signature_node:
+            if not verifier:
+                raise CannotHandleAssertion(ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER)
+
             try:
-                XMLVerifier().verify(
-                    decoded_xml,
-                    x509_cert=self.provider.verification_kp.certificate_data,
+                ctx = xmlsec.SignatureContext()
+                key = xmlsec.Key.from_memory(
+                    verifier.certificate_data,
+                    xmlsec.constants.KeyDataFormatCertPem,
+                    None,
                 )
-            except InvalidSignature as exc:
-                raise CannotHandleAssertion("Failed to verify signature") from exc
+                ctx.key = key
+                ctx.verify(signature_node)
+            except xmlsec.VerificationError as exc:
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -90,31 +116,45 @@ class AuthNRequestParser:
         """Validate and parse raw request with detached signature"""
         decoded_xml = decode_base64_and_inflate(saml_request)
 
+        verifier = self.provider.verification_kp
+
+        if verifier and not (signature and sig_alg):
+            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+
         if signature and sig_alg:
-            # if sig_alg == "http://www.w3.org/2000/09/xmldsig#rsa-sha1":
-            sig_hash = hashes.SHA1()  # nosec
+            if not verifier:
+                raise CannotHandleAssertion(ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER)
 
             querystring = f"SAMLRequest={quote_plus(saml_request)}&"
             if relay_state is not None:
                 querystring += f"RelayState={quote_plus(relay_state)}&"
-            querystring += f"SigAlg={sig_alg}"
+            querystring += f"SigAlg={quote_plus(sig_alg)}"
 
-            if not self.provider.verification_kp:
-                raise CannotHandleAssertion(
-                    "Provider does not have a Validation Certificate configured."
-                )
-            public_key = self.provider.verification_kp.private_key.public_key()
+            dsig_ctx = xmlsec.SignatureContext()
+            key = xmlsec.Key.from_memory(
+                verifier.certificate_data, xmlsec.constants.KeyDataFormatCertPem, None
+            )
+            dsig_ctx.key = key
+
+            sign_algorithm_transform_map = {
+                DSA_SHA1: xmlsec.constants.TransformDsaSha1,
+                RSA_SHA1: xmlsec.constants.TransformRsaSha1,
+                RSA_SHA256: xmlsec.constants.TransformRsaSha256,
+                RSA_SHA384: xmlsec.constants.TransformRsaSha384,
+                RSA_SHA512: xmlsec.constants.TransformRsaSha512,
+            }
+            sign_algorithm_transform = sign_algorithm_transform_map.get(
+                sig_alg, xmlsec.constants.TransformRsaSha1
+            )
+
             try:
-                public_key.verify(
+                dsig_ctx.verify_binary(
+                    querystring.encode("utf-8"),
+                    sign_algorithm_transform,
                     b64decode(signature),
-                    querystring.encode(),
-                    padding.PSS(
-                        mgf=padding.MGF1(sig_hash), salt_length=padding.PSS.MAX_LENGTH
-                    ),
-                    sig_hash,
                 )
-            except InvalidSignature as exc:
-                raise CannotHandleAssertion("Failed to verify signature") from exc
+            except xmlsec.VerificationError as exc:
+                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
         return self._parse_xml(decoded_xml, relay_state)
 
     def idp_initiated(self) -> AuthNRequest:

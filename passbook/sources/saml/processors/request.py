@@ -3,8 +3,7 @@ from base64 import b64encode
 from typing import Dict
 from urllib.parse import quote_plus
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
+import xmlsec
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
@@ -18,6 +17,7 @@ from passbook.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
+    RSA_SHA256,
 )
 
 SESSION_REQUEST_ID = "passbook_source_saml_request_id"
@@ -51,7 +51,7 @@ class RequestProcessor:
     def get_name_id_policy(self) -> Element:
         """Get NameID Policy Element"""
         name_id_policy = Element(f"{{{NS_SAML_PROTOCOL}}}NameIDPolicy")
-        name_id_policy.text = self.source.name_id_policy
+        name_id_policy.attrib["Format"] = self.source.name_id_policy
         return name_id_policy
 
     def get_auth_n(self) -> Element:
@@ -103,22 +103,28 @@ class RequestProcessor:
             response_dict["RelayState"] = self.relay_state
 
         if self.source.signing_kp:
-            sig_alg = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
-            sig_hash = hashes.SHA1()  # nosec
+            sig_alg = RSA_SHA256
             # Create the full querystring in the correct order to be signed
             querystring = f"SAMLRequest={quote_plus(saml_request)}&"
-            if self.relay_state != "":
-                querystring += f"RelayState={quote_plus(self.relay_state)}&"
-            querystring += f"SigAlg={sig_alg}"
+            if "RelayState" in response_dict:
+                querystring += f"RelayState={quote_plus(response_dict['RelayState'])}&"
+            querystring += f"SigAlg={quote_plus(sig_alg)}"
 
-            signature = self.source.signing_kp.private_key.sign(
-                querystring.encode(),
-                padding.PSS(
-                    mgf=padding.MGF1(sig_hash), salt_length=padding.PSS.MAX_LENGTH
-                ),
-                sig_hash,
+            ctx = xmlsec.SignatureContext()
+
+            key = xmlsec.Key.from_memory(
+                self.source.signing_kp.key_data, xmlsec.constants.KeyDataFormatPem, None
             )
-            response_dict["SigAlg"] = sig_alg
+            key.load_cert_from_memory(
+                self.source.signing_kp.certificate_data,
+                xmlsec.constants.KeyDataFormatPem,
+            )
+            ctx.key = key
+
+            signature = ctx.sign_binary(
+                querystring.encode("utf-8"), xmlsec.constants.TransformRsaSha256
+            )
             response_dict["Signature"] = b64encode(signature).decode()
+            response_dict["SigAlg"] = sig_alg
 
         return response_dict

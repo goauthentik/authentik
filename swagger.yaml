@@ -7431,7 +7431,6 @@ definitions:
     required:
       - name
       - acs_url
-      - issuer
     type: object
     properties:
       pk:
@@ -7450,6 +7449,7 @@ definitions:
         minLength: 1
       audience:
         title: Audience
+        description: Value of the audience restriction field of the asseration.
         type: string
         minLength: 1
       issuer:
@@ -7497,18 +7497,15 @@ definitions:
           - dsa-sha1
       signing_kp:
         title: Signing Keypair
-        description: Singing is enabled upon selection of a Key Pair.
+        description: Keypair used to sign outgoing Responses going to the Service
+          Provider.
         type: string
         format: uuid
         x-nullable: true
-      require_signing:
-        title: Require signing
-        description: Require Requests to be signed by an X509 Certificate. Must match
-          the Certificate selected in `Singing Keypair`.
-        type: boolean
       verification_kp:
-        title: Verification Keypair
-        description: If selected, incoming assertion's Signatures will be validated.
+        title: Verification Certificate
+        description: When selected, incoming assertion's Signatures will be validated
+          against this certificate. To allow unsigned Requests, leave on default.
         type: string
         format: uuid
         x-nullable: true
@@ -7863,8 +7860,7 @@ definitions:
         minLength: 1
       signing_kp:
         title: Singing Keypair
-        description: Certificate Key Pair of the IdP which Assertion's Signature is
-          validated against.
+        description: Keypair which is used to sign outgoing requests.
         type: string
         format: uuid
   Stage:

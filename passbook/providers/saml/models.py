@@ -28,12 +28,21 @@ class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
     acs_url = models.URLField(verbose_name=_("ACS URL"))
-    audience = models.TextField(default="")
-    issuer = models.TextField(help_text=_("Also known as EntityID"))
+    audience = models.TextField(
+        default="",
+        help_text=_("Value of the audience restriction field of the asseration."),
+    )
+    issuer = models.TextField(help_text=_("Also known as EntityID"), default="passbook")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
         default=SAMLBindings.REDIRECT,
-        verbose_name=_("Service Prodier Binding"),
+        verbose_name=_("Service Provider Binding"),
+        help_text=_(
+            (
+                "This determines how passbook sends the "
+                "response back to the Service Provider."
+            )
+        ),
     )
 
     assertion_valid_not_before = models.TextField(
@@ -92,9 +101,14 @@ class SAMLProvider(Provider):
         default=None,
         null=True,
         blank=True,
-        help_text=_("If selected, incoming assertion's Signatures will be validated."),
+        help_text=_(
+            (
+                "When selected, incoming assertion's Signatures will be validated against this "
+                "certificate. To allow unsigned Requests, leave on default."
+            )
+        ),
         on_delete=models.SET_NULL,
-        verbose_name=_("Verification Keypair"),
+        verbose_name=_("Verification Certificate"),
         related_name="+",
     )
     signing_kp = models.ForeignKey(
@@ -102,17 +116,11 @@ class SAMLProvider(Provider):
         default=None,
         null=True,
         blank=True,
-        help_text=_("Singing is enabled upon selection of a Key Pair."),
+        help_text=_(
+            "Keypair used to sign outgoing Responses going to the Service Provider."
+        ),
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
-    )
-
-    require_signing = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Require Requests to be signed by an X509 Certificate. "
-            "Must match the Certificate selected in `Singing Keypair`."
-        ),
     )
 
     @property

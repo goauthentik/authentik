@@ -1,6 +1,4 @@
 """Test AuthN Request generator and parser"""
-from base64 import b64encode
-from passbook.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http.request import HttpRequest, QueryDict
 from django.test import RequestFactory, TestCase
@@ -14,16 +12,30 @@ from passbook.providers.saml.processors.request_parser import AuthNRequestParser
 from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
 from passbook.sources.saml.exceptions import MismatchedRequestID
 from passbook.sources.saml.models import SAMLSource
+from passbook.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
 from passbook.sources.saml.processors.request import (
     SESSION_REQUEST_ID,
     RequestProcessor,
 )
 from passbook.sources.saml.processors.response import ResponseProcessor
 
-REDIRECT_REQUEST = """fZLNbsIwEIRfJfIdbKeFgEUipXAoEm0jSHvopTLJplhK7NTr9Oft6yRUKhekPdk73+yOdoWyqVuRdu6k9/DRAbrgu6k1iuEjJp3VwkhUKLRsAIUrxCF92IlwykRrjTOFqUmQIoJ1yui10dg1YA9gP1UBz/tdTE7OtSgo5WzKQzYditGeP8GW9rSQZk+HnAQbb6+07EGj7EI1j8SCeaVs21oVQ9dAoRqcf6OIhh6VLpV+pxZKZaFwlATbTUzeyqKazaqiDCO5WEQwZzKCagkwr8obWcqjb0PsYKvRSe1iErKQTTj3lYdc3HLBl68kyM4L340u19M5j4LiPs+zybjgC1gclvMNJFn104vB2P5L/TpW/kVNkqvBrug/+mjVikeP224y4/P7CdK6Nl9rC9JBTDihySi5vIbkFw=="""
-REDIRECT_SIGNATURE = "UlOe1BItHVHM+io6rUZAenIqfibm7hM6wr9I1rcP5kPJ4N8cbkyqmAMh5LD2lUq3PDERJfjdO/oOKnvJmbD2y9MOObyR2d7Udv62KERrA0qM917Q+w8wrLX7w2nHY96EDvkXD4iAomR5EE9dHRuubDy7uRv2syEevc0gfoLi7W/5vp96vJgsaSqxnTp+QiYq49KyWyMtxRULF2yd+vYDnHCDME73mNSULEHfwCU71dvbKpnFaej78q7wS20gUk6ysOOXXtvDHbiVcpUb/9oyDgNAxUjVvPdh96AhBFj2HCuGZhP0CGotafTciu6YlsiwUpuBkIYgZmNWYa3FR9LS4Q=="
+REDIRECT_REQUEST = (
+    "fZLNbsIwEIRfJfIdbKeFgEUipXAoEm0jSHvopTLJplhK7NTr9Oft6yRUKhekPdk73+yOdoWyqVuRdu6k9/DRAbrgu6k1iu"
+    "EjJp3VwkhUKLRsAIUrxCF92IlwykRrjTOFqUmQIoJ1yui10dg1YA9gP1UBz/tdTE7OtSgo5WzKQzYditGeP8GW9rSQZk+H"
+    "nAQbb6+07EGj7EI1j8SCeaVs21oVQ9dAoRqcf6OIhh6VLpV+pxZKZaFwlATbTUzeyqKazaqiDCO5WEQwZzKCagkwr8obWc"
+    "qjb0PsYKvRSe1iErKQTTj3lYdc3HLBl68kyM4L340u19M5j4LiPs+zybjgC1gclvMNJFn104vB2P5L/TpW/kVNkqvBrug/"
+    "+mjVikeP224y4/P7CdK6Nl9rC9JBTDihySi5vIbkFw=="
+)
+REDIRECT_SIGNATURE = (
+    "UlOe1BItHVHM+io6rUZAenIqfibm7hM6wr9I1rcP5kPJ4N8cbkyqmAMh5LD2lUq3PDERJfjdO/oOKnvJmbD2y9MOObyR2d"
+    "7Udv62KERrA0qM917Q+w8wrLX7w2nHY96EDvkXD4iAomR5EE9dHRuubDy7uRv2syEevc0gfoLi7W/5vp96vJgsaSqxnTp+"
+    "QiYq49KyWyMtxRULF2yd+vYDnHCDME73mNSULEHfwCU71dvbKpnFaej78q7wS20gUk6ysOOXXtvDHbiVcpUb/9oyDgNAxU"
+    "jVvPdh96AhBFj2HCuGZhP0CGotafTciu6YlsiwUpuBkIYgZmNWYa3FR9LS4Q=="
+)
 REDIRECT_SIG_ALG = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
-REDIRECT_RELAY_STATE = "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
+REDIRECT_RELAY_STATE = (
+    "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
+)
 REDIRECT_CERT = """-----BEGIN CERTIFICATE-----
 MIIDCDCCAfCgAwIBAgIRAM5s+bhOHk4ChSpPkGSh0NswDQYJKoZIhvcNAQELBQAw
 KzEpMCcGA1UEAwwgcGFzc2Jvb2sgU2VsZi1zaWduZWQgQ2VydGlmaWNhdGUwHhcN
@@ -54,18 +66,19 @@ class TestAuthNRequest(TestCase):
     """Test AuthN Request generator and parser"""
 
     def setUp(self):
+        cert = CertificateKeyPair.objects.first()
         self.provider = SAMLProvider.objects.create(
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
             acs_url="http://testserver/source/saml/provider/acs/",
-            signing_kp=CertificateKeyPair.objects.first(),
-            verification_kp=CertificateKeyPair.objects.first(),
+            signing_kp=cert,
+            verification_kp=cert,
         )
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="passbook",
-            signing_kp=CertificateKeyPair.objects.first(),
+            signing_kp=cert,
         )
         self.factory = RequestFactory()
 
@@ -83,24 +96,6 @@ class TestAuthNRequest(TestCase):
         # Now we check the ID and signature
         parsed_request = AuthNRequestParser(self.provider).parse(
             deflate_and_base64_encode(request), "test_state"
-        )
-        self.assertEqual(parsed_request.id, request_proc.request_id)
-        self.assertEqual(parsed_request.relay_state, "test_state")
-
-    def test_signed_valid_detached(self):
-        """Test generated AuthNRequest with valid signature (detached)"""
-        http_request = self.factory.get("/")
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(http_request)
-        http_request.session.save()
-
-        # First create an AuthNRequest
-        request_proc = RequestProcessor(self.source, http_request, "test_state")
-        params = request_proc.build_auth_n_detached()
-        # Now we check the ID and signature
-        parsed_request = AuthNRequestParser(self.provider).parse_detached(
-            params["SAMLRequest"], "test_state", params["Signature"], params["SigAlg"]
         )
         self.assertEqual(parsed_request.id, request_proc.request_id)
         self.assertEqual(parsed_request.relay_state, "test_state")
@@ -139,12 +134,32 @@ class TestAuthNRequest(TestCase):
         with self.assertRaises(MismatchedRequestID):
             response_parser.parse(http_request)
 
+    def test_signed_valid_detached(self):
+        """Test generated AuthNRequest with valid signature (detached)"""
+        http_request = self.factory.get("/")
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(http_request)
+        http_request.session.save()
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        params = request_proc.build_auth_n_detached()
+        # Now we check the ID and signature
+        parsed_request = AuthNRequestParser(self.provider).parse_detached(
+            params["SAMLRequest"],
+            params["RelayState"],
+            params["Signature"],
+            params["SigAlg"],
+        )
+        self.assertEqual(parsed_request.id, request_proc.request_id)
+        self.assertEqual(parsed_request.relay_state, "test_state")
+
     def test_signed_detached_static(self):
         """Test request with detached signature,
         taken from https://www.samltool.com/generic_sso_req.php"""
         static_keypair = CertificateKeyPair.objects.create(
-            name="samltool",
-            certificate_data=REDIRECT_CERT
+            name="samltool", certificate_data=REDIRECT_CERT
         )
         provider = SAMLProvider(
             name="samltool",
@@ -152,6 +167,8 @@ class TestAuthNRequest(TestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
+            audience="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=static_keypair,
             verification_kp=static_keypair,
         )

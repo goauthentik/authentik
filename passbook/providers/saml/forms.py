@@ -39,7 +39,6 @@ class SAMLProviderForm(forms.ModelForm):
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
             "digest_algorithm",
-            "require_signing",
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
