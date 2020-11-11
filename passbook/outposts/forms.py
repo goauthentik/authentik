@@ -8,6 +8,7 @@ from passbook.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
     Outpost,
+    OutpostServiceConnection,
 )
 from passbook.providers.proxy.models import ProxyProvider
 
@@ -18,6 +19,9 @@ class OutpostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["providers"].queryset = ProxyProvider.objects.all()
+        self.fields[
+            "service_connection"
+        ].queryset = OutpostServiceConnection.objects.select_subclasses()
 
     class Meta:
 
