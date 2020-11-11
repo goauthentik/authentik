@@ -18,12 +18,14 @@ from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from structlog import get_logger
 
-from passbook.root import websocket
-
 # DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
 
 defuse_stdlib()
 django.setup()
+
+# pylint: disable=wrong-import-position
+from passbook.root import websocket  # noqa  # isort:skip
+
 
 # See https://github.com/encode/starlette/blob/master/starlette/types.py
 Scope = typing.MutableMapping[str, typing.Any]

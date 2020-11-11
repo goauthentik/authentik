@@ -1,5 +1,5 @@
 """passbook sentry integration"""
-from aioredis.errors import ReplyError, ConnectionClosedError
+from aioredis.errors import ConnectionClosedError, ReplyError
 from billiard.exceptions import WorkerLostError
 from botocore.client import ClientError
 from celery.exceptions import CeleryError
