@@ -1,4 +1,6 @@
 """Test AuthN Request generator and parser"""
+from base64 import b64encode
+from passbook.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http.request import HttpRequest, QueryDict
 from django.test import RequestFactory, TestCase
@@ -17,6 +19,30 @@ from passbook.sources.saml.processors.request import (
     RequestProcessor,
 )
 from passbook.sources.saml.processors.response import ResponseProcessor
+
+REDIRECT_REQUEST = """fZLNbsIwEIRfJfIdbKeFgEUipXAoEm0jSHvopTLJplhK7NTr9Oft6yRUKhekPdk73+yOdoWyqVuRdu6k9/DRAbrgu6k1iuEjJp3VwkhUKLRsAIUrxCF92IlwykRrjTOFqUmQIoJ1yui10dg1YA9gP1UBz/tdTE7OtSgo5WzKQzYditGeP8GW9rSQZk+HnAQbb6+07EGj7EI1j8SCeaVs21oVQ9dAoRqcf6OIhh6VLpV+pxZKZaFwlATbTUzeyqKazaqiDCO5WEQwZzKCagkwr8obWcqjb0PsYKvRSe1iErKQTTj3lYdc3HLBl68kyM4L340u19M5j4LiPs+zybjgC1gclvMNJFn104vB2P5L/TpW/kVNkqvBrug/+mjVikeP224y4/P7CdK6Nl9rC9JBTDihySi5vIbkFw=="""
+REDIRECT_SIGNATURE = "UlOe1BItHVHM+io6rUZAenIqfibm7hM6wr9I1rcP5kPJ4N8cbkyqmAMh5LD2lUq3PDERJfjdO/oOKnvJmbD2y9MOObyR2d7Udv62KERrA0qM917Q+w8wrLX7w2nHY96EDvkXD4iAomR5EE9dHRuubDy7uRv2syEevc0gfoLi7W/5vp96vJgsaSqxnTp+QiYq49KyWyMtxRULF2yd+vYDnHCDME73mNSULEHfwCU71dvbKpnFaej78q7wS20gUk6ysOOXXtvDHbiVcpUb/9oyDgNAxUjVvPdh96AhBFj2HCuGZhP0CGotafTciu6YlsiwUpuBkIYgZmNWYa3FR9LS4Q=="
+REDIRECT_SIG_ALG = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+REDIRECT_RELAY_STATE = "ss:mem:7a054b4af44f34f89dd2d973f383c250b6b076e7f06cfa8276008a6504eaf3c7"
+REDIRECT_CERT = """-----BEGIN CERTIFICATE-----
+MIIDCDCCAfCgAwIBAgIRAM5s+bhOHk4ChSpPkGSh0NswDQYJKoZIhvcNAQELBQAw
+KzEpMCcGA1UEAwwgcGFzc2Jvb2sgU2VsZi1zaWduZWQgQ2VydGlmaWNhdGUwHhcN
+MjAxMTA3MjAzNDIxWhcNMjExMTA4MjAzNDIxWjBUMSkwJwYDVQQDDCBwYXNzYm9v
+ayBTZWxmLXNpZ25lZCBDZXJ0aWZpY2F0ZTERMA8GA1UECgwIcGFzc2Jvb2sxFDAS
+BgNVBAsMC1NlbGYtc2lnbmVkMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAuh+Bv6a/ogpic72X/sq86YiLzVjixnGqjc4wpsPPP00GX8jUAZJL4Tjo+sYK
+IU2DF2/azlVqjkbLho4rGuuc8YkbFXBEXPYc5h3bseO2vk6sbbbWKV0mro1VFhBh
+T59hBORuMMefmQdhFzsRNOGklIptQdg0quD8ET3+/uNfIT98S2ruZdYteFls46Sa
+MokZFYVD6pWEYV4P2MKVAFqJX9bqBW0LfCCfFqHAOJjUZj9dtleg86d2WfedUOG2
+LK0iLrydjhThbI0GUDhv0jWYkRlv04fdJ1WSRANYA3gBOnyw+Iigh2xNnYbVZMXT
+I0BupIJ4UoODMc4QpD2GYJ6oGwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCCEF3e
+Y99KxEBSR4H4/TvKbnh4QtHswOf7MaGdjtrld7l4u4Hc4NEklNdDn1XLKhZwnq3Z
+LRsRlJutDzZ18SRmAJPXPbka7z7D+LA1mbNQElOgiKyQHD9rIJSBr6X5SM9As3CR
+7QUsb8dg7kc+Jn7WuLZIEVxxMtekt0buWEdMJiklF0tCS3LNsP083FaQk/H1K0z6
+3PWP26EFdwir3RyTKLY5CBLjKrUAo9O1l/WBVFYbdetnipbGGu5f6nk6nnxbwLLI
+Dm52Vkq+xFDDUq9IqIoYvLaE86MDvtpMQEx65tIGU19vUf3fL/+sSfdRZ1HDzP4d
+qNAZMq1DqpibfCBg
+-----END CERTIFICATE-----"""
 
 
 def dummy_get_response(request: HttpRequest):  # pragma: no cover
@@ -112,3 +138,26 @@ class TestAuthNRequest(TestCase):
 
         with self.assertRaises(MismatchedRequestID):
             response_parser.parse(http_request)
+
+    def test_signed_detached_static(self):
+        """Test request with detached signature,
+        taken from https://www.samltool.com/generic_sso_req.php"""
+        static_keypair = CertificateKeyPair.objects.create(
+            name="samltool",
+            certificate_data=REDIRECT_CERT
+        )
+        provider = SAMLProvider(
+            name="samltool",
+            authorization_flow=Flow.objects.get(
+                slug="default-provider-authorization-implicit-consent"
+            ),
+            acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
+            signing_kp=static_keypair,
+            verification_kp=static_keypair,
+        )
+        parsed_request = AuthNRequestParser(provider).parse_detached(
+            REDIRECT_REQUEST, REDIRECT_RELAY_STATE, REDIRECT_SIGNATURE, REDIRECT_SIG_ALG
+        )
+        self.assertEqual(parsed_request.id, "_dcf55fcd27a887e60a7ef9ee6fd3adab")
+        self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_EMAIL)
+        self.assertEqual(parsed_request.relay_state, REDIRECT_RELAY_STATE)
