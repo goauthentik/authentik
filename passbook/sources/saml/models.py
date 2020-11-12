@@ -96,11 +96,33 @@ class SAMLSource(Source):
 
     signing_kp = models.ForeignKey(
         CertificateKeyPair,
+        default=None,
+        blank=True,
+        null=True,
         verbose_name=_("Singing Keypair"),
         help_text=_(
-            "Certificate Key Pair of the IdP which Assertion's Signature is validated against."
+            "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
         ),
-        on_delete=models.PROTECT,
+        on_delete=models.SET_DEFAULT,
+    )
+
+    digest_algorithm = models.CharField(
+        max_length=50,
+        choices=(
+            ("sha1", _("SHA1")),
+            ("sha256", _("SHA256")),
+        ),
+        default="sha256",
+    )
+    signature_algorithm = models.CharField(
+        max_length=50,
+        choices=(
+            ("rsa-sha1", _("RSA-SHA1")),
+            ("rsa-sha256", _("RSA-SHA256")),
+            ("ecdsa-sha256", _("ECDSA-SHA256")),
+            ("dsa-sha1", _("DSA-SHA1")),
+        ),
+        default="rsa-sha256",
     )
 
     @property

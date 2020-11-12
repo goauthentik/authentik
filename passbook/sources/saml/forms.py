@@ -35,8 +35,10 @@ class SAMLSourceForm(forms.ModelForm):
             "binding_type",
             "name_id_policy",
             "allow_idp_initiated",
-            "temporary_user_delete_after",
             "signing_kp",
+            "digest_algorithm",
+            "signature_algorithm",
+            "temporary_user_delete_after",
         ]
         widgets = {
             "name": forms.TextInput(),

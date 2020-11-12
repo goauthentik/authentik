@@ -14,10 +14,14 @@ from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
+    DSA_SHA1,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
+    RSA_SHA1,
     RSA_SHA256,
+    RSA_SHA384,
+    RSA_SHA512,
 )
 
 SESSION_REQUEST_ID = "passbook_source_saml_request_id"
@@ -77,7 +81,11 @@ class RequestProcessor:
         auth_n_request = self.get_auth_n()
 
         if self.source.signing_kp:
-            signed_request = XMLSigner().sign(
+            signed_request = XMLSigner(
+                c14n_algorithm="http://www.w3.org/2001/10/xml-exc-c14n#",
+                signature_algorithm=self.source.signature_algorithm,
+                digest_algorithm=self.source.digest_algorithm,
+            ).sign(
                 auth_n_request,
                 cert=self.source.signing_kp.certificate_data,
                 key=self.source.signing_kp.key_data,
@@ -103,12 +111,22 @@ class RequestProcessor:
             response_dict["RelayState"] = self.relay_state
 
         if self.source.signing_kp:
-            sig_alg = RSA_SHA256
+            sign_algorithm_transform_map = {
+                DSA_SHA1: xmlsec.constants.TransformDsaSha1,
+                RSA_SHA1: xmlsec.constants.TransformRsaSha1,
+                RSA_SHA256: xmlsec.constants.TransformRsaSha256,
+                RSA_SHA384: xmlsec.constants.TransformRsaSha384,
+                RSA_SHA512: xmlsec.constants.TransformRsaSha512,
+            }
+            sign_algorithm_transform = sign_algorithm_transform_map.get(
+                self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
+            )
+
             # Create the full querystring in the correct order to be signed
             querystring = f"SAMLRequest={quote_plus(saml_request)}&"
             if "RelayState" in response_dict:
                 querystring += f"RelayState={quote_plus(response_dict['RelayState'])}&"
-            querystring += f"SigAlg={quote_plus(sig_alg)}"
+            querystring += f"SigAlg={quote_plus(self.source.signature_algorithm)}"
 
             ctx = xmlsec.SignatureContext()
 
@@ -122,9 +140,9 @@ class RequestProcessor:
             ctx.key = key
 
             signature = ctx.sign_binary(
-                querystring.encode("utf-8"), xmlsec.constants.TransformRsaSha256
+                querystring.encode("utf-8"), sign_algorithm_transform
             )
             response_dict["Signature"] = b64encode(signature).decode()
-            response_dict["SigAlg"] = sig_alg
+            response_dict["SigAlg"] = self.source.signature_algorithm
 
         return response_dict
