@@ -1,11 +1,12 @@
 """passbook saml source processor"""
-from typing import TYPE_CHECKING, Dict
+from base64 import b64decode
+from typing import TYPE_CHECKING, Any, Dict
 
-from defusedxml import ElementTree
+import xmlsec
+from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
-from signxml import XMLVerifier
 from structlog import get_logger
 
 from passbook.core.models import User
@@ -18,14 +19,15 @@ from passbook.flows.planner import (
 from passbook.flows.views import SESSION_KEY_PLAN
 from passbook.lib.utils.urls import redirect_with_qs
 from passbook.policies.utils import delete_none_keys
-from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 from passbook.sources.saml.exceptions import (
+    InvalidSignature,
     MismatchedRequestID,
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
+    NS_MAP,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
@@ -49,7 +51,7 @@ class ResponseProcessor:
 
     _source: SAMLSource
 
-    _root: "Element"
+    _root: Any
     _root_xml: str
 
     def __init__(self, source: SAMLSource):
@@ -61,20 +63,36 @@ class ResponseProcessor:
         raw_response = request.POST.get("SAMLResponse", None)
         if not raw_response:
             raise MissingSAMLResponse("Request does not contain 'SAMLResponse'")
-        # relay_state = request.POST.get('RelayState', None)
         # Check if response is compressed, b64 decode it
-        self._root_xml = decode_base64_and_inflate(raw_response)
-        self._root = ElementTree.fromstring(self._root_xml)
+        self._root_xml = b64decode(raw_response.encode()).decode()
+        self._root = fromstring(self._root_xml)
 
-        self._verify_signed()
+        if self._source.signing_kp:
+            self._verify_signed()
         self._verify_request_id(request)
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
-        verifier = XMLVerifier()
-        verifier.verify(
-            self._root_xml, x509_cert=self._source.signing_kp.certificate_data
+        signature_nodes = self._root.xpath(
+            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
         )
+        if len(signature_nodes) != 1:
+            raise InvalidSignature()
+        signature_node = signature_nodes[0]
+        xmlsec.tree.add_ids(self._root, ["ID"])
+
+        ctx = xmlsec.SignatureContext()
+        key = xmlsec.Key.from_memory(
+            self._source.signing_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+        ctx.key = key
+
+        ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
+        try:
+            ctx.verify(signature_node)
+        except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
+            raise InvalidSignature from exc
         LOGGER.debug("Successfully verified signautre")
 
     def _verify_request_id(self, request: HttpRequest):

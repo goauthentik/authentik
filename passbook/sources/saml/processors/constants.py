@@ -1,4 +1,6 @@
 """SAML Source processor constants"""
+import xmlsec
+
 NS_SAML_PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"
 NS_SAML_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion"
 NS_SAML_METADATA = "urn:oasis:names:tc:SAML:2.0:metadata"
@@ -27,3 +29,23 @@ RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
 RSA_SHA256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
 RSA_SHA384 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"
 RSA_SHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
+
+SHA1 = "http://www.w3.org/2000/09/xmldsig#sha1"
+SHA256 = "http://www.w3.org/2001/04/xmlenc#sha256"
+SHA384 = "http://www.w3.org/2001/04/xmldsig-more#sha384"
+SHA512 = "http://www.w3.org/2001/04/xmlenc#sha512"
+
+SIGN_ALGORITHM_TRANSFORM_MAP = {
+    DSA_SHA1: xmlsec.constants.TransformDsaSha1,
+    RSA_SHA1: xmlsec.constants.TransformRsaSha1,
+    RSA_SHA256: xmlsec.constants.TransformRsaSha256,
+    RSA_SHA384: xmlsec.constants.TransformRsaSha384,
+    RSA_SHA512: xmlsec.constants.TransformRsaSha512,
+}
+
+DIGEST_ALGORITHM_TRANSLATION_MAP = {
+    SHA1: xmlsec.constants.TransformSha1,
+    SHA256: xmlsec.constants.TransformSha256,
+    SHA384: xmlsec.constants.TransformSha384,
+    SHA512: xmlsec.constants.TransformSha512,
+}

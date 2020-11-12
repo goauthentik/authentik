@@ -12,3 +12,7 @@ class UnsupportedNameIDFormat(SentryIgnoredException):
 
 class MismatchedRequestID(SentryIgnoredException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
+
+
+class InvalidSignature(SentryIgnoredException):
+    """Signature of XML Object is either missing or invalid"""

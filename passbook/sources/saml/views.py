@@ -8,7 +8,7 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from signxml import InvalidSignature
+from xmlsec import VerificationError
 
 from passbook.lib.views import bad_request_message
 from passbook.providers.saml.utils.encoding import nice64
@@ -77,7 +77,7 @@ class ACSView(View):
             processor.parse(request)
         except MissingSAMLResponse as exc:
             return bad_request_message(request, str(exc))
-        except InvalidSignature as exc:
+        except VerificationError as exc:
             return bad_request_message(request, str(exc))
 
         try:

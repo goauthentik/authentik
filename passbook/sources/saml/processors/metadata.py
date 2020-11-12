@@ -3,8 +3,8 @@ from typing import Iterator, Optional
 
 from django.http import HttpRequest
 from lxml.etree import Element, SubElement, tostring  # nosec
-from signxml.util import strip_pem_header
 
+from passbook.providers.saml.utils.encoding import strip_pem_header
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
     NS_MAP,

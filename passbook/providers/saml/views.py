@@ -127,7 +127,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
     def check_saml_request(self) -> Optional[HttpRequest]:
         """Handle POST bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.POST:
-            LOGGER.info("handle_saml_request: SAML payload missing")
+            LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(
                 self.request, "The SAML request payload is missing."
             )

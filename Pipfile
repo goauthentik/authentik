@@ -35,7 +35,6 @@ qrcode = "*"
 requests-oauthlib = "*"
 sentry-sdk = "*"
 service_identity = "*"
-signxml = "*"
 structlog = "*"
 swagger-spec-validator = "*"
 urllib3 = {extras = ["secure"],version = "*"}

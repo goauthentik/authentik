@@ -14,6 +14,7 @@ from passbook.providers.saml.models import SAMLProvider
 from passbook.providers.saml.utils.encoding import decode_base64_and_inflate
 from passbook.sources.saml.processors.constants import (
     DSA_SHA1,
+    NS_MAP,
     NS_SAML_PROTOCOL,
     RSA_SHA1,
     RSA_SHA256,
@@ -77,18 +78,24 @@ class AuthNRequestParser:
 
     def parse(self, saml_request: str, relay_state: Optional[str]) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
-        decoded_xml = decode_base64_and_inflate(saml_request)
+        decoded_xml = b64decode(saml_request.encode()).decode()
 
         verifier = self.provider.verification_kp
 
         root = etree.fromstring(decoded_xml)  # nosec
         xmlsec.tree.add_ids(root, ["ID"])
-        signature_node = xmlsec.tree.find_node(root, xmlsec.constants.NodeSignature)
-
-        if verifier and not signature_node:
+        signature_nodes = root.xpath(
+            "/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP
+        )
+        if len(signature_nodes) != 1:
             raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
 
-        if signature_node:
+        signature_node = signature_nodes[0]
+
+        if verifier and signature_node is None:
+            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+
+        if signature_node is not None:
             if not verifier:
                 raise CannotHandleAssertion(ERROR_SIGNATURE_EXISTS_BUT_NO_VERIFIER)
 

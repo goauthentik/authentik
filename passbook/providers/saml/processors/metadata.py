@@ -4,9 +4,9 @@ from typing import Iterator, Optional
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
-from signxml.util import strip_pem_header
 
 from passbook.providers.saml.models import SAMLProvider
+from passbook.providers.saml.utils.encoding import strip_pem_header
 from passbook.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_METADATA,
@@ -42,7 +42,7 @@ class MetadataProcessor:
             )
             x509_certificate.text = strip_pem_header(
                 self.provider.signing_kp.certificate_data.replace("\r", "")
-            ).replace("\n", "")
+            )
             return key_descriptor
         return None
 

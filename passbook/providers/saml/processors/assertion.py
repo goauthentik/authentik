@@ -2,10 +2,10 @@
 from hashlib import sha256
 from types import GeneratorType
 
+import xmlsec
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from signxml import XMLSigner, XMLVerifier, strip_pem_header
 from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
@@ -16,14 +16,15 @@ from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.exceptions import UnsupportedNameIDFormat
 from passbook.sources.saml.processors.constants import (
+    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
-    NS_SIGNATURE,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_X509,
+    SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 
 LOGGER = get_logger()
@@ -186,12 +187,16 @@ class AssertionProcessor:
         assertion.append(self.get_issuer())
 
         if self.provider.signing_kp:
-            # We need a placeholder signature as SAML requires the signature to be between
-            # Issuer and subject
-            signature_placeholder = SubElement(
-                assertion, f"{{{NS_SIGNATURE}}}Signature", nsmap=NS_MAP
+            sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
+                self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
-            signature_placeholder.attrib["Id"] = "placeholder"
+            signature = xmlsec.template.create(
+                assertion,
+                xmlsec.constants.TransformExclC14N,
+                sign_algorithm_transform,
+                ns="ds",  # type: ignore
+            )
+            assertion.append(signature)
 
         assertion.append(self.get_assertion_subject())
         assertion.append(self.get_assertion_conditions())
@@ -223,20 +228,36 @@ class AssertionProcessor:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
         if self.provider.signing_kp:
-            signer = XMLSigner(
-                c14n_algorithm="http://www.w3.org/2001/10/xml-exc-c14n#",
-                signature_algorithm=self.provider.signature_algorithm,
-                digest_algorithm=self.provider.digest_algorithm,
+            digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
+                self.provider.digest_algorithm, xmlsec.constants.TransformSha1
             )
-            x509_data = strip_pem_header(
-                self.provider.signing_kp.certificate_data
-            ).replace("\n", "")
-            signed = signer.sign(
-                root_response,
-                key=self.provider.signing_kp.private_key,
-                cert=[x509_data],
-                reference_uri=self._assertion_id,
+            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+            xmlsec.tree.add_ids(assertion, ["ID"])
+            signature_node = xmlsec.tree.find_node(
+                assertion, xmlsec.constants.NodeSignature
             )
-            XMLVerifier().verify(signed, x509_cert=x509_data)
-            return etree.tostring(signed).decode("utf-8")  # nosec
+            ref = xmlsec.template.add_reference(
+                signature_node,
+                digest_algorithm_transform,
+                uri="#" + self._assertion_id,
+            )
+            xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
+            xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
+            key_info = xmlsec.template.ensure_key_info(signature_node)
+            xmlsec.template.add_x509_data(key_info)
+
+            ctx = xmlsec.SignatureContext()
+
+            key = xmlsec.Key.from_memory(
+                self.provider.signing_kp.key_data,
+                xmlsec.constants.KeyDataFormatPem,
+                None,
+            )
+            key.load_cert_from_memory(
+                self.provider.signing_kp.certificate_data,
+                xmlsec.constants.KeyDataFormatCertPem,
+            )
+            ctx.key = key
+            ctx.sign(signature_node)
+
         return etree.tostring(root_response).decode("utf-8")  # nosec

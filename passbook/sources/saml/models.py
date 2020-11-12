@@ -13,11 +13,20 @@ from passbook.core.types import UILoginButton
 from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.utils.time import timedelta_string_validator
 from passbook.sources.saml.processors.constants import (
+    DSA_SHA1,
+    RSA_SHA1,
+    RSA_SHA256,
+    RSA_SHA384,
+    RSA_SHA512,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
+    SHA1,
+    SHA256,
+    SHA384,
+    SHA512,
 )
 
 
@@ -109,20 +118,23 @@ class SAMLSource(Source):
     digest_algorithm = models.CharField(
         max_length=50,
         choices=(
-            ("sha1", _("SHA1")),
-            ("sha256", _("SHA256")),
+            (SHA1, _("SHA1")),
+            (SHA256, _("SHA256")),
+            (SHA384, _("SHA384")),
+            (SHA512, _("SHA512")),
         ),
-        default="sha256",
+        default=SHA256,
     )
     signature_algorithm = models.CharField(
         max_length=50,
         choices=(
-            ("rsa-sha1", _("RSA-SHA1")),
-            ("rsa-sha256", _("RSA-SHA256")),
-            ("ecdsa-sha256", _("ECDSA-SHA256")),
-            ("dsa-sha1", _("DSA-SHA1")),
+            (RSA_SHA1, _("RSA-SHA1")),
+            (RSA_SHA256, _("RSA-SHA256")),
+            (RSA_SHA384, _("RSA-SHA384")),
+            (RSA_SHA512, _("RSA-SHA512")),
+            (DSA_SHA1, _("DSA-SHA1")),
         ),
-        default="rsa-sha256",
+        default=RSA_SHA256,
     )
 
     @property

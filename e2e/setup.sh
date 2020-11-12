@@ -9,7 +9,7 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo npm install -g yarn
 # Setup python
-sudo apt install -y python3.8 python3-pip
+sudo apt install -y python3.8 python3-pip libxmlsec1-dev pkg-config
 # Setup docker
 sudo pip3 install pipenv
 

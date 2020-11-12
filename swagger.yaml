@@ -7485,16 +7485,19 @@ definitions:
         title: Digest algorithm
         type: string
         enum:
-          - sha1
-          - sha256
+          - http://www.w3.org/2000/09/xmldsig#sha1
+          - http://www.w3.org/2001/04/xmlenc#sha256
+          - http://www.w3.org/2001/04/xmldsig-more#sha384
+          - http://www.w3.org/2001/04/xmlenc#sha512
       signature_algorithm:
         title: Signature algorithm
         type: string
         enum:
-          - rsa-sha1
-          - rsa-sha256
-          - ecdsa-sha256
-          - dsa-sha1
+          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       signing_kp:
         title: Signing Keypair
         description: Keypair used to sign outgoing Responses going to the Service
@@ -7779,7 +7782,6 @@ definitions:
       - name
       - slug
       - sso_url
-      - signing_kp
     type: object
     properties:
       name:
@@ -7851,6 +7853,30 @@ definitions:
           - REDIRECT
           - POST
           - POST_AUTO
+      signing_kp:
+        title: Singing Keypair
+        description: Keypair which is used to sign outgoing requests. Leave empty
+          to disable signing.
+        type: string
+        format: uuid
+        x-nullable: true
+      digest_algorithm:
+        title: Digest algorithm
+        type: string
+        enum:
+          - http://www.w3.org/2000/09/xmldsig#sha1
+          - http://www.w3.org/2001/04/xmlenc#sha256
+          - http://www.w3.org/2001/04/xmldsig-more#sha384
+          - http://www.w3.org/2001/04/xmlenc#sha512
+      signature_algorithm:
+        title: Signature algorithm
+        type: string
+        enum:
+          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       temporary_user_delete_after:
         title: Delete temporary users after
         description: "Time offset when temporary users should be deleted. This only\
@@ -7858,11 +7884,6 @@ definitions:
           \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
         type: string
         minLength: 1
-      signing_kp:
-        title: Singing Keypair
-        description: Keypair which is used to sign outgoing requests.
-        type: string
-        format: uuid
   Stage:
     description: Stage Serializer
     required:

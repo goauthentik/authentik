@@ -2,6 +2,9 @@
 import base64
 import zlib
 
+PEM_HEADER = "-----BEGIN CERTIFICATE-----"
+PEM_FOOTER = "-----END CERTIFICATE-----"
+
 
 def decode_base64_and_inflate(encoded: str, encoding="utf-8") -> str:
     """Base64 decode and ZLib decompress b64string"""
@@ -22,3 +25,8 @@ def deflate_and_base64_encode(inflated: str, encoding="utf-8"):
 def nice64(src: str) -> str:
     """Returns src base64-encoded and formatted nicely for our XML. """
     return base64.b64encode(src.encode()).decode("utf-8").replace("\n", "")
+
+
+def strip_pem_header(cert: str) -> str:
+    """Remove PEM Headers"""
+    return cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", "")

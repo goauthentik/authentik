@@ -1,4 +1,6 @@
 """Test AuthN Request generator and parser"""
+from base64 import b64encode
+
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http.request import HttpRequest, QueryDict
 from django.test import RequestFactory, TestCase
@@ -6,10 +8,9 @@ from guardian.utils import get_anonymous_user
 
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
-from passbook.providers.saml.models import SAMLProvider
+from passbook.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from passbook.providers.saml.processors.assertion import AssertionProcessor
 from passbook.providers.saml.processors.request_parser import AuthNRequestParser
-from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
 from passbook.sources.saml.exceptions import MismatchedRequestID
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
@@ -67,7 +68,7 @@ class TestAuthNRequest(TestCase):
 
     def setUp(self):
         cert = CertificateKeyPair.objects.first()
-        self.provider = SAMLProvider.objects.create(
+        self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
@@ -75,6 +76,8 @@ class TestAuthNRequest(TestCase):
             signing_kp=cert,
             verification_kp=cert,
         )
+        self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        self.provider.save()
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="passbook",
@@ -95,10 +98,38 @@ class TestAuthNRequest(TestCase):
         request = request_proc.build_auth_n()
         # Now we check the ID and signature
         parsed_request = AuthNRequestParser(self.provider).parse(
-            deflate_and_base64_encode(request), "test_state"
+            b64encode(request.encode()).decode(), "test_state"
         )
         self.assertEqual(parsed_request.id, request_proc.request_id)
         self.assertEqual(parsed_request.relay_state, "test_state")
+
+    def test_request_full_signed(self):
+        """Test full SAML Request/Response flow, fully signed"""
+        http_request = self.factory.get("/")
+        http_request.user = get_anonymous_user()
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(http_request)
+        http_request.session.save()
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Now parse the response (source)
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source)
+        response_parser.parse(http_request)
 
     def test_request_id_invalid(self):
         """Test generated AuthNRequest with invalid request ID"""
@@ -119,7 +150,7 @@ class TestAuthNRequest(TestCase):
 
         # To get an assertion we need a parsed request (parsed by provider)
         parsed_request = AuthNRequestParser(self.provider).parse(
-            deflate_and_base64_encode(request), "test_state"
+            b64encode(request.encode()).decode(), "test_state"
         )
         # Now create a response and convert it to string (provider)
         response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
@@ -127,7 +158,7 @@ class TestAuthNRequest(TestCase):
 
         # Now parse the response (source)
         http_request.POST = QueryDict(mutable=True)
-        http_request.POST["SAMLResponse"] = deflate_and_base64_encode(response)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
 
         response_parser = ResponseProcessor(self.source)
 

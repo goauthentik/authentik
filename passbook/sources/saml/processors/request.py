@@ -7,21 +7,17 @@ import xmlsec
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
-from signxml import XMLSigner
 
 from passbook.providers.saml.utils import get_random_id
 from passbook.providers.saml.utils.encoding import deflate_and_base64_encode
 from passbook.providers.saml.utils.time import get_time_string
 from passbook.sources.saml.models import SAMLSource
 from passbook.sources.saml.processors.constants import (
-    DSA_SHA1,
+    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
-    RSA_SHA1,
-    RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
+    SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 
 SESSION_REQUEST_ID = "passbook_source_saml_request_id"
@@ -71,6 +67,19 @@ class RequestProcessor:
         auth_n_request.attrib["Version"] = "2.0"
         # Create issuer object
         auth_n_request.append(self.get_issuer())
+
+        if self.source.signing_kp:
+            sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
+                self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
+            )
+            signature = xmlsec.template.create(
+                auth_n_request,
+                xmlsec.constants.TransformExclC14N,
+                sign_algorithm_transform,
+                ns="ds",  # type: ignore
+            )
+            auth_n_request.append(signature)
+
         # Create NameID Policy Object
         auth_n_request.append(self.get_name_id_policy())
         return auth_n_request
@@ -81,16 +90,38 @@ class RequestProcessor:
         auth_n_request = self.get_auth_n()
 
         if self.source.signing_kp:
-            signed_request = XMLSigner(
-                c14n_algorithm="http://www.w3.org/2001/10/xml-exc-c14n#",
-                signature_algorithm=self.source.signature_algorithm,
-                digest_algorithm=self.source.digest_algorithm,
-            ).sign(
-                auth_n_request,
-                cert=self.source.signing_kp.certificate_data,
-                key=self.source.signing_kp.key_data,
+            xmlsec.tree.add_ids(auth_n_request, ["ID"])
+
+            ctx = xmlsec.SignatureContext()
+
+            key = xmlsec.Key.from_memory(
+                self.source.signing_kp.key_data, xmlsec.constants.KeyDataFormatPem, None
             )
-            return etree.tostring(signed_request).decode()
+            key.load_cert_from_memory(
+                self.source.signing_kp.certificate_data,
+                xmlsec.constants.KeyDataFormatCertPem,
+            )
+            ctx.key = key
+
+            digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
+                self.source.digest_algorithm, xmlsec.constants.TransformSha1
+            )
+
+            signature_node = xmlsec.tree.find_node(
+                auth_n_request, xmlsec.constants.NodeSignature
+            )
+
+            ref = xmlsec.template.add_reference(
+                signature_node,
+                digest_algorithm_transform,
+                uri="#" + auth_n_request.attrib["ID"],
+            )
+            xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
+            xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
+            key_info = xmlsec.template.ensure_key_info(signature_node)
+            xmlsec.template.add_x509_data(key_info)
+
+            ctx.sign(signature_node)
 
         return etree.tostring(auth_n_request).decode()
 
@@ -111,14 +142,7 @@ class RequestProcessor:
             response_dict["RelayState"] = self.relay_state
 
         if self.source.signing_kp:
-            sign_algorithm_transform_map = {
-                DSA_SHA1: xmlsec.constants.TransformDsaSha1,
-                RSA_SHA1: xmlsec.constants.TransformRsaSha1,
-                RSA_SHA256: xmlsec.constants.TransformRsaSha256,
-                RSA_SHA384: xmlsec.constants.TransformRsaSha384,
-                RSA_SHA512: xmlsec.constants.TransformRsaSha512,
-            }
-            sign_algorithm_transform = sign_algorithm_transform_map.get(
+            sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.source.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
 
