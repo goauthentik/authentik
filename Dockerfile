@@ -20,7 +20,7 @@ RUN apt-get update && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
     echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     apt-get update && \
-    apt-get install -y --no-install-recommends postgresql-client-12 postgresql-client-11 build-essential && \
+    apt-get install -y --no-install-recommends postgresql-client-12 postgresql-client-11 build-essential libxmlsec1-dev pkg-config && \
     apt-get clean && \
     pip install -r /requirements.txt --no-cache-dir && \
     apt-get remove --purge -y build-essential && \
