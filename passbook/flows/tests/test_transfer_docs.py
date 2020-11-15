@@ -26,6 +26,4 @@ def pbflow_tester(file_name: str) -> Callable:
 
 for flow_file in glob("website/static/flows/*.pbflow"):
     method_name = Path(flow_file).stem.replace("-", "_").replace(".", "_")
-    setattr(
-        TestTransferDocs, f"test_flow_{method_name}", pbflow_tester(flow_file)
-    )
+    setattr(TestTransferDocs, f"test_flow_{method_name}", pbflow_tester(flow_file))
