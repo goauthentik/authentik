@@ -156,7 +156,7 @@ def retry(max_retires=3, exceptions=None):
                     raise exc
                 logger.debug("Retrying on error", exc=exc, test=self)
                 self.tearDown()
-                getattr(self, "_post_teardown")()
+                self._post_teardown()  # noqa
                 self.setUp()
                 return wrapper(self, *args, **kwargs)
 

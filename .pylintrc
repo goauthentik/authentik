@@ -12,6 +12,7 @@ disable =
     signature-differs,
     similarities,
     cyclic-import,
+    protected-access,
     unsubscriptable-object # remove when pylint is upgraded to 2.6
 
 load-plugins=pylint_django,pylint.extensions.bad_builtin
