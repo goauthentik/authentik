@@ -15,13 +15,15 @@
     --ifm-color-primary-light: #ffffff;
     --ifm-color-primary-lighter: #ffffff;
     --ifm-color-primary-lightest: #ffffff;
+
+    --ifm-footer-background-color: #18191a;
+
+    --ifm-navbar-link-color: #000000;
+    --ifm-font-color-base-inverse: #000000;
 }
 
-.docusaurus-highlight-code-line {
-    background-color: rgb(72, 77, 91);
-    display: block;
-    margin: 0 calc(-1 * var(--ifm-pre-padding));
-    padding: 0 var(--ifm-pre-padding);
+.button.button--outline {
+    color: var(--ifm-navbar-link-color) !important;
 }
 
 .navbar {
