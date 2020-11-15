@@ -108,7 +108,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     @swagger_serializer_method(serializer_or_field=OpenIDConnectConfigurationSerializer)
     def get_oidc_configuration(self, obj: ProxyProvider):
         """Embed OpenID Connect provider information"""
-        # pylint: disable=protected-access
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
 
