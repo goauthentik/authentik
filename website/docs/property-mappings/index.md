@@ -8,8 +8,6 @@ Property Mappings allow you to pass information to external applications. For ex
 
 SAML Property Mappings allow you embed information into the SAML AuthN request. This information can then be used by the application to, for example, assign permissions to the object.
 
-You can find examples [here](integrations/).
-
 ## LDAP Property Mapping
 
 LDAP Property Mappings are used when you define a LDAP Source. These mappings define which LDAP property maps to which passbook property. By default, the following mappings are created:

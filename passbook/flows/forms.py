@@ -1,6 +1,7 @@
 """Flow and Stage forms"""
 
 from django import forms
+from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -62,7 +63,9 @@ class FlowStageBindingForm(forms.ModelForm):
 class FlowImportForm(forms.Form):
     """Form used for flow importing"""
 
-    flow = forms.FileField()
+    flow = forms.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=["pbflow"])]
+    )
 
     def clean_flow(self):
         """Check if the flow is valid and rewind the file to the start"""

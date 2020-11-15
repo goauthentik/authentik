@@ -4,7 +4,7 @@ title: Upgrading to 0.11
 
 This update brings these headline features:
 
-- Add Backup and Restore, currently only externally schedulable, documented [here](https://passbook.beryju.org/maintenance/backups/)
+- Add Backup and Restore, currently only externally schedulable, documented [here](../maintenance/backups/index.md)
 - New Admin Dashboard with more metrics and Charts
 
   Shows successful and failed logins from the last 24 hours, as well as the most used applications

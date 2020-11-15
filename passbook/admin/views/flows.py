@@ -147,5 +147,5 @@ class FlowExportView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
         flow: Flow = self.get_object()
         exporter = FlowExporter(flow)
         response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
-        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.json"'
+        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.pbflow"'
         return response
