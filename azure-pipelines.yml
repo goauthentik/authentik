@@ -26,7 +26,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -42,7 +42,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -58,7 +58,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
                 pipenv install --dev prospector --skip-lock
@@ -75,7 +75,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -97,7 +97,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -121,7 +121,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -145,7 +145,7 @@ stages:
             inputs:
               script: |
                 git checkout $(git describe --abbrev=0 --match 'version/*')
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -186,7 +186,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: CmdLine@2
@@ -229,7 +229,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
           - task: DockerCompose@0
@@ -299,7 +299,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                sudo apt install libxmlsec1-dev pkg-config
+                sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
                 pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
