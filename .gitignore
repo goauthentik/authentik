@@ -199,3 +199,4 @@ local.env.yml
 
 # Selenium Screenshots
 selenium_screenshots/**
+backups/

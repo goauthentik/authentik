@@ -1,2 +1,0 @@
-mkdocs
-mkdocs-material
