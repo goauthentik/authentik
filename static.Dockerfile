@@ -17,7 +17,7 @@ COPY --from=locker /app/requirements-dev.txt /app/
 WORKDIR /app/
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends postgresql-client-11 build-essential && \
+    apt-get install -y --no-install-recommends postgresql-client-11 build-essential libxmlsec1-dev pkg-config && \
     rm -rf /var/lib/apt/ && \
     pip install -r requirements.txt  --no-cache-dir && \
     apt-get remove --purge -y build-essential && \
