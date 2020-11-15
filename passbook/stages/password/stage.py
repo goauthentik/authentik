@@ -112,7 +112,6 @@ class PasswordStageView(FormView, StageView):
                 # No user was found -> invalid credentials
                 LOGGER.debug("Invalid credentials")
                 # Manually inject error into form
-                # pylint: disable=protected-access
                 errors = form._errors.setdefault("password", ErrorList())
                 errors.append(_("Invalid password"))
                 return self.form_invalid(form)
