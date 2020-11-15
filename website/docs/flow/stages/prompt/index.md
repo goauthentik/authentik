@@ -8,14 +8,14 @@ This stage is used to show the user arbitrary prompts.
 
 The prompt can be any of the following types:
 
-| Type     | Description                                                      |
-|----------|------------------------------------------------------------------|
-| text     | Arbitrary text. No client-side validation is done.               |
-| email    | Email input. Requires a valid email adress.                      |
-| password | Password input.                                                  |
-| number   | Number input. Any number is allowed.                             |
-| checkbox | Simple checkbox.                                                 |
-| hidden   | Hidden input field. Allows for the pre-setting of default values.|
+| Type     | Description                                                       |
+| -------- | ----------------------------------------------------------------- |
+| text     | Arbitrary text. No client-side validation is done.                |
+| email    | Email input. Requires a valid email adress.                       |
+| password | Password input.                                                   |
+| number   | Number input. Any number is allowed.                              |
+| checkbox | Simple checkbox.                                                  |
+| hidden   | Hidden input field. Allows for the pre-setting of default values. |
 
 A prompt has the following attributes:
 

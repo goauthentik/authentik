@@ -6,15 +6,15 @@ This provider supports both generic OAuth2 as well as OpenID Connect
 
 Scopes can be configured using Scope Mappings, a type of [Property Mappings](../property-mappings/index.md#scope-mapping).
 
-Endpoint | URL
----------|---
-Authorization        | `/application/o/authorize/`
-Token                | `/application/o/token/`
-User Info            | `/application/o/userinfo/`
-End Session          | `/application/o/end-session/`
-Introspect           | `/application/o/end-session/`
-JWKS                 | `/application/o/<application slug>/jwks/`
-OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration`
+| Endpoint             | URL                                                                  |
+| -------------------- | -------------------------------------------------------------------- |
+| Authorization        | `/application/o/authorize/`                                          |
+| Token                | `/application/o/token/`                                              |
+| User Info            | `/application/o/userinfo/`                                           |
+| End Session          | `/application/o/end-session/`                                        |
+| Introspect           | `/application/o/end-session/`                                        |
+| JWKS                 | `/application/o/<application slug>/jwks/`                            |
+| OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 ## GitHub Compatibility
 
@@ -22,12 +22,11 @@ This provider also exposes a GitHub-compatible endpoint. This endpoint can be us
 
 To use any of the GitHub Compatibility scopes, you have to use the GitHub Compatibility Endpoints.
 
-
-Endpoint | URL
----------|---
-Authorization        | `/login/oauth/authorize`
-Token                | `/login/oauth/access_token`
-User Info            | `/user`
-User Teams Info      | `/user/teams`
+| Endpoint        | URL                         |
+| --------------- | --------------------------- |
+| Authorization   | `/login/oauth/authorize`    |
+| Token           | `/login/oauth/access_token` |
+| User Info       | `/user`                     |
+| User Teams Info | `/user/teams`               |
 
 To access the user's email address, a scope of `user:email` is required. To access their groups, `read:org` is required. Because these scopes are handled by a different endpoint, they are not customisable as a Scope Mapping.

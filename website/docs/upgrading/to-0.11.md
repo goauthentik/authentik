@@ -4,16 +4,18 @@ title: Upgrading to 0.11
 
 This update brings these headline features:
 
-- Add Backup and Restore, currently only externally schedulable, documented [here](../maintenance/backups/index.md)
-- New Admin Dashboard with more metrics and Charts
+-   Add Backup and Restore, currently only externally schedulable, documented [here](../maintenance/backups/index.md)
+-   New Admin Dashboard with more metrics and Charts
 
-  Shows successful and failed logins from the last 24 hours, as well as the most used applications
-- Add search to all table views
-- Outpost now supports a Docker Controller, which installs the Outpost on the same host as passbook, updates and manages it
-- Add Token Identifier
+    Shows successful and failed logins from the last 24 hours, as well as the most used applications
 
-  Tokens now have an identifier which is used to reference to them, so the Primary key is not shown in URLs
-- `core/applications/list` API now shows applications the user has access to via policies
+-   Add search to all table views
+-   Outpost now supports a Docker Controller, which installs the Outpost on the same host as passbook, updates and manages it
+-   Add Token Identifier
+
+    Tokens now have an identifier which is used to reference to them, so the Primary key is not shown in URLs
+
+-   `core/applications/list` API now shows applications the user has access to via policies
 
 ## Upgrading
 

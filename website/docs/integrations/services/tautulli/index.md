@@ -14,8 +14,8 @@ Tautulli is a 3rd party application that you can run alongside your Plex Media S
 
 The following placeholders will be used:
 
-- `tautulli.company` is the FQDN of the Tautulli install.
-- `passbook.company` is the FQDN of the passbook install.
+-   `tautulli.company` is the FQDN of the Tautulli install.
+-   `passbook.company` is the FQDN of the passbook install.
 
 ## passbook Setup
 
@@ -30,13 +30,13 @@ Add all Tautulli users to the Group. You should also create a Group Membership P
 
 Create an application in passbook. Create a Proxy provider with the following parameters:
 
-- Internal host
+-   Internal host
 
     If Tautulli is running in docker, and you're deploying the passbook proxy on the same host, set the value to `http://tautulli:3579`, where tautulli is the name of your container.
 
     If Tautulli is running on a different server to where you are deploying the passbook proxy, set the value to `http://tautulli.company:3579`.
 
-- External host
+-   External host
 
     Set this to the external URL you will be accessing Tautulli from.
 

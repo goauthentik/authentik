@@ -1,6 +1,7 @@
 ---
 title: Policies
 ---
+
 ## Standard Policies
 
 ---
@@ -24,11 +25,11 @@ See [Expression Policy](expression.md).
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
-- Minimum amount of uppercase characters.
-- Minimum amount of lowercase characters.
-- Minimum amount of symbols characters.
-- Minimum length.
-- Symbol charset (define which characters are counted as symbols).
+-   Minimum amount of uppercase characters.
+-   Minimum amount of lowercase characters.
+-   Minimum amount of symbols characters.
+-   Minimum length.
+-   Symbol charset (define which characters are counted as symbols).
 
 ### Have I Been Pwned Policy
 

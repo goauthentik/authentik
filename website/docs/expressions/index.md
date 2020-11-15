@@ -7,13 +7,13 @@ Expressions allow you to write custom logic using Python code.
 Expressions are used in different places throughout passbook, and can do different things.
 
 :::info
-    These functions/objects are available wherever expressions are used. For more specific information, see [Expression Policies](../policies/expression.md) and [Property Mappings](../property-mappings/expression.md)
+These functions/objects are available wherever expressions are used. For more specific information, see [Expression Policies](../policies/expression.md) and [Property Mappings](../property-mappings/expression.md)
 :::
 
 ## Global objects
 
-- `pb_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
-- `requests`: requests Session object. ([ref](https://requests.readthedocs.io/en/master/user/advanced/))
+-   `pb_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
+-   `requests`: requests Session object. ([ref](https://requests.readthedocs.io/en/master/user/advanced/))
 
 ## Generally available functions
 

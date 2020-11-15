@@ -14,15 +14,15 @@ GitLab is a complete DevOps platform, delivered as a single application. This ma
 
 The following placeholders will be used:
 
-- `gitlab.company` is the FQDN of the GitLab Install
-- `passbook.company` is the FQDN of the passbook Install
+-   `gitlab.company` is the FQDN of the GitLab Install
+-   `passbook.company` is the FQDN of the passbook Install
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://gitlab.company/users/auth/saml/callback`
-- Audience: `https://gitlab.company`
-- Issuer: `https://gitlab.company`
-- Binding: `Post`
+-   ACS URL: `https://gitlab.company/users/auth/saml/callback`
+-   Audience: `https://gitlab.company`
+-   Issuer: `https://gitlab.company`
+-   Binding: `Post`
 
 You can of course use a custom signing certificate, and adjust durations. To get the value for `idp_cert_fingerprint`, you can use a tool like [this](https://www.samltool.com/fingerprint.php).
 

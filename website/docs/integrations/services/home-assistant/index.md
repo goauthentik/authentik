@@ -14,8 +14,8 @@ Open source home automation that puts local control and privacy first. Powered b
 
 The following placeholders will be used:
 
-- `hass.company` is the FQDN of the Home-Assistant install.
-- `passbook.company` is the FQDN of the passbook install.
+-   `hass.company` is the FQDN of the Home-Assistant install.
+-   `passbook.company` is the FQDN of the passbook install.
 
 :::note
 This setup uses https://github.com/BeryJu/hass-auth-header and the passbook proxy for authentication. When this [PR](https://github.com/home-assistant/core/pull/32926) is merged, this will no longer be necessary.
@@ -35,20 +35,20 @@ For example add this to your user's properties and set the Header to `X-pb-hass-
 
 ```yaml
 additionalHeaders:
-  X-pb-hass-user: some other name
+    X-pb-hass-user: some other name
 ```
 
 ## passbook
 
 Create a Proxy Provider with the following values
 
-- Internal host
+-   Internal host
 
     If Home-Assistant is running in docker, and you're deploying the passbook proxy on the same host, set the value to `http://homeassistant:8123`, where Home-Assistant is the name of your container.
 
     If Home-Assistant is running on a different server than where you are deploying the passbook proxy, set the value to `http://hass.company:8123`.
 
-- External host
+-   External host
 
     Set this to the external URL you will be accessing Home-Assistant from.
 

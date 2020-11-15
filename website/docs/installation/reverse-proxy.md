@@ -1,6 +1,7 @@
 ---
 title: passbook behind a reverse-proxy
 ---
+
 If you want to access passbook behind a reverse-proxy, use a config like this. It is important that Websocket is enabled, so that Outposts can connect.
 
 ```

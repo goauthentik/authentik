@@ -14,16 +14,16 @@ Harbor is an open source container image registry that secures images with role-
 
 The following placeholders will be used:
 
-- `harbor.company` is the FQDN of the Harbor install.
-- `passbook.company` is the FQDN of the passbook install.
+-   `harbor.company` is the FQDN of the Harbor install.
+-   `passbook.company` is the FQDN of the passbook install.
 
 Create an application in passbook. Create an OpenID provider with the following parameters:
 
-- Client Type: `Confidential`
-- Response types: `code (Authorization Code Flow)`
-- JWT Algorithm: `RS256`
-- Redirect URIs: `https://harbor.company/c/oidc/callback`
-- Scopes: `openid`
+-   Client Type: `Confidential`
+-   Response types: `code (Authorization Code Flow)`
+-   JWT Algorithm: `RS256`
+-   Redirect URIs: `https://harbor.company/c/oidc/callback`
+-   Scopes: `openid`
 
 ## Harbor
 

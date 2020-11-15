@@ -20,15 +20,15 @@ AWX is the open-source version of Tower. The term "AWX" will be used interchange
 
 The following placeholders will be used:
 
-- `awx.company` is the FQDN of the AWX/Tower install.
-- `passbook.company` is the FQDN of the passbook install.
+-   `awx.company` is the FQDN of the AWX/Tower install.
+-   `passbook.company` is the FQDN of the passbook install.
 
 Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- ACS URL: `https://awx.company/sso/complete/saml/`
-- Audience: `awx`
-- Service Provider Binding: Post
-- Issuer: `https://awx.company/sso/metadata/saml/`
+-   ACS URL: `https://awx.company/sso/complete/saml/`
+-   Audience: `awx`
+-   Service Provider Binding: Post
+-   Issuer: `https://awx.company/sso/metadata/saml/`
 
 You can of course use a custom signing certificate, and adjust durations.
 
@@ -42,20 +42,20 @@ Provide metadata in the `SAML Service Provider Organization Info` field:
 
 ```json
 {
- "en-US": {
-  "name": "passbook",
-  "url": "https://passbook.company",
-  "displayname": "passbook"
- }
+    "en-US": {
+        "name": "passbook",
+        "url": "https://passbook.company",
+        "displayname": "passbook"
+    }
 }
 ```
 
-Provide metadata in the  `SAML Service Provider Technical Contact` and `SAML Service Provider Technical Contact` fields:
+Provide metadata in the `SAML Service Provider Technical Contact` and `SAML Service Provider Technical Contact` fields:
 
 ```json
 {
- "givenName": "Admin Name",
- "emailAddress": "admin@company"
+    "givenName": "Admin Name",
+    "emailAddress": "admin@company"
 }
 ```
 
@@ -63,16 +63,16 @@ In the `SAML Enabled Identity Providers` paste the following configuration:
 
 ```json
 {
- "passbook": {
-  "attr_username": "urn:oid:2.16.840.1.113730.3.1.241",
-  "attr_user_permanent_id": "urn:oid:0.9.2342.19200300.100.1.1",
-  "x509cert": "MIIDEjCCAfqgAwIBAgIRAJZ9pOZ1g0xjiHtQAAejsMEwDQYJKoZIhvcNAQELBQAwMDEuMCwGA1UEAwwlcGFzc2Jvb2sgU2VsZi1zaWduZWQgU0FNTCBDZXJ0aWZpY2F0ZTAeFw0xOTEyMjYyMDEwNDFaFw0yMDEyMjYyMDEwNDFaMFkxLjAsBgNVBAMMJXBhc3Nib29rIFNlbGYtc2lnbmVkIFNBTUwgQ2VydGlmaWNhdGUxETAPBgNVBAoMCHBhc3Nib29rMRQwEgYDVQQLDAtTZWxmLXNpZ25lZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAO/ktBYZkY9xAijF4acvzX6Q1K8KoIZeyde8fVgcWBz4L5FgDQ4/dni4k2YAcPdwteGL4nKVzetUzjbRCBUNuO6lqU4J4WNNX4Xg4Ir7XLRoAQeo+omTPBdpJ1p02HjtN5jT01umN3bK2yto1e37CJhK6WJiaXqRewPxh4lI4aqdj3BhFkJ3I3r2qxaWOAXQ6X7fg3w/ny7QP53//ouZo7hSLY3GIcRKgvdjjVM3OW5C3WLpOq5Dez5GWVJ17aeFCfGQ8bwFKde6qfYqyGcU9xHB36TtVHB9hSFP/tUFhkiSOxtsrYwCgCyXm4UTSpP+wiNyjKfFw7qGLBvA2hGTNw8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAh9PeAqPRQk1/SSygIFADZBi08O/DPCshFwEHvJATIcTzcDD8UGAjXh+H5OlkDyX7KyrcaNvYaafCUo63A+WprdtdY5Ty6SBEwTYyiQyQfwM9BfK+imCoif1Ai7xAelD7p9lNazWq7JU+H/Ep7U7Q7LvpxAbK0JArt+IWTb2NcMb3OWE1r0gFbs44O1l6W9UbJTbyLMzbGbe5i+NHlgnwPwuhtRMh0NUYabGHKcHbhwyFhfGAQv2dAp5KF1E5gu6ZzCiFePzc0FrqXQyb2zpFYcJHXquiqaOeG7cZxRHYcjrl10Vxzki64XVA9BpdELgKSnupDGUEJsRUt3WVOmvZuA==",
-  "url": "https://passbook.company/application/saml/awx/login/",
-  "attr_last_name": "User.LastName",
-  "entity_id": "https://awx.company/sso/metadata/saml/",
-  "attr_email": "urn:oid:0.9.2342.19200300.100.1.3",
-  "attr_first_name": "urn:oid:2.5.4.3"
- }
+    "passbook": {
+        "attr_username": "urn:oid:2.16.840.1.113730.3.1.241",
+        "attr_user_permanent_id": "urn:oid:0.9.2342.19200300.100.1.1",
+        "x509cert": "MIIDEjCCAfqgAwIBAgIRAJZ9pOZ1g0xjiHtQAAejsMEwDQYJKoZIhvcNAQELBQAwMDEuMCwGA1UEAwwlcGFzc2Jvb2sgU2VsZi1zaWduZWQgU0FNTCBDZXJ0aWZpY2F0ZTAeFw0xOTEyMjYyMDEwNDFaFw0yMDEyMjYyMDEwNDFaMFkxLjAsBgNVBAMMJXBhc3Nib29rIFNlbGYtc2lnbmVkIFNBTUwgQ2VydGlmaWNhdGUxETAPBgNVBAoMCHBhc3Nib29rMRQwEgYDVQQLDAtTZWxmLXNpZ25lZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAO/ktBYZkY9xAijF4acvzX6Q1K8KoIZeyde8fVgcWBz4L5FgDQ4/dni4k2YAcPdwteGL4nKVzetUzjbRCBUNuO6lqU4J4WNNX4Xg4Ir7XLRoAQeo+omTPBdpJ1p02HjtN5jT01umN3bK2yto1e37CJhK6WJiaXqRewPxh4lI4aqdj3BhFkJ3I3r2qxaWOAXQ6X7fg3w/ny7QP53//ouZo7hSLY3GIcRKgvdjjVM3OW5C3WLpOq5Dez5GWVJ17aeFCfGQ8bwFKde6qfYqyGcU9xHB36TtVHB9hSFP/tUFhkiSOxtsrYwCgCyXm4UTSpP+wiNyjKfFw7qGLBvA2hGTNw8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAh9PeAqPRQk1/SSygIFADZBi08O/DPCshFwEHvJATIcTzcDD8UGAjXh+H5OlkDyX7KyrcaNvYaafCUo63A+WprdtdY5Ty6SBEwTYyiQyQfwM9BfK+imCoif1Ai7xAelD7p9lNazWq7JU+H/Ep7U7Q7LvpxAbK0JArt+IWTb2NcMb3OWE1r0gFbs44O1l6W9UbJTbyLMzbGbe5i+NHlgnwPwuhtRMh0NUYabGHKcHbhwyFhfGAQv2dAp5KF1E5gu6ZzCiFePzc0FrqXQyb2zpFYcJHXquiqaOeG7cZxRHYcjrl10Vxzki64XVA9BpdELgKSnupDGUEJsRUt3WVOmvZuA==",
+        "url": "https://passbook.company/application/saml/awx/login/",
+        "attr_last_name": "User.LastName",
+        "entity_id": "https://awx.company/sso/metadata/saml/",
+        "attr_email": "urn:oid:0.9.2342.19200300.100.1.3",
+        "attr_first_name": "urn:oid:2.5.4.3"
+    }
 }
 ```
 

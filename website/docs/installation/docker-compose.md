@@ -1,12 +1,13 @@
 ---
 title: docker-compose installation
 ---
+
 This installation method is for test-setups and small-scale productive setups.
 
 ## Prerequisites
 
-- docker
-- docker-compose
+-   docker
+-   docker-compose
 
 ## Install
 

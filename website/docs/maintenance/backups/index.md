@@ -20,7 +20,6 @@ docker-compose run --rm worker backup
 
 This will dump the current database into the `./backups` folder. By defaults, the last 10 Backups are kept.
 
-
 ### Restore
 
 Run this command in your passbook installation directory
@@ -94,11 +93,11 @@ Simply enable these options in your values.yaml file
 ```yaml
 # Enable Database Backups to S3
 backup:
-  accessKey: access-key
-  secretKey: secret-key
-  bucket: s3-bucket
-  region: eu-central-1
-  host: s3-host
+    accessKey: access-key
+    secretKey: secret-key
+    bucket: s3-bucket
+    region: eu-central-1
+    host: s3-host
 ```
 
 Afterwards, run a `helm upgrade` to update the ConfigMap. Backups are done automatically as above, at 00:00 every day.

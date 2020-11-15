@@ -2,6 +2,7 @@
 id: terminology
 title: Terminology
 ---
+
 ### Policy
 
 At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.

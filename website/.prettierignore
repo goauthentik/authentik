@@ -1,5 +1,4 @@
 # Ignore artifacts:
 build
 coverage
-docs
 .docusaurus

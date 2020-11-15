@@ -4,33 +4,33 @@ title: Upgrading to 0.10
 
 This update brings a lot of big features, such as:
 
-- New OAuth2/OpenID Provider
+-   New OAuth2/OpenID Provider
 
-  This new provider merges both OAuth2 and OpenID. It is based on the codebase of the old provider, which has been simplified and cleaned from the ground up. Support for Property Mappings has also been added. Because of this change, OpenID and OAuth2 Providers will have to be re-created.
+    This new provider merges both OAuth2 and OpenID. It is based on the codebase of the old provider, which has been simplified and cleaned from the ground up. Support for Property Mappings has also been added. Because of this change, OpenID and OAuth2 Providers will have to be re-created.
 
-- Proxy Provider
+-   Proxy Provider
 
-  Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs, and more.
+    Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs, and more.
 
-  See [Proxy](../providers/proxy.md)
+    See [Proxy](../providers/proxy.md)
 
-- Outpost System
+-   Outpost System
 
-  This is a new Object type, currently used only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
+    This is a new Object type, currently used only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
 
-  See [Outposts](../outposts/outposts.md)
+    See [Outposts](../outposts/outposts.md)
 
-- Flow Import/Export
+-   Flow Import/Export
 
-  Flows can now be imported and exported. This feature can be used as a backup system, or to share complex flows with other people. Example flows have also been added to the documentation to help you get going with passbook.
+    Flows can now be imported and exported. This feature can be used as a backup system, or to share complex flows with other people. Example flows have also been added to the documentation to help you get going with passbook.
 
 ## Under the hood
 
-- passbook now runs on Django 3.1 and Channels with complete ASGI enabled
-- uwsgi has been replaced with Gunicorn and uvicorn
-- Elastic APM has been replaced with Sentry Performance metrics
-- Flow title is now configurable separately from the name
-- All logging output is now json
+-   passbook now runs on Django 3.1 and Channels with complete ASGI enabled
+-   uwsgi has been replaced with Gunicorn and uvicorn
+-   Elastic APM has been replaced with Sentry Performance metrics
+-   Flow title is now configurable separately from the name
+-   All logging output is now json
 
 ## Upgrading
 
@@ -54,17 +54,17 @@ docker-compose up -d
 
 A few options have changed:
 
-- `error_reporting` was changed from a simple boolean to a dictionary:
+-   `error_reporting` was changed from a simple boolean to a dictionary:
 
 ```yaml
-  error_reporting:
+error_reporting:
     enabled: false
     environment: customer
     send_pii: false
 ```
 
-- The `apm` and `monitoring` blocks have been removed.
-- `serverReplicas` and `workerReplicas` have been added
+-   The `apm` and `monitoring` blocks have been removed.
+-   `serverReplicas` and `workerReplicas` have been added
 
 ### Upgrading
 
