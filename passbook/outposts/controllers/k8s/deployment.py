@@ -17,6 +17,7 @@ from kubernetes.client import (
 )
 
 from passbook import __version__
+from passbook.lib.config import CONFIG
 from passbook.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
@@ -29,8 +30,6 @@ if TYPE_CHECKING:
 
 class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
     """Kubernetes Deployment Reconciler"""
-
-    image_base = "beryju/passbook"
 
     outpost: Outpost
 
@@ -68,6 +67,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             container_ports.append(V1ContainerPort(container_port=port, name=port_name))
         meta = self.get_object_meta(name=self.name)
         secret_name = f"passbook-outpost-{self.controller.outpost.uuid.hex}-api"
+        image_prefix = CONFIG.y("outposts.docker_image_base")
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
@@ -79,7 +79,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                         containers=[
                             V1Container(
                                 name=str(self.outpost.type),
-                                image=f"{self.image_base}-{self.outpost.type}:{__version__}",
+                                image=f"{image_prefix}-{self.outpost.type}:{__version__}",
                                 ports=container_ports,
                                 env=[
                                     V1EnvVar(

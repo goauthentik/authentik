@@ -21,6 +21,9 @@ error_reporting:
   environment: customer
   send_pii: false
 
+outposts:
+  docker_image_base: "beryju/passbook" # this is prepended to -proxy:version
+
 passbook:
   avatars: gravatar  # gravatar or none
   branding:

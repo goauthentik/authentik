@@ -9,6 +9,7 @@ from docker.models.containers import Container
 from yaml import safe_dump
 
 from passbook import __version__
+from passbook.lib.config import CONFIG
 from passbook.outposts.controllers.base import BaseController, ControllerException
 from passbook.outposts.models import (
     DockerServiceConnection,
@@ -24,8 +25,6 @@ class DockerController(BaseController):
 
     container: Container
     connection: DockerServiceConnection
-
-    image_base = "beryju/passbook"
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection) -> None:
         super().__init__(outpost, connection)
@@ -62,7 +61,8 @@ class DockerController(BaseController):
             return self.client.containers.get(container_name), False
         except NotFound:
             self.logger.info("Container does not exist, creating")
-            image_name = f"{self.image_base}-{self.outpost.type}:{__version__}"
+            image_prefix = CONFIG.y("outposts.docker_image_base")
+            image_name = f"{image_prefix}-{self.outpost.type}:{__version__}"
             self.client.images.pull(image_name)
             return (
                 self.client.containers.create(
@@ -137,11 +137,12 @@ class DockerController(BaseController):
     def get_static_deployment(self) -> str:
         """Generate docker-compose yaml for proxy, version 3.5"""
         ports = [f"{x}:{x}" for _, x in self.deployment_ports.items()]
+        image_prefix = CONFIG.y("outposts.docker_image_base")
         compose = {
             "version": "3.5",
             "services": {
                 f"passbook_{self.outpost.type}": {
-                    "image": f"{self.image_base}-{self.outpost.type}:{__version__}",
+                    "image": f"{image_prefix}-{self.outpost.type}:{__version__}",
                     "ports": ports,
                     "environment": {
                         "PASSBOOK_HOST": self.outpost.config.passbook_host,

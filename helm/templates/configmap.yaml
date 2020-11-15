@@ -18,3 +18,4 @@ data:
   ERROR_REPORTING__ENVIRONMENT: "{{ .Values.config.errorReporting.environment }}"
   ERROR_REPORTING__SEND_PII: "{{ .Values.config.errorReporting.sendPii }}"
   LOG_LEVEL: "{{ .Values.config.logLevel }}"
+  OUTPOSTS__DOCKER_IMAGE_BASE: "{{ .Values.image.name_outposts }}"

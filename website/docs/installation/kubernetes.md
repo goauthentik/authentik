@@ -13,6 +13,7 @@ This installation automatically applies database migrations on startup. After th
 image:
     name: beryju/passbook
     name_static: beryju/passbook-static
+    name_outposts: beryju/passbook # Prefix used for Outpost deployments, Outpost type and version is appended
     tag: 0.12.11-stable
 
 serverReplicas: 1
