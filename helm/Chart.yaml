@@ -5,7 +5,7 @@ home: https://passbook.beryju.org
 sources:
   - https://github.com/BeryJu/passbook
 version: "0.12.10-stable"
-icon: https://raw.githubusercontent.com/BeryJu/passbook/master/docs/images/logo.svg
+icon: https://raw.githubusercontent.com/BeryJu/passbook/master/website/static/img/logo.svg
 dependencies:
   - name: postgresql
     version: 9.4.1

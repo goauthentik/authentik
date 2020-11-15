@@ -31,5 +31,5 @@ passbook:
   footer_links:
     - name: Documentation
       href: https://passbook.beryju.org/docs/
-    #  - name: test
-    #    href: https://test
+    - name: passbook Website
+      href: https://passbook.beryju.org/

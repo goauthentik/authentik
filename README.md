@@ -1,4 +1,4 @@
-<img src="docs/images/logo.svg" height="50" alt="passbook logo"><img src="docs/images/brand_inverted.svg" height="50" alt="passbook">
+<img src="website/static/img/logo.svg" height="50" alt="passbook logo"><img src="website/static/img/brand_inverted.svg" height="50" alt="passbook">
 
 [![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/passbook/1?style=flat-square)](https://dev.azure.com/beryjuorg/passbook/_build?definitionId=1)
 ![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/passbook/1?compact_message&style=flat-square)
@@ -13,14 +13,14 @@ passbook is an open-source Identity Provider focused on flexibility and versatil
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/docs/installation/docker-compose/)
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/website/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org/website/docs/installation/kubernetes/)
 
 ## Screenshots
 
-![](docs/images/screen_apps.png)
-![](docs/images/screen_admin.png)
+![](website/static/img/screen_apps.png)
+![](website/static/img/screen_admin.png)
 
 ## Development
 

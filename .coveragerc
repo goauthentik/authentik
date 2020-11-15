@@ -6,7 +6,7 @@ omit =
     manage.py
     */migrations/*
     */apps.py
-    docs/
+    website/
 
 [report]
 sort = Cover

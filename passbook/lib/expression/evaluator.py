@@ -27,7 +27,7 @@ class BaseEvaluator:
 
     def __init__(self):
         # update passbook/policies/expression/templates/policy/expression/form.html
-        # update docs/policies/expression/index.md
+        # update website/docs/policies/expression.md
         self._globals = {
             "regex_match": BaseEvaluator.expr_filter_regex_match,
             "regex_replace": BaseEvaluator.expr_filter_regex_replace,
