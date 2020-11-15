@@ -13,9 +13,9 @@ passbook is an open-source Identity Provider focused on flexibility and versatil
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/installation/docker-compose/)
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org//installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org/docs/installation/kubernetes/)
 
 ## Screenshots
 
@@ -24,7 +24,7 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Development
 
-To develop on passbook, you need a system with Python 3.7+ (3.8 is recommended). passbook uses [pipenv](https://pipenv.pypa.io/en/latest/) for managing dependencies.
+To develop on passbook, you need a system with Python 3.8+ (3.9 is recommended). passbook uses [pipenv](https://pipenv.pypa.io/en/latest/) for managing dependencies.
 
 To get started, run
 

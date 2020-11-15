@@ -12,7 +12,7 @@ class TestTransferDocs(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
 
 
-def generic_view_tester(file_name: str) -> Callable:
+def pbflow_tester(file_name: str) -> Callable:
     """This is used instead of subTest for better visibility"""
 
     def tester(self: TestTransferDocs):
@@ -24,8 +24,6 @@ def generic_view_tester(file_name: str) -> Callable:
     return tester
 
 
-for flow_file in glob("docs/flow/examples/*.json"):
+for flow_file in glob("website/static/flows/*.pbflow"):
     method_name = Path(flow_file).stem.replace("-", "_").replace(".", "_")
-    setattr(
-        TestTransferDocs, f"test_flow_{method_name}", generic_view_tester(flow_file)
-    )
+    setattr(TestTransferDocs, f"test_flow_{method_name}", pbflow_tester(flow_file))

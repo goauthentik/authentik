@@ -1,0 +1,47 @@
+@font-face {
+    font-family: "DIN 1451 Std";
+    src: url("/fonts/DINEngschriftStd.woff2") format("woff2"),
+        url("/fonts/DINEngschriftStd.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --ifm-color-primary: #3578e5;
+    --ifm-color-primary-dark: #1d68e1;
+    --ifm-color-primary-darker: #1b62d4;
+    --ifm-color-primary-darkest: #1751af;
+    --ifm-color-primary-light: #4e89e8;
+    --ifm-color-primary-lighter: #5a91ea;
+    --ifm-color-primary-lightest: #80aaef;
+}
+
+.button.button--outline {
+    color: var(--ifm-navbar-link-color) !important;
+}
+
+.navbar {
+    background-color: var(--ifm-color-primary);
+    box-shadow: none;
+}
+
+.navbar__title {
+    font-family: "DIN 1451 Std";
+    font-size: 2em;
+    margin-top: 2px;
+}
+
+.hero--primary {
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+}
+
+.hero_image {
+    flex-direction: column;
+    justify-items: center;
+}
+
+.hero_image > img {
+    max-height: 200px;
+}

@@ -1,0 +1,4 @@
+# Ignore artifacts:
+build
+coverage
+.docusaurus

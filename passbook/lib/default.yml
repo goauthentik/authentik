@@ -30,6 +30,6 @@ passbook:
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation
-      href: https://passbook.beryju.org/
+      href: https://passbook.beryju.org/docs/
     #  - name: test
     #    href: https://test
