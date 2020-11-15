@@ -9,33 +9,26 @@ import styles from "./styles.module.css";
 const features = [
     {
         title: "Easy to Use",
-        imageUrl: "img/undraw_docusaurus_mountain.svg",
         description: (
             <>
-                Docusaurus was designed from the ground up to be easily
-                installed and used to get your website up and running quickly.
+                Identity made easy. passbook makes single-sign on, user enrollment and
+                access control simple.
             </>
         ),
     },
     {
-        title: "Focus on What Matters",
-        imageUrl: "img/undraw_docusaurus_tree.svg",
+        title: "Realise your workflow",
         description: (
             <>
-                Docusaurus lets you focus on your docs, and we&apos;ll do the
-                chores. Go ahead and move your docs into the <code>docs</code>{" "}
-                directory.
+                passbook lets you build your Workflow as you need it, no limitations.
             </>
         ),
     },
     {
-        title: "Powered by React",
-        imageUrl: "img/undraw_docusaurus_react.svg",
+        title: "Powered by Python",
         description: (
             <>
-                Extend or customize your website layout by reusing React.
-                Docusaurus can be extended while reusing the same header and
-                footer.
+                Implement custom verification or access control logic using Python code.
             </>
         ),
     },
@@ -65,8 +58,8 @@ function Home() {
     const { siteConfig = {} } = context;
     return (
         <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />"
+            title={`Welcome to ${siteConfig.title}`}
+            description={`${siteConfig.tagline}`}
         >
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
@@ -78,7 +71,7 @@ function Home() {
                                 "button button--outline button--secondary button--lg",
                                 styles.getStarted
                             )}
-                            to={useBaseUrl("docs/")}
+                            to={useBaseUrl("docs/installation/index")}
                         >
                             Get Started
                         </Link>

@@ -12,6 +12,7 @@ module.exports = {
             type: "category",
             label: "Installation",
             items: [
+                "installation/index",
                 "installation/docker-compose",
                 "installation/kubernetes",
                 "installation/reverse-proxy",

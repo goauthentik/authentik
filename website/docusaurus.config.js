@@ -1,10 +1,10 @@
 module.exports = {
     title: "passbook",
-    tagline: "The tagline of my site",
-    url: "https://your-docusaurus-test-site.com",
+    tagline: "The authentication glue you need.",
+    url: "https://passbook.beryju.org",
     baseUrl: "/",
     onBrokenLinks: "throw",
-    favicon: "img/favicon.ico",
+    favicon: "img/logo.png",
     organizationName: "BeryJu",
     projectName: "passbook",
     themeConfig: {
@@ -37,6 +37,10 @@ module.exports = {
                         {
                             label: "Documentation",
                             to: "docs/",
+                        },
+                        {
+                            label: "Installations",
+                            to: "docs/installation/index",
                         },
                     ],
                 },
