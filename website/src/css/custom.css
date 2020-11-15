@@ -8,18 +8,13 @@
 }
 
 :root {
-    --ifm-color-primary: #f0f0f0;
-    --ifm-color-primary-dark: #d8d8d8;
-    --ifm-color-primary-darker: #cccccc;
-    --ifm-color-primary-darkest: #a8a8a8;
-    --ifm-color-primary-light: #ffffff;
-    --ifm-color-primary-lighter: #ffffff;
-    --ifm-color-primary-lightest: #ffffff;
-
-    --ifm-footer-background-color: #18191a;
-
-    --ifm-navbar-link-color: #000000;
-    --ifm-font-color-base-inverse: #000000;
+    --ifm-color-primary: #3578e5;
+    --ifm-color-primary-dark: #1d68e1;
+    --ifm-color-primary-darker: #1b62d4;
+    --ifm-color-primary-darkest: #1751af;
+    --ifm-color-primary-light: #4e89e8;
+    --ifm-color-primary-lighter: #5a91ea;
+    --ifm-color-primary-lightest: #80aaef;
 }
 
 .button.button--outline {

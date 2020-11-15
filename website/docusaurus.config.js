@@ -14,6 +14,7 @@ module.exports = {
                 alt: "passbook logo",
                 src: "img/logo.svg",
             },
+            hideOnScroll: true,
             items: [
                 {
                     to: "docs/",
@@ -54,6 +55,9 @@ module.exports = {
                 },
             ],
             copyright: `Copyright © ${new Date().getFullYear()} BeryJu.org. Built with Docusaurus.`,
+        },
+        colorMode: {
+            respectPrefersColorScheme: true,
         },
     },
     presets: [
