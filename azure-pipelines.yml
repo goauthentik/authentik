@@ -133,6 +133,9 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
+              versionSpec: '3.8'
+          - task: UsePythonVersion@0
+            inputs:
               versionSpec: '3.9'
           - task: DockerCompose@0
             displayName: Run services
