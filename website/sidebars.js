@@ -25,11 +25,7 @@ module.exports = {
         {
             type: "category",
             label: "Providers",
-            items: [
-                "providers/oauth2",
-                "providers/saml",
-                "providers/proxy",
-            ],
+            items: ["providers/oauth2", "providers/saml", "providers/proxy"],
         },
         {
             type: "category",
@@ -44,10 +40,7 @@ module.exports = {
         {
             type: "category",
             label: "Flows",
-            items: [
-                "flow/flows",
-                "flow/examples",
-            ],
+            items: ["flow/flows", "flow/examples"],
         },
         {
             type: "category",
@@ -73,18 +66,12 @@ module.exports = {
         {
             type: "category",
             label: "Policies",
-            items: [
-                "policies/index",
-                "policies/expression",
-            ],
+            items: ["policies/index", "policies/expression"],
         },
         {
             type: "category",
             label: "Property Mappings",
-            items: [
-                "property-mappings/index",
-                "property-mappings/expression",
-            ],
+            items: ["property-mappings/index", "property-mappings/expression"],
         },
         {
             type: "category",
@@ -94,10 +81,8 @@ module.exports = {
                 {
                     type: "category",
                     label: "Reference",
-                    items: [
-                        "expressions/reference/user-object"
-                    ]
-                }
+                    items: ["expressions/reference/user-object"],
+                },
             ],
         },
         {
@@ -107,9 +92,7 @@ module.exports = {
                 {
                     type: "category",
                     label: "as Source",
-                    items: [
-                        "integrations/sources/active-directory/index"
-                    ]
+                    items: ["integrations/sources/active-directory/index"],
                 },
                 {
                     type: "category",
@@ -126,16 +109,14 @@ module.exports = {
                         "integrations/services/tower-awx/index",
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/vmware-vcenter/index",
-                    ]
+                    ],
                 },
             ],
         },
         {
             type: "category",
             label: "Maintenance",
-            items: [
-                "maintenance/backups/index",
-            ],
+            items: ["maintenance/backups/index"],
         },
         {
             type: "category",
@@ -150,9 +131,7 @@ module.exports = {
         {
             type: "category",
             label: "Troubleshooting",
-            items: [
-                "troubleshooting/access",
-            ],
+            items: ["troubleshooting/access"],
         },
     ],
 };

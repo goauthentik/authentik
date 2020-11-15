@@ -11,8 +11,8 @@ const features = [
         title: "Easy to Use",
         description: (
             <>
-                Identity made easy. passbook makes single-sign on, user enrollment and
-                access control simple.
+                Identity made easy. passbook makes single-sign on, user
+                enrollment and access control simple.
             </>
         ),
     },
@@ -20,7 +20,8 @@ const features = [
         title: "Realise your workflow",
         description: (
             <>
-                passbook lets you build your Workflow as you need it, no limitations.
+                passbook lets you build your Workflow as you need it, no
+                limitations.
             </>
         ),
     },
@@ -28,7 +29,8 @@ const features = [
         title: "Powered by Python",
         description: (
             <>
-                Implement custom verification or access control logic using Python code.
+                Implement custom verification or access control logic using
+                Python code.
             </>
         ),
     },
@@ -57,16 +59,18 @@ function Home() {
     const context = useDocusaurusContext();
     const { siteConfig = {} } = context;
     return (
-        <Layout
-            title="Welcome"
-            description={siteConfig.tagline}
-        >
+        <Layout title="Welcome" description={siteConfig.tagline}>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
                     <div className="row">
                         <div className="col padding-top--lg">
-                            <h1 className="hero__title">{siteConfig.tagline}</h1>
-                            <p className="hero__subtitle">passbook is an open-source Identity Provider focused on flexibility and versatility</p>
+                            <h1 className="hero__title">
+                                {siteConfig.tagline}
+                            </h1>
+                            <p className="hero__subtitle">
+                                passbook is an open-source Identity Provider
+                                focused on flexibility and versatility
+                            </p>
                             <div className={styles.buttons}>
                                 <Link
                                     className={clsx(
@@ -95,13 +99,18 @@ function Home() {
                         </div>
                         <div className="row">
                             <div className="col col--5">
-                                <div>
-                                </div>
+                                <div></div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>What is passbook?</h2>
                                 <p>
-                                    passbook is an open-source Identity Provider focused on flexibility and versatility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+                                    passbook is an open-source Identity Provider
+                                    focused on flexibility and versatility. You
+                                    can use passbook in an existing environment
+                                    to add support for new protocols. passbook
+                                    is also a great solution for implementing
+                                    signup/recovery/etc in your application, so
+                                    you don't have to deal with it.
                                 </p>
                             </div>
                         </div>

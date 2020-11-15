@@ -1,20 +1,20 @@
 @font-face {
-    font-family: 'DIN 1451 Std';
-    src: url('/fonts/DINEngschriftStd.woff2') format('woff2'),
-        url('/fonts/DINEngschriftStd.woff') format('woff');
+    font-family: "DIN 1451 Std";
+    src: url("/fonts/DINEngschriftStd.woff2") format("woff2"),
+        url("/fonts/DINEngschriftStd.woff") format("woff");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 :root {
-    --ifm-color-primary: #25c2a0;
-    --ifm-color-primary-dark: rgb(33, 175, 144);
-    --ifm-color-primary-darker: rgb(31, 165, 136);
-    --ifm-color-primary-darkest: rgb(26, 136, 112);
-    --ifm-color-primary-light: rgb(70, 203, 174);
-    --ifm-color-primary-lighter: rgb(102, 212, 189);
-    --ifm-color-primary-lightest: rgb(146, 224, 208);
+    --ifm-color-primary: #f0f0f0;
+    --ifm-color-primary-dark: #d8d8d8;
+    --ifm-color-primary-darker: #cccccc;
+    --ifm-color-primary-darkest: #a8a8a8;
+    --ifm-color-primary-light: #ffffff;
+    --ifm-color-primary-lighter: #ffffff;
+    --ifm-color-primary-lightest: #ffffff;
 }
 
 .docusaurus-highlight-code-line {
@@ -30,14 +30,14 @@
 }
 
 .navbar__title {
-    font-family: 'DIN 1451 Std';
+    font-family: "DIN 1451 Std";
     font-size: 2em;
     margin-top: 2px;
 }
 
 .hero--primary {
-    -webkit-clip-path: polygon(0 0,100% 0,100% 100%,0 calc(100% - 3vw));
-    clip-path: polygon(0 0,100% 0,100% 100%,0 calc(100% - 3vw));
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
 }
 
 .hero_image {

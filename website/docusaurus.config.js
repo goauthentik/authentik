@@ -63,7 +63,8 @@ module.exports = {
             {
                 docs: {
                     sidebarPath: require.resolve("./sidebars.js"),
-                    editUrl: "https://github.com/beryju/passbook/edit/master/docs/",
+                    editUrl:
+                        "https://github.com/beryju/passbook/edit/master/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
