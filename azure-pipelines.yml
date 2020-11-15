@@ -22,7 +22,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: |
@@ -38,7 +38,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: |
@@ -54,7 +54,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: |
@@ -71,7 +71,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: |
@@ -90,7 +90,7 @@ stages:
               version: '12.x'
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: npm install -g pyright@1.1.79
@@ -111,7 +111,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: DockerCompose@0
             displayName: Run services
             inputs:
@@ -133,7 +133,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: DockerCompose@0
             displayName: Run services
             inputs:
@@ -169,7 +169,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: DockerCompose@0
             displayName: Run services
             inputs:
@@ -212,7 +212,7 @@ stages:
         steps:
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: DockerCompose@0
             displayName: Run services
             inputs:
@@ -295,7 +295,7 @@ stages:
               path: "coverage-unittest/"
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.8'
+              versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
               script: |

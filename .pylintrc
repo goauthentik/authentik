@@ -1,6 +1,18 @@
 [MASTER]
 
-disable=arguments-differ,no-self-use,fixme,locally-disabled,too-many-ancestors,too-few-public-methods,import-outside-toplevel,bad-continuation,signature-differs,similarities,cyclic-import
+disable =
+    arguments-differ,
+    no-self-use,
+    fixme,
+    locally-disabled,
+    too-many-ancestors,
+    too-few-public-methods,
+    import-outside-toplevel,
+    bad-continuation,
+    signature-differs,
+    similarities,
+    cyclic-import,
+    unsubscriptable-object # remove when pylint is upgraded to 2.6
 
 load-plugins=pylint_django,pylint.extensions.bad_builtin
 

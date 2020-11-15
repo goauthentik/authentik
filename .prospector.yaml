@@ -9,3 +9,4 @@ ignore-paths:
 
 uses:
   - django
+  - celery

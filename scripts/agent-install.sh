@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
-VERSION=3.8.5
+VERSION=3.9.0
 
 wget https://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz
 tar xvzf Python-$VERSION.tgz
@@ -12,5 +12,5 @@ make -j 8
 sudo make altinstall
 touch $HOME/_work/_tool/Python/$VERSION/x64.complete
 
-ln -s $HOME/_work/_tool/Python/3.8.5/x64 $HOME/_work/_tool/Python/3/x64
-ln -s $HOME/_work/_tool/Python/3.8.5/x64 $HOME/_work/_tool/Python/3.8/x64
+ln -s $HOME/_work/_tool/Python/3.9.5/x64 $HOME/_work/_tool/Python/3/x64
+ln -s $HOME/_work/_tool/Python/3.9.5/x64 $HOME/_work/_tool/Python/3.9/x64
