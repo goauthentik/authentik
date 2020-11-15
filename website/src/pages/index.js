@@ -58,38 +58,55 @@ function Home() {
     const { siteConfig = {} } = context;
     return (
         <Layout
-            title={`Welcome to ${siteConfig.title}`}
-            description={`${siteConfig.tagline}`}
+            title="Welcome"
+            description={siteConfig.tagline}
         >
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
-                    <h1 className="hero__title">{siteConfig.title}</h1>
-                    <p className="hero__subtitle">{siteConfig.tagline}</p>
-                    <div className={styles.buttons}>
-                        <Link
-                            className={clsx(
-                                "button button--outline button--secondary button--lg",
-                                styles.getStarted
-                            )}
-                            to={useBaseUrl("docs/installation/index")}
-                        >
-                            Get Started
-                        </Link>
+                    <div className="row">
+                        <div className="col padding-top--lg">
+                            <h1 className="hero__title">{siteConfig.tagline}</h1>
+                            <p className="hero__subtitle">passbook is an open-source Identity Provider focused on flexibility and versatility</p>
+                            <div className={styles.buttons}>
+                                <Link
+                                    className={clsx(
+                                        "button button--outline button--secondary button--lg",
+                                        styles.getStarted
+                                    )}
+                                    to={useBaseUrl("docs/installation/index")}
+                                >
+                                    Get Started
+                                </Link>
+                            </div>
+                        </div>
+                        <div className="col text--center hero_image">
+                            <img alt="passbook logo" src="/img/logo.png" />
+                        </div>
                     </div>
                 </div>
             </header>
             <main>
-                {features && features.length > 0 && (
-                    <section className={styles.features}>
-                        <div className="container">
-                            <div className="row">
-                                {features.map((props, idx) => (
-                                    <Feature key={idx} {...props} />
-                                ))}
+                <section className={styles.features}>
+                    <div className="container">
+                        <div className="row">
+                            {features.map((props, idx) => (
+                                <Feature key={idx} {...props} />
+                            ))}
+                        </div>
+                        <div className="row">
+                            <div className="col col--5">
+                                <div>
+                                </div>
+                            </div>
+                            <div className="col col--5 col--offset-2 padding-vert--xl">
+                                <h2>What is passbook?</h2>
+                                <p>
+                                    passbook is an open-source Identity Provider focused on flexibility and versatility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+                                </p>
                             </div>
                         </div>
-                    </section>
-                )}
+                    </div>
+                </section>
             </main>
         </Layout>
     );

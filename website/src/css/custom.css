@@ -24,13 +24,27 @@
     padding: 0 var(--ifm-pre-padding);
 }
 
+.navbar {
+    background-color: var(--ifm-color-primary);
+    box-shadow: none;
+}
+
 .navbar__title {
     font-family: 'DIN 1451 Std';
     font-size: 2em;
     margin-top: 2px;
 }
 
-.hero__title {
-    font-family: 'DIN 1451 Std';
-    font-size: 4em;
+.hero--primary {
+    -webkit-clip-path: polygon(0 0,100% 0,100% 100%,0 calc(100% - 3vw));
+    clip-path: polygon(0 0,100% 0,100% 100%,0 calc(100% - 3vw));
+}
+
+.hero_image {
+    flex-direction: column;
+    justify-items: center;
+}
+
+.hero_image > img {
+    max-height: 200px;
 }
