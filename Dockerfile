@@ -37,6 +37,7 @@ RUN apt-get update && \
     chown passbook:passbook /backups
 
 COPY ./passbook/ /passbook
+COPY ./pytest.ini /
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 
