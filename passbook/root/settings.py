@@ -14,6 +14,7 @@ import importlib
 import os
 import sys
 from json import dumps
+from time import time
 
 import structlog
 from celery.schedules import crontab
@@ -36,6 +37,7 @@ def j_print(event: str, log_level: str = "info", **kwargs):
         "event": event,
         "level": log_level,
         "logger": __name__,
+        "timestamp": time(),
     }
     data.update(**kwargs)
     print(dumps(data), file=sys.stderr)

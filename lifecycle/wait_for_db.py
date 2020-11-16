@@ -3,7 +3,7 @@
 import passbook. This is done by the dockerfile."""
 from json import dumps
 from sys import stderr
-from time import sleep
+from time import sleep, time
 
 from psycopg2 import OperationalError, connect
 from redis import Redis
@@ -19,6 +19,7 @@ def j_print(event: str, log_level: str = "info", **kwargs):
         "event": event,
         "level": log_level,
         "logger": __name__,
+        "timestamp": time(),
     }
     data.update(**kwargs)
     print(dumps(data), file=stderr)

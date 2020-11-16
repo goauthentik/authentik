@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from contextlib import contextmanager
 from glob import glob
 from json import dumps
+from time import time
 from typing import Any, Dict
 from urllib.parse import urlparse
 
@@ -60,7 +61,12 @@ class ConfigLoader:
     def _log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
         'structlog' or 'logging' hasn't been configured yet."""
-        output = {"event": message, "level": level, "logger": self.__class__.__module__}
+        output = {
+            "event": message,
+            "level": level,
+            "logger": self.__class__.__module__,
+            "timestamp": time(),
+        }
         output.update(kwargs)
         print(dumps(output))
 
