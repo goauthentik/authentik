@@ -1,13 +1,13 @@
 """outpost tests"""
 from os import environ
 from unittest.case import skipUnless
-from unittest.mock import patch
 
 from django.test import TestCase
 from guardian.models import UserObjectPermission
 
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
+from passbook.lib.config import CONFIG
 from passbook.outposts.controllers.k8s.base import NeedsUpdate
 from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
 from passbook.outposts.controllers.kubernetes import KubernetesController
@@ -104,7 +104,7 @@ class OutpostKubernetesTests(TestCase):
                 deployment_reconciler.get_reference_object(),
             )
 
-        with patch.object(deployment_reconciler, "image_base", "test"):
+        with CONFIG.patch("outposts.docker_image_base", "test"):
             with self.assertRaises(NeedsUpdate):
                 deployment_reconciler.reconcile(
                     deployment_reconciler.retrieve(),

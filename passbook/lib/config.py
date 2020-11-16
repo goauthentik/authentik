@@ -34,7 +34,6 @@ class ConfigLoader:
     loaded_file = []
 
     __config = {}
-    __sub_dicts = []
 
     def __init__(self):
         super().__init__()
@@ -129,12 +128,12 @@ class ConfigLoader:
             self.update(self.__config, outer)
 
     @contextmanager
-    # pylint: disable=invalid-name
-    def cd(self, sub: str):
-        """Contextmanager that descends into sub-dict. Can be chained."""
-        self.__sub_dicts.append(sub)
+    def patch(self, path: str, value: Any):
+        """Context manager for unittests to patch a value"""
+        original_value = self.y(path)
+        self.y_set(path, value)
         yield
-        self.__sub_dicts.pop()
+        self.y_set(path, original_value)
 
     @property
     def raw(self) -> dict:
@@ -146,8 +145,6 @@ class ConfigLoader:
         """Access attribute by using yaml path"""
         # Walk sub_dicts before parsing path
         root = self.raw
-        for sub in self.__sub_dicts:
-            root = root.get(sub, None)
         # Walk each component of the path
         for comp in path.split(sep):
             if root and comp in root:
@@ -155,6 +152,18 @@ class ConfigLoader:
             else:
                 return default
         return root
+
+    def y_set(self, path: str, value: Any, sep="."):
+        """Set value using same syntax as y()"""
+        # Walk sub_dicts before parsing path
+        root = self.raw
+        # Walk each component of the path
+        path_parts = path.split(sep)
+        for comp in path_parts[:-1]:
+            if comp not in root:
+                root[comp] = {}
+            root = root.get(comp)
+        root[path_parts[-1]] = value
 
     def y_bool(self, path: str, default=False) -> bool:
         """Wrapper for y that converts value into boolean"""
