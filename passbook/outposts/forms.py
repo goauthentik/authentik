@@ -4,6 +4,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.fields import CodeMirrorWidget, YAMLField
+from passbook.crypto.models import CertificateKeyPair
 from passbook.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -46,17 +47,24 @@ class OutpostForm(forms.ModelForm):
 class DockerServiceConnectionForm(forms.ModelForm):
     """Docker service-connection form"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["tls_authentication"].queryset = CertificateKeyPair.objects.filter(
+            key_data__isnull=False
+        )
+
     class Meta:
 
         model = DockerServiceConnection
-        fields = ["name", "local", "url", "tls"]
+        fields = ["name", "local", "url", "tls_verification", "tls_authentication"]
         widgets = {
             "name": forms.TextInput,
             "url": forms.TextInput,
         }
         labels = {
             "url": _("URL"),
-            "tls": _("TLS"),
+            "tls_verification": _("TLS Verification Certificate"),
+            "tls_authentication": _("TLS Authentication Certificate"),
         }
 
 

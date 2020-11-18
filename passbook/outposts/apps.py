@@ -70,5 +70,4 @@ class PassbookOutpostConfig(AppConfig):
                     name="Local Docker connection",
                     local=True,
                     url=unix_socket_path,
-                    tls=True,
                 )

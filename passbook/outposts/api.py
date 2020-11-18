@@ -33,7 +33,14 @@ class DockerServiceConnectionSerializer(ModelSerializer):
     class Meta:
 
         model = DockerServiceConnection
-        fields = ["pk", "name", "local", "url", "tls"]
+        fields = [
+            "pk",
+            "name",
+            "local",
+            "url",
+            "tls_verification",
+            "tls_authentication",
+        ]
 
 
 class DockerServiceConnectionViewSet(ModelViewSet):

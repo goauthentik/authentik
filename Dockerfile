@@ -43,5 +43,5 @@ COPY ./lifecycle/ /lifecycle
 
 USER passbook
 STOPSIGNAL SIGINT
-
+ENV TMPDIR /dev/shm/
 ENTRYPOINT [ "/lifecycle/bootstrap.sh" ]

@@ -20,10 +20,6 @@ def migrate_to_service_connection(apps: Apps, schema_editor: BaseDatabaseSchemaE
     KubernetesServiceConnection = apps.get_model(
         "passbook_outposts", "KubernetesServiceConnection"
     )
-    from passbook.outposts.apps import PassbookOutpostConfig
-
-    # Ensure that local connection have been created
-    PassbookOutpostConfig.init_local_connection(None)
 
     docker = DockerServiceConnection.objects.filter(local=True).first()
     k8s = KubernetesServiceConnection.objects.filter(local=True).first()

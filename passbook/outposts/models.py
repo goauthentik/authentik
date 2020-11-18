@@ -24,17 +24,21 @@ from kubernetes.config.incluster_config import load_incluster_config
 from kubernetes.config.kube_config import load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
+from structlog import get_logger
 from urllib3.exceptions import HTTPError
 
 from passbook import __version__
 from passbook.core.models import Provider, Token, TokenIntents, User
+from passbook.crypto.models import CertificateKeyPair
 from passbook.lib.config import CONFIG
 from passbook.lib.models import InheritanceForeignKey
 from passbook.lib.sentry import SentryIgnoredException
 from passbook.lib.utils.template import render_to_string
+from passbook.outposts.docker_tls import DockerInlineTLS
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
+LOGGER = get_logger()
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
@@ -99,7 +103,6 @@ class OutpostServiceConnection(models.Model):
 
     local = models.BooleanField(
         default=False,
-        unique=True,
         help_text=_(
             (
                 "If enabled, use the local connection. Required Docker "
@@ -138,7 +141,31 @@ class DockerServiceConnection(OutpostServiceConnection):
     """Service Connection to a Docker endpoint"""
 
     url = models.TextField()
-    tls = models.BooleanField()
+    tls_verification = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="+",
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            (
+                "CA which the endpoint's Certificate is verified against. "
+                "Can be left empty for no validation."
+            )
+        ),
+    )
+    tls_authentication = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="+",
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "Certificate/Key used for authentication. Can be left empty for no authentication."
+        ),
+    )
 
     @property
     def form(self) -> Type[ModelForm]:
@@ -158,10 +185,14 @@ class DockerServiceConnection(OutpostServiceConnection):
             else:
                 client = DockerClient(
                     base_url=self.url,
-                    tls=self.tls,
+                    tls=DockerInlineTLS(
+                        verification_kp=self.tls_verification,
+                        authentication_kp=self.tls_authentication,
+                    ).write(),
                 )
             client.containers.list()
         except DockerException as exc:
+            LOGGER.error(exc)
             raise ServiceConnectionInvalid from exc
         return client
 

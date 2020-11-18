@@ -6860,7 +6860,6 @@ definitions:
     required:
       - name
       - url
-      - tls
     type: object
     properties:
       pk:
@@ -6881,9 +6880,20 @@ definitions:
         title: Url
         type: string
         minLength: 1
-      tls:
-        title: Tls
-        type: boolean
+      tls_verification:
+        title: Tls verification
+        description: CA which the endpoint's Certificate is verified against. Can
+          be left empty for no validation.
+        type: string
+        format: uuid
+        x-nullable: true
+      tls_authentication:
+        title: Tls authentication
+        description: Certificate/Key used for authentication. Can be left empty for
+          no authentication.
+        type: string
+        format: uuid
+        x-nullable: true
   KubernetesServiceConnection:
     description: KubernetesServiceConnection Serializer
     required:
