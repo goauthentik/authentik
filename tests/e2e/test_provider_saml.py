@@ -12,7 +12,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import Application
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
@@ -23,6 +22,7 @@ from passbook.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
 )
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 LOGGER = get_logger()
 

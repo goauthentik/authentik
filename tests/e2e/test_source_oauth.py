@@ -14,13 +14,13 @@ from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 from yaml import safe_dump
 
-from e2e.utils import SeleniumTestCase, retry
 from passbook.flows.models import Flow
 from passbook.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
 from passbook.sources.oauth.models import OAuthSource
+from tests.e2e.utils import SeleniumTestCase, retry
 
 CONFIG_PATH = "/tmp/dex.yml"
 LOGGER = get_logger()

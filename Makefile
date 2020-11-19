@@ -1,19 +1,26 @@
 all: lint-fix lint coverage gen
 
+test-integration:
+	k3d cluster create || exit 0
+	k3d kubeconfig write -o ~/.kube/config --overwrite
+	coverage run manage.py test --failfast -v 3 tests/integration
+
+test-e2e:
+	coverage run manage.py test --failfast -v 3 tests/e2e
+
 coverage:
-	coverage run --concurrency=multiprocessing manage.py test --failfast -v 3
-	coverage combine
+	coverage run manage.py test --failfast -v 3 passbook
 	coverage html
 	coverage report
 
 lint-fix:
 	isort -rc .
-	black passbook e2e lifecycle
+	black passbook tests lifecycle
 
 lint:
-	pyright passbook e2e lifecycle
-	bandit -r passbook e2e lifecycle -x node_modules
-	pylint passbook e2e lifecycle
+	pyright passbook tests lifecycle
+	bandit -r passbook tests lifecycle -x node_modules
+	pylint passbook tests lifecycle
 	prospector
 
 gen: coverage

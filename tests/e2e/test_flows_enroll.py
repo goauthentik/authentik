@@ -8,13 +8,13 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.stages.email.models import EmailStage, EmailTemplates
 from passbook.stages.identification.models import IdentificationStage
 from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from passbook.stages.user_login.models import UserLoginStage
 from passbook.stages.user_write.models import UserWriteStage
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

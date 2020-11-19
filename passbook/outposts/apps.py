@@ -28,11 +28,12 @@ class PassbookOutpostConfig(AppConfig):
     def ready(self):
         import_module("passbook.outposts.signals")
         try:
-            self.init_local_connection()
+            PassbookOutpostConfig.init_local_connection()
         except ProgrammingError:
             pass
 
-    def init_local_connection(self):
+    @staticmethod
+    def init_local_connection():
         """Check if local kubernetes or docker connections should be created"""
         from passbook.outposts.models import (
             KubernetesServiceConnection,

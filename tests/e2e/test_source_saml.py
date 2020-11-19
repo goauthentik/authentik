@@ -10,10 +10,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from e2e.utils import SeleniumTestCase, retry
 from passbook.crypto.models import CertificateKeyPair
 from passbook.flows.models import Flow
 from passbook.sources.saml.models import SAMLBindingTypes, SAMLSource
+from tests.e2e.utils import SeleniumTestCase, retry
 
 LOGGER = get_logger()
 

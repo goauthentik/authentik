@@ -9,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.core.models import Application
 from passbook.flows.models import Flow
 from passbook.policies.expression.models import ExpressionPolicy
@@ -19,6 +18,7 @@ from passbook.providers.oauth2.generators import (
     generate_client_secret,
 )
 from passbook.providers.oauth2.models import ClientTypes, OAuth2Provider, ResponseTypes
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

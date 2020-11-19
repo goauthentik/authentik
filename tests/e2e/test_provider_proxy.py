@@ -11,10 +11,10 @@ from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from e2e.utils import USER, SeleniumTestCase, retry
 from passbook import __version__
 from passbook.core.models import Application
 from passbook.flows.models import Flow
+from passbook.outposts.apps import PassbookOutpostConfig
 from passbook.outposts.models import (
     DockerServiceConnection,
     Outpost,
@@ -22,6 +22,7 @@ from passbook.outposts.models import (
     OutpostType,
 )
 from passbook.providers.proxy.models import ProxyProvider
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -113,6 +114,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @retry()
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
+        PassbookOutpostConfig.init_local_connection()
         SeleniumTestCase().apply_default_data()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",

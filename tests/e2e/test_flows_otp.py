@@ -12,9 +12,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from e2e.utils import USER, SeleniumTestCase, retry
 from passbook.flows.models import Flow, FlowStageBinding
 from passbook.stages.otp_validate.models import OTPValidateStage
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

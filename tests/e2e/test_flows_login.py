@@ -5,7 +5,7 @@ from unittest.case import skipUnless
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")

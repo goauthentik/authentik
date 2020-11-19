@@ -31,7 +31,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run pylint passbook e2e lifecycle
+              script: pipenv run pylint passbook tests lifecycle
       - job: black
         pool:
           vmImage: 'ubuntu-latest'
@@ -47,7 +47,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run black --check passbook e2e lifecycle
+              script: pipenv run black --check passbook tests lifecycle
       - job: prospector
         pool:
           vmImage: 'ubuntu-latest'
@@ -80,7 +80,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run bandit -r passbook e2e lifecycle
+              script: pipenv run bandit -r passbook tests lifecycle
       - job: pyright
         pool:
           vmImage: ubuntu-latest
@@ -180,13 +180,6 @@ stages:
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
-            displayName: Install K3d and prepare
-            inputs:
-              script: |
-                wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-                k3d cluster create
-                k3d kubeconfig write -o ~/.kube/config --overwrite
-          - task: CmdLine@2
             inputs:
               script: |
                 sudo apt install -y libxmlsec1-dev pkg-config
@@ -196,8 +189,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                export PB_TEST_K8S=true
-                pipenv run coverage run ./manage.py test passbook -v 3
+                pipenv run make coverage
           - task: CmdLine@2
             inputs:
               script: |
@@ -208,6 +200,48 @@ stages:
             inputs:
               targetPath: 'output-unittest/'
               artifact: 'coverage-unittest'
+              publishLocation: 'pipeline'
+      - job: coverage_integration
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.9'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
+          - task: CmdLine@2
+            inputs:
+              script: |
+                sudo apt install -y libxmlsec1-dev pkg-config
+                sudo pip install -U wheel pipenv
+                pipenv install --dev
+          - task: CmdLine@2
+            displayName: Install K3d and prepare
+            inputs:
+              script: |
+                wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+                k3d cluster create
+                k3d kubeconfig write -o ~/.kube/config --overwrite
+          - task: CmdLine@2
+            displayName: Run full test suite
+            inputs:
+              script: |
+                pipenv run make test-integration
+          - task: CmdLine@2
+            inputs:
+              script: |
+                mkdir output-integration
+                mv unittest.xml output-integration/unittest.xml
+                mv .coverage output-integration/coverage
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'output-integration/'
+              artifact: 'coverage-integration'
               publishLocation: 'pipeline'
       - job: coverage_e2e
         pool:
@@ -223,13 +257,6 @@ stages:
               action: 'Run services'
               buildImages: false
           - task: CmdLine@2
-            displayName: Install K3d and prepare
-            inputs:
-              script: |
-                wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
-                k3d cluster create
-                k3d kubeconfig write -o ~/.kube/config --overwrite
-          - task: CmdLine@2
             inputs:
               script: |
                 sudo apt install -y libxmlsec1-dev pkg-config
@@ -238,7 +265,7 @@ stages:
           - task: DockerCompose@0
             displayName: Run ChromeDriver
             inputs:
-              dockerComposeFile: 'e2e/ci.docker-compose.yml'
+              dockerComposeFile: 'tests/e2e/ci.docker-compose.yml'
               action: 'Run a specific service'
               serviceName: 'chrome'
           - task: CmdLine@2
@@ -252,8 +279,7 @@ stages:
             displayName: Run full test suite
             inputs:
               script: |
-                export PB_TEST_K8S=true
-                pipenv run coverage run ./manage.py test e2e -v 3 --failfast
+                pipenv run make test-e2e
           - task: CmdLine@2
             condition: always()
             displayName: Cleanup
@@ -294,6 +320,11 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
+              artifactName: 'coverage-integration'
+              path: "coverage-integration/"
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
               artifactName: 'coverage-unittest'
               path: "coverage-unittest/"
           - task: UsePythonVersion@0
@@ -305,7 +336,7 @@ stages:
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
                 pipenv install --dev
-                pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage
+                pipenv run coverage combine coverage-e2e/coverage coverage-unittest/coverage coverage-integration/coverage
                 pipenv run coverage xml
                 pipenv run coverage html
           - task: PublishCodeCoverageResults@1
@@ -319,6 +350,7 @@ stages:
               testResultsFormat: 'JUnit'
               testResultsFiles: |
                 coverage-e2e/unittest.xml
+                coverage-integration/unittest.xml
                 coverage-unittest/unittest.xml
               mergeTestResults: true
           - task: CmdLine@2
