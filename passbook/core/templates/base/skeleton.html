@@ -17,6 +17,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'passbook/passbook.css' %}">
+        <script src="{% static 'passbook/main.js' %}" defer></script>
         {% block head %}
         {% endblock %}
     </head>
@@ -37,6 +38,5 @@
         {% endblock %}
         {% block scripts %}
         {% endblock %}
-        <script src="{% static 'passbook/passbook.js' %}"></script>
     </body>
 </html>

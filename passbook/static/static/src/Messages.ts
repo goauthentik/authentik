@@ -1,28 +1,34 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html, customElement, property } from 'lit-element';
 
-const LEVEL_ICON_MAP = {
+const LEVEL_ICON_MAP: { [key: string]: string } = {
     "error": "fas fa-exclamation-circle",
     "warning": "fas fa-exclamation-triangle",
     "success": "fas fa-check-circle",
     "info": "fas fa-info",
 };
 
-let ID = function (prefix) {
+let ID = function (prefix: string) {
     return prefix + Math.random().toString(36).substr(2, 9);
 };
 
 export function updateMessages() {
-    document.querySelector("pb-messages").fetchMessages();
+    const messageElement = <Messages>document?.querySelector("pb-messages");
+    messageElement.fetchMessages();
 }
 
-class Messages extends LitElement {
+interface Message {
+    level_tag: string;
+    message: string;
+}
 
-    static get properties() {
-        return {
-            url: { type: String },
-            messages: { type: Array },
-        };
-    }
+@customElement("pb-messages")
+export class Messages extends LitElement {
+
+    @property()
+    url: string = "";
+
+    @property()
+    messages: string[] = [];
 
     createRenderRoot() {
         return this;
@@ -34,15 +40,15 @@ class Messages extends LitElement {
 
     fetchMessages() {
         return fetch(this.url).then(r => r.json()).then(r => this.messages = r).then((r) => {
-            const container = this.querySelector(".pf-c-alert-group");
-            r.forEach(message => {
+            const container = <HTMLElement>this.querySelector(".pf-c-alert-group")!;
+            r.forEach((message: Message) => {
                 const messageElement = this.renderMessage(message);
                 container.appendChild(messageElement);
             });
         });
     }
 
-    renderMessage(message) {
+    renderMessage(message: Message): ChildNode {
         const id = ID("pb-message");
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
@@ -56,14 +62,12 @@ class Messages extends LitElement {
             </div>
         </li>`;
         setTimeout(() => {
-            this.querySelector(`#${id}`).remove();
+            this.querySelector(`#${id}`)?.remove();
         }, 1500);
-        return el.content.firstChild;
+        return el.content.firstChild!;
     }
 
     render() {
         return html`<ul class="pf-c-alert-group pf-m-toast"></ul>`;
     }
 }
-
-customElements.define('pb-messages', Messages);

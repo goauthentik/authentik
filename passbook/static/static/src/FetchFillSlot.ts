@@ -1,37 +1,43 @@
-import { LitElement, html } from 'lit-element';
+import { LitElement, html, customElement, property } from 'lit-element';
 
-class FetchFillSlot extends LitElement {
+interface ComparisonHash {
+    [key: string]: (a: any, b: any) => boolean
+}
 
-    static get properties() {
-        return {
-            url: { type: String },
-            key: { type: String },
-            value: { type: Number },
-        };
-    }
+@customElement("fetch-fill-slot")
+export class FetchFillSlot extends LitElement {
 
-    comparison(slotName) {
-        var comparisonOperatorsHash = {
-            '<': function (a, b) { return a < b; },
-            '>': function (a, b) { return a > b; },
-            '>=': function (a, b) { return a >= b; },
-            '<=': function (a, b) { return a <= b; },
-            '==': function (a, b) { return a == b; },
-            '!=': function (a, b) { return a != b; },
-            '===': function (a, b) { return a === b; },
-            '!==': function (a, b) { return a !== b; },
+    @property()
+    url: string = "";
+
+    @property()
+    key: string = "";
+
+    @property()
+    value: string = "";
+
+    comparison(slotName: string) {
+        let comparisonOperatorsHash = <ComparisonHash>{
+            '<': function (a: any, b: any) { return a < b; },
+            '>': function (a: any, b: any) { return a > b; },
+            '>=': function (a: any, b: any) { return a >= b; },
+            '<=': function (a: any, b: any) { return a <= b; },
+            '==': function (a: any, b: any) { return a == b; },
+            '!=': function (a: any, b: any) { return a != b; },
+            '===': function (a: any, b: any) { return a === b; },
+            '!==': function (a: any, b: any) { return a !== b; },
         };
         const tokens = slotName.split(" ");
         if (tokens.length < 3) {
             throw new Error("nah");
         }
-        let a = tokens[0];
+        let a: any = tokens[0];
         if (a === "value") {
             a = this.value;
         } else {
             a = parseInt(a, 10);
         }
-        let b = tokens[2];
+        let b: any = tokens[2];
         if (b === "value") {
             b = this.value;
         } else {
@@ -54,7 +60,7 @@ class FetchFillSlot extends LitElement {
         }
         let selectedSlot = "";
         this.querySelectorAll("[slot]").forEach(slot => {
-            const comp = slot.getAttribute("slot");
+            const comp = slot.getAttribute("slot")!;
             if (this.comparison(comp)) {
                 selectedSlot = comp;
             }
@@ -65,5 +71,3 @@ class FetchFillSlot extends LitElement {
         return html`<slot name=${selectedSlot}></slot>`;
     }
 }
-
-customElements.define('fetch-fill-slot', FetchFillSlot);

@@ -1,14 +1,25 @@
-import { LitElement, html } from 'lit-element';
-import { updateMessages } from "./Messages.js";
+import { LitElement, html, customElement, property } from 'lit-element';
+import { updateMessages } from "./Messages";
 
-class FlowShellCard extends LitElement {
+enum ResponseType {
+    redirect,
+    template
+}
 
-    static get properties() {
-        return {
-            flowBodyUrl: { type: String },
-            flowBody: { type: String },
-        };
-    }
+interface Response {
+    type: ResponseType;
+    to?: string;
+    body?: string;
+}
+
+@customElement("flow-shell-card")
+export class FlowShellCard extends LitElement {
+
+    @property()
+    flowBodyUrl: string = "";
+
+    @property()
+    flowBody?: string = undefined;
 
     createRenderRoot() {
         return this;
@@ -30,12 +41,12 @@ class FlowShellCard extends LitElement {
         });
     }
 
-    async updateCard(data) {
+    async updateCard(data: Response) {
         switch (data.type) {
-            case "redirect":
-                window.location = data.to
+            case ResponseType.redirect:
+                window.location.assign(data.to!);
                 break;
-            case "template":
+            case ResponseType.template:
                 this.flowBody = data.body;
                 await this.requestUpdate();
                 this.checkAutofocus();
@@ -56,26 +67,26 @@ class FlowShellCard extends LitElement {
     }
 
     checkAutofocus() {
-        const autofocusElement = this.querySelector("[autofocus]");
+        const autofocusElement = <HTMLElement>this.querySelector("[autofocus]");
         if (autofocusElement !== null) {
             autofocusElement.focus();
         }
     }
 
-    updateFormAction(form) {
+    updateFormAction(form: HTMLFormElement) {
         for (let index = 0; index < form.elements.length; index++) {
-            const element = form.elements[index];
+            const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
                 console.log("pb-flow: Found Form action URL in form elements, not changing form action.");
                 return false;
             }
         }
         form.action = this.flowBodyUrl;
-        console.log(`pb-flow: updated form.action ${this.flowBodyUrl}`);
+        console.log(`passbook/flows: updated form.action ${this.flowBodyUrl}`);
         return true;
     }
 
-    checkAutosubmit(form) {
+    checkAutosubmit(form: HTMLFormElement) {
         if ("autosubmit" in form.attributes) {
             return form.submit();
         }
@@ -83,11 +94,11 @@ class FlowShellCard extends LitElement {
 
     setFormSubmitHandlers() {
         this.querySelectorAll("form").forEach(form => {
-            console.log(`pb-flow: Checking for autosubmit attribute ${form}`);
+            console.log(`passbook/flows: Checking for autosubmit attribute ${form}`);
             this.checkAutosubmit(form);
-            console.log(`pb-flow: Setting action for form ${form}`);
+            console.log(`passbook/flows: Setting action for form ${form}`);
             this.updateFormAction(form);
-            console.log(`pb-flow: Adding handler for form ${form}`);
+            console.log(`passbook/flows: Adding handler for form ${form}`);
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 let formData = new FormData(form);
@@ -107,7 +118,7 @@ class FlowShellCard extends LitElement {
         });
     }
 
-    errorMessage(error) {
+    errorMessage(error: string) {
         this.flowBody = `
             <style>
                 .pb-exception {
@@ -141,10 +152,9 @@ class FlowShellCard extends LitElement {
 
     render() {
         if (this.flowBody !== undefined) {
-            return html([this.flowBody]);
+            // return html(<TemplateStringsArray>[this.flowBody]);
+            return html`${this.flowBody}`;
         }
         return this.loading();
     }
 }
-
-customElements.define('flow-shell-card', FlowShellCard);

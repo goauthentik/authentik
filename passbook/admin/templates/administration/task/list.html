@@ -64,9 +64,9 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <button is="action-button" class="pf-c-button pf-m-primary" url="{% url 'passbook_api:admin_system_tasks-retry' pk=task.task_name %}">
+                        <pb-action-button url="{% url 'passbook_api:admin_system_tasks-retry' pk=task.task_name %}">
                             {% trans 'Retry Task' %}
-                        </button>
+                        </pb-action-button>
                     </td>
                 </tr>
                 {% endfor %}

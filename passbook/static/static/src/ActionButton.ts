@@ -1,37 +1,33 @@
 import { getCookie } from "./utils.js";
 import { updateMessages } from "./Messages.js";
+import { customElement, html, LitElement, property } from "lit-element";
 
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
 const ERROR_CLASS = "pf-m-danger";
 const PROGRESS_CLASSES = ["pf-m-progress", "pf-m-in-progress"];
 
-class ActionButton extends HTMLButtonElement {
+@customElement("pb-action-button")
+export class ActionButton extends LitElement {
 
     constructor() {
         super();
-        this.addEventListener('click', e => this.callAction());
+        this.querySelector("button")?.addEventListener('click', e => this.callAction());
     }
+
+    @property()
+    url: string = "";
 
     isRunning = false;
-    oldBody = "";
 
     setLoading() {
+        this.isRunning = true;
         this.classList.add(...PROGRESS_CLASSES);
-        this.oldBody = this.innerText;
-        this.innerHTML = `<span class="pf-c-button__progress">
-            <span class="pf-c-spinner pf-m-md" role="progressbar" aria-valuetext="Loading...">
-                <span class="pf-c-spinner__clipper"></span>
-                <span class="pf-c-spinner__lead-ball"></span>
-                <span class="pf-c-spinner__tail-ball"></span>
-            </span>
-        </span>${this.oldBody}`;
     }
 
-    setDone(statusClass) {
+    setDone(statusClass: string) {
         this.isRunning = false;
         this.classList.remove(...PROGRESS_CLASSES);
-        this.innerText = this.oldBody;
         this.classList.replace(PRIMARY_CLASS, statusClass);
         // Trigger messages to update
         updateMessages();
@@ -47,8 +43,8 @@ class ActionButton extends HTMLButtonElement {
         this.setLoading();
         const csrftoken = getCookie('passbook_csrf');
         const request = new Request(
-            this.attributes["url"].value,
-            { headers: { 'X-CSRFToken': csrftoken } }
+            this.url,
+            { headers: { 'X-CSRFToken': csrftoken! } }
         );
         fetch(request, {
             method: "POST",
@@ -60,6 +56,18 @@ class ActionButton extends HTMLButtonElement {
         });
     }
 
-}
+    render() {
+        return html`<button class="pf-c-button pf-m-primary">
+            ${this.isRunning ? html`
+            <span class="pf-c-button__progress">
+                <span class="pf-c-spinner pf-m-md" role="progressbar" aria-valuetext="Loading...">
+                    <span class="pf-c-spinner__clipper"></span>
+                    <span class="pf-c-spinner__lead-ball"></span>
+                    <span class="pf-c-spinner__tail-ball"></span>
+                </span>
+            </span>` : ""}
+            <slot></slot>
+        </button>`;
+    }
 
-customElements.define('action-button', ActionButton, { extends: 'button' });
+}

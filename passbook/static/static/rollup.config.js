@@ -3,26 +3,24 @@ import commonjs from 'rollup-plugin-commonjs';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
 import { terser } from 'rollup-plugin-terser';
 import sourcemaps from 'rollup-plugin-sourcemaps';
+import typescript from '@rollup/plugin-typescript';
 
 export default [{
-  input: './src/passbook.js',
+  input: './src/main.ts',
   output: [
     {
       format: 'iife',
       dir: 'passbook',
-      sourcemap: true,
+      sourcemap: true
     }
   ],
 
   plugins: [
+    typescript(),
     resolve({browser: true}),
     commonjs(),
     sourcemaps(),
     minifyHTML(),
     terser(),
   ],
-
-  watch: {
-    clearScreen: false,
-  },
 }];

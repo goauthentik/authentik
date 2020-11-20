@@ -1,18 +1,3 @@
-import './FetchFillSlot.js';
-import './ActionButton.js';
-import './Messages.js';
-import './FlowShellCard.js';
-import './Tabs.js';
-
-// Button Dropdowns
-document.querySelectorAll("button.pf-c-dropdown__toggle").forEach((b) => {
-    b.addEventListener('click', (e) => {
-        const parent = e.target.closest('.pf-c-dropdown');
-        const menu = parent.querySelector('.pf-c-dropdown__menu');
-        menu.hidden = !menu.hidden;
-    });
-});
-
 // Search clearing
 document.querySelectorAll("input[type=search]").forEach((si) => {
     si.addEventListener("search", (e) => {
