@@ -277,8 +277,6 @@
         </div>
     </div>
 </div>
-
-<script src="{% static 'node_modules/chart.js/dist/Chart.bundle.min.js' %}"></script>
 <script>
 var ctx = document.getElementById('logins-last-metrics').getContext('2d');
 fetch("{% url 'passbook_api:admin_metrics-list' %}").then(r => r.json()).then(r => {

@@ -21,10 +21,12 @@ from passbook.admin.views import (
     tasks,
     tokens,
     users,
+    shell,
 )
 
 urlpatterns = [
-    path("", overview.AdministrationOverviewView.as_view(), name="overview"),
+    path("", shell.ShellView.as_view(), name="shell"),
+    path("overview/", overview.AdministrationOverviewView.as_view(), name="overview"),
     # Applications
     path(
         "applications/", applications.ApplicationListView.as_view(), name="applications"

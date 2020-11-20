@@ -10,9 +10,6 @@ export class DropdownButton extends LitElement {
             btn.addEventListener("click", e => {
                 menu.hidden = !menu.hidden;
             });
-            btn.addEventListener("blur", e => {
-                menu.hidden = true;
-            });
         });
     }
 
