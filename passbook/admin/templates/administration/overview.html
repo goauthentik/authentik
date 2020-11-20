@@ -17,8 +17,8 @@
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Logins over the last 24 hours' %}
                 </div>
             </div>
-            <div class="pf-c-card__body" style="position: relative; height:100%; width:100%">
-                <canvas id="logins-last-metrics"></canvas>
+            <div class="pf-c-card__body">
+                <pb-admin-logins-chart url="{% url 'passbook_api:admin_metrics-list' %}"></pb-admin-logins-chart>
             </div>
         </div>
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 2;grid-row-end: span 3;">
@@ -277,59 +277,4 @@
         </div>
     </div>
 </div>
-<script>
-var ctx = document.getElementById('logins-last-metrics').getContext('2d');
-fetch("{% url 'passbook_api:admin_metrics-list' %}").then(r => r.json()).then(r => {
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            datasets: [
-                {
-                    label: 'Failed Logins',
-                    backgroundColor: "rgba(201, 25, 11, .5)",
-                    spanGaps: true,
-                    data: r.logins_failed_per_1h,
-                },
-                {
-                    label: 'Successful Logins',
-                    backgroundColor: "rgba(189, 229, 184, .5)",
-                    spanGaps: true,
-                    data: r.logins_per_1h,
-                },
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            spanGaps: true,
-            scales: {
-                xAxes: [{
-                    stacked: true,
-                    gridLines: {
-                        color: "rgba(0, 0, 0, 0)",
-                    },
-                    type: 'time',
-                    offset: true,
-                    ticks: {
-                        callback: function (value, index, values) {
-                            const date = new Date();
-                            const delta = (date - values[index].value);
-                            const ago = Math.round(delta / 1000 / 3600);
-                            return `${ago} Hours ago`;
-                        },
-                        autoSkip: true,
-                        maxTicksLimit: 8
-                    }
-                }],
-                yAxes: [{
-                    stacked: true,
-                    gridLines: {
-                        color: "rgba(0, 0, 0, 0)",
-                    }
-                }]
-            }
-        }
-    });
-});
-</script>
-
 {% endblock %}

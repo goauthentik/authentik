@@ -1,5 +1,6 @@
 import "./legacy.js";
 
+import "./AdminLoginsChart";
 import './ActionButton';
 import './Dropdown';
 import './FetchFillSlot';

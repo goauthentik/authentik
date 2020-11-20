@@ -9,12 +9,11 @@ export default [{
   input: './src/main.ts',
   output: [
     {
-      format: 'iife',
+      format: 'es',
       dir: 'passbook',
       sourcemap: true
     }
   ],
-
   plugins: [
     typescript(),
     resolve({browser: true}),
