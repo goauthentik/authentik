@@ -22,7 +22,7 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <div class="pf-c-dropdown">
+                    <pb-dropdown class="pf-c-dropdown">
                         <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                             <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                             <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -39,7 +39,7 @@
                             </li>
                             {% endfor %}
                         </ul>
-                    </div>
+                    </pb-dropdown>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -114,7 +114,7 @@
                     {% trans 'Currently no providers exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <div class="pf-c-dropdown">
+                <pb-dropdown class="pf-c-dropdown">
                     <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                         <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                         <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -131,7 +131,7 @@
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
+                </pb-dropdown>
             </div>
         </div>
         {% endif %}
