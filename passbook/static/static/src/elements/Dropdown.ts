@@ -5,7 +5,7 @@ export class DropdownButton extends LitElement {
     constructor() {
         super();
         const menu = <HTMLElement>this.querySelector(".pf-c-dropdown__menu")!;
-        this.querySelectorAll("button").forEach((btn) => {
+        this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 menu.hidden = !menu.hidden;
             });

@@ -5,6 +5,11 @@ import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.
 import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+// @ts-ignore
+import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
+// @ts-ignore
+import fa from "@patternfly/patternfly/assets/icons/fontawesome.css";
+
 import { updateMessages } from "../elements/Messages";
 import { convertToSlug } from "../utils";
 
@@ -17,7 +22,7 @@ export class ModalButton extends LitElement {
     open: boolean = false;
 
     static get styles() {
-        return [ModalBoxStyle, BullseyeStyle, BackdropStyle];
+        return [ModalBoxStyle, BullseyeStyle, BackdropStyle, ButtonStyle, fa];
     }
 
     constructor() {

@@ -1,20 +1,15 @@
-import {
-    css,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, customElement, html, LitElement, property } from "lit-element";
 // @ts-ignore
 import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 // @ts-ignore
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
+// @ts-ignore
+import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 
-@customElement("pb-admin-shell")
-export class AdminSiteShell extends LitElement {
+@customElement("pb-site-shell")
+export class SiteShell extends LitElement {
     @property()
-    set defaultUrl(value: string) {
+    set url(value: string) {
         if (window.location.hash === "" && value !== undefined) {
             window.location.hash = `#${value}`;
         }
@@ -38,6 +33,7 @@ export class AdminSiteShell extends LitElement {
                     z-index: 2000;
                 }
             `,
+            BackdropStyle,
             BullseyeStyle,
             SpinnerStyle,
         ];
@@ -101,17 +97,19 @@ export class AdminSiteShell extends LitElement {
 
     render() {
         return html` ${this.loading
-                ? html` <div class="pf-l-bullseye">
-                      <div class="pf-l-bullseye__item">
-                          <span
-                              class="pf-c-spinner pf-m-xl"
-                              role="progressbar"
-                              aria-valuetext="Loading..."
-                          >
-                              <span class="pf-c-spinner__clipper"></span>
-                              <span class="pf-c-spinner__lead-ball"></span>
-                              <span class="pf-c-spinner__tail-ball"></span>
-                          </span>
+                ? html` <div class="pf-c-backdrop">
+                      <div class="pf-l-bullseye">
+                          <div class="pf-l-bullseye__item">
+                              <span
+                                  class="pf-c-spinner pf-m-xl"
+                                  role="progressbar"
+                                  aria-valuetext="Loading..."
+                              >
+                                  <span class="pf-c-spinner__clipper"></span>
+                                  <span class="pf-c-spinner__lead-ball"></span>
+                                  <span class="pf-c-spinner__tail-ball"></span>
+                              </span>
+                          </div>
                       </div>
                   </div>`
                 : ""}
