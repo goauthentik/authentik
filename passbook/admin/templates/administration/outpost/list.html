@@ -22,7 +22,15 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <a href="{% url 'passbook_admin:outpost-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                    <pb-modal-button href="{% url 'passbook_admin:outpost-create' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            {% trans 'Create' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -84,8 +92,18 @@
                     {% endif %}
                     {% endwith %}
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-update' pk=outpost.pk' %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk' %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                         {% get_htmls outpost as htmls %}
                         {% for html in htmls %}
                         {{ html|safe }}
@@ -117,7 +135,12 @@
                     {% trans 'Currently no outposts exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <a href="{% url 'passbook_admin:outpost-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                <pb-modal-button href="{% url 'passbook_admin:outpost-create' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        {% trans 'Create' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
             </div>
         </div>
         {% endif %}

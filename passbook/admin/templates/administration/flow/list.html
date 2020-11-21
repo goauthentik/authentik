@@ -20,8 +20,21 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <a href="{% url 'passbook_admin:flow-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
-                    <a href="{% url 'passbook_admin:flow-import' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-secondary" type="button">{% trans 'Import' %}</a>
+                    <pb-modal-button href="{% url 'passbook_admin:flow-create' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            {% trans 'Create' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <pb-modal-button href="{% url 'passbook_admin:flow-import' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            {% trans 'Import' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -41,7 +54,7 @@
                 <tr role="row">
                     <th role="columnheader">
                         <div>
-                            <div>{{ flow.slug }}</div>
+                            <div><code>{{ flow.slug }}</code></div>
                             <small>{{ flow.name }}</small>
                         </div>
                     </th>
@@ -61,8 +74,19 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-update' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:flow-delete' pk=flow.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:flow-delete' pk=flow.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        {# TODO: Fix execute link being modified #}
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-execute' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Execute' %}</a>
                         <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:flow-export' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Export' %}</a>
                     </td>
@@ -92,8 +116,18 @@
                     {% trans 'Currently no flows exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <a href="{% url 'passbook_admin:flow-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
-                <a href="{% url 'passbook_admin:flow-import' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Import' %}</a>
+                <pb-modal-button href="{% url 'passbook_admin:flow-create' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        {% trans 'Create' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
+                <pb-modal-button href="{% url 'passbook_admin:flow-import' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                        {% trans 'Import' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
             </div>
         </div>
         {% endif %}

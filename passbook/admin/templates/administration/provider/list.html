@@ -30,16 +30,22 @@
                         <ul class="pf-c-dropdown__menu" hidden>
                             {% for type, name in types.items %}
                             <li>
-                                <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                    {{ name|verbose_name }}<br>
-                                    <small>
-                                        {{ name|doc }}
-                                    </small>
-                                </a>
+                                <pb-modal-button href="{% url 'passbook_admin:provider-create' %}?type={{ type }}">
+                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                        {{ name|verbose_name }}<br>
+                                        <small>
+                                            {{ name|doc }}
+                                        </small>
+                                    </button>
+                                    <div slot="modal"></div>
+                                </pb-modal-button>
                             </li>
                             {% endfor %}
                         </ul>
                     </pb-dropdown>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -77,8 +83,18 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:provider-update' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:provider-update' pk=provider.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:provider-delete' pk=provider.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                         {% get_links provider as links %}
                         {% for name, href in links.items %}
                             <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
@@ -122,12 +138,15 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:provider-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                {{ name|verbose_name }}<br>
-                                <small>
-                                    {{ name|doc }}
-                                </small>
-                            </a>
+                            <pb-modal-button href="{% url 'passbook_admin:provider-create' %}?type={{ type }}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    {{ name|verbose_name }}<br>
+                                    <small>
+                                        {{ name|doc }}
+                                    </small>
+                                </button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
                         </li>
                         {% endfor %}
                     </ul>

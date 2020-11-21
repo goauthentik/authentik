@@ -58,7 +58,12 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:token-delete' pk=token.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:token-delete' pk=token.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                     </td>
                 </tr>
                 {% endfor %}
