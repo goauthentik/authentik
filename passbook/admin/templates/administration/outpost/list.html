@@ -92,13 +92,13 @@
                     {% endif %}
                     {% endwith %}
                     <td>
-                        <pb-modal-button href="{% url 'passbook_admin:outpost-update' pk=outpost.pk' %}">
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}">
                             <button slot="trigger" class="pf-c-button pf-m-secondary">
                                 {% trans 'Edit' %}
                             </button>
                             <div slot="modal"></div>
                         </pb-modal-button>
-                        <pb-modal-button href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk' %}">
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk %}">
                             <button slot="trigger" class="pf-c-button pf-m-danger">
                                 {% trans 'Delete' %}
                             </button>
