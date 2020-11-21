@@ -6,6 +6,7 @@ import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css"
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { updateMessages } from "./Messages";
+import { convertToSlug } from "./utils";
 
 @customElement("pb-modal-button")
 export class ModalButton extends LitElement {
@@ -37,6 +38,20 @@ export class ModalButton extends LitElement {
             a.addEventListener("click", e => {
                 e.preventDefault();
                 this.open = false;
+            });
+        });
+        // Make name field update slug field
+        this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const form = input.closest("form");
+                if (form === null) {
+                    return;
+                }
+                const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
+                if (!slugField) {
+                    return;
+                }
+                slugField.value = convertToSlug(input.value);
             });
         });
         // Ensure forms sends in AJAX

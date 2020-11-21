@@ -40,25 +40,6 @@ document.querySelectorAll(".pf-c-check__label").forEach((checkLabel) => {
     });
 });
 
-// Automatic slug fields
-const convertToSlug = (text) => {
-    return text
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '');
-};
-
-document.querySelectorAll("input[name=name]").forEach((input) => {
-    input.addEventListener("input", (e) => {
-        const form = e.target.closest("form");
-        if (form === null) {
-            return;
-        }
-        const slugField = form.querySelector("input[name=slug]");
-        slugField.value = convertToSlug(e.target.value);
-    });
-});
-
 // Hamburger Menu
 document.querySelectorAll(".pf-c-page__header-brand-toggle>button").forEach((toggle) => {
     toggle.addEventListener("click", (e) => {

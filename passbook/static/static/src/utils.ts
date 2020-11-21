@@ -13,3 +13,10 @@ export function getCookie(name: string) {
     }
     return cookieValue;
 }
+
+export function convertToSlug(text: string): string {
+    return text
+        .toLowerCase()
+        .replace(/ /g, '-')
+        .replace(/[^\w-]+/g, '');
+}
