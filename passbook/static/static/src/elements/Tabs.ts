@@ -1,27 +1,34 @@
-import { LitElement, html, customElement } from 'lit-element';
+import { LitElement, html, customElement } from "lit-element";
 
 @customElement("pb-tabs")
 export class Tabs extends LitElement {
-
     _currentPage? = "";
     _firstPage? = "";
 
     get currentPage() {
-        return this._currentPage
+        return this._currentPage;
     }
 
     set currentPage(value) {
         try {
             // Show active tab page
-            this.querySelector(`.pf-c-tab-content[tab-name='${value}']`)?.removeAttribute("hidden");
+            this.querySelector(
+                `.pf-c-tab-content[tab-name='${value}']`
+            )?.removeAttribute("hidden");
             // Update active status on buttons
-            this.querySelector(`.pf-c-tabs__item[tab-name='${value}']`)?.classList.add("pf-m-current");
+            this.querySelector(
+                `.pf-c-tabs__item[tab-name='${value}']`
+            )?.classList.add("pf-m-current");
             // Hide other tab pages
-            this.querySelectorAll(`.pf-c-tab-content:not([tab-name='${value}'])`).forEach((el) => {
+            this.querySelectorAll(
+                `.pf-c-tab-content:not([tab-name='${value}'])`
+            ).forEach((el) => {
                 el.setAttribute("hidden", "");
             });
             // Update active status on other buttons
-            this.querySelectorAll(`.pf-c-tabs__item:not([tab-name='${value}'])`).forEach((el) => {
+            this.querySelectorAll(
+                `.pf-c-tabs__item:not([tab-name='${value}'])`
+            ).forEach((el) => {
                 el.classList.remove("pf-m-current");
             });
             // Update window hash
@@ -37,7 +44,9 @@ export class Tabs extends LitElement {
     }
 
     firstUpdated() {
-        this._firstPage = this.querySelector(".pf-c-tab-content")?.getAttribute("tab-name")!;
+        this._firstPage = this.querySelector(".pf-c-tab-content")?.getAttribute(
+            "tab-name"
+        )!;
         if (window.location.hash) {
             this.currentPage = window.location.hash;
         } else {
@@ -47,8 +56,7 @@ export class Tabs extends LitElement {
             button.addEventListener("click", (e) => {
                 let tabPage = button.parentElement?.getAttribute("tab-name")!;
                 this.currentPage = tabPage;
-            })
+            });
         });
     }
-
 }

@@ -1,9 +1,9 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { LitElement, html, customElement, property } from "lit-element";
 import { updateMessages } from "../elements/Messages";
 
 enum ResponseType {
     redirect = "redirect",
-    template = "template"
+    template = "template",
 }
 
 interface Response {
@@ -14,7 +14,6 @@ interface Response {
 
 @customElement("pb-flow-shell-card")
 export class FlowShellCard extends LitElement {
-
     @property()
     flowBodyUrl: string = "";
 
@@ -26,19 +25,23 @@ export class FlowShellCard extends LitElement {
     }
 
     firstUpdated() {
-        fetch(this.flowBodyUrl).then(r => {
-            if (!r.ok) {
-                throw Error(r.statusText);
-            }
-            return r;
-        }).then((r) => {
-            return r.json();
-        }).then((r) => {
-            this.updateCard(r);
-        }).catch((e) => {
-            // Catch JSON or Update errors
-            this.errorMessage(e);
-        });
+        fetch(this.flowBodyUrl)
+            .then((r) => {
+                if (!r.ok) {
+                    throw Error(r.statusText);
+                }
+                return r;
+            })
+            .then((r) => {
+                return r.json();
+            })
+            .then((r) => {
+                this.updateCard(r);
+            })
+            .catch((e) => {
+                // Catch JSON or Update errors
+                this.errorMessage(e);
+            });
     }
 
     async updateCard(data: Response) {
@@ -54,13 +57,15 @@ export class FlowShellCard extends LitElement {
                 this.loadFormCode();
                 this.setFormSubmitHandlers();
             default:
-                console.log(`passbook/flows: unexpected data type ${data.type}`);
+                console.log(
+                    `passbook/flows: unexpected data type ${data.type}`
+                );
                 break;
         }
-    };
+    }
 
     loadFormCode() {
-        this.querySelectorAll("script").forEach(script => {
+        this.querySelectorAll("script").forEach((script) => {
             let newScript = document.createElement("script");
             newScript.src = script.src;
             document.head.appendChild(newScript);
@@ -78,7 +83,9 @@ export class FlowShellCard extends LitElement {
         for (let index = 0; index < form.elements.length; index++) {
             const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
-                console.log("passbook/flows: Found Form action URL in form elements, not changing form action.");
+                console.log(
+                    "passbook/flows: Found Form action URL in form elements, not changing form action."
+                );
                 return false;
             }
         }
@@ -94,26 +101,31 @@ export class FlowShellCard extends LitElement {
     }
 
     setFormSubmitHandlers() {
-        this.querySelectorAll("form").forEach(form => {
-            console.log(`passbook/flows: Checking for autosubmit attribute ${form}`);
+        this.querySelectorAll("form").forEach((form) => {
+            console.log(
+                `passbook/flows: Checking for autosubmit attribute ${form}`
+            );
             this.checkAutosubmit(form);
             console.log(`passbook/flows: Setting action for form ${form}`);
             this.updateFormAction(form);
             console.log(`passbook/flows: Adding handler for form ${form}`);
-            form.addEventListener('submit', (e) => {
+            form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 let formData = new FormData(form);
                 this.flowBody = undefined;
                 fetch(this.flowBodyUrl, {
-                    method: 'post',
+                    method: "post",
                     body: formData,
-                }).then((response) => {
-                    return response.json()
-                }).then(data => {
-                    this.updateCard(data);
-                }).catch((e) => {
-                    this.errorMessage(e);
-                });
+                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        this.updateCard(data);
+                    })
+                    .catch((e) => {
+                        this.errorMessage(e);
+                    });
             });
             form.classList.add("pb-flow-wrapped");
         });
@@ -141,19 +153,22 @@ export class FlowShellCard extends LitElement {
     }
 
     loading() {
-        return html`
-            <div class="pf-c-login__main-body pb-loading">
-                <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-                    <span class="pf-c-spinner__clipper"></span>
-                    <span class="pf-c-spinner__lead-ball"></span>
-                    <span class="pf-c-spinner__tail-ball"></span>
-                </span>
-            </div>`;
+        return html` <div class="pf-c-login__main-body pb-loading">
+            <span
+                class="pf-c-spinner"
+                role="progressbar"
+                aria-valuetext="Loading..."
+            >
+                <span class="pf-c-spinner__clipper"></span>
+                <span class="pf-c-spinner__lead-ball"></span>
+                <span class="pf-c-spinner__tail-ball"></span>
+            </span>
+        </div>`;
     }
 
     render() {
         if (this.flowBody) {
-            return html(<TemplateStringsArray><unknown>[this.flowBody]);
+            return html(<TemplateStringsArray>(<unknown>[this.flowBody]));
         }
         return this.loading();
     }

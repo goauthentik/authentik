@@ -9,7 +9,6 @@ import "codemirror/mode/python/python.js";
 
 @customElement("pb-codemirror")
 export class CodeMirrorTextarea extends LitElement {
-
     @property()
     readOnly: boolean = false;
 
@@ -29,7 +28,7 @@ export class CodeMirrorTextarea extends LitElement {
         }
         this.editor = CodeMirror.fromTextArea(textarea, {
             mode: this.mode,
-            theme: 'monokai',
+            theme: "monokai",
             lineNumbers: false,
             readOnly: this.readOnly,
             autoRefresh: true,
@@ -38,5 +37,4 @@ export class CodeMirrorTextarea extends LitElement {
             this.editor?.save();
         });
     }
-
 }

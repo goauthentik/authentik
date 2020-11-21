@@ -1,10 +1,10 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { LitElement, html, customElement, property } from "lit-element";
 
 const LEVEL_ICON_MAP: { [key: string]: string } = {
-    "error": "fas fa-exclamation-circle",
-    "warning": "fas fa-exclamation-triangle",
-    "success": "fas fa-check-circle",
-    "info": "fas fa-info",
+    error: "fas fa-exclamation-circle",
+    warning: "fas fa-exclamation-triangle",
+    success: "fas fa-check-circle",
+    info: "fas fa-info",
 };
 
 let ID = function (prefix: string) {
@@ -23,7 +23,6 @@ interface Message {
 
 @customElement("pb-messages")
 export class Messages extends LitElement {
-
     @property()
     url: string = "";
 
@@ -39,20 +38,27 @@ export class Messages extends LitElement {
     }
 
     fetchMessages() {
-        return fetch(this.url).then(r => r.json()).then(r => this.messages = r).then((r) => {
-            const container = <HTMLElement>this.querySelector(".pf-c-alert-group")!;
-            r.forEach((message: Message) => {
-                const messageElement = this.renderMessage(message);
-                container.appendChild(messageElement);
+        return fetch(this.url)
+            .then((r) => r.json())
+            .then((r) => (this.messages = r))
+            .then((r) => {
+                const container = <HTMLElement>(
+                    this.querySelector(".pf-c-alert-group")!
+                );
+                r.forEach((message: Message) => {
+                    const messageElement = this.renderMessage(message);
+                    container.appendChild(messageElement);
+                });
             });
-        });
     }
 
     renderMessage(message: Message): ChildNode {
         const id = ID("pb-message");
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
-            <div class="pf-c-alert pf-m-${message.level_tag} ${message.level_tag === 'error' ? 'pf-m-danger': ''}">
+            <div class="pf-c-alert pf-m-${message.level_tag} ${
+            message.level_tag === "error" ? "pf-m-danger" : ""
+        }">
                 <div class="pf-c-alert__icon">
                     <i class="${LEVEL_ICON_MAP[message.level_tag]}"></i>
                 </div>

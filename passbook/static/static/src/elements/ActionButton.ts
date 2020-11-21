@@ -9,10 +9,11 @@ const PROGRESS_CLASSES = ["pf-m-progress", "pf-m-in-progress"];
 
 @customElement("pb-action-button")
 export class ActionButton extends LitElement {
-
     constructor() {
         super();
-        this.querySelector("button")?.addEventListener('click', e => this.callAction());
+        this.querySelector("button")?.addEventListener("click", (e) =>
+            this.callAction()
+        );
     }
 
     @property()
@@ -41,33 +42,39 @@ export class ActionButton extends LitElement {
             return;
         }
         this.setLoading();
-        const csrftoken = getCookie('passbook_csrf');
-        const request = new Request(
-            this.url,
-            { headers: { 'X-CSRFToken': csrftoken! } }
-        );
+        const csrftoken = getCookie("passbook_csrf");
+        const request = new Request(this.url, {
+            headers: { "X-CSRFToken": csrftoken! },
+        });
         fetch(request, {
             method: "POST",
-            mode: 'same-origin',
-        }).then(r => r.json()).then(r => {
-            this.setDone(SUCCESS_CLASS);
-        }).catch(() => {
-            this.setDone(ERROR_CLASS);
-        });
+            mode: "same-origin",
+        })
+            .then((r) => r.json())
+            .then((r) => {
+                this.setDone(SUCCESS_CLASS);
+            })
+            .catch(() => {
+                this.setDone(ERROR_CLASS);
+            });
     }
 
     render() {
         return html`<button class="pf-c-button pf-m-primary">
-            ${this.isRunning ? html`
-            <span class="pf-c-button__progress">
-                <span class="pf-c-spinner pf-m-md" role="progressbar" aria-valuetext="Loading...">
-                    <span class="pf-c-spinner__clipper"></span>
-                    <span class="pf-c-spinner__lead-ball"></span>
-                    <span class="pf-c-spinner__tail-ball"></span>
-                </span>
-            </span>` : ""}
+            ${this.isRunning
+                ? html` <span class="pf-c-button__progress">
+                      <span
+                          class="pf-c-spinner pf-m-md"
+                          role="progressbar"
+                          aria-valuetext="Loading..."
+                      >
+                          <span class="pf-c-spinner__clipper"></span>
+                          <span class="pf-c-spinner__lead-ball"></span>
+                          <span class="pf-c-spinner__tail-ball"></span>
+                      </span>
+                  </span>`
+                : ""}
             <slot></slot>
         </button>`;
     }
-
 }
