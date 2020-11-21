@@ -25,6 +25,15 @@ export class ModalButton extends LitElement {
         return [ModalBoxStyle, BullseyeStyle, BackdropStyle]
     }
 
+    constructor() {
+        super();
+        window.addEventListener("keyup", e => {
+            if (e.code === "Escape") {
+                this.open = false;
+            }
+        });
+    }
+
     setContent(content: string) {
         this.querySelector("[slot=modal]")!.innerHTML = content;
         // Ensure links close the modal
