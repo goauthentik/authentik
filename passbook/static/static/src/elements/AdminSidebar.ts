@@ -28,7 +28,7 @@ export class AdminSideBar extends LitElement {
                         console.log(`Ignoring ${a}`);
                         return;
                     }
-                    rawValue = `^${parsedURL.hash.slice(1, Infinity)}$`;
+                    rawValue = `^${parsedURL.hash.slice(1, Infinity)}`;
                 }
                 const regexp = RegExp(rawValue);
                 this.paths.push({ anchor: a, match: regexp });
