@@ -11,7 +11,7 @@ export default [{
   output: [
     {
       format: 'es',
-      dir: 'passbook',
+      dir: 'dist',
       sourcemap: true
     }
   ],
