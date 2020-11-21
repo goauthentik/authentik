@@ -63,7 +63,7 @@
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:user-update' pk=user.pk %}">
                             <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                {% trans 'Update' %}
+                                {% trans 'Edit' %}
                             </button>
                             <div slot="modal"></div>
                         </pb-modal-button>
@@ -82,8 +82,8 @@
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% endif %}
-                        <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
-                        <a class="pf-c-button pf-m-tertiary" href="{% url 'passbook_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
+                        <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'passbook_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
+                        <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'passbook_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
                     </td>
                 </tr>
                 {% endfor %}

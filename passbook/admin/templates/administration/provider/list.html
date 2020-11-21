@@ -97,7 +97,7 @@
                         </pb-modal-button>
                         {% get_links provider as links %}
                         {% for name, href in links.items %}
-                            <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                            <a class="pf-c-button pf-m-tertiary pb-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
                         {% endfor %}
                         {% get_htmls provider as htmls %}
                         {% for html in htmls %}

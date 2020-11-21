@@ -48,7 +48,7 @@ export class AdminSiteShell extends LitElement {
             this.querySelector("[slot=body]")!.innerHTML = t;
         }).then(() => {
             // Ensure anchors only change the hash
-            this.querySelectorAll("a").forEach(a => {
+            this.querySelectorAll<HTMLAnchorElement>("a:not(.pb-root-link)").forEach(a => {
                 if (a.href === "") {
                     return;
                 }
