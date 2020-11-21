@@ -18,31 +18,31 @@
 {% endblock %}
 
 {% block page_content %}
-<div class="pf-c-page__sidebar">
+<pb-admin-sidebar class="pf-c-page__sidebar">
     <div class="pf-c-page__sidebar-body">
         <nav class="pf-c-nav" id="page-default-nav-example-primary-nav" aria-label="Global">
             <ul class="pf-c-nav__list">
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:overview' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:overview' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Overview' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:applications' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:applications' 'passbook_admin:application-create' 'passbook_admin:application-update' 'passbook_admin:application-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Applications' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:sources' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:sources' 'passbook_admin:source-create' 'passbook_admin:source-update' 'passbook_admin:source-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Sources' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:providers' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:providers' 'passbook_admin:provider-create' 'passbook_admin:provider-update' 'passbook_admin:provider-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Providers' %}
                     </a>
                 </li>
@@ -56,13 +56,13 @@
                         <ul class="pf-c-nav__simple-list">
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:outposts' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:outposts' 'passbook_admin:outpost-create' 'passbook_admin:outpost-update' 'passbook_admin:outpost-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Outposts' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:outpost-service-connections' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:outpost-service-connections' 'passbook_admin:outpost-service-connections-create' 'passbook_admin:outpost-service-connections-update' 'passbook_admin:outpost-service-connections-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Service Connections' %}
                                 </a>
                             </li>
@@ -71,7 +71,7 @@
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:property-mappings' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:property-mappings' 'passbook_admin:property-mapping-create' 'passbook_admin:property-mapping-update' 'passbook_admin:property-mapping-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Property Mappings' %}
                     </a>
                 </li>
@@ -85,31 +85,31 @@
                         <ul class="pf-c-nav__simple-list">
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:flows' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:flows' 'passbook_admin:flow-create' 'passbook_admin:flow-update' 'passbook_admin:flow-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Flows' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:stage-bindings' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:stage-bindings' 'passbook_admin:stage-binding-create' 'passbook_admin:stage-binding-update' 'passbook_admin:stage-binding-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Bindings' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:stages' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:stages' 'passbook_admin:stage-create' 'passbook_admin:stage-update' 'passbook_admin:stage-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Stages' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:stage-prompts' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:stage-prompts' 'passbook_admin:stage-prompt-create' 'passbook_admin:stage-prompt-update' 'passbook_admin:stage-prompt-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Prompts' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:stage-invitations' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:stage-invitations' 'passbook_admin:stage-invitation-create' 'passbook_admin:stage-invitation-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Invitations' %}
                                 </a>
                             </li>
@@ -126,13 +126,13 @@
                         <ul class="pf-c-nav__simple-list">
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:policies' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:policies' 'passbook_admin:policy-create' 'passbook_admin:policy-update' 'passbook_admin:policy-delete' 'passbook_admin:policy-test' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Policies' %}
                                 </a>
                             </li>
                             <li class="pf-c-nav__item">
                                 <a href="#{% url 'passbook_admin:policies-bindings' %}"
-                                    class="pf-c-nav__link {% is_active 'passbook_admin:policies-bindings' 'passbook_admin:policy-binding-create' 'passbook_admin:policy-binding-update' 'passbook_admin:policy-binding-delete' %}">
+                                    class="pf-c-nav__link">
                                     {% trans 'Bindings' %}
                                 </a>
                             </li>
@@ -141,38 +141,38 @@
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:certificate_key_pair' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:certificate_key_pair' 'passbook_admin:certificatekeypair-create' 'passbook_admin:certificatekeypair-update' 'passbook_admin:certificatekeypair-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Certificates' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:tokens' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:tokens' 'passbook_admin:token-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Tokens' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:users' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:users' 'passbook_admin:user-create' 'passbook_admin:user-update' 'passbook_admin:user-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Users' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:groups' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:groups' 'passbook_admin:group-create' 'passbook_admin:group-update' 'passbook_admin:group-delete' %}">
+                        class="pf-c-nav__link">
                         {% trans 'Groups' %}
                     </a>
                 </li>
                 <li class="pf-c-nav__item">
                     <a href="#{% url 'passbook_admin:tasks' %}"
-                        class="pf-c-nav__link {% is_active 'passbook_admin:tasks' %}">
+                        class="pf-c-nav__link">
                         {% trans 'System Tasks' %}
                     </a>
                 </li>
             </ul>
         </nav>
     </div>
-</div>
+</pb-admin-sidebar>
 <pb-admin-shell defaultUrl="{% url 'passbook_admin:overview' %}" role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
     <div slot="body"></div>
 </pb-admin-shell>
