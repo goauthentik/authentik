@@ -1,5 +1,5 @@
 import { LitElement, html, customElement, property } from 'lit-element';
-import { updateMessages } from "./Messages";
+import { updateMessages } from "../elements/Messages";
 
 enum ResponseType {
     redirect = "redirect",

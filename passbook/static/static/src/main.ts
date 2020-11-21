@@ -1,13 +1,13 @@
 import "./legacy.js";
 
-import './ActionButton';
-import './AdminSidebar';
-import './AdminSiteShell';
-import "./AdminLoginsChart";
-import './CodeMirror';
-import './Dropdown';
-import './FetchFillSlot';
-import './FlowShellCard';
-import './Messages';
-import './ModalButton';
-import './Tabs';
+import './elements/ActionButton';
+import './elements/AdminSidebar';
+import './elements/CodeMirror';
+import './elements/Dropdown';
+import './elements/FetchFillSlot';
+import './elements/Messages';
+import './elements/ModalButton';
+import './elements/Tabs';
+import './pages/AdminSiteShell';
+import './pages/FlowShellCard';
+import "./elements/AdminLoginsChart";

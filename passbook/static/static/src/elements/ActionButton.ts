@@ -1,5 +1,5 @@
-import { getCookie } from "./utils.js";
-import { updateMessages } from "./Messages.js";
+import { getCookie } from "../utils";
+import { updateMessages } from "./Messages";
 import { customElement, html, LitElement, property } from "lit-element";
 
 const PRIMARY_CLASS = "pf-m-primary";

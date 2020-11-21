@@ -1,12 +1,12 @@
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, LitElement, property } from "lit-element";
 // @ts-ignore
 import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 // @ts-ignore
 import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
-import { updateMessages } from "./Messages";
-import { convertToSlug } from "./utils";
+import { updateMessages } from "../elements/Messages";
+import { convertToSlug } from "../utils";
 
 @customElement("pb-modal-button")
 export class ModalButton extends LitElement {
