@@ -7,11 +7,6 @@ import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css"
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { updateMessages } from "./Messages";
 
-const PRIMARY_CLASS = "pf-m-primary";
-const SUCCESS_CLASS = "pf-m-success";
-const ERROR_CLASS = "pf-m-danger";
-const PROGRESS_CLASSES = ["pf-m-progress", "pf-m-in-progress"];
-
 @customElement("pb-modal-button")
 export class ModalButton extends LitElement {
 

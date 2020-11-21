@@ -26,6 +26,16 @@ from passbook.admin.views import (
 
 urlpatterns = [
     path("", shell.ShellView.as_view(), name="shell"),
+    path(
+        "overview/cache/flow/",
+        overview.FlowCacheClearView.as_view(),
+        name="overview-clear-flow-cache",
+    ),
+    path(
+        "overview/cache/policy/",
+        overview.PolicyCacheClearView.as_view(),
+        name="overview-clear-policy-cache",
+    ),
     path("overview/", overview.AdministrationOverviewView.as_view(), name="overview"),
     # Applications
     path(
