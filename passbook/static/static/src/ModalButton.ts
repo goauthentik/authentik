@@ -5,6 +5,7 @@ import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.
 import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+import { updateMessages } from "./Messages";
 
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
@@ -24,6 +25,41 @@ export class ModalButton extends LitElement {
         return [ModalBoxStyle, BullseyeStyle, BackdropStyle]
     }
 
+    setContent(content: string) {
+        this.querySelector("[slot=modal]")!.innerHTML = content;
+        // Ensure links close the modal
+        this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach(a => {
+            // Make click on a close the modal
+            a.addEventListener("click", e => {
+                e.preventDefault();
+                this.open = false;
+            });
+        });
+        // Ensure forms sends in AJAX
+        this.querySelectorAll<HTMLFormElement>("[slot=modal] form").forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let formData = new FormData(form);
+                fetch((form.action === window.location.toString()) ? this.href : form.action, {
+                    method: form.method,
+                    body: formData,
+                }).then((response) => {
+                    return response.text();
+                }).then(data => {
+                    if (data.indexOf("csrfmiddlewaretoken") !== -1) {
+                        this.setContent(data);
+                    } else {
+                        this.open = false;
+                        this.dispatchEvent(new CustomEvent('hashchange', { bubbles: true }));
+                        updateMessages();
+                    }
+                }).catch((e) => {
+                    console.error(e);
+                });
+            });
+        });
+    }
+
     onClick(e: MouseEvent) {
         const request = new Request(
             this.href,
@@ -31,27 +67,7 @@ export class ModalButton extends LitElement {
         fetch(request, {
             mode: 'same-origin',
         }).then(r => r.text()).then((t) => {
-            this.querySelector("[slot=modal]")!.innerHTML = t;
-            // Ensure links close the modal
-            this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach(a => {
-                // Make click on a close the modal
-                a.addEventListener("click", e => {
-                    this.open = false;
-                });
-            });
-            // Ensure input type submit submits the form without reloading the page
-            this.querySelectorAll<HTMLInputElement>("[slot=modal] input[type=submit]").forEach(i => {
-                i.form?.addEventListener("submit", e => {
-                    e.preventDefault();
-                    return false;
-                });
-                i.addEventListener("click", e => {
-                    console.log("on submit");
-                    e.preventDefault();
-                    i.form?.submit();
-                    this.open = false;
-                });
-            });
+            this.setContent(t);
             this.open = true;
         }).catch(e => {
             console.error(e);
@@ -62,7 +78,7 @@ export class ModalButton extends LitElement {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
                 <div class="pf-c-modal-box pf-m-md" role="dialog" aria-modal="true" aria-labelledby="modal-md-title" aria-describedby="modal-md-description">
-                    <button class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
+                    <button @click=${() => this.open = false} class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                     <slot name="modal">

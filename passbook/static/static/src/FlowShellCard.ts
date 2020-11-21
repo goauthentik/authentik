@@ -19,7 +19,7 @@ export class FlowShellCard extends LitElement {
     flowBodyUrl: string = "";
 
     @property()
-    flowBody?: string = undefined;
+    flowBody?: string;
 
     createRenderRoot() {
         return this;

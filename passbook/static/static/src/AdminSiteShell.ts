@@ -47,6 +47,7 @@ export class AdminSiteShell extends LitElement {
         fetch(url).then(r => r.text()).then((t) => {
             this.querySelector("[slot=body]")!.innerHTML = t;
         }).then(() => {
+            // Ensure anchors only change the hash
             this.querySelectorAll("a").forEach(a => {
                 if (a.href === "") {
                     return;
@@ -58,6 +59,12 @@ export class AdminSiteShell extends LitElement {
                 } catch (e) {
                     a.href = `#${a.href}`;
                 }
+            });
+            // Create refresh buttons
+            this.querySelectorAll("[role=pb-refresh]").forEach(rt => {
+                rt.addEventListener("click", e => {
+                    this.loadContent();
+                });
             });
             this.loading = false;
         });
