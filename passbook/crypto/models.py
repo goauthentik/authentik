@@ -79,7 +79,7 @@ class CertificateKeyPair(CreatedUpdatedModel):
         )
 
     def __str__(self) -> str:
-        return f"Certificate-Key Pair {self.name} {self.fingerprint}"
+        return f"Certificate-Key Pair {self.name}"
 
     class Meta:
 

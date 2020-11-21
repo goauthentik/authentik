@@ -284,12 +284,6 @@ input[data-is-monospace] {
     white-space: pre-wrap;
 }
 
-/* Table buttons (Don't wrap, align) */
-.pb-table-action {
-    white-space: nowrap !important;
-    padding: var(--pf-c-table--cell--PaddingTop) var(--pf-c-table--cell--PaddingRight) var(--pf-c-table--cell--PaddingBottom) var(--pf-c-table--cell--PaddingLeft) !important;
-}
-
 /* Aggregate Cards */
 .pb-aggregate-card {
     font-size: var(--pf-global--icon--FontSize--lg);

@@ -13,6 +13,7 @@ from passbook.admin.views import (
     policies_bindings,
     property_mappings,
     providers,
+    shell,
     sources,
     stages,
     stages_bindings,
@@ -21,7 +22,6 @@ from passbook.admin.views import (
     tasks,
     tokens,
     users,
-    shell,
 )
 
 urlpatterns = [
