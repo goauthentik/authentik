@@ -4,6 +4,7 @@ import minifyHTML from 'rollup-plugin-minify-html-literals';
 import { terser } from 'rollup-plugin-terser';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import typescript from '@rollup/plugin-typescript';
+import cssimport from "rollup-plugin-cssimport";
 
 export default [{
   input: './src/main.ts',
@@ -15,6 +16,7 @@ export default [{
     }
   ],
   plugins: [
+    cssimport(),
     typescript(),
     resolve({browser: true}),
     commonjs(),

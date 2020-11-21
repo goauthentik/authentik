@@ -1,4 +1,10 @@
-import { customElement, html, LitElement, property } from "lit-element";
+import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+// @ts-ignore
+import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.css";
+// @ts-ignore
+import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+// @ts-ignore
+import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
@@ -11,48 +17,65 @@ export class ModalButton extends LitElement {
     @property()
     href: string = "";
 
-    constructor() {
-        super();
-        this.addEventListener('click', e => this.callAction(e));
+    @property()
+    open: boolean = false;
+
+    static get styles() {
+        return [ModalBoxStyle, BullseyeStyle, BackdropStyle]
     }
 
-    getModal() {
+    onClick(e: MouseEvent) {
+        const request = new Request(
+            this.href,
+        );
+        fetch(request, {
+            mode: 'same-origin',
+        }).then(r => r.text()).then((t) => {
+            this.querySelector("[slot=modal]")!.innerHTML = t;
+            // Ensure links close the modal
+            this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach(a => {
+                // Make click on a close the modal
+                a.addEventListener("click", e => {
+                    this.open = false;
+                });
+            });
+            // Ensure input type submit submits the form without reloading the page
+            this.querySelectorAll<HTMLInputElement>("[slot=modal] input[type=submit]").forEach(i => {
+                i.form?.addEventListener("submit", e => {
+                    e.preventDefault();
+                    return false;
+                });
+                i.addEventListener("click", e => {
+                    console.log("on submit");
+                    e.preventDefault();
+                    i.form?.submit();
+                    this.open = false;
+                });
+            });
+            this.open = true;
+        }).catch(e => {
+            console.error(e);
+        });
+    }
+
+    renderModal() {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
                 <div class="pf-c-modal-box pf-m-md" role="dialog" aria-modal="true" aria-labelledby="modal-md-title" aria-describedby="modal-md-description">
-                <button class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
-                    <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-
-                <header class="pf-c-modal-box__header">
-                    <h1 class="pf-c-modal-box__title" id="modal-md-title">This is a long header title that will truncate because modal titles should be very short. Use the modal body to provide more info.</h1>
-                </header>
-                <div class="pf-c-modal-box__body">
-                    <p id="modal-md-description">The "aria-describedby" attribute can be applied to any text that adequately describes the modal's purpose. It does not have to be assigned to ".pf-c-modal-box__body"</p>
-                    <p>Form here</p>
-                </div>
-                <footer class="pf-c-modal-box__footer">
-                    <button class="pf-c-button pf-m-primary" type="button">Save</button>
-                    <button class="pf-c-button pf-m-link" type="button">Cancel</button>
-                </footer>
+                    <button class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                    <slot name="modal">
+                    </slot>
                 </div>
             </div>
         </div>`;
     }
 
-    callAction(e: MouseEvent) {
-        e.preventDefault();
-        const request = new Request(
-            this.href,
-        );
-        fetch(request, {
-            method: "POST",
-            mode: 'same-origin',
-        }).then(r => {
-            // this.
-        }).catch(() => {
-            // this.setDone(ERROR_CLASS);
-        });
+    render() {
+        return html`
+            <slot name="trigger" @click=${(e: any) => this.onClick(e)}></slot>
+            ${this.open ? this.renderModal() : ""}`;
     }
 
 }
