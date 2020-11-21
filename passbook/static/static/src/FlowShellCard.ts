@@ -2,8 +2,8 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import { updateMessages } from "./Messages";
 
 enum ResponseType {
-    redirect,
-    template
+    redirect = "redirect",
+    template = "template"
 }
 
 interface Response {
@@ -12,7 +12,7 @@ interface Response {
     body?: string;
 }
 
-@customElement("flow-shell-card")
+@customElement("pb-flow-shell-card")
 export class FlowShellCard extends LitElement {
 
     @property()
@@ -32,9 +32,9 @@ export class FlowShellCard extends LitElement {
             }
             return r;
         }).then((r) => {
-            return r.json()
+            return r.json();
         }).then((r) => {
-            this.updateCard(r)
+            this.updateCard(r);
         }).catch((e) => {
             // Catch JSON or Update errors
             this.errorMessage(e);
@@ -54,6 +54,7 @@ export class FlowShellCard extends LitElement {
                 this.loadFormCode();
                 this.setFormSubmitHandlers();
             default:
+                console.log(`passbook/flows: unexpected data type ${data.type}`);
                 break;
         }
     };
@@ -77,7 +78,7 @@ export class FlowShellCard extends LitElement {
         for (let index = 0; index < form.elements.length; index++) {
             const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
-                console.log("pb-flow: Found Form action URL in form elements, not changing form action.");
+                console.log("passbook/flows: Found Form action URL in form elements, not changing form action.");
                 return false;
             }
         }
@@ -151,9 +152,8 @@ export class FlowShellCard extends LitElement {
     }
 
     render() {
-        if (this.flowBody !== undefined) {
-            // return html(<TemplateStringsArray>[this.flowBody]);
-            return html`${this.flowBody}`;
+        if (this.flowBody) {
+            return html(<TemplateStringsArray><unknown>[this.flowBody]);
         }
         return this.loading();
     }
