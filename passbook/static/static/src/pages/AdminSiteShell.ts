@@ -35,6 +35,7 @@ export class AdminSiteShell extends LitElement {
                     width: 100%;
                     top: 0;
                     left: 0;
+                    z-index: 2000;
                 }
             `,
             BullseyeStyle,
@@ -81,7 +82,9 @@ export class AdminSiteShell extends LitElement {
                         this.loadContent();
                     });
                 });
-                this.loading = false;
+                setTimeout(() => {
+                    this.loading = false;
+                }, 100);
             });
     }
 
