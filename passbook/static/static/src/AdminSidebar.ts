@@ -35,7 +35,6 @@ export class AdminSideBar extends LitElement {
     }
 
     render() {
-        console.log(this.activePath);
         this.paths.forEach(path => {
             if (path.match.exec(this.activePath)) {
                 path.anchor.classList.add("pf-m-current");

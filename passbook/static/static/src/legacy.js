@@ -41,21 +41,21 @@ document.querySelectorAll(".pf-c-check__label").forEach((checkLabel) => {
 });
 
 // CodeMirror
-document.querySelectorAll(".codemirror").forEach((cm) => {
-    let cmMode = 'xml';
-    if ('data-cm-mode' in cm.attributes) {
-        cmMode = cm.attributes['data-cm-mode'].value;
-    }
-    // https://github.com/codemirror/CodeMirror/issues/5092
-    cm.removeAttribute("required");
-    CodeMirror.fromTextArea(cm, {
-        mode: cmMode,
-        theme: 'monokai',
-        lineNumbers: false,
-        readOnly: cm.readOnly,
-        autoRefresh: true,
-    });
-});
+// document.querySelectorAll(".codemirror").forEach((cm) => {
+//     let cmMode = 'xml';
+//     if ('data-cm-mode' in cm.attributes) {
+//         cmMode = cm.attributes['data-cm-mode'].value;
+//     }
+//     // https://github.com/codemirror/CodeMirror/issues/5092
+//     cm.removeAttribute("required");
+//     CodeMirror.fromTextArea(cm, {
+//         mode: cmMode,
+//         theme: 'monokai',
+//         lineNumbers: false,
+//         readOnly: cm.readOnly,
+//         autoRefresh: true,
+//     });
+// });
 
 // Automatic slug fields
 const convertToSlug = (text) => {
