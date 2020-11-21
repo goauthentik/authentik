@@ -82,6 +82,17 @@ export class AdminSiteShell extends LitElement {
                         this.loadContent();
                     });
                 });
+                // Make get forms (search bar) notify us on submit so we can change the hash
+                this.querySelectorAll("form").forEach((f) => {
+                    f.addEventListener("submit", (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(f);
+                        const qs = new URLSearchParams(
+                            <any>(<unknown>formData)
+                        ).toString();
+                        window.location.hash = `#${url}?${qs}`;
+                    });
+                });
                 setTimeout(() => {
                     this.loading = false;
                 }, 100);
