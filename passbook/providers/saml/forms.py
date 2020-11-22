@@ -1,7 +1,6 @@
 """passbook SAML IDP Forms"""
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.html import mark_safe
 from django.utils.translation import gettext as _
 
@@ -51,7 +50,6 @@ class SAMLProviderForm(forms.ModelForm):
             "assertion_valid_not_before": forms.TextInput(),
             "assertion_valid_not_on_or_after": forms.TextInput(),
             "session_valid_not_on_or_after": forms.TextInput(),
-            "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
         }
 
 

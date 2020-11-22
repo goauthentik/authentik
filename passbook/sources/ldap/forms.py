@@ -1,7 +1,6 @@
 """passbook LDAP Forms"""
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.admin.fields import CodeMirrorWidget
@@ -54,7 +53,6 @@ class LDAPSourceForm(forms.ModelForm):
             "group_object_filter": forms.TextInput(),
             "user_group_membership_field": forms.TextInput(),
             "object_uniqueness_field": forms.TextInput(),
-            "property_mappings": FilteredSelectMultiple(_("Property Mappings"), False),
         }
 
 

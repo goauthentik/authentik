@@ -1,7 +1,6 @@
 """passbook HaveIBeenPwned Policy forms"""
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext as _
 
 from passbook.policies.forms import GENERAL_FIELDS
@@ -18,5 +17,4 @@ class HaveIBeenPwnedPolicyForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(),
             "password_field": forms.TextInput(),
-            "policies": FilteredSelectMultiple(_("policies"), False),
         }
