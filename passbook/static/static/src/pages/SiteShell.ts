@@ -24,6 +24,7 @@ export class SiteShell extends LitElement {
             css`
                 :host {
                     position: relative;
+                    --pf-global--BackgroundColor--dark-transparent-100: rgba(0,0,0,0);
                 }
                 :host .pf-l-bullseye {
                     position: absolute;

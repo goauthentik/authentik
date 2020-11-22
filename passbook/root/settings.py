@@ -412,6 +412,7 @@ _LOGGING_HANDLER_MAP = {
     "daphne": "WARNING",
     "dbbackup": "ERROR",
     "kubernetes": "INFO",
+    "asyncio": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
