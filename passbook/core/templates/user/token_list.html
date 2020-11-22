@@ -13,7 +13,12 @@
         <div class="pf-c-toolbar__content">
             {% include 'partials/toolbar_search.html' %}
             <div class="pf-c-toolbar__bulk-select">
-                <a href="{% url 'passbook_core:user-tokens-create' %}?back={{ request.get_full_path }}"  class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                <pb-modal-button href="{% url 'passbook_core:user-tokens-create' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        {% trans 'Create' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
             </div>
             {% include 'partials/pagination.html' %}
         </div>
@@ -54,8 +59,21 @@
                     </span>
                 </td>
                 <td>
-                    <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_core:user-tokens-update' identifier=token.identifier %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                    <a class="pf-c-button pf-m-danger" href="{% url 'passbook_core:user-tokens-delete' identifier=token.identifier %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                    <pb-modal-button href="{% url 'passbook_core:user-tokens-update' identifier=token.identifier %}">
+                        <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            {% trans 'Edit' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <pb-modal-button href="{% url 'passbook_core:user-tokens-delete' identifier=token.identifier %}">
+                        <button slot="trigger" class="pf-c-button pf-m-danger">
+                            {% trans 'Delete' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <pb-token-copy-button identifier="{{ outpost.token_identifier }}">
+                        {% trans 'Copy token' %}
+                    </pb-token-copy-button>
                 </td>
             </tr>
             {% endfor %}
@@ -74,7 +92,12 @@
             <div class="pf-c-empty-state__body">
                 {% trans 'Currently no tokens exist. Click the button below to create one.' %}
             </div>
-            <a href="{% url 'passbook_core:user-tokens-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+            <pb-modal-button href="{% url 'passbook_core:user-tokens-create' %}">
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    {% trans 'Create' %}
+                </button>
+                <div slot="modal"></div>
+            </pb-modal-button>
         </div>
     </div>
     {% endif %}
