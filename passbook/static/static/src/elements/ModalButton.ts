@@ -8,7 +8,7 @@ import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.c
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 // @ts-ignore
-import fa from "@patternfly/patternfly/assets/icons/fontawesome.css";
+import fa from "@fortawesome/fontawesome-free/css/solid.css";
 
 import { updateMessages } from "../elements/Messages";
 import { convertToSlug } from "../utils";
