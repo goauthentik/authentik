@@ -12,107 +12,17 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
-import { User } from "../api/user";
+
+import { me, User } from "../api/user";
 
 export interface SidebarItem {
     name: string;
     path?: string;
     children?: SidebarItem[];
-    condition?: (sb: SideBar) => boolean;
+    condition?: (sb: Sidebar) => boolean;
 }
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
-    {
-        name: "General",
-        children: [
-            {
-                name: "Overview",
-                path: "administration/overview",
-            },
-            {
-                name: "System Tasks",
-                path: "administration/tasks",
-            },
-        ],
-    },
-    {
-        name: "Applications",
-        path: "administration/applications",
-    },
-    {
-        name: "Sources",
-        path: "administration/sources",
-    },
-    {
-        name: "Providers",
-        path: "administration/providers",
-    },
-    {
-        name: "User Management",
-        children: [
-            {
-                name: "User",
-                path: "administration/users",
-            },
-            {
-                name: "Groups",
-                path: "administration/groups",
-            },
-        ],
-    },
-    {
-        name: "Outposts",
-        children: [
-            {
-                name: "Outposts",
-                path: "administration/outposts",
-            },
-            {
-                name: "Service Connections",
-                path: "administration/outposts/service_connections",
-            },
-        ],
-    },
-    {
-        name: "Policies",
-        path: "administration/policies",
-    },
-    {
-        name: "Property Mappings",
-        path: "administration/property_mappings",
-    },
-    {
-        name: "Flows",
-        children: [
-            {
-                name: "Flows",
-                path: "administration/flows",
-            },
-            {
-                name: "Stages",
-                path: "administration/stages",
-            },
-            {
-                name: "Prompts",
-                path: "administration/stages/prompts",
-            },
-            {
-                name: "Invitations",
-                path: "administration/stages/invitations",
-            },
-        ],
-    },
-    {
-        name: "Certificates",
-        path: "administration/crypto/certificates",
-    },
-    {
-        name: "Tokens",
-        path: "administration/tokens",
-    },
-];
-
-export const ROOT_ITEMS: SidebarItem[] = [
     {
         name: "Library",
         path: "/-/overview/",
@@ -120,21 +30,110 @@ export const ROOT_ITEMS: SidebarItem[] = [
     {
         name: "Monitor",
         path: "/audit/audit/",
-        condition: (sb: SideBar) => {
+        condition: (sb: Sidebar) => {
             return sb.user?.is_superuser!;
         },
     },
     {
         name: "Administration",
-        children: SIDEBAR_ITEMS,
-        condition: (sb: SideBar) => {
+        children: [
+            {
+                name: "General",
+                children: [
+                    {
+                        name: "Overview",
+                        path: "administration/overview",
+                    },
+                    {
+                        name: "System Tasks",
+                        path: "administration/tasks",
+                    },
+                ],
+            },
+            {
+                name: "Applications",
+                path: "administration/applications",
+            },
+            {
+                name: "Sources",
+                path: "administration/sources",
+            },
+            {
+                name: "Providers",
+                path: "administration/providers",
+            },
+            {
+                name: "User Management",
+                children: [
+                    {
+                        name: "User",
+                        path: "administration/users",
+                    },
+                    {
+                        name: "Groups",
+                        path: "administration/groups",
+                    },
+                ],
+            },
+            {
+                name: "Outposts",
+                children: [
+                    {
+                        name: "Outposts",
+                        path: "administration/outposts",
+                    },
+                    {
+                        name: "Service Connections",
+                        path: "administration/outposts/service_connections",
+                    },
+                ],
+            },
+            {
+                name: "Policies",
+                path: "administration/policies",
+            },
+            {
+                name: "Property Mappings",
+                path: "administration/property_mappings",
+            },
+            {
+                name: "Flows",
+                children: [
+                    {
+                        name: "Flows",
+                        path: "administration/flows",
+                    },
+                    {
+                        name: "Stages",
+                        path: "administration/stages",
+                    },
+                    {
+                        name: "Prompts",
+                        path: "administration/stages/prompts",
+                    },
+                    {
+                        name: "Invitations",
+                        path: "administration/stages/invitations",
+                    },
+                ],
+            },
+            {
+                name: "Certificates",
+                path: "administration/crypto/certificates",
+            },
+            {
+                name: "Tokens",
+                path: "administration/tokens",
+            },
+        ],
+        condition: (sb: Sidebar) => {
             return sb.user?.is_superuser!;
         },
     },
 ];
 
 @customElement("pb-sidebar")
-export class SideBar extends LitElement {
+export class Sidebar extends LitElement {
     @property()
     activePath: string;
 
@@ -161,21 +160,11 @@ export class SideBar extends LitElement {
                 .pf-c-nav__subnav {
                     --pf-c-nav__subnav--PaddingBottom: 0px;
                 }
-                .pb-brand {
-                    font-family: "DIN 1451 Std";
-                    line-height: 60px;
-                    font-size: 3rem;
-                    color: var(--pf-c-nav__link--m-current--Color);
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: center;
+
+                .pf-c-nav__item-bottom {
+                    position: absolute;
+                    bottom: 0;
                     width: 100%;
-                    margin: 0 1rem;
-                    margin-bottom: 1.5rem;
-                }
-                .pb-brand img {
-                    max-height: 60px;
-                    margin-right: 8px;
                 }
             `,
         ];
@@ -183,26 +172,11 @@ export class SideBar extends LitElement {
 
     constructor() {
         super();
-        fetch("/api/v2beta/core/users/me/")
-            .then((r) => r.json())
-            .then((r) => (this.user = <User>r));
+        me().then((u) => (this.user = u));
         this.activePath = window.location.hash.slice(1, Infinity);
         window.addEventListener("hashchange", (e) => {
             this.activePath = window.location.hash.slice(1, Infinity);
         });
-    }
-
-    renderBrand(): TemplateResult {
-        return html`<li class="pf-c-nav__item">
-            <a href="#/" class="pf-c-page__header-brand-link">
-                <div class="pf-c-brand pb-brand">
-                    <img src="${this.brandLogo}" alt="passbook icon" />
-                    ${this.brandTitle
-                        ? html`<span>${this.brandTitle}</span>`
-                        : ""}
-                </div>
-            </a>
-        </li>`;
     }
 
     renderItem(item: SidebarItem): TemplateResult {
@@ -247,8 +221,16 @@ export class SideBar extends LitElement {
         return html`<div class="pf-c-page__sidebar-body">
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
-                    ${this.renderBrand()}
-                    ${ROOT_ITEMS.map((i) => this.renderItem(i))}
+                    <li class="pf-c-nav__item">
+                        <pb-sidebar-brand
+                            .brandLogo=${this.brandLogo}
+                            .brandTitle=${this.brandTitle}
+                        ></pb-sidebar-brand>
+                    </li>
+                    ${SIDEBAR_ITEMS.map((i) => this.renderItem(i))}
+                    <li class="pf-c-nav__item pf-c-nav__item-bottom">
+                        <pb-sidebar-user .user=${this.user}></pb-sidebar-user>
+                    </li>
                 </ul>
             </nav>
         </div>`;
