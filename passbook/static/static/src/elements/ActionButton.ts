@@ -1,39 +1,47 @@
 import { getCookie } from "../utils";
 import { updateMessages } from "./Messages";
 import { customElement, html, LitElement, property } from "lit-element";
+// @ts-ignore
+import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+// @ts-ignore
+import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
+// @ts-ignore
+import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
 
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
 const ERROR_CLASS = "pf-m-danger";
-const PROGRESS_CLASSES = ["pf-m-progress", "pf-m-in-progress"];
+const PROGRESS_CLASS ="pf-m-in-progress";
 
 @customElement("pb-action-button")
 export class ActionButton extends LitElement {
-    constructor() {
-        super();
-        this.querySelector("button")?.addEventListener("click", (e) =>
-            this.callAction()
-        );
-    }
 
     @property()
     url: string = "";
 
+    @property()
     isRunning = false;
+
+    static get styles() {
+        return [GlobalsStyle, ButtonStyle, SpinnerStyle]
+    }
 
     setLoading() {
         this.isRunning = true;
-        this.classList.add(...PROGRESS_CLASSES);
+        this.classList.add(PROGRESS_CLASS);
+        this.requestUpdate();
     }
 
     setDone(statusClass: string) {
         this.isRunning = false;
-        this.classList.remove(...PROGRESS_CLASSES);
+        this.classList.remove(PROGRESS_CLASS);
         this.classList.replace(PRIMARY_CLASS, statusClass);
+        this.requestUpdate();
         // Trigger messages to update
         updateMessages();
         setTimeout(() => {
             this.classList.replace(statusClass, PRIMARY_CLASS);
+            this.requestUpdate();
         }, 1000);
     }
 
@@ -60,7 +68,7 @@ export class ActionButton extends LitElement {
     }
 
     render() {
-        return html`<button class="pf-c-button pf-m-primary">
+        return html`<button class="pf-c-button pf-m-progress ${this.classList}" @click=${() => this.callAction()}>
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
                       <span

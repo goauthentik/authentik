@@ -25,5 +25,8 @@ export default [
             minifyHTML(),
             terser(),
         ],
+        watch: {
+            clearScreen: false,
+        },
     },
 ];
