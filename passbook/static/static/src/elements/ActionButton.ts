@@ -24,7 +24,23 @@ export class ActionButton extends LitElement {
     isRunning = false;
 
     static get styles() {
-        return [GlobalsStyle, ButtonStyle, SpinnerStyle, ColorStyles];
+        return [
+            GlobalsStyle,
+            ButtonStyle,
+            SpinnerStyle,
+            ColorStyles,
+            css`
+                button {
+                    /* Have to use !important here, as buttons with pf-m-progress have transition already */
+                    transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s !important;
+                }
+            `,
+        ];
+    }
+
+    constructor() {
+        super();
+        this.classList.add(PRIMARY_CLASS);
     }
 
     setLoading() {
@@ -70,7 +86,7 @@ export class ActionButton extends LitElement {
 
     render() {
         return html`<button
-            class="pf-c-button pf-m-progress ${this.classList}"
+            class="pf-c-button pf-m-progress ${this.classList.toString()}"
             @click=${() => this.callAction()}
         >
             ${this.isRunning
