@@ -27,6 +27,9 @@ export class ModalButton extends LitElement {
                 :host {
                     text-align: left;
                 }
+                ::slotted(*) {
+                    overflow-y: auto;
+                }
             `,
             ModalBoxStyle,
             BullseyeStyle,
@@ -133,7 +136,7 @@ export class ModalButton extends LitElement {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
                 <div
-                    class="pf-c-modal-box pf-m-md"
+                    class="pf-c-modal-box pf-m-lg"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-md-title"
