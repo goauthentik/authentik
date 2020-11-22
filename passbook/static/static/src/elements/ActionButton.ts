@@ -32,7 +32,9 @@ export class ActionButton extends LitElement {
             css`
                 button {
                     /* Have to use !important here, as buttons with pf-m-progress have transition already */
-                    transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s !important;
+                    transition: all
+                        var(--pf-c-button--m-progress--TransitionDuration) ease
+                        0s !important;
                 }
             `,
         ];
