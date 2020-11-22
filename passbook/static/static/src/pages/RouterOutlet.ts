@@ -67,6 +67,8 @@ export class RouterOutlet extends LitElement {
         let activeUrl = window.location.hash.slice(1, Infinity);
         if (activeUrl === "") {
             activeUrl = this.defaultUrl!;
+            window.location.hash = `#${activeUrl}`;
+            return;
         }
         ROUTES.forEach((route) => {
             let selectedRoute: Route | null = null;
@@ -77,7 +79,6 @@ export class RouterOutlet extends LitElement {
                 console.log(
                     `passbook/router: route "${activeUrl}" not defined, defaulting to shell`
                 );
-                window.location.hash = `#${activeUrl}`;
                 selectedRoute = {
                     url: RegExp(""),
                     element: html`<pb-site-shell url=${activeUrl}
