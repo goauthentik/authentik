@@ -13,7 +13,6 @@ from passbook.admin.views import (
     policies_bindings,
     property_mappings,
     providers,
-    shell,
     sources,
     stages,
     stages_bindings,
@@ -25,7 +24,6 @@ from passbook.admin.views import (
 )
 
 urlpatterns = [
-    path("", shell.ShellView.as_view(), name="shell"),
     path(
         "overview/cache/flow/",
         overview.FlowCacheClearView.as_view(),

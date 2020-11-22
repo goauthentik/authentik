@@ -13,11 +13,8 @@
 {% endblock %}
 
 {% block page_content %}
-<pb-admin-sidebar class="pf-c-page__sidebar">
-</pb-admin-sidebar>
-<pb-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
+<pb-sidebar class="pf-c-page__sidebar" brandLogo="{{ config.passbook.branding.logo }}" {% if config.passbook.branding.title_show %} brandTitle="{{ config.passbook.branding.title }}" {% endif %}>
+</pb-sidebar>
+<pb-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="-/overview/">
 </pb-router-outlet>
-<!-- <pb-admin-shell url="{% url 'passbook_admin:overview' %}" >
-    <div slot="body"></div>
-</pb-admin-shell> -->
 {% endblock %}

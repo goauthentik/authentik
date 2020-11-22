@@ -8,54 +8,8 @@
 
 {% block body %}
 <pb-messages url="{% url 'passbook_api:messages-list' %}"></pb-messages>
-<div class="pf-c-page" id="page-default-nav-example">
+<div class="pf-c-page">
     <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content">{% trans 'Skip to content' %}</a>
-    <header role="banner" class="pf-c-page__header ws-page-header">
-        <div class="pf-c-page__header-brand">
-            <div class="pf-c-page__header-brand-toggle">
-                <button class="pf-c-button pf-m-plain" type="button" id="page-default-nav-example-nav-toggle"
-                    aria-label="Global navigation" aria-expanded="true"
-                    aria-controls="page-default-nav-example-primary-nav">
-                    <i class="fas fa-bars" aria-hidden="true"></i>
-                </button>
-            </div>
-            <a href="{% url 'passbook_core:overview' %}" class="pf-c-page__header-brand-link">
-                <div class="pf-c-brand pb-brand">
-                    <img src="{{ config.passbook.branding.logo }}" style="width: 100px;" alt="passbook icon">
-                    {% if config.passbook.branding.title_show %}
-                    <small><small>{{ config.passbook.branding.title }}</small></small>
-                    {% endif %}
-                </div>
-            </a>
-        </div>
-        <div class="pf-c-page__header-nav">
-            <nav class="pf-c-nav pf-m-horizontal" aria-label="Nav">
-                <ul class="pf-c-nav__list ws-top-nav">
-                    <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_url 'passbook_core:overview' %}"
-                            href="{% url 'passbook_core:overview' %}">{% trans 'Access' %}</a></li>
-                    {% if user.is_superuser %}
-                    <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_app 'passbook_admin' %}"
-                            href="{% url 'passbook_admin:shell' %}">{% trans 'Administrate' %}</a></li>
-                    <li class="pf-c-nav__item"><a class="pf-c-nav__link {% is_active_url 'passbook_audit:log' %}"
-                            href="{% url 'passbook_audit:log' %}">{% trans 'Monitor' %}</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-        <div class="pf-c-page__header-tools">
-            <div class="pf-c-page__header-tools-group pf-m-icons">
-                <a href="{% url 'passbook_flows:default-invalidation' %}" class="pf-c-button pf-m-plain" type="button" id="logout">
-                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                </a>
-            </div>
-            <div class="pf-c-page__header-tools-group">
-                <a href="{% url 'passbook_core:user-settings' %}" id="user-settings" class="pf-c-button">
-                    {{ user.username }}
-                </a>
-            </div>
-            <img class="pf-c-avatar" src="{% avatar user %}" alt="">
-        </div>
-    </header>
     {% block page_content %}
     {% endblock %}
 </div>
