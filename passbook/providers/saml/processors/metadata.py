@@ -105,4 +105,4 @@ class MetadataProcessor:
         for binding in self.get_bindings():
             idp_sso_descriptor.append(binding)
 
-        return tostring(entity_descriptor).decode()
+        return tostring(entity_descriptor, pretty_print=True).decode()
