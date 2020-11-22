@@ -164,17 +164,18 @@ export class SideBar extends LitElement {
                 .pb-brand {
                     font-family: "DIN 1451 Std";
                     line-height: 60px;
-                    display: flex;
                     font-size: 3rem;
-                    flex-direction: row;
-                    align-items: center;
-                    margin-right: 0.5em;
                     color: var(--pf-c-nav__link--m-current--Color);
-                    text-align: center;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    width: 100%;
+                    margin: 0 1rem;
+                    margin-bottom: 1.5rem;
                 }
                 .pb-brand img {
-                    margin: 0 0.5rem;
                     max-height: 60px;
+                    margin-right: 8px;
                 }
             `,
         ];
