@@ -94,7 +94,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
             },
             {
                 name: "Property Mappings",
-                path: "administration/property_mappings",
+                path: "administration/property-mappings/",
             },
             {
                 name: "Flows",
