@@ -14,25 +14,6 @@ html {
     --pf-c-nav__link--PaddingLeft: 0.5rem;
 }
 
-.pb-brand {
-    font-family: "DIN 1451 Std";
-    font-size: 4em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 0.5em;
-    color: var(--pf-global--Color--light-200);
-}
-
-.pb-brand > a:hover {
-    text-decoration: none;
-}
-
-.pb-brand > img {
-    max-height: 68px;
-    margin-right: 0.5em;
-}
-
 .pf-c-background-image::before {
     background-image: url("./flow_background.jpg");
     background-position: center;
@@ -295,4 +276,15 @@ input[data-is-monospace] {
 .pb-aggregate-card {
     font-size: var(--pf-global--icon--FontSize--lg);
     text-align: center;
+}
+
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+.pf-c-content h1 i {
+    font-style: normal;
+}
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
 }
