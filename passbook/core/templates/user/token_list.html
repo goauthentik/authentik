@@ -2,10 +2,6 @@
 
 <div class="pf-c-card">
     <div class="pf-c-card__header pf-c-title pf-m-md">
-        <h1>
-            <i class="pf-icon pf-icon-users"></i>
-            {% trans 'Manage Tokens' %}
-        </h1>
         <p>{% trans "Tokens can be used to access passbook's API." %}</p>
     </div>
     {% if object_list %}
@@ -71,7 +67,7 @@
                         </button>
                         <div slot="modal"></div>
                     </pb-modal-button>
-                    <pb-token-copy-button identifier="{{ outpost.token_identifier }}">
+                    <pb-token-copy-button identifier="{{ token.identifier }}">
                         {% trans 'Copy token' %}
                     </pb-token-copy-button>
                 </td>
