@@ -2,7 +2,8 @@
     "license": "MIT",
     "scripts": {
         "build": "rollup -c ./rollup.config.js",
-        "watch": "rollup -c -w"
+        "watch": "rollup -c -w",
+        "format": "prettier --write ."
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",

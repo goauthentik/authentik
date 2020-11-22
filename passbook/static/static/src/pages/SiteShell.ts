@@ -24,7 +24,6 @@ export class SiteShell extends LitElement {
             css`
                 :host {
                     position: relative;
-                    --pf-global--BackgroundColor--dark-transparent-100: rgba(0,0,0,0);
                 }
                 :host .pf-l-bullseye {
                     position: absolute;
@@ -33,6 +32,14 @@ export class SiteShell extends LitElement {
                     top: 0;
                     left: 0;
                     z-index: 2000;
+                }
+                .pf-c-backdrop {
+                    --pf-c-backdrop--BackgroundColor: rgba(
+                        0,
+                        0,
+                        0,
+                        0
+                    ) !important;
                 }
             `,
             BackdropStyle,
