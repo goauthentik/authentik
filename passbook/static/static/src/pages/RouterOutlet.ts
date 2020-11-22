@@ -33,18 +33,27 @@ export class RouterOutlet extends LitElement {
     @property()
     activeRoute?: Route;
 
+    @property()
+    defaultUrl?: string;
+
     static get styles() {
         return [PF, PFAddons];
     }
 
     constructor() {
         super();
-        this.navigate();
         window.addEventListener("hashchange", (e) => this.navigate());
     }
 
+    firstUpdated() {
+        this.navigate();
+    }
+
     navigate() {
-        const activeUrl = window.location.hash.slice(1, Infinity);
+        let activeUrl = window.location.hash.slice(1, Infinity);
+        if (activeUrl === "") {
+            activeUrl = this.defaultUrl!;
+        }
         ROUTES.forEach((route) => {
             let selectedRoute: Route | null = null;
             if (route.url.exec(activeUrl)) {

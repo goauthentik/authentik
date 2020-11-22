@@ -7,6 +7,13 @@
     font-display: swap;
 }
 
+html {
+    --pf-c-nav__link--PaddingTop: 0.5rem;
+    --pf-c-nav__link--PaddingRight: 0.5rem;
+    --pf-c-nav__link--PaddingBottom: 0.5rem;
+    --pf-c-nav__link--PaddingLeft: 0.5rem;
+}
+
 .pb-brand {
     font-family: "DIN 1451 Std";
     font-size: 4em;

@@ -1,4 +1,5 @@
 import {
+    css,
     customElement,
     html,
     LitElement,
@@ -19,9 +20,23 @@ export interface SidebarItem {
 }
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
+
     {
-        name: "Overview",
-        path: "overview",
+        name: "",
+        path: "",
+    },
+    {
+        name: "General",
+        children: [
+            {
+                name: "Overview",
+                path: "overview",
+            },
+            {
+                name: "System Tasks",
+                path: "tasks",
+            },
+        ],
     },
     {
         name: "Applications",
@@ -34,6 +49,19 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         name: "Providers",
         path: "providers",
+    },
+    {
+        name: "User Management",
+        children: [
+            {
+                name: "User",
+                path: "users",
+            },
+            {
+                name: "Groups",
+                path: "groups",
+            },
+        ],
     },
     {
         name: "Outposts",
@@ -49,6 +77,10 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
+        name: "Policies",
+        path: "policies",
+    },
+    {
         name: "Property Mappings",
         path: "property_mappings",
     },
@@ -58,10 +90,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
             {
                 name: "Flows",
                 path: "flows",
-            },
-            {
-                name: "Bindings",
-                path: "stages/bindings",
             },
             {
                 name: "Stages",
@@ -78,19 +106,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ],
     },
     {
-        name: "Policies",
-        children: [
-            {
-                name: "Policies",
-                path: "policies",
-            },
-            {
-                name: "Bindings",
-                path: "policies/bindings",
-            },
-        ],
-    },
-    {
         name: "Certificates",
         path: "crypto/certificates",
     },
@@ -98,27 +113,65 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         name: "Tokens",
         path: "tokens",
     },
-    {
-        name: "User",
-        path: "users",
-    },
-    {
-        name: "Groups",
-        path: "groups",
-    },
-    {
-        name: "System Tasks",
-        path: "tasks",
-    },
 ];
 
-@customElement("pb-admin-sidebar")
-export class AdminSideBar extends LitElement {
+export const ROOT_ITEMS: SidebarItem[] = [
+    {
+        name: "Library",
+        path: "/-/overview/",
+    },
+    {
+        name: "Monitor",
+        path: "/audit/audit/",
+    },
+    {
+        name: "Administration",
+        children: SIDEBAR_ITEMS
+    }
+];
+
+@customElement("pb-sidebar")
+export class SideBar extends LitElement {
     @property()
     activePath: string;
 
+    @property()
+    brandLogo?: string;
+
+    @property()
+    brandTitle?: string;
+
     static get styles() {
-        return [GlobalsStyle, PageStyle, NavStyle];
+        return [
+            GlobalsStyle,
+            PageStyle,
+            NavStyle,
+            css`
+                .pf-c-nav__link {
+                    --pf-c-nav__link--PaddingTop: 0.5rem;
+                    --pf-c-nav__link--PaddingRight: 0.5rem;
+                    --pf-c-nav__link--PaddingBottom: 0.5rem;
+                }
+                .pf-c-nav__subnav {
+                    --pf-c-nav__subnav--PaddingBottom: 0px;
+                }
+                .pb-brand {
+                    font-family: "DIN 1451 Std";
+                    line-height: 60px;
+                    display: flex;
+                    font-size: 3rem;
+                    flex-direction: row;
+                    align-items: center;
+                    margin-right: 0.5em;
+                    color: var(--pf-c-nav__link--m-current--Color);
+                    text-align: center;
+                }
+                .pb-brand img {
+                    margin: 0 0.5rem;
+                    max-height: 60px;
+                }
+            `,
+        ];
     }
 
     constructor() {
@@ -127,6 +180,17 @@ export class AdminSideBar extends LitElement {
         window.addEventListener("hashchange", (e) => {
             this.activePath = window.location.hash.slice(1, Infinity);
         });
+    }
+
+    renderBrand(): TemplateResult {
+        return html`<li class="pf-c-nav__item">
+            <a href="#/" class="pf-c-page__header-brand-link">
+                <div class="pf-c-brand pb-brand">
+                    <img src="${this.brandLogo}" alt="passbook icon" />
+                    ${this.brandTitle ? html`<span>${this.brandTitle}</span>` : ""}
+                </div>
+            </a>
+        </li>`;
     }
 
     renderItem(item: SidebarItem): TemplateResult {
@@ -165,7 +229,8 @@ export class AdminSideBar extends LitElement {
         return html`<div class="pf-c-page__sidebar-body">
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
-                    ${SIDEBAR_ITEMS.map((i) => this.renderItem(i))}
+                    ${this.renderBrand()}
+                    ${ROOT_ITEMS.map((i) => this.renderItem(i))}
                 </ul>
             </nav>
         </div>`;

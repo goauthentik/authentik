@@ -1,7 +1,7 @@
 import "./legacy.js";
 
 import "./elements/ActionButton";
-import "./elements/AdminSidebar";
+import "./elements/Sidebar";
 import "./elements/CodeMirror";
 import "./elements/Dropdown";
 import "./elements/FetchFillSlot";
