@@ -1,4 +1,4 @@
-import { customElement, html, LitElement, property } from "lit-element";
+import { css, customElement, html, LitElement, property } from "lit-element";
 // @ts-ignore
 import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 // @ts-ignore
@@ -22,7 +22,18 @@ export class ModalButton extends LitElement {
     open: boolean = false;
 
     static get styles() {
-        return [ModalBoxStyle, BullseyeStyle, BackdropStyle, ButtonStyle, fa];
+        return [
+            css`
+                :host {
+                    text-align: left;
+                }
+            `,
+            ModalBoxStyle,
+            BullseyeStyle,
+            BackdropStyle,
+            ButtonStyle,
+            fa,
+        ];
     }
 
     constructor() {
