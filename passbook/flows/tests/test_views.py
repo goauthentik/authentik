@@ -207,7 +207,7 @@ class TestFlowExecutor(TestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("passbook_core:overview"))
+        self.assertEqual(response.url, reverse("passbook_core:shell"))
 
     def test_reevaluate_remove_middle(self):
         """Test planner with re-evaluate (middle stage is removed)"""
@@ -273,7 +273,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_core:overview")},
+            {"type": "redirect", "to": reverse("passbook_core:shell")},
         )
 
     def test_reevaluate_remove_consecutive(self):
@@ -349,5 +349,5 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_core:overview")},
+            {"type": "redirect", "to": reverse("passbook_core:shell")},
         )

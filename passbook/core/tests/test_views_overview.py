@@ -23,8 +23,20 @@ class TestOverviewViews(TestCase):
         )
         self.client.force_login(self.user)
 
+    def test_shell(self):
+        """Test shell"""
+        self.assertEqual(
+            self.client.get(reverse("passbook_core:shell")).status_code, 200
+        )
+
     def test_overview(self):
-        """Test UserSettingsView"""
+        """Test overview"""
         self.assertEqual(
             self.client.get(reverse("passbook_core:overview")).status_code, 200
+        )
+
+    def test_user_settings(self):
+        """Test user settings"""
+        self.assertEqual(
+            self.client.get(reverse("passbook_core:user-settings")).status_code, 200
         )
