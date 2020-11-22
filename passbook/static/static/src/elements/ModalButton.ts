@@ -16,7 +16,7 @@ import { convertToSlug } from "../utils";
 @customElement("pb-modal-button")
 export class ModalButton extends LitElement {
     @property()
-    href: string = "";
+    href?: string;
 
     @property()
     open: boolean = false;
@@ -48,8 +48,7 @@ export class ModalButton extends LitElement {
         });
     }
 
-    setContent(content: string) {
-        this.querySelector("[slot=modal]")!.innerHTML = content;
+    updateHandlers() {
         // Ensure links close the modal
         this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach(
             (a) => {
@@ -85,9 +84,7 @@ export class ModalButton extends LitElement {
                     e.preventDefault();
                     let formData = new FormData(form);
                     fetch(
-                        form.action === window.location.toString()
-                            ? this.href
-                            : form.action,
+                        this.href ? this.href : form.action,
                         {
                             method: form.method,
                             body: formData,
@@ -98,7 +95,8 @@ export class ModalButton extends LitElement {
                         })
                         .then((data) => {
                             if (data.indexOf("csrfmiddlewaretoken") !== -1) {
-                                this.setContent(data);
+                                this.querySelector("[slot=modal]")!.innerHTML = data;
+                                this.updateHandlers();
                             } else {
                                 this.open = false;
                                 this.dispatchEvent(
@@ -118,18 +116,24 @@ export class ModalButton extends LitElement {
     }
 
     onClick(e: MouseEvent) {
-        const request = new Request(this.href);
-        fetch(request, {
-            mode: "same-origin",
-        })
-            .then((r) => r.text())
-            .then((t) => {
-                this.setContent(t);
-                this.open = true;
+        if (!this.href) {
+            this.updateHandlers();
+            this.open = true;
+        } else {
+            const request = new Request(this.href);
+            fetch(request, {
+                mode: "same-origin",
             })
-            .catch((e) => {
-                console.error(e);
-            });
+                .then((r) => r.text())
+                .then((t) => {
+                    this.querySelector("[slot=modal]")!.innerHTML = t;
+                    this.updateHandlers();
+                    this.open = true;
+                })
+                .catch((e) => {
+                    console.error(e);
+                });
+        }
     }
 
     renderModal() {
