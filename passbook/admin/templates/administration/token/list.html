@@ -64,6 +64,9 @@
                             </button>
                             <div slot="modal"></div>
                         </pb-modal-button>
+                        <pb-token-copy-button identifier="{{ outpost.token_identifier }}">
+                            {% trans 'Copy token' %}
+                        </pb-token-copy-button>
                     </td>
                 </tr>
                 {% endfor %}
