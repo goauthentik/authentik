@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from passbook.core.models import Source, UserSourceConnection
-from passbook.core.types import UILoginButton, UIUserSettings
+from passbook.core.types import UILoginButton
 
 
 class OAuthSource(Source):
@@ -66,12 +66,9 @@ class OAuthSource(Source):
         return f"Callback URL: <pre>{url}</pre>"
 
     @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
+    def ui_user_settings(self) -> Optional[str]:
         view_name = "passbook_sources_oauth:oauth-client-user"
-        return UIUserSettings(
-            name=self.name,
-            url=reverse(view_name, kwargs={"source_slug": self.slug}),
-        )
+        return reverse(view_name, kwargs={"source_slug": self.slug})
 
     def __str__(self) -> str:
         return f"OAuth Source {self.name}"

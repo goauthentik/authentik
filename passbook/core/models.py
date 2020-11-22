@@ -18,7 +18,7 @@ from structlog import get_logger
 
 from passbook.core.exceptions import PropertyMappingExpressionException
 from passbook.core.signals import password_changed
-from passbook.core.types import UILoginButton, UIUserSettings
+from passbook.core.types import UILoginButton
 from passbook.flows.models import Flow
 from passbook.lib.models import CreatedUpdatedModel
 from passbook.policies.models import PolicyBindingModel
@@ -249,9 +249,9 @@ class Source(PolicyBindingModel):
         return None
 
     @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
+    def ui_user_settings(self) -> Optional[str]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or an instanace of UIUserSettings."""
+        user settings are available, or a string with the URL to fetch."""
         return None
 
     def __str__(self):

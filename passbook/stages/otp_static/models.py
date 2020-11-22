@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
-from passbook.core.types import UIUserSettings
 from passbook.flows.models import ConfigurableStage, Stage
 
 
@@ -36,14 +35,11 @@ class OTPStaticStage(ConfigurableStage, Stage):
         return OTPStaticStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
-        return UIUserSettings(
-            name="Static OTP",
-            url=reverse(
+    def ui_user_settings(self) -> Optional[str]:
+        return reverse(
                 "passbook_stages_otp_static:user-settings",
                 kwargs={"stage_uuid": self.stage_uuid},
-            ),
-        )
+            )
 
     def __str__(self) -> str:
         return f"OTP Static Stage {self.name}"

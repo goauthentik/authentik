@@ -4,15 +4,12 @@ from typing import Optional, Type
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.forms import ModelForm
-from django.shortcuts import reverse
-from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
+from django.shortcuts import reverse
 
-from passbook.core.types import UIUserSettings
 from passbook.flows.models import ConfigurableStage, Stage
-from passbook.flows.views import NEXT_ARG_NAME
 
 
 class PasswordStage(ConfigurableStage, Stage):
@@ -51,12 +48,10 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[UIUserSettings]:
+    def ui_user_settings(self) -> Optional[str]:
         if not self.configure_flow:
             return None
-        base_url = reverse("passbook_flows:configure", kwargs={"stage_uuid": self.pk})
-        args = urlencode({NEXT_ARG_NAME: reverse("passbook_core:user-settings")})
-        return UIUserSettings(name=_("Change password"), url=f"{base_url}?{args}")
+        return reverse("passbook_stages_password:user-settings", kwargs={"stage_uuid": self.pk})
 
     def __str__(self):
         return f"Password Stage {self.name}"
