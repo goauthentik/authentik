@@ -12,54 +12,51 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+import { User } from "../api/user";
 
 export interface SidebarItem {
     name: string;
     path?: string;
     children?: SidebarItem[];
+    condition?: (sb: SideBar) => boolean;
 }
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
-
-    {
-        name: "",
-        path: "",
-    },
     {
         name: "General",
         children: [
             {
                 name: "Overview",
-                path: "overview",
+                path: "administration/overview",
             },
             {
                 name: "System Tasks",
-                path: "tasks",
+                path: "administration/tasks",
             },
         ],
     },
     {
         name: "Applications",
-        path: "applications",
+        path: "administration/applications",
     },
     {
         name: "Sources",
-        path: "sources",
+        path: "administration/sources",
     },
     {
         name: "Providers",
-        path: "providers",
+        path: "administration/providers",
     },
     {
         name: "User Management",
         children: [
             {
                 name: "User",
-                path: "users",
+                path: "administration/users",
             },
             {
                 name: "Groups",
-                path: "groups",
+                path: "administration/groups",
             },
         ],
     },
@@ -68,50 +65,50 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         children: [
             {
                 name: "Outposts",
-                path: "outposts",
+                path: "administration/outposts",
             },
             {
                 name: "Service Connections",
-                path: "outposts/service_connections",
+                path: "administration/outposts/service_connections",
             },
         ],
     },
     {
         name: "Policies",
-        path: "policies",
+        path: "administration/policies",
     },
     {
         name: "Property Mappings",
-        path: "property_mappings",
+        path: "administration/property_mappings",
     },
     {
         name: "Flows",
         children: [
             {
                 name: "Flows",
-                path: "flows",
+                path: "administration/flows",
             },
             {
                 name: "Stages",
-                path: "stages",
+                path: "administration/stages",
             },
             {
                 name: "Prompts",
-                path: "stages/prompts",
+                path: "administration/stages/prompts",
             },
             {
                 name: "Invitations",
-                path: "stages/invitations",
+                path: "administration/stages/invitations",
             },
         ],
     },
     {
         name: "Certificates",
-        path: "crypto/certificates",
+        path: "administration/crypto/certificates",
     },
     {
         name: "Tokens",
-        path: "tokens",
+        path: "administration/tokens",
     },
 ];
 
@@ -123,10 +120,16 @@ export const ROOT_ITEMS: SidebarItem[] = [
     {
         name: "Monitor",
         path: "/audit/audit/",
+        condition: (sb: SideBar) => {
+            return sb.user?.is_superuser!;
+        }
     },
     {
         name: "Administration",
-        children: SIDEBAR_ITEMS
+        children: SIDEBAR_ITEMS,
+        condition: (sb: SideBar) => {
+            return sb.user?.is_superuser!;
+        }
     }
 ];
 
@@ -140,6 +143,9 @@ export class SideBar extends LitElement {
 
     @property()
     brandTitle?: string;
+
+    @property()
+    user?: User;
 
     static get styles() {
         return [
@@ -176,6 +182,9 @@ export class SideBar extends LitElement {
 
     constructor() {
         super();
+        fetch("/api/v2beta/core/users/me/")
+            .then(r => r.json())
+            .then(r => this.user = <User>r);
         this.activePath = window.location.hash.slice(1, Infinity);
         window.addEventListener("hashchange", (e) => {
             this.activePath = window.location.hash.slice(1, Infinity);
@@ -194,6 +203,12 @@ export class SideBar extends LitElement {
     }
 
     renderItem(item: SidebarItem): TemplateResult {
+        if (item.condition) {
+           const result = item.condition(this);
+           if (!result) {
+               return html``;
+           }
+        }
         return html` <li
             class="pf-c-nav__item ${item.children
                 ? "pf-m-expandable pf-m-expanded"
