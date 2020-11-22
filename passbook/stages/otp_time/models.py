@@ -44,9 +44,9 @@ class OTPTimeStage(ConfigurableStage, Stage):
     @property
     def ui_user_settings(self) -> Optional[str]:
         return reverse(
-                "passbook_stages_otp_time:user-settings",
-                kwargs={"stage_uuid": self.stage_uuid},
-            )
+            "passbook_stages_otp_time:user-settings",
+            kwargs={"stage_uuid": self.stage_uuid},
+        )
 
     def __str__(self) -> str:
         return f"OTP Time (TOTP) Stage {self.name}"

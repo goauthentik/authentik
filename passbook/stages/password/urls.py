@@ -5,6 +5,8 @@ from passbook.stages.password.views import UserSettingsCardView
 
 urlpatterns = [
     path(
-        "<uuid:stage_uuid>/change-card/", UserSettingsCardView.as_view(), name="user-settings"
+        "<uuid:stage_uuid>/change-card/",
+        UserSettingsCardView.as_view(),
+        name="user-settings",
     ),
 ]

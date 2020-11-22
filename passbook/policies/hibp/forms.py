@@ -1,7 +1,6 @@
 """passbook HaveIBeenPwned Policy forms"""
 
 from django import forms
-from django.utils.translation import gettext as _
 
 from passbook.policies.forms import GENERAL_FIELDS
 from passbook.policies.hibp.models import HaveIBeenPwendPolicy
