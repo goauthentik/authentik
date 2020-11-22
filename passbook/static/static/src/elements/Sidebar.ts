@@ -122,15 +122,15 @@ export const ROOT_ITEMS: SidebarItem[] = [
         path: "/audit/audit/",
         condition: (sb: SideBar) => {
             return sb.user?.is_superuser!;
-        }
+        },
     },
     {
         name: "Administration",
         children: SIDEBAR_ITEMS,
         condition: (sb: SideBar) => {
             return sb.user?.is_superuser!;
-        }
-    }
+        },
+    },
 ];
 
 @customElement("pb-sidebar")
@@ -183,8 +183,8 @@ export class SideBar extends LitElement {
     constructor() {
         super();
         fetch("/api/v2beta/core/users/me/")
-            .then(r => r.json())
-            .then(r => this.user = <User>r);
+            .then((r) => r.json())
+            .then((r) => (this.user = <User>r));
         this.activePath = window.location.hash.slice(1, Infinity);
         window.addEventListener("hashchange", (e) => {
             this.activePath = window.location.hash.slice(1, Infinity);
@@ -196,7 +196,9 @@ export class SideBar extends LitElement {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand pb-brand">
                     <img src="${this.brandLogo}" alt="passbook icon" />
-                    ${this.brandTitle ? html`<span>${this.brandTitle}</span>` : ""}
+                    ${this.brandTitle
+                        ? html`<span>${this.brandTitle}</span>`
+                        : ""}
                 </div>
             </a>
         </li>`;
@@ -204,10 +206,10 @@ export class SideBar extends LitElement {
 
     renderItem(item: SidebarItem): TemplateResult {
         if (item.condition) {
-           const result = item.condition(this);
-           if (!result) {
-               return html``;
-           }
+            const result = item.condition(this);
+            if (!result) {
+                return html``;
+            }
         }
         return html` <li
             class="pf-c-nav__item ${item.children

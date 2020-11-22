@@ -97,17 +97,19 @@ export class SiteShell extends LitElement {
 
     render() {
         return html` ${this.loading
-                ? html` <div class="pf-l-bullseye">
-                      <div class="pf-l-bullseye__item">
-                          <span
-                              class="pf-c-spinner pf-m-xl"
-                              role="progressbar"
-                              aria-valuetext="Loading..."
-                          >
-                              <span class="pf-c-spinner__clipper"></span>
-                              <span class="pf-c-spinner__lead-ball"></span>
-                              <span class="pf-c-spinner__tail-ball"></span>
-                          </span>
+                ? html`<div class="pf-c-backdrop">
+                      <div class="pf-l-bullseye">
+                          <div class="pf-l-bullseye__item">
+                              <span
+                                  class="pf-c-spinner pf-m-xl"
+                                  role="progressbar"
+                                  aria-valuetext="Loading..."
+                              >
+                                  <span class="pf-c-spinner__clipper"></span>
+                                  <span class="pf-c-spinner__lead-ball"></span>
+                                  <span class="pf-c-spinner__tail-ball"></span>
+                              </span>
+                          </div>
                       </div>
                   </div>`
                 : ""}

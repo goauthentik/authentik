@@ -11,11 +11,10 @@ import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css"
 const PRIMARY_CLASS = "pf-m-primary";
 const SUCCESS_CLASS = "pf-m-success";
 const ERROR_CLASS = "pf-m-danger";
-const PROGRESS_CLASS ="pf-m-in-progress";
+const PROGRESS_CLASS = "pf-m-in-progress";
 
 @customElement("pb-action-button")
 export class ActionButton extends LitElement {
-
     @property()
     url: string = "";
 
@@ -23,7 +22,7 @@ export class ActionButton extends LitElement {
     isRunning = false;
 
     static get styles() {
-        return [GlobalsStyle, ButtonStyle, SpinnerStyle]
+        return [GlobalsStyle, ButtonStyle, SpinnerStyle];
     }
 
     setLoading() {
@@ -68,7 +67,10 @@ export class ActionButton extends LitElement {
     }
 
     render() {
-        return html`<button class="pf-c-button pf-m-progress ${this.classList}" @click=${() => this.callAction()}>
+        return html`<button
+            class="pf-c-button pf-m-progress ${this.classList}"
+            @click=${() => this.callAction()}
+        >
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
                       <span
