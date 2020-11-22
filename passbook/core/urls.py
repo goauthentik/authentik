@@ -1,7 +1,7 @@
 """passbook URL Configuration"""
 from django.urls import path
 
-from passbook.core.views import impersonate, overview, user, shell
+from passbook.core.views import impersonate, overview, shell, user
 
 urlpatterns = [
     # User views

@@ -620,6 +620,57 @@ paths:
       tags:
         - core
     parameters: []
+  /core/users/me/:
+    get:
+      operationId: core_users_me
+      description: Get information about current user
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+      tags:
+        - core
+    parameters: []
   /core/users/{id}/:
     get:
       operationId: core_users_read
@@ -6564,6 +6615,10 @@ definitions:
         type: string
         format: email
         maxLength: 254
+      avatar:
+        title: Avatar
+        type: string
+        readOnly: true
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:
