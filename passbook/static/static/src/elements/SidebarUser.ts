@@ -50,7 +50,7 @@ export class SidebarUser extends LitElement {
         }
         return html`
             <a
-                href="/-/user/"
+                href="#/-/user/"
                 class="pf-c-nav__link user-avatar"
                 id="user-settings"
             >

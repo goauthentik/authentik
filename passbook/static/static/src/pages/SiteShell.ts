@@ -10,10 +10,11 @@ import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.c
 export class SiteShell extends LitElement {
     @property()
     set url(value: string) {
-        if (window.location.hash === "" && value !== undefined) {
-            window.location.hash = `#${value}`;
-        }
+        this._url = value;
+        this.loadContent();
     }
+
+    _url?: string;
 
     @property()
     loading: boolean = false;
@@ -39,19 +40,12 @@ export class SiteShell extends LitElement {
         ];
     }
 
-    constructor() {
-        super();
-        this.loadContent();
-        window.addEventListener("hashchange", (e) => this.loadContent());
-    }
-
     loadContent() {
-        let url = window.location.hash.slice(1, Infinity);
-        if (url === "") {
+        if (!this._url) {
             return;
         }
         this.loading = true;
-        fetch(url)
+        fetch(this._url)
             .then((r) => r.text())
             .then((t) => {
                 this.querySelector("[slot=body]")!.innerHTML = t;
@@ -86,7 +80,7 @@ export class SiteShell extends LitElement {
                         const qs = new URLSearchParams(
                             <any>(<unknown>formData)
                         ).toString();
-                        window.location.hash = `#${url}?${qs}`;
+                        window.location.hash = `#${this._url}?${qs}`;
                     });
                 });
                 setTimeout(() => {
