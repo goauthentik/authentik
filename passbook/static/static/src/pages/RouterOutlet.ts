@@ -11,6 +11,10 @@ import PF from "@patternfly/patternfly/patternfly.css";
 import PFAddons from "@patternfly/patternfly/patternfly-addons.css";
 // @ts-ignore
 import PBGlobal from "../../passbook/passbook.css";
+// @ts-ignore
+import CodeMirrorStyle from "codemirror/lib/codemirror.css";
+// @ts-ignore
+import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 export interface Route {
     url: RegExp;
@@ -39,7 +43,7 @@ export class RouterOutlet extends LitElement {
     defaultUrl?: string;
 
     static get styles() {
-        return [PF, PFAddons, PBGlobal];
+        return [PF, PFAddons, PBGlobal, CodeMirrorStyle, CodeMirrorTheme];
     }
 
     constructor() {

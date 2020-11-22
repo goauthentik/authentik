@@ -40,7 +40,11 @@ export class SidebarBrand extends LitElement {
     render() {
         return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
-                <img src="${this.brandLogo}" alt="passbook icon" />
+                <img
+                    src="${this.brandLogo}"
+                    alt="passbook icon"
+                    loading="lazy"
+                />
                 ${this.brandTitle ? html`<span>${this.brandTitle}</span>` : ""}
             </div>
         </a>`;

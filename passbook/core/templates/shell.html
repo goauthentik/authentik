@@ -6,12 +6,6 @@
 {% load passbook_is_active %}
 {% load passbook_utils %}
 
-{% block head %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static 'node_modules/codemirror/theme/monokai.css' %}">
-{% endblock %}
-
 {% block page_content %}
 <pb-sidebar class="pf-c-page__sidebar" brandLogo="{{ config.passbook.branding.logo }}" {% if config.passbook.branding.title_show %} brandTitle="{{ config.passbook.branding.title }}" {% endif %}>
 </pb-sidebar>
