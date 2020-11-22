@@ -83,19 +83,18 @@ export class ModalButton extends LitElement {
                 form.addEventListener("submit", (e) => {
                     e.preventDefault();
                     let formData = new FormData(form);
-                    fetch(
-                        this.href ? this.href : form.action,
-                        {
-                            method: form.method,
-                            body: formData,
-                        }
-                    )
+                    fetch(this.href ? this.href : form.action, {
+                        method: form.method,
+                        body: formData,
+                    })
                         .then((response) => {
                             return response.text();
                         })
                         .then((data) => {
                             if (data.indexOf("csrfmiddlewaretoken") !== -1) {
-                                this.querySelector("[slot=modal]")!.innerHTML = data;
+                                this.querySelector(
+                                    "[slot=modal]"
+                                )!.innerHTML = data;
                                 this.updateHandlers();
                             } else {
                                 this.open = false;

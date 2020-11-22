@@ -1,17 +1,19 @@
 import { getCookie } from "../utils";
 import { updateMessages } from "./Messages";
-import { customElement, html, LitElement, property } from "lit-element";
+import { css, customElement, html, LitElement, property } from "lit-element";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 // @ts-ignore
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
-
-const PRIMARY_CLASS = "pf-m-primary";
-const SUCCESS_CLASS = "pf-m-success";
-const ERROR_CLASS = "pf-m-danger";
-const PROGRESS_CLASS = "pf-m-in-progress";
+import {
+    ColorStyles,
+    ERROR_CLASS,
+    PRIMARY_CLASS,
+    PROGRESS_CLASS,
+    SUCCESS_CLASS,
+} from "../constants";
 
 @customElement("pb-action-button")
 export class ActionButton extends LitElement {
@@ -22,7 +24,7 @@ export class ActionButton extends LitElement {
     isRunning = false;
 
     static get styles() {
-        return [GlobalsStyle, ButtonStyle, SpinnerStyle];
+        return [GlobalsStyle, ButtonStyle, SpinnerStyle, ColorStyles];
     }
 
     setLoading() {

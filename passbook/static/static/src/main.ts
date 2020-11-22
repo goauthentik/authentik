@@ -9,6 +9,7 @@ import "./elements/Dropdown";
 import "./elements/FetchFillSlot";
 import "./elements/Messages";
 import "./elements/ModalButton";
+import "./elements/TokenCopyButton";
 import "./elements/Tabs";
 import "./pages/SiteShell";
 import "./pages/FlowShellCard";

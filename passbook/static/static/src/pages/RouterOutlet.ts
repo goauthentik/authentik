@@ -15,6 +15,7 @@ import PBGlobal from "../../passbook/passbook.css";
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
+import { ColorStyles } from "../constants";
 
 export interface Route {
     url: RegExp;
@@ -43,7 +44,14 @@ export class RouterOutlet extends LitElement {
     defaultUrl?: string;
 
     static get styles() {
-        return [PF, PFAddons, PBGlobal, CodeMirrorStyle, CodeMirrorTheme];
+        return [
+            PF,
+            PFAddons,
+            PBGlobal,
+            CodeMirrorStyle,
+            CodeMirrorTheme,
+            ColorStyles,
+        ];
     }
 
     constructor() {
