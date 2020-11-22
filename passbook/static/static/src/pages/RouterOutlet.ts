@@ -9,6 +9,8 @@ import {
 import PF from "@patternfly/patternfly/patternfly.css";
 // @ts-ignore
 import PFAddons from "@patternfly/patternfly/patternfly-addons.css";
+// @ts-ignore
+import PBGlobal from "../../passbook/passbook.css";
 
 export interface Route {
     url: RegExp;
@@ -37,7 +39,7 @@ export class RouterOutlet extends LitElement {
     defaultUrl?: string;
 
     static get styles() {
-        return [PF, PFAddons];
+        return [PF, PFAddons, PBGlobal];
     }
 
     constructor() {
