@@ -10,7 +10,7 @@ import PF from "@patternfly/patternfly/patternfly.css";
 // @ts-ignore
 import PFAddons from "@patternfly/patternfly/patternfly-addons.css";
 // @ts-ignore
-import PBGlobal from "../../passbook/passbook.css";
+import PBGlobal from "../passbook.css";
 // @ts-ignore
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
