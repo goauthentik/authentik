@@ -22,7 +22,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: |
-                $(go list -f {{.Target}} github.com/go-swagger/go-swagger/cmd/swagger) generate client -f ../swagger.yaml -A passbook -t pkg/
+                swagger generate client -f ../swagger.yaml -A passbook -t pkg/
               workingDirectory: 'proxy/'
           - task: PublishPipelineArtifact@1
             inputs:
