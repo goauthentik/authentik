@@ -22,7 +22,7 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <div class="pf-c-dropdown">
+                    <pb-dropdown class="pf-c-dropdown">
                         <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                             <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                             <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -30,16 +30,22 @@
                         <ul class="pf-c-dropdown__menu" hidden>
                             {% for type, name in types.items %}
                             <li>
-                                <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:outpost-service-connection-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                    {{ name|verbose_name }}<br>
-                                    <small>
-                                        {{ name|doc }}
-                                    </small>
-                                </a>
+                                <pb-modal-button href="{% url 'passbook_admin:outpost-service-connection-create' %}?type={{ type }}">
+                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                        {{ name|verbose_name }}<br>
+                                        <small>
+                                            {{ name|doc }}
+                                        </small>
+                                    </button>
+                                    <div slot="modal"></div>
+                                </pb-modal-button>
                             </li>
                             {% endfor %}
                         </ul>
-                    </div>
+                    </pb-dropdown>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -80,8 +86,18 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:outpost-service-connection-update' pk=sc.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:outpost-service-connection-delete' pk=sc.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-service-connection-update' pk=sc.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:outpost-service-connection-delete' pk=sc.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -109,7 +125,7 @@
                     {% trans 'Currently no service connections exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <div class="pf-c-dropdown">
+                <pb-dropdown class="pf-c-dropdown">
                     <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                         <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                         <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -117,16 +133,19 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <a class="pf-c-dropdown__menu-item" href="{% url 'passbook_admin:outpost-service-connection-create' %}?type={{ type }}&back={{ request.get_full_path }}">
-                                {{ name|verbose_name }}<br>
-                                <small>
-                                    {{ name|doc }}
-                                </small>
-                            </a>
+                            <pb-modal-button href="{% url 'passbook_admin:outpost-service-connection-create' %}?type={{ type }}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    {{ name|verbose_name }}<br>
+                                    <small>
+                                        {{ name|doc }}
+                                    </small>
+                                </button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
+                </pb-dropdown>
             </div>
         </div>
         {% endif %}

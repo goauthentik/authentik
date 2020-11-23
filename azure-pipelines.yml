@@ -261,7 +261,7 @@ stages:
               script: |
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
-                pipenv install --dev
+                pipenv install --dev --python python3.9
           - task: DockerCompose@0
             displayName: Run ChromeDriver
             inputs:

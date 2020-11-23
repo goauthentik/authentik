@@ -155,7 +155,7 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Create token for user and return link"""
         super().get(request, *args, **kwargs)
-        token, _ = Token.objects.get_or_create(
+        token, __ = Token.objects.get_or_create(
             identifier="password-reset-temp", user=self.object
         )
         querystring = urlencode({"token": token.key})

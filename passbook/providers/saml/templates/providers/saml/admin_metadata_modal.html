@@ -1,24 +1,22 @@
 {% load i18n %}
-{% load static %}
-<button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="saml-{{ provider.pk }}">{% trans 'View Metadata' %}</button>
 
-<div class="pf-c-backdrop" id="saml-{{ provider.pk }}" hidden>
-    <div class="pf-l-bullseye">
-        <div class="pf-c-modal-box pf-m-lg" role="dialog">
-            <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-            <div class="pf-c-modal-box__header">
-                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Metadata' %}</h1>
-            </div>
-            <div class="pf-c-modal-box__body" id="modal-description">
-                <form method="post">
-                    <textarea class="codemirror" readonly data-cm-mode="xml">{{ metadata }}</textarea>
-                </form>
-            </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <button data-modal-close class="pf-c-button pf-m-primary" type="button">{% trans 'Close' %}</button>
-            </footer>
+<pb-modal-button>
+    <button slot="trigger" class="pf-c-button pf-m-tertiary">
+        {% trans 'View Metadata' %}
+    </button>
+    <div slot="modal">
+        <div class="pf-c-modal-box__header">
+            <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Metadata' %}</h1>
         </div>
+        <div class="pf-c-modal-box__body" id="modal-description">
+            <form method="post">
+                <pb-codemirror mode="xml"><textarea class="pf-c-form-control"
+                        readonly>{{ metadata }}</textarea></pb-codemirror>
+            </form>
+        </div>
+        <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <a class="pf-c-button pf-m-primary">{% trans 'Close' %}</a>
+        </footer>
     </div>
-</div>
+</pb-modal-button>
+

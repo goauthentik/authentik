@@ -89,7 +89,7 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_core:overview")},
+            {"type": "redirect", "to": reverse("passbook_core:shell")},
         )
 
         self.stage.continue_flow_without_invitation = False
@@ -128,5 +128,5 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("passbook_core:overview")},
+            {"type": "redirect", "to": reverse("passbook_core:shell")},
         )

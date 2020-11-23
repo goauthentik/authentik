@@ -1,9 +1,5 @@
-{% extends "user/base.html" %}
-
-{% load passbook_utils %}
 {% load i18n %}
 
-{% block page %}
 <div class="pf-c-card">
     <div class="pf-c-card__header pf-c-title pf-m-md">
         {% trans "Static One-Time Passwords" %}
@@ -33,4 +29,3 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}

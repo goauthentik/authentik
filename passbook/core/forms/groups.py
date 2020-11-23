@@ -1,6 +1,5 @@
 """passbook Core Group forms"""
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from passbook.admin.fields import CodeMirrorWidget, YAMLField
 from passbook.core.models import Group, User
@@ -12,7 +11,6 @@ class GroupForm(forms.ModelForm):
     members = forms.ModelMultipleChoiceField(
         User.objects.all(),
         required=False,
-        widget=FilteredSelectMultiple("users", False),
     )
 
     def __init__(self, *args, **kwargs):

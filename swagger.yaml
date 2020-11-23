@@ -620,6 +620,39 @@ paths:
       tags:
         - core
     parameters: []
+  /core/users/me/:
+    get:
+      operationId: core_users_me
+      description: Get information about current user
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+        - name: offset
+          in: query
+          description: The initial index from which to return the results.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: User Serializer
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - core
+    parameters: []
   /core/users/{id}/:
     get:
       operationId: core_users_read
@@ -3591,6 +3624,22 @@ paths:
         description: A unique integer value identifying this SAML Provider.
         required: true
         type: integer
+  /root/config/:
+    get:
+      operationId: root_config_list
+      description: Retrive public configuration options
+      parameters: []
+      responses:
+        '200':
+          description: Serialize passbook Config into DRF Object
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/Config'
+      tags:
+        - root
+    parameters: []
   /root/messages/:
     get:
       operationId: root_messages_list
@@ -6564,6 +6613,10 @@ definitions:
         type: string
         format: email
         maxLength: 254
+      avatar:
+        title: Avatar
+        type: string
+        readOnly: true
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:
@@ -7522,6 +7575,18 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+  Config:
+    description: Serialize passbook Config into DRF Object
+    type: object
+    properties:
+      branding_logo:
+        title: Branding logo
+        type: string
+        readOnly: true
+      branding_title:
+        title: Branding title
+        type: string
+        readOnly: true
   Message:
     description: Serialize Django Message into DRF Object
     type: object

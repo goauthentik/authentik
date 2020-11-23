@@ -4,7 +4,6 @@ from types import MethodType
 from typing import Any, Callable, Iterator, List
 
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -27,7 +26,6 @@ class PromptStageForm(forms.ModelForm):
         fields = ["name", "fields", "validation_policies"]
         widgets = {
             "name": forms.TextInput(),
-            "fields": FilteredSelectMultiple(_("prompts"), False),
         }
 
 

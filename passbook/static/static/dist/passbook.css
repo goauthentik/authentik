@@ -1,10 +1,17 @@
 @font-face {
-    font-family: 'DIN 1451 Std';
-    src: url('fonts/DINEngschriftStd.woff2') format('woff2'),
-        url('fonts/DINEngschriftStd.woff') format('woff');
+    font-family: "DIN 1451 Std";
+    src: url("assets/fonts/DINEngschriftStd.woff2") format("woff2"),
+        url("assets/fonts/DINEngschriftStd.woff") format("woff");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+}
+
+html {
+    --pf-c-nav__link--PaddingTop: 0.5rem;
+    --pf-c-nav__link--PaddingRight: 0.5rem;
+    --pf-c-nav__link--PaddingBottom: 0.5rem;
+    --pf-c-nav__link--PaddingLeft: 0.5rem;
 }
 
 .pb-brand {
@@ -13,7 +20,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: .5em;
+    margin-right: 0.5em;
     color: var(--pf-global--Color--light-200);
 }
 
@@ -23,11 +30,11 @@
 
 .pb-brand > img {
     max-height: 68px;
-    margin-right: .5em;
+    margin-right: 0.5em;
 }
 
 .pf-c-background-image::before {
-    background-image: url('./flow_background.jpg');
+    background-image: url("assets/images/flow_background.jpg");
     background-position: center;
 }
 
@@ -52,16 +59,6 @@
     max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
     height: 100%;
     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-}
-
-.pf-m-success {
-    color: var(--pf-global--success-color--100);
-}
-.pf-m-warning {
-    color: var(--pf-global--warning-color--100);
-}
-.pf-m-danger {
-    color: var(--pf-global--danger-color--100);
 }
 
 /* fix multiple selects height */
@@ -91,7 +88,8 @@ select[multiple] {
     flex: 1 1;
 }
 
-.selector-available, .selector-chosen {
+.selector-available,
+.selector-chosen {
     width: auto;
     flex: 1 1;
     display: flex;
@@ -114,7 +112,8 @@ select[multiple] {
     list-style: none;
 }
 
-.selector-add, .selector-remove {
+.selector-add,
+.selector-remove {
     width: 20px;
     height: 20px;
     background-size: 20px auto;
@@ -128,7 +127,8 @@ select[multiple] {
     background-position: 0 -80px;
 }
 
-a.selector-chooseall, a.selector-clearall {
+a.selector-chooseall,
+a.selector-clearall {
     align-self: center;
 }
 
@@ -145,7 +145,8 @@ a.selector-chooseall, a.selector-clearall {
     margin-bottom: 0;
 }
 
-.stacked .selector-available, .stacked .selector-chosen {
+.stacked .selector-available,
+.stacked .selector-chosen {
     width: auto;
 }
 
@@ -161,7 +162,8 @@ a.selector-chooseall, a.selector-clearall {
     padding: 3px;
 }
 
-.stacked .selector-add, .stacked .selector-remove {
+.stacked .selector-add,
+.stacked .selector-remove {
     background-size: 20px auto;
 }
 
@@ -181,7 +183,8 @@ a.selector-chooseall, a.selector-clearall {
     background-position: 0 -20px;
 }
 
-.help-tooltip, .selector .help-icon {
+.help-tooltip,
+.selector .help-icon {
     display: none;
 }
 
@@ -212,7 +215,8 @@ form .form-row p.datetime {
     overflow: auto;
 }
 
-.selector-add, .selector-remove {
+.selector-add,
+.selector-remove {
     width: 16px;
     height: 16px;
     display: block;
@@ -222,11 +226,13 @@ form .form-row p.datetime {
     opacity: 0.3;
 }
 
-.active.selector-add, .active.selector-remove {
+.active.selector-add,
+.active.selector-remove {
     opacity: 1;
 }
 
-.active.selector-add:hover, .active.selector-remove:hover {
+.active.selector-add:hover,
+.active.selector-remove:hover {
     cursor: pointer;
 }
 
@@ -234,7 +240,8 @@ form .form-row p.datetime {
     background: url(../admin/img/selector-icons.svg) 0 -96px no-repeat;
 }
 
-.active.selector-add:focus, .active.selector-add:hover {
+.active.selector-add:focus,
+.active.selector-add:hover {
     background-position: 0 -112px;
 }
 
@@ -284,14 +291,19 @@ input[data-is-monospace] {
     white-space: pre-wrap;
 }
 
-/* Table buttons (Don't wrap, align) */
-.pb-table-action {
-    white-space: nowrap !important;
-    padding: var(--pf-c-table--cell--PaddingTop) var(--pf-c-table--cell--PaddingRight) var(--pf-c-table--cell--PaddingBottom) var(--pf-c-table--cell--PaddingLeft) !important;
-}
-
 /* Aggregate Cards */
 .pb-aggregate-card {
     font-size: var(--pf-global--icon--FontSize--lg);
     text-align: center;
+}
+
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+.pf-c-content h1 i {
+    font-style: normal;
+}
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
 }

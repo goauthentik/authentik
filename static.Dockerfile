@@ -40,6 +40,7 @@ FROM node as npm-builder
 
 COPY --from=static-build /app/static/src /static/src
 COPY --from=static-build /app/static/rollup.config.js /static/rollup.config.js
+COPY --from=static-build /app/static/tsconfig.json /static/tsconfig.json
 COPY --from=static-build /app/static/package.json /static/package.json
 COPY --from=static-build /app/static/package-lock.json /static/package-lock.json
 
@@ -50,4 +51,4 @@ FROM nginx
 COPY --from=static-build /app/static /usr/share/nginx/html/static
 COPY --from=static-build /app/static/robots.txt /usr/share/nginx/html/robots.txt
 COPY --from=npm-builder /static/node_modules /usr/share/nginx/html/static/node_modules
-COPY --from=npm-builder /static/passbook/passbook.js* /usr/share/nginx/html/static/passbook/
+COPY --from=npm-builder /static/dist/* /usr/share/nginx/html/static/dist/

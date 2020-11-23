@@ -144,7 +144,7 @@ class FlowExecutorView(View):
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "passbook_core:overview"
+            NEXT_ARG_NAME, "passbook_core:shell"
         )
         self.cancel()
         return redirect_with_qs(next_param)
@@ -248,7 +248,7 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
-        return redirect("passbook_core:overview")
+        return redirect("passbook_core:shell")
 
 
 class ToDefaultFlow(View):

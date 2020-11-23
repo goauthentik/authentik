@@ -1,6 +1,5 @@
 """passbook administration forms"""
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from passbook.flows.models import Flow, FlowDesignation
@@ -54,7 +53,5 @@ class PasswordStageForm(forms.ModelForm):
         fields = ["name", "backends", "configure_flow", "failed_attempts_before_cancel"]
         widgets = {
             "name": forms.TextInput(),
-            "backends": FilteredSelectMultiple(
-                _("backends"), False, choices=get_authentication_backends()
-            ),
+            "backends": forms.SelectMultiple(get_authentication_backends()),
         }

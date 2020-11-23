@@ -4,16 +4,8 @@ from typing import Optional
 
 
 @dataclass
-class UIUserSettings:
-    """Dataclass for Stage and Source's user_settings"""
-
-    name: str
-    url: str
-
-
-@dataclass
 class UILoginButton:
-    """Dataclass for Source's ui_ui_login_button"""
+    """Dataclass for Source's ui_login_button"""
 
     # Name, ran through i18n
     name: str

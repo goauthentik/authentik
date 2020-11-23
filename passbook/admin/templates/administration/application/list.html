@@ -20,7 +20,15 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <a href="{% url 'passbook_admin:application-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                    <pb-modal-button href="{% url 'passbook_admin:application-create' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            {% trans 'Create' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -29,6 +37,7 @@
             <thead>
                 <tr role="row">
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Slug' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Provider' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Provider Type' %}</th>
                     <th role="cell"></th>
@@ -46,6 +55,9 @@
                         </div>
                     </th>
                     <td role="cell">
+                        <code>{{ application.slug }}</span>
+                    </td>
+                    <td role="cell">
                         <span>
                             {{ application.get_provider }}
                         </span>
@@ -56,8 +68,18 @@
                         </span>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:application-update' pk=application.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:application-delete' pk=application.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:application-update' pk=application.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:application-delete' pk=application.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -85,7 +107,12 @@
                     {% trans 'Currently no applications exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <a href="{% url 'passbook_admin:application-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                <pb-modal-button href="{% url 'passbook_admin:application-create' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        {% trans 'Create' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
             </div>
         </div>
         {% endif %}

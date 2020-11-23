@@ -19,8 +19,15 @@
         <div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
                 <div class="pf-c-toolbar__bulk-select">
-                    <a href="{% url 'passbook_admin:stage-binding-create' %}?back={{ request.get_full_path }}"
-                        class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                    <pb-modal-button href="{% url 'passbook_admin:stage-binding-create' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            {% trans 'Create' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -73,8 +80,18 @@
                             </div>
                         </td>
                         <td>
-                            <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-binding-update' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                            <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-binding-delete' pk=binding.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                            <pb-modal-button href="{% url 'passbook_admin:stage-binding-update' pk=binding.pk %}">
+                                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                    {% trans 'Update' %}
+                                </button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
+                            <pb-modal-button href="{% url 'passbook_admin:stage-binding-delete' pk=binding.pk %}">
+                                <button slot="trigger" class="pf-c-button pf-m-danger">
+                                    {% trans 'Delete' %}
+                                </button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -94,7 +111,12 @@
                 <div class="pf-c-empty-state__body">
                     {% trans 'Currently no flow-stage bindings exist. Click the button below to create one.' %}
                 </div>
-                <a href="{% url 'passbook_admin:certificatekeypair-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                <pb-modal-button href="{% url 'passbook_admin:stage-binding-create' %}">
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        {% trans 'Create' %}
+                    </button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
             </div>
         </div>
         {% endif %}

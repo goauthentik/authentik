@@ -33,7 +33,7 @@ class ImpersonateInitView(View):
 
         Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
 
-        return redirect("passbook_core:overview")
+        return redirect("passbook_core:shell")
 
 
 class ImpersonateEndView(View):
@@ -46,7 +46,7 @@ class ImpersonateEndView(View):
             or SESSION_IMPERSONATE_ORIGINAL_USER not in request.session
         ):
             LOGGER.debug("Can't end impersonation", user=request.user)
-            return redirect("passbook_core:overview")
+            return redirect("passbook_core:shell")
 
         original_user = request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
 
@@ -55,4 +55,4 @@ class ImpersonateEndView(View):
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
 
-        return redirect("passbook_core:overview")
+        return redirect("passbook_core:shell")

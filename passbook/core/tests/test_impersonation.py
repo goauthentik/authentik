@@ -23,13 +23,13 @@ class TestImpersonation(TestCase):
             )
         )
 
-        response = self.client.get(reverse("passbook_core:overview"))
+        response = self.client.get(reverse("passbook_api:user-me"))
         self.assertIn(self.other_user.username, response.content.decode())
         self.assertNotIn(self.pbadmin.username, response.content.decode())
 
         self.client.get(reverse("passbook_core:impersonate-end"))
 
-        response = self.client.get(reverse("passbook_core:overview"))
+        response = self.client.get(reverse("passbook_api:user-me"))
         self.assertNotIn(self.other_user.username, response.content.decode())
         self.assertIn(self.pbadmin.username, response.content.decode())
 
@@ -43,7 +43,7 @@ class TestImpersonation(TestCase):
             )
         )
 
-        response = self.client.get(reverse("passbook_core:overview"))
+        response = self.client.get(reverse("passbook_api:user-me"))
         self.assertIn(self.other_user.username, response.content.decode())
         self.assertNotIn(self.pbadmin.username, response.content.decode())
 
@@ -52,4 +52,4 @@ class TestImpersonation(TestCase):
         self.client.force_login(self.other_user)
 
         response = self.client.get(reverse("passbook_core:impersonate-end"))
-        self.assertRedirects(response, reverse("passbook_core:overview"))
+        self.assertRedirects(response, reverse("passbook_core:shell"))

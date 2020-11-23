@@ -1,4 +1,5 @@
 """passbook e2e testing utilities"""
+import json
 from functools import wraps
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
@@ -17,11 +18,13 @@ from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog import get_logger
 
+from passbook.core.api.users import UserSerializer
 from passbook.core.models import User
 
 
@@ -99,6 +102,20 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def url(self, view, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)
+
+    def shell_url(self, view, **kwargs) -> str:
+        """same as self.url() but show URL in shell"""
+        return f"{self.live_server_url}/#{reverse(view, kwargs=kwargs)}"
+
+    def assert_user(self, expected_user: User):
+        """Check users/me API and assert it matches expected_user"""
+        self.driver.get(self.url("passbook_api:user-me") + "?format=json")
+        user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
+        user = UserSerializer(data=json.loads(user_json))
+        user.is_valid()
+        self.assertEqual(user["username"].value, expected_user.username)
+        self.assertEqual(user["name"].value, expected_user.name)
+        self.assertEqual(user["email"].value, expected_user.email)
 
     def apply_default_data(self):
         """apply objects created by migrations after tables have been truncated"""

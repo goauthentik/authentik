@@ -133,11 +133,10 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
         # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.assertNotEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )
@@ -185,11 +184,10 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
         # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.assertNotEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )
@@ -235,11 +233,10 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
         # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.assertNotEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), ""
         )

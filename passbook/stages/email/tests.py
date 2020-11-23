@@ -117,7 +117,7 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {"type": "redirect", "to": reverse("passbook_core:overview")},
+                {"type": "redirect", "to": reverse("passbook_core:shell")},
             )
 
             session = self.client.session

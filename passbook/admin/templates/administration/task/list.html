@@ -16,6 +16,13 @@
 </section>
 <section class="pf-c-page__main-section pf-m-no-padding-mobile">
     <div class="pf-c-card">
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                    {% trans 'Refresh' %}
+                </button>
+            </div>
+        </div>
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
@@ -64,9 +71,9 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <button is="action-button" class="pf-c-button pf-m-primary" url="{% url 'passbook_api:admin_system_tasks-retry' pk=task.task_name %}">
+                        <pb-action-button url="{% url 'passbook_api:admin_system_tasks-retry' pk=task.task_name %}">
                             {% trans 'Retry Task' %}
-                        </button>
+                        </pb-action-button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -36,15 +36,15 @@ class CodeMirrorWidget(forms.Textarea):
     # CodeMirror mode to enable
     mode: str
 
+    template_name = "fields/codemirror.html"
+
     def __init__(self, *args, mode="yaml", **kwargs):
         super().__init__(*args, **kwargs)
         self.mode = mode
 
     def render(self, *args, **kwargs):
         attrs = kwargs.setdefault("attrs", {})
-        attrs.setdefault("class", "")
-        attrs["class"] += " codemirror"
-        attrs["data-cm-mode"] = self.mode
+        attrs["mode"] = self.mode
         return super().render(*args, **kwargs)
 
 

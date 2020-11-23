@@ -21,7 +21,15 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <a href="{% url 'passbook_admin:stage-prompt-create' %}?back={{ request.get_full_path }}" class="pf-c-button pf-m-primary" type="button">{% trans 'Create' %}</a>
+                    <pb-modal-button href="{% url 'passbook_admin:stage-prompt-create' %}">
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            {% trans 'Create' %}
+                        </button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -63,18 +71,28 @@
                     <td role="cell">
                         <ul>
                             {% for flow in prompt.flow_set.all %}
-                            <li><a href="{% url 'passbook_admin:flow-update' pk=flow.pk %}">{{ flow.slug }}</a></li>
+                            <li>{{ flow.slug }}</li>
                             {% empty %}
                             <li>-</li>
                             {% endfor %}
                         </ul>
                     </td>
                     <td>
-                        <a class="pf-c-button pf-m-secondary" href="{% url 'passbook_admin:stage-prompt-update' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Edit' %}</a>
-                        <a class="pf-c-button pf-m-danger" href="{% url 'passbook_admin:stage-prompt-delete' pk=prompt.pk %}?back={{ request.get_full_path }}">{% trans 'Delete' %}</a>
+                        <pb-modal-button href="{% url 'passbook_admin:stage-prompt-update' pk=prompt.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                {% trans 'Update' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'passbook_admin:stage-prompt-delete' pk=prompt.pk %}">
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                                {% trans 'Delete' %}
+                            </button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
                         {% get_links prompt as links %}
                         {% for name, href in links.items %}
-                        <a class="pf-c-button pf-m-tertiary" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                        <a class="pf-c-button pf-m-tertiary pb-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
                         {% endfor %}
                     </td>
                 </tr>

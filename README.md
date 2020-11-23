@@ -13,9 +13,9 @@ passbook is an open-source Identity Provider focused on flexibility and versatil
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/website/docs/installation/docker-compose/)
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://passbook.beryju.org/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org/website/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://passbook.beryju.org/docs/installation/kubernetes/)
 
 ## Screenshots
 

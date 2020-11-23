@@ -1,0 +1,309 @@
+@font-face {
+    font-family: "DIN 1451 Std";
+    src: url("assets/fonts/DINEngschriftStd.woff2") format("woff2"),
+        url("assets/fonts/DINEngschriftStd.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html {
+    --pf-c-nav__link--PaddingTop: 0.5rem;
+    --pf-c-nav__link--PaddingRight: 0.5rem;
+    --pf-c-nav__link--PaddingBottom: 0.5rem;
+    --pf-c-nav__link--PaddingLeft: 0.5rem;
+}
+
+.pb-brand {
+    font-family: "DIN 1451 Std";
+    font-size: 4em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 0.5em;
+    color: var(--pf-global--Color--light-200);
+}
+
+.pb-brand > a:hover {
+    text-decoration: none;
+}
+
+.pb-brand > img {
+    max-height: 68px;
+    margin-right: 0.5em;
+}
+
+.pf-c-background-image::before {
+    background-image: url("assets/images/flow_background.jpg");
+    background-position: center;
+}
+
+/* Fix patternfly sidebar and header with open Modal */
+.pf-c-page__sidebar {
+    z-index: 0;
+}
+
+.pf-c-page__header {
+    z-index: 0;
+}
+
+/* Ensure card is displayed on small screens */
+.pf-c-login__main {
+    display: block;
+}
+
+/* login page's icons */
+.pf-c-login__main-footer-links-item-link img {
+    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+    width: 100%;
+    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+    height: 100%;
+    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+}
+
+/* fix multiple selects height */
+select[multiple] {
+    height: initial;
+}
+
+/* Selector */
+.selector {
+    display: flex;
+    width: 100%;
+    height: 45vh;
+}
+
+.selector .selector-filter {
+    display: flex;
+    align-items: center;
+}
+
+.selector .selector-filter label {
+    margin: 0 8px 0 0;
+}
+
+.selector .selector-filter input {
+    width: auto;
+    min-height: 0;
+    flex: 1 1;
+}
+
+.selector-available,
+.selector-chosen {
+    width: auto;
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.selector select {
+    width: 100%;
+    flex: 1 0 auto;
+    margin-bottom: 5px;
+}
+
+.selector ul.selector-chooser {
+    width: 26px;
+    height: 52px;
+    padding: 2px 0;
+    margin: auto 15px;
+    border-radius: 20px;
+    transform: translateY(-10px);
+    list-style: none;
+}
+
+.selector-add,
+.selector-remove {
+    width: 20px;
+    height: 20px;
+    background-size: 20px auto;
+}
+
+.selector-add {
+    background-position: 0 -120px;
+}
+
+.selector-remove {
+    background-position: 0 -80px;
+}
+
+a.selector-chooseall,
+a.selector-clearall {
+    align-self: center;
+}
+
+.stacked {
+    flex-direction: column;
+    max-width: 480px;
+}
+
+.stacked > * {
+    flex: 0 1 auto;
+}
+
+.stacked select {
+    margin-bottom: 0;
+}
+
+.stacked .selector-available,
+.stacked .selector-chosen {
+    width: auto;
+}
+
+.stacked ul.selector-chooser {
+    width: 52px;
+    height: 26px;
+    padding: 0 2px;
+    margin: 15px auto;
+    transform: none;
+}
+
+.stacked .selector-chooser li {
+    padding: 3px;
+}
+
+.stacked .selector-add,
+.stacked .selector-remove {
+    background-size: 20px auto;
+}
+
+.stacked .selector-add {
+    background-position: 0 -40px;
+}
+
+.stacked .active.selector-add {
+    background-position: 0 -60px;
+}
+
+.stacked .selector-remove {
+    background-position: 0 0;
+}
+
+.stacked .active.selector-remove {
+    background-position: 0 -20px;
+}
+
+.help-tooltip,
+.selector .help-icon {
+    display: none;
+}
+
+form .form-row p.datetime {
+    width: 100%;
+}
+
+.datetime input {
+    width: 50%;
+    max-width: 120px;
+}
+
+.datetime span {
+    font-size: 13px;
+}
+
+.datetime .timezonewarning {
+    display: block;
+    font-size: 11px;
+    color: #999;
+}
+
+.datetimeshortcuts {
+    color: #ccc;
+}
+
+.inline-group {
+    overflow: auto;
+}
+
+.selector-add,
+.selector-remove {
+    width: 16px;
+    height: 16px;
+    display: block;
+    text-indent: -3000px;
+    overflow: hidden;
+    cursor: default;
+    opacity: 0.3;
+}
+
+.active.selector-add,
+.active.selector-remove {
+    opacity: 1;
+}
+
+.active.selector-add:hover,
+.active.selector-remove:hover {
+    cursor: pointer;
+}
+
+.selector-add {
+    background: url(../admin/img/selector-icons.svg) 0 -96px no-repeat;
+}
+
+.active.selector-add:focus,
+.active.selector-add:hover {
+    background-position: 0 -112px;
+}
+
+.selector-remove {
+    background: url(../admin/img/selector-icons.svg) 0 -64px no-repeat;
+}
+
+input[data-is-monospace] {
+    font-family: monospace;
+}
+
+/* Form with user */
+.form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-control-static .left {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: var(--pf-global--spacer--xs);
+}
+.form-control-static a {
+    padding-top: var(--pf-global--spacer--xs);
+    padding-bottom: var(--pf-global--spacer--xs);
+    line-height: var(--pf-global--spacer--xl);
+}
+
+/* Static OTP Tokens, passbook.stages.otp_static */
+.pb-otp-tokens {
+    list-style: circle;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    margin-left: var(--pf-global--spacer--xs);
+}
+.pb-otp-tokens li {
+    font-size: var(--pf-global--FontSize--2xl);
+    font-family: monospace;
+}
+
+/* Fix pre elements within alerts */
+.pf-c-alert pre {
+    white-space: pre-wrap;
+}
+
+/* Aggregate Cards */
+.pb-aggregate-card {
+    font-size: var(--pf-global--icon--FontSize--lg);
+    text-align: center;
+}
+
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+.pf-c-content h1 i {
+    font-style: normal;
+}
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
+}

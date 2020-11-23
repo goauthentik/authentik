@@ -52,7 +52,7 @@ class PasswordStageView(FormView, StageView):
     """Authentication stage which authenticates against django's AuthBackend"""
 
     form_class = PasswordForm
-    template_name = "stages/password/backend.html"
+    template_name = "stages/password/flow-form.html"
 
     def get_form(self, form_class=None) -> PasswordForm:
         form = super().get_form(form_class=form_class)

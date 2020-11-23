@@ -1,9 +1,5 @@
-{% extends "user/base.html" %}
-
-{% load passbook_utils %}
 {% load i18n %}
 
-{% block page %}
 <div class="pf-c-card">
     <div class="pf-c-card__header pf-c-title pf-m-md">
         {% blocktrans with source_name=source.name %}
@@ -26,4 +22,3 @@
         {% endif %}
     </div>
 </div>
-{% endblock %}

@@ -1,54 +1,50 @@
 {% load i18n %}
 
-<button class="pf-c-button pf-m-tertiary" data-target="modal" data-modal="oauth2-{{ provider.pk }}">{% trans 'View Setup URLs' %}</button>
-
-<div class="pf-c-backdrop" id="oauth2-{{ provider.pk }}" hidden>
-    <div class="pf-l-bullseye">
-        <div class="pf-c-modal-box pf-m-lg" role="dialog">
-            <button data-modal-close class="pf-c-button pf-m-plain" type="button" aria-label="Close dialog">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </button>
-            <div class="pf-c-modal-box__header">
-                <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Setup URLs' %}</h1>
-            </div>
-            <div class="pf-c-modal-box__body" id="modal-description">
-                <form class="pf-c-form">
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'OpenID Configuration URL' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ provider_info }}" />
-                    </div>
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'OpenID Configuration Issuer' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ issuer }}" />
-                    </div>
-                    <hr>
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'Authorize URL' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ authorize }}" />
-                    </div>
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'Token URL' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ token }}" />
-                    </div>
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="help-text-simple-form-name">
-                            <span class="pf-c-form__label-text">{% trans 'Userinfo Endpoint' %}</span>
-                        </label>
-                        <input class="pf-c-form-control" readonly type="text" value="{{ userinfo }}" />
-                    </div>
-                </form>
-            </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <button data-modal-close class="pf-c-button pf-m-primary" type="button">{% trans 'Close' %}</button>
-            </footer>
+<pb-modal-button>
+    <button slot="trigger" class="pf-c-button pf-m-tertiary">
+        {% trans 'View Setup URLs' %}
+    </button>
+    <div slot="modal">
+        <div class="pf-c-modal-box__header">
+            <h1 class="pf-c-title pf-m-2xl" id="modal-title">{% trans 'Setup URLs' %}</h1>
         </div>
+        <div class="pf-c-modal-box__body" id="modal-description">
+            <form class="pf-c-form">
+                <div class="pf-c-form__group">
+                    <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <span class="pf-c-form__label-text">{% trans 'OpenID Configuration URL' %}</span>
+                    </label>
+                    <input class="pf-c-form-control" readonly type="text" value="{{ provider_info }}" />
+                </div>
+                <div class="pf-c-form__group">
+                    <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <span class="pf-c-form__label-text">{% trans 'OpenID Configuration Issuer' %}</span>
+                    </label>
+                    <input class="pf-c-form-control" readonly type="text" value="{{ issuer }}" />
+                </div>
+                <hr>
+                <div class="pf-c-form__group">
+                    <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <span class="pf-c-form__label-text">{% trans 'Authorize URL' %}</span>
+                    </label>
+                    <input class="pf-c-form-control" readonly type="text" value="{{ authorize }}" />
+                </div>
+                <div class="pf-c-form__group">
+                    <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <span class="pf-c-form__label-text">{% trans 'Token URL' %}</span>
+                    </label>
+                    <input class="pf-c-form-control" readonly type="text" value="{{ token }}" />
+                </div>
+                <div class="pf-c-form__group">
+                    <label class="pf-c-form__label" for="help-text-simple-form-name">
+                        <span class="pf-c-form__label-text">{% trans 'Userinfo Endpoint' %}</span>
+                    </label>
+                    <input class="pf-c-form-control" readonly type="text" value="{{ userinfo }}" />
+                </div>
+            </form>
+        </div>
+        <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <a class="pf-c-button pf-m-primary">{% trans 'Close' %}</a>
+        </footer>
     </div>
-</div>
+</pb-modal-button>

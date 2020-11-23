@@ -17,7 +17,7 @@
                 <div class="pf-c-pagination__nav-control pf-m-prev">
                     <a class="pf-c-button pf-m-plain"
                         {% if page_obj.has_previous %}
-                        href="?{% query_transform page=page_obj.previous_page_number %}"
+                        href="{{ request.path }}?{% query_transform page=page_obj.previous_page_number %}"
                         {% else %}
                         disabled
                         {% endif %}
@@ -28,7 +28,7 @@
                 <div class="pf-c-pagination__nav-control pf-m-next">
                     <a class="pf-c-button pf-m-plain"
                         {% if page_obj.has_next %}
-                        href="?{% query_transform page=page_obj.next_page_number %}"
+                        href="{{ request.path }}?{% query_transform page=page_obj.next_page_number %}"
                         {% else %}
                         disabled
                         {% endif %}

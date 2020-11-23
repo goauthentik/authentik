@@ -140,14 +140,10 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.NAME, "username").send_keys("foo")
         self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
 
-        # Wait until we've loaded the user info page
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        # Wait until we've logged in
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            "foo",
-        )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
         )
@@ -202,7 +198,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
         # We're logged in at the end of this, log out and re-login
-        self.driver.find_element(By.ID, "logout").click()
+        self.driver.get(self.url("passbook_flows:default-invalidation"))
 
         self.wait.until(
             ec.presence_of_element_located(
@@ -226,13 +222,10 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        # Wait until we've logged in
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            "foo",
-        )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
         )
@@ -322,13 +315,10 @@ class TestSourceOAuth1(SeleniumTestCase):
 
         # Wait until we've loaded the user info page
         sleep(2)
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
+        # Wait until we've logged in
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         self.driver.get(self.url("passbook_core:user-settings"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            "example-user",
-        )
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"),
             "example-user",
