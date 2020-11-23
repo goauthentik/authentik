@@ -197,5 +197,6 @@ local.env.yml
 **/charts/*.tgz
 
 # Selenium Screenshots
-selenium_screenshots/**
+selenium_screenshots/
 backups/
+media/

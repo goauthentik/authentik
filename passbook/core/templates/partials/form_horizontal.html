@@ -57,6 +57,26 @@
                 {% endif %}
             </div>
         </div>
+    {% elif field.field.widget|fieldtype == "ClearableFileInput" %}
+        <div class="pf-c-form__group-label">
+            <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
+                <span class="pf-c-form__label-text">{{ field.label }}</span>
+                {% if field.field.required %}
+                <span class="pf-c-form__label-required" aria-hidden="true">&#42;</span>
+                {% endif %}
+            </label>
+        </div>
+        <div class="pf-c-form__group-control">
+            <div class="c-form__horizontal-group">
+                <div class="pf-c-file-upload">
+                    <div class="pf-c-file-upload__file-select">
+                        <div class="pf-c-input-group">
+                            {{ field|css_class:"pf-c-form-control" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% else %}
         <div class="pf-c-form__group-label">
             <label class="pf-c-form__label" for="{{ field.name }}-{{ forloop.counter0 }}">
