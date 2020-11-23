@@ -58,7 +58,7 @@ export class SidebarUser extends LitElement {
                 <span>${this.user?.username}</span>
             </a>
             <a
-                href="/-/default/invalidation/"
+                href="/flows/-/default/invalidation/"
                 class="pf-c-nav__link user-logout"
                 id="logout"
             >
