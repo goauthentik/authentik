@@ -1,4 +1,5 @@
 """User API Views"""
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -35,6 +36,7 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    @swagger_auto_schema(responses={200: UserSerializer(many=False)})
     @action(detail=False)
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:

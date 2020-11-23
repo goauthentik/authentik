@@ -647,27 +647,9 @@ paths:
           type: integer
       responses:
         '200':
-          description: ''
+          description: User Serializer
           schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/User'
+            $ref: '#/definitions/User'
       tags:
         - core
     parameters: []
@@ -3642,6 +3624,22 @@ paths:
         description: A unique integer value identifying this SAML Provider.
         required: true
         type: integer
+  /root/config/:
+    get:
+      operationId: root_config_list
+      description: Retrive public configuration options
+      parameters: []
+      responses:
+        '200':
+          description: Serialize passbook Config into DRF Object
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/Config'
+      tags:
+        - root
+    parameters: []
   /root/messages/:
     get:
       operationId: root_messages_list
@@ -7577,6 +7575,18 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+  Config:
+    description: Serialize passbook Config into DRF Object
+    type: object
+    properties:
+      branding_logo:
+        title: Branding logo
+        type: string
+        readOnly: true
+      branding_title:
+        title: Branding title
+        type: string
+        readOnly: true
   Message:
     description: Serialize Django Message into DRF Object
     type: object

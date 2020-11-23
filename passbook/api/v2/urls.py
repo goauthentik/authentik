@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from passbook.admin.api.overview import AdministrationOverviewViewSet
 from passbook.admin.api.overview_metrics import AdministrationMetricsViewSet
 from passbook.admin.api.tasks import TaskViewSet
+from passbook.api.v2.config import ConfigsViewSet
 from passbook.api.v2.messages import MessagesViewSet
 from passbook.audit.api import EventViewSet
 from passbook.core.api.applications import ApplicationViewSet
@@ -57,6 +58,7 @@ from passbook.stages.user_write.api import UserWriteStageViewSet
 router = routers.DefaultRouter()
 
 router.register("root/messages", MessagesViewSet, basename="messages")
+router.register("root/config", ConfigsViewSet, basename="configs")
 
 router.register(
     "admin/overview", AdministrationOverviewViewSet, basename="admin_overview"
