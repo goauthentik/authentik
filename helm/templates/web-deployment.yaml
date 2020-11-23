@@ -90,6 +90,9 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
                   key: "postgresql-password"
+          volumeMounts:
+            - name: passbook-uploads
+              mountPath: /media
           ports:
             - name: http
               containerPort: 8000
@@ -115,3 +118,7 @@ spec:
             limits:
               cpu: 300m
               memory: 500M
+      volumes:
+        - name: passbook-uploads
+          persistentVolumeClaim:
+            claimName: {{ include "passbook.fullname" . }}-uploads
