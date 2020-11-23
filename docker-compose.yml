@@ -25,6 +25,8 @@ services:
       PASSBOOK_REDIS__HOST: redis
       PASSBOOK_POSTGRESQL__HOST: postgresql
       PASSBOOK_POSTGRESQL__PASSWORD: ${PG_PASS}
+    volumes:
+      - ./media:/media
     ports:
       - 8000
     networks:
@@ -60,11 +62,13 @@ services:
     labels:
       traefik.enable: 'true'
       traefik.docker.network: internal
-      traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/robots.txt`, `/favicon.ico`)
+      traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/media`, `/robots.txt`, `/favicon.ico`)
       traefik.http.routers.static-router.tls: 'true'
       traefik.http.routers.static-router.service: static-service
       traefik.http.services.static-service.loadbalancer.healthcheck.path: /
       traefik.http.services.static-service.loadbalancer.server.port: '80'
+    volumes:
+      - ./media:/media
   traefik:
     image: traefik:2.3
     command:

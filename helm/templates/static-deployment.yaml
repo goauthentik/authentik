@@ -48,3 +48,10 @@ spec:
             limits:
               cpu: 20m
               memory: 20M
+          volumeMounts:
+            - name: passbook-uploads
+              mountPath: /usr/share/nginx/html/media
+      volumes:
+        - name: passbook-uploads
+          persistentVolumeClaim:
+            claimName: {{ include "passbook.fullname" . }}-uploads

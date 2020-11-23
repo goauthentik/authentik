@@ -1,9 +1,10 @@
 """passbook URL Configuration"""
 from django.urls import path
 
-from passbook.core.views import impersonate, overview, shell, user
+from passbook.core.views import impersonate, library, shell, user
 
 urlpatterns = [
+    path("", shell.ShellView.as_view(), name="shell"),
     # User views
     path("-/user/", user.UserSettingsView.as_view(), name="user-settings"),
     path("-/user/tokens/", user.TokenListView.as_view(), name="user-tokens"),
@@ -22,9 +23,8 @@ urlpatterns = [
         user.TokenDeleteView.as_view(),
         name="user-tokens-delete",
     ),
-    # Overview
-    path("", shell.ShellView.as_view(), name="shell"),
-    path("-/overview/", overview.OverviewView.as_view(), name="overview"),
+    # Libray
+    path("-/overview/", library.LibraryView.as_view(), name="overview"),
     # Impersonation
     path(
         "-/impersonation/<int:user_id>/",

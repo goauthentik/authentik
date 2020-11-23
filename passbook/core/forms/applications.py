@@ -23,14 +23,13 @@ class ApplicationForm(forms.ModelForm):
             "slug",
             "provider",
             "meta_launch_url",
-            "meta_icon_url",
+            "meta_icon",
             "meta_description",
             "meta_publisher",
         ]
         widgets = {
             "name": forms.TextInput(),
             "meta_launch_url": forms.TextInput(),
-            "meta_icon_url": forms.TextInput(),
             "meta_publisher": forms.TextInput(),
         }
         help_texts = {
@@ -44,7 +43,7 @@ class ApplicationForm(forms.ModelForm):
         field_classes = {"provider": GroupedModelChoiceField}
         labels = {
             "meta_launch_url": _("Launch URL"),
-            "meta_icon_url": _("Icon URL"),
+            "meta_icon": _("Icon"),
             "meta_description": _("Description"),
             "meta_publisher": _("Publisher"),
         }

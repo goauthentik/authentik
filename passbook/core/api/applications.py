@@ -22,7 +22,7 @@ class ApplicationSerializer(ModelSerializer):
             "slug",
             "provider",
             "meta_launch_url",
-            "meta_icon_url",
+            "meta_icon",
             "meta_description",
             "meta_publisher",
             "policies",

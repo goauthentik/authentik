@@ -171,7 +171,8 @@ class Application(PolicyBindingModel):
     )
 
     meta_launch_url = models.URLField(default="", blank=True)
-    meta_icon_url = models.TextField(default="", blank=True)
+    # For template applications, this can be set to /static/passbook/applications/*
+    meta_icon = models.FileField(upload_to="application-icons/", default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 

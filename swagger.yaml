@@ -6498,9 +6498,11 @@ definitions:
         type: string
         format: uri
         maxLength: 200
-      meta_icon_url:
-        title: Meta icon url
+      meta_icon:
+        title: Meta icon
         type: string
+        readOnly: true
+        format: uri
       meta_description:
         title: Meta description
         type: string

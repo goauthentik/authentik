@@ -4,6 +4,14 @@ title: Kubernetes installation
 
 For a mid to high-load installation, Kubernetes is recommended. passbook is installed using a helm-chart.
 
+To install passbook using the helm chart, run these commands:
+
+```
+helm repo add passbook https://docker.beryju.org/chartrepo/passbook
+helm repo update
+helm repo install passbook/passbook --devel -f values.yaml
+```
+
 This installation automatically applies database migrations on startup. After the installation is done, you can use `pbadmin` as username and password.
 
 ```yaml
