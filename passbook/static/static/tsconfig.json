@@ -6,7 +6,7 @@
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
         "sourceMap": true,
-        "target": "es2017",
+        "target": "esnext",
         "module": "es2015",
         "moduleResolution": "node",
         "lib": ["es2017", "dom", "dom.iterable"]

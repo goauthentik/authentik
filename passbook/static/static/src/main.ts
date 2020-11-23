@@ -1,3 +1,5 @@
+import 'construct-style-sheets-polyfill';
+
 import "./legacy.js";
 
 import "./elements/ActionButton";
