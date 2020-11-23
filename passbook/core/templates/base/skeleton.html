@@ -6,17 +6,17 @@
 
 <html lang="en">
     <head>
-        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff2' %}" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="{% static 'passbook/fonts/DINEngschriftStd.woff' %}" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="{% static 'dist/assets/fonts/DINEngschriftStd.woff2' %}" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="{% static 'dist/assets/fonts/DINEngschriftStd.woff' %}" as="font" type="font/woff" crossorigin>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{% block title %}{% trans title|default:config.passbook.branding.title %}{% endblock %}</title>
-        <link rel="icon" type="image/png" href="{% static 'passbook/logo.png' %}">
-        <link rel="shortcut icon" type="image/png" href="{% static 'passbook/logo.png' %}">
+        <link rel="icon" type="image/png" href="{% static 'dist/assets/images/logo.png' %}">
+        <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/images/logo.png' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'src/passbook.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/passbook.css' %}">
         <script src="{% static 'dist/main.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}

@@ -7,7 +7,11 @@ import typescript from "@rollup/plugin-typescript";
 import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
 
-const resources = [{ src: "src/index.html", dest: "dist" }];
+const resources = [
+    { src: "src/index.html", dest: "dist" },
+    { src: 'src/passbook.css', dest: 'dist' },
+    { src: 'src/assets/*', dest: 'dist/assets' },
+];
 
 export default [
     {
