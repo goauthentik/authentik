@@ -7,7 +7,7 @@
 {% load passbook_utils %}
 
 {% block page_content %}
-<pb-sidebar class="pf-c-page__sidebar" brandLogo="{{ config.passbook.branding.logo }}" {% if config.passbook.branding.title_show %} brandTitle="{{ config.passbook.branding.title }}" {% endif %}>
+<pb-sidebar class="pf-c-page__sidebar">
 </pb-sidebar>
 <pb-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/-/overview/">
 </pb-router-outlet>

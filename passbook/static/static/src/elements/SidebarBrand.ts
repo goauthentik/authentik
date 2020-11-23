@@ -3,14 +3,12 @@ import { css, customElement, html, LitElement, property } from "lit-element";
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+import { Config, getConfig } from "../api/config";
 
 @customElement("pb-sidebar-brand")
 export class SidebarBrand extends LitElement {
     @property()
-    brandLogo?: string;
-
-    @property()
-    brandTitle?: string;
+    config?: Config;
 
     static get styles() {
         return [
@@ -37,15 +35,22 @@ export class SidebarBrand extends LitElement {
         ];
     }
 
+    constructor() {
+        super();
+        getConfig().then((c) => (this.config = c));
+    }
+
     render() {
         return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
                 <img
-                    src="${this.brandLogo}"
+                    src="${this.config?.branding_logo}"
                     alt="passbook icon"
                     loading="lazy"
                 />
-                ${this.brandTitle ? html`<span>${this.brandTitle}</span>` : ""}
+                ${this.config?.branding_title
+                    ? html`<span>${this.config.branding_title}</span>`
+                    : ""}
             </div>
         </a>`;
     }

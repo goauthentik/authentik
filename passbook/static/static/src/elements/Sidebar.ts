@@ -138,12 +138,6 @@ export class Sidebar extends LitElement {
     activePath: string;
 
     @property()
-    brandLogo?: string;
-
-    @property()
-    brandTitle?: string;
-
-    @property()
     user?: User;
 
     static get styles() {
@@ -222,10 +216,7 @@ export class Sidebar extends LitElement {
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
                     <li class="pf-c-nav__item">
-                        <pb-sidebar-brand
-                            .brandLogo=${this.brandLogo}
-                            .brandTitle=${this.brandTitle}
-                        ></pb-sidebar-brand>
+                        <pb-sidebar-brand></pb-sidebar-brand>
                     </li>
                     ${SIDEBAR_ITEMS.map((i) => this.renderItem(i))}
                     <li class="pf-c-nav__item pf-c-nav__item-bottom">
