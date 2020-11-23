@@ -8,6 +8,7 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from passbook.core.models import User
 from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
 from passbook.stages.email.models import EmailStage, EmailTemplates
 from passbook.stages.identification.models import IdentificationStage
@@ -100,25 +101,13 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        self.wait.until(ec.presence_of_element_located((By.LINK_TEXT, "foo")))
-        self.driver.find_element(By.LINK_TEXT, "foo").click()
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pb-sidebar")))
+        self.driver.get(self.shell_url("passbook_core:user-settings"))
 
-        self.wait_for_url(self.url("passbook_core:user-settings"))
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            "foo",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
-            "some name",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
-            "foo@bar.baz",
-        )
+        user = User.objects.get(username="foo")
+        self.assertEqual(user.username, "foo")
+        self.assertEqual(user.name, "some name")
+        self.assertEqual(user.email, "foo@bar.baz")
 
     @retry()
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
@@ -207,21 +196,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         # We're now logged in
-        self.wait.until(ec.presence_of_element_located((By.ID, "user-settings")))
-        self.driver.find_element(By.ID, "user-settings").click()
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pb-sidebar")))
+        self.driver.get(self.shell_url("passbook_core:user-settings"))
 
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            "foo",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_name").get_attribute("value"),
-            "some name",
-        )
-        self.assertEqual(
-            self.driver.find_element(By.ID, "id_email").get_attribute("value"),
-            "foo@bar.baz",
-        )
+        self.assert_user(User.objects.get(username="foo"))

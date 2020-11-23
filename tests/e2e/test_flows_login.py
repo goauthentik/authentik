@@ -21,7 +21,5 @@ class TestFlowsLogin(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            USER().username,
-        )
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.assert_user(USER())

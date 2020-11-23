@@ -38,16 +38,20 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
-        self.driver.find_element(By.ID, "user-settings").click()
-        self.wait_for_url(self.url("passbook_core:user-settings"))
-        self.driver.find_element(By.LINK_TEXT, "Change password").click()
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
+
+        self.driver.get(
+            self.url(
+                "passbook_flows:configure",
+                stage_uuid=PasswordStage.objects.first().stage_uuid,
+            )
+        )
         self.driver.find_element(By.ID, "id_password").send_keys(new_password)
         self.driver.find_element(By.ID, "id_password_repeat").click()
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(new_password)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        self.wait_for_url(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
         # Because USER() is cached, we need to get the user manually here
         user = User.objects.get(username=USER().username)
         self.assertTrue(user.check_password(new_password))

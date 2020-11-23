@@ -13,6 +13,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
 from passbook.flows.models import Flow, FlowStageBinding
+from passbook.stages.otp_static.models import OTPStaticStage
+from passbook.stages.otp_time.models import OTPTimeStage
 from passbook.stages.otp_validate.models import OTPValidateStage
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
@@ -47,11 +49,8 @@ class TestFlowsOTP(SeleniumTestCase):
         totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
         self.driver.find_element(By.ID, "id_code").send_keys(totp.token())
         self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
-        self.wait_for_url(self.url("passbook_core:overview"))
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            USER().username,
-        )
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.assert_user(USER())
 
     @retry()
     def test_otp_totp_setup(self):
@@ -64,22 +63,18 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            USER().username,
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.assert_user(USER())
+
+        self.driver.get(
+            self.url(
+                "passbook_flows:configure",
+                stage_uuid=OTPTimeStage.objects.first().stage_uuid,
+            )
         )
-
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
-        self.driver.get(self.url("passbook_core:user-settings"))
-
-        self.driver.find_element(By.LINK_TEXT, "Time-based OTP").click()
 
         # Remember the current URL as we should end up back here
         destination_url = self.driver.current_url
-
-        self.driver.find_element(
-            By.CSS_SELECTOR, ".pf-c-card__body a.pf-c-button"
-        ).click()
 
         self.wait.until(ec.presence_of_element_located((By.ID, "qr")))
         otp_uri = self.driver.find_element(By.ID, "qr").get_attribute("data-otpuri")
@@ -111,23 +106,19 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.assertEqual(
-            self.driver.find_element(By.ID, "user-settings").text,
-            USER().username,
+        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.assert_user(USER())
+
+        self.driver.get(
+            self.url(
+                "passbook_flows:configure",
+                stage_uuid=OTPStaticStage.objects.first().stage_uuid,
+            )
         )
-
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-page__header").click()
-        self.driver.find_element(By.ID, "user-settings").click()
-        self.wait_for_url(self.url("passbook_core:user-settings"))
-
-        self.driver.find_element(By.LINK_TEXT, "Static OTP").click()
 
         # Remember the current URL as we should end up back here
         destination_url = self.driver.current_url
 
-        self.driver.find_element(
-            By.CSS_SELECTOR, ".pf-c-card__body a.pf-c-button"
-        ).click()
         token = self.driver.find_element(
             By.CSS_SELECTOR, ".pb-otp-tokens li:nth-child(1)"
         ).text
