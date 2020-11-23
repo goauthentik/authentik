@@ -1,10 +1,10 @@
 """passbook URL Configuration"""
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 from structlog import get_logger
-from django.conf.urls.static import static
 
 from passbook.core.views import error
 from passbook.lib.utils.reflection import get_apps
@@ -61,6 +61,10 @@ urlpatterns += [
 if settings.DEBUG:
     import debug_toolbar
 
-    urlpatterns = [
-        path("-/debug/", include(debug_toolbar.urls)),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + urlpatterns
+    urlpatterns = (
+        [
+            path("-/debug/", include(debug_toolbar.urls)),
+        ]
+        + static("/media/", document_root=settings.MEDIA_ROOT)
+        + urlpatterns
+    )

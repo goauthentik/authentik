@@ -13,7 +13,7 @@
         {% if applications %}
         <div class="pf-l-gallery pf-m-gutter">
             {% for app in applications %}
-            <a href="{{ app.get_launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact">
+            <a href="{{ app.get_launch_url }}" class="pf-c-card pf-m-hoverable pf-m-compact pb-root-link">
                 <div class="pf-c-card__header">
                     {% if app.meta_icon %}
                     <img class="app-icon pf-c-avatar" src="{{ app.meta_icon.url }}" alt="{% trans 'Application Icon' %}">

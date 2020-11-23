@@ -6,17 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('passbook_core', '0014_auto_20201018_1158'),
+        ("passbook_core", "0014_auto_20201018_1158"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='application',
-            name='meta_icon_url',
+            model_name="application",
+            name="meta_icon_url",
         ),
         migrations.AddField(
-            model_name='application',
-            name='meta_icon',
-            field=models.FileField(blank=True, default='', upload_to='application-icons/'),
+            model_name="application",
+            name="meta_icon",
+            field=models.FileField(
+                blank=True, default="", upload_to="application-icons/"
+            ),
         ),
     ]
