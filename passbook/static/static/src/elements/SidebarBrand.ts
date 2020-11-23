@@ -41,7 +41,10 @@ export class SidebarBrand extends LitElement {
     }
 
     render() {
-        return html` <a href="#/" class="pf-c-page__header-brand-link">
+        if (!this.config) {
+            return html``;
+        }
+        return html` <a href="" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
                 <img
                     src="${this.config?.branding_logo}"
