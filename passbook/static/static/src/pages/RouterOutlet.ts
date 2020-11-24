@@ -19,22 +19,41 @@ import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
 import { ColorStyles } from "../constants";
 
-export interface Route {
+export class Route {
     url: RegExp;
-    element: TemplateResult;
+
+    private element?: TemplateResult;
+    private callback?: () => TemplateResult;
+
+    constructor(url: RegExp, element?: TemplateResult) {
+        this.url = url;
+        this.element = element;
+    }
+
+    redirect(to: string): Route {
+        this.callback = () => {
+            console.log(`passbook/router: redirecting ${to}`);
+            window.location.hash = `#${to}`;
+            return html``;
+        };
+        return this;
+    }
+
+    render(): TemplateResult {
+        if (this.callback) {
+            return this.callback();
+        }
+        if (this.element) {
+            return this.element;
+        }
+        throw new Error("Route does not have callback or element");
+    }
 }
 
 export const ROUTES: Route[] = [
-    {
-        url: new RegExp("^overview$"),
-        element: html`<pb-site-shell url="/overview/"
-            ><div slot="body"></div
-        ></pb-site-shell>`,
-    },
-    // {
-    //     url: new RegExp("^applications$"),
-    //     element: html`<h1>test2</h1>`,
-    // },
+    // Prevent infinite Shell loops
+    new Route(new RegExp("^/$")).redirect("/-/overview/"),
+    new Route(new RegExp("^/applications/$"), html`<h1>test</h1>`),
 ];
 
 @customElement("pb-router-outlet")
@@ -73,27 +92,28 @@ export class RouterOutlet extends LitElement {
             window.location.hash = `#${activeUrl}`;
             return;
         }
+        let selectedRoute: Route | null = null;
         ROUTES.forEach((route) => {
-            let selectedRoute: Route | null = null;
             if (route.url.exec(activeUrl)) {
                 selectedRoute = route;
+                return;
             }
-            if (!selectedRoute) {
-                console.log(
-                    `passbook/router: route "${activeUrl}" not defined, defaulting to shell`
-                );
-                selectedRoute = {
-                    url: RegExp(""),
-                    element: html`<pb-site-shell url=${activeUrl}
-                        ><div slot="body"></div
-                    ></pb-site-shell>`,
-                };
-            }
-            this.activeRoute = selectedRoute;
         });
+        if (!selectedRoute) {
+            console.log(
+                `passbook/router: route "${activeUrl}" not defined, defaulting to shell`
+            );
+            selectedRoute = new Route(
+                RegExp(""),
+                html`<pb-site-shell url=${activeUrl}
+                    ><div slot="body"></div
+                ></pb-site-shell>`
+            );
+        }
+        this.activeRoute = selectedRoute;
     }
 
     render() {
-        return this.activeRoute?.element;
+        return this.activeRoute?.render();
     }
 }
