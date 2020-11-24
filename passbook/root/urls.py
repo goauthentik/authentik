@@ -65,6 +65,6 @@ if settings.DEBUG:
         [
             path("-/debug/", include(debug_toolbar.urls)),
         ]
-        + static("/media/", document_root=settings.MEDIA_ROOT)
+        + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
         + urlpatterns
     )

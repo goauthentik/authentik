@@ -339,7 +339,7 @@ if not DEBUG and _ERROR_REPORTING:
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = "/static/"
-MEDIA_URL = "/"
+MEDIA_URL = "/media/"
 
 
 structlog.configure_once(
