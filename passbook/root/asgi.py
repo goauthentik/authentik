@@ -87,7 +87,7 @@ class ASGILogger:
             if b"Content-Length" in headers:
                 self.content_length += int(headers.get(b"Content-Length", b"0"))
 
-            if message["type"] == "http.response.body" and not message["more_body"]:
+            if message["type"] == "http.response.body" and not message.get("more_body", None):
                 runtime = int((time() - self.start) * 10 ** 6)
                 self.log(runtime)
             await send(message)
