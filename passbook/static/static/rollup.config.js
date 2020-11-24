@@ -9,8 +9,8 @@ import copy from "rollup-plugin-copy";
 
 const resources = [
     { src: "src/index.html", dest: "dist" },
-    { src: 'src/passbook.css', dest: 'dist' },
-    { src: 'src/assets/*', dest: 'dist/assets' },
+    { src: "src/passbook.css", dest: "dist" },
+    { src: "src/assets/*", dest: "dist/assets" },
 ];
 
 export default [

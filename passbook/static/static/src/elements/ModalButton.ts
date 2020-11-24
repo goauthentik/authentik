@@ -95,9 +95,11 @@ export class ModalButton extends LitElement {
                                 this.querySelector(
                                     "[slot=modal]"
                                 )!.innerHTML = data;
+                                console.log(`passbook/modalbutton: re-showing form`);
                                 this.updateHandlers();
                             } else {
                                 this.open = false;
+                                console.log(`passbook/modalbutton: successful submit`);
                                 this.dispatchEvent(
                                     new CustomEvent("hashchange", {
                                         bubbles: true,

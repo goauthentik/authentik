@@ -1,4 +1,4 @@
-import 'construct-style-sheets-polyfill';
+import "construct-style-sheets-polyfill";
 
 import "./legacy.js";
 
