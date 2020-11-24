@@ -86,6 +86,7 @@ export class ModalButton extends LitElement {
                     fetch(this.href ? this.href : form.action, {
                         method: form.method,
                         body: formData,
+                        redirect: "manual",
                     })
                         .then((response) => {
                             return response.text();
