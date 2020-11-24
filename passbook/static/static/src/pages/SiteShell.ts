@@ -54,6 +54,14 @@ export class SiteShell extends LitElement {
         }
         this.loading = true;
         fetch(this._url)
+            .then((r) => {
+                if (r.ok) {
+                    return r;
+                }
+                console.log(`passbook/site-shell: Request failed ${this._url}`);
+                window.location.hash = "#/";
+                throw new Error("Request failed");
+            })
             .then((r) => r.text())
             .then((t) => {
                 this.querySelector("[slot=body]")!.innerHTML = t;
