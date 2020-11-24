@@ -29,7 +29,7 @@ class ServerErrorTemplateResponse(TemplateResponse, HttpResponseServerError):
 class BadRequestView(TemplateView):
     """Show Bad Request message"""
 
-    extra_context = {"card_title": "Bad Request"}
+    extra_context = {"title": "Bad Request"}
 
     response_class = BadRequestTemplateResponse
     template_name = "error/generic.html"
@@ -38,7 +38,7 @@ class BadRequestView(TemplateView):
 class ForbiddenView(TemplateView):
     """Show Forbidden message"""
 
-    extra_context = {"card_title": "Forbidden"}
+    extra_context = {"title": "Forbidden"}
 
     response_class = ForbiddenTemplateResponse
     template_name = "error/generic.html"
@@ -47,7 +47,7 @@ class ForbiddenView(TemplateView):
 class NotFoundView(TemplateView):
     """Show Not Found message"""
 
-    extra_context = {"card_title": "Not Found"}
+    extra_context = {"title": "Not Found"}
 
     response_class = NotFoundTemplateResponse
     template_name = "error/generic.html"
@@ -56,7 +56,7 @@ class NotFoundView(TemplateView):
 class ServerErrorView(TemplateView):
     """Show Server Error message"""
 
-    extra_context = {"card_title": "Server Error"}
+    extra_context = {"title": "Server Error"}
 
     response_class = ServerErrorTemplateResponse
     template_name = "error/generic.html"

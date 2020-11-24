@@ -1,10 +1,6 @@
 {% extends "base/skeleton.html" %}
 
-{% load static %}
 {% load i18n %}
-
-{% load passbook_is_active %}
-{% load passbook_utils %}
 
 {% block body %}
 <pb-messages url="{% url 'passbook_api:messages-list' %}"></pb-messages>
