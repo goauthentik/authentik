@@ -152,7 +152,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             sleep(0.5)
 
         state = outpost.state
-        self.assertTrue(len(state), 1)
+        self.assertEqual(len(state), 1)
         self.assertEqual(state[0].version, __version__)
 
         # Make sure to delete the outpost to remove the container
