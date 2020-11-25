@@ -36,6 +36,6 @@ def bad_request_message(
     return TemplateResponse(
         request,
         template,
-        {"message": message, "card_title": _(title)},
+        {"message": message, "title": _(title)},
         status=400,
     )
