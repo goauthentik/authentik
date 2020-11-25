@@ -22,8 +22,9 @@ export class SiteShell extends LitElement {
     static get styles() {
         return [
             css`
-                :host {
-                    position: relative;
+                :host,
+                ::slotted(*) {
+                    height: 100%;
                 }
                 :host .pf-l-bullseye {
                     position: absolute;

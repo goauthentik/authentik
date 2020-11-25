@@ -1,4 +1,5 @@
 import {
+    css,
     customElement,
     html,
     LitElement,
@@ -73,6 +74,11 @@ export class RouterOutlet extends LitElement {
             CodeMirrorStyle,
             CodeMirrorTheme,
             ColorStyles,
+            css`
+                :host {
+                    height: 100%;
+                }
+            `,
         ];
     }
 
@@ -105,9 +111,9 @@ export class RouterOutlet extends LitElement {
             );
             selectedRoute = new Route(
                 RegExp(""),
-                html`<pb-site-shell url=${activeUrl}
-                    ><div slot="body"></div
-                ></pb-site-shell>`
+                html`<pb-site-shell url=${activeUrl}>
+                    <div slot="body"></div>
+                </pb-site-shell>`
             );
         }
         this.activeRoute = selectedRoute;
