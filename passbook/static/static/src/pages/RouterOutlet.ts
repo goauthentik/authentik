@@ -26,7 +26,7 @@ export class Route {
 
     redirect(to: string): Route {
         this.callback = () => {
-            console.log(`passbook/router: redirecting ${to}`);
+            console.debug(`passbook/router: redirecting ${to}`);
             window.location.hash = `#${to}`;
             return html``;
         };
@@ -116,7 +116,9 @@ export class RouterOutlet extends LitElement {
         }
         let matchedRoute: RouteMatch | null = null;
         ROUTES.forEach((route) => {
-            console.debug(`passbook/router: matching ${activeUrl} against ${route.url}`);
+            console.debug(
+                `passbook/router: matching ${activeUrl} against ${route.url}`
+            );
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);

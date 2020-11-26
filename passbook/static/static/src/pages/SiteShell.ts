@@ -59,7 +59,9 @@ export class SiteShell extends LitElement {
                 if (r.ok) {
                     return r;
                 }
-                console.log(`passbook/site-shell: Request failed ${this._url}`);
+                console.debug(
+                    `passbook/site-shell: Request failed ${this._url}`
+                );
                 window.location.hash = "#/";
                 throw new Error("Request failed");
             })

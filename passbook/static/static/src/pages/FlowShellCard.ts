@@ -1,5 +1,4 @@
 import { LitElement, html, customElement, property } from "lit-element";
-import { updateMessages } from "../elements/Messages";
 
 enum ResponseType {
     redirect = "redirect",
@@ -53,11 +52,10 @@ export class FlowShellCard extends LitElement {
                 this.flowBody = data.body;
                 await this.requestUpdate();
                 this.checkAutofocus();
-                updateMessages();
                 this.loadFormCode();
                 this.setFormSubmitHandlers();
             default:
-                console.log(
+                console.debug(
                     `passbook/flows: unexpected data type ${data.type}`
                 );
                 break;
@@ -83,14 +81,16 @@ export class FlowShellCard extends LitElement {
         for (let index = 0; index < form.elements.length; index++) {
             const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
-                console.log(
+                console.debug(
                     "passbook/flows: Found Form action URL in form elements, not changing form action."
                 );
                 return false;
             }
         }
         form.action = this.flowBodyUrl;
-        console.log(`passbook/flows: updated form.action ${this.flowBodyUrl}`);
+        console.debug(
+            `passbook/flows: updated form.action ${this.flowBodyUrl}`
+        );
         return true;
     }
 
@@ -102,13 +102,13 @@ export class FlowShellCard extends LitElement {
 
     setFormSubmitHandlers() {
         this.querySelectorAll("form").forEach((form) => {
-            console.log(
+            console.debug(
                 `passbook/flows: Checking for autosubmit attribute ${form}`
             );
             this.checkAutosubmit(form);
-            console.log(`passbook/flows: Setting action for form ${form}`);
+            console.debug(`passbook/flows: Setting action for form ${form}`);
             this.updateFormAction(form);
-            console.log(`passbook/flows: Adding handler for form ${form}`);
+            console.debug(`passbook/flows: Adding handler for form ${form}`);
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 let formData = new FormData(form);

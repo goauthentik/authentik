@@ -1,5 +1,4 @@
 import { getCookie } from "../utils";
-import { updateMessages } from "./Messages";
 import { css, customElement, html, LitElement, property } from "lit-element";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
@@ -56,8 +55,6 @@ export class ActionButton extends LitElement {
         this.classList.remove(PROGRESS_CLASS);
         this.classList.replace(PRIMARY_CLASS, statusClass);
         this.requestUpdate();
-        // Trigger messages to update
-        updateMessages();
         setTimeout(() => {
             this.classList.replace(statusClass, PRIMARY_CLASS);
             this.requestUpdate();

@@ -10,7 +10,6 @@ import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 // @ts-ignore
 import fa from "@fortawesome/fontawesome-free/css/solid.css";
 
-import { updateMessages } from "../elements/Messages";
 import { convertToSlug } from "../utils";
 
 @customElement("pb-modal-button")
@@ -96,13 +95,13 @@ export class ModalButton extends LitElement {
                                 this.querySelector(
                                     "[slot=modal]"
                                 )!.innerHTML = data;
-                                console.log(
+                                console.debug(
                                     `passbook/modalbutton: re-showing form`
                                 );
                                 this.updateHandlers();
                             } else {
                                 this.open = false;
-                                console.log(
+                                console.debug(
                                     `passbook/modalbutton: successful submit`
                                 );
                                 this.dispatchEvent(
@@ -110,7 +109,6 @@ export class ModalButton extends LitElement {
                                         bubbles: true,
                                     })
                                 );
-                                updateMessages();
                             }
                         })
                         .catch((e) => {
