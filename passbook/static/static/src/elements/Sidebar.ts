@@ -13,7 +13,7 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 
-import { me, User } from "../api/user";
+import { User } from "../api/user";
 
 export interface SidebarItem {
     name: string;
@@ -166,7 +166,7 @@ export class Sidebar extends LitElement {
 
     constructor() {
         super();
-        me().then((u) => (this.user = u));
+        User.me().then((u) => (this.user = u));
         this.activePath = window.location.hash.slice(1, Infinity);
         window.addEventListener("hashchange", (e) => {
             this.activePath = window.location.hash.slice(1, Infinity);

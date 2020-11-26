@@ -3,7 +3,7 @@ import { css, customElement, html, LitElement, property } from "lit-element";
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
-import { Config, getConfig } from "../api/config";
+import { Config } from "../api/config";
 
 @customElement("pb-sidebar-brand")
 export class SidebarBrand extends LitElement {
@@ -37,7 +37,7 @@ export class SidebarBrand extends LitElement {
 
     constructor() {
         super();
-        getConfig().then((c) => (this.config = c));
+        Config.get().then((c) => (this.config = c));
     }
 
     render() {

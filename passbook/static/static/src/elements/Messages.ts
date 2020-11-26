@@ -54,7 +54,7 @@ export class Messages extends LitElement {
             console.debug(`passbook/messages: closed ws connection: ${e}`);
             setTimeout(() => {
                 console.debug(
-                    `passbook/messages: reconnecting ws in ${this.retryDelay}`
+                    `passbook/messages: reconnecting ws in ${this.retryDelay}ms`
                 );
                 this.connect();
             }, this.retryDelay);
@@ -67,7 +67,7 @@ export class Messages extends LitElement {
         this.messageSocket.addEventListener("error", (e) => {
             console.warn(`passbook/messages: error ${e}`);
             this.retryDelay = this.retryDelay * 2;
-        })
+        });
     }
 
     /* Fetch messages which were stored in the session.
@@ -90,9 +90,7 @@ export class Messages extends LitElement {
     }
 
     renderMessage(message: Message) {
-        const container = <HTMLElement>(
-            this.querySelector(".pf-c-alert-group")!
-        );
+        const container = <HTMLElement>this.querySelector(".pf-c-alert-group")!;
         const id = ID("pb-message");
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">

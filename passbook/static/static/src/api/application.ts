@@ -1,3 +1,5 @@
+import { DefaultClient } from "./client";
+
 export class Application {
     pk?: string;
     name?: string;
@@ -11,8 +13,6 @@ export class Application {
     policies?: string[];
 
     static get(slug: string): Promise<Application> {
-        return fetch(`/api/v2beta/core/applications/${slug}/`)
-            .then((r) => r.json())
-            .then((r) => <Application>r);
+        return DefaultClient.fetch<Application>("core", "applications", slug);
     }
 }

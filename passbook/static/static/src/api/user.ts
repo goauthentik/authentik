@@ -1,14 +1,15 @@
-export interface User {
-    pk: number;
-    username: string;
-    name: string;
-    is_superuser: boolean;
-    email: boolean;
-    avatar: string;
-}
+import { Primitive } from "lit-html/lib/parts";
+import { DefaultClient } from "./client";
 
-export function me(): Promise<User> {
-    return fetch("/api/v2beta/core/users/me/")
-        .then((r) => r.json())
-        .then((r) => <User>r);
+export class User {
+    pk?: number;
+    username?: string;
+    name?: string;
+    is_superuser?: boolean;
+    email?: boolean;
+    avatar?: string;
+
+    static me(): Promise<User> {
+        return DefaultClient.fetch<User>("core", "users", "me");
+    }
 }
