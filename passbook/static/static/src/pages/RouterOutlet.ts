@@ -7,18 +7,11 @@ import {
     TemplateResult,
 } from "lit-element";
 // @ts-ignore
-import PF from "@patternfly/patternfly/patternfly.css";
-// @ts-ignore
-import PFAddons from "@patternfly/patternfly/patternfly-addons.css";
-// @ts-ignore
-import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
-// @ts-ignore
-import PBGlobal from "../passbook.css";
-// @ts-ignore
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
 import { ColorStyles } from "../constants";
+import { COMMON_STYLES } from "../common/styles";
 
 export class Route {
     url: RegExp;
@@ -61,10 +54,8 @@ export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
     new Route(new RegExp(`^/$`)).redirect("/-/overview/"),
     new Route(new RegExp(`^/applications/$`), html`<h1>test</h1>`),
-    new Route(new RegExp(`^/-/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
-        return html`<h1>test</h1>
-
-        <span>${args.slug}</span>`;
+    new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
+        return html`<pb-application-view .args=${args}></pb-application-view>`;
     }),
 ];
 
@@ -92,10 +83,6 @@ export class RouterOutlet extends LitElement {
 
     static get styles() {
         return [
-            PF,
-            PFAddons,
-            FA,
-            PBGlobal,
             CodeMirrorStyle,
             CodeMirrorTheme,
             ColorStyles,
@@ -104,7 +91,7 @@ export class RouterOutlet extends LitElement {
                     height: 100%;
                 }
             `,
-        ];
+        ].concat(...COMMON_STYLES);
     }
 
     constructor() {
