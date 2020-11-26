@@ -1,12 +1,13 @@
 """Channels Messages storage"""
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.contrib.messages.storage.base import BaseStorage, Message
+from django.contrib.messages.storage.base import Message
+from django.contrib.messages.storage.session import SessionStorage
 from django.core.cache import cache
 from django.http.request import HttpRequest
 
 
-class ChannelsStorage(BaseStorage):
+class ChannelsStorage(SessionStorage):
     """Send contrib.messages over websocket"""
 
     def __init__(self, request: HttpRequest) -> None:
@@ -15,7 +16,7 @@ class ChannelsStorage(BaseStorage):
         self.channel = get_channel_layer()
 
     def _store(self, messages: list[Message], response, *args, **kwargs):
-        prefix = f"user_{self.request.user.pk}_"
+        prefix = f"user_{self.request.user.pk}_messages_"
         keys = cache.keys(f"{prefix}*")
         for key in keys:
             uid = key.replace(prefix, "")
@@ -29,6 +30,4 @@ class ChannelsStorage(BaseStorage):
                         "message": message.message,
                     },
                 )
-
-    def _get(self, *args, **kwargs):
-        return [], True
+        return super()._store(messages, response, *args, **kwargs)

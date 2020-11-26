@@ -9,11 +9,11 @@ class MessageConsumer(JsonWebsocketConsumer):
 
     def connect(self):
         self.accept()
-        cache.set(f"user_{self.scope['user'].pk}_{self.channel_name}", True)
+        cache.set(f"user_{self.scope['user'].pk}_messages_{self.channel_name}", True)
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
-        cache.delete(f"user_{self.scope['user'].pk}_{self.channel_name}")
+        cache.delete(f"user_{self.scope['user'].pk}_messages_{self.channel_name}")
 
     def event_update(self, event: dict):
         """Event handler which is called by Messages Storage backend"""
