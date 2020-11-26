@@ -27,6 +27,8 @@ export class Messages extends LitElement {
 
     messageSocket?: WebSocket;
 
+    retryDelay: number = 200;
+
     createRenderRoot() {
         return this;
     }
@@ -47,9 +49,10 @@ export class Messages extends LitElement {
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`passbook/messages: closed ws connection: ${e}`);
             setTimeout(() => {
-                console.debug(`passbook/messages: reconnecting ws`);
+                console.debug(`passbook/messages: reconnecting ws in ${this.retryDelay}`);
                 this.connect();
-            }, 1000);
+            }, this.retryDelay);
+            this.retryDelay = this.retryDelay * 2;
         });
         this.messageSocket.addEventListener("message", (e) => {
             const container = <HTMLElement>(
