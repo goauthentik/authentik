@@ -38,6 +38,10 @@ export class Messages extends LitElement {
         this.connect();
     }
 
+    firstUpdated() {
+        this.fetchMessages();
+    }
+
     connect() {
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
@@ -62,6 +66,24 @@ export class Messages extends LitElement {
             const messageElement = this.renderMessage(data);
             container.appendChild(messageElement);
         });
+    }
+
+    /* Fetch messages which were stored in the session.
+     * This mostly gets messages which were created when the user arrives/leaves the site
+     * and especially the login flow */
+    fetchMessages() {
+        return fetch(this.url)
+            .then((r) => r.json())
+            .then((r) => (this.messages = r))
+            .then((r) => {
+                const container = <HTMLElement>(
+                    this.querySelector(".pf-c-alert-group")!
+                );
+                r.forEach((message: Message) => {
+                    const messageElement = this.renderMessage(message);
+                    container.appendChild(messageElement);
+                });
+            });
     }
 
     renderMessage(message: Message): ChildNode {
