@@ -365,11 +365,11 @@
         },
         "docker": {
             "hashes": [
-                "sha256:13966471e8bc23b36bfb3a6fb4ab75043a5ef1dac86516274777576bed3b9828",
-                "sha256:bad94b8dd001a8a4af19ce4becc17f41b09f228173ffe6a4e0355389eef142f2"
+                "sha256:317e95a48c32de8c1aac92a48066a5b73e218ed096e03758bcdd799a7130a1a1",
+                "sha256:cffc771d4ea1389fc66bc95cb72d304aa41d1a1563482a9a000fba3a84ed5071"
             ],
             "index": "pypi",
-            "version": "==4.3.1"
+            "version": "==4.4.0"
         },
         "drf-yasg2": {
             "hashes": [
