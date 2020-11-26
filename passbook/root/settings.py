@@ -177,6 +177,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_SAMESITE = "lax"
 
+MESSAGE_STORAGE = "passbook.root.messages.storage.ChannelsStorage"
+
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
