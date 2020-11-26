@@ -17,7 +17,7 @@ import { me, User } from "../api/user";
 
 export interface SidebarItem {
     name: string;
-    path?: string;
+    path?: string[];
     children?: SidebarItem[];
     condition?: (sb: Sidebar) => boolean;
 }
@@ -25,11 +25,11 @@ export interface SidebarItem {
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         name: "Library",
-        path: "/-/overview/",
+        path: ["/-/overview/"],
     },
     {
         name: "Monitor",
-        path: "/audit/audit/",
+        path: ["/audit/audit/"],
         condition: (sb: Sidebar) => {
             return sb.user?.is_superuser!;
         },
@@ -42,36 +42,36 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 children: [
                     {
                         name: "Overview",
-                        path: "/administration/overview/",
+                        path: ["/administration/overview/"],
                     },
                     {
                         name: "System Tasks",
-                        path: "/administration/tasks/",
+                        path: ["/administration/tasks/"],
                     },
                 ],
             },
             {
                 name: "Applications",
-                path: "/administration/applications/",
+                path: ["/administration/applications/"],
             },
             {
                 name: "Sources",
-                path: "/administration/sources/",
+                path: ["/administration/sources/"],
             },
             {
                 name: "Providers",
-                path: "/administration/providers/",
+                path: ["/administration/providers/"],
             },
             {
                 name: "User Management",
                 children: [
                     {
                         name: "User",
-                        path: "/administration/users/",
+                        path: ["/administration/users/"],
                     },
                     {
                         name: "Groups",
-                        path: "/administration/groups/",
+                        path: ["/administration/groups/"],
                     },
                 ],
             },
@@ -80,50 +80,50 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 children: [
                     {
                         name: "Outposts",
-                        path: "/administration/outposts/",
+                        path: ["/administration/outposts/"],
                     },
                     {
                         name: "Service Connections",
-                        path: "/administration/outposts/service_connections/",
+                        path: ["/administration/outposts/service_connections/"],
                     },
                 ],
             },
             {
                 name: "Policies",
-                path: "/administration/policies/",
+                path: ["/administration/policies/"],
             },
             {
                 name: "Property Mappings",
-                path: "/administration/property-mappings/",
+                path: ["/administration/property-mappings/"],
             },
             {
                 name: "Flows",
                 children: [
                     {
                         name: "Flows",
-                        path: "/administration/flows/",
+                        path: ["/administration/flows/"],
                     },
                     {
                         name: "Stages",
-                        path: "/administration/stages/",
+                        path: ["/administration/stages/"],
                     },
                     {
                         name: "Prompts",
-                        path: "/administration/stages/prompts/",
+                        path: ["/administration/stages/prompts/"],
                     },
                     {
                         name: "Invitations",
-                        path: "/administration/stages/invitations/",
+                        path: ["/administration/stages/invitations/"],
                     },
                 ],
             },
             {
                 name: "Certificates",
-                path: "/administration/crypto/certificates/",
+                path: ["/administration/crypto/certificates/"],
             },
             {
                 name: "Tokens",
-                path: "/administration/tokens/",
+                path: ["/administration/tokens/"],
             },
         ],
         condition: (sb: Sidebar) => {
@@ -188,7 +188,9 @@ export class Sidebar extends LitElement {
             ${item.path
                 ? html`<a
                       href="#${item.path}"
-                      class="pf-c-nav__link ${item.path === this.activePath
+                      class="pf-c-nav__link ${item.path.some(
+                          (v) => v === this.activePath
+                      )
                           ? "pf-m-current"
                           : ""}"
                   >
