@@ -47,12 +47,19 @@ export class Route {
         }
         throw new Error("Route does not have callback or element");
     }
+
+    toString(): string {
+        return `<Route url=${this.url} callback=${
+            this.callback ? "true" : "false"
+        }>`;
+    }
 }
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
     new Route(new RegExp(`^/$`)).redirect("/-/overview/"),
+    new Route(new RegExp(`^#.*`)).redirect("/-/overview/"),
     new Route(new RegExp(`^/applications/$`), html`<h1>test</h1>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then(
         (args) => {
@@ -74,6 +81,10 @@ class RouteMatch {
 
     render(): TemplateResult {
         return this.route.render(this.arguments!.groups || {});
+    }
+
+    toString(): string {
+        return `<RouteMatch url=${this.fullUrl} route=${this.route} arguments=${this.arguments}>`;
     }
 }
 
@@ -112,6 +123,7 @@ export class RouterOutlet extends LitElement {
         if (activeUrl === "") {
             activeUrl = this.defaultUrl!;
             window.location.hash = `#${activeUrl}`;
+            console.debug(`passbook/router: set to ${window.location.hash}`);
             return;
         }
         let matchedRoute: RouteMatch | null = null;
@@ -124,6 +136,7 @@ export class RouterOutlet extends LitElement {
                 matchedRoute = new RouteMatch(route);
                 matchedRoute.arguments = match;
                 matchedRoute.fullUrl = activeUrl;
+                console.debug(`passbook/router: found match ${matchedRoute}`);
                 return;
             }
         });

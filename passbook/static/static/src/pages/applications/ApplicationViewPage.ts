@@ -1,4 +1,4 @@
-import { customElement, html, LitElement, property } from "lit-element";
+import { css, customElement, html, LitElement, property } from "lit-element";
 import { Application } from "../../api/application";
 import { COMMON_STYLES } from "../../common/styles";
 
@@ -18,24 +18,33 @@ export class ApplicationViewPage extends LitElement {
     application?: Application;
 
     static get styles() {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(
+            css`
+                img.pf-icon {
+                    max-height: 24px;
+                }
+            `
+        );
     }
 
     render() {
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <i class="pf-icon pf-icon-applications"></i>
+                        <img
+                            class="pf-icon"
+                            src="${this.application?.meta_icon || ""}"
+                        />
                         ${this.application?.name}
                     </h1>
-                    <p>
-                        External Applications which use passbook as
-                        Identity-Provider, utilizing protocols like OAuth2 and
-                        SAML.
-                    </p>
+                    <p>${this.application?.meta_publisher}</p>
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <pb-tabs>
+                    <div slot="page-1" tab-title="Users">users</div>
+                    <div slot="page-2" tab-title="Containers">foo</div>
+                </pb-tabs>
                 <div class="pf-c-card">
                     <div class="pf-c-toolbar">
                         <div class="pf-c-toolbar__content">

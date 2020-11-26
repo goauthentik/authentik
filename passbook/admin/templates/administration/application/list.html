@@ -47,12 +47,12 @@
                 {% for application in object_list %}
                 <tr role="row">
                     <th role="columnheader">
-                        <div>
+                        <a href="/applications/{{ application.slug }}/">
                             <div>{{ application.name }}</div>
                             {% if application.meta_publisher %}
                             <small>{{ application.meta_publisher }}</small>
                             {% endif %}
-                        </div>
+                        </a>
                     </th>
                     <td role="cell">
                         <code>{{ application.slug }}</span>
