@@ -64,16 +64,19 @@ class DockerController(BaseController):
             image_prefix = CONFIG.y("outposts.docker_image_base")
             image_name = f"{image_prefix}-{self.outpost.type}:{__version__}"
             self.client.images.pull(image_name)
+            container_args = {
+                "image": image_name,
+                "name": f"passbook-proxy-{self.outpost.uuid.hex}",
+                "detach": True,
+                "ports": {x: x for _, x in self.deployment_ports.items()},
+                "environment": self._get_env(),
+                "labels": self._get_labels(),
+            }
+            if settings.TEST:
+                del container_args["ports"]
+                container_args["network_mode"] = "host"
             return (
-                self.client.containers.create(
-                    image=image_name,
-                    name=f"passbook-proxy-{self.outpost.uuid.hex}",
-                    detach=True,
-                    ports={x: x for _, x in self.deployment_ports.items()},
-                    environment=self._get_env(),
-                    network_mode="host" if settings.TEST else "bridge",
-                    labels=self._get_labels(),
-                ),
+                self.client.containers.create(**container_args),
                 True,
             )
 

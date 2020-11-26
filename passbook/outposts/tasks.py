@@ -68,6 +68,10 @@ def outpost_controller(self: MonitoredTask, outpost_pk: str):
                 logs = ProxyKubernetesController(
                     outpost, service_connection
                 ).up_with_logs()
+        LOGGER.debug("---------------Outpost Controller logs starting----------------")
+        for log in logs:
+            LOGGER.debug(log)
+        LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except ControllerException as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
