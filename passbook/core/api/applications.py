@@ -44,9 +44,13 @@ class ApplicationViewSet(ModelViewSet):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
-    def list(self, request: Request, *_, **__) -> Response:
+    def list(self, request: Request, *args, **kwargs) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
+        if request.user.is_superuser:
+            # pylint: disable=no-member
+            return super().list(request, *args, **kwargs)
         queryset = self._filter_queryset_for_list(self.get_queryset())
+        self.paginate_queryset(queryset)
         allowed_applications = []
         for application in queryset.order_by("name"):
             engine = PolicyEngine(application, self.request.user, self.request)
@@ -54,4 +58,4 @@ class ApplicationViewSet(ModelViewSet):
             if engine.passing:
                 allowed_applications.append(application)
         serializer = self.get_serializer(allowed_applications, many=True)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)

@@ -20,46 +20,45 @@ from rest_framework.viewsets import ViewSet
 from passbook.audit.models import Event, EventAction
 
 
+def get_events_per_1h(**filter_kwargs) -> List[Dict[str, int]]:
+    """Get event count by hour in the last day, fill with zeros"""
+    date_from = now() - timedelta(days=1)
+    result = (
+        Event.objects.filter(created__gte=date_from, **filter_kwargs)
+        .annotate(
+            age=ExpressionWrapper(now() - F("created"), output_field=DurationField())
+        )
+        .annotate(age_hours=ExtractHour("age"))
+        .values("age_hours")
+        .annotate(count=Count("pk"))
+        .order_by("age_hours")
+    )
+    data = Counter({d["age_hours"]: d["count"] for d in result})
+    results = []
+    _now = now()
+    for hour in range(0, -24, -1):
+        results.append(
+            {
+                "x": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
+                "y": data[hour * -1],
+            }
+        )
+    return results
+
+
 class AdministrationMetricsSerializer(Serializer):
     """Overview View"""
 
     logins_per_1h = SerializerMethodField()
     logins_failed_per_1h = SerializerMethodField()
 
-    def get_events_per_1h(self, action: str) -> List[Dict[str, int]]:
-        """Get event count by hour in the last day, fill with zeros"""
-        date_from = now() - timedelta(days=1)
-        result = (
-            Event.objects.filter(action=action, created__gte=date_from)
-            .annotate(
-                age=ExpressionWrapper(
-                    now() - F("created"), output_field=DurationField()
-                )
-            )
-            .annotate(age_hours=ExtractHour("age"))
-            .values("age_hours")
-            .annotate(count=Count("pk"))
-            .order_by("age_hours")
-        )
-        data = Counter({d["age_hours"]: d["count"] for d in result})
-        results = []
-        _now = now()
-        for hour in range(0, -24, -1):
-            results.append(
-                {
-                    "x": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
-                    "y": data[hour * -1],
-                }
-            )
-        return results
-
     def get_logins_per_1h(self, _):
         """Get successful logins per hour for the last 24 hours"""
-        return self.get_events_per_1h(EventAction.LOGIN)
+        return get_events_per_1h(action=EventAction.LOGIN)
 
     def get_logins_failed_per_1h(self, _):
         """Get failed logins per hour for the last 24 hours"""
-        return self.get_events_per_1h(EventAction.LOGIN_FAILED)
+        return get_events_per_1h(action=EventAction.LOGIN_FAILED)
 
     def create(self, request: Request) -> response:
         raise NotImplementedError
