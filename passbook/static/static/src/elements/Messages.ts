@@ -13,7 +13,7 @@ let ID = function (prefix: string) {
 
 interface Message {
     levelTag: string;
-    tags: string[];
+    tags: string;
     message: string;
 }
 
@@ -22,11 +22,7 @@ export class Messages extends LitElement {
     @property()
     url: string = "";
 
-    @property()
-    messages: string[] = [];
-
     messageSocket?: WebSocket;
-
     retryDelay: number = 200;
 
     createRenderRoot() {
@@ -35,7 +31,11 @@ export class Messages extends LitElement {
 
     constructor() {
         super();
-        this.connect();
+        try {
+            this.connect();
+        } catch (error) {
+            console.warn(`passbook/messages: failed to connect to ws ${error}`);
+        }
     }
 
     firstUpdated() {
@@ -53,40 +53,46 @@ export class Messages extends LitElement {
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`passbook/messages: closed ws connection: ${e}`);
             setTimeout(() => {
-                console.debug(`passbook/messages: reconnecting ws in ${this.retryDelay}`);
+                console.debug(
+                    `passbook/messages: reconnecting ws in ${this.retryDelay}`
+                );
                 this.connect();
             }, this.retryDelay);
             this.retryDelay = this.retryDelay * 2;
         });
         this.messageSocket.addEventListener("message", (e) => {
-            const container = <HTMLElement>(
-                this.querySelector(".pf-c-alert-group")!
-            );
             const data = JSON.parse(e.data);
-            const messageElement = this.renderMessage(data);
-            container.appendChild(messageElement);
+            this.renderMessage(data);
         });
+        this.messageSocket.addEventListener("error", (e) => {
+            console.warn(`passbook/messages: error ${e}`);
+            this.retryDelay = this.retryDelay * 2;
+        })
     }
 
     /* Fetch messages which were stored in the session.
      * This mostly gets messages which were created when the user arrives/leaves the site
      * and especially the login flow */
     fetchMessages() {
+        console.debug(`passbook/messages: fetching messages over direct api`);
         return fetch(this.url)
             .then((r) => r.json())
-            .then((r) => (this.messages = r))
             .then((r) => {
-                const container = <HTMLElement>(
-                    this.querySelector(".pf-c-alert-group")!
-                );
-                r.forEach((message: Message) => {
-                    const messageElement = this.renderMessage(message);
-                    container.appendChild(messageElement);
+                r.forEach((m: any) => {
+                    const message = <Message>{
+                        levelTag: m.level_tag,
+                        tags: m.tags,
+                        message: m.message,
+                    };
+                    this.renderMessage(message);
                 });
             });
     }
 
-    renderMessage(message: Message): ChildNode {
+    renderMessage(message: Message) {
+        const container = <HTMLElement>(
+            this.querySelector(".pf-c-alert-group")!
+        );
         const id = ID("pb-message");
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
@@ -104,7 +110,7 @@ export class Messages extends LitElement {
         setTimeout(() => {
             this.querySelector(`#${id}`)?.remove();
         }, 1500);
-        return el.content.firstChild!;
+        container.appendChild(el.content.firstChild!);
     }
 
     render() {

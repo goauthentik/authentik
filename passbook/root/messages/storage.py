@@ -2,12 +2,12 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.messages.storage.base import Message
-from django.contrib.messages.storage.session import SessionStorage
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core.cache import cache
 from django.http.request import HttpRequest
 
 
-class ChannelsStorage(SessionStorage):
+class ChannelsStorage(FallbackStorage):
     """Send contrib.messages over websocket"""
 
     def __init__(self, request: HttpRequest) -> None:

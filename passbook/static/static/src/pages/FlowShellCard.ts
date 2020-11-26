@@ -54,6 +54,7 @@ export class FlowShellCard extends LitElement {
                 this.checkAutofocus();
                 this.loadFormCode();
                 this.setFormSubmitHandlers();
+                break;
             default:
                 console.debug(
                     `passbook/flows: unexpected data type ${data.type}`
