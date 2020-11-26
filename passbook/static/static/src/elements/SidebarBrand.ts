@@ -46,11 +46,7 @@ export class SidebarBrand extends LitElement {
         }
         return html` <a href="" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
-                <img
-                    src="${this.config?.branding_logo}"
-                    alt="passbook icon"
-                    loading="lazy"
-                />
+                <img src="${this.config?.branding_logo}" alt="passbook icon" loading="lazy" />
                 ${this.config?.branding_title
                     ? html`<span>${this.config.branding_title}</span>`
                     : ""}

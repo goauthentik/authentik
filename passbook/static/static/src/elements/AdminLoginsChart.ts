@@ -43,9 +43,9 @@ export class AdminLoginsChart extends LitElement {
             .then((r) => r.json())
             .catch((e) => console.error(e))
             .then((r) => {
-                let ctx = (<HTMLCanvasElement>(
-                    this.shadowRoot?.querySelector("canvas")
-                )).getContext("2d")!;
+                let ctx = (<HTMLCanvasElement>this.shadowRoot?.querySelector("canvas")).getContext(
+                    "2d"
+                )!;
                 this.chart = new Chart(ctx, {
                     type: "bar",
                     data: {
@@ -77,19 +77,10 @@ export class AdminLoginsChart extends LitElement {
                                     type: "time",
                                     offset: true,
                                     ticks: {
-                                        callback: function (
-                                            value,
-                                            index: number,
-                                            values
-                                        ) {
-                                            const valueStamp = <TickValue>(
-                                                (<unknown>values[index])
-                                            );
-                                            const delta =
-                                                Date.now() - valueStamp.value;
-                                            const ago = Math.round(
-                                                delta / 1000 / 3600
-                                            );
+                                        callback: function (value, index: number, values) {
+                                            const valueStamp = <TickValue>(<unknown>values[index]);
+                                            const delta = Date.now() - valueStamp.value;
+                                            const ago = Math.round(delta / 1000 / 3600);
                                             return `${ago} Hours ago`;
                                         },
                                         autoSkip: true,

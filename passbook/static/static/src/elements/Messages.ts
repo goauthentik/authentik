@@ -53,9 +53,7 @@ export class Messages extends LitElement {
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`passbook/messages: closed ws connection: ${e}`);
             setTimeout(() => {
-                console.debug(
-                    `passbook/messages: reconnecting ws in ${this.retryDelay}ms`
-                );
+                console.debug(`passbook/messages: reconnecting ws in ${this.retryDelay}ms`);
                 this.connect();
             }, this.retryDelay);
             this.retryDelay = this.retryDelay * 2;

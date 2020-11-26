@@ -56,9 +56,7 @@ export class FlowShellCard extends LitElement {
                 this.setFormSubmitHandlers();
                 break;
             default:
-                console.debug(
-                    `passbook/flows: unexpected data type ${data.type}`
-                );
+                console.debug(`passbook/flows: unexpected data type ${data.type}`);
                 break;
         }
     }
@@ -89,9 +87,7 @@ export class FlowShellCard extends LitElement {
             }
         }
         form.action = this.flowBodyUrl;
-        console.debug(
-            `passbook/flows: updated form.action ${this.flowBodyUrl}`
-        );
+        console.debug(`passbook/flows: updated form.action ${this.flowBodyUrl}`);
         return true;
     }
 
@@ -103,9 +99,7 @@ export class FlowShellCard extends LitElement {
 
     setFormSubmitHandlers() {
         this.querySelectorAll("form").forEach((form) => {
-            console.debug(
-                `passbook/flows: Checking for autosubmit attribute ${form}`
-            );
+            console.debug(`passbook/flows: Checking for autosubmit attribute ${form}`);
             this.checkAutosubmit(form);
             console.debug(`passbook/flows: Setting action for form ${form}`);
             this.updateFormAction(form);
@@ -155,11 +149,7 @@ export class FlowShellCard extends LitElement {
 
     loading() {
         return html` <div class="pf-c-login__main-body pb-loading">
-            <span
-                class="pf-c-spinner"
-                role="progressbar"
-                aria-valuetext="Loading..."
-            >
+            <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
                 <span class="pf-c-spinner__clipper"></span>
                 <span class="pf-c-spinner__lead-ball"></span>
                 <span class="pf-c-spinner__tail-ball"></span>

@@ -1,11 +1,4 @@
-import {
-    css,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
@@ -181,16 +174,12 @@ export class Sidebar extends LitElement {
             }
         }
         return html` <li
-            class="pf-c-nav__item ${item.children
-                ? "pf-m-expandable pf-m-expanded"
-                : ""}"
+            class="pf-c-nav__item ${item.children ? "pf-m-expandable pf-m-expanded" : ""}"
         >
             ${item.path
                 ? html`<a
                       href="#${item.path}"
-                      class="pf-c-nav__link ${item.path.some(
-                          (v) => v === this.activePath
-                      )
+                      class="pf-c-nav__link ${item.path.some((v) => v === this.activePath)
                           ? "pf-m-current"
                           : ""}"
                   >
@@ -199,10 +188,7 @@ export class Sidebar extends LitElement {
                 : html`<a class="pf-c-nav__link" aria-expanded="true"
                           >${item.name}
                           <span class="pf-c-nav__toggle">
-                              <i
-                                  class="fas fa-angle-right"
-                                  aria-hidden="true"
-                              ></i>
+                              <i class="fas fa-angle-right" aria-hidden="true"></i>
                           </span>
                       </a>
                       <section class="pf-c-nav__subnav">

@@ -49,19 +49,11 @@ export class SidebarUser extends LitElement {
             return html``;
         }
         return html`
-            <a
-                href="#/-/user/"
-                class="pf-c-nav__link user-avatar"
-                id="user-settings"
-            >
+            <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
                 <img class="pf-c-avatar" src="${this.user?.avatar}" alt="" />
                 <span>${this.user?.username}</span>
             </a>
-            <a
-                href="/flows/-/default/invalidation/"
-                class="pf-c-nav__link user-logout"
-                id="logout"
-            >
+            <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             </a>
         `;

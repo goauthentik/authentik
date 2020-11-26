@@ -1,11 +1,4 @@
-import {
-    css,
-    customElement,
-    html,
-    LitElement,
-    property,
-    TemplateResult,
-} from "lit-element";
+import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
@@ -49,9 +42,7 @@ export class Route {
     }
 
     toString(): string {
-        return `<Route url=${this.url} callback=${
-            this.callback ? "true" : "false"
-        }>`;
+        return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
     }
 }
 
@@ -61,13 +52,9 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/$`)).redirect("/-/overview/"),
     new Route(new RegExp(`^#.*`)).redirect("/-/overview/"),
     new Route(new RegExp(`^/applications/$`), html`<h1>test</h1>`),
-    new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then(
-        (args) => {
-            return html`<pb-application-view
-                .args=${args}
-            ></pb-application-view>`;
-        }
-    ),
+    new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
+        return html`<pb-application-view .args=${args}></pb-application-view>`;
+    }),
 ];
 
 class RouteMatch {
@@ -128,9 +115,7 @@ export class RouterOutlet extends LitElement {
         }
         let matchedRoute: RouteMatch | null = null;
         ROUTES.forEach((route) => {
-            console.debug(
-                `passbook/router: matching ${activeUrl} against ${route.url}`
-            );
+            console.debug(`passbook/router: matching ${activeUrl} against ${route.url}`);
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);
@@ -141,9 +126,7 @@ export class RouterOutlet extends LitElement {
             }
         });
         if (!matchedRoute) {
-            console.debug(
-                `passbook/router: route "${activeUrl}" not defined, defaulting to shell`
-            );
+            console.debug(`passbook/router: route "${activeUrl}" not defined, defaulting to shell`);
             const route = new Route(
                 RegExp(""),
                 html`<pb-site-shell url=${activeUrl}>

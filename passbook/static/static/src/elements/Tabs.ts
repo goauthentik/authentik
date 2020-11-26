@@ -25,8 +25,7 @@ export class Tabs extends LitElement {
         return html`<div class="pf-c-tabs">
                 <ul class="pf-c-tabs__list">
                     ${pages.map((page) => {
-                        const slot = page.attributes.getNamedItem("slot")
-                            ?.value;
+                        const slot = page.attributes.getNamedItem("slot")?.value;
                         return html` <li
                             class="pf-c-tabs__item ${slot === this.currentPage
                                 ? CURRENT_CLASS
@@ -39,8 +38,7 @@ export class Tabs extends LitElement {
                                 }}
                             >
                                 <span class="pf-c-tabs__item-text">
-                                    ${page.attributes.getNamedItem("tab-title")
-                                        ?.value}
+                                    ${page.attributes.getNamedItem("tab-title")?.value}
                                 </span>
                             </button>
                         </li>`;

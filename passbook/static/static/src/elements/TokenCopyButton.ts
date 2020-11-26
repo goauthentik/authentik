@@ -4,12 +4,7 @@ import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import { tokenByIdentifier } from "../api/token";
-import {
-    ColorStyles,
-    ERROR_CLASS,
-    PRIMARY_CLASS,
-    SUCCESS_CLASS,
-} from "../constants";
+import { ColorStyles, ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../constants";
 
 @customElement("pb-token-copy-button")
 export class TokenCopyButton extends LitElement {
@@ -51,10 +46,7 @@ export class TokenCopyButton extends LitElement {
     }
 
     render() {
-        return html`<button
-            @click=${() => this.onClick()}
-            class="pf-c-button ${this.buttonClass}"
-        >
+        return html`<button @click=${() => this.onClick()} class="pf-c-button ${this.buttonClass}">
             <slot></slot>
         </button>`;
     }

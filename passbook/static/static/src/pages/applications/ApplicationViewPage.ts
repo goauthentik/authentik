@@ -31,29 +31,24 @@ export class ApplicationViewPage extends LitElement {
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <img
-                            class="pf-icon"
-                            src="${this.application?.meta_icon || ""}"
-                        />
+                        <img class="pf-icon" src="${this.application?.meta_icon || ""}" />
                         ${this.application?.name}
                     </h1>
                     <p>${this.application?.meta_publisher}</p>
                 </div>
             </section>
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <pb-tabs>
-                    <div slot="page-1" tab-title="Users">users</div>
-                    <div slot="page-2" tab-title="Containers">foo</div>
-                </pb-tabs>
-                <div class="pf-c-card">
-                    <div class="pf-c-toolbar">
-                        <div class="pf-c-toolbar__content">
-                            <h1>test</h1>
+            <pb-tabs>
+                <section slot="page-1" tab-title="Users" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        users
+                        <h1>test</h1>
 
-                            <span>${this.applicationSlug}</span>
-                        </div>
+                        <span>${this.application?.slug}</span>
                     </div>
+                </section>
+                <div slot="page-2" tab-title="Containers">
+                    foo
                 </div>
-            </section>`;
+            </pb-tabs>`;
     }
 }

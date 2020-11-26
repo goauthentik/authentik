@@ -35,12 +35,7 @@ export class SiteShell extends LitElement {
                     z-index: 2000;
                 }
                 .pf-c-backdrop {
-                    --pf-c-backdrop--BackgroundColor: rgba(
-                        0,
-                        0,
-                        0,
-                        0
-                    ) !important;
+                    --pf-c-backdrop--BackgroundColor: rgba(0, 0, 0, 0) !important;
                 }
             `,
             BackdropStyle,
@@ -59,9 +54,7 @@ export class SiteShell extends LitElement {
                 if (r.ok) {
                     return r;
                 }
-                console.debug(
-                    `passbook/site-shell: Request failed ${this._url}`
-                );
+                console.debug(`passbook/site-shell: Request failed ${this._url}`);
                 window.location.hash = "#/";
                 throw new Error("Request failed");
             })
@@ -71,9 +64,7 @@ export class SiteShell extends LitElement {
             })
             .then(() => {
                 // Ensure anchors only change the hash
-                this.querySelectorAll<HTMLAnchorElement>(
-                    "a:not(.pb-root-link)"
-                ).forEach((a) => {
+                this.querySelectorAll<HTMLAnchorElement>("a:not(.pb-root-link)").forEach((a) => {
                     if (a.href === "") {
                         return;
                     }
@@ -96,9 +87,7 @@ export class SiteShell extends LitElement {
                     f.addEventListener("submit", (e) => {
                         e.preventDefault();
                         const formData = new FormData(f);
-                        const qs = new URLSearchParams(
-                            <any>(<unknown>formData)
-                        ).toString();
+                        const qs = new URLSearchParams(<any>(<unknown>formData)).toString();
                         window.location.hash = `#${this._url}?${qs}`;
                     });
                 });

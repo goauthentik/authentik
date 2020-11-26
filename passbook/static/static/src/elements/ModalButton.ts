@@ -49,74 +49,60 @@ export class ModalButton extends LitElement {
 
     updateHandlers() {
         // Ensure links close the modal
-        this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach(
-            (a) => {
-                // Make click on a close the modal
-                a.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    this.open = false;
-                });
-            }
-        );
+        this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach((a) => {
+            // Make click on a close the modal
+            a.addEventListener("click", (e) => {
+                e.preventDefault();
+                this.open = false;
+            });
+        });
         // Make name field update slug field
-        this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach(
-            (input) => {
-                input.addEventListener("input", (e) => {
-                    const form = input.closest("form");
-                    if (form === null) {
-                        return;
-                    }
-                    const slugField = form.querySelector<HTMLInputElement>(
-                        "input[name=slug]"
-                    );
-                    if (!slugField) {
-                        return;
-                    }
-                    slugField.value = convertToSlug(input.value);
-                });
-            }
-        );
+        this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
+            input.addEventListener("input", (e) => {
+                const form = input.closest("form");
+                if (form === null) {
+                    return;
+                }
+                const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
+                if (!slugField) {
+                    return;
+                }
+                slugField.value = convertToSlug(input.value);
+            });
+        });
         // Ensure forms sends in AJAX
-        this.querySelectorAll<HTMLFormElement>("[slot=modal] form").forEach(
-            (form) => {
-                form.addEventListener("submit", (e) => {
-                    e.preventDefault();
-                    let formData = new FormData(form);
-                    fetch(this.href ? this.href : form.action, {
-                        method: form.method,
-                        body: formData,
-                        redirect: "manual",
+        this.querySelectorAll<HTMLFormElement>("[slot=modal] form").forEach((form) => {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                let formData = new FormData(form);
+                fetch(this.href ? this.href : form.action, {
+                    method: form.method,
+                    body: formData,
+                    redirect: "manual",
+                })
+                    .then((response) => {
+                        return response.text();
                     })
-                        .then((response) => {
-                            return response.text();
-                        })
-                        .then((data) => {
-                            if (data.indexOf("csrfmiddlewaretoken") !== -1) {
-                                this.querySelector(
-                                    "[slot=modal]"
-                                )!.innerHTML = data;
-                                console.debug(
-                                    `passbook/modalbutton: re-showing form`
-                                );
-                                this.updateHandlers();
-                            } else {
-                                this.open = false;
-                                console.debug(
-                                    `passbook/modalbutton: successful submit`
-                                );
-                                this.dispatchEvent(
-                                    new CustomEvent("hashchange", {
-                                        bubbles: true,
-                                    })
-                                );
-                            }
-                        })
-                        .catch((e) => {
-                            console.error(e);
-                        });
-                });
-            }
-        );
+                    .then((data) => {
+                        if (data.indexOf("csrfmiddlewaretoken") !== -1) {
+                            this.querySelector("[slot=modal]")!.innerHTML = data;
+                            console.debug(`passbook/modalbutton: re-showing form`);
+                            this.updateHandlers();
+                        } else {
+                            this.open = false;
+                            console.debug(`passbook/modalbutton: successful submit`);
+                            this.dispatchEvent(
+                                new CustomEvent("hashchange", {
+                                    bubbles: true,
+                                })
+                            );
+                        }
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                    });
+            });
+        });
     }
 
     onClick(e: MouseEvent) {
@@ -165,10 +151,7 @@ export class ModalButton extends LitElement {
     }
 
     render() {
-        return html` <slot
-                name="trigger"
-                @click=${(e: any) => this.onClick(e)}
-            ></slot>
+        return html` <slot name="trigger" @click=${(e: any) => this.onClick(e)}></slot>
             ${this.open ? this.renderModal() : ""}`;
     }
 }

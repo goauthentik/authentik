@@ -13,9 +13,7 @@ export class Client {
                 if (r.status > 300) {
                     switch (r.status) {
                         case 404:
-                            throw new NotFoundError(
-                                `URL ${this.makeUrl(...url)} not found`
-                            );
+                            throw new NotFoundError(`URL ${this.makeUrl(...url)} not found`);
                         default:
                             throw new RequestError(r.statusText);
                     }
