@@ -26,7 +26,10 @@ export class FlowShellCard extends LitElement {
     firstUpdated() {
         fetch(this.flowBodyUrl)
             .then((r) => {
-                if (!r.ok) {
+                if (r.status === 404) {
+                    // Fallback when the flow does not exist, just redirect to the root
+                    window.location.pathname = "/";
+                } else if (!r.ok) {
                     throw Error(r.statusText);
                 }
                 return r;

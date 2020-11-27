@@ -3,7 +3,7 @@ import { NotFoundError, RequestError } from "./errors";
 export const VERSION = "v2beta";
 
 export class Client {
-    private makeUrl(...url: string[]): string {
+    makeUrl(...url: string[]): string {
         return `/api/${VERSION}/${url.join("/")}/`;
     }
 
@@ -26,3 +26,10 @@ export class Client {
 }
 
 export const DefaultClient = new Client();
+
+export interface PBResponse {
+    count: number;
+    next: string;
+    previous: string;
+    results: Array<any>;
+}

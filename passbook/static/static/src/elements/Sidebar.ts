@@ -31,17 +31,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         name: "Administration",
         children: [
             {
-                name: "General",
-                children: [
-                    {
-                        name: "Overview",
-                        path: ["/administration/overview/"],
-                    },
-                    {
-                        name: "System Tasks",
-                        path: ["/administration/tasks/"],
-                    },
-                ],
+                name: "Overview",
+                path: ["/administration/overview/"],
+            },
+            {
+                name: "System Tasks",
+                path: ["/administration/tasks/"],
             },
             {
                 name: "Applications",
