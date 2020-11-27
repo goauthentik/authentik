@@ -9,7 +9,7 @@ updates:
   assignees:
   - BeryJu
 - package-ecosystem: npm
-  directory: "/passbook/static/static"
+  directory: "/web"
   schedule:
     interval: daily
     time: "04:00"

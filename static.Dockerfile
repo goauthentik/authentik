@@ -38,11 +38,7 @@ RUN ./manage.py collectstatic --no-input
 
 FROM node as npm-builder
 
-COPY --from=static-build /app/static/src /static/src
-COPY --from=static-build /app/static/rollup.config.js /static/rollup.config.js
-COPY --from=static-build /app/static/tsconfig.json /static/tsconfig.json
-COPY --from=static-build /app/static/package.json /static/package.json
-COPY --from=static-build /app/static/package-lock.json /static/package-lock.json
+COPY ./web /static/
 
 RUN cd /static && npm i && npm run build
 

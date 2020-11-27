@@ -48,6 +48,7 @@ LOGGER = structlog.get_logger()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STATIC_ROOT = BASE_DIR + "/static"
+STATICFILES_DIRS = [BASE_DIR + "/web"]
 MEDIA_ROOT = BASE_DIR + "/media"
 
 # Quick-start development settings - unsuitable for production
@@ -124,7 +125,6 @@ INSTALLED_APPS = [
     "passbook.stages.otp_time.apps.PassbookStageOTPTimeConfig",
     "passbook.stages.otp_validate.apps.PassbookStageOTPValidateConfig",
     "passbook.stages.password.apps.PassbookStagePasswordConfig",
-    "passbook.static.apps.PassbookStaticConfig",
     "rest_framework",
     "django_filters",
     "drf_yasg2",
