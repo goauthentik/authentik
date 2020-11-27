@@ -12,7 +12,6 @@ class FlowSerializer(ModelSerializer):
 
     cache_count = SerializerMethodField()
 
-    # pylint: disable=invalid-name
     def get_cache_count(self, flow: Flow):
         """Get count of cached flows"""
         return len(cache.keys(f"{cache_key(flow)}*"))
