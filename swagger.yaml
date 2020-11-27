@@ -280,6 +280,26 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /core/applications/{slug}/metrics/:
+    get:
+      operationId: core_applications_metrics
+      description: Metrics for application logins
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+      tags:
+        - core
+    parameters:
+      - name: slug
+        in: path
+        description: Internal application name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/groups/:
     get:
       operationId: core_groups_list
@@ -1715,6 +1735,31 @@ paths:
       operationId: policies_bindings_list
       description: PolicyBinding Viewset
       parameters:
+        - name: policy
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: target
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: enabled
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: order
+          in: query
+          description: ''
+          required: false
+          type: number
+        - name: timeout
+          in: query
+          description: ''
+          required: false
+          type: number
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -6741,6 +6786,10 @@ definitions:
           format: uuid
         readOnly: true
         uniqueItems: true
+      cache_count:
+        title: Cache count
+        type: string
+        readOnly: true
   Outpost:
     description: Outpost Serializer
     required:

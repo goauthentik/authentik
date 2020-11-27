@@ -1,5 +1,4 @@
 """policy API Views"""
-import django_filters.rest_framework
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.serializers import (
     ModelSerializer,

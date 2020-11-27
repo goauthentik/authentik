@@ -65,6 +65,7 @@ class ApplicationViewSet(ModelViewSet):
 
     @action(detail=True)
     def metrics(self, request: Request, slug: str):
+        """Metrics for application logins"""
         # TODO: Check app read and audit read perms
         app = Application.objects.get(slug=slug)
         return Response(
