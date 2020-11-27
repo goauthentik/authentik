@@ -1,11 +1,14 @@
 """Application API Views"""
 from django.db.models import QuerySet
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
+from passbook.admin.api.overview_metrics import get_events_per_1h
+from passbook.audit.models import EventAction
 from passbook.core.models import Application
 from passbook.policies.engine import PolicyEngine
 
@@ -59,3 +62,14 @@ class ApplicationViewSet(ModelViewSet):
                 allowed_applications.append(application)
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @action(detail=True)
+    def metrics(self, request: Request, slug: str):
+        # TODO: Check app read and audit read perms
+        app = Application.objects.get(slug=slug)
+        return Response(
+            get_events_per_1h(
+                action=EventAction.AUTHORIZE_APPLICATION,
+                context__authorized_application__pk=app.pk.hex,
+            )
+        )

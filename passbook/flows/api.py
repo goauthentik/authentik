@@ -1,17 +1,35 @@
 """Flow API Views"""
+from django.core.cache import cache
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from passbook.flows.models import Flow, FlowStageBinding, Stage
+from passbook.flows.planner import cache_key
 
 
 class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
+    cache_count = SerializerMethodField()
+
+    # pylint: disable=invalid-name
+    def get_cache_count(self, flow: Flow):
+        """Get count of cached flows"""
+        return len(cache.keys(f"{cache_key(flow)}*"))
+
     class Meta:
 
         model = Flow
-        fields = ["pk", "name", "slug", "title", "designation", "stages", "policies"]
+        fields = [
+            "pk",
+            "name",
+            "slug",
+            "title",
+            "designation",
+            "stages",
+            "policies",
+            "cache_count",
+        ]
 
 
 class FlowViewSet(ModelViewSet):

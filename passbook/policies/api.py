@@ -1,4 +1,5 @@
 """policy API Views"""
+import django_filters.rest_framework
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.serializers import (
     ModelSerializer,
@@ -62,6 +63,7 @@ class PolicyBindingViewSet(ModelViewSet):
 
     queryset = PolicyBinding.objects.all()
     serializer_class = PolicyBindingSerializer
+    filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
 
 
 class PolicySerializer(ModelSerializer):
