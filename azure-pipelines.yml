@@ -272,7 +272,7 @@ stages:
             displayName: Build static files for e2e
             inputs:
               script: |
-                cd passbook/static/static
+                cd web
                 npm i
                 npm run build
           - task: CmdLine@2

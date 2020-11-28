@@ -31,3 +31,8 @@ local-stack:
 	docker build -t beryju/passbook:testng .
 	docker-compose up -d
 	docker-compose run --rm server migrate
+
+build-static:
+	docker-compose -f scripts/ci.docker-compose.yml up -d
+	docker build -t beryju/passbook-static -f static.Dockerfile --network=scripts_default .
+	docker-compose -f scripts/ci.docker-compose.yml down -v

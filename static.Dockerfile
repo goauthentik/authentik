@@ -34,21 +34,18 @@ ENV PASSBOOK_REDIS__HOST=redis
 ENV PASSBOOK_POSTGRESQL__USER=passbook
 # CI Password, same as in .github/workflows/ci.yml
 ENV PASSBOOK_POSTGRESQL__PASSWORD="EK-5jnKfjrGRm<77"
-RUN ./manage.py collectstatic --no-input
+RUN mkdir -p /app/web && \
+    ./manage.py collectstatic --no-input
 
 FROM node as npm-builder
 
-COPY --from=static-build /app/static/src /static/src
-COPY --from=static-build /app/static/rollup.config.js /static/rollup.config.js
-COPY --from=static-build /app/static/tsconfig.json /static/tsconfig.json
-COPY --from=static-build /app/static/package.json /static/package.json
-COPY --from=static-build /app/static/package-lock.json /static/package-lock.json
+COPY ./web /static/
 
 RUN cd /static && npm i && npm run build
 
 FROM nginx
 
 COPY --from=static-build /app/static /usr/share/nginx/html/static
-COPY --from=static-build /app/static/robots.txt /usr/share/nginx/html/robots.txt
+COPY --from=npm-builder /static/robots.txt /usr/share/nginx/html/robots.txt
 COPY --from=npm-builder /static/node_modules /usr/share/nginx/html/static/node_modules
 COPY --from=npm-builder /static/dist/* /usr/share/nginx/html/static/dist/
