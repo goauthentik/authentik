@@ -47,7 +47,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"beryju/passbook-proxy:{__version__}",
+            image=f"docker.beryju.org/proxy/beryju/passbook-proxy:{__version__}",
             detach=True,
             network_mode="host",
             auto_remove=True,
