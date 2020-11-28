@@ -34,7 +34,8 @@ ENV PASSBOOK_REDIS__HOST=redis
 ENV PASSBOOK_POSTGRESQL__USER=passbook
 # CI Password, same as in .github/workflows/ci.yml
 ENV PASSBOOK_POSTGRESQL__PASSWORD="EK-5jnKfjrGRm<77"
-RUN ./manage.py collectstatic --no-input
+RUN mkdir -p /app/web && \
+    ./manage.py collectstatic --no-input
 
 FROM node as npm-builder
 

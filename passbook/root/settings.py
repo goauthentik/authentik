@@ -48,6 +48,7 @@ LOGGER = structlog.get_logger()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 STATIC_ROOT = BASE_DIR + "/static"
+STATICFILES_DIRS = [BASE_DIR + "/web"]
 MEDIA_ROOT = BASE_DIR + "/media"
 
 SECRET_KEY = CONFIG.y(
@@ -453,7 +454,6 @@ if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
     CELERY_TASK_ALWAYS_EAGER = True
-    STATICFILES_DIRS = [BASE_DIR + "/web"]
 
 INSTALLED_APPS.append("passbook.core.apps.PassbookCoreConfig")
 
