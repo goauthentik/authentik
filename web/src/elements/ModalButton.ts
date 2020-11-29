@@ -11,6 +11,8 @@ import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import fa from "@fortawesome/fontawesome-free/css/solid.css";
 
 import { convertToSlug } from "../utils";
+import { SpinnerButton } from "./SpinnerButton";
+import { PRIMARY_CLASS } from "../constants";
 
 @customElement("pb-modal-button")
 export class ModalButton extends LitElement {
@@ -119,6 +121,9 @@ export class ModalButton extends LitElement {
                     this.querySelector("[slot=modal]")!.innerHTML = t;
                     this.updateHandlers();
                     this.open = true;
+                    this.querySelectorAll<SpinnerButton>("pb-spinner-button").forEach(sb => {
+                        sb.setDone(PRIMARY_CLASS);
+                    });
                 })
                 .catch((e) => {
                     console.error(e);

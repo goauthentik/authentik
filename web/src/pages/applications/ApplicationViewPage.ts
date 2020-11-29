@@ -22,24 +22,24 @@ export class BoundPoliciesList extends Table {
 
     row(item: any): string[] {
         return [
-            item.policy.name,
+            item.policy_obj.name,
             item.enabled,
             item.order,
             item.timeout,
             `
-            <pb-modal-button href="{% url 'passbook_admin:policy-binding-update' pk=binding.pk %}">
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
+            <pb-modal-button href="administration/policies/bindings/${item.pk}/update/">
+                <pb-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
-                </button>
+                </pb-spinner-button>
                 <div slot="modal"></div>
             </pb-modal-button>
-            <pb-modal-button href="{% url 'passbook_admin:policy-binding-delete' pk=binding.pk %}">
-                <button slot="trigger" class="pf-c-button pf-m-danger">
+            <pb-modal-button href="administration/policies/bindings/${item.pk}/delete/">
+                <pb-spinner-button slot="trigger" class="pf-m-danger">
                     Delete
-                </button>
+                </pb-spinner-button>
                 <div slot="modal"></div>
             </pb-modal-button>
-            `
+            `,
         ];
     }
 }

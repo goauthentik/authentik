@@ -15,6 +15,10 @@ class ConfigSerializer(Serializer):
     branding_logo = ReadOnlyField()
     branding_title = ReadOnlyField()
 
+    error_reporting_enabled = ReadOnlyField()
+    error_reporting_environment = ReadOnlyField()
+    error_reporting_send_pii = ReadOnlyField()
+
     def create(self, request: Request) -> Response:
         raise NotImplementedError
 
@@ -34,6 +38,9 @@ class ConfigsViewSet(ViewSet):
             {
                 "branding_logo": CONFIG.y("passbook.branding.logo"),
                 "branding_title": CONFIG.y("passbook.branding.title"),
+                "error_reporting_enabled": CONFIG.y("error_reporting.enabled"),
+                "error_reporting_environment": CONFIG.y("error_reporting.environment"),
+                "error_reporting_send_pii": CONFIG.y("error_reporting.send_pii"),
             }
         )
         return Response(config.data)
