@@ -10,6 +10,6 @@ export class User {
     avatar?: string;
 
     static me(): Promise<User> {
-        return DefaultClient.fetch<User>("core", "users", "me");
+        return DefaultClient.fetch<User>(["core", "users", "me"]);
     }
 }

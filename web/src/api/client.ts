@@ -3,17 +3,25 @@ import { NotFoundError, RequestError } from "./errors";
 export const VERSION = "v2beta";
 
 export class Client {
-    makeUrl(...url: string[]): string {
-        return `/api/${VERSION}/${url.join("/")}/`;
+    makeUrl(url: string[], query?: { [key: string]: string }): string {
+        let builtUrl = `/api/${VERSION}/${url.join("/")}/`;
+        if (query) {
+            let queryString = Object.keys(query)
+                .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k]))
+                .join("&");
+            builtUrl += `?${queryString}`;
+        }
+        return builtUrl;
     }
 
-    fetch<T>(...url: string[]): Promise<T> {
-        return fetch(this.makeUrl(...url))
+    fetch<T>(url: string[], query?: { [key: string]: string }): Promise<T> {
+        const finalUrl = this.makeUrl(url, query);
+        return fetch(finalUrl)
             .then((r) => {
                 if (r.status > 300) {
                     switch (r.status) {
                         case 404:
-                            throw new NotFoundError(`URL ${this.makeUrl(...url)} not found`);
+                            throw new NotFoundError(`URL ${finalUrl} not found`);
                         default:
                             throw new RequestError(r.statusText);
                     }

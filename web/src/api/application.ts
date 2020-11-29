@@ -13,6 +13,6 @@ export class Application {
     policies?: string[];
 
     static get(slug: string): Promise<Application> {
-        return DefaultClient.fetch<Application>("core", "applications", slug);
+        return DefaultClient.fetch<Application>(["core", "applications", slug]);
     }
 }

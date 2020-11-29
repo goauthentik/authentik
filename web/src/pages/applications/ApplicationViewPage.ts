@@ -1,6 +1,6 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/application";
-import { DefaultClient } from "../../api/client";
+import { DefaultClient, PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 import { Table } from "../../elements/Table";
 
@@ -9,16 +9,38 @@ export class BoundPoliciesList extends Table {
     @property()
     target?: string;
 
-    apiEndpoint(): string[] {
-        return ["policies", "bindings", `?target=${this.target}`];
+    apiEndpoint(): Promise<PBResponse> {
+        return DefaultClient.fetch<PBResponse>(["policies", "bindings"], {
+            target: this.target!,
+            ordering: "order",
+        });
     }
 
     columns(): string[] {
-        return ["Foo"];
+        return ["Policy", "Enabled", "Order", "Timeout", ""];
     }
 
-    row(item: any): TemplateResult[] {
-        return [html`${item}`];
+    row(item: any): string[] {
+        return [
+            item.policy.name,
+            item.enabled,
+            item.order,
+            item.timeout,
+            `
+            <pb-modal-button href="{% url 'passbook_admin:policy-binding-update' pk=binding.pk %}">
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    Edit
+                </button>
+                <div slot="modal"></div>
+            </pb-modal-button>
+            <pb-modal-button href="{% url 'passbook_admin:policy-binding-delete' pk=binding.pk %}">
+                <button slot="trigger" class="pf-c-button pf-m-danger">
+                    Delete
+                </button>
+                <div slot="modal"></div>
+            </pb-modal-button>
+            `
+        ];
     }
 }
 
@@ -79,12 +101,12 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                             <div class="pf-c-card__body">
                                 <pb-admin-logins-chart
-                                    url="${DefaultClient.makeUrl(
+                                    url="${DefaultClient.makeUrl([
                                         "core",
                                         "applications",
                                         this.application?.slug!,
-                                        "metrics"
-                                    )}"
+                                        "metrics",
+                                    ])}"
                                 ></pb-admin-logins-chart>
                             </div>
                         </div>
@@ -95,15 +117,10 @@ export class ApplicationViewPage extends LitElement {
                     tab-title="Policy Bindings"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-l-gallery pf-m-gutter">
-                        <div
-                            class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col"
-                            style="grid-column-end: span 3;grid-row-end: span 2;"
-                        >
-                            <pb-bound-policies-list
-                                .target=${this.application.pk}
-                            ></pb-bound-policies-list>
-                        </div>
+                    <div class="pf-c-card">
+                        <pb-bound-policies-list
+                            .target=${this.application.pk}
+                        ></pb-bound-policies-list>
                     </div>
                 </div>
             </pb-tabs>`;

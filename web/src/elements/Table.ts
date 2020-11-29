@@ -1,57 +1,46 @@
-import { css, html, LitElement, TemplateResult } from "lit-element";
+import { html, LitElement } from "lit-element";
 import { until } from "lit-html/directives/until.js";
-import { DefaultClient, PBResponse } from "../api/client";
+import { PBResponse } from "../api/client";
+import { COMMON_STYLES } from "../common/styles";
 
 export abstract class Table extends LitElement {
-    abstract apiEndpoint(): string[];
+    abstract apiEndpoint(): Promise<PBResponse>;
     abstract columns(): Array<string>;
-    abstract row(item: any): Array<TemplateResult>;
+    abstract row(item: any): Array<string>;
 
     private data: PBResponse = <PBResponse>{};
 
-    public static get styles() {
-        return css`
-            table {
-                width: 100%;
-            }
-            table,
-            tr,
-            td {
-                border: 1px inset white;
-                border-collapse: collapse;
-            }
-            td,
-            th {
-                padding: 0.5rem;
-            }
-            td:hover {
-                border: 1px solid red;
-            }
-        `;
+    static get styles() {
+        return [COMMON_STYLES];
     }
 
     private renderRows() {
-        return DefaultClient.fetch<PBResponse>(...this.apiEndpoint())
+        return this.apiEndpoint()
             .then((r) => (this.data = r))
             .then(() => {
                 return this.data.results.map((item) => {
-                    return this.row(item).map((col) => {
-                        // let t = <TemplateStringsArray>[];
-                        return col;
-                    });
+                    const fullRow = [`<tr role="row">`].concat(
+                        this.row(item).map((col) => {
+                            return `<td role="cell">${col}</td>`;
+                        })
+                    );
+                    fullRow.push(`</tr>`);
+                    return html(<any>fullRow);
                 });
             });
     }
 
     render() {
-        return html`<table>
+        return html`<table class="pf-c-table pf-m-compact pf-m-grid-md">
             <thead>
-                <tr>
-                    ${this.columns().map((col) => html`<th>${col}</th>`)}
+                <tr role="row">
+                    ${this.columns().map(
+                        (col) => html`<th role="columnheader" scope="col">${col}</th>`
+                    )}
                 </tr>
             </thead>
-            <tbody>
-                ${until(this.renderRows(), html`<tr><td>loading...</tr></td>`)}
+            <tbody role="rowgroup">
+                ${until(this.renderRows(), html`<tr role="row"><td>loading...</tr></td>`)}
             </tbody>
         </table>`;
     }
