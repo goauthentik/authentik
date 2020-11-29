@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -106,8 +107,7 @@ func getTLSTransport() http.RoundTripper {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(pbURL url.URL, token string) *APIController {
 	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
-
-	transport.Transport = getTLSTransport()
+	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("passbook-proxy@%s", pkg.VERSION))
 
 	// create the transport
 	auth := httptransport.BasicAuth("", token)

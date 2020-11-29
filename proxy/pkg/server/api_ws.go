@@ -24,6 +24,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
+		"User-Agent":    []string{fmt.Sprintf("passbook-proxy@%s", pkg.VERSION)},
 	}
 
 	value, set := os.LookupEnv("PASSBOOK_INSECURE")
