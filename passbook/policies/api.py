@@ -97,3 +97,4 @@ class PolicyBindingViewSet(ModelViewSet):
     queryset = PolicyBinding.objects.all()
     serializer_class = PolicyBindingSerializer
     filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
+    search_fields = ["policy__name"]

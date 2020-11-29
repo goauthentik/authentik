@@ -140,7 +140,7 @@ SWAGGER_SETTINGS = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "DEFAULT_PAGINATION_CLASS": "passbook.api.pagination.Pagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework_guardian.filters.ObjectPermissionsFilter",
