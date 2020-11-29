@@ -65,7 +65,10 @@ class FlowImporter:
             return value
 
         for key, value in attrs.items():
-            if isinstance(value, (list, dict)):
+            if isinstance(value, dict):
+                for idx, _inner_key in enumerate(value):
+                    value[_inner_key] = updater(value[_inner_key])
+            elif isinstance(value, list):
                 for idx, _inner_value in enumerate(value):
                     attrs[key][idx] = updater(_inner_value)
             else:
@@ -97,6 +100,10 @@ class FlowImporter:
         # Because a model might have multiple unique columns, we chain all identifiers together
         # to create an OR query.
         updated_identifiers = self.__update_pks_for_attrs(entry.identifiers)
+        for key, value in list(updated_identifiers.items()):
+            if isinstance(value, dict) and "pk" in value:
+                del updated_identifiers[key]
+                updated_identifiers[f"{key}"] = value["pk"]
         existing_models = model.objects.filter(
             self.__query_from_identifier(updated_identifiers)
         )

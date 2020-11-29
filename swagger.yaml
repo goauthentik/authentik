@@ -7058,6 +7058,8 @@ definitions:
         title: Policy
         type: string
         format: uuid
+      policy_obj:
+        $ref: '#/definitions/Policy'
       target:
         title: Target
         type: string

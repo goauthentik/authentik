@@ -41,30 +41,6 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
         return correct_model.pk
 
 
-class PolicyBindingSerializer(ModelSerializer):
-    """PolicyBinding Serializer"""
-
-    # Because we're not interested in the PolicyBindingModel's PK but rather the subclasses PK,
-    # we have to manually declare this field
-    target = PolicyBindingModelForeignKey(
-        queryset=PolicyBindingModel.objects.select_subclasses(),
-        required=True,
-    )
-
-    class Meta:
-
-        model = PolicyBinding
-        fields = ["pk", "policy", "target", "enabled", "order", "timeout"]
-
-
-class PolicyBindingViewSet(ModelViewSet):
-    """PolicyBinding Viewset"""
-
-    queryset = PolicyBinding.objects.all()
-    serializer_class = PolicyBindingSerializer
-    filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
-
-
 class PolicySerializer(ModelSerializer):
     """Policy Serializer"""
 
@@ -74,10 +50,17 @@ class PolicySerializer(ModelSerializer):
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("policy", "")
 
+    def to_representation(self, instance: Policy):
+        # pyright: reportGeneralTypeIssues=false
+        if instance.__class__ == Policy:
+            return super().to_representation(instance)
+        return instance.serializer(instance=instance).data
+
     class Meta:
 
         model = Policy
         fields = ["pk"] + GENERAL_FIELDS + ["__type__"]
+        depth = 3
 
 
 class PolicyViewSet(ReadOnlyModelViewSet):
@@ -88,3 +71,29 @@ class PolicyViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Policy.objects.select_subclasses()
+
+
+class PolicyBindingSerializer(ModelSerializer):
+    """PolicyBinding Serializer"""
+
+    # Because we're not interested in the PolicyBindingModel's PK but rather the subclasses PK,
+    # we have to manually declare this field
+    target = PolicyBindingModelForeignKey(
+        queryset=PolicyBindingModel.objects.select_subclasses(),
+        required=True,
+    )
+
+    policy_obj = PolicySerializer(read_only=True, source="policy")
+
+    class Meta:
+
+        model = PolicyBinding
+        fields = ["pk", "policy", "policy_obj", "target", "enabled", "order", "timeout"]
+
+
+class PolicyBindingViewSet(ModelViewSet):
+    """PolicyBinding Viewset"""
+
+    queryset = PolicyBinding.objects.all()
+    serializer_class = PolicyBindingSerializer
+    filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
