@@ -6,7 +6,7 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 
-import { User } from "../api/user";
+import { User } from "../../api/user";
 
 export interface SidebarItem {
     name: string;

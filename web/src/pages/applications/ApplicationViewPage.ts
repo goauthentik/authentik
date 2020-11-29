@@ -2,17 +2,18 @@ import { css, customElement, html, LitElement, property, TemplateResult } from "
 import { Application } from "../../api/application";
 import { DefaultClient, PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
-import { Table } from "../../elements/Table";
+import { Table } from "../../elements/table/Table";
 
 @customElement("pb-bound-policies-list")
 export class BoundPoliciesList extends Table {
     @property()
     target?: string;
 
-    apiEndpoint(): Promise<PBResponse> {
+    apiEndpoint(page: number): Promise<PBResponse> {
         return DefaultClient.fetch<PBResponse>(["policies", "bindings"], {
             target: this.target!,
             ordering: "order",
+            page: page,
         });
     }
 

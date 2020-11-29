@@ -14,7 +14,7 @@ export class Client {
         return builtUrl;
     }
 
-    fetch<T>(url: string[], query?: { [key: string]: string }): Promise<T> {
+    fetch<T>(url: string[], query?: { [key: string]: any }): Promise<T> {
         const finalUrl = this.makeUrl(url, query);
         return fetch(finalUrl)
             .then((r) => {
@@ -35,9 +35,20 @@ export class Client {
 
 export const DefaultClient = new Client();
 
-export interface PBResponse {
+export interface PBPagination {
+    next?: number;
+    previous?: number;
+
     count: number;
-    next: string;
-    previous: string;
+    current: number;
+    total_pages: number;
+
+    start_index: number;
+    end_index: number;
+}
+
+export interface PBResponse {
+    pagination: PBPagination;
+
     results: Array<any>;
 }

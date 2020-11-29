@@ -5,7 +5,7 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 import fa from "@fortawesome/fontawesome-free/css/all.css";
 // @ts-ignore
 import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { User } from "../api/user";
+import { User } from "../../api/user";
 
 @customElement("pb-sidebar-user")
 export class SidebarUser extends LitElement {

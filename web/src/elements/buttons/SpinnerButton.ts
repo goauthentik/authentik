@@ -5,11 +5,7 @@ import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 // @ts-ignore
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
-import {
-    ColorStyles,
-    PRIMARY_CLASS,
-    PROGRESS_CLASS,
-} from "../constants";
+import { ColorStyles, PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
 
 @customElement("pb-spinner-button")
 export class SpinnerButton extends LitElement {

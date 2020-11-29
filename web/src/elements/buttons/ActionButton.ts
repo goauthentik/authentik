@@ -1,6 +1,6 @@
-import { getCookie } from "../utils";
+import { getCookie } from "../../utils";
 import { customElement, html, property } from "lit-element";
-import { ERROR_CLASS, SUCCESS_CLASS } from "../constants";
+import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 
 @customElement("pb-action-button")
