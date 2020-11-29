@@ -59,9 +59,9 @@
                     </td>
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:token-delete' pk=token.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-token-copy-button identifier="{{ token.identifier }}">

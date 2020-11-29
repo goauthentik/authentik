@@ -16,6 +16,9 @@ export class SpinnerButton extends LitElement {
     @property()
     isRunning = false;
 
+    @property()
+    form?: string;
+
     static get styles() {
         return [
             GlobalsStyle,
@@ -56,6 +59,11 @@ export class SpinnerButton extends LitElement {
     callAction() {
         if (this.isRunning === true) {
             return;
+        }
+        if (this.form) {
+            // Because safari we can't just extend HTMLButtonElement, hence I have to implement
+            // these attributes by myself here, sigh...
+            document.querySelector<HTMLFormElement>(`#${this.form}`)?.submit();
         }
         this.setLoading();
     }

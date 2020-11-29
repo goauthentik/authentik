@@ -10,9 +10,9 @@
             {% include 'partials/toolbar_search.html' %}
             <div class="pf-c-toolbar__bulk-select">
                 <pb-modal-button href="{% url 'passbook_core:user-tokens-create' %}">
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                    <pb-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </button>
+                    </pb-spinner-button>
                     <div slot="modal"></div>
                 </pb-modal-button>
             </div>
@@ -56,15 +56,15 @@
                 </td>
                 <td>
                     <pb-modal-button href="{% url 'passbook_core:user-tokens-update' identifier=token.identifier %}">
-                        <button slot="trigger" class="pf-c-button pf-m-secondary">
+                        <pb-spinner-button slot="trigger" class="pf-m-secondary">
                             {% trans 'Edit' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <pb-modal-button href="{% url 'passbook_core:user-tokens-delete' identifier=token.identifier %}">
-                        <button slot="trigger" class="pf-c-button pf-m-danger">
+                        <pb-spinner-button slot="trigger" class="pf-m-danger">
                             {% trans 'Delete' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <pb-token-copy-button identifier="{{ token.identifier }}">
@@ -89,9 +89,9 @@
                 {% trans 'Currently no tokens exist. Click the button below to create one.' %}
             </div>
             <pb-modal-button href="{% url 'passbook_core:user-tokens-create' %}">
-                <button slot="trigger" class="pf-c-button pf-m-primary">
+                <pb-spinner-button slot="trigger" class="pf-m-primary">
                     {% trans 'Create' %}
-                </button>
+                </pb-spinner-button>
                 <div slot="modal"></div>
             </pb-modal-button>
         </div>

@@ -20,9 +20,9 @@
             <div class="pf-c-toolbar__content">
                 <div class="pf-c-toolbar__bulk-select">
                     <pb-modal-button href="{% url 'passbook_admin:stage-binding-create' %}">
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <pb-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
@@ -81,15 +81,15 @@
                         </td>
                         <td>
                             <pb-modal-button href="{% url 'passbook_admin:stage-binding-update' pk=binding.pk %}">
-                                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                     {% trans 'Update' %}
-                                </button>
+                                </pb-spinner-button>
                                 <div slot="modal"></div>
                             </pb-modal-button>
                             <pb-modal-button href="{% url 'passbook_admin:stage-binding-delete' pk=binding.pk %}">
-                                <button slot="trigger" class="pf-c-button pf-m-danger">
+                                <pb-spinner-button slot="trigger" class="pf-m-danger">
                                     {% trans 'Delete' %}
-                                </button>
+                                </pb-spinner-button>
                                 <div slot="modal"></div>
                             </pb-modal-button>
                         </td>
@@ -112,9 +112,9 @@
                     {% trans 'Currently no flow-stage bindings exist. Click the button below to create one.' %}
                 </div>
                 <pb-modal-button href="{% url 'passbook_admin:stage-binding-create' %}">
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                    <pb-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </button>
+                    </pb-spinner-button>
                     <div slot="modal"></div>
                 </pb-modal-button>
             </div>

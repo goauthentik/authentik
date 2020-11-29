@@ -4,20 +4,6 @@
 {% load passbook_utils %}
 {% load static %}
 
-{% block head %}
-{{ block.super }}
-{{ form.media.css }}
-<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/actions.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/urlify.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/prepopulate.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/SelectBox.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/SelectFilter2.js' %}"></script>
-{% endblock %}
-
 {% block content %}
 <section class="pf-c-page__main-section pf-m-light">
     <div class="pf-c-content">

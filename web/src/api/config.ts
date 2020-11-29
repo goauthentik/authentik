@@ -21,7 +21,6 @@ export class Config {
                         integrations: [new Integrations.BrowserTracing()],
                         tracesSampleRate: 1.0,
                         environment: config.error_reporting_environment,
-                        sendDefaultPii: config.error_reporting_send_pii,
                     });
                     console.debug(`passbook/config: Sentry enabled.`);
                 }

@@ -75,21 +75,21 @@
                     </td>
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:policy-update' pk=policy.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-modal-button href="{% url 'passbook_admin:policy-test' pk=policy.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                            <pb-spinner-button slot="trigger" class="pf-m-tertiary">
                                 {% trans 'Test' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-modal-button href="{% url 'passbook_admin:policy-delete' pk=policy.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                     </td>

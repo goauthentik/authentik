@@ -22,9 +22,9 @@
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
                     <pb-modal-button href="{% url 'passbook_admin:stage-prompt-create' %}">
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <pb-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
@@ -79,15 +79,15 @@
                     </td>
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:stage-prompt-update' pk=prompt.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Update' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-modal-button href="{% url 'passbook_admin:stage-prompt-delete' pk=prompt.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% get_links prompt as links %}

@@ -20,9 +20,9 @@
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
                     <pb-modal-button href="{% url 'passbook_admin:user-create' %}">
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <pb-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
@@ -62,23 +62,23 @@
                     </td>
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:user-update' pk=user.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% if user.is_active %}
                         <pb-modal-button href="{% url 'passbook_admin:user-disable' pk=user.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-warning">
+                            <pb-spinner-button slot="trigger" class="pf-m-warning">
                                 {% trans 'Disable' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% else %}
                         <pb-modal-button href="{% url 'passbook_admin:user-delete' pk=user.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                            <pb-spinner-button slot="trigger" class="pf-m-primary">
                                 {% trans 'Enable' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% endif %}
@@ -112,9 +112,9 @@
                 {% endif %}
                 </div>
                 <pb-modal-button href="{% url 'passbook_admin:user-create' %}">
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                    <pb-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </button>
+                    </pb-spinner-button>
                     <div slot="modal"></div>
                 </pb-modal-button>
             </div>

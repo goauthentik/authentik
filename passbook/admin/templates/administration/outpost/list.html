@@ -23,9 +23,9 @@
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
                     <pb-modal-button href="{% url 'passbook_admin:outpost-create' %}">
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <pb-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </button>
+                        </pb-spinner-button>
                         <div slot="modal"></div>
                     </pb-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
@@ -93,15 +93,15 @@
                     {% endwith %}
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:outpost-update' pk=outpost.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-modal-button href="{% url 'passbook_admin:outpost-delete' pk=outpost.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         {% get_htmls outpost as htmls %}
@@ -136,9 +136,9 @@
                 {% endif %}
                 </div>
                 <pb-modal-button href="{% url 'passbook_admin:outpost-create' %}">
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                    <pb-spinner-button slot="trigger" class="pf-c-button pf-m-primary">
                         {% trans 'Create' %}
-                    </button>
+                    </pb-spinner-button>
                     <div slot="modal"></div>
                 </pb-modal-button>
             </div>

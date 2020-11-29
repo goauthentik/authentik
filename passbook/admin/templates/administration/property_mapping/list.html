@@ -72,15 +72,15 @@
                     </td>
                     <td>
                         <pb-modal-button href="{% url 'passbook_admin:property-mapping-update' pk=property_mapping.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                         <pb-modal-button href="{% url 'passbook_admin:property-mapping-delete' pk=property_mapping.pk %}">
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </button>
+                            </pb-spinner-button>
                             <div slot="modal"></div>
                         </pb-modal-button>
                     </td>
