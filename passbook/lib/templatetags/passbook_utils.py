@@ -96,13 +96,6 @@ def form_verbose_name(obj) -> str:
 
 
 @register.filter
-def debug(obj) -> str:
-    """Output object to logger"""
-    LOGGER.debug(obj)
-    return ""
-
-
-@register.filter
 def doc(obj) -> str:
     """Return docstring of object"""
     return mark_safe(obj.__doc__.replace("\n", "<br>"))

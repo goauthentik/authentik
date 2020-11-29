@@ -31,6 +31,7 @@ class ApplicationForm(forms.ModelForm):
             "name": forms.TextInput(),
             "meta_launch_url": forms.TextInput(),
             "meta_publisher": forms.TextInput(),
+            "meta_icon": forms.FileInput(),
         }
         help_texts = {
             "meta_launch_url": _(

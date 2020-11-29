@@ -52,6 +52,9 @@ export class ModalButton extends LitElement {
     updateHandlers() {
         // Ensure links close the modal
         this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach((a) => {
+            if (a.target == "_blank") {
+                return;
+            }
             // Make click on a close the modal
             a.addEventListener("click", (e) => {
                 e.preventDefault();
