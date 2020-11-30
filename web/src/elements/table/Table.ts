@@ -6,7 +6,7 @@ import { COMMON_STYLES } from "../../common/styles";
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
     abstract columns(): Array<string>;
-    abstract row(item: any): Array<string>;
+    abstract row(item: T): Array<string>;
 
     @property()
     data?: PBResponse<T>;
@@ -61,7 +61,7 @@ export abstract class Table<T> extends LitElement {
         });
     }
 
-    render() {
+    renderTable() {
         if (!this.data) {
             this.fetch();
         }
@@ -102,5 +102,9 @@ export abstract class Table<T> extends LitElement {
                     .table=${this}
                 ></pb-table-pagination>
             </div>`;
+    }
+
+    render() {
+        return this.renderTable();
     }
 }

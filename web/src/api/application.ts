@@ -17,7 +17,7 @@ export class Application {
         return DefaultClient.fetch<Application>(["core", "applications", slug]);
     }
 
-    static list(filter?: { [key: string]: string }): Promise<PBResponse<Application>> {
+    static list(filter?: { [key: string]: any }): Promise<PBResponse<Application>> {
         return DefaultClient.fetch<PBResponse<Application>>(["core", "applications"], filter);
     }
 }

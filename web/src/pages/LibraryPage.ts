@@ -1,8 +1,8 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Application } from "../../api/application";
-import { DefaultClient, PBResponse } from "../../api/client";
-import { COMMON_STYLES } from "../../common/styles";
-import { truncate } from "../../utils";
+import { Application } from "../api/application";
+import { DefaultClient, PBResponse } from "../api/client";
+import { COMMON_STYLES } from "../common/styles";
+import { truncate } from "../utils";
 
 @customElement("pb-library")
 export class ApplicationViewPage extends LitElement {
