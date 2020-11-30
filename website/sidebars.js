@@ -133,5 +133,10 @@ module.exports = {
             label: "Troubleshooting",
             items: ["troubleshooting/access"],
         },
+        {
+            type: "category",
+            label: "Development",
+            items: ["development/local-dev-environment"],
+        },
     ],
 };

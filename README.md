@@ -24,30 +24,7 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Development
 
-To develop on passbook, you need a system with Python 3.8+ (3.9 is recommended). passbook uses [pipenv](https://pipenv.pypa.io/en/latest/) for managing dependencies.
-
-To get started, run
-
-```
-python3 -m pip install pipenv
-git clone https://github.com/BeryJu/passbook.git
-cd passbook
-pipenv shell
-pipenv sync -d
-```
-
-Since passbook uses PostgreSQL-specific fields, you also need a local PostgreSQL instance to develop. passbook also uses redis for caching and message queueing.
-For these databases you can use [Postgres.app](https://postgresapp.com/) and [Redis.app](https://jpadilla.github.io/redisapp/) on macOS or use it the docker-compose file in `scripts/docker-compose.yml`.
-
-To tell passbook about these databases, create a file in the project root called `local.env.yml` with the following contents:
-
-```yaml
-debug: true
-postgresql:
-  user: postgres
-
-log_level: debug
-```
+See [Development Documentation](https://passbook.beryju.org/docs/development/local-dev-environment)
 
 ## Security
 

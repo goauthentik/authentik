@@ -15,6 +15,7 @@
     --ifm-color-primary-light: #4e89e8;
     --ifm-color-primary-lighter: #5a91ea;
     --ifm-color-primary-lightest: #80aaef;
+    --ifm-navbar-link-hover-color: var(--ifm-navbar-link-color);
 }
 
 .button.button--outline {
