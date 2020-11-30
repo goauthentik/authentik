@@ -6278,6 +6278,10 @@ definitions:
         title: Provider
         type: integer
         x-nullable: true
+      launch_url:
+        title: Launch url
+        type: string
+        readOnly: true
       meta_launch_url:
         title: Meta launch url
         type: string
