@@ -3,13 +3,13 @@ import { until } from "lit-html/directives/until.js";
 import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 
-export abstract class Table extends LitElement {
-    abstract apiEndpoint(page: number): Promise<PBResponse>;
+export abstract class Table<T> extends LitElement {
+    abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
     abstract columns(): Array<string>;
     abstract row(item: any): Array<string>;
 
     @property()
-    data?: PBResponse;
+    data?: PBResponse<T>;
 
     @property()
     page: number = 1;
@@ -23,6 +23,27 @@ export abstract class Table extends LitElement {
             this.data = r;
             this.page = r.pagination.current;
         });
+    }
+
+    private renderLoading(): TemplateResult {
+        return html`<tr role="row">
+            <td role="cell" colspan="25">
+                <div class="pf-l-bullseye">
+                    <div class="pf-c-empty-state pf-m-sm">
+                        <div class="pf-c-empty-state__content">
+                            <div class="pf-c-empty-state__icon">
+                                <span class="pf-c-spinner" role="progressbar">
+                                    <span class="pf-c-spinner__clipper"></span>
+                                    <span class="pf-c-spinner__lead-ball"></span>
+                                    <span class="pf-c-spinner__tail-ball"></span>
+                                </span>
+                            </div>
+                            <h2 class="pf-c-title pf-m-lg">Loading</h2>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>`;
     }
 
     private renderRows(): TemplateResult[] | undefined {
@@ -43,7 +64,6 @@ export abstract class Table extends LitElement {
     render() {
         if (!this.data) {
             this.fetch();
-            return;
         }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
@@ -73,7 +93,7 @@ export abstract class Table extends LitElement {
                     </tr>
                 </thead>
                 <tbody role="rowgroup">
-                    ${this.renderRows()}
+                    ${this.data ? this.renderRows() : this.renderLoading()}
                 </tbody>
             </table>
             <div class="pf-c-pagination pf-m-bottom">

@@ -49,8 +49,9 @@ export class Route {
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
-    new Route(new RegExp(`^/$`)).redirect("/-/overview/"),
-    new Route(new RegExp(`^#.*`)).redirect("/-/overview/"),
+    new Route(new RegExp(`^/$`)).redirect("/library/"),
+    new Route(new RegExp(`^#.*`)).redirect("/library/"),
+    new Route(new RegExp(`^/library/$`), html`<pb-library></pb-library>`),
     new Route(new RegExp(`^/applications/$`), html`<h1>test</h1>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<pb-application-view .args=${args}></pb-application-view>`;
@@ -114,7 +115,7 @@ export class RouterOutlet extends LitElement {
             return;
         }
         let matchedRoute: RouteMatch | null = null;
-        ROUTES.forEach((route) => {
+        ROUTES.some((route) => {
             console.debug(`passbook/router: matching ${activeUrl} against ${route.url}`);
             const match = route.url.exec(activeUrl);
             if (match != null) {
@@ -122,7 +123,7 @@ export class RouterOutlet extends LitElement {
                 matchedRoute.arguments = match;
                 matchedRoute.fullUrl = activeUrl;
                 console.debug(`passbook/router: found match ${matchedRoute}`);
-                return;
+                return true;
             }
         });
         if (!matchedRoute) {

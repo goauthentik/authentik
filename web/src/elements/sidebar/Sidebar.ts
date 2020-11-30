@@ -18,7 +18,7 @@ export interface SidebarItem {
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         name: "Library",
-        path: ["/-/overview/"],
+        path: ["/library/"],
     },
     {
         name: "Monitor",

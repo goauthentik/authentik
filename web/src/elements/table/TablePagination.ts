@@ -5,7 +5,7 @@ import { COMMON_STYLES } from "../../common/styles";
 @customElement("pb-table-pagination")
 export class TablePagination extends LitElement {
     @property()
-    table?: Table;
+    table?: Table<any>;
 
     static get styles() {
         return [COMMON_STYLES];

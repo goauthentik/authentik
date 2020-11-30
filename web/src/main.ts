@@ -15,6 +15,7 @@ import "./elements/sidebar/SidebarUser";
 import "./elements/Tabs";
 import "./elements/table/TablePagination";
 import "./pages/applications/ApplicationViewPage";
+import "./pages/applications/LibraryPage";
 import "./pages/FlowShellCard";
 import "./pages/RouterOutlet";
 import "./pages/SiteShell";

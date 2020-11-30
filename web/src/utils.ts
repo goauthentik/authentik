@@ -20,3 +20,11 @@ export function convertToSlug(text: string): string {
         .replace(/ /g, "-")
         .replace(/[^\w-]+/g, "");
 }
+
+export function truncate(input?: string, max = 10): string {
+    input = input || "";
+    const array = input.trim().split(" ");
+    const ellipsis = array.length > max ? "..." : "";
+
+    return array.slice(0, max).join(" ") + ellipsis;
+}

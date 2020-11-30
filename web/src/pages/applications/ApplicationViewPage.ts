@@ -5,12 +5,12 @@ import { COMMON_STYLES } from "../../common/styles";
 import { Table } from "../../elements/table/Table";
 
 @customElement("pb-bound-policies-list")
-export class BoundPoliciesList extends Table {
+export class BoundPoliciesList extends Table<any> {
     @property()
     target?: string;
 
-    apiEndpoint(page: number): Promise<PBResponse> {
-        return DefaultClient.fetch<PBResponse>(["policies", "bindings"], {
+    apiEndpoint(page: number): Promise<PBResponse<any>> {
+        return DefaultClient.fetch<PBResponse<any>>(["policies", "bindings"], {
             target: this.target!,
             ordering: "order",
             page: page,

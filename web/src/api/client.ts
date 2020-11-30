@@ -47,8 +47,8 @@ export interface PBPagination {
     end_index: number;
 }
 
-export interface PBResponse {
+export interface PBResponse<T> {
     pagination: PBPagination;
 
-    results: Array<any>;
+    results: Array<T>;
 }

@@ -97,14 +97,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -167,14 +162,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -315,14 +305,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -442,14 +427,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -588,14 +568,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -655,14 +630,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -747,14 +717,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -914,14 +879,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1041,14 +1001,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1168,14 +1123,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1295,14 +1245,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1421,14 +1366,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1548,14 +1488,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1675,14 +1610,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1770,14 +1700,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -1897,14 +1822,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2024,14 +1944,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2151,14 +2066,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2278,14 +2188,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2405,14 +2310,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2532,14 +2432,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2659,14 +2554,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2786,14 +2676,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2856,14 +2741,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -2983,14 +2863,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3110,14 +2985,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3237,14 +3107,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3306,14 +3171,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3432,14 +3292,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3558,14 +3413,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3716,14 +3566,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3786,14 +3631,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -3913,14 +3753,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4040,14 +3875,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4167,14 +3997,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4237,14 +4062,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4364,14 +4184,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4491,14 +4306,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4618,14 +4428,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4745,14 +4550,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4872,14 +4672,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -4939,14 +4734,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5126,14 +4916,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5253,14 +5038,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5380,14 +5160,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5507,14 +5282,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5634,14 +5404,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5761,14 +5526,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -5888,14 +5648,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -6015,14 +5770,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -6142,14 +5892,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -6269,14 +6014,9 @@ paths:
           description: A search term.
           required: false
           type: string
-        - name: limit
+        - name: page
           in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-        - name: offset
-          in: query
-          description: The initial index from which to return the results.
+          description: A page number within the paginated result set.
           required: false
           type: integer
       responses:
@@ -7638,6 +7378,18 @@ definitions:
         readOnly: true
       branding_title:
         title: Branding title
+        type: string
+        readOnly: true
+      error_reporting_enabled:
+        title: Error reporting enabled
+        type: string
+        readOnly: true
+      error_reporting_environment:
+        title: Error reporting environment
+        type: string
+        readOnly: true
+      error_reporting_send_pii:
+        title: Error reporting send pii
         type: string
         readOnly: true
   Message:

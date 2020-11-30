@@ -1,6 +1,7 @@
 """Application API Views"""
 from django.db.models import QuerySet
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -16,6 +17,12 @@ from passbook.policies.engine import PolicyEngine
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
+    launch_url = SerializerMethodField()
+
+    def get_launch_url(self, instance: Application) -> str:
+        """Get generated launch URL"""
+        return instance.get_launch_url() or ""
+
     class Meta:
 
         model = Application
@@ -24,6 +31,7 @@ class ApplicationSerializer(ModelSerializer):
             "name",
             "slug",
             "provider",
+            "launch_url",
             "meta_launch_url",
             "meta_icon",
             "meta_description",
@@ -47,11 +55,8 @@ class ApplicationViewSet(ModelViewSet):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
-    def list(self, request: Request, *args, **kwargs) -> Response:
+    def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
-        if request.user.is_superuser:
-            # pylint: disable=no-member
-            return super().list(request, *args, **kwargs)
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
         allowed_applications = []
