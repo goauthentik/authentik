@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/application";
 import { DefaultClient, PBResponse } from "../../api/client";
 import { PolicyBinding } from "../../api/policy_binding";
@@ -13,7 +13,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     apiEndpoint(page: number): Promise<PBResponse<PolicyBinding>> {
         return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "bindings"], {
-            target: this.target!,
+            target: this.target || "",
             ordering: "order",
             page: page,
         });
@@ -62,7 +62,7 @@ export class ApplicationViewPage extends LitElement {
     @property()
     application?: Application;
 
-    static get styles(): any[] {
+    static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
             css`
                 img.pf-icon {
@@ -95,12 +95,10 @@ export class ApplicationViewPage extends LitElement {
                                 </div>
                             </div>
                             <div class="pf-c-card__body">
-                                ${this.application ?
-        html`
+                                ${this.application ? html`
                                     <pb-admin-logins-chart
                                         url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug, "metrics"])}">
-                                    </pb-admin-logins-chart>`
-        : ""}
+                                    </pb-admin-logins-chart>`: ""}
                             </div>
                         </div>
                     </div>

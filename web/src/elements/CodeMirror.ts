@@ -1,4 +1,4 @@
-import { customElement, html, LitElement, property } from "lit-element";
+import { customElement, LitElement, property } from "lit-element";
 
 // @ts-ignore
 import CodeMirror from "codemirror";
@@ -17,11 +17,11 @@ export class CodeMirrorTextarea extends LitElement {
 
     editor?: CodeMirror.EditorFromTextArea;
 
-    createRenderRoot() {
+    createRenderRoot() : ShadowRoot | Element {
         return this;
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         const textarea = this.querySelector("textarea");
         if (!textarea) {
             return;
@@ -33,7 +33,7 @@ export class CodeMirrorTextarea extends LitElement {
             readOnly: this.readOnly,
             autoRefresh: true,
         });
-        this.editor.on("blur", (e) => {
+        this.editor.on("blur", () => {
             this.editor?.save();
         });
     }

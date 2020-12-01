@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../api/application";
 import { PBResponse } from "../api/client";
 import { COMMON_STYLES } from "../common/styles";
@@ -9,7 +9,7 @@ export class ApplicationViewPage extends LitElement {
     @property()
     apps?: PBResponse<Application>;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
             css`
                 img.pf-icon {

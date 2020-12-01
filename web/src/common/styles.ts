@@ -6,5 +6,6 @@ import PFAddons from "@patternfly/patternfly/patternfly-addons.css";
 import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
 // @ts-ignore
 import PBGlobal from "../passbook.css";
+import { CSSResult } from "lit-element";
 
-export const COMMON_STYLES = [PF, PFAddons, FA, PBGlobal];
+export const COMMON_STYLES: CSSResult[] = [PF, PFAddons, FA, PBGlobal];

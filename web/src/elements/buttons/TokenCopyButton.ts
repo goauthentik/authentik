@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
@@ -14,7 +14,7 @@ export class TokenCopyButton extends LitElement {
     @property()
     buttonClass: string = PRIMARY_CLASS;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             GlobalsStyle,
             ButtonStyle,
@@ -27,7 +27,7 @@ export class TokenCopyButton extends LitElement {
         ];
     }
 
-    onClick() {
+    onClick(): void {
         if (!this.identifier) {
             this.buttonClass = ERROR_CLASS;
             setTimeout(() => {
@@ -45,7 +45,7 @@ export class TokenCopyButton extends LitElement {
         });
     }
 
-    render() {
+    render(): TemplateResult {
         return html`<button @click=${() => this.onClick()} class="pf-c-button ${this.buttonClass}">
             <slot></slot>
         </button>`;

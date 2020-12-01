@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
@@ -12,7 +12,7 @@ export class SidebarUser extends LitElement {
     @property()
     user?: User;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             fa,
             NavStyle,
@@ -44,7 +44,7 @@ export class SidebarUser extends LitElement {
         ];
     }
 
-    render() {
+    render(): TemplateResult {
         if (!this.user) {
             return html``;
         }

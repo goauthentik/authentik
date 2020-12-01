@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
@@ -23,7 +23,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     {
         name: "Monitor",
         path: ["/audit/audit/"],
-        condition: (sb: Sidebar) => {
+        condition: (sb: Sidebar): boolean => {
             return sb.user?.is_superuser || false;
         },
     },
@@ -123,7 +123,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 path: ["/administration/tokens/"],
             },
         ],
-        condition: (sb: Sidebar) => {
+        condition: (sb: Sidebar): boolean => {
             return sb.user?.is_superuser || false;
         },
     },
@@ -137,7 +137,7 @@ export class Sidebar extends LitElement {
     @property()
     user?: User;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             GlobalsStyle,
             PageStyle,
@@ -169,7 +169,7 @@ export class Sidebar extends LitElement {
         super();
         User.me().then((u) => (this.user = u));
         this.activePath = window.location.hash.slice(1, Infinity);
-        window.addEventListener("hashchange", (e) => {
+        window.addEventListener("hashchange", () => {
             this.activePath = window.location.hash.slice(1, Infinity);
         });
     }
@@ -200,7 +200,7 @@ export class Sidebar extends LitElement {
         </li>`;
     }
 
-    render() {
+    render(): TemplateResult {
         return html`<div class="pf-c-page__sidebar-body">
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">

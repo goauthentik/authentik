@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 // @ts-ignore
@@ -19,7 +19,7 @@ export class SiteShell extends LitElement {
     @property()
     loading = false;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             css`
                 :host,
@@ -44,7 +44,7 @@ export class SiteShell extends LitElement {
         ];
     }
 
-    loadContent() {
+    loadContent(): void {
         if (!this._url) {
             return;
         }
@@ -60,7 +60,11 @@ export class SiteShell extends LitElement {
             })
             .then((r) => r.text())
             .then((t) => {
-                this.querySelector("[slot=body]")!.innerHTML = t;
+                const bodySlot = this.querySelector("[slot=body]");
+                if (!bodySlot) {
+                    return;
+                }
+                bodySlot.innerHTML = t;
             })
             .then(() => {
                 // Ensure anchors only change the hash
@@ -73,12 +77,13 @@ export class SiteShell extends LitElement {
                         const qs = url.search || "";
                         a.href = `#${url.pathname}${qs}`;
                     } catch (e) {
+                        console.debug(`passbook/site-shell: error ${e}`);
                         a.href = `#${a.href}`;
                     }
                 });
                 // Create refresh buttons
                 this.querySelectorAll("[role=pb-refresh]").forEach((rt) => {
-                    rt.addEventListener("click", (e) => {
+                    rt.addEventListener("click", () => {
                         this.loadContent();
                     });
                 });
@@ -87,7 +92,7 @@ export class SiteShell extends LitElement {
                     f.addEventListener("submit", (e) => {
                         e.preventDefault();
                         const formData = new FormData(f);
-                        const qs = new URLSearchParams(<any>(<unknown>formData)).toString();
+                        const qs = new URLSearchParams((<any>formData)).toString(); // eslint-disable-line
                         window.location.hash = `#${this._url}?${qs}`;
                     });
                 });
@@ -97,7 +102,7 @@ export class SiteShell extends LitElement {
             });
     }
 
-    render() {
+    render(): TemplateResult {
         return html` ${this.loading ?
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">

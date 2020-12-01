@@ -29,10 +29,10 @@ export class ApplicationList extends TablePage<Application> {
 
     row(item: Application): string[] {
         return [
-            item.name!,
-            item.slug!,
-            item.provider!.toString(),
-            item.provider!.toString(),
+            item.name,
+            item.slug,
+            item.provider.toString(),
+            item.provider.toString(),
             `
             <pb-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <pb-spinner-button slot="trigger" class="pf-m-secondary">

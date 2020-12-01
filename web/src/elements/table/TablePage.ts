@@ -1,4 +1,4 @@
-import { html } from "lit-html";
+import { html, TemplateResult } from "lit-html";
 import { Table } from "./Table";
 
 export abstract class TablePage<T> extends Table<T> {
@@ -6,7 +6,7 @@ export abstract class TablePage<T> extends Table<T> {
     abstract pageDescription(): string;
     abstract pageIcon(): string;
 
-    render() {
+    render(): TemplateResult {
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>

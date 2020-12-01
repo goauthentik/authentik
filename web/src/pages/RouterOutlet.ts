@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
@@ -61,15 +61,16 @@ export const ROUTES: Route[] = [
 
 class RouteMatch {
     route: Route;
-    arguments?: RegExpExecArray;
+    arguments: { [key: string]: string; };
     fullUrl?: string;
 
     constructor(route: Route) {
         this.route = route;
+        this.arguments = {};
     }
 
     render(): TemplateResult {
-        return this.route.render(this.arguments!.groups || {});
+        return this.route.render(this.arguments);
     }
 
     toString(): string {
@@ -85,7 +86,7 @@ export class RouterOutlet extends LitElement {
     @property()
     defaultUrl?: string;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             CodeMirrorStyle,
             CodeMirrorTheme,
@@ -110,7 +111,7 @@ export class RouterOutlet extends LitElement {
     navigate(): void {
         let activeUrl = window.location.hash.slice(1, Infinity);
         if (activeUrl === "") {
-            activeUrl = this.defaultUrl!;
+            activeUrl = this.defaultUrl || "/";
             window.location.hash = `#${activeUrl}`;
             console.debug(`passbook/router: set to ${window.location.hash}`);
             return;
@@ -121,7 +122,7 @@ export class RouterOutlet extends LitElement {
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);
-                matchedRoute.arguments = match;
+                matchedRoute.arguments = match.groups || {};
                 matchedRoute.fullUrl = activeUrl;
                 console.debug(`passbook/router: found match ${matchedRoute}`);
                 return true;
@@ -136,7 +137,7 @@ export class RouterOutlet extends LitElement {
                 </pb-site-shell>`
             );
             matchedRoute = new RouteMatch(route);
-            matchedRoute.arguments = route.url.exec(activeUrl)!;
+            matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
             matchedRoute.fullUrl = activeUrl;
         }
         this.current = matchedRoute;

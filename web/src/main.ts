@@ -7,7 +7,6 @@ import "./elements/buttons/ModalButton";
 import "./elements/buttons/SpinnerButton";
 import "./elements/buttons/TokenCopyButton";
 import "./elements/CodeMirror";
-import "./elements/FetchFillSlot";
 import "./elements/Messages";
 import "./elements/sidebar/Sidebar";
 import "./elements/sidebar/SidebarBrand";

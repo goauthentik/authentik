@@ -2,8 +2,12 @@ import { NotFoundError, RequestError } from "./errors";
 
 export const VERSION = "v2beta";
 
+export interface QueryArguments {
+    [key: string]: number | string | boolean;
+}
+
 export class Client {
-    makeUrl(url: string[], query?: { [key: string]: string }): string {
+    makeUrl(url: string[], query?: QueryArguments): string {
         let builtUrl = `/api/${VERSION}/${url.join("/")}/`;
         if (query) {
             const queryString = Object.keys(query)
@@ -14,7 +18,7 @@ export class Client {
         return builtUrl;
     }
 
-    fetch<T>(url: string[], query?: { [key: string]: any }): Promise<T> {
+    fetch<T>(url: string[], query?: QueryArguments): Promise<T> {
         const finalUrl = this.makeUrl(url, query);
         return fetch(finalUrl)
             .then((r) => {

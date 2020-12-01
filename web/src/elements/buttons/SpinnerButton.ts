@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
@@ -15,7 +15,7 @@ export class SpinnerButton extends LitElement {
     @property()
     form?: string;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             GlobalsStyle,
             ButtonStyle,
@@ -35,13 +35,13 @@ export class SpinnerButton extends LitElement {
         this.classList.add(PRIMARY_CLASS);
     }
 
-    setLoading() {
+    setLoading(): void {
         this.isRunning = true;
         this.classList.add(PROGRESS_CLASS);
         this.requestUpdate();
     }
 
-    setDone(statusClass: string) {
+    setDone(statusClass: string): void {
         this.isRunning = false;
         this.classList.remove(PROGRESS_CLASS);
         this.classList.replace(PRIMARY_CLASS, statusClass);
@@ -52,7 +52,7 @@ export class SpinnerButton extends LitElement {
         }, 1000);
     }
 
-    callAction() {
+    callAction(): void {
         if (this.isRunning === true) {
             return;
         }
@@ -64,7 +64,7 @@ export class SpinnerButton extends LitElement {
         this.setLoading();
     }
 
-    render() {
+    render(): TemplateResult {
         return html`<button
             class="pf-c-button pf-m-progress ${this.classList.toString()}"
             @click=${() => this.callAction()}

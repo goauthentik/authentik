@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
@@ -8,6 +8,10 @@ import { Config } from "../../api/config";
 export const DefaultConfig: Config = {
     branding_logo: " /static/dist/assets/images/logo.svg",
     branding_title: "passbook",
+
+    error_reporting_enabled: false,
+    error_reporting_environment: "",
+    error_reporting_send_pii: false,
 };
 
 @customElement("pb-sidebar-brand")
@@ -15,7 +19,7 @@ export class SidebarBrand extends LitElement {
     @property()
     config: Config = DefaultConfig;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             GlobalsStyle,
             PageStyle,
@@ -45,7 +49,7 @@ export class SidebarBrand extends LitElement {
         Config.get().then((c) => (this.config = c));
     }
 
-    render() {
+    render(): TemplateResult {
         if (!this.config) {
             return html``;
         }

@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 // @ts-ignore
@@ -22,7 +22,7 @@ export class ModalButton extends LitElement {
     @property()
     open = false;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [
             css`
                 :host {
@@ -49,7 +49,7 @@ export class ModalButton extends LitElement {
         });
     }
 
-    updateHandlers() {
+    updateHandlers(): void {
         // Ensure links close the modal
         this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach((a) => {
             if (a.target == "_blank") {
@@ -63,7 +63,7 @@ export class ModalButton extends LitElement {
         });
         // Make name field update slug field
         this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
-            input.addEventListener("input", (e) => {
+            input.addEventListener("input", () => {
                 const form = input.closest("form");
                 if (form === null) {
                     return;
@@ -90,7 +90,12 @@ export class ModalButton extends LitElement {
                     })
                     .then((data) => {
                         if (data.indexOf("csrfmiddlewaretoken") !== -1) {
-                            this.querySelector("[slot=modal]")!.innerHTML = data;
+                            const modalSlot = this.querySelector("[slot=modal]");
+                            if (!modalSlot) {
+                                console.debug("passbook/modalbutton: modal slot not found?");
+                                return;
+                            }
+                            modalSlot.innerHTML = data;
                             console.debug("passbook/modalbutton: re-showing form");
                             this.updateHandlers();
                         } else {
@@ -110,7 +115,7 @@ export class ModalButton extends LitElement {
         });
     }
 
-    onClick(e: MouseEvent) {
+    onClick(): void {
         if (!this.href) {
             this.updateHandlers();
             this.open = true;
@@ -121,7 +126,11 @@ export class ModalButton extends LitElement {
             })
                 .then((r) => r.text())
                 .then((t) => {
-                    this.querySelector("[slot=modal]")!.innerHTML = t;
+                    const modalSlot = this.querySelector("[slot=modal]");
+                    if (!modalSlot) {
+                        return;
+                    }
+                    modalSlot.innerHTML = t;
                     this.updateHandlers();
                     this.open = true;
                     this.querySelectorAll<SpinnerButton>("pb-spinner-button").forEach((sb) => {
@@ -134,7 +143,7 @@ export class ModalButton extends LitElement {
         }
     }
 
-    renderModal() {
+    renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
                 <div
@@ -158,8 +167,8 @@ export class ModalButton extends LitElement {
         </div>`;
     }
 
-    render() {
-        return html` <slot name="trigger" @click=${(e: any) => this.onClick(e)}></slot>
+    render(): TemplateResult {
+        return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : ""}`;
     }
 }

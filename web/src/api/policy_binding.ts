@@ -1,7 +1,7 @@
 export interface Policy {
     pk: string;
     name: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface PolicyBinding {

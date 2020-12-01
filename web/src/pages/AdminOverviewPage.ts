@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { AdminOverview } from "../api/admin_overview";
 import { DefaultClient } from "../api/client";
@@ -17,7 +17,7 @@ export class AggregateCard extends LitElement {
     @property()
     headerLink?: string;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return COMMON_STYLES;
     }
 
@@ -61,7 +61,7 @@ export class AdminOverviewPage extends LitElement {
     @property()
     data?: AdminOverview;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return COMMON_STYLES;
     }
 

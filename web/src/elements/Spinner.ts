@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
 
@@ -15,7 +15,7 @@ export class Spinner extends LitElement {
     @property()
     size: SpinnerSize = SpinnerSize.Medium;
 
-    static get styles() {
+    static get styles(): CSSResult[] {
         return [SpinnerStyle];
     }
 

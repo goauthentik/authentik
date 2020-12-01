@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import Chart from "chart.js";
 
 interface TickValue {
@@ -11,10 +11,10 @@ export class AdminLoginsChart extends LitElement {
     @property()
     url = "";
 
-    chart: any;
+    chart?: Chart;
 
-    static get styles() {
-        return css`
+    static get styles(): CSSResult[] {
+        return [css`
             :host {
                 position: relative;
                 height: 100%;
@@ -26,7 +26,7 @@ export class AdminLoginsChart extends LitElement {
                 width: 100px;
                 height: 100px;
             }
-        `;
+        `];
     }
 
     constructor() {
@@ -38,14 +38,21 @@ export class AdminLoginsChart extends LitElement {
         });
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         fetch(this.url)
             .then((r) => r.json())
             .catch((e) => console.error(e))
             .then((r) => {
-                const ctx = (<HTMLCanvasElement>this.shadowRoot?.querySelector("canvas")).getContext(
-                    "2d"
-                )!;
+                const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
+                if (!canvas) {
+                    console.warn("Failed to get canvas element");
+                    return false;
+                }
+                const ctx = canvas.getContext("2d");
+                if (!ctx) {
+                    console.warn("failed to get 2d context");
+                    return false;
+                }
                 this.chart = new Chart(ctx, {
                     type: "bar",
                     data: {
@@ -102,7 +109,7 @@ export class AdminLoginsChart extends LitElement {
             });
     }
 
-    render() {
+    render(): TemplateResult {
         return html`<canvas></canvas>`;
     }
 }

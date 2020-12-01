@@ -1,3 +1,5 @@
+import { html, TemplateResult } from "lit-html";
+
 export function getCookie(name: string): string | undefined {
     let cookieValue = undefined;
     if (document.cookie && document.cookie !== "") {
@@ -27,4 +29,8 @@ export function truncate(input?: string, max = 10): string {
     const ellipsis = array.length > max ? "..." : "";
 
     return array.slice(0, max).join(" ") + ellipsis;
+}
+
+export function htmlFromString(...strings: string[]): TemplateResult {
+    return html({ raw: strings, ...strings } as TemplateStringsArray);
 }

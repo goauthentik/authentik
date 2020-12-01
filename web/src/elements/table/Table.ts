@@ -1,7 +1,8 @@
 import { gettext } from "django";
-import { html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
+import { htmlFromString } from "../../utils";
 
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
@@ -14,11 +15,11 @@ export abstract class Table<T> extends LitElement {
     @property()
     page = 1;
 
-    static get styles() {
-        return [COMMON_STYLES];
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
     }
 
-    public fetch() {
+    public fetch(): void {
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
@@ -57,11 +58,11 @@ export abstract class Table<T> extends LitElement {
                 })
             );
             fullRow.push("</tr>");
-            return html(<any>fullRow);
+            return htmlFromString(...fullRow);
         });
     }
 
-    renderTable() {
+    renderTable(): TemplateResult {
         if (!this.data) {
             this.fetch();
         }
@@ -85,9 +86,7 @@ export abstract class Table<T> extends LitElement {
             <table class="pf-c-table pf-m-compact pf-m-grid-md">
                 <thead>
                     <tr role="row">
-                        ${this.columns().map(
-        (col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`
-    )}
+                        ${this.columns().map((col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`)}
                     </tr>
                 </thead>
                 <tbody role="rowgroup">
@@ -102,7 +101,7 @@ export abstract class Table<T> extends LitElement {
             </div>`;
     }
 
-    render() {
+    render(): TemplateResult {
         return this.renderTable();
     }
 }

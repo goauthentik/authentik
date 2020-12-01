@@ -3,7 +3,7 @@
     "scripts": {
         "build": "rollup -c ./rollup.config.js",
         "watch": "rollup -c -w",
-        "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+        "lint": "eslint . --max-warnings 0"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",

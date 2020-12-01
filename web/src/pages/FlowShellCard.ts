@@ -49,7 +49,7 @@ export class FlowShellCard extends LitElement {
     async updateCard(data: Response): Promise<void> {
         switch (data.type) {
         case ResponseType.redirect:
-            window.location.assign(data.to!);
+            window.location.assign(data.to || "");
             break;
         case ResponseType.template:
             this.flowBody = data.body;

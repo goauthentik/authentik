@@ -1,5 +1,5 @@
 import { getCookie } from "../../utils";
-import { customElement, html, property } from "lit-element";
+import { customElement, property } from "lit-element";
 import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 
@@ -8,21 +8,26 @@ export class ActionButton extends SpinnerButton {
     @property()
     url = "";
 
-    callAction() {
+    callAction(): void {
         if (this.isRunning === true) {
             return;
         }
         this.setLoading();
         const csrftoken = getCookie("passbook_csrf");
+        if (!csrftoken) {
+            console.debug("No csrf token in cookie");
+            this.setDone(ERROR_CLASS);
+            return;
+        }
         const request = new Request(this.url, {
-            headers: { "X-CSRFToken": csrftoken! },
+            headers: { "X-CSRFToken": csrftoken },
         });
         fetch(request, {
             method: "POST",
             mode: "same-origin",
         })
             .then((r) => r.json())
-            .then((r) => {
+            .then(() => {
                 this.setDone(SUCCESS_CLASS);
             })
             .catch(() => {
