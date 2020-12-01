@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { html, LitElement, property, TemplateResult } from "lit-element";
-import { until } from "lit-html/directives/until.js";
 import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 

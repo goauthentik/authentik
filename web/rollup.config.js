@@ -6,6 +6,7 @@ import sourcemaps from "rollup-plugin-sourcemaps";
 import typescript from "@rollup/plugin-typescript";
 import cssimport from "rollup-plugin-cssimport";
 import copy from "rollup-plugin-copy";
+import externalGlobals from "rollup-plugin-external-globals";
 
 const resources = [
     { src: "src/index.html", dest: "dist" },
@@ -26,6 +27,9 @@ export default [
         plugins: [
             cssimport(),
             typescript(),
+            externalGlobals({
+                django: "django"
+            }),
             resolve({ browser: true }),
             commonjs(),
             sourcemaps(),
