@@ -143,6 +143,10 @@ export class Sidebar extends LitElement {
             PageStyle,
             NavStyle,
             css`
+                .pf-c-nav__list .sidebar-brand {
+                    max-height: 82px;
+                    margin-bottom: 0.5rem;
+                }
                 .pf-c-nav__link {
                     --pf-c-nav__link--PaddingTop: 0.5rem;
                     --pf-c-nav__link--PaddingRight: 0.5rem;
@@ -207,7 +211,7 @@ export class Sidebar extends LitElement {
         return html`<div class="pf-c-page__sidebar-body">
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
-                    <li class="pf-c-nav__item">
+                    <li class="pf-c-nav__item sidebar-brand">
                         <pb-sidebar-brand></pb-sidebar-brand>
                     </li>
                     ${SIDEBAR_ITEMS.map((i) => this.renderItem(i))}

@@ -5,10 +5,15 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { Config } from "../../api/config";
 
+export const DefaultConfig: Config = {
+    branding_logo: " /static/dist/assets/images/logo.svg",
+    branding_title: "passbook",
+};
+
 @customElement("pb-sidebar-brand")
 export class SidebarBrand extends LitElement {
     @property()
-    config?: Config;
+    config: Config = DefaultConfig;
 
     static get styles() {
         return [
@@ -44,12 +49,12 @@ export class SidebarBrand extends LitElement {
         if (!this.config) {
             return html``;
         }
-        return html` <a href="" class="pf-c-page__header-brand-link">
+        return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
-                <img src="${this.config?.branding_logo}" alt="passbook icon" loading="lazy" />
-                ${this.config?.branding_title
-        ? html`<span>${this.config.branding_title}</span>`
-        : ""}
+                <img src="${this.config.branding_logo}" alt="passbook icon" loading="lazy" />
+                ${this.config.branding_title
+                    ? html`<span>${this.config.branding_title}</span>`
+                    : ""}
             </div>
         </a>`;
     }
