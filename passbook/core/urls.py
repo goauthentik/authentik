@@ -24,7 +24,7 @@ urlpatterns = [
         name="user-tokens-delete",
     ),
     # Libray
-    path("-/overview/", library.LibraryView.as_view(), name="overview"),
+    path("library/", library.LibraryView.as_view(), name="overview"),
     # Impersonation
     path(
         "-/impersonation/<int:user_id>/",
