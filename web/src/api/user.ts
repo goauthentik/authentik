@@ -1,5 +1,4 @@
-import { Primitive } from "lit-html/lib/parts";
-import { DefaultClient } from "./client";
+import { DefaultClient, PBResponse } from "./client";
 
 export class User {
     pk?: number;
@@ -11,5 +10,13 @@ export class User {
 
     static me(): Promise<User> {
         return DefaultClient.fetch<User>(["core", "users", "me"]);
+    }
+
+    static count(): Promise<number> {
+        return DefaultClient.fetch<PBResponse<User>>(["core", "users"], {
+            "page_size": 1
+        }).then(r => {
+            return r.pagination.count;
+        });
     }
 }
