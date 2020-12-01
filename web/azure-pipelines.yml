@@ -1,5 +1,5 @@
 trigger:
-- main
+  - master
 
 stages:
   - stage: link
