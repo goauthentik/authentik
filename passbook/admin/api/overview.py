@@ -1,6 +1,5 @@
 """passbook administration overview"""
 from django.core.cache import cache
-from django.http import response
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.fields import SerializerMethodField
 from rest_framework.permissions import IsAdminUser
@@ -61,7 +60,7 @@ class AdministrationOverviewSerializer(Serializer):
         """Get cached flow count"""
         return len(cache.keys("flow_*"))
 
-    def create(self, request: Request) -> response:
+    def create(self, request: Request) -> Response:
         raise NotImplementedError
 
     def update(self, request: Request) -> Response:
