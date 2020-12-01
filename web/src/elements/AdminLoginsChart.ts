@@ -9,7 +9,7 @@ interface TickValue {
 @customElement("pb-admin-logins-chart")
 export class AdminLoginsChart extends LitElement {
     @property()
-    url: string = "";
+    url = "";
 
     chart: any;
 
@@ -43,7 +43,7 @@ export class AdminLoginsChart extends LitElement {
             .then((r) => r.json())
             .catch((e) => console.error(e))
             .then((r) => {
-                let ctx = (<HTMLCanvasElement>this.shadowRoot?.querySelector("canvas")).getContext(
+                const ctx = (<HTMLCanvasElement>this.shadowRoot?.querySelector("canvas")).getContext(
                     "2d"
                 )!;
                 this.chart = new Chart(ctx, {

@@ -20,7 +20,7 @@ export class ModalButton extends LitElement {
     href?: string;
 
     @property()
-    open: boolean = false;
+    open = false;
 
     static get styles() {
         return [
@@ -79,7 +79,7 @@ export class ModalButton extends LitElement {
         this.querySelectorAll<HTMLFormElement>("[slot=modal] form").forEach((form) => {
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
-                let formData = new FormData(form);
+                const formData = new FormData(form);
                 fetch(this.href ? this.href : form.action, {
                     method: form.method,
                     body: formData,
@@ -91,11 +91,11 @@ export class ModalButton extends LitElement {
                     .then((data) => {
                         if (data.indexOf("csrfmiddlewaretoken") !== -1) {
                             this.querySelector("[slot=modal]")!.innerHTML = data;
-                            console.debug(`passbook/modalbutton: re-showing form`);
+                            console.debug("passbook/modalbutton: re-showing form");
                             this.updateHandlers();
                         } else {
                             this.open = false;
-                            console.debug(`passbook/modalbutton: successful submit`);
+                            console.debug("passbook/modalbutton: successful submit");
                             this.dispatchEvent(
                                 new CustomEvent("hashchange", {
                                     bubbles: true,

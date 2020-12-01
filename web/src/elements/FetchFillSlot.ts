@@ -7,16 +7,16 @@ interface ComparisonHash {
 @customElement("fetch-fill-slot")
 export class FetchFillSlot extends LitElement {
     @property()
-    url: string = "";
+    url = "";
 
     @property()
-    key: string = "";
+    key = "";
 
     @property()
-    value: string = "";
+    value = "";
 
     comparison(slotName: string) {
-        let comparisonOperatorsHash = <ComparisonHash>{
+        const comparisonOperatorsHash = <ComparisonHash>{
             "<": function (a: any, b: any) {
                 return a < b;
             },

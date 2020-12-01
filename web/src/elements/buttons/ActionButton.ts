@@ -6,7 +6,7 @@ import { SpinnerButton } from "./SpinnerButton";
 @customElement("pb-action-button")
 export class ActionButton extends SpinnerButton {
     @property()
-    url: string = "";
+    url = "";
 
     callAction() {
         if (this.isRunning === true) {

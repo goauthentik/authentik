@@ -181,15 +181,15 @@ export class Sidebar extends LitElement {
             class="pf-c-nav__item ${item.children ? "pf-m-expandable pf-m-expanded" : ""}"
         >
             ${item.path
-                ? html`<a
+        ? html`<a
                       href="#${item.path}"
                       class="pf-c-nav__link ${item.path.some((v) => v === this.activePath)
-                          ? "pf-m-current"
-                          : ""}"
+        ? "pf-m-current"
+        : ""}"
                   >
                       ${item.name}
                   </a>`
-                : html`<a class="pf-c-nav__link" aria-expanded="true"
+        : html`<a class="pf-c-nav__link" aria-expanded="true"
                           >${item.name}
                           <span class="pf-c-nav__toggle">
                               <i class="fas fa-angle-right" aria-hidden="true"></i>

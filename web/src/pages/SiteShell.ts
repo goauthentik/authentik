@@ -17,7 +17,7 @@ export class SiteShell extends LitElement {
     _url?: string;
 
     @property()
-    loading: boolean = false;
+    loading = false;
 
     static get styles() {
         return [
@@ -99,7 +99,7 @@ export class SiteShell extends LitElement {
 
     render() {
         return html` ${this.loading
-                ? html`<div class="pf-c-backdrop">
+            ? html`<div class="pf-c-backdrop">
                       <div class="pf-l-bullseye">
                           <div class="pf-l-bullseye__item">
                               <span
@@ -114,7 +114,7 @@ export class SiteShell extends LitElement {
                           </div>
                       </div>
                   </div>`
-                : ""}
+            : ""}
             <slot name="body"> </slot>`;
     }
 }

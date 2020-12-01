@@ -1,16 +1,17 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/application";
 import { DefaultClient, PBResponse } from "../../api/client";
+import { PolicyBinding } from "../../api/policy_binding";
 import { COMMON_STYLES } from "../../common/styles";
 import { Table } from "../../elements/table/Table";
 
 @customElement("pb-bound-policies-list")
-export class BoundPoliciesList extends Table<any> {
+export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
 
-    apiEndpoint(page: number): Promise<PBResponse<any>> {
-        return DefaultClient.fetch<PBResponse<any>>(["policies", "bindings"], {
+    apiEndpoint(page: number): Promise<PBResponse<PolicyBinding>> {
+        return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "bindings"], {
             target: this.target!,
             ordering: "order",
             page: page,
@@ -21,12 +22,12 @@ export class BoundPoliciesList extends Table<any> {
         return ["Policy", "Enabled", "Order", "Timeout", ""];
     }
 
-    row(item: any): string[] {
+    row(item: PolicyBinding): string[] {
         return [
             item.policy_obj.name,
-            item.enabled,
-            item.order,
-            item.timeout,
+            item.enabled ? "Yes" : "No",
+            item.order.toString(),
+            item.timeout.toString(),
             `
             <pb-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <pb-spinner-button slot="trigger" class="pf-m-secondary">
@@ -70,7 +71,7 @@ export class ApplicationViewPage extends LitElement {
         );
     }
 
-    render() {
+    render(): TemplateResult {
         if (!this.application) {
             return html``;
         }
@@ -84,44 +85,24 @@ export class ApplicationViewPage extends LitElement {
                 </div>
             </section>
             <pb-tabs>
-                <section
-                    slot="page-1"
-                    tab-title="Users"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
+                <section slot="page-1" tab-title="Users" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div
-                            class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col"
-                            style="grid-column-end: span 3;grid-row-end: span 2;"
-                        >
+                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__header">
                                 <div class="pf-c-card__header-main">
-                                    <i class="pf-icon pf-icon-server"></i> Logins over the last 24
-                                    hours
+                                    <i class="pf-icon pf-icon-server"></i> Logins over the last 24 hours
                                 </div>
                             </div>
                             <div class="pf-c-card__body">
-                                <pb-admin-logins-chart
-                                    url="${DefaultClient.makeUrl([
-                                        "core",
-                                        "applications",
-                                        this.application?.slug!,
-                                        "metrics",
-                                    ])}"
-                                ></pb-admin-logins-chart>
+                                ${this.application ?
+        html`<pb-admin-logins-chart url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug!, "metrics"])}"></pb-admin-logins-chart>` : ""}
                             </div>
                         </div>
                     </div>
                 </section>
-                <div
-                    slot="page-2"
-                    tab-title="Policy Bindings"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
+                <div slot="page-2" tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <pb-bound-policies-list
-                            .target=${this.application.pk}
-                        ></pb-bound-policies-list>
+                        <pb-bound-policies-list .target=${this.application.pk}></pb-bound-policies-list>
                     </div>
                 </div>
             </pb-tabs>`;

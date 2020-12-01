@@ -12,7 +12,7 @@ export abstract class Table<T> extends LitElement {
     data?: PBResponse<T>;
 
     @property()
-    page: number = 1;
+    page = 1;
 
     static get styles() {
         return [COMMON_STYLES];
@@ -51,12 +51,12 @@ export abstract class Table<T> extends LitElement {
             return;
         }
         return this.data.results.map((item) => {
-            const fullRow = [`<tr role="row">`].concat(
+            const fullRow = ["<tr role=\"row\">"].concat(
                 this.row(item).map((col) => {
                     return `<td role="cell">${col}</td>`;
                 })
             );
-            fullRow.push(`</tr>`);
+            fullRow.push("</tr>");
             return html(<any>fullRow);
         });
     }
@@ -71,8 +71,8 @@ export abstract class Table<T> extends LitElement {
                         <slot name="create-button"></slot>
                         <button
                             @click=${() => {
-                                this.fetch();
-                            }}
+        this.fetch();
+    }}
                             class="pf-c-button pf-m-primary"
                         >
                             Refresh
@@ -88,8 +88,8 @@ export abstract class Table<T> extends LitElement {
                 <thead>
                     <tr role="row">
                         ${this.columns().map(
-                            (col) => html`<th role="columnheader" scope="col">${col}</th>`
-                        )}
+        (col) => html`<th role="columnheader" scope="col">${col}</th>`
+    )}
                     </tr>
                 </thead>
                 <tbody role="rowgroup">

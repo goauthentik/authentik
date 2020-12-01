@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property } from "lit-element";
+import { LitElement, html, customElement, property, TemplateResult } from "lit-element";
 
 enum ResponseType {
     redirect = "redirect",
@@ -14,16 +14,16 @@ interface Response {
 @customElement("pb-flow-shell-card")
 export class FlowShellCard extends LitElement {
     @property()
-    flowBodyUrl: string = "";
+    flowBodyUrl = "";
 
     @property()
     flowBody?: string;
 
-    createRenderRoot() {
+    createRenderRoot(): Element | ShadowRoot {
         return this;
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         fetch(this.flowBodyUrl)
             .then((r) => {
                 if (r.status === 404) {
@@ -46,40 +46,40 @@ export class FlowShellCard extends LitElement {
             });
     }
 
-    async updateCard(data: Response) {
+    async updateCard(data: Response): Promise<void> {
         switch (data.type) {
-            case ResponseType.redirect:
-                window.location.assign(data.to!);
-                break;
-            case ResponseType.template:
-                this.flowBody = data.body;
-                await this.requestUpdate();
-                this.checkAutofocus();
-                this.loadFormCode();
-                this.setFormSubmitHandlers();
-                break;
-            default:
-                console.debug(`passbook/flows: unexpected data type ${data.type}`);
-                break;
+        case ResponseType.redirect:
+            window.location.assign(data.to!);
+            break;
+        case ResponseType.template:
+            this.flowBody = data.body;
+            await this.requestUpdate();
+            this.checkAutofocus();
+            this.loadFormCode();
+            this.setFormSubmitHandlers();
+            break;
+        default:
+            console.debug(`passbook/flows: unexpected data type ${data.type}`);
+            break;
         }
     }
 
-    loadFormCode() {
+    loadFormCode(): void {
         this.querySelectorAll("script").forEach((script) => {
-            let newScript = document.createElement("script");
+            const newScript = document.createElement("script");
             newScript.src = script.src;
             document.head.appendChild(newScript);
         });
     }
 
-    checkAutofocus() {
+    checkAutofocus(): void {
         const autofocusElement = <HTMLElement>this.querySelector("[autofocus]");
         if (autofocusElement !== null) {
             autofocusElement.focus();
         }
     }
 
-    updateFormAction(form: HTMLFormElement) {
+    updateFormAction(form: HTMLFormElement): boolean {
         for (let index = 0; index < form.elements.length; index++) {
             const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
@@ -94,13 +94,13 @@ export class FlowShellCard extends LitElement {
         return true;
     }
 
-    checkAutosubmit(form: HTMLFormElement) {
+    checkAutosubmit(form: HTMLFormElement): void {
         if ("autosubmit" in form.attributes) {
             return form.submit();
         }
     }
 
-    setFormSubmitHandlers() {
+    setFormSubmitHandlers(): void {
         this.querySelectorAll("form").forEach((form) => {
             console.debug(`passbook/flows: Checking for autosubmit attribute ${form}`);
             this.checkAutosubmit(form);
@@ -109,7 +109,7 @@ export class FlowShellCard extends LitElement {
             console.debug(`passbook/flows: Adding handler for form ${form}`);
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
-                let formData = new FormData(form);
+                const formData = new FormData(form);
                 this.flowBody = undefined;
                 fetch(this.flowBodyUrl, {
                     method: "post",
@@ -129,7 +129,7 @@ export class FlowShellCard extends LitElement {
         });
     }
 
-    errorMessage(error: string) {
+    errorMessage(error: string): void {
         this.flowBody = `
             <style>
                 .pb-exception {
@@ -150,7 +150,7 @@ export class FlowShellCard extends LitElement {
             </div>`;
     }
 
-    loading() {
+    loading(): TemplateResult {
         return html` <div class="pf-c-login__main-body pb-loading">
             <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
                 <span class="pf-c-spinner__clipper"></span>
@@ -160,7 +160,7 @@ export class FlowShellCard extends LitElement {
         </div>`;
     }
 
-    render() {
+    render(): TemplateResult {
         if (this.flowBody) {
             return html(<TemplateStringsArray>(<unknown>[this.flowBody]));
         }

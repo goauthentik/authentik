@@ -49,10 +49,10 @@ export class Route {
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
-    new Route(new RegExp(`^/$`)).redirect("/library/"),
-    new Route(new RegExp(`^#.*`)).redirect("/library/"),
-    new Route(new RegExp(`^/library/$`), html`<pb-library></pb-library>`),
-    new Route(new RegExp(`^/applications/$`), html`<pb-application-list></pb-application-list>`),
+    new Route(new RegExp("^/$")).redirect("/library/"),
+    new Route(new RegExp("^#.*")).redirect("/library/"),
+    new Route(new RegExp("^/library/$"), html`<pb-library></pb-library>`),
+    new Route(new RegExp("^/applications/$"), html`<pb-application-list></pb-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<pb-application-view .args=${args}></pb-application-view>`;
     }),
@@ -99,14 +99,14 @@ export class RouterOutlet extends LitElement {
 
     constructor() {
         super();
-        window.addEventListener("hashchange", (e) => this.navigate());
+        window.addEventListener("hashchange", () => this.navigate());
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         this.navigate();
     }
 
-    navigate() {
+    navigate(): void {
         let activeUrl = window.location.hash.slice(1, Infinity);
         if (activeUrl === "") {
             activeUrl = this.defaultUrl!;
@@ -141,7 +141,7 @@ export class RouterOutlet extends LitElement {
         this.current = matchedRoute;
     }
 
-    render() {
+    render(): TemplateResult {
         return this.current?.render();
     }
 }

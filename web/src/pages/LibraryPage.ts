@@ -1,6 +1,6 @@
 import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../api/application";
-import { DefaultClient, PBResponse } from "../api/client";
+import { PBResponse } from "../api/client";
 import { COMMON_STYLES } from "../common/styles";
 import { truncate } from "../utils";
 
@@ -19,18 +19,17 @@ export class ApplicationViewPage extends LitElement {
         );
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         Application.list().then((r) => (this.apps = r));
     }
 
-    renderEmptyState() {
+    renderEmptyState(): TemplateResult {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">{% trans 'No Applications available.' %}</h1>
+                <h1 class="pf-c-title pf-m-lg">No Applications available.</h1>
                 <div class="pf-c-empty-state__body">
-                    {% trans "Either no applications are defined, or you don't have access to any."
-                    %}
+                    Either no applications are defined, or you don't have access to any.
                 </div>
                 {% if perms.passbook_core.add_application %}
                 <a
@@ -49,12 +48,12 @@ export class ApplicationViewPage extends LitElement {
         return html` <a href="${app.launch_url}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 ${app.meta_icon
-                    ? html`<img
+        ? html`<img
                           class="app-icon pf-c-avatar"
                           src="${app.meta_icon}"
                           alt="Application Icon"
                       />`
-                    : html`<i class="pf-icon pf-icon-arrow"></i>`}
+        : html`<i class="pf-icon pf-icon-arrow"></i>`}
             </div>
             <div class="pf-c-card__title">
                 <p id="card-1-check-label">${app.name}</p>
@@ -66,7 +65,7 @@ export class ApplicationViewPage extends LitElement {
         </a>`;
     }
 
-    renderLoading() {
+    renderLoading(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <div class="pf-l-bullseye">
@@ -86,7 +85,7 @@ export class ApplicationViewPage extends LitElement {
         </div>`;
     }
 
-    render() {
+    render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
@@ -97,12 +96,12 @@ export class ApplicationViewPage extends LitElement {
                 </div>
             </section>
             ${this.apps
-                ? html`<section class="pf-c-page__main-section">
+        ? html`<section class="pf-c-page__main-section">
                       <div class="pf-l-gallery pf-m-gutter">
                           ${this.apps.results.map((app) => this.renderApp(app))}
                       </div>
                   </section>`
-                : this.renderLoading()}
+        : this.renderLoading()}
         </main>`;
     }
 }

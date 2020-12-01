@@ -21,7 +21,7 @@ export class Config {
                     tracesSampleRate: 1.0,
                     environment: config.error_reporting_environment,
                 });
-                console.debug(`passbook/config: Sentry enabled.`);
+                console.debug("passbook/config: Sentry enabled.");
             }
             return config;
         });

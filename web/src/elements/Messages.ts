@@ -7,7 +7,7 @@ const LEVEL_ICON_MAP: { [key: string]: string } = {
     info: "fas fa-info",
 };
 
-let ID = function (prefix: string) {
+const ID = function (prefix: string) {
     return prefix + Math.random().toString(36).substr(2, 9);
 };
 
@@ -20,10 +20,10 @@ interface Message {
 @customElement("pb-messages")
 export class Messages extends LitElement {
     @property()
-    url: string = "";
+    url = "";
 
     messageSocket?: WebSocket;
-    retryDelay: number = 200;
+    retryDelay = 200;
 
     createRenderRoot() {
         return this;
@@ -72,7 +72,7 @@ export class Messages extends LitElement {
      * This mostly gets messages which were created when the user arrives/leaves the site
      * and especially the login flow */
     fetchMessages() {
-        console.debug(`passbook/messages: fetching messages over direct api`);
+        console.debug("passbook/messages: fetching messages over direct api");
         return fetch(this.url)
             .then((r) => r.json())
             .then((r) => {
@@ -93,8 +93,8 @@ export class Messages extends LitElement {
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
             <div class="pf-c-alert pf-m-${message.levelTag} ${
-            message.levelTag === "error" ? "pf-m-danger" : ""
-        }">
+    message.levelTag === "error" ? "pf-m-danger" : ""
+}">
                 <div class="pf-c-alert__icon">
                     <i class="${LEVEL_ICON_MAP[message.levelTag]}"></i>
                 </div>

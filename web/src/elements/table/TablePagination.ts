@@ -13,7 +13,7 @@ export class TablePagination extends LitElement {
 
     previousHandler() {
         if (!this.table?.data?.pagination.previous) {
-            console.debug(`passbook/tables: no previous`);
+            console.debug("passbook/tables: no previous");
             return;
         }
         this.table.page = this.table?.data?.pagination.previous;
@@ -21,7 +21,7 @@ export class TablePagination extends LitElement {
 
     nextHandler() {
         if (!this.table?.data?.pagination.next) {
-            console.debug(`passbook/tables: no next`);
+            console.debug("passbook/tables: no next");
             return;
         }
         this.table.page = this.table?.data?.pagination.next;
@@ -44,8 +44,8 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => {
-                                this.previousHandler();
-                            }}
+        this.previousHandler();
+    }}
                             disabled="${this.table?.data?.pagination.previous ? "true" : "false"}"
                             aria-label="{% trans 'Go to previous page' %}"
                         >
@@ -56,8 +56,8 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => {
-                                this.nextHandler();
-                            }}
+        this.nextHandler();
+    }}
                             disabled="${this.table?.data?.pagination.next ? "true" : "false"}"
                             aria-label="{% trans 'Go to next page' %}"
                         >

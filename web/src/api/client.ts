@@ -6,7 +6,7 @@ export class Client {
     makeUrl(url: string[], query?: { [key: string]: string }): string {
         let builtUrl = `/api/${VERSION}/${url.join("/")}/`;
         if (query) {
-            let queryString = Object.keys(query)
+            const queryString = Object.keys(query)
                 .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k]))
                 .join("&");
             builtUrl += `?${queryString}`;
@@ -20,10 +20,10 @@ export class Client {
             .then((r) => {
                 if (r.status > 300) {
                     switch (r.status) {
-                        case 404:
-                            throw new NotFoundError(`URL ${finalUrl} not found`);
-                        default:
-                            throw new RequestError(r.statusText);
+                    case 404:
+                        throw new NotFoundError(`URL ${finalUrl} not found`);
+                    default:
+                        throw new RequestError(r.statusText);
                     }
                 }
                 return r;

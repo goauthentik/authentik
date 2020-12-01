@@ -70,7 +70,7 @@ export class SpinnerButton extends LitElement {
             @click=${() => this.callAction()}
         >
             ${this.isRunning
-                ? html` <span class="pf-c-button__progress">
+        ? html` <span class="pf-c-button__progress">
                       <span
                           class="pf-c-spinner pf-m-md"
                           role="progressbar"
@@ -81,7 +81,7 @@ export class SpinnerButton extends LitElement {
                           <span class="pf-c-spinner__tail-ball"></span>
                       </span>
                   </span>`
-                : ""}
+        : ""}
             <slot></slot>
         </button>`;
     }

@@ -48,8 +48,8 @@ export class SidebarBrand extends LitElement {
             <div class="pf-c-brand pb-brand">
                 <img src="${this.config?.branding_logo}" alt="passbook icon" loading="lazy" />
                 ${this.config?.branding_title
-                    ? html`<span>${this.config.branding_title}</span>`
-                    : ""}
+        ? html`<span>${this.config.branding_title}</span>`
+        : ""}
             </div>
         </a>`;
     }

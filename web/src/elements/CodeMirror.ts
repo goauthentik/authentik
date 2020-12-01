@@ -10,10 +10,10 @@ import "codemirror/mode/python/python.js";
 @customElement("pb-codemirror")
 export class CodeMirrorTextarea extends LitElement {
     @property()
-    readOnly: boolean = false;
+    readOnly = false;
 
     @property()
-    mode: string = "yaml";
+    mode = "yaml";
 
     editor?: CodeMirror.EditorFromTextArea;
 
