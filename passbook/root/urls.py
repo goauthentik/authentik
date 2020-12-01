@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 from structlog import get_logger
+from django.views.i18n import JavaScriptCatalog
 
 from passbook.core.views import error
 from passbook.lib.utils.reflection import get_apps
@@ -56,6 +57,7 @@ for _passbook_app in get_apps():
 urlpatterns += [
     path("administration/django/", admin.site.urls),
     path("metrics/", MetricsView.as_view(), name="metrics"),
+    path("-/jsi18n/", JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
 
 if settings.DEBUG:

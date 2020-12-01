@@ -1,3 +1,4 @@
+import { gettext } from "django";
 import { customElement } from "lit-element";
 import { Application } from "../../api/application";
 import { PBResponse } from "../../api/client";
@@ -6,13 +7,13 @@ import { TablePage } from "../../elements/table/TablePage";
 @customElement("pb-application-list")
 export class ApplicationList extends TablePage<Application> {
     pageTitle(): string {
-        return "Applications";
+        return gettext("Applications");
     }
     pageDescription(): string {
-        return "External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML.";
+        return gettext("External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML.");
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-applications";
+        return gettext("pf-icon pf-icon-applications");
     }
 
     apiEndpoint(page: number): Promise<PBResponse<Application>> {

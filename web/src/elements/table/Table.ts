@@ -1,3 +1,4 @@
+import { gettext } from "django";
 import { html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until.js";
 import { PBResponse } from "../../api/client";
@@ -70,12 +71,10 @@ export abstract class Table<T> extends LitElement {
                     <div class="pf-c-toolbar__bulk-select">
                         <slot name="create-button"></slot>
                         <button
-                            @click=${() => {
-        this.fetch();
-    }}
+                            @click=${() => {this.fetch();}}
                             class="pf-c-button pf-m-primary"
                         >
-                            Refresh
+                            ${gettext("Refresh")}
                         </button>
                     </div>
                     <pb-table-pagination
@@ -88,8 +87,8 @@ export abstract class Table<T> extends LitElement {
                 <thead>
                     <tr role="row">
                         ${this.columns().map(
-        (col) => html`<th role="columnheader" scope="col">${col}</th>`
-    )}
+                            (col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`
+                        )}
                     </tr>
                 </thead>
                 <tbody role="rowgroup">

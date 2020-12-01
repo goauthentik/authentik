@@ -141,7 +141,8 @@ export class RouterOutlet extends LitElement {
         this.current = matchedRoute;
     }
 
-    render(): TemplateResult {
+    render(): TemplateResult | undefined {
+        // TODO: Render 404 when current Route is empty
         return this.current?.render();
     }
 }
