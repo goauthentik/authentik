@@ -3,7 +3,7 @@
     "scripts": {
         "build": "rollup -c ./rollup.config.js",
         "watch": "rollup -c -w",
-        "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+        "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
@@ -28,6 +28,7 @@
         "@typescript-eslint/eslint-plugin": "^4.9.0",
         "@typescript-eslint/parser": "^4.9.0",
         "eslint": "^7.14.0",
+        "eslint-config-google": "^0.14.0",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-minify-html-literals": "^1.2.5",
         "rollup-plugin-node-resolve": "^5.2.0",

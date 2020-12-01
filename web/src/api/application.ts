@@ -1,17 +1,21 @@
 import { DefaultClient, PBResponse } from "./client";
 
 export class Application {
-    pk?: string;
-    name?: string;
-    slug?: string;
-    provider?: number;
+    pk: string;
+    name: string;
+    slug: string;
+    provider: number;
 
-    launch_url?: string;
-    meta_launch_url?: string;
-    meta_icon?: string;
-    meta_description?: string;
-    meta_publisher?: string;
-    policies?: string[];
+    launch_url: string;
+    meta_launch_url: string;
+    meta_icon: string;
+    meta_description: string;
+    meta_publisher: string;
+    policies: string[];
+
+    constructor() {
+        throw Error();
+    }
 
     static get(slug: string): Promise<Application> {
         return DefaultClient.fetch<Application>(["core", "applications", slug]);

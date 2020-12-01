@@ -1,12 +1,16 @@
 import { DefaultClient, PBResponse } from "./client";
 
 export class User {
-    pk?: number;
-    username?: string;
-    name?: string;
-    is_superuser?: boolean;
-    email?: boolean;
-    avatar?: string;
+    pk: number;
+    username: string;
+    name: string;
+    is_superuser: boolean;
+    email: boolean;
+    avatar: string;
+
+    constructor() {
+        throw Error();
+    }
 
     static me(): Promise<User> {
         return DefaultClient.fetch<User>(["core", "users", "me"]);

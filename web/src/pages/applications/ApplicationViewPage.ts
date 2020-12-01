@@ -1,3 +1,4 @@
+import { gettext } from "django";
 import { css, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/application";
 import { DefaultClient, PBResponse } from "../../api/client";
@@ -61,7 +62,7 @@ export class ApplicationViewPage extends LitElement {
     @property()
     application?: Application;
 
-    static get styles() {
+    static get styles(): any[] {
         return COMMON_STYLES.concat(
             css`
                 img.pf-icon {
@@ -90,12 +91,16 @@ export class ApplicationViewPage extends LitElement {
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__header">
                                 <div class="pf-c-card__header-main">
-                                    <i class="pf-icon pf-icon-server"></i> Logins over the last 24 hours
+                                    <i class="pf-icon pf-icon-server"></i> ${gettext("Logins over the last 24 hours")}
                                 </div>
                             </div>
                             <div class="pf-c-card__body">
                                 ${this.application ?
-        html`<pb-admin-logins-chart url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug!, "metrics"])}"></pb-admin-logins-chart>` : ""}
+        html`
+                                    <pb-admin-logins-chart
+                                        url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug, "metrics"])}">
+                                    </pb-admin-logins-chart>`
+        : ""}
                             </div>
                         </div>
                     </div>

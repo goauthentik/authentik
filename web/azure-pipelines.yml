@@ -1,0 +1,42 @@
+trigger:
+- main
+
+stages:
+  - stage: link
+    jobs:
+      - job: lint
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '12.x'
+            displayName: 'Install Node.js'
+          - task: Npm@1
+            inputs:
+              command: 'install'
+              workingDir: 'web/'
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              workingDir: 'web/'
+              customCommand: 'run lint'
+  - stage: Build
+    jobs:
+      - job: build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '12.x'
+            displayName: 'Install Node.js'
+          - task: Npm@1
+            inputs:
+              command: 'install'
+              workingDir: 'web/'
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              workingDir: 'web/'
+              customCommand: 'run build'

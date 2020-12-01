@@ -82,39 +82,39 @@ export class AdminOverviewPage extends LitElement {
                 </pb-aggregate-card>
                 <pb-aggregate-card icon="pf-icon pf-icon-server" header="Workers">
                     ${this.data ?
-                        this.data?.worker_count! < 1 ?
-                            html`<p class="pb-aggregate-card">
+        this.data?.worker_count < 1 ?
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-exclamation-triangle"></i> ${this.data.worker_count}
                                 </p>
                                 <p>${gettext("No workers connected.")}</p>` :
-                            html`<p class="pb-aggregate-card">
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> ${this.data.worker_count}
                                 </p>`
-                    : html`<pb-spinner></pb-spinner>`}
+        : html`<pb-spinner></pb-spinner>`}
                 </pb-aggregate-card>
                 <pb-aggregate-card icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
                     ${this.data ?
-                        this.data?.providers_without_application! < 1 ?
-                            html`<p class="pb-aggregate-card">
+        this.data?.providers_without_application < 1 ?
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-exclamation-triangle"></i> 0
                                 </p>
                                 <p>${gettext("At least one Provider has no application assigned.")}</p>` :
-                            html`<p class="pb-aggregate-card">
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-                    : html`<pb-spinner></pb-spinner>`}
+        : html`<pb-spinner></pb-spinner>`}
                 </pb-aggregate-card>
                 <pb-aggregate-card icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
                     ${this.data ?
-                        this.data?.policies_without_binding! < 1 ?
-                            html`<p class="pb-aggregate-card">
+        this.data?.policies_without_binding < 1 ?
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-exclamation-triangle"></i> 0
                                 </p>
                                 <p>${gettext("Policies without binding exist.")}</p>` :
-                            html`<p class="pb-aggregate-card">
+            html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-                    : html`<pb-spinner></pb-spinner>`}
+        : html`<pb-spinner></pb-spinner>`}
                 </pb-aggregate-card>
                 <pb-aggregate-card-promise
                     icon="pf-icon pf-icon-user"
