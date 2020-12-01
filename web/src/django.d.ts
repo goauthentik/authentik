@@ -1,4 +1,4 @@
-declare module 'django' {
+declare module "django" {
     export = django;
 }
 declare namespace django {

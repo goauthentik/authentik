@@ -52,6 +52,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/library/"),
     new Route(new RegExp("^#.*")).redirect("/library/"),
     new Route(new RegExp("^/library/$"), html`<pb-library></pb-library>`),
+    new Route(new RegExp("^/administration/overview/$"), html`<pb-admin-overview></pb-admin-overview>`),
     new Route(new RegExp("^/applications/$"), html`<pb-application-list></pb-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<pb-application-view .args=${args}></pb-application-view>`;

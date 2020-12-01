@@ -86,8 +86,8 @@ export abstract class Table<T> extends LitElement {
                 <thead>
                     <tr role="row">
                         ${this.columns().map(
-                            (col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`
-                        )}
+        (col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`
+    )}
                     </tr>
                 </thead>
                 <tbody role="rowgroup">

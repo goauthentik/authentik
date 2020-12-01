@@ -43,6 +43,6 @@ export default [
         watch: {
             clearScreen: false,
         },
-        external: ['django']
+        external: ["django"]
     },
 ];

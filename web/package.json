@@ -3,7 +3,7 @@
     "scripts": {
         "build": "rollup -c ./rollup.config.js",
         "watch": "rollup -c -w",
-        "format": "prettier --write ."
+        "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
