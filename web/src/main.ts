@@ -13,6 +13,8 @@ import "./elements/sidebar/SidebarUser";
 import "./elements/table/TablePagination";
 
 import "./elements/AdminLoginsChart";
+import "./elements/cards/AggregateCard";
+import "./elements/cards/AggregatePromiseCard";
 import "./elements/CodeMirror";
 import "./elements/Messages";
 import "./elements/Spinner";
@@ -23,7 +25,8 @@ import "./pages/generic/SiteShell";
 
 import "./pages/router/RouterOutlet";
 
-import "./pages/AdminOverviewPage";
+import "./pages/admin-overview/AdminOverviewPage";
+import "./pages/admin-overview/TopApplicationsTable";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
 import "./pages/LibraryPage";

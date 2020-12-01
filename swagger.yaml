@@ -133,6 +133,42 @@ paths:
       tags:
         - audit
     parameters: []
+  /audit/events/top_per_user/:
+    get:
+      operationId: audit_events_top_per_user
+      description: Get the top_n events grouped by user count
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Response object of Event's top_per_user
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/EventTopPerUserSerialier'
+      tags:
+        - audit
+    parameters: []
   /audit/events/{event_uuid}/:
     get:
       operationId: audit_events_read
@@ -6509,6 +6545,25 @@ definitions:
         type: string
         format: date-time
         readOnly: true
+  EventTopPerUserSerialier:
+    description: Response object of Event's top_per_user
+    required:
+      - application
+      - counted_events
+      - unique_users
+    type: object
+    properties:
+      application:
+        title: Application
+        type: object
+        additionalProperties:
+          type: string
+      counted_events:
+        title: Counted events
+        type: integer
+      unique_users:
+        title: Unique users
+        type: integer
   Application:
     description: Application Serializer
     required:
