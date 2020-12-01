@@ -32,7 +32,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         children: [
             {
                 name: "Overview",
-                path: ["/administration/overview/"],
+                path: ["/administration/overview-ng/"],
             },
             {
                 name: "System Tasks",

@@ -1,23 +1,29 @@
 import "construct-style-sheets-polyfill";
 
-import "./elements/AdminLoginsChart";
 import "./elements/buttons/ActionButton";
 import "./elements/buttons/Dropdown";
 import "./elements/buttons/ModalButton";
 import "./elements/buttons/SpinnerButton";
 import "./elements/buttons/TokenCopyButton";
-import "./elements/CodeMirror";
-import "./elements/Messages";
+
 import "./elements/sidebar/Sidebar";
 import "./elements/sidebar/SidebarBrand";
 import "./elements/sidebar/SidebarUser";
-import "./elements/Tabs";
-import "./elements/Spinner";
+
 import "./elements/table/TablePagination";
-import "./pages/applications/ApplicationViewPage";
-import "./pages/applications/ApplicationListPage";
+
+import "./elements/AdminLoginsChart";
+import "./elements/CodeMirror";
+import "./elements/Messages";
+import "./elements/Spinner";
+import "./elements/Tabs";
+
+import "./pages/generic/FlowShellCard";
+import "./pages/generic/SiteShell";
+
+import "./pages/router/RouterOutlet";
+
 import "./pages/AdminOverviewPage";
+import "./pages/applications/ApplicationListPage";
+import "./pages/applications/ApplicationViewPage";
 import "./pages/LibraryPage";
-import "./pages/FlowShellCard";
-import "./pages/RouterOutlet";
-import "./pages/SiteShell";

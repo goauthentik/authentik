@@ -15,6 +15,9 @@ export class ApplicationViewPage extends LitElement {
                 img.pf-icon {
                     max-height: 24px;
                 }
+                .pf-c-avatar {
+                    --pf-c-avatar--BorderRadius: 0;
+                }
             `
         );
     }
