@@ -2,7 +2,7 @@ trigger:
   - master
 
 stages:
-  - stage: link
+  - stage: lint
     jobs:
       - job: lint
         pool:
@@ -21,7 +21,7 @@ stages:
               command: 'custom'
               workingDir: 'web/'
               customCommand: 'run lint'
-  - stage: Build
+  - stage: build_local
     jobs:
       - job: build
         pool:
@@ -40,3 +40,17 @@ stages:
               command: 'custom'
               workingDir: 'web/'
               customCommand: 'run build'
+  - stage: build_docker
+    jobs:
+      - job: build_static
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockerhub'
+            repository: 'beryju/passbook-static'
+            command: 'buildAndPush'
+            Dockerfile: 'Dockerfile'
+            tags: "gh-${{ variables.branchName }}"
+            buildContext: 'web/'

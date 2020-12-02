@@ -1,17 +1,6 @@
-FROM python:3.9-slim-buster as locker
-
-COPY ./Pipfile /app/
-COPY ./Pipfile.lock /app/
-
-WORKDIR /app/
-
-RUN pip install pipenv && \
-    pipenv lock -r > requirements.txt && \
-    pipenv lock -rd > requirements-dev.txt
-
 FROM node as npm-builder
 
-COPY ./web /static/
+COPY . /static/
 
 RUN cd /static && npm i && npm run build
 

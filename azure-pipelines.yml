@@ -371,14 +371,3 @@ stages:
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
             tags: "gh-${{ variables.branchName }}"
-      - job: build_static
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'dockerhub'
-            repository: 'beryju/passbook-static'
-            command: 'buildAndPush'
-            Dockerfile: 'static.Dockerfile'
-            tags: "gh-${{ variables.branchName }}"

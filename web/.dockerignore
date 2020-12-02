@@ -1,0 +1,6 @@
+env
+helm
+static
+htmlcov
+*.env.yml
+**/node_modules
