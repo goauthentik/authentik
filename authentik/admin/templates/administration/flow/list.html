@@ -32,7 +32,7 @@
                         </ak-spinner-button>
                         <div slot="modal"></div>
                     </ak-modal-button>
-                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                    <button role="ak-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
                 </div>
@@ -86,8 +86,8 @@
                             </ak-spinner-button>
                             <div slot="modal"></div>
                         </ak-modal-button>
-                        <a class="pf-c-button pf-m-secondary pb-root-link" href="{% url 'authentik_admin:flow-execute' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Execute' %}</a>
-                        <a class="pf-c-button pf-m-secondary pb-root-link" href="{% url 'authentik_admin:flow-export' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Export' %}</a>
+                        <a class="pf-c-button pf-m-secondary ak-root-link" href="{% url 'authentik_admin:flow-execute' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Execute' %}</a>
+                        <a class="pf-c-button pf-m-secondary ak-root-link" href="{% url 'authentik_admin:flow-export' pk=flow.pk %}?next={{ request.get_full_path }}">{% trans 'Export' %}</a>
                     </td>
                 </tr>
                 {% endfor %}

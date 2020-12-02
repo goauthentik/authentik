@@ -23,7 +23,7 @@ class ProxyDockerController(DockerController):
             proxy_provider: ProxyProvider
             external_host_name = urlparse(proxy_provider.external_host)
             hosts.append(f"`{external_host_name}`")
-        traefik_name = f"pb-outpost-{self.outpost.pk.hex}"
+        traefik_name = f"ak-outpost-{self.outpost.pk.hex}"
         return {
             "traefik.enable": "true",
             f"traefik.http.routers.{traefik_name}-router.rule": f"Host({','.join(hosts)})",

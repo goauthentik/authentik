@@ -27,13 +27,13 @@ export class AdminStatusCard extends AggregatePromiseCard {
     }
 
     renderGood(): TemplateResult {
-        return html`<p class="pb-aggregate-card">
+        return html`<p class="ak-aggregate-card">
             <i class="fa fa-check-circle"></i> ${this.value}
         </p>`;
     }
 
     renderBad(): TemplateResult {
-        return html`<p class="pb-aggregate-card">
+        return html`<p class="ak-aggregate-card">
             <i class="fa fa-exclamation-triangle"></i> ${this.value}
         </p>
         <p class="subtext">${this.warningText ? gettext(this.warningText) : ""}</p>`;
@@ -86,11 +86,11 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
                     ${this.data ?
         this.data?.providers_without_application > 1 ?
-            html`<p class="pb-aggregate-card">
+            html`<p class="ak-aggregate-card">
                                     <i class="fa fa-exclamation-triangle"></i> 0
                                 </p>
                                 <p class="subtext">${gettext("At least one Provider has no application assigned.")}</p>` :
-            html`<p class="pb-aggregate-card">
+            html`<p class="ak-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
         : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
@@ -98,11 +98,11 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
                     ${this.data ?
         this.data?.policies_without_binding > 1 ?
-            html`<p class="pb-aggregate-card">
+            html`<p class="ak-aggregate-card">
                                     <i class="fa fa-exclamation-triangle"></i> 0
                                 </p>
                                 <p class="subtext">${gettext("Policies without binding exist.")}</p>` :
-            html`<p class="pb-aggregate-card">
+            html`<p class="ak-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
         : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}

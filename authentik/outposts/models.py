@@ -309,7 +309,7 @@ class Outpost(models.Model):
     @property
     def user_identifier(self):
         """Username for service user"""
-        return f"pb-outpost-{self.uuid.hex}"
+        return f"ak-outpost-{self.uuid.hex}"
 
     @property
     def user(self) -> User:
@@ -333,7 +333,7 @@ class Outpost(models.Model):
     @property
     def token_identifier(self) -> str:
         """Get Token identifier"""
-        return f"pb-outpost-{self.pk}-api"
+        return f"ak-outpost-{self.pk}-api"
 
     @property
     def token(self) -> Token:

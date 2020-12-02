@@ -120,7 +120,7 @@ class TestFlowsOTP(SeleniumTestCase):
         destination_url = self.driver.current_url
 
         token = self.driver.find_element(
-            By.CSS_SELECTOR, ".pb-otp-tokens li:nth-child(1)"
+            By.CSS_SELECTOR, ".ak-otp-tokens li:nth-child(1)"
         ).text
 
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()

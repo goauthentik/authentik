@@ -88,7 +88,7 @@ export class Messages extends LitElement {
             console.warn("authentik/messages: failed to find container");
             return;
         }
-        const id = ID("pb-message");
+        const id = ID("ak-message");
         const el = document.createElement("template");
         el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
             <div class="pf-c-alert pf-m-${message.level_tag} ${message.level_tag === "error" ? "pf-m-danger" : ""}">

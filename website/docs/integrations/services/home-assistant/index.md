@@ -31,11 +31,11 @@ With the default Header of `X-Forwarded-Preferred-Username` matching is done on 
 
 If this is not the case, you can simply add an additional header for your user, which contains the Home-Assistant Name and authenticate based on that.
 
-For example add this to your user's properties and set the Header to `X-pb-hass-user`.
+For example add this to your user's properties and set the Header to `X-ak-hass-user`.
 
 ```yaml
 additionalHeaders:
-    X-pb-hass-user: some other name
+    X-ak-hass-user: some other name
 ```
 
 ## authentik

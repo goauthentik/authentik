@@ -9,7 +9,7 @@ class StaticTokenWidget(forms.widgets.Widget):
     """Widget to render tokens as multiple labels"""
 
     def render(self, name, value, attrs=None, renderer=None):
-        final_string = '<ul class="pb-otp-tokens">'
+        final_string = '<ul class="ak-otp-tokens">'
         for token in value:
             final_string += f"<li>{token.token}</li>"
         final_string += "</ul>"

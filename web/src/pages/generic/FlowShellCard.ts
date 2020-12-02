@@ -125,14 +125,14 @@ export class FlowShellCard extends LitElement {
                         this.errorMessage(e);
                     });
             });
-            form.classList.add("pb-flow-wrapped");
+            form.classList.add("ak-flow-wrapped");
         });
     }
 
     errorMessage(error: string): void {
         this.flowBody = `
             <style>
-                .pb-exception {
+                .ak-exception {
                     font-family: monospace;
                     overflow-x: scroll;
                 }
@@ -146,12 +146,12 @@ export class FlowShellCard extends LitElement {
                 <h3>
                     Something went wrong! Please try again later.
                 </h3>
-                <pre class="pb-exception">${error}</pre>
+                <pre class="ak-exception">${error}</pre>
             </div>`;
     }
 
     loading(): TemplateResult {
-        return html` <div class="pf-c-login__main-body pb-loading">
+        return html` <div class="pf-c-login__main-body ak-loading">
             <span class="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
                 <span class="pf-c-spinner__clipper"></span>
                 <span class="pf-c-spinner__lead-ball"></span>

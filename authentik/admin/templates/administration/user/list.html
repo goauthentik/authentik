@@ -25,7 +25,7 @@
                         </ak-spinner-button>
                         <div slot="modal"></div>
                     </ak-modal-button>
-                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                    <button role="ak-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
                 </div>
@@ -82,8 +82,8 @@
                             <div slot="modal"></div>
                         </ak-modal-button>
                         {% endif %}
-                        <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'authentik_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
-                        <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'authentik_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
+                        <a class="pf-c-button pf-m-tertiary ak-root-link" href="{% url 'authentik_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
+                        <a class="pf-c-button pf-m-tertiary ak-root-link" href="{% url 'authentik_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
                     </td>
                 </tr>
                 {% endfor %}

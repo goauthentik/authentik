@@ -66,12 +66,12 @@
             </div>
             <div class="pf-c-card__body">
                 {% if providers_without_application.exists %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ provider_count }}
                 </p>
                 <p>{% trans 'Warning: At least one Provider has no application assigned.' %}</p>
                 {% else %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ provider_count }}
                 </p>
                 {% endif %}
@@ -89,12 +89,12 @@
             </div>
             <div class="pf-c-card__body">
                 {% if policies_without_binding %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ policy_count }}
                 </p>
                 <p>{% trans 'Policies without binding exist.' %}</p>
                 {% else %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ policy_count }}
                 </p>
                 {% endif %}
@@ -111,7 +111,7 @@
                 </a>
             </div>
             <div class="pf-c-card__body">
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ user_count }}
                 </p>
             </div>
@@ -127,7 +127,7 @@
                 </a>
             </div>
             <div class="pf-c-card__body">
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     {% if version >= version_latest %}
                     <i class="fa fa-check-circle"></i> {{ version }}
                     {% else %}
@@ -154,13 +154,13 @@
             </div>
             <fetch-fill-slot class="pf-c-card__body" url="{% url 'authentik_api:admin_overview-list' %}" key="worker_count">
                 <div slot="value < 1">
-                    <p class="pb-aggregate-card">
+                    <p class="ak-aggregate-card">
                         <i class="fa fa-exclamation-triangle"></i> <span data-value></span>
                     </p>
                     <p>{% trans 'No workers connected.' %}</p>
                 </div>
                 <div slot="value >= 1">
-                    <p class="pb-aggregate-card">
+                    <p class="ak-aggregate-card">
                         <i class="fa fa-check-circle"></i> <span data-value></span>
                     </p>
                 </div>
@@ -188,12 +188,12 @@
             </div>
             <div class="pf-c-card__body">
                 {% if cached_policies < 1 %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-exclamation-triangle"></i> {{ cached_policies }}
                 </p>
                 <p>{% trans 'No policies cached. Users may experience slow response times.' %}</p>
                 {% else %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ cached_policies }}
                 </p>
                 {% endif %}
@@ -214,12 +214,12 @@
             </div>
             <div class="pf-c-card__body">
                 {% if cached_flows < 1 %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <span class="fa fa-exclamation-triangle"></span> {{ cached_flows }}
                 </p>
                 <p>{% trans 'No flows cached.' %}</p>
                 {% else %}
-                <p class="pb-aggregate-card">
+                <p class="ak-aggregate-card">
                     <i class="fa fa-check-circle"></i> {{ cached_flows }}
                 </p>
                 {% endif %}

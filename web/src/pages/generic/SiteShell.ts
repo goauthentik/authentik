@@ -69,7 +69,7 @@ export class SiteShell extends LitElement {
             })
             .then(() => {
                 // Ensure anchors only change the hash
-                this.querySelectorAll<HTMLAnchorElement>("a:not(.pb-root-link)").forEach((a) => {
+                this.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
                     if (a.href === "") {
                         return;
                     }
@@ -83,7 +83,7 @@ export class SiteShell extends LitElement {
                     }
                 });
                 // Create refresh buttons
-                this.querySelectorAll("[role=pb-refresh]").forEach((rt) => {
+                this.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
                     rt.addEventListener("click", () => {
                         this.loadContent();
                     });

@@ -133,7 +133,7 @@ export class ModalButton extends LitElement {
                     modalSlot.innerHTML = t;
                     this.updateHandlers();
                     this.open = true;
-                    this.querySelectorAll<SpinnerButton>("pb-spinner-button").forEach((sb) => {
+                    this.querySelectorAll<SpinnerButton>("ak-spinner-button").forEach((sb) => {
                         sb.setDone(PRIMARY_CLASS);
                     });
                 })

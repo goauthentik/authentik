@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <style>
-    .pb-exception {
+    .ak-exception {
         font-family: monospace;
         overflow-x: scroll;
     }
@@ -17,6 +17,6 @@
         {% trans 'Something went wrong! Please try again later.' %}
     </h3>
     {% if debug %}
-    <pre class="pb-exception">{{ tb }}{{ error }}</pre>
+    <pre class="ak-exception">{{ tb }}{{ error }}</pre>
     {% endif %}
 </div>
