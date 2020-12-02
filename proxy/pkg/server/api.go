@@ -51,7 +51,7 @@ func getCommonOptions() *options.Options {
 	commonOpts.Cookie.Name = "authentik_proxy"
 	commonOpts.EmailDomains = []string{"*"}
 	commonOpts.ProviderType = "oidc"
-	commonOpts.ProxyPrefix = "/pbprox"
+	commonOpts.ProxyPrefix = "/akprox"
 	commonOpts.Logging.SilencePing = true
 	commonOpts.SetAuthorization = false
 	commonOpts.Scope = "openid email profile ak_proxy"

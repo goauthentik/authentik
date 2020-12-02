@@ -36,7 +36,7 @@ def get_cookie_secret():
 
 
 def _get_callback_url(uri: str) -> str:
-    return urljoin(uri, "/pbprox/callback")
+    return urljoin(uri, "/akprox/callback")
 
 
 class ProxyProvider(OutpostModel, OAuth2Provider):

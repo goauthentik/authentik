@@ -7090,8 +7090,8 @@ definitions:
         type: boolean
       kubeconfig:
         title: Kubeconfig
-        description: Paste your kubeconfig here. authentik will automatically use the
-          currently selected context.
+        description: Paste your kubeconfig here. authentik will automatically use
+          the currently selected context.
         type: object
   Policy:
     description: Policy Serializer
