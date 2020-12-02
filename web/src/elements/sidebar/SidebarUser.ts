@@ -1,4 +1,4 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 // @ts-ignore
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
@@ -9,9 +9,6 @@ import { User } from "../../api/user";
 
 @customElement("pb-sidebar-user")
 export class SidebarUser extends LitElement {
-    @property()
-    user?: User;
-
     static get styles(): CSSResult[] {
         return [
             fa,
@@ -44,14 +41,12 @@ export class SidebarUser extends LitElement {
         ];
     }
 
-    render(): TemplateResult {
-        if (!this.user) {
-            return html``;
-        }
+    async render(): Promise<TemplateResult> {
+        const user = await User.me();
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
-                <img class="pf-c-avatar" src="${this.user?.avatar}" alt="" />
-                <span>${this.user?.username}</span>
+                <img class="pf-c-avatar" src="${user.avatar}" alt="" />
+                <span>${user.username}</span>
             </a>
             <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>

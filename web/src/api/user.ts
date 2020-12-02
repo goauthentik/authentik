@@ -1,5 +1,7 @@
 import { DefaultClient, PBResponse } from "./client";
 
+let me: User;
+
 export class User {
     pk: number;
     username: string;
@@ -13,7 +15,10 @@ export class User {
     }
 
     static me(): Promise<User> {
-        return DefaultClient.fetch<User>(["core", "users", "me"]);
+        if (me) {
+            return Promise.resolve<User>(me);
+        }
+        return DefaultClient.fetch<User>(["core", "users", "me"]).then(u => me = u);
     }
 
     static count(): Promise<number> {

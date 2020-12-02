@@ -114,7 +114,3 @@ select[multiple] {
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
 }
-
-.pf-c-empty-state {
-    height: 100vh;
-}

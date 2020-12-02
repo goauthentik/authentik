@@ -1,4 +1,5 @@
-import { LitElement, html, customElement, property, TemplateResult } from "lit-element";
+import { LitElement, html, customElement, TemplateResult } from "lit-element";
+import { DefaultClient } from "../api/client";
 
 const LEVEL_ICON_MAP: { [key: string]: string } = {
     error: "fas fa-exclamation-circle",
@@ -19,8 +20,7 @@ interface Message {
 
 @customElement("pb-messages")
 export class Messages extends LitElement {
-    @property()
-    url = "";
+    url = DefaultClient.makeUrl(["root", "messages"]);
 
     messageSocket?: WebSocket;
     retryDelay = 200;

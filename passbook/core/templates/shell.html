@@ -1,10 +1,5 @@
-{% extends "base/page.html" %}
+{% extends "base/skeleton.html" %}
 
-{% block page_content %}
-<pb-sidebar class="pf-c-page__sidebar">
-</pb-sidebar>
-<main class="pf-c-page__main">
-    <pb-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library/">
-    </pb-router-outlet>
-</main>
+{% block body %}
+<pb-interface-admin></pb-interface-admin>
 {% endblock %}

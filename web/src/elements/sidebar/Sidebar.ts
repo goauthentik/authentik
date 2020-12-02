@@ -6,136 +6,22 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 
-import { User } from "../../api/user";
+import { until } from "lit-html/directives/until";
 
 export interface SidebarItem {
     name: string;
     path?: string[];
     children?: SidebarItem[];
-    condition?: (sb: Sidebar) => boolean;
+    condition?: () => Promise<boolean>;
 }
-
-export const SIDEBAR_ITEMS: SidebarItem[] = [
-    {
-        name: "Library",
-        path: ["/library/"],
-    },
-    {
-        name: "Monitor",
-        path: ["/audit/audit/"],
-        condition: (sb: Sidebar): boolean => {
-            return sb.user?.is_superuser || false;
-        },
-    },
-    {
-        name: "Administration",
-        children: [
-            {
-                name: "Overview",
-                path: ["/administration/overview-ng/"],
-            },
-            {
-                name: "System Tasks",
-                path: ["/administration/tasks/"],
-            },
-            {
-                name: "Applications",
-                path: ["/administration/applications/"],
-            },
-            {
-                name: "Sources",
-                path: ["/administration/sources/"],
-            },
-            {
-                name: "Providers",
-                path: ["/administration/providers/"],
-            },
-            {
-                name: "User Management",
-                children: [
-                    {
-                        name: "User",
-                        path: ["/administration/users/"],
-                    },
-                    {
-                        name: "Groups",
-                        path: ["/administration/groups/"],
-                    },
-                ],
-            },
-            {
-                name: "Outposts",
-                children: [
-                    {
-                        name: "Outposts",
-                        path: ["/administration/outposts/"],
-                    },
-                    {
-                        name: "Service Connections",
-                        path: ["/administration/outposts/service_connections/"],
-                    },
-                ],
-            },
-            {
-                name: "Policies",
-                children: [
-                    {
-                        name: "Policies",
-                        path: ["/administration/policies/"],
-                    },
-                    {
-                        name: "Bindings",
-                        path: ["/administration/policies/bindings/"],
-                    },
-                ],
-            },
-            {
-                name: "Property Mappings",
-                path: ["/administration/property-mappings/"],
-            },
-            {
-                name: "Flows",
-                children: [
-                    {
-                        name: "Flows",
-                        path: ["/administration/flows/"],
-                    },
-                    {
-                        name: "Stages",
-                        path: ["/administration/stages/"],
-                    },
-                    {
-                        name: "Prompts",
-                        path: ["/administration/stages/prompts/"],
-                    },
-                    {
-                        name: "Invitations",
-                        path: ["/administration/stages/invitations/"],
-                    },
-                ],
-            },
-            {
-                name: "Certificates",
-                path: ["/administration/crypto/certificates/"],
-            },
-            {
-                name: "Tokens",
-                path: ["/administration/tokens/"],
-            },
-        ],
-        condition: (sb: Sidebar): boolean => {
-            return sb.user?.is_superuser || false;
-        },
-    },
-];
 
 @customElement("pb-sidebar")
 export class Sidebar extends LitElement {
-    @property()
-    activePath: string;
+    @property({attribute: false})
+    items: SidebarItem[] = [];
 
     @property()
-    user?: User;
+    activePath: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -145,7 +31,7 @@ export class Sidebar extends LitElement {
             css`
                 .pf-c-nav__list .sidebar-brand {
                     max-height: 82px;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: -0.5rem;
                 }
                 .pf-c-nav__link {
                     --pf-c-nav__link--PaddingTop: 0.5rem;
@@ -167,16 +53,15 @@ export class Sidebar extends LitElement {
 
     constructor() {
         super();
-        User.me().then((u) => (this.user = u));
         this.activePath = window.location.hash.slice(1, Infinity);
         window.addEventListener("hashchange", () => {
             this.activePath = window.location.hash.slice(1, Infinity);
         });
     }
 
-    renderItem(item: SidebarItem): TemplateResult {
+    async renderItem(item: SidebarItem): Promise<TemplateResult> {
         if (item.condition) {
-            const result = item.condition(this);
+            const result = await item.condition();
             if (!result) {
                 return html``;
             }
@@ -194,7 +79,7 @@ export class Sidebar extends LitElement {
                     </a>
                     <section class="pf-c-nav__subnav">
                         <ul class="pf-c-nav__simple-list">
-                            ${item.children?.map((i) => this.renderItem(i))}
+                            ${item.children?.map((i) => until(this.renderItem(i), html``))}
                         </ul>
                     </section>`}
         </li>`;
@@ -207,9 +92,9 @@ export class Sidebar extends LitElement {
                     <li class="pf-c-nav__item sidebar-brand">
                         <pb-sidebar-brand></pb-sidebar-brand>
                     </li>
-                    ${SIDEBAR_ITEMS.map((i) => this.renderItem(i))}
+                    ${this.items.map((i) => until(this.renderItem(i), html``))}
                     <li class="pf-c-nav__item pf-c-nav__item-bottom">
-                        <pb-sidebar-user .user=${this.user}></pb-sidebar-user>
+                        <pb-sidebar-user></pb-sidebar-user>
                     </li>
                 </ul>
             </nav>

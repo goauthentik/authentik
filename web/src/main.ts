@@ -30,3 +30,5 @@ import "./pages/admin-overview/TopApplicationsTable";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
 import "./pages/LibraryPage";
+
+import "./interfaces/AdminInterface";
