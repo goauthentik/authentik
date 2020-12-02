@@ -2,4 +2,4 @@
 {{- range .Values.ingress.hosts }}
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
 {{- end }}
-2. Login to authentik using the user "pbadmin" and the password "pbadmin".
+2. Login to authentik using the user "akadmin" and the password "akadmin".

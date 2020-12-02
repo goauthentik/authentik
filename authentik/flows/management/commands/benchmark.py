@@ -65,7 +65,7 @@ class Command(BaseCommand):  # pragma: no cover
     def benchmark_flows(self, proc_count):
         """Get full recovery link"""
         flow = Flow.objects.get(slug="default-authentication-flow")
-        user = User.objects.get(username="pbadmin")
+        user = User.objects.get(username="akadmin")
         manager = Manager()
         return_dict = manager.dict()
 

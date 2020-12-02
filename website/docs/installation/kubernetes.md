@@ -12,7 +12,7 @@ helm repo update
 helm repo install authentik/authentik --devel -f values.yaml
 ```
 
-This installation automatically applies database migrations on startup. After the installation is done, you can use `pbadmin` as username and password.
+This installation automatically applies database migrations on startup. After the installation is done, you can use `akadmin` as username and password.
 
 ```yaml
 ###################################

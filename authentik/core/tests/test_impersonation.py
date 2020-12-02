@@ -11,11 +11,11 @@ class TestImpersonation(TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.other_user = User.objects.create(username="to-impersonate")
-        self.pbadmin = User.objects.get(username="pbadmin")
+        self.akadmin = User.objects.get(username="akadmin")
 
     def test_impersonate_simple(self):
         """test simple impersonation and un-impersonation"""
-        self.client.force_login(self.pbadmin)
+        self.client.force_login(self.akadmin)
 
         self.client.get(
             reverse(
@@ -26,13 +26,13 @@ class TestImpersonation(TestCase):
 
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertIn(self.other_user.username, response.content.decode())
-        self.assertNotIn(self.pbadmin.username, response.content.decode())
+        self.assertNotIn(self.akadmin.username, response.content.decode())
 
         self.client.get(reverse("authentik_core:impersonate-end"))
 
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertNotIn(self.other_user.username, response.content.decode())
-        self.assertIn(self.pbadmin.username, response.content.decode())
+        self.assertIn(self.akadmin.username, response.content.decode())
 
     def test_impersonate_denied(self):
         """test impersonation without permissions"""
@@ -40,13 +40,13 @@ class TestImpersonation(TestCase):
 
         self.client.get(
             reverse(
-                "authentik_core:impersonate-init", kwargs={"user_id": self.pbadmin.pk}
+                "authentik_core:impersonate-init", kwargs={"user_id": self.akadmin.pk}
             )
         )
 
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertIn(self.other_user.username, response.content.decode())
-        self.assertNotIn(self.pbadmin.username, response.content.decode())
+        self.assertNotIn(self.akadmin.username, response.content.decode())
 
     def test_un_impersonate_empty(self):
         """test un-impersonation without impersonating first"""

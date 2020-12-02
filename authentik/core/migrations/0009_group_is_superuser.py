@@ -18,7 +18,7 @@ def create_default_admin_group(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
             "name": "authentik Admins",
         },
     )
-    group.users.set(User.objects.filter(username="pbadmin"))
+    group.users.set(User.objects.filter(username="akadmin"))
     group.save()
 
 

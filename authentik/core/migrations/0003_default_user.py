@@ -11,11 +11,11 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     db_alias = schema_editor.connection.alias
 
-    pbadmin, _ = User.objects.using(db_alias).get_or_create(
-        username="pbadmin", email="root@localhost", name="authentik Default Admin"
+    akadmin, _ = User.objects.using(db_alias).get_or_create(
+        username="akadmin", email="root@localhost", name="authentik Default Admin"
     )
-    pbadmin.set_password("pbadmin", signal=False)  # noqa # nosec
-    pbadmin.save()
+    akadmin.set_password("akadmin", signal=False)  # noqa # nosec
+    akadmin.save()
 
 
 class Migration(migrations.Migration):

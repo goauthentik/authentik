@@ -43,4 +43,4 @@ authentik will then be reachable via HTTP on port 80, and HTTPS on port 443. You
 
 If you plan to access authentik via a reverse proxy which does SSL Termination, make sure you use the HTTPS port, so authentik is aware of the SSL connection.
 
-The initial setup process also creates a default admin user, the username and password for which is `pbadmin`. It is highly recommended to change this password as soon as you log in.
+The initial setup process also creates a default admin user, the username and password for which is `akadmin`. It is highly recommended to change this password as soon as you log in.

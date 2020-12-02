@@ -30,8 +30,8 @@ from authentik.core.models import User
 
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
-    """Cached function that always returns pbadmin"""
-    return User.objects.get(username="pbadmin")
+    """Cached function that always returns akadmin"""
+    return User.objects.get(username="akadmin")
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):

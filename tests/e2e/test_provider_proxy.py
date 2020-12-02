@@ -104,7 +104,7 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn("X-Forwarded-Preferred-Username: pbadmin", full_body_text)
+        self.assertIn("X-Forwarded-Preferred-Username: akadmin", full_body_text)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
