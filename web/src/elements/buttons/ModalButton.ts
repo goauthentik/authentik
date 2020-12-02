@@ -19,7 +19,7 @@ export class ModalButton extends LitElement {
     @property()
     href?: string;
 
-    @property()
+    @property({type: Boolean})
     open = false;
 
     static get styles(): CSSResult[] {

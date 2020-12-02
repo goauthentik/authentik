@@ -9,7 +9,7 @@ import "codemirror/mode/python/python.js";
 
 @customElement("pb-codemirror")
 export class CodeMirrorTextarea extends LitElement {
-    @property()
+    @property({type: Boolean})
     readOnly = false;
 
     @property()

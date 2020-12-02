@@ -5,21 +5,25 @@ import { DefaultClient } from "../../api/client";
 import { User } from "../../api/user";
 import { COMMON_STYLES } from "../../common/styles";
 import { AggregatePromiseCard } from "../../elements/cards/AggregatePromiseCard";
+import { SpinnerSize } from "../../elements/Spinner";
+
+import "../../elements/AdminLoginsChart";
+import "./TopApplicationsTable";
 
 @customElement("pb-admin-status-card")
 export class AdminStatusCard extends AggregatePromiseCard {
 
-    @property()
+    @property({type: Number})
     value?: number;
 
     @property()
     warningText?: string;
 
-    @property()
+    @property({type: Number})
     lessThanThreshold?: number;
 
     renderNone(): TemplateResult {
-        return html`<pb-spinner size="large"></pb-spinner>`;
+        return html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`;
     }
 
     renderGood(): TemplateResult {
@@ -47,10 +51,10 @@ export class AdminStatusCard extends AggregatePromiseCard {
 
 @customElement("pb-admin-overview")
 export class AdminOverviewPage extends LitElement {
-    @property()
+    @property({attribute: false})
     data?: AdminOverview;
 
-    @property()
+    @property({attribute: false})
     users?: Promise<number>;
 
     static get styles(): CSSResult[] {
@@ -89,7 +93,7 @@ export class AdminOverviewPage extends LitElement {
             html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-        : html`<pb-spinner size="large"></pb-spinner>`}
+        : html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`}
                 </pb-aggregate-card>
                 <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
                     ${this.data ?
@@ -101,7 +105,7 @@ export class AdminOverviewPage extends LitElement {
             html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-        : html`<pb-spinner size="large"></pb-spinner>`}
+        : html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`}
                 </pb-aggregate-card>
                 <pb-aggregate-card-promise
                     icon="pf-icon pf-icon-user"

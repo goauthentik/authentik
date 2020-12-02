@@ -4,15 +4,17 @@ import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 import { htmlFromString } from "../../utils";
 
+import "./TablePagination";
+
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
     abstract columns(): Array<string>;
     abstract row(item: T): Array<string>;
 
-    @property()
+    @property({attribute: false})
     data?: PBResponse<T>;
 
-    @property()
+    @property({type: Number})
     page = 1;
 
     static get styles(): CSSResult[] {

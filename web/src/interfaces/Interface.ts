@@ -1,15 +1,16 @@
 import { gettext } from "django";
-import { CSSResult, html, LitElement, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../common/styles";
+import { html, LitElement, TemplateResult } from "lit-element";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 
-// @customElement("pb-interface")
+import "../elements/Messages";
+import "../pages/router/RouterOutlet";
+
 export abstract class Interface extends LitElement {
 
     abstract get sidebar(): SidebarItem[];
 
-    static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+    createRenderRoot(): ShadowRoot | Element {
+        return this;
     }
 
     render(): TemplateResult {

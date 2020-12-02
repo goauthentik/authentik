@@ -16,7 +16,7 @@ export const DefaultConfig: Config = {
 
 @customElement("pb-sidebar-brand")
 export class SidebarBrand extends LitElement {
-    @property()
+    @property({attribute: false})
     config: Config = DefaultConfig;
 
     static get styles(): CSSResult[] {

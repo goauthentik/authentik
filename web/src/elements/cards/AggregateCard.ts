@@ -1,5 +1,6 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { ifDefined } from "lit-html/directives/if-defined";
 import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("pb-aggregate-card")
@@ -33,7 +34,7 @@ export class AggregateCard extends LitElement {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
-                    <i class="${this.icon}"></i> ${this.header ? gettext(this.header) : ""}
+                    <i class="${ifDefined(this.icon)}"></i> ${this.header ? gettext(this.header) : ""}
                 </div>
                 ${this.headerLink ? html`<a href="${this.headerLink}">
                     <i class="fa fa-external-link-alt"> </i>

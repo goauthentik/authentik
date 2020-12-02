@@ -4,7 +4,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("pb-table-pagination")
 export class TablePagination extends LitElement {
-    @property()
+    @property({attribute: false})
     table?: Table<unknown>;
 
     static get styles(): CSSResult[] {
@@ -44,7 +44,7 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => {this.previousHandler();}}
-                            disabled="${this.table?.data?.pagination.previous ? "true" : "false"}"
+                            ?disabled="${(this.table?.data?.pagination.previous || 0) > 0}"
                             aria-label="{% trans 'Go to previous page' %}"
                         >
                             <i class="fas fa-angle-left" aria-hidden="true"></i>
@@ -54,7 +54,7 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => {this.nextHandler();}}
-                            disabled="${this.table?.data?.pagination.next ? "true" : "false"}"
+                            ?disabled="${(this.table?.data?.pagination.next || 0) > 0}"
                             aria-label="{% trans 'Go to next page' %}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>

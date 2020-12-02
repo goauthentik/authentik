@@ -5,6 +5,7 @@ import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css"
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+import { SpinnerSize } from "../../elements/Spinner";
 
 @customElement("pb-site-shell")
 export class SiteShell extends LitElement {
@@ -16,7 +17,7 @@ export class SiteShell extends LitElement {
 
     _url?: string;
 
-    @property()
+    @property({type: Boolean})
     loading = false;
 
     static get styles(): CSSResult[] {
@@ -107,7 +108,7 @@ export class SiteShell extends LitElement {
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">
                         <div class="pf-l-bullseye__item">
-                            <pb-spinner size="large"></pb-spinner>
+                            <pb-spinner size=${SpinnerSize.Large}></pb-spinner>
                         </div>
                     </div>
                 </div>`

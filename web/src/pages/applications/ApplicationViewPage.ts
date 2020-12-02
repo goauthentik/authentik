@@ -6,6 +6,9 @@ import { PolicyBinding } from "../../api/policy_binding";
 import { COMMON_STYLES } from "../../common/styles";
 import { Table } from "../../elements/table/Table";
 
+import "../../elements/Tabs";
+import "../../elements/AdminLoginsChart";
+
 @customElement("pb-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
@@ -59,7 +62,7 @@ export class ApplicationViewPage extends LitElement {
         Application.get(value).then((app) => (this.application = app));
     }
 
-    @property()
+    @property({attribute: false})
     application?: Application;
 
     static get styles(): CSSResult[] {

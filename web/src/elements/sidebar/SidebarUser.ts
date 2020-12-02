@@ -46,9 +46,9 @@ export class SidebarUser extends LitElement {
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(User.me().then(u => {
-                    return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />
+        return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />
                     <span>${u.username}</span>`;
-                }), html``)}
+    }), html``)}
             </a>
             <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>

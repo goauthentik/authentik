@@ -1,4 +1,5 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult } from "lit-element";
+import { ifDefined } from "lit-html/directives/if-defined";
 // @ts-ignore
 import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
 // @ts-ignore
@@ -38,6 +39,6 @@ export class Tabs extends LitElement {
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>
-            <slot name="${this.currentPage}"></slot>`;
+            <slot name="${ifDefined(this.currentPage)}"></slot>`;
     }
 }

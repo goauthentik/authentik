@@ -9,9 +9,11 @@ import { Route } from "./Route";
 import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
 
+import "../generic/SiteShell";
+
 @customElement("pb-router-outlet")
 export class RouterOutlet extends LitElement {
-    @property()
+    @property({attribute: false})
     current?: RouteMatch;
 
     @property()

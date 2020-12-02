@@ -3,10 +3,12 @@ import { CSSResult, customElement, html, LitElement, property, TemplateResult } 
 import { AuditEvent, TopNEvent } from "../../api/events";
 import { COMMON_STYLES } from "../../common/styles";
 
+import "../../elements/Spinner";
+
 @customElement("pb-top-applications-table")
 export class TopApplicationsTable extends LitElement {
 
-    @property()
+    @property({attribute: false})
     topN?: TopNEvent[];
 
     static get styles(): CSSResult[] {

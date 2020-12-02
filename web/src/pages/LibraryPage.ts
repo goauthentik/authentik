@@ -6,7 +6,7 @@ import { truncate } from "../utils";
 
 @customElement("pb-library")
 export class ApplicationViewPage extends LitElement {
-    @property()
+    @property({attribute: false})
     apps?: PBResponse<Application>;
 
     static get styles(): CSSResult[] {

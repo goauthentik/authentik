@@ -9,7 +9,7 @@ import { ColorStyles, PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
 
 @customElement("pb-spinner-button")
 export class SpinnerButton extends LitElement {
-    @property()
+    @property({type: Boolean})
     isRunning = false;
 
     @property()

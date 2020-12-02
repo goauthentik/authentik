@@ -8,6 +8,9 @@ import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 
 import { until } from "lit-html/directives/until";
 
+import "./SidebarBrand";
+import "./SidebarUser";
+
 export interface SidebarItem {
     name: string;
     path?: string[];
