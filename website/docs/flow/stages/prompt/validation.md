@@ -10,7 +10,7 @@ To validate that two password fields are identical, create the following express
 if request.context.get('prompt_data').get('password') == request.context.get('prompt_data').get('password_repeat'):
     return True
 
-pb_message("Passwords don't match.")
+ak_message("Passwords don't match.")
 return False
 ```
 

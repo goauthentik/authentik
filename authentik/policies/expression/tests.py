@@ -22,7 +22,7 @@ class TestEvaluator(TestCase):
 
     def test_messages(self):
         """test expression with message return"""
-        template = 'pb_message("some message");return False'
+        template = 'ak_message("some message");return False'
         evaluator = PolicyEvaluator("test")
         evaluator.set_policy_request(self.request)
         result = evaluator.evaluate(template)

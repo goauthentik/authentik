@@ -17,7 +17,7 @@ class TestAdmin(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="test")
-        self.user.pb_groups.add(Group.objects.filter(is_superuser=True).first())
+        self.user.ak_groups.add(Group.objects.filter(is_superuser=True).first())
         self.user.save()
         self.client = Client()
         self.client.force_login(self.user)

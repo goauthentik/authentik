@@ -54,4 +54,4 @@ The other settings might need to be adjusted based on the setup of your domain.
 
 After you save the source, a synchronization will start in the background. When its done, you cen see the summary on the System Tasks page.
 
-![](./03_pb_status.png)
+![](./03_ak_status.png)

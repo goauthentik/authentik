@@ -84,7 +84,7 @@ class User(GuardianUserMixin, AbstractUser):
     name = models.TextField(help_text=_("User's display name."))
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    pb_groups = models.ManyToManyField("Group", related_name="users")
+    ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     attributes = models.JSONField(default=dict, blank=True)
@@ -95,7 +95,7 @@ class User(GuardianUserMixin, AbstractUser):
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
-        for group in self.pb_groups.all().order_by("name"):
+        for group in self.ak_groups.all().order_by("name"):
             final_attributes.update(group.attributes)
         final_attributes.update(self.attributes)
         return final_attributes
@@ -103,7 +103,7 @@ class User(GuardianUserMixin, AbstractUser):
     @cached_property
     def is_superuser(self) -> bool:
         """Get supseruser status based on membership in a group with superuser status"""
-        return self.pb_groups.filter(is_superuser=True).exists()
+        return self.ak_groups.filter(is_superuser=True).exists()
 
     @property
     def is_staff(self) -> bool:

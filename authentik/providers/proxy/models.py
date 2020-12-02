@@ -25,7 +25,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 
-SCOPE_PB_PROXY = "pb_proxy"
+SCOPE_AK_PROXY = "ak_proxy"
 
 
 def get_cookie_secret():
@@ -128,7 +128,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
                 SCOPE_OPENID,
                 SCOPE_OPENID_PROFILE,
                 SCOPE_OPENID_EMAIL,
-                SCOPE_PB_PROXY,
+                SCOPE_AK_PROXY,
             ]
         )
         self.property_mappings.set(scopes)

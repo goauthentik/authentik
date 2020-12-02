@@ -31,9 +31,9 @@ class BaseEvaluator:
         self._globals = {
             "regex_match": BaseEvaluator.expr_filter_regex_match,
             "regex_replace": BaseEvaluator.expr_filter_regex_replace,
-            "pb_is_group_member": BaseEvaluator.expr_func_is_group_member,
-            "pb_user_by": BaseEvaluator.expr_func_user_by,
-            "pb_logger": get_logger(),
+            "ak_is_group_member": BaseEvaluator.expr_func_is_group_member,
+            "ak_user_by": BaseEvaluator.expr_func_user_by,
+            "ak_logger": get_logger(),
             "requests": Session(),
         }
         self._context = {}
