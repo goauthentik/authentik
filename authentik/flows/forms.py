@@ -56,7 +56,7 @@ class FlowImportForm(forms.Form):
     """Form used for flow importing"""
 
     flow = forms.FileField(
-        validators=[FileExtensionValidator(allowed_extensions=["pbflow"])]
+        validators=[FileExtensionValidator(allowed_extensions=["akflow"])]
     )
 
     def clean_flow(self):
