@@ -33,6 +33,6 @@ authentik:
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation
-      href: https://authentik.beryju.org/docs/
+      href: https://goauthentik.io/docs/
     - name: authentik Website
-      href: https://authentik.beryju.org/
+      href: https://goauthentik.io/

@@ -1,7 +1,7 @@
 module.exports = {
     title: "authentik",
     tagline: "The authentication glue you need.",
-    url: "https://authentik.beryju.org",
+    url: "https://goauthentik.io",
     baseUrl: "/",
     onBrokenLinks: "throw",
     favicon: "img/logo.png",

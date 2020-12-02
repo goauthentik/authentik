@@ -55,8 +55,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         """Get common object metadata"""
         return {
             "app.kubernetes.io/name": "authentik-outpost",
-            "app.kubernetes.io/managed-by": "authentik.beryju.org",
-            "authentik.beryju.org/outpost-uuid": self.controller.outpost.uuid.hex,
+            "app.kubernetes.io/managed-by": "goauthentik.io",
+            "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
         }
 
     def get_reference_object(self) -> V1Deployment:

@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "authentik.chart" . }}
-    k8s.authentik.beryju.org/component: web
+    k8s.goauthentik.io/component: web
 spec:
   type: ClusterIP
   ports:
@@ -18,4 +18,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "authentik.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    k8s.authentik.beryju.org/component: web
+    k8s.goauthentik.io/component: web

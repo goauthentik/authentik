@@ -7,20 +7,20 @@ metadata:
     helm.sh/chart: {{ include "authentik.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.authentik.beryju.org/component: web
+    k8s.goauthentik.io/component: web
 spec:
   replicas: {{ .Values.serverReplicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "authentik.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      k8s.authentik.beryju.org/component: web
+      k8s.goauthentik.io/component: web
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "authentik.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        k8s.authentik.beryju.org/component: web
+        k8s.goauthentik.io/component: web
     spec:
       affinity:
         podAntiAffinity:
@@ -37,7 +37,7 @@ spec:
                   operator: In
                   values:
                   - {{ .Release.Name }}
-                - key: k8s.authentik.beryju.org/component
+                - key: k8s.goauthentik.io/component
                   operator: In
                   values:
                   - web

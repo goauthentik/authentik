@@ -13,9 +13,9 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://authentik.beryju.org/docs/installation/docker-compose/)
+For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/)
 
-For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://authentik.beryju.org/docs/installation/kubernetes/)
+For bigger setups, there is a Helm Chart in the `helm/` directory. This is documented [here](https://goauthentik.io/docs/installation/kubernetes/)
 
 ## Screenshots
 
@@ -24,7 +24,7 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Development
 
-See [Development Documentation](https://authentik.beryju.org/docs/development/local-dev-environment)
+See [Development Documentation](https://goauthentik.io/docs/development/local-dev-environment)
 
 ## Security
 

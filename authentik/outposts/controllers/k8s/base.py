@@ -119,8 +119,8 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
                 "app.kubernetes.io/instance": self.controller.outpost.name,
                 "app.kubernetes.io/version": __version__,
-                "app.kubernetes.io/managed-by": "authentik.beryju.org",
-                "authentik.beryju.org/outpost-uuid": self.controller.outpost.uuid.hex,
+                "app.kubernetes.io/managed-by": "goauthentik.io",
+                "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,
             },
             **kwargs,
         )

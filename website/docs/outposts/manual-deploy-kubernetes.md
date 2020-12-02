@@ -12,7 +12,7 @@ kind: Secret
 metadata:
     labels:
         app.kubernetes.io/instance: test
-        app.kubernetes.io/managed-by: authentik.beryju.org
+        app.kubernetes.io/managed-by: goauthentik.io
         app.kubernetes.io/name: authentik-proxy
         app.kubernetes.io/version: 0.10.0
     name: authentik-outpost-api
@@ -27,7 +27,7 @@ kind: Service
 metadata:
     labels:
         app.kubernetes.io/instance: test
-        app.kubernetes.io/managed-by: authentik.beryju.org
+        app.kubernetes.io/managed-by: goauthentik.io
         app.kubernetes.io/name: authentik-proxy
         app.kubernetes.io/version: 0.10.0
     name: authentik-outpost
@@ -43,7 +43,7 @@ spec:
           targetPort: https
     selector:
         app.kubernetes.io/instance: test
-        app.kubernetes.io/managed-by: authentik.beryju.org
+        app.kubernetes.io/managed-by: goauthentik.io
         app.kubernetes.io/name: authentik-proxy
         app.kubernetes.io/version: 0.10.0
     type: ClusterIP
@@ -53,7 +53,7 @@ kind: Deployment
 metadata:
     labels:
         app.kubernetes.io/instance: test
-        app.kubernetes.io/managed-by: authentik.beryju.org
+        app.kubernetes.io/managed-by: goauthentik.io
         app.kubernetes.io/name: authentik-proxy
         app.kubernetes.io/version: 0.10.0
     name: authentik-outpost
@@ -61,14 +61,14 @@ spec:
     selector:
         matchLabels:
             app.kubernetes.io/instance: test
-            app.kubernetes.io/managed-by: authentik.beryju.org
+            app.kubernetes.io/managed-by: goauthentik.io
             app.kubernetes.io/name: authentik-proxy
             app.kubernetes.io/version: 0.10.0
     template:
         metadata:
             labels:
                 app.kubernetes.io/instance: test
-                app.kubernetes.io/managed-by: authentik.beryju.org
+                app.kubernetes.io/managed-by: goauthentik.io
                 app.kubernetes.io/name: authentik-proxy
                 app.kubernetes.io/version: 0.10.0
         spec:

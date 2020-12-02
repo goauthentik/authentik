@@ -25,4 +25,4 @@
 | install.redis                     | true                    | Enables/disables the packaged Redis Chart
 | postgresql.postgresqlPassword     |                         | Password used for PostgreSQL, generated automatically.
 
-For more info, see https://authentik.beryju.org/ and https://authentik.beryju.org/docs/installation/kubernetes/
+For more info, see https://goauthentik.io/ and https://goauthentik.io/docs/installation/kubernetes/
