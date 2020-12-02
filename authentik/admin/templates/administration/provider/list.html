@@ -22,7 +22,7 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-dropdown class="pf-c-dropdown">
+                    <ak-dropdown class="pf-c-dropdown">
                         <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                             <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                             <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -30,7 +30,7 @@
                         <ul class="pf-c-dropdown__menu" hidden>
                             {% for type, name in types.items %}
                             <li>
-                                <pb-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
+                                <ak-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
                                     <button slot="trigger" class="pf-c-dropdown__menu-item">
                                         {{ name|verbose_name }}<br>
                                         <small>
@@ -38,11 +38,11 @@
                                         </small>
                                     </button>
                                     <div slot="modal"></div>
-                                </pb-modal-button>
+                                </ak-modal-button>
                             </li>
                             {% endfor %}
                         </ul>
-                    </pb-dropdown>
+                    </ak-dropdown>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
@@ -83,18 +83,18 @@
                         </span>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:provider-update' pk=provider.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                        <ak-modal-button href="{% url 'authentik_admin:provider-update' pk=provider.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
-                        <pb-modal-button href="{% url 'authentik_admin:provider-delete' pk=provider.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:provider-delete' pk=provider.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                         {% get_links provider as links %}
                         {% for name, href in links.items %}
                             <a class="pf-c-button pf-m-tertiary pb-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
@@ -130,7 +130,7 @@
                     {% trans 'Currently no providers exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <pb-dropdown class="pf-c-dropdown">
+                <ak-dropdown class="pf-c-dropdown">
                     <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                         <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                         <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -138,7 +138,7 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <pb-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
+                            <ak-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">
                                     {{ name|verbose_name }}<br>
                                     <small>
@@ -146,11 +146,11 @@
                                     </small>
                                 </button>
                                 <div slot="modal"></div>
-                            </pb-modal-button>
+                            </ak-modal-button>
                         </li>
                         {% endfor %}
                     </ul>
-                </pb-dropdown>
+                </ak-dropdown>
             </div>
         </div>
         {% endif %}

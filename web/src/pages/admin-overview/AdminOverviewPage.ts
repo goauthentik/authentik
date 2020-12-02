@@ -10,7 +10,7 @@ import { SpinnerSize } from "../../elements/Spinner";
 import "../../elements/AdminLoginsChart";
 import "./TopApplicationsTable";
 
-@customElement("pb-admin-status-card")
+@customElement("ak-admin-status-card")
 export class AdminStatusCard extends AggregatePromiseCard {
 
     @property({type: Number})
@@ -23,7 +23,7 @@ export class AdminStatusCard extends AggregatePromiseCard {
     lessThanThreshold?: number;
 
     renderNone(): TemplateResult {
-        return html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`;
+        return html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`;
     }
 
     renderGood(): TemplateResult {
@@ -49,7 +49,7 @@ export class AdminStatusCard extends AggregatePromiseCard {
 
 }
 
-@customElement("pb-admin-overview")
+@customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
     @property({attribute: false})
     data?: AdminOverview;
@@ -74,16 +74,16 @@ export class AdminOverviewPage extends LitElement {
         </section>
         <section class="pf-c-page__main-section">
             <div class="pf-l-gallery pf-m-gutter">
-                <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Logins over the last 24 hours" style="grid-column-end: span 3;grid-row-end: span 2;">
-                    <pb-admin-logins-chart url="${DefaultClient.makeUrl(["admin", "metrics"])}"></pb-admin-logins-chart>
-                </pb-aggregate-card>
-                <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
-                    <pb-top-applications-table></pb-top-applications-table>
-                </pb-aggregate-card>
-                <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
+                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Logins over the last 24 hours" style="grid-column-end: span 3;grid-row-end: span 2;">
+                    <ak-admin-logins-chart url="${DefaultClient.makeUrl(["admin", "metrics"])}"></ak-admin-logins-chart>
+                </ak-aggregate-card>
+                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
+                    <ak-top-applications-table></ak-top-applications-table>
+                </ak-aggregate-card>
+                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
 
-                </pb-aggregate-card>
-                <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
+                </ak-aggregate-card>
+                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
                     ${this.data ?
         this.data?.providers_without_application > 1 ?
             html`<p class="pb-aggregate-card">
@@ -93,9 +93,9 @@ export class AdminOverviewPage extends LitElement {
             html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-        : html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`}
-                </pb-aggregate-card>
-                <pb-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
+        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
+                </ak-aggregate-card>
+                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
                     ${this.data ?
         this.data?.policies_without_binding > 1 ?
             html`<p class="pb-aggregate-card">
@@ -105,14 +105,14 @@ export class AdminOverviewPage extends LitElement {
             html`<p class="pb-aggregate-card">
                                     <i class="fa fa-check-circle"></i> 0
                                 </p>`
-        : html`<pb-spinner size=${SpinnerSize.Large}></pb-spinner>`}
-                </pb-aggregate-card>
-                <pb-aggregate-card-promise
+        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
+                </ak-aggregate-card>
+                <ak-aggregate-card-promise
                     icon="pf-icon pf-icon-user"
                     header="Users"
                     headerLink="#/administration/users/"
                     .promise=${this.users}>
-                </pb-aggregate-card-promise>
+                </ak-aggregate-card-promise>
             </div>
         </section>`;
     }

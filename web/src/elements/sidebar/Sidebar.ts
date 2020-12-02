@@ -18,7 +18,7 @@ export interface SidebarItem {
     condition?: () => Promise<boolean>;
 }
 
-@customElement("pb-sidebar")
+@customElement("ak-sidebar")
 export class Sidebar extends LitElement {
     @property({attribute: false})
     items: SidebarItem[] = [];
@@ -93,11 +93,11 @@ export class Sidebar extends LitElement {
             <nav class="pf-c-nav" aria-label="Global">
                 <ul class="pf-c-nav__list">
                     <li class="pf-c-nav__item sidebar-brand">
-                        <pb-sidebar-brand></pb-sidebar-brand>
+                        <ak-sidebar-brand></ak-sidebar-brand>
                     </li>
                     ${this.items.map((i) => until(this.renderItem(i), html``))}
                     <li class="pf-c-nav__item pf-c-nav__item-bottom">
-                        <pb-sidebar-user></pb-sidebar-user>
+                        <ak-sidebar-user></ak-sidebar-user>
                     </li>
                 </ul>
             </nav>

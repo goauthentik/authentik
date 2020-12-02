@@ -14,14 +14,14 @@ export abstract class Interface extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<pb-messages></pb-messages>
+        return html`<ak-messages></ak-messages>
             <div class="pf-c-page">
                 <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content">${gettext("Skip to content")}</a>
-                <pb-sidebar class="pf-c-page__sidebar" .items=${this.sidebar}>
-                </pb-sidebar>
+                <ak-sidebar class="pf-c-page__sidebar" .items=${this.sidebar}>
+                </ak-sidebar>
                 <main class="pf-c-page__main">
-                    <pb-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library/">
-                    </pb-router-outlet>
+                    <ak-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library/">
+                    </ak-router-outlet>
                 </main>
             </div>`;
     }

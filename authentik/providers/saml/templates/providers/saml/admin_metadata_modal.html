@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<pb-modal-button>
+<ak-modal-button>
     <button slot="trigger" class="pf-c-button pf-m-tertiary">
         {% trans 'View Metadata' %}
     </button>
@@ -10,13 +10,13 @@
         </div>
         <div class="pf-c-modal-box__body" id="modal-description">
             <form method="post">
-                <pb-codemirror mode="xml"><textarea class="pf-c-form-control"
-                        readonly>{{ metadata }}</textarea></pb-codemirror>
+                <ak-codemirror mode="xml"><textarea class="pf-c-form-control"
+                        readonly>{{ metadata }}</textarea></ak-codemirror>
             </form>
         </div>
         <footer class="pf-c-modal-box__footer pf-m-align-left">
             <a class="pf-c-button pf-m-primary">{% trans 'Close' %}</a>
         </footer>
     </div>
-</pb-modal-button>
+</ak-modal-button>
 

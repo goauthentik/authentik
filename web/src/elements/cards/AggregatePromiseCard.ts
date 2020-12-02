@@ -4,7 +4,7 @@ import { AggregateCard } from "./AggregateCard";
 import "../Spinner";
 import { SpinnerSize } from "../Spinner";
 
-@customElement("pb-aggregate-card-promise")
+@customElement("ak-aggregate-card-promise")
 export class AggregatePromiseCard extends AggregateCard {
     @property({attribute: false})
     promise?: Promise<Record<string, unknown>>;
@@ -20,7 +20,7 @@ export class AggregatePromiseCard extends AggregateCard {
 
     renderInner(): TemplateResult {
         return html`<p class="center-value">
-            ${until(this.promiseProxy(), html`<pb-spinner size="${SpinnerSize.Large}"></pb-spinner>`)}
+            ${until(this.promiseProxy(), html`<ak-spinner size="${SpinnerSize.Large}"></ak-spinner>`)}
         </p>`;
     }
 

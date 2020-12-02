@@ -117,7 +117,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     },
 ];
 
-@customElement("pb-interface-admin")
+@customElement("ak-interface-admin")
 export class AdminInterface extends Interface {
 
     get sidebar(): SidebarItem[] {

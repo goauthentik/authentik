@@ -14,7 +14,7 @@ import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS } from "../../constants";
 
-@customElement("pb-modal-button")
+@customElement("ak-modal-button")
 export class ModalButton extends LitElement {
     @property()
     href?: string;

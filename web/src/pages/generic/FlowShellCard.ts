@@ -11,7 +11,7 @@ interface Response {
     body?: string;
 }
 
-@customElement("pb-flow-shell-card")
+@customElement("ak-flow-shell-card")
 export class FlowShellCard extends LitElement {
     @property()
     flowBodyUrl = "";

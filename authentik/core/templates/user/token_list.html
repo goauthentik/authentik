@@ -9,12 +9,12 @@
         <div class="pf-c-toolbar__content">
             {% include 'partials/toolbar_search.html' %}
             <div class="pf-c-toolbar__bulk-select">
-                <pb-modal-button href="{% url 'authentik_core:user-tokens-create' %}">
-                    <pb-spinner-button slot="trigger" class="pf-m-primary">
+                <ak-modal-button href="{% url 'authentik_core:user-tokens-create' %}">
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </pb-spinner-button>
+                    </ak-spinner-button>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
             {% include 'partials/pagination.html' %}
         </div>
@@ -55,21 +55,21 @@
                     </span>
                 </td>
                 <td>
-                    <pb-modal-button href="{% url 'authentik_core:user-tokens-update' identifier=token.identifier %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                    <ak-modal-button href="{% url 'authentik_core:user-tokens-update' identifier=token.identifier %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-secondary">
                             {% trans 'Edit' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
-                    <pb-modal-button href="{% url 'authentik_core:user-tokens-delete' identifier=token.identifier %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-danger">
+                    </ak-modal-button>
+                    <ak-modal-button href="{% url 'authentik_core:user-tokens-delete' identifier=token.identifier %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-danger">
                             {% trans 'Delete' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
-                    <pb-token-copy-button identifier="{{ token.identifier }}">
+                    </ak-modal-button>
+                    <ak-token-copy-button identifier="{{ token.identifier }}">
                         {% trans 'Copy token' %}
-                    </pb-token-copy-button>
+                    </ak-token-copy-button>
                 </td>
             </tr>
             {% endfor %}
@@ -88,12 +88,12 @@
             <div class="pf-c-empty-state__body">
                 {% trans 'Currently no tokens exist. Click the button below to create one.' %}
             </div>
-            <pb-modal-button href="{% url 'authentik_core:user-tokens-create' %}">
-                <pb-spinner-button slot="trigger" class="pf-m-primary">
+            <ak-modal-button href="{% url 'authentik_core:user-tokens-create' %}">
+                <ak-spinner-button slot="trigger" class="pf-m-primary">
                     {% trans 'Create' %}
-                </pb-spinner-button>
+                </ak-spinner-button>
                 <div slot="modal"></div>
-            </pb-modal-button>
+            </ak-modal-button>
         </div>
     </div>
     {% endif %}

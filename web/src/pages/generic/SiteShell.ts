@@ -7,7 +7,7 @@ import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css"
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { SpinnerSize } from "../../elements/Spinner";
 
-@customElement("pb-site-shell")
+@customElement("ak-site-shell")
 export class SiteShell extends LitElement {
     @property()
     set url(value: string) {
@@ -108,7 +108,7 @@ export class SiteShell extends LitElement {
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">
                         <div class="pf-l-bullseye__item">
-                            <pb-spinner size=${SpinnerSize.Large}></pb-spinner>
+                            <ak-spinner size=${SpinnerSize.Large}></ak-spinner>
                         </div>
                     </div>
                 </div>`

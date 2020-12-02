@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="pf-c-card__body">
-                <pb-admin-logins-chart url="{% url 'authentik_api:admin_metrics-list' %}"></pb-admin-logins-chart>
+                <ak-admin-logins-chart url="{% url 'authentik_api:admin_metrics-list' %}"></ak-admin-logins-chart>
             </div>
         </div>
         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 2;grid-row-end: span 3;">
@@ -179,12 +179,12 @@
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
                 </div>
-                <pb-modal-button href="{% url 'authentik_admin:overview-clear-policy-cache' %}">
+                <ak-modal-button href="{% url 'authentik_admin:overview-clear-policy-cache' %}">
                     <a slot="trigger">
                         <i class="fa fa-trash"> </i>
                     </a>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
             <div class="pf-c-card__body">
                 {% if cached_policies < 1 %}
@@ -205,12 +205,12 @@
                 <div class="pf-c-card__header-main">
                     <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Flows' %}
                 </div>
-                <pb-modal-button href="{% url 'authentik_admin:overview-clear-flow-cache' %}">
+                <ak-modal-button href="{% url 'authentik_admin:overview-clear-flow-cache' %}">
                     <a slot="trigger">
                         <i class="fa fa-trash"> </i>
                     </a>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
             <div class="pf-c-card__body">
                 {% if cached_flows < 1 %}

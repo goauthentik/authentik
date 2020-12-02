@@ -20,7 +20,7 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-dropdown class="pf-c-dropdown">
+                    <ak-dropdown class="pf-c-dropdown">
                         <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                             <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                             <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -28,7 +28,7 @@
                         <ul class="pf-c-dropdown__menu" hidden>
                             {% for type, name in types.items %}
                             <li>
-                                <pb-modal-button href="{% url 'authentik_admin:policy-create' %}?type={{ type }}">
+                                <ak-modal-button href="{% url 'authentik_admin:policy-create' %}?type={{ type }}">
                                     <button slot="trigger" class="pf-c-dropdown__menu-item">
                                         {{ name|verbose_name }}<br>
                                         <small>
@@ -36,11 +36,11 @@
                                         </small>
                                     </button>
                                     <div slot="modal"></div>
-                                </pb-modal-button>
+                                </ak-modal-button>
                             </li>
                             {% endfor %}
                         </ul>
-                    </pb-dropdown>
+                    </ak-dropdown>
                 </div>
                 {% include 'partials/pagination.html' %}
             </div>
@@ -74,24 +74,24 @@
                         </span>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:policy-update' pk=policy.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                        <ak-modal-button href="{% url 'authentik_admin:policy-update' pk=policy.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
-                        <pb-modal-button href="{% url 'authentik_admin:policy-test' pk=policy.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-tertiary">
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:policy-test' pk=policy.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-tertiary">
                                 {% trans 'Test' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
-                        <pb-modal-button href="{% url 'authentik_admin:policy-delete' pk=policy.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:policy-delete' pk=policy.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -119,7 +119,7 @@
                     {% trans 'Currently no policies exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <pb-dropdown class="pf-c-dropdown">
+                <ak-dropdown class="pf-c-dropdown">
                     <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                         <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
                         <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
@@ -127,7 +127,7 @@
                     <ul class="pf-c-dropdown__menu" hidden>
                         {% for type, name in types.items %}
                         <li>
-                            <pb-modal-button href="{% url 'authentik_admin:policy-create' %}?type={{ type }}">
+                            <ak-modal-button href="{% url 'authentik_admin:policy-create' %}?type={{ type }}">
                                 <button slot="trigger" class="pf-c-dropdown__menu-item">
                                     {{ name|verbose_name }}<br>
                                     <small>
@@ -135,11 +135,11 @@
                                     </small>
                                 </button>
                                 <div slot="modal"></div>
-                            </pb-modal-button>
+                            </ak-modal-button>
                         </li>
                         {% endfor %}
                     </ul>
-                </pb-dropdown>
+                </ak-dropdown>
             </div>
         </div>
         {% endif %}

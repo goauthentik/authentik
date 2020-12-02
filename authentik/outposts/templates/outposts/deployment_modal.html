@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<pb-modal-button>
+<ak-modal-button>
     <button slot="trigger" class="pf-c-button pf-m-tertiary">
         {% trans 'View Deployment Info' %}
     </button>
@@ -22,9 +22,9 @@
                         <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                     </label>
                     <div>
-                        <pb-token-copy-button identifier="{{ outpost.token_identifier }}">
+                        <ak-token-copy-button identifier="{{ outpost.token_identifier }}">
                             {% trans 'Click to copy token' %}
-                        </pb-token-copy-button>
+                        </ak-token-copy-button>
                     </div>
                 </div>
                 <h3>{% trans 'If your authentik Instance is using a self-signed certificate, set this value.' %}</h3>
@@ -40,4 +40,4 @@
             <a class="pf-c-button pf-m-primary">{% trans 'Close' %}</a>
         </footer>
     </div>
-</pb-modal-button>
+</ak-modal-button>

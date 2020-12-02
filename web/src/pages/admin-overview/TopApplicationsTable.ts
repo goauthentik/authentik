@@ -5,7 +5,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Spinner";
 
-@customElement("pb-top-applications-table")
+@customElement("ak-top-applications-table")
 export class TopApplicationsTable extends LitElement {
 
     @property({attribute: false})
@@ -43,7 +43,7 @@ export class TopApplicationsTable extends LitElement {
                     </tr>
                 </thead>
                 <tbody role="rowgroup">
-                    ${this.topN ? this.topN.map((e) => this.renderRow(e)) : html`<pb-spinner></pb-spinner>`}
+                    ${this.topN ? this.topN.map((e) => this.renderRow(e)) : html`<ak-spinner></ak-spinner>`}
                 </tbody>
             </table>`;
     }

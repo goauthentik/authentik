@@ -18,7 +18,7 @@ interface Message {
     message: string;
 }
 
-@customElement("pb-messages")
+@customElement("ak-messages")
 export class Messages extends LitElement {
     url = DefaultClient.makeUrl(["root", "messages"]);
 

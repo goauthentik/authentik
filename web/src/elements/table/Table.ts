@@ -79,10 +79,10 @@ export abstract class Table<T> extends LitElement {
                             ${gettext("Refresh")}
                         </button>
                     </div>
-                    <pb-table-pagination
+                    <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
                         .table=${this}
-                    ></pb-table-pagination>
+                    ></ak-table-pagination>
                 </div>
             </div>
             <table class="pf-c-table pf-m-compact pf-m-grid-md">
@@ -96,10 +96,10 @@ export abstract class Table<T> extends LitElement {
                 </tbody>
             </table>
             <div class="pf-c-pagination pf-m-bottom">
-                <pb-table-pagination
+                <ak-table-pagination
                     class="pf-c-toolbar__item pf-m-pagination"
                     .table=${this}
-                ></pb-table-pagination>
+                ></ak-table-pagination>
             </div>`;
     }
 

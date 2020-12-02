@@ -11,7 +11,7 @@ import { RouteMatch } from "./RouteMatch";
 
 import "../generic/SiteShell";
 
-@customElement("pb-router-outlet")
+@customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
     @property({attribute: false})
     current?: RouteMatch;
@@ -65,9 +65,9 @@ export class RouterOutlet extends LitElement {
             console.debug(`authentik/router: route "${activeUrl}" not defined, defaulting to shell`);
             const route = new Route(
                 RegExp(""),
-                html`<pb-site-shell url=${activeUrl}>
+                html`<ak-site-shell url=${activeUrl}>
                     <div slot="body"></div>
-                </pb-site-shell>`
+                </ak-site-shell>`
             );
             matchedRoute = new RouteMatch(route);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};

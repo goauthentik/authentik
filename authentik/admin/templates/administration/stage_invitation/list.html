@@ -21,12 +21,12 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-modal-button href="{% url 'authentik_admin:stage-invitation-create' %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-primary">
+                    <ak-modal-button href="{% url 'authentik_admin:stage-invitation-create' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
+                    </ak-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
@@ -56,12 +56,12 @@
                         </span>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:stage-invitation-delete' pk=invitation.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                        <ak-modal-button href="{% url 'authentik_admin:stage-invitation-delete' pk=invitation.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -89,12 +89,12 @@
                     {% trans 'Currently no invitations exist. Click the button below to create one.' %}
                 {% endif %}
                 </div>
-                <pb-modal-button href="{% url 'authentik_admin:stage-invitation-create' %}">
-                    <pb-spinner-button slot="trigger" class="pf-m-primary">
+                <ak-modal-button href="{% url 'authentik_admin:stage-invitation-create' %}">
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </pb-spinner-button>
+                    </ak-spinner-button>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
         </div>
         {% endif %}

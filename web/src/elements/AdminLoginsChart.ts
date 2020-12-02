@@ -6,7 +6,7 @@ interface TickValue {
     major: boolean;
 }
 
-@customElement("pb-admin-logins-chart")
+@customElement("ak-admin-logins-chart")
 export class AdminLoginsChart extends LitElement {
     @property()
     url = "";

@@ -58,15 +58,15 @@
                         </span>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:token-delete' pk=token.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                        <ak-modal-button href="{% url 'authentik_admin:token-delete' pk=token.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
-                        <pb-token-copy-button identifier="{{ token.identifier }}">
+                        </ak-modal-button>
+                        <ak-token-copy-button identifier="{{ token.identifier }}">
                             {% trans 'Copy token' %}
-                        </pb-token-copy-button>
+                        </ak-token-copy-button>
                     </td>
                 </tr>
                 {% endfor %}

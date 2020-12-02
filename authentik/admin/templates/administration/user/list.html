@@ -19,12 +19,12 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-modal-button href="{% url 'authentik_admin:user-create' %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-primary">
+                    <ak-modal-button href="{% url 'authentik_admin:user-create' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
+                    </ak-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
@@ -61,26 +61,26 @@
                         </span>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:user-update' pk=user.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                        <ak-modal-button href="{% url 'authentik_admin:user-update' pk=user.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Edit' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                         {% if user.is_active %}
-                        <pb-modal-button href="{% url 'authentik_admin:user-disable' pk=user.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-warning">
+                        <ak-modal-button href="{% url 'authentik_admin:user-disable' pk=user.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-warning">
                                 {% trans 'Disable' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                         {% else %}
-                        <pb-modal-button href="{% url 'authentik_admin:user-delete' pk=user.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-primary">
+                        <ak-modal-button href="{% url 'authentik_admin:user-delete' pk=user.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-primary">
                                 {% trans 'Enable' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                         {% endif %}
                         <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'authentik_admin:user-password-reset' pk=user.pk %}?back={{ request.get_full_path }}">{% trans 'Reset Password' %}</a>
                         <a class="pf-c-button pf-m-tertiary pb-root-link" href="{% url 'authentik_core:impersonate-init' user_id=user.pk %}">{% trans 'Impersonate' %}</a>
@@ -111,12 +111,12 @@
                     {% trans 'Currently no users exist. How did you even get here.' %}
                 {% endif %}
                 </div>
-                <pb-modal-button href="{% url 'authentik_admin:user-create' %}">
-                    <pb-spinner-button slot="trigger" class="pf-m-primary">
+                <ak-modal-button href="{% url 'authentik_admin:user-create' %}">
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </pb-spinner-button>
+                    </ak-spinner-button>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
         </div>
         {% endif %}

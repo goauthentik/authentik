@@ -14,7 +14,7 @@ export const DefaultConfig: Config = {
     error_reporting_send_pii: false,
 };
 
-@customElement("pb-sidebar-brand")
+@customElement("ak-sidebar-brand")
 export class SidebarBrand extends LitElement {
     @property({attribute: false})
     config: Config = DefaultConfig;

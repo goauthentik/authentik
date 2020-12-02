@@ -9,7 +9,7 @@ import { Table } from "../../elements/table/Table";
 import "../../elements/Tabs";
 import "../../elements/AdminLoginsChart";
 
-@customElement("pb-bound-policies-list")
+@customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
@@ -33,24 +33,24 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             item.order.toString(),
             item.timeout.toString(),
             `
-            <pb-modal-button href="administration/policies/bindings/${item.pk}/update/">
-                <pb-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
-                </pb-spinner-button>
+                </ak-spinner-button>
                 <div slot="modal"></div>
-            </pb-modal-button>
-            <pb-modal-button href="administration/policies/bindings/${item.pk}/delete/">
-                <pb-spinner-button slot="trigger" class="pf-m-danger">
+            </ak-modal-button>
+            <ak-modal-button href="administration/policies/bindings/${item.pk}/delete/">
+                <ak-spinner-button slot="trigger" class="pf-m-danger">
                     Delete
-                </pb-spinner-button>
+                </ak-spinner-button>
                 <div slot="modal"></div>
-            </pb-modal-button>
+            </ak-modal-button>
             `,
         ];
     }
 }
 
-@customElement("pb-application-view")
+@customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
     @property()
     set args(value: { [key: string]: string }) {
@@ -88,7 +88,7 @@ export class ApplicationViewPage extends LitElement {
                     <p>${this.application?.meta_publisher}</p>
                 </div>
             </section>
-            <pb-tabs>
+            <ak-tabs>
                 <section slot="page-1" tab-title="Users" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
@@ -99,18 +99,18 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
-                                    <pb-admin-logins-chart
+                                    <ak-admin-logins-chart
                                         url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug, "metrics"])}">
-                                    </pb-admin-logins-chart>`: ""}
+                                    </ak-admin-logins-chart>`: ""}
                             </div>
                         </div>
                     </div>
                 </section>
                 <div slot="page-2" tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <pb-bound-policies-list .target=${this.application.pk}></pb-bound-policies-list>
+                        <ak-bound-policies-list .target=${this.application.pk}></ak-bound-policies-list>
                     </div>
                 </div>
-            </pb-tabs>`;
+            </ak-tabs>`;
     }
 }

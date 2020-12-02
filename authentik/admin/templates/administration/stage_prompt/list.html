@@ -21,12 +21,12 @@
             <div class="pf-c-toolbar__content">
                 {% include 'partials/toolbar_search.html' %}
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-modal-button href="{% url 'authentik_admin:stage-prompt-create' %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-primary">
+                    <ak-modal-button href="{% url 'authentik_admin:stage-prompt-create' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
+                    </ak-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
@@ -78,18 +78,18 @@
                         </ul>
                     </td>
                     <td>
-                        <pb-modal-button href="{% url 'authentik_admin:stage-prompt-update' pk=prompt.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                        <ak-modal-button href="{% url 'authentik_admin:stage-prompt-update' pk=prompt.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
                                 {% trans 'Update' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
-                        <pb-modal-button href="{% url 'authentik_admin:stage-prompt-delete' pk=prompt.pk %}">
-                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:stage-prompt-delete' pk=prompt.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
                                 {% trans 'Delete' %}
-                            </pb-spinner-button>
+                            </ak-spinner-button>
                             <div slot="modal"></div>
-                        </pb-modal-button>
+                        </ak-modal-button>
                         {% get_links prompt as links %}
                         {% for name, href in links.items %}
                         <a class="pf-c-button pf-m-tertiary pb-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>

@@ -3,7 +3,7 @@ import { customElement, property } from "lit-element";
 import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 
-@customElement("pb-action-button")
+@customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
     @property()
     url = "";

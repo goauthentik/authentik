@@ -44,9 +44,9 @@
         <section class="pf-c-page__main-section">
             <div class="pf-u-display-flex pf-u-justify-content-center">
                 <div class="pf-u-w-75">
-                    <pb-site-shell url="{% url 'authentik_core:user-tokens' %}">
+                    <ak-site-shell url="{% url 'authentik_core:user-tokens' %}">
                         <div slot="body"></div>
-                    </pb-site-shell>
+                    </ak-site-shell>
                 </div>
             </div>
         </section>
@@ -55,9 +55,9 @@
         <section class="pf-c-page__main-section">
             <div class="pf-u-display-flex pf-u-justify-content-center">
                 <div class="pf-u-w-75">
-                    <pb-site-shell url="{{ stage }}">
+                    <ak-site-shell url="{{ stage }}">
                         <div slot="body"></div>
-                    </pb-site-shell>
+                    </ak-site-shell>
                 </div>
             </div>
         </section>
@@ -67,9 +67,9 @@
         <section class="pf-c-page__main-section">
             <div class="pf-u-display-flex pf-u-justify-content-center">
                 <div class="pf-u-w-75">
-                    <pb-site-shell url="{{ source }}">
+                    <ak-site-shell url="{{ source }}">
                         <div slot="body"></div>
-                    </pb-site-shell>
+                    </ak-site-shell>
                 </div>
             </div>
         </section>

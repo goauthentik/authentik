@@ -6,7 +6,7 @@ import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { CURRENT_CLASS } from "../constants";
 
-@customElement("pb-tabs")
+@customElement("ak-tabs")
 export class Tabs extends LitElement {
     @property()
     currentPage?: string;

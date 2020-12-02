@@ -19,12 +19,12 @@
         <div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
                 <div class="pf-c-toolbar__bulk-select">
-                    <pb-modal-button href="{% url 'authentik_admin:stage-binding-create' %}">
-                        <pb-spinner-button slot="trigger" class="pf-m-primary">
+                    <ak-modal-button href="{% url 'authentik_admin:stage-binding-create' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
                             {% trans 'Create' %}
-                        </pb-spinner-button>
+                        </ak-spinner-button>
                         <div slot="modal"></div>
-                    </pb-modal-button>
+                    </ak-modal-button>
                     <button role="pb-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>
@@ -80,18 +80,18 @@
                             </div>
                         </td>
                         <td>
-                            <pb-modal-button href="{% url 'authentik_admin:stage-binding-update' pk=binding.pk %}">
-                                <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                            <ak-modal-button href="{% url 'authentik_admin:stage-binding-update' pk=binding.pk %}">
+                                <ak-spinner-button slot="trigger" class="pf-m-secondary">
                                     {% trans 'Update' %}
-                                </pb-spinner-button>
+                                </ak-spinner-button>
                                 <div slot="modal"></div>
-                            </pb-modal-button>
-                            <pb-modal-button href="{% url 'authentik_admin:stage-binding-delete' pk=binding.pk %}">
-                                <pb-spinner-button slot="trigger" class="pf-m-danger">
+                            </ak-modal-button>
+                            <ak-modal-button href="{% url 'authentik_admin:stage-binding-delete' pk=binding.pk %}">
+                                <ak-spinner-button slot="trigger" class="pf-m-danger">
                                     {% trans 'Delete' %}
-                                </pb-spinner-button>
+                                </ak-spinner-button>
                                 <div slot="modal"></div>
-                            </pb-modal-button>
+                            </ak-modal-button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -111,12 +111,12 @@
                 <div class="pf-c-empty-state__body">
                     {% trans 'Currently no flow-stage bindings exist. Click the button below to create one.' %}
                 </div>
-                <pb-modal-button href="{% url 'authentik_admin:stage-binding-create' %}">
-                    <pb-spinner-button slot="trigger" class="pf-m-primary">
+                <ak-modal-button href="{% url 'authentik_admin:stage-binding-create' %}">
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
                         {% trans 'Create' %}
-                    </pb-spinner-button>
+                    </ak-spinner-button>
                     <div slot="modal"></div>
-                </pb-modal-button>
+                </ak-modal-button>
             </div>
         </div>
         {% endif %}

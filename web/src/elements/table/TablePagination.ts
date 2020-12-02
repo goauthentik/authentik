@@ -2,7 +2,7 @@ import { CSSResult, customElement, html, LitElement, property, TemplateResult } 
 import { Table } from "./Table";
 import { COMMON_STYLES } from "../../common/styles";
 
-@customElement("pb-table-pagination")
+@customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
     @property({attribute: false})
     table?: Table<unknown>;

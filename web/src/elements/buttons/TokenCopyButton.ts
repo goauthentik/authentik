@@ -6,7 +6,7 @@ import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import { tokenByIdentifier } from "../../api/token";
 import { ColorStyles, ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
 
-@customElement("pb-token-copy-button")
+@customElement("ak-token-copy-button")
 export class TokenCopyButton extends LitElement {
     @property()
     identifier?: string;
