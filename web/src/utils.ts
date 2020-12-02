@@ -1,4 +1,5 @@
 import { html, TemplateResult } from "lit-html";
+import { SpinnerSize } from "./elements/Spinner";
 
 export function getCookie(name: string): string | undefined {
     let cookieValue = undefined;
@@ -33,4 +34,19 @@ export function truncate(input?: string, max = 10): string {
 
 export function htmlFromString(...strings: string[]): TemplateResult {
     return html({ raw: strings, ...strings } as TemplateStringsArray);
+}
+
+export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
+    if (!v) {
+        return html`<div class="pf-c-empty-state pf-m-full-height">
+            <div class="pf-c-empty-state__content">
+                <div class="pf-l-bullseye">
+                    <div class="pf-l-bullseye__item">
+                        <pb-spinner size="${SpinnerSize.Large}"></pb-spinner>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+    return actual;
 }
