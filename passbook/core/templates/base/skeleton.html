@@ -13,9 +13,9 @@
         <title>{% block title %}{% trans title|default:config.passbook.branding.title %}{% endblock %}</title>
         <link rel="icon" type="image/png" href="{% static 'dist/assets/images/logo.png' %}">
         <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/images/logo.png' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@patternfly/patternfly/patternfly-addons.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly-addons.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/fontawesome.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/passbook.css' %}">
         <script src="{% url 'javascript-catalog' %}"></script>
         <script src="{% static 'dist/main.js' %}" type="module"></script>
