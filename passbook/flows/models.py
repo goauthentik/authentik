@@ -92,11 +92,27 @@ class Flow(SerializerModel, PolicyBindingModel):
     flow_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, help_text=_("Visible in the URL."))
 
-    title = models.TextField()
+    title = models.TextField(help_text=_("Shown as the Title in Flow pages."))
 
-    designation = models.CharField(max_length=100, choices=FlowDesignation.choices)
+    designation = models.CharField(
+        max_length=100,
+        choices=FlowDesignation.choices,
+        help_text=_(
+            (
+                "Decides what this Flow is used for. For example, the Authentication flow "
+                "is redirect to when an un-authenticated user visits passbook."
+            )
+        ),
+    )
+
+    background = models.FileField(
+        upload_to="flow-backgrounds/",
+        default="../static/dist/assets/images/flow_background.jpg",
+        blank=True,
+        help_text=_("Background shown during execution"),
+    )
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 

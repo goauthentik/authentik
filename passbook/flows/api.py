@@ -25,6 +25,7 @@ class FlowSerializer(ModelSerializer):
             "slug",
             "title",
             "designation",
+            "background",
             "stages",
             "policies",
             "cache_count",

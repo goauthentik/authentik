@@ -33,11 +33,6 @@ html {
     margin-right: 0.5em;
 }
 
-.pf-c-background-image::before {
-    background-image: url("assets/images/flow_background.jpg");
-    background-position: center;
-}
-
 /* Fix patternfly sidebar and header with open Modal */
 .pf-c-page__sidebar {
     z-index: 0;

@@ -21,20 +21,12 @@ class FlowForm(forms.ModelForm):
             "title",
             "slug",
             "designation",
+            "background",
         ]
-        help_texts = {
-            "title": _("Shown as the Title in Flow pages."),
-            "slug": _("Visible in the URL."),
-            "designation": _(
-                (
-                    "Decides what this Flow is used for. For example, the Authentication flow "
-                    "is redirect to when an un-authenticated user visits passbook."
-                )
-            ),
-        }
         widgets = {
             "name": forms.TextInput(),
             "title": forms.TextInput(),
+            "background": forms.FileInput(),
         }
 
 

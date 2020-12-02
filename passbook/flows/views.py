@@ -235,6 +235,8 @@ class FlowExecutorShellView(TemplateView):
     template_name = "flows/shell.html"
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        flow: Flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        kwargs["background_url"] = flow.background.url
         kwargs["exec_url"] = reverse("passbook_flows:flow-executor", kwargs=self.kwargs)
         self.request.session[SESSION_KEY_GET] = self.request.GET
         return kwargs

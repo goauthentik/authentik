@@ -6811,6 +6811,7 @@ definitions:
         minLength: 1
       slug:
         title: Slug
+        description: Visible in the URL.
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
@@ -6818,10 +6819,13 @@ definitions:
         minLength: 1
       title:
         title: Title
+        description: Shown as the Title in Flow pages.
         type: string
         minLength: 1
       designation:
         title: Designation
+        description: Decides what this Flow is used for. For example, the Authentication
+          flow is redirect to when an un-authenticated user visits passbook.
         type: string
         enum:
           - authentication
@@ -6831,6 +6835,12 @@ definitions:
           - unenrollment
           - recovery
           - stage_configuration
+      background:
+        title: Background
+        description: Background shown during execution
+        type: string
+        readOnly: true
+        format: uri
       stages:
         type: array
         items:
