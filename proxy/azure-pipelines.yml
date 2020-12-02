@@ -1,6 +1,12 @@
 trigger:
   - master
 
+variables:
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
+    branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], 'refs/heads/', '') }}
+
 stages:
   - stage: generate
     jobs:
@@ -87,4 +93,4 @@ stages:
               command: 'buildAndPush'
               Dockerfile: 'proxy/Dockerfile'
               buildContext: 'proxy/'
-              tags: 'gh-$(Build.SourceBranchName)'
+              tags: "gh-${{ variables.branchName }}"
