@@ -107,7 +107,7 @@ export class SiteShell extends LitElement {
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">
                         <div class="pf-l-bullseye__item">
-                            <pb-spinner></pb-spinner>
+                            <pb-spinner size="large"></pb-spinner>
                         </div>
                     </div>
                 </div>`
