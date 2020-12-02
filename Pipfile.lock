@@ -303,11 +303,11 @@
         },
         "django-model-utils": {
             "hashes": [
-                "sha256:70cedefa4c9481be611082a8bd3dd8bba54280c2ead187d982a464be02a8d279",
-                "sha256:83e9d7c1b1fa74273822672a0c6d9f47834a6d2d8af1c7a1539eddda9dbce4f8"
+                "sha256:eb5dd05ef7d7ce6bc79cae54ea7c4a221f6f81e2aad7722933aee66489e7264b",
+                "sha256:ef7c440024e797796a3811432abdd2be8b5225ae64ef346f8bfc6de7d8e5d73c"
             ],
             "index": "pypi",
-            "version": "==4.1.0"
+            "version": "==4.1.1"
         },
         "django-otp": {
             "hashes": [
