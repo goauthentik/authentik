@@ -1,24 +1,24 @@
-# passbook Proxy
+# authentik Proxy
 
-[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/passbook/3?style=flat-square)](https://dev.azure.com/beryjuorg/passbook/_build?definitionId=3)
-![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/passbook-proxy.svg?style=flat-square)
+[![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/3?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=3)
+![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/authentik-proxy.svg?style=flat-square)
 
-Reverse Proxy based on [oauth2_proxy](https://github.com/oauth2-proxy/oauth2-proxy), completely managed and monitored by passbook.
+Reverse Proxy based on [oauth2_proxy](https://github.com/oauth2-proxy/oauth2-proxy), completely managed and monitored by authentik.
 
 ## Usage
 
-passbook Proxy is built to be configured by passbook itself, hence the only options you can directly give it are connection params.
+authentik Proxy is built to be configured by authentik itself, hence the only options you can directly give it are connection params.
 
 The following environment variable are implemented:
 
-`PASSBOOK_HOST`: Full URL to the passbook instance with protocol, i.e. "https://passbook.company.tld"
+`AUTHENTIK_HOST`: Full URL to the authentik instance with protocol, i.e. "https://authentik.company.tld"
 
-`PASSBOOK_TOKEN`: Token used to authenticate against passbook. This is generated after an Outpost instance is created.
+`AUTHENTIK_TOKEN`: Token used to authenticate against authentik. This is generated after an Outpost instance is created.
 
-`PASSBOOK_INSECURE`: This environment variable can optionally be set to ignore the SSL Certificate of the passbook instance. Applies to both HTTP and WS connections.
+`AUTHENTIK_INSECURE`: This environment variable can optionally be set to ignore the SSL Certificate of the authentik instance. Applies to both HTTP and WS connections.
 
 ## Development
 
-passbook Proxy uses an auto-generated API Client to communicate with passbook. This client is not kept in git. To generate the client locally, run `make generate`.
+authentik Proxy uses an auto-generated API Client to communicate with authentik. This client is not kept in git. To generate the client locally, run `make generate`.
 
 Afterwards you can build the proxy like any other Go project, using `go build`.

@@ -14,7 +14,7 @@ const resources = [
     { src: "node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css", dest: "dist/" },
     { src: "node_modules/@patternfly/patternfly/assets/*", dest: "dist/assets/" },
     { src: "src/index.html", dest: "dist" },
-    { src: "src/passbook.css", dest: "dist" },
+    { src: "src/authentik.css", dest: "dist" },
     { src: "src/assets/*", dest: "dist/assets" },
 ];
 

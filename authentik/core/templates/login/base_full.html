@@ -1,0 +1,75 @@
+{% extends 'base/skeleton.html' %}
+
+{% load static %}
+{% load i18n %}
+{% load authentik_utils %}
+
+{% block head %}
+{{ block.super }}
+<style>
+/* Fix logo/header/footer block moving around when card size changes */
+.pf-c-login__header {
+    grid-row-start: 3;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="pf-c-background-image">
+    <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
+        <filter id="image_overlay">
+            <feColorMatrix type="matrix" values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 1 0"></feColorMatrix>
+            <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
+                <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
+                <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
+                <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
+                <feFuncA type="table" tableValues="0 1"></feFuncA>
+            </feComponentTransfer>
+        </filter>
+    </svg>
+</div>
+<pb-messages url="{% url 'authentik_api:messages-list' %}"></pb-messages>
+<div class="pf-c-login">
+    <div class="pf-c-login__container">
+        <header class="pf-c-login__header">
+            <div class="pf-c-brand pb-brand">
+                <img src="{{ config.authentik.branding.logo }}" alt="authentik icon" />
+                {% if config.authentik.branding.title_show %}
+                <p>{{ config.authentik.branding.title }}</p>
+                {% endif %}
+            </div>
+            <footer class="pf-c-login__footer">
+                <p></p>
+                <ul class="pf-c-list pf-m-inline">
+                    {% for link in config.authentik.footer_links %}
+                    <li>
+                        <a href="{{ link.href }}">{{ link.name }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if config.authentik.branding.title != "authentik" %}
+                    <li>
+                        <a href="https://github.com/beryju/authentik">
+                            {% trans 'Powered by authentik' %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </footer>
+        </header>
+        {% block main_container %}
+        <main class="pf-c-login__main">
+            <header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">
+                    {% block card_title %}
+                    {% endblock %}
+                </h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                {% block card %}
+                {% endblock %}
+            </div>
+        </main>
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-As passbook is currently in a pre-stable, only the latest "stable" version is supported. After passbook 1.0, this will change.
+As authentik is currently in a pre-stable, only the latest "stable" version is supported. After authentik 1.0, this will change.
 
 | Version  | Supported          |
 | -------- | ------------------ |

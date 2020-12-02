@@ -10,21 +10,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from passbook.core.models import Application
-from passbook.crypto.models import CertificateKeyPair
-from passbook.flows.models import Flow
-from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
-from passbook.providers.oauth2.constants import (
+from authentik.core.models import Application
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
+from authentik.providers.oauth2.constants import (
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from passbook.providers.oauth2.generators import (
+from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from passbook.providers.oauth2.models import (
+from authentik.providers.oauth2.models import (
     ClientTypes,
     OAuth2Provider,
     ResponseTypes,
@@ -62,17 +62,17 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GENERIC_OAUTH_SCOPES": "openid email profile",
                 "GF_AUTH_GENERIC_OAUTH_AUTH_URL": (
-                    self.url("passbook_providers_oauth2:authorize")
+                    self.url("authentik_providers_oauth2:authorize")
                 ),
                 "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (
-                    self.url("passbook_providers_oauth2:token")
+                    self.url("authentik_providers_oauth2:token")
                 ),
                 "GF_AUTH_GENERIC_OAUTH_API_URL": (
-                    self.url("passbook_providers_oauth2:userinfo")
+                    self.url("authentik_providers_oauth2:userinfo")
                 ),
                 "GF_AUTH_SIGNOUT_REDIRECT_URL": (
                     self.url(
-                        "passbook_providers_oauth2:end-session",
+                        "authentik_providers_oauth2:end-session",
                         application_slug=APPLICATION_SLUG,
                     )
                 ),
@@ -249,7 +249,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.get("http://localhost:3000/logout")
         self.wait_for_url(
             self.url(
-                "passbook_providers_oauth2:end-session",
+                "authentik_providers_oauth2:end-session",
                 application_slug=APPLICATION_SLUG,
             )
         )

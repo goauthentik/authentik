@@ -11,7 +11,7 @@ const features = [
         title: "Easy to Use",
         description: (
             <>
-                Identity made easy. passbook makes single-sign on, user
+                Identity made easy. authentik makes single-sign on, user
                 enrollment and access control simple.
             </>
         ),
@@ -20,7 +20,7 @@ const features = [
         title: "Realise your workflow",
         description: (
             <>
-                passbook lets you build your Workflow as you need it, no
+                authentik lets you build your Workflow as you need it, no
                 limitations.
             </>
         ),
@@ -68,7 +68,7 @@ function Home() {
                                 {siteConfig.tagline}
                             </h1>
                             <p className="hero__subtitle">
-                                passbook is an open-source Identity Provider
+                                authentik is an open-source Identity Provider
                                 focused on flexibility and versatility
                             </p>
                             <div className={styles.buttons}>
@@ -84,7 +84,7 @@ function Home() {
                             </div>
                         </div>
                         <div className="col text--center hero_image">
-                            <img alt="passbook logo" src="/img/logo.png" />
+                            <img alt="authentik logo" src="/img/logo.png" />
                         </div>
                     </div>
                 </div>
@@ -102,12 +102,12 @@ function Home() {
                                 <div></div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
-                                <h2>What is passbook?</h2>
+                                <h2>What is authentik?</h2>
                                 <p>
-                                    passbook is an open-source Identity Provider
+                                    authentik is an open-source Identity Provider
                                     focused on flexibility and versatility. You
-                                    can use passbook in an existing environment
-                                    to add support for new protocols. passbook
+                                    can use authentik in an existing environment
+                                    to add support for new protocols. authentik
                                     is also a great solution for implementing
                                     signup/recovery/etc in your application, so
                                     you don't have to deal with it.

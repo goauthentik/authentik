@@ -92,15 +92,15 @@ export class ModalButton extends LitElement {
                         if (data.indexOf("csrfmiddlewaretoken") !== -1) {
                             const modalSlot = this.querySelector("[slot=modal]");
                             if (!modalSlot) {
-                                console.debug("passbook/modalbutton: modal slot not found?");
+                                console.debug("authentik/modalbutton: modal slot not found?");
                                 return;
                             }
                             modalSlot.innerHTML = data;
-                            console.debug("passbook/modalbutton: re-showing form");
+                            console.debug("authentik/modalbutton: re-showing form");
                             this.updateHandlers();
                         } else {
                             this.open = false;
-                            console.debug("passbook/modalbutton: successful submit");
+                            console.debug("authentik/modalbutton: successful submit");
                             this.dispatchEvent(
                                 new CustomEvent("hashchange", {
                                     bubbles: true,

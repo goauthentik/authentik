@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "passbook.fullname" . }}-uploads
+  name: {{ include "authentik.fullname" . }}-uploads
   labels:
-    app.kubernetes.io/name: {{ include "passbook.name" . }}
-    helm.sh/chart: {{ include "passbook.chart" . }}
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:

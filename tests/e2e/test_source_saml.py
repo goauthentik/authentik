@@ -10,9 +10,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from passbook.crypto.models import CertificateKeyPair
-from passbook.flows.models import Flow
-from passbook.sources.saml.models import SAMLBindingTypes, SAMLSource
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from tests.e2e.utils import SeleniumTestCase, retry
 
 LOGGER = get_logger()
@@ -133,8 +133,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(
@@ -184,8 +184,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(
@@ -233,8 +233,8 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(

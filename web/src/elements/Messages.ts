@@ -34,7 +34,7 @@ export class Messages extends LitElement {
         try {
             this.connect();
         } catch (error) {
-            console.warn(`passbook/messages: failed to connect to ws ${error}`);
+            console.warn(`authentik/messages: failed to connect to ws ${error}`);
         }
     }
 
@@ -48,12 +48,12 @@ export class Messages extends LitElement {
         }/ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
-            console.debug(`passbook/messages: connected to ${wsUrl}`);
+            console.debug(`authentik/messages: connected to ${wsUrl}`);
         });
         this.messageSocket.addEventListener("close", (e) => {
-            console.debug(`passbook/messages: closed ws connection: ${e}`);
+            console.debug(`authentik/messages: closed ws connection: ${e}`);
             setTimeout(() => {
-                console.debug(`passbook/messages: reconnecting ws in ${this.retryDelay}ms`);
+                console.debug(`authentik/messages: reconnecting ws in ${this.retryDelay}ms`);
                 this.connect();
             }, this.retryDelay);
             this.retryDelay = this.retryDelay * 2;
@@ -63,7 +63,7 @@ export class Messages extends LitElement {
             this.renderMessage(data);
         });
         this.messageSocket.addEventListener("error", (e) => {
-            console.warn(`passbook/messages: error ${e}`);
+            console.warn(`authentik/messages: error ${e}`);
             this.retryDelay = this.retryDelay * 2;
         });
     }
@@ -72,7 +72,7 @@ export class Messages extends LitElement {
      * This mostly gets messages which were created when the user arrives/leaves the site
      * and especially the login flow */
     fetchMessages(): Promise<void> {
-        console.debug("passbook/messages: fetching messages over direct api");
+        console.debug("authentik/messages: fetching messages over direct api");
         return fetch(this.url)
             .then((r) => r.json())
             .then((r: Message[]) => {
@@ -85,7 +85,7 @@ export class Messages extends LitElement {
     renderMessage(message: Message): void {
         const container = <HTMLElement>this.querySelector(".pf-c-alert-group");
         if (!container) {
-            console.warn("passbook/messages: failed to find container");
+            console.warn("authentik/messages: failed to find container");
             return;
         }
         const id = ID("pb-message");

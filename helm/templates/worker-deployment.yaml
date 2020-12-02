@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "passbook.fullname" . }}-worker
+  name: {{ include "authentik.fullname" . }}-worker
   labels:
-    app.kubernetes.io/name: {{ include "passbook.name" . }}
-    helm.sh/chart: {{ include "passbook.chart" . }}
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.passbook.beryju.org/component: worker
+    k8s.authentik.beryju.org/component: worker
 spec:
   replicas: {{ .Values.workerReplicas }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "passbook.name" . }}
+      app.kubernetes.io/name: {{ include "authentik.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      k8s.passbook.beryju.org/component: worker
+      k8s.authentik.beryju.org/component: worker
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "passbook.name" . }}
+        app.kubernetes.io/name: {{ include "authentik.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        k8s.passbook.beryju.org/component: worker
+        k8s.authentik.beryju.org/component: worker
     spec:
       {{- if .Values.kubernetesIntegration }}
-      serviceAccountName: {{ include "passbook.fullname" . }}-sa
+      serviceAccountName: {{ include "authentik.fullname" . }}-sa
       {{- end }}
       affinity:
         podAntiAffinity:
@@ -35,12 +35,12 @@ spec:
                 - key: app.kubernetes.io/name
                   operator: In
                   values:
-                  - {{ include "passbook.name" . }}
+                  - {{ include "authentik.name" . }}
                 - key: app.kubernetes.io/instance
                   operator: In
                   values:
                   - {{ .Release.Name }}
-                - key: k8s.passbook.beryju.org/component
+                - key: k8s.authentik.beryju.org/component
                   operator: In
                   values:
                   - worker
@@ -52,20 +52,20 @@ spec:
           args: [worker]
           envFrom:
             - configMapRef:
-                name: "{{ include "passbook.fullname" . }}-config"
-              prefix: "PASSBOOK_"
+                name: "{{ include "authentik.fullname" . }}-config"
+              prefix: "AUTHENTIK_"
           env:
-            - name: PASSBOOK_SECRET_KEY
+            - name: AUTHENTIK_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: "{{ include "passbook.fullname" . }}-secret-key"
+                  name: "{{ include "authentik.fullname" . }}-secret-key"
                   key: secret_key
-            - name: PASSBOOK_REDIS__PASSWORD
+            - name: AUTHENTIK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-redis"
                   key: "redis-password"
-            - name: PASSBOOK_POSTGRESQL__PASSWORD
+            - name: AUTHENTIK_POSTGRESQL__PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"

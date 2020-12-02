@@ -15,9 +15,9 @@ Harbor is an open source container image registry that secures images with role-
 The following placeholders will be used:
 
 -   `harbor.company` is the FQDN of the Harbor install.
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in passbook. Create an OpenID provider with the following parameters:
+Create an application in authentik. Create an OpenID provider with the following parameters:
 
 -   Client Type: `Confidential`
 -   Response types: `code (Authorization Code Flow)`

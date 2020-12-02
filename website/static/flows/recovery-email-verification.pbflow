@@ -6,7 +6,7 @@
                 "pk": "a5993183-89c0-43d2-a7f4-ddffb17baba7",
                 "slug": "default-recovery-flow"
             },
-            "model": "passbook_flows.flow",
+            "model": "authentik_flows.flow",
             "attrs": {
                 "name": "Default recovery flow",
                 "title": "Reset your password",
@@ -17,7 +17,7 @@
             "identifiers": {
                 "pk": "1ff91927-e33d-4615-95b0-c258e5f0df62"
             },
-            "model": "passbook_stages_prompt.prompt",
+            "model": "authentik_stages_prompt.prompt",
             "attrs": {
                 "field_key": "email",
                 "label": "Email",
@@ -31,7 +31,7 @@
             "identifiers": {
                 "pk": "7db91ee8-4290-4e08-8d39-63f132402515"
             },
-            "model": "passbook_stages_prompt.prompt",
+            "model": "authentik_stages_prompt.prompt",
             "attrs": {
                 "field_key": "password",
                 "label": "Password",
@@ -45,7 +45,7 @@
             "identifiers": {
                 "pk": "d30b5eb4-7787-4072-b1ba-65b46e928920"
             },
-            "model": "passbook_stages_prompt.prompt",
+            "model": "authentik_stages_prompt.prompt",
             "attrs": {
                 "field_key": "password_repeat",
                 "label": "Password (repeat)",
@@ -60,7 +60,7 @@
                 "pk": "e54045a7-6ecb-4ad9-ad37-28e72d8e565e",
                 "name": "default-recovery-identification"
             },
-            "model": "passbook_stages_identification.identificationstage",
+            "model": "authentik_stages_identification.identificationstage",
             "attrs": {
                 "user_fields": ["email", "username"],
                 "template": "stages/identification/recovery.html",
@@ -73,7 +73,7 @@
                 "pk": "3909fd60-b013-4668-8806-12e9507dab97",
                 "name": "default-recovery-user-write"
             },
-            "model": "passbook_stages_user_write.userwritestage",
+            "model": "authentik_stages_user_write.userwritestage",
             "attrs": {}
         },
         {
@@ -81,7 +81,7 @@
                 "pk": "66f948dc-3f74-42b2-b26b-b8b9df109efb",
                 "name": "default-recovery-email"
             },
-            "model": "passbook_stages_email.emailstage",
+            "model": "authentik_stages_email.emailstage",
             "attrs": {
                 "host": "localhost",
                 "port": 25,
@@ -89,9 +89,9 @@
                 "use_tls": false,
                 "use_ssl": false,
                 "timeout": 10,
-                "from_address": "system@passbook.local",
+                "from_address": "system@authentik.local",
                 "token_expiry": 30,
-                "subject": "passbook",
+                "subject": "authentik",
                 "template": "stages/email/for_email/password_reset.html"
             }
         },
@@ -100,7 +100,7 @@
                 "pk": "975d5502-1e22-4d10-b560-fbc5bd70ff4d",
                 "name": "Change your password"
             },
-            "model": "passbook_stages_prompt.promptstage",
+            "model": "authentik_stages_prompt.promptstage",
             "attrs": {
                 "fields": [
                     "7db91ee8-4290-4e08-8d39-63f132402515",
@@ -113,7 +113,7 @@
                 "pk": "fcdd4206-0d35-4ad2-a59f-5a72422936bb",
                 "name": "default-recovery-user-login"
             },
-            "model": "passbook_stages_user_login.userloginstage",
+            "model": "authentik_stages_user_login.userloginstage",
             "attrs": {
                 "session_duration": "seconds=-1"
             }
@@ -125,7 +125,7 @@
                 "stage": "e54045a7-6ecb-4ad9-ad37-28e72d8e565e",
                 "order": 0
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -137,7 +137,7 @@
                 "stage": "66f948dc-3f74-42b2-b26b-b8b9df109efb",
                 "order": 1
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -149,7 +149,7 @@
                 "stage": "975d5502-1e22-4d10-b560-fbc5bd70ff4d",
                 "order": 2
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -161,7 +161,7 @@
                 "stage": "3909fd60-b013-4668-8806-12e9507dab97",
                 "order": 3
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -173,7 +173,7 @@
                 "stage": "fcdd4206-0d35-4ad2-a59f-5a72422936bb",
                 "order": 4
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }

@@ -1,0 +1,159 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load authentik_utils %}
+{% load admin_reflection %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-integration"></i>
+            {% trans 'Providers' %}
+        </h1>
+        <p>{% trans "Provide support for protocols like SAML and OAuth to assigned applications." %}
+    </p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        {% if object_list %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+                <div class="pf-c-toolbar__bulk-select">
+                    <pb-dropdown class="pf-c-dropdown">
+                        <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                            <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                            <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                        </button>
+                        <ul class="pf-c-dropdown__menu" hidden>
+                            {% for type, name in types.items %}
+                            <li>
+                                <pb-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
+                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                        {{ name|verbose_name }}<br>
+                                        <small>
+                                            {{ name|doc }}
+                                        </small>
+                                    </button>
+                                    <div slot="modal"></div>
+                                </pb-modal-button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </pb-dropdown>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
+                </div>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for provider in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ provider.name }}</div>
+                            {% if not provider.application %}
+                            <i class="pf-icon pf-icon-warning-triangle"></i>
+                            <small>{% trans 'Warning: Provider not assigned to any application.' %}</small>
+                            {% else %}
+                            <i class="pf-icon pf-icon-ok"></i>
+                            <small>
+                                {% blocktrans with app=provider.application %}
+                                    Assigned to application {{ app }}.
+                                {% endblocktrans %}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {{ provider|verbose_name }}
+                        </span>
+                    </td>
+                    <td>
+                        <pb-modal-button href="{% url 'authentik_admin:provider-update' pk=provider.pk %}">
+                            <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </pb-spinner-button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        <pb-modal-button href="{% url 'authentik_admin:provider-delete' pk=provider.pk %}">
+                            <pb-spinner-button slot="trigger" class="pf-m-danger">
+                                {% trans 'Delete' %}
+                            </pb-spinner-button>
+                            <div slot="modal"></div>
+                        </pb-modal-button>
+                        {% get_links provider as links %}
+                        {% for name, href in links.items %}
+                            <a class="pf-c-button pf-m-tertiary pb-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
+                        {% endfor %}
+                        {% get_htmls provider as htmls %}
+                        {% for html in htmls %}
+                            {{ html|safe }}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-pagination pf-m-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+        {% else %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+            </div>
+        </div>
+        <div class="pf-c-empty-state">
+            <div class="pf-c-empty-state__content">
+                <i class="pf-icon-integration pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Providers.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                {% if request.GET.search != "" %}
+                    {% trans "Your search query doesn't match any providers." %}
+                {% else %}
+                    {% trans 'Currently no providers exist. Click the button below to create one.' %}
+                {% endif %}
+                </div>
+                <pb-dropdown class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        {% for type, name in types.items %}
+                        <li>
+                            <pb-modal-button href="{% url 'authentik_admin:provider-create' %}?type={{ type }}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    {{ name|verbose_name }}<br>
+                                    <small>
+                                        {{ name|doc }}
+                                    </small>
+                                </button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </pb-dropdown>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

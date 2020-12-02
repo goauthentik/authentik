@@ -1,0 +1,111 @@
+@font-face {
+    font-family: "DIN 1451 Std";
+    src: url("assets/fonts/DINEngschriftStd.woff2") format("woff2"),
+        url("assets/fonts/DINEngschriftStd.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+html {
+    --pf-c-nav__link--PaddingTop: 0.5rem;
+    --pf-c-nav__link--PaddingRight: 0.5rem;
+    --pf-c-nav__link--PaddingBottom: 0.5rem;
+    --pf-c-nav__link--PaddingLeft: 0.5rem;
+}
+
+.pb-brand {
+    font-family: "DIN 1451 Std";
+    font-size: 4em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 0.5em;
+    color: var(--pf-global--Color--light-200);
+}
+
+.pb-brand > a:hover {
+    text-decoration: none;
+}
+
+.pb-brand > img {
+    max-height: 68px;
+    margin-right: 0.5em;
+}
+
+/* Fix patternfly sidebar and header with open Modal */
+.pf-c-page__sidebar {
+    z-index: 0;
+}
+
+.pf-c-page__header {
+    z-index: 0;
+}
+
+/* Ensure card is displayed on small screens */
+.pf-c-login__main {
+    display: block;
+}
+
+/* login page's icons */
+.pf-c-login__main-footer-links-item-link img {
+    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+    width: 100%;
+    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+    height: 100%;
+    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+}
+
+/* fix multiple selects height */
+select[multiple] {
+    height: initial;
+}
+
+/* Form with user */
+.form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-control-static .left {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: var(--pf-global--spacer--xs);
+}
+.form-control-static a {
+    padding-top: var(--pf-global--spacer--xs);
+    padding-bottom: var(--pf-global--spacer--xs);
+    line-height: var(--pf-global--spacer--xl);
+}
+
+/* Static OTP Tokens, authentik.stages.otp_static */
+.pb-otp-tokens {
+    list-style: circle;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    margin-left: var(--pf-global--spacer--xs);
+}
+.pb-otp-tokens li {
+    font-size: var(--pf-global--FontSize--2xl);
+    font-family: monospace;
+}
+
+/* Fix pre elements within alerts */
+.pf-c-alert pre {
+    white-space: pre-wrap;
+}
+
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+.pf-c-content h1 i {
+    font-style: normal;
+}
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
+}

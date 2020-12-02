@@ -6,7 +6,7 @@ Flows are a method of describing a sequence of stages. A stage represents a sing
 
 Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
 
-To determine which flow is linked, passbook searches all flows with the required designation and chooses the first instance the current user has access to.
+To determine which flow is linked, authentik searches all flows with the required designation and chooses the first instance the current user has access to.
 
 ## Permissions
 

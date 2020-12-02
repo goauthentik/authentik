@@ -1,4 +1,4 @@
-module github.com/BeryJu/passbook/proxy
+module github.com/BeryJu/authentik/proxy
 
 go 1.14
 

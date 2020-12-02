@@ -7,7 +7,7 @@ import { Config } from "../../api/config";
 
 export const DefaultConfig: Config = {
     branding_logo: " /static/dist/assets/images/logo.svg",
-    branding_title: "passbook",
+    branding_title: "authentik",
 
     error_reporting_enabled: false,
     error_reporting_environment: "",
@@ -55,7 +55,7 @@ export class SidebarBrand extends LitElement {
         }
         return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand pb-brand">
-                <img src="${this.config.branding_logo}" alt="passbook icon" loading="lazy" />
+                <img src="${this.config.branding_logo}" alt="authentik icon" loading="lazy" />
                 ${this.config.branding_title
         ? html`<span>${this.config.branding_title}</span>`
         : ""}

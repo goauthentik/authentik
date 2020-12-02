@@ -55,7 +55,7 @@ export class SiteShell extends LitElement {
                 if (r.ok) {
                     return r;
                 }
-                console.debug(`passbook/site-shell: Request failed ${this._url}`);
+                console.debug(`authentik/site-shell: Request failed ${this._url}`);
                 window.location.hash = "#/";
                 throw new Error("Request failed");
             })
@@ -78,7 +78,7 @@ export class SiteShell extends LitElement {
                         const qs = url.search || "";
                         a.href = `#${url.pathname}${qs}`;
                     } catch (e) {
-                        console.debug(`passbook/site-shell: error ${e}`);
+                        console.debug(`authentik/site-shell: error ${e}`);
                         a.href = `#${a.href}`;
                     }
                 });

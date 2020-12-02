@@ -1,5 +1,5 @@
-1. Access passbook using the following URL:
+1. Access authentik using the following URL:
 {{- range .Values.ingress.hosts }}
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}
 {{- end }}
-2. Login to passbook using the user "pbadmin" and the password "pbadmin".
+2. Login to authentik using the user "pbadmin" and the password "pbadmin".

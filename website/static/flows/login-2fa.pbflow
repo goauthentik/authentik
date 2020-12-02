@@ -6,10 +6,10 @@
                 "slug": "default-authentication-flow",
                 "pk": "563ece21-e9a4-47e5-a264-23ffd923e393"
             },
-            "model": "passbook_flows.flow",
+            "model": "authentik_flows.flow",
             "attrs": {
                 "name": "Default Authentication Flow",
-                "title": "Welcome to passbook!",
+                "title": "Welcome to authentik!",
                 "designation": "authentication"
             }
         },
@@ -18,7 +18,7 @@
                 "pk": "69d41125-3987-499b-8d74-ef27b54b88c8",
                 "name": "default-authentication-login"
             },
-            "model": "passbook_stages_user_login.userloginstage",
+            "model": "authentik_stages_user_login.userloginstage",
             "attrs": {
                 "session_duration": "seconds=-1"
             }
@@ -28,7 +28,7 @@
                 "pk": "5f594f27-0def-488d-9855-fe604eb13de5",
                 "name": "default-authentication-identification"
             },
-            "model": "passbook_stages_identification.identificationstage",
+            "model": "authentik_stages_identification.identificationstage",
             "attrs": {
                 "user_fields": ["email", "username"],
                 "template": "stages/identification/login.html",
@@ -41,7 +41,7 @@
                 "pk": "37f709c3-8817-45e8-9a93-80a925d293c2",
                 "name": "default-authentication-flow-totp"
             },
-            "model": "passbook_stages_otp_validate.otpvalidatestage",
+            "model": "authentik_stages_otp_validate.otpvalidatestage",
             "attrs": {}
         },
         {
@@ -49,7 +49,7 @@
                 "pk": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
                 "name": "default-authentication-password"
             },
-            "model": "passbook_stages_password.passwordstage",
+            "model": "authentik_stages_password.passwordstage",
             "attrs": {
                 "backends": ["django.contrib.auth.backends.ModelBackend"]
             }
@@ -61,7 +61,7 @@
                 "stage": "5f594f27-0def-488d-9855-fe604eb13de5",
                 "order": 0
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -73,7 +73,7 @@
                 "stage": "d8affa62-500c-4c5c-a01f-5835e1ffdf40",
                 "order": 1
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -85,7 +85,7 @@
                 "stage": "37f709c3-8817-45e8-9a93-80a925d293c2",
                 "order": 2
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }
@@ -97,7 +97,7 @@
                 "stage": "69d41125-3987-499b-8d74-ef27b54b88c8",
                 "order": 3
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }

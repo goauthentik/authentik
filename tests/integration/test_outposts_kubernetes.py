@@ -1,14 +1,14 @@
 """outpost tests"""
 from django.test import TestCase
 
-from passbook.flows.models import Flow
-from passbook.lib.config import CONFIG
-from passbook.outposts.apps import PassbookOutpostConfig
-from passbook.outposts.controllers.k8s.base import NeedsUpdate
-from passbook.outposts.controllers.k8s.deployment import DeploymentReconciler
-from passbook.outposts.controllers.kubernetes import KubernetesController
-from passbook.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
-from passbook.providers.proxy.models import ProxyProvider
+from authentik.flows.models import Flow
+from authentik.lib.config import CONFIG
+from authentik.outposts.apps import AuthentikOutpostConfig
+from authentik.outposts.controllers.k8s.base import NeedsUpdate
+from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.kubernetes import KubernetesController
+from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class OutpostKubernetesTests(TestCase):
@@ -17,7 +17,7 @@ class OutpostKubernetesTests(TestCase):
     def setUp(self):
         super().setUp()
         # Ensure that local connection have been created
-        PassbookOutpostConfig.init_local_connection()
+        AuthentikOutpostConfig.init_local_connection()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",

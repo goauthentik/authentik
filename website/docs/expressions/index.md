@@ -4,7 +4,7 @@ title: Expressions
 
 Expressions allow you to write custom logic using Python code.
 
-Expressions are used in different places throughout passbook, and can do different things.
+Expressions are used in different places throughout authentik, and can do different things.
 
 :::info
 These functions/objects are available wherever expressions are used. For more specific information, see [Expression Policies](../policies/expression.md) and [Property Mappings](../property-mappings/expression.md)

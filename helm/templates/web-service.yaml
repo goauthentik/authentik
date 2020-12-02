@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "passbook.fullname" . }}-web
+  name: {{ include "authentik.fullname" . }}-web
   labels:
-    app.kubernetes.io/name: {{ include "passbook.name" . }}
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "passbook.chart" . }}
-    k8s.passbook.beryju.org/component: web
+    helm.sh/chart: {{ include "authentik.chart" . }}
+    k8s.authentik.beryju.org/component: web
 spec:
   type: ClusterIP
   ports:
@@ -16,6 +16,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: {{ include "passbook.name" . }}
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    k8s.passbook.beryju.org/component: web
+    k8s.authentik.beryju.org/component: web

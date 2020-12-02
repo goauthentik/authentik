@@ -10,13 +10,13 @@ You can also run the outpost in a separate docker-compose project, you just have
 version: "3.5"
 
 services:
-    passbook_proxy:
-        image: beryju/passbook-proxy:0.10.0-stable
+    authentik_proxy:
+        image: beryju/authentik-proxy:0.10.0-stable
         ports:
             - 4180:4180
             - 4443:4443
         environment:
-            PASSBOOK_HOST: https://your-passbook.tld
-            PASSBOOK_INSECURE: "false"
-            PASSBOOK_TOKEN: token-generated-by-passbook
+            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_INSECURE: "false"
+            AUTHENTIK_TOKEN: token-generated-by-authentik
 ```

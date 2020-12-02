@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "passbook.fullname" . }}-static
+  name: {{ include "authentik.fullname" . }}-static
   labels:
-    app.kubernetes.io/name: {{ include "passbook.name" . }}
-    helm.sh/chart: {{ include "passbook.chart" . }}
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    k8s.passbook.beryju.org/component: static
+    k8s.authentik.beryju.org/component: static
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "passbook.name" . }}
+      app.kubernetes.io/name: {{ include "authentik.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
-      k8s.passbook.beryju.org/component: static
+      k8s.authentik.beryju.org/component: static
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "passbook.name" . }}
+        app.kubernetes.io/name: {{ include "authentik.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        k8s.passbook.beryju.org/component: static
+        k8s.authentik.beryju.org/component: static
     spec:
       containers:
         - name: {{ .Chart.Name }}-static
@@ -49,9 +49,9 @@ spec:
               cpu: 20m
               memory: 20M
           volumeMounts:
-            - name: passbook-uploads
+            - name: authentik-uploads
               mountPath: /usr/share/nginx/html/media
       volumes:
-        - name: passbook-uploads
+        - name: authentik-uploads
           persistentVolumeClaim:
-            claimName: {{ include "passbook.fullname" . }}-uploads
+            claimName: {{ include "authentik.fullname" . }}-uploads

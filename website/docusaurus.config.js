@@ -1,17 +1,17 @@
 module.exports = {
-    title: "passbook",
+    title: "authentik",
     tagline: "The authentication glue you need.",
-    url: "https://passbook.beryju.org",
+    url: "https://authentik.beryju.org",
     baseUrl: "/",
     onBrokenLinks: "throw",
     favicon: "img/logo.png",
     organizationName: "BeryJu",
-    projectName: "passbook",
+    projectName: "authentik",
     themeConfig: {
         navbar: {
-            title: "passbook",
+            title: "authentik",
             logo: {
-                alt: "passbook logo",
+                alt: "authentik logo",
                 src: "img/logo.svg",
             },
             hideOnScroll: true,
@@ -23,7 +23,7 @@ module.exports = {
                     position: "left",
                 },
                 {
-                    href: "https://github.com/beryju/passbook",
+                    href: "https://github.com/beryju/authentik",
                     label: "GitHub",
                     position: "right",
                 },
@@ -49,7 +49,7 @@ module.exports = {
                     items: [
                         {
                             label: "GitHub",
-                            href: "https://github.com/beryju/passbook",
+                            href: "https://github.com/beryju/authentik",
                         },
                     ],
                 },
@@ -67,7 +67,7 @@ module.exports = {
                 docs: {
                     sidebarPath: require.resolve("./sidebars.js"),
                     editUrl:
-                        "https://github.com/beryju/passbook/edit/master/website/",
+                        "https://github.com/beryju/authentik/edit/master/website/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),

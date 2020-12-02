@@ -9,11 +9,11 @@ At a base level a policy is a yes/no gate. It will either evaluate to True or Fa
 
 ### Provider
 
-A Provider is a way for other applications to authenticate against passbook. Common Providers are OpenID Connect (OIDC) and SAML.
+A Provider is a way for other applications to authenticate against authentik. Common Providers are OpenID Connect (OIDC) and SAML.
 
 ### Source
 
-Sources are locations from which users can be added to passbook. For example, an LDAP Connection to import Users from Active Directory, or an OAuth2 Connection to allow Social Logins.
+Sources are locations from which users can be added to authentik. For example, an LDAP Connection to import Users from Active Directory, or an OAuth2 Connection to allow Social Logins.
 
 ### Application
 
@@ -29,4 +29,4 @@ Flows are an ordered sequence of stages. These flows can be used to define how a
 
 ### Property Mappings
 
-Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with passbook, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in passbook.
+Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.

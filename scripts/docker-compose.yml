@@ -8,7 +8,7 @@ services:
     - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: passbook
+      POSTGRES_DB: authentik
     ports:
     - 5432:5432
     restart: always

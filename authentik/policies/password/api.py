@@ -1,0 +1,29 @@
+"""Password Policy API Views"""
+from rest_framework.serializers import ModelSerializer
+from rest_framework.viewsets import ModelViewSet
+
+from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
+from authentik.policies.password.models import PasswordPolicy
+
+
+class PasswordPolicySerializer(ModelSerializer):
+    """Password Policy Serializer"""
+
+    class Meta:
+        model = PasswordPolicy
+        fields = GENERAL_SERIALIZER_FIELDS + [
+            "password_field",
+            "amount_uppercase",
+            "amount_lowercase",
+            "amount_symbols",
+            "length_min",
+            "symbol_charset",
+            "error_message",
+        ]
+
+
+class PasswordPolicyViewSet(ModelViewSet):
+    """Password Policy Viewset"""
+
+    queryset = PasswordPolicy.objects.all()
+    serializer_class = PasswordPolicySerializer

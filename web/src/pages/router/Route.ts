@@ -15,7 +15,7 @@ export class Route {
 
     redirect(to: string): Route {
         this.callback = () => {
-            console.debug(`passbook/router: redirecting ${to}`);
+            console.debug(`authentik/router: redirecting ${to}`);
             window.location.hash = `#${to}`;
             return html``;
         };

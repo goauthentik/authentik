@@ -46,23 +46,23 @@ export class RouterOutlet extends LitElement {
         if (activeUrl === "") {
             activeUrl = this.defaultUrl || "/";
             window.location.hash = `#${activeUrl}`;
-            console.debug(`passbook/router: set to ${window.location.hash}`);
+            console.debug(`authentik/router: set to ${window.location.hash}`);
             return;
         }
         let matchedRoute: RouteMatch | null = null;
         ROUTES.some((route) => {
-            console.debug(`passbook/router: matching ${activeUrl} against ${route.url}`);
+            console.debug(`authentik/router: matching ${activeUrl} against ${route.url}`);
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);
                 matchedRoute.arguments = match.groups || {};
                 matchedRoute.fullUrl = activeUrl;
-                console.debug(`passbook/router: found match ${matchedRoute}`);
+                console.debug(`authentik/router: found match ${matchedRoute}`);
                 return true;
             }
         });
         if (!matchedRoute) {
-            console.debug(`passbook/router: route "${activeUrl}" not defined, defaulting to shell`);
+            console.debug(`authentik/router: route "${activeUrl}" not defined, defaulting to shell`);
             const route = new Route(
                 RegExp(""),
                 html`<pb-site-shell url=${activeUrl}>

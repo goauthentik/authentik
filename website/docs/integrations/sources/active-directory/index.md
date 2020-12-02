@@ -7,7 +7,7 @@ title: Active Directory
 The following placeholders will be used:
 
 -   `ad.company` is the Name of the Active Directory domain.
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Active Directory Setup
 
@@ -21,25 +21,25 @@ The following placeholders will be used:
 
 4. Open the Delegation of Control Wizard by right-clicking the domain.
 
-5. Select the passbook service user you've just created.
+5. Select the authentik service user you've just created.
 
 6. Ensure the "Reset user password and force password change at next logon" Option is checked.
 
     ![](./02_delegate.png)
 
-## passbook Setup
+## authentik Setup
 
-In passbook, create a new LDAP Source in Administration -> Sources.
+In authentik, create a new LDAP Source in Administration -> Sources.
 
 Use these settings:
 
 -   Server URI: `ldap://ad.company`
 
-    For passbook to be able to write passwords back to Active Directory, make sure to use `ldaps://`
+    For authentik to be able to write passwords back to Active Directory, make sure to use `ldaps://`
 
 -   Bind CN: `<name of your service user>@ad.company`
 -   Bind Password: The password you've given the user above
--   Base DN: The base DN which you want passbook to sync
+-   Base DN: The base DN which you want authentik to sync
 -   Property Mappings: Select all and click the right arrow
 
 The other settings might need to be adjusted based on the setup of your domain.

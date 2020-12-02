@@ -12,12 +12,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from passbook.core.models import Application
-from passbook.crypto.models import CertificateKeyPair
-from passbook.flows.models import Flow
-from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
-from passbook.providers.saml.models import (
+from authentik.core.models import Application
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
+from authentik.providers.saml.models import (
     SAMLBindings,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -52,7 +52,7 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": (
                     self.url(
-                        "passbook_providers_saml:metadata",
+                        "authentik_providers_saml:metadata",
                         application_slug=provider.application.slug,
                     )
                 ),
@@ -76,8 +76,8 @@ class TestProviderSAML(SeleniumTestCase):
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
             acs_url="http://localhost:9009/saml/acs",
-            audience="passbook-e2e",
-            issuer="passbook-e2e",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=CertificateKeyPair.objects.first(),
@@ -86,7 +86,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="passbook-saml",
+            slug="authentik-saml",
             provider=provider,
         )
         self.container = self.setup_client(provider)
@@ -116,8 +116,8 @@ class TestProviderSAML(SeleniumTestCase):
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
             acs_url="http://localhost:9009/saml/acs",
-            audience="passbook-e2e",
-            issuer="passbook-e2e",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=CertificateKeyPair.objects.first(),
@@ -126,7 +126,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="passbook-saml",
+            slug="authentik-saml",
             provider=provider,
         )
         self.container = self.setup_client(provider)
@@ -162,8 +162,8 @@ class TestProviderSAML(SeleniumTestCase):
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
             acs_url="http://localhost:9009/saml/acs",
-            audience="passbook-e2e",
-            issuer="passbook-e2e",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=CertificateKeyPair.objects.first(),
@@ -172,13 +172,13 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         Application.objects.create(
             name="SAML",
-            slug="passbook-saml",
+            slug="authentik-saml",
             provider=provider,
         )
         self.container = self.setup_client(provider)
         self.driver.get(
             self.url(
-                "passbook_providers_saml:sso-init",
+                "authentik_providers_saml:sso-init",
                 application_slug=provider.application.slug,
             )
         )
@@ -211,8 +211,8 @@ class TestProviderSAML(SeleniumTestCase):
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
             acs_url="http://localhost:9009/saml/acs",
-            audience="passbook-e2e",
-            issuer="passbook-e2e",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=CertificateKeyPair.objects.first(),
@@ -221,7 +221,7 @@ class TestProviderSAML(SeleniumTestCase):
         provider.save()
         app = Application.objects.create(
             name="SAML",
-            slug="passbook-saml",
+            slug="authentik-saml",
             provider=provider,
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)

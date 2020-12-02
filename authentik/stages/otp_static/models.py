@@ -1,0 +1,50 @@
+"""OTP Static models"""
+from typing import Optional, Type
+
+from django.db import models
+from django.forms import ModelForm
+from django.shortcuts import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views import View
+from rest_framework.serializers import BaseSerializer
+
+from authentik.flows.models import ConfigurableStage, Stage
+
+
+class OTPStaticStage(ConfigurableStage, Stage):
+    """Generate static tokens for the user as a backup."""
+
+    token_count = models.IntegerField(default=6)
+
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.stages.otp_static.api import OTPStaticStageSerializer
+
+        return OTPStaticStageSerializer
+
+    @property
+    def type(self) -> Type[View]:
+        from authentik.stages.otp_static.stage import OTPStaticStageView
+
+        return OTPStaticStageView
+
+    @property
+    def form(self) -> Type[ModelForm]:
+        from authentik.stages.otp_static.forms import OTPStaticStageForm
+
+        return OTPStaticStageForm
+
+    @property
+    def ui_user_settings(self) -> Optional[str]:
+        return reverse(
+            "authentik_stages_otp_static:user-settings",
+            kwargs={"stage_uuid": self.stage_uuid},
+        )
+
+    def __str__(self) -> str:
+        return f"OTP Static Stage {self.name}"
+
+    class Meta:
+
+        verbose_name = _("OTP Static Setup Stage")
+        verbose_name_plural = _("OTP Static Setup Stages")

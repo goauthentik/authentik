@@ -1,11 +1,11 @@
 apiVersion: v2
-description: passbook is an open-source Identity Provider focused on flexibility and versatility. You can use passbook in an existing environment to add support for new protocols. passbook is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
-name: passbook
-home: https://passbook.beryju.org
+description: authentik is an open-source Identity Provider focused on flexibility and versatility. You can use authentik in an existing environment to add support for new protocols. authentik is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+name: authentik
+home: https://authentik.beryju.org
 sources:
-  - https://github.com/BeryJu/passbook
+  - https://github.com/BeryJu/authentik
 version: "0.12.11-stable"
-icon: https://raw.githubusercontent.com/BeryJu/passbook/master/website/static/img/logo.svg
+icon: https://raw.githubusercontent.com/BeryJu/authentik/master/website/static/img/logo.svg
 dependencies:
   - name: postgresql
     version: 9.4.1

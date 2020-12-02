@@ -13,7 +13,7 @@ export class ActionButton extends SpinnerButton {
             return;
         }
         this.setLoading();
-        const csrftoken = getCookie("passbook_csrf");
+        const csrftoken = getCookie("authentik_csrf");
         if (!csrftoken) {
             console.debug("No csrf token in cookie");
             this.setDone(ERROR_CLASS);

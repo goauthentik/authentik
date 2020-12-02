@@ -11,17 +11,17 @@ from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from passbook import __version__
-from passbook.core.models import Application
-from passbook.flows.models import Flow
-from passbook.outposts.apps import PassbookOutpostConfig
-from passbook.outposts.models import (
+from authentik import __version__
+from authentik.core.models import Application
+from authentik.flows.models import Flow
+from authentik.outposts.apps import AuthentikOutpostConfig
+from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
     OutpostConfig,
     OutpostType,
 )
-from passbook.providers.proxy.models import ProxyProvider
+from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -47,13 +47,13 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"docker.beryju.org/proxy/beryju/passbook-proxy:{__version__}",
+            image=f"docker.beryju.org/proxy/beryju/authentik-proxy:{__version__}",
             detach=True,
             network_mode="host",
             auto_remove=True,
             environment={
-                "PASSBOOK_HOST": self.live_server_url,
-                "PASSBOOK_TOKEN": outpost.token.key,
+                "AUTHENTIK_HOST": self.live_server_url,
+                "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
         return container
@@ -114,7 +114,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @retry()
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        PassbookOutpostConfig.init_local_connection()
+        AuthentikOutpostConfig.init_local_connection()
         SeleniumTestCase().apply_default_data()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
@@ -135,7 +135,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             type=OutpostType.PROXY,
             service_connection=service_connection,
             _config=asdict(
-                OutpostConfig(passbook_host=self.live_server_url, log_level="debug")
+                OutpostConfig(authentik_host=self.live_server_url, log_level="debug")
             ),
         )
         outpost.providers.add(proxy)

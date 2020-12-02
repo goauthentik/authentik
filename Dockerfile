@@ -30,18 +30,18 @@ RUN apt-get update && \
     # but then we have to drop permmissions later
     groupadd -g 998 docker_998 && \
     groupadd -g 999 docker_999 && \
-    adduser --system --no-create-home --uid 1000 --group --home /passbook passbook && \
-    usermod -a -G docker_998 passbook && \
-    usermod -a -G docker_999 passbook && \
+    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
+    usermod -a -G docker_998 authentik && \
+    usermod -a -G docker_999 authentik && \
     mkdir /backups && \
-    chown passbook:passbook /backups
+    chown authentik:authentik /backups
 
-COPY ./passbook/ /passbook
+COPY ./authentik/ /authentik
 COPY ./pytest.ini /
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 
-USER passbook
+USER authentik
 STOPSIGNAL SIGINT
 ENV TMPDIR /dev/shm/
 ENTRYPOINT [ "/lifecycle/bootstrap.sh" ]

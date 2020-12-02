@@ -20,12 +20,12 @@ export class Config {
             if (config.error_reporting_enabled) {
                 Sentry.init({
                     dsn: "https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
-                    release: `passbook@${VERSION}`,
+                    release: `authentik@${VERSION}`,
                     integrations: [new Integrations.BrowserTracing()],
                     tracesSampleRate: 1.0,
                     environment: config.error_reporting_environment,
                 });
-                console.debug("passbook/config: Sentry enabled.");
+                console.debug("authentik/config: Sentry enabled.");
             }
             return config;
         });

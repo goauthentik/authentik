@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: passbook API
+  title: authentik API
   contact:
     email: hello@beryju.org
   license:
@@ -3712,7 +3712,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Serialize passbook Config into DRF Object
+          description: Serialize authentik Config into DRF Object
           schema:
             description: ''
             type: array
@@ -6825,7 +6825,7 @@ definitions:
       designation:
         title: Designation
         description: Decides what this Flow is used for. For example, the Authentication
-          flow is redirect to when an un-authenticated user visits passbook.
+          flow is redirect to when an un-authenticated user visits authentik.
         type: string
         enum:
           - authentication
@@ -6883,8 +6883,8 @@ definitions:
         uniqueItems: true
       service_connection:
         title: Service connection
-        description: Select Service-Connection passbook should use to manage this
-          outpost. Leave empty if passbook should not handle the deployment.
+        description: Select Service-Connection authentik should use to manage this
+          outpost. Leave empty if authentik should not handle the deployment.
         type: string
         format: uuid
         x-nullable: true
@@ -7016,7 +7016,7 @@ definitions:
       basic_auth_enabled:
         title: Set HTTP-Basic Authentication
         description: Set a custom HTTP-Basic Authentication header based on values
-          from passbook.
+          from authentik.
         type: boolean
       basic_auth_password_attribute:
         title: HTTP-Basic Password Key
@@ -7090,7 +7090,7 @@ definitions:
         type: boolean
       kubeconfig:
         title: Kubeconfig
-        description: Paste your kubeconfig here. passbook will automatically use the
+        description: Paste your kubeconfig here. authentik will automatically use the
           currently selected context.
         type: object
   Policy:
@@ -7599,7 +7599,7 @@ definitions:
       basic_auth_enabled:
         title: Set HTTP-Basic Authentication
         description: Set a custom HTTP-Basic Authentication header based on values
-          from passbook.
+          from authentik.
         type: boolean
       basic_auth_password_attribute:
         title: HTTP-Basic Password Key
@@ -7698,7 +7698,7 @@ definitions:
         format: uuid
         x-nullable: true
   Config:
-    description: Serialize passbook Config into DRF Object
+    description: Serialize authentik Config into DRF Object
     type: object
     properties:
       branding_logo:
@@ -7967,13 +7967,13 @@ definitions:
         minLength: 1
       access_token_url:
         title: Access Token URL
-        description: URL used by passbook to retrive tokens.
+        description: URL used by authentik to retrive tokens.
         type: string
         maxLength: 255
         minLength: 1
       profile_url:
         title: Profile URL
-        description: URL used by passbook to get user information.
+        description: URL used by authentik to get user information.
         type: string
         maxLength: 255
         minLength: 1

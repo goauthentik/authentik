@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/passbook/proxy/pkg"
-	"github.com/BeryJu/passbook/proxy/pkg/client"
-	"github.com/BeryJu/passbook/proxy/pkg/client/outposts"
+	"github.com/BeryJu/authentik/proxy/pkg"
+	"github.com/BeryJu/authentik/proxy/pkg/client"
+	"github.com/BeryJu/authentik/proxy/pkg/client/outposts"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-openapi/runtime"
 	"github.com/recws-org/recws"
@@ -28,9 +28,9 @@ const ConfigLogLevel = "log_level"
 const ConfigErrorReportingEnabled = "error_reporting_enabled"
 const ConfigErrorReportingEnvironment = "error_reporting_environment"
 
-// APIController main controller which connects to the passbook api via http and ws
+// APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
-	client *client.Passbook
+	client *client.Authentik
 	auth   runtime.ClientAuthInfoWriter
 	token  string
 
@@ -48,7 +48,7 @@ type APIController struct {
 
 func getCommonOptions() *options.Options {
 	commonOpts := options.NewOptions()
-	commonOpts.Cookie.Name = "passbook_proxy"
+	commonOpts.Cookie.Name = "authentik_proxy"
 	commonOpts.EmailDomains = []string{"*"}
 	commonOpts.ProviderType = "oidc"
 	commonOpts.ProxyPrefix = "/pbprox"
@@ -71,7 +71,7 @@ func doGlobalSetup(config map[string]interface{}) {
 	default:
 		log.SetLevel(log.DebugLevel)
 	}
-	log.WithField("version", pkg.VERSION).Info("Starting passbook proxy")
+	log.WithField("version", pkg.VERSION).Info("Starting authentik proxy")
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
@@ -91,7 +91,7 @@ func doGlobalSetup(config map[string]interface{}) {
 }
 
 func getTLSTransport() http.RoundTripper {
-	value, set := os.LookupEnv("PASSBOOK_INSECURE")
+	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
 	if !set {
 		value = "false"
 	}
@@ -107,7 +107,7 @@ func getTLSTransport() http.RoundTripper {
 // NewAPIController initialise new API Controller instance from URL and API token
 func NewAPIController(pbURL url.URL, token string) *APIController {
 	transport := httptransport.New(pbURL.Host, client.DefaultBasePath, []string{pbURL.Scheme})
-	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("passbook-proxy@%s", pkg.VERSION))
+	transport.Transport = SetUserAgent(getTLSTransport(), fmt.Sprintf("authentik-proxy@%s", pkg.VERSION))
 
 	// create the transport
 	auth := httptransport.BasicAuth("", token)

@@ -36,8 +36,8 @@ func generateSelfSignedCert() (tls.Certificate, error) {
 	template := x509.Certificate{
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
-			Organization: []string{"passbook"},
-			CommonName:   "passbook Proxy default certificate",
+			Organization: []string{"authentik"},
+			CommonName:   "authentik Proxy default certificate",
 		},
 		NotBefore: notBefore,
 		NotAfter:  notAfter,

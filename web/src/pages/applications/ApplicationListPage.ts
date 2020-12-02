@@ -10,7 +10,7 @@ export class ApplicationList extends TablePage<Application> {
         return gettext("Applications");
     }
     pageDescription(): string {
-        return gettext("External Applications which use passbook as Identity-Provider, utilizing protocols like OAuth2 and SAML.");
+        return gettext("External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML.");
     }
     pageIcon(): string {
         return gettext("pf-icon pf-icon-applications");

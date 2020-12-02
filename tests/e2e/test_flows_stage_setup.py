@@ -5,10 +5,10 @@ from unittest.case import skipUnless
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-from passbook.core.models import User
-from passbook.flows.models import Flow, FlowDesignation
-from passbook.providers.oauth2.generators import generate_client_secret
-from passbook.stages.password.models import PasswordStage
+from authentik.core.models import User
+from authentik.flows.models import Flow, FlowDesignation
+from authentik.providers.oauth2.generators import generate_client_secret
+from authentik.stages.password.models import PasswordStage
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -38,11 +38,11 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
 
         self.driver.get(
             self.url(
-                "passbook_flows:configure",
+                "authentik_flows:configure",
                 stage_uuid=PasswordStage.objects.first().stage_uuid,
             )
         )
@@ -51,7 +51,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(new_password)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
         # Because USER() is cached, we need to get the user manually here
         user = User.objects.get(username=USER().username)
         self.assertTrue(user.check_password(new_password))

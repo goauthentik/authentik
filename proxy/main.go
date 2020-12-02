@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/BeryJu/passbook/proxy/cmd"
+	"github.com/BeryJu/authentik/proxy/cmd"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -8,4 +8,4 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 line_length = 88
-src_paths = ["passbook", "tests", "lifecycle"]
+src_paths = ["authentik", "tests", "lifecycle"]

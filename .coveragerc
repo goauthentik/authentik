@@ -1,5 +1,5 @@
 [run]
-source = passbook
+source = authentik
 relative_files = true
 omit =
     */asgi.py

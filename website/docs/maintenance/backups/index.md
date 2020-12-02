@@ -12,7 +12,7 @@ Local backups are only supported for docker-compose installs. If you want to bac
 Local backups are **enabled** by default, and will be run daily at 00:00
 :::
 
-Local backups can be created by running the following command in your passbook installation directory
+Local backups can be created by running the following command in your authentik installation directory
 
 ```
 docker-compose run --rm worker backup
@@ -22,7 +22,7 @@ This will dump the current database into the `./backups` folder. By defaults, th
 
 ### Restore
 
-Run this command in your passbook installation directory
+Run this command in your authentik installation directory
 
 ```
 docker-compose run --rm worker restore
@@ -40,7 +40,7 @@ After you've restored the backup, it is recommended to restart all services with
 
 #### Preparation
 
-passbook expects the bucket you select to already exist. The IAM User given to passbook should have the following permissions
+authentik expects the bucket you select to already exist. The IAM User given to authentik should have the following permissions
 
 ```json
 {
@@ -74,16 +74,16 @@ passbook expects the bucket you select to already exist. The IAM User given to p
 Set the following values in your `.env` file.
 
 ```
-PASSBOOK_POSTGRESQL__S3_BACKUP__ACCESS_KEY=
-PASSBOOK_POSTGRESQL__S3_BACKUP__SECRET_KEY=
-PASSBOOK_POSTGRESQL__S3_BACKUP__BUCKET=
-PASSBOOK_POSTGRESQL__S3_BACKUP__REGION=
+AUTHENTIK_POSTGRESQL__S3_BACKUP__ACCESS_KEY=
+AUTHENTIK_POSTGRESQL__S3_BACKUP__SECRET_KEY=
+AUTHENTIK_POSTGRESQL__S3_BACKUP__BUCKET=
+AUTHENTIK_POSTGRESQL__S3_BACKUP__REGION=
 ```
 
 If you want to backup to an S3-compatible server, like [minio](https://min.io/), use this setting:
 
 ```
-PASSBOOK_POSTGRESQL__S3_BACKUP__HOST=http://play.min.io
+AUTHENTIK_POSTGRESQL__S3_BACKUP__HOST=http://play.min.io
 ```
 
 #### Kubernetes

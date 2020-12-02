@@ -14,12 +14,12 @@ from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 from yaml import safe_dump
 
-from passbook.flows.models import Flow
-from passbook.providers.oauth2.generators import (
+from authentik.flows.models import Flow
+from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from passbook.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import OAuthSource
 from tests.e2e.utils import SeleniumTestCase, retry
 
 CONFIG_PATH = "/tmp/dex.yml"
@@ -50,7 +50,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                     "name": "Example App",
                     "redirectURIs": [
                         self.url(
-                            "passbook_sources_oauth:oauth-client-callback",
+                            "authentik_sources_oauth:oauth-client-callback",
                             source_slug="dex",
                         )
                     ],
@@ -141,8 +141,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
 
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -198,7 +198,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
         # We're logged in at the end of this, log out and re-login
-        self.driver.get(self.url("passbook_flows:default-invalidation"))
+        self.driver.get(self.url("authentik_flows:default-invalidation"))
 
         self.wait.until(
             ec.presence_of_element_located(
@@ -223,8 +223,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -260,7 +260,7 @@ class TestSourceOAuth1(SeleniumTestCase):
                 "OAUTH1_CLIENT_SECRET": self.client_secret,
                 "OAUTH1_REDIRECT_URI": (
                     self.url(
-                        "passbook_sources_oauth:oauth-client-callback",
+                        "authentik_sources_oauth:oauth-client-callback",
                         source_slug=self.source_slug,
                     )
                 ),
@@ -316,8 +316,8 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've loaded the user info page
         sleep(2)
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
-        self.driver.get(self.url("passbook_core:user-settings"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.driver.get(self.url("authentik_core:user-settings"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"),

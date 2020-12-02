@@ -15,9 +15,9 @@ GitLab is a complete DevOps platform, delivered as a single application. This ma
 The following placeholders will be used:
 
 -   `gitlab.company` is the FQDN of the GitLab Install
--   `passbook.company` is the FQDN of the passbook Install
+-   `authentik.company` is the FQDN of the authentik Install
 
-Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://gitlab.company/users/auth/saml/callback`
 -   Audience: `https://gitlab.company`
@@ -45,7 +45,7 @@ gitlab_rails['omniauth_providers'] = [
     args: {
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
       idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
-      idp_sso_target_url: 'https://passbook.company/application/saml/<passbook application slug>/sso/binding/post/',
+      idp_sso_target_url: 'https://authentik.company/application/saml/<authentik application slug>/sso/binding/post/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       attribute_statements: {
@@ -54,7 +54,7 @@ gitlab_rails['omniauth_providers'] = [
         nickname: ['urn:oid:2.16.840.1.113730.3.1.241']
       }
     },
-    label: 'passbook'
+    label: 'authentik'
   }
 ]
 ```

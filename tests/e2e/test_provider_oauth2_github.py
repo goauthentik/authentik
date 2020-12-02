@@ -9,15 +9,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from passbook.core.models import Application
-from passbook.flows.models import Flow
-from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
-from passbook.providers.oauth2.generators import (
+from authentik.core.models import Application
+from authentik.flows.models import Flow
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
+from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from passbook.providers.oauth2.models import ClientTypes, OAuth2Provider, ResponseTypes
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ResponseTypes
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -49,13 +49,13 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GITHUB_SCOPES": "user:email,read:org",
                 "GF_AUTH_GITHUB_AUTH_URL": self.url(
-                    "passbook_providers_oauth2_github:github-authorize"
+                    "authentik_providers_oauth2_github:github-authorize"
                 ),
                 "GF_AUTH_GITHUB_TOKEN_URL": self.url(
-                    "passbook_providers_oauth2_github:github-access-token"
+                    "authentik_providers_oauth2_github:github-access-token"
                 ),
                 "GF_AUTH_GITHUB_API_URL": self.url(
-                    "passbook_providers_oauth2_github:github-user"
+                    "authentik_providers_oauth2_github:github-user"
                 ),
                 "GF_LOG_LEVEL": "debug",
             },

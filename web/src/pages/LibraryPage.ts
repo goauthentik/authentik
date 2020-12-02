@@ -6,6 +6,7 @@ import { PBResponse } from "../api/client";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 
+@customElement("pb-library-app")
 export class LibraryApplication extends LitElement {
     @property({attribute: false})
     application?: Application;
@@ -72,7 +73,7 @@ export class LibraryPage extends LitElement {
 
     renderApps(): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results.map((app) => html`<pb-library-app application=${app}></pb-library-app>`)}
+            ${this.apps?.results.map((app) => html`<pb-library-app .application=${app}></pb-library-app>`)}
         </div>`;
     }
 

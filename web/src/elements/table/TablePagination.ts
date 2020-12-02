@@ -13,7 +13,7 @@ export class TablePagination extends LitElement {
 
     previousHandler(): void {
         if (!this.table?.data?.pagination.previous) {
-            console.debug("passbook/tables: no previous");
+            console.debug("authentik/tables: no previous");
             return;
         }
         this.table.page = this.table?.data?.pagination.previous;
@@ -21,7 +21,7 @@ export class TablePagination extends LitElement {
 
     nextHandler(): void {
         if (!this.table?.data?.pagination.next) {
-            console.debug("passbook/tables: no next");
+            console.debug("authentik/tables: no next");
             return;
         }
         this.table.page = this.table?.data?.pagination.next;

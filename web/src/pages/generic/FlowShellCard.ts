@@ -59,7 +59,7 @@ export class FlowShellCard extends LitElement {
             this.setFormSubmitHandlers();
             break;
         default:
-            console.debug(`passbook/flows: unexpected data type ${data.type}`);
+            console.debug(`authentik/flows: unexpected data type ${data.type}`);
             break;
         }
     }
@@ -84,13 +84,13 @@ export class FlowShellCard extends LitElement {
             const element = <HTMLInputElement>form.elements[index];
             if (element.value === form.action) {
                 console.debug(
-                    "passbook/flows: Found Form action URL in form elements, not changing form action."
+                    "authentik/flows: Found Form action URL in form elements, not changing form action."
                 );
                 return false;
             }
         }
         form.action = this.flowBodyUrl;
-        console.debug(`passbook/flows: updated form.action ${this.flowBodyUrl}`);
+        console.debug(`authentik/flows: updated form.action ${this.flowBodyUrl}`);
         return true;
     }
 
@@ -102,11 +102,11 @@ export class FlowShellCard extends LitElement {
 
     setFormSubmitHandlers(): void {
         this.querySelectorAll("form").forEach((form) => {
-            console.debug(`passbook/flows: Checking for autosubmit attribute ${form}`);
+            console.debug(`authentik/flows: Checking for autosubmit attribute ${form}`);
             this.checkAutosubmit(form);
-            console.debug(`passbook/flows: Setting action for form ${form}`);
+            console.debug(`authentik/flows: Setting action for form ${form}`);
             this.updateFormAction(form);
-            console.debug(`passbook/flows: Adding handler for form ${form}`);
+            console.debug(`authentik/flows: Adding handler for form ${form}`);
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);

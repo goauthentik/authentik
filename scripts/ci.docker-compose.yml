@@ -7,9 +7,9 @@ services:
     volumes:
     - db-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: passbook
+      POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
-      POSTGRES_DB: passbook
+      POSTGRES_DB: authentik
     ports:
     - 5432:5432
     restart: always

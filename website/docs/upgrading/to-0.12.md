@@ -20,7 +20,7 @@ Fixes:
 
 ### docker-compose
 
-Docker-compose users should download the latest docker-compose file from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml). This includes the new traefik 2.3.
+Docker-compose users should download the latest docker-compose file from [here](https://raw.githubusercontent.com/BeryJu/authentik/master/docker-compose.yml). This includes the new traefik 2.3.
 
 Afterwards, you can simply run `docker-compose up -d` and then the normal upgrade command of `docker-compose run --rm server migrate`.
 
@@ -62,4 +62,4 @@ config:
 
 in order to be consistent with the rest of the settings.
 
-There is also a new setting called `kubernetesIntegration`, which controls the Kubernetes integration for passbook. When enabled (the default), a Service Account is created, which allows passbook to deploy and update Outposts.
+There is also a new setting called `kubernetesIntegration`, which controls the Kubernetes integration for authentik. When enabled (the default), a Service Account is created, which allows authentik to deploy and update Outposts.

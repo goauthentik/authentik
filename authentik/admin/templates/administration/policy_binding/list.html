@@ -1,0 +1,119 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load authentik_utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-infrastructure"></i>
+            {% trans 'Policy Bindings' %}
+        </h1>
+        <p>{% trans "Bind existing Policies to Models accepting policies." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        {% if object_list %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                <div class="pf-c-toolbar__bulk-select">
+                    <pb-modal-button href="{% url 'authentik_admin:policy-binding-create' %}">
+                        <pb-spinner-button slot="trigger" class="pf-m-primary">
+                            {% trans 'Create' %}
+                        </pb-spinner-button>
+                        <div slot="modal"></div>
+                    </pb-modal-button>
+                    <button role="pb-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
+                </div>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Policy' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Enabled' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Order' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Timeout' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for pbm in object_list %}
+                    <tr role="role">
+                        <td>
+                            {{ pbm }}
+                            <small>
+                                {{ pbm|fieldtype }}
+                            </small>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% for binding in pbm.bindings %}
+                    <tr class="row pf-c-table__expandable-row pf-m-expanded">
+                        <th role="cell">
+                            <div>{{ binding.policy }}</div>
+                            <small>
+                                {{ binding.policy|fieldtype }}
+                            </small>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.enabled }}</div>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.order }}</div>
+                        </th>
+                        <th role="cell">
+                            <div>{{ binding.timeout }}</div>
+                        </th>
+                        <td>
+                            <pb-modal-button href="{% url 'authentik_admin:policy-binding-update' pk=binding.pk %}">
+                                <pb-spinner-button slot="trigger" class="pf-m-secondary">
+                                    {% trans 'Edit' %}
+                                </pb-spinner-button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
+                            <pb-modal-button href="{% url 'authentik_admin:policy-binding-delete' pk=binding.pk %}">
+                                <pb-spinner-button slot="trigger" class="pf-m-danger">
+                                    {% trans 'Delete' %}
+                                </pb-spinner-button>
+                                <div slot="modal"></div>
+                            </pb-modal-button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-pagination pf-m-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+        {% else %}
+        <div class="pf-c-empty-state">
+            <div class="pf-c-empty-state__content">
+                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Policy Bindings.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                    {% trans 'Currently no policy bindings exist. Click the button below to create one.' %}
+                </div>
+                <pb-modal-button href="{% url 'authentik_admin:policy-binding-create' %}">
+                    <pb-spinner-button slot="trigger" class="pf-m-primary">
+                        {% trans 'Create' %}
+                    </pb-spinner-button>
+                    <div slot="modal"></div>
+                </pb-modal-button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
