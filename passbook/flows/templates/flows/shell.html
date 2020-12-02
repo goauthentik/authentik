@@ -6,21 +6,21 @@
 {% block head %}
 {{ block.super }}
 <style>
-    .pb-loading,
-    .pf-c-login__main >iframe {
-        display: flex;
-        height: 100%;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-    }
-    .pb-hidden {
-        display: none
-    }
-    .pf-c-background-image::before {
-        background-image: url("{{ background_url }}");
-        background-position: center;
-    }
+.pb-loading,
+.pf-c-login__main >iframe {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.pb-hidden {
+    display: none
+}
+.pf-c-background-image::before {
+    background-image: url("{{ background_url }}");
+    background-position: center;
+}
 </style>
 {% endblock %}
 

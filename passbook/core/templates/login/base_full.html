@@ -4,6 +4,16 @@
 {% load i18n %}
 {% load passbook_utils %}
 
+{% block head %}
+{{ block.super }}
+<style>
+/* Fix logo/header/footer block moving around when card size changes */
+.pf-c-login__header {
+    grid-row-start: 3;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 <div class="pf-c-background-image">
     <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
@@ -28,6 +38,23 @@
                 <p>{{ config.passbook.branding.title }}</p>
                 {% endif %}
             </div>
+            <footer class="pf-c-login__footer">
+                <p></p>
+                <ul class="pf-c-list pf-m-inline">
+                    {% for link in config.passbook.footer_links %}
+                    <li>
+                        <a href="{{ link.href }}">{{ link.name }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if config.passbook.branding.title != "passbook" %}
+                    <li>
+                        <a href="https://github.com/beryju/passbook">
+                            {% trans 'Powered by passbook' %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </footer>
         </header>
         {% block main_container %}
         <main class="pf-c-login__main">
@@ -43,23 +70,6 @@
             </div>
         </main>
         {% endblock %}
-        <footer class="pf-c-login__footer">
-            <p></p>
-            <ul class="pf-c-list pf-m-inline">
-                {% for link in config.passbook.footer_links %}
-                <li>
-                    <a href="{{ link.href }}">{{ link.name }}</a>
-                </li>
-                {% endfor %}
-                {% if config.passbook.branding.title != "passbook" %}
-                <li>
-                    <a href="https://github.com/beryju/passbook">
-                        {% trans 'Powered by passbook' %}
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </footer>
     </div>
 </div>
 {% endblock %}
