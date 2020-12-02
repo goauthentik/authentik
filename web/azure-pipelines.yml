@@ -51,6 +51,6 @@ stages:
             containerRegistry: 'dockerhub'
             repository: 'beryju/passbook-static'
             command: 'buildAndPush'
-            Dockerfile: 'Dockerfile'
+            Dockerfile: 'web/Dockerfile'
             tags: "gh-${{ variables.branchName }}"
             buildContext: 'web/'
