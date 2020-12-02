@@ -5,7 +5,9 @@ from django.db import migrations
 
 
 def create_default_ad_property_mappings(apps: Apps, schema_editor):
-    LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
+    LDAPPropertyMapping = apps.get_model(
+        "authentik_sources_ldap", "LDAPPropertyMapping"
+    )
     mapping = {
         "name": "return ldap.get('name')",
         "first_name": "return ldap.get('givenName')",

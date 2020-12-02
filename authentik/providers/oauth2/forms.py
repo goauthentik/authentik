@@ -12,7 +12,11 @@ from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    JWTAlgorithms,
+    OAuth2Provider,
+    ScopeMapping,
+)
 
 
 class OAuth2ProviderForm(forms.ModelForm):

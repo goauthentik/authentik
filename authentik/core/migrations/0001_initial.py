@@ -337,7 +337,8 @@ class Migration(migrations.Migration):
             model_name="user",
             name="sources",
             field=models.ManyToManyField(
-                through="authentik_core.UserSourceConnection", to="authentik_core.Source"
+                through="authentik_core.UserSourceConnection",
+                to="authentik_core.Source",
             ),
         ),
         migrations.AddField(

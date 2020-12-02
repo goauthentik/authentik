@@ -43,7 +43,9 @@ class SAMLProvider(Provider):
         default="",
         help_text=_("Value of the audience restriction field of the asseration."),
     )
-    issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
+    issuer = models.TextField(
+        help_text=_("Also known as EntityID"), default="authentik"
+    )
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
         default=SAMLBindings.REDIRECT,

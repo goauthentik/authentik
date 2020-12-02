@@ -110,7 +110,8 @@ class TestEmailStage(TestCase):
             # Call the actual executor to get the JSON Response
             response = self.client.get(
                 reverse(
-                    "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                    "authentik_flows:flow-executor",
+                    kwargs={"flow_slug": self.flow.slug},
                 )
             )
 

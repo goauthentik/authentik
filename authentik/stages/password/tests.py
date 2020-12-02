@@ -145,7 +145,8 @@ class TestPasswordStage(TestCase):
         for _ in range(self.stage.failed_attempts_before_cancel):
             response = self.client.post(
                 reverse(
-                    "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                    "authentik_flows:flow-executor",
+                    kwargs={"flow_slug": self.flow.slug},
                 ),
                 # Form data
                 {"password": self.password + "test"},

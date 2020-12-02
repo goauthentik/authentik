@@ -22,7 +22,10 @@ class TestFlowTransfer(TransactionTestCase):
         importer = FlowImporter('{"version": 3}')
         self.assertFalse(importer.validate())
         importer = FlowImporter(
-            '{"version": 1,"entries":[{"identifiers":{},"attrs":{},"model": "authentik_core.User"}]}'
+            (
+                '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
+                '"model": "authentik_core.User"}]}'
+            )
         )
         self.assertFalse(importer.validate())
 

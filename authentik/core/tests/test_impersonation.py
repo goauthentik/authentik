@@ -19,7 +19,8 @@ class TestImpersonation(TestCase):
 
         self.client.get(
             reverse(
-                "authentik_core:impersonate-init", kwargs={"user_id": self.other_user.pk}
+                "authentik_core:impersonate-init",
+                kwargs={"user_id": self.other_user.pk},
             )
         )
 

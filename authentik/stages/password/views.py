@@ -16,7 +16,8 @@ class UserSettingsCardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         base_url = reverse(
-            "authentik_flows:configure", kwargs={"stage_uuid": self.kwargs["stage_uuid"]}
+            "authentik_flows:configure",
+            kwargs={"stage_uuid": self.kwargs["stage_uuid"]},
         )
         args = urlencode({NEXT_ARG_NAME: reverse("authentik_core:user-settings")})
 

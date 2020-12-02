@@ -6,29 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentik_core', '0015_application_icon'),
+        ("authentik_core", "0015_application_icon"),
     ]
 
     operations = [
         migrations.RemoveIndex(
-            model_name='token',
-            name='authentik_co_key_e45007_idx',
+            model_name="token",
+            name="authentik_co_key_e45007_idx",
         ),
         migrations.RemoveIndex(
-            model_name='token',
-            name='authentik_co_identif_1a34a8_idx',
+            model_name="token",
+            name="authentik_co_identif_1a34a8_idx",
         ),
         migrations.RenameField(
-            model_name='user',
-            old_name='pb_groups',
-            new_name='ak_groups',
+            model_name="user",
+            old_name="pb_groups",
+            new_name="ak_groups",
         ),
         migrations.AddIndex(
-            model_name='token',
-            index=models.Index(fields=['identifier'], name='authentik_c_identif_d9d032_idx'),
+            model_name="token",
+            index=models.Index(
+                fields=["identifier"], name="authentik_c_identif_d9d032_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='token',
-            index=models.Index(fields=['key'], name='authentik_c_key_f71355_idx'),
+            model_name="token",
+            index=models.Index(fields=["key"], name="authentik_c_key_f71355_idx"),
         ),
     ]
