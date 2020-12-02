@@ -3,4 +3,4 @@ helm
 static
 htmlcov
 *.env.yml
-node_modules/**
+**/node_modules
