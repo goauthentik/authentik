@@ -6,6 +6,7 @@ import fa from "@fortawesome/fontawesome-free/css/all.css";
 // @ts-ignore
 import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
 import { User } from "../../api/user";
+import { until } from "lit-html/directives/until";
 
 @customElement("pb-sidebar-user")
 export class SidebarUser extends LitElement {
@@ -41,12 +42,13 @@ export class SidebarUser extends LitElement {
         ];
     }
 
-    async render(): Promise<TemplateResult> {
-        const user = await User.me();
+    render(): TemplateResult {
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
-                <img class="pf-c-avatar" src="${user.avatar}" alt="" />
-                <span>${user.username}</span>
+                ${until(User.me().then(u => {
+                    return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />
+                    <span>${u.username}</span>`;
+                }), html``)}
             </a>
             <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
