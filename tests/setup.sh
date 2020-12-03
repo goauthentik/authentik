@@ -1,6 +1,6 @@
 #!/bin/bash -x
 # Setup docker & compose
-# curl -fsSL https://get.docker.com | bash
+curl -fsSL https://get.docker.com | bash
 sudo usermod -a -G docker ubuntu
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
@@ -10,7 +10,7 @@ sudo apt-get install -y nodejs
 # Setup k3d
 curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 # Setup python
-sudo apt install -y python3.9 python3-pip libxmlsec1-dev pkg-config
+sudo apt install -y python3.9 python3.9-dev python3-pip libxmlsec1-dev pkg-config
 # Setup docker
 sudo pip3 install pipenv
 
