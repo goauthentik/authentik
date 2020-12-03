@@ -24,6 +24,12 @@ export class SidebarBrand extends LitElement {
             GlobalsStyle,
             PageStyle,
             css`
+                :host {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    height: 82px;
+                }
                 .pf-c-brand {
                     font-family: "DIN 1451 Std";
                     line-height: 60px;
@@ -34,7 +40,6 @@ export class SidebarBrand extends LitElement {
                     justify-content: center;
                     width: 100%;
                     margin: 0 1rem;
-                    margin-bottom: 1.5rem;
                 }
                 .pf-c-brand img {
                     max-height: 60px;
