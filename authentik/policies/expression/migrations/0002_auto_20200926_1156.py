@@ -13,7 +13,7 @@ def remove_pb_flow_plan(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
 
     for policy in ExpressionPolicy.objects.using(db_alias).all():
-        policy.expression.replace("pb_flow_plan.", "context.")
+        policy.expression = policy.expression.replace("pb_flow_plan.", "context.")
         policy.save()
 
 

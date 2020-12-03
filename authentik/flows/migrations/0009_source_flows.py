@@ -9,7 +9,7 @@ from authentik.stages.prompt.models import FieldTypes
 
 FLOW_POLICY_EXPRESSION = """# This policy ensures that this flow can only be used when the user
 # is in a SSO Flow (meaning they come from an external IdP)
-return pb_is_sso_flow"""
+return ak_is_sso_flow"""
 PROMPT_POLICY_EXPRESSION = """# Check if we've not been given a username by the external IdP
 # and trigger the enrollment flow
 return 'username' not in context.get('prompt_data', {})"""
