@@ -24,7 +24,8 @@ from authentik.lib.models import CreatedUpdatedModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
-AUTHENTIK_USER_DEBUG = "authentik_user_debug"
+USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
+USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 
 
 def default_token_duration():

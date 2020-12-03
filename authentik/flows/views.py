@@ -18,7 +18,7 @@ from django.views.generic import TemplateView, View
 from structlog import get_logger
 
 from authentik.audit.models import cleanse_dict
-from authentik.core.models import AUTHENTIK_USER_DEBUG
+from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
@@ -222,7 +222,7 @@ class FlowErrorResponse(TemplateResponse):
         context["error"] = self.error
         if self._request.user and self._request.user.is_authenticated:
             if self._request.user.is_superuser or self._request.user.attributes.get(
-                AUTHENTIK_USER_DEBUG, False
+                USER_ATTRIBUTE_DEBUG, False
             ):
                 context["tb"] = "".join(format_tb(self.error.__traceback__))
         return context

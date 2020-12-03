@@ -28,7 +28,7 @@ from structlog import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__
-from authentik.core.models import Provider, Token, TokenIntents, User
+from authentik.core.models import USER_ATTRIBUTE_SA, Provider, Token, TokenIntents, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
@@ -317,6 +317,7 @@ class Outpost(models.Model):
         users = User.objects.filter(username=self.user_identifier)
         if not users.exists():
             user: User = User.objects.create(username=self.user_identifier)
+            user.attributes[USER_ATTRIBUTE_SA] = True
             user.set_unusable_password()
             user.save()
         else:

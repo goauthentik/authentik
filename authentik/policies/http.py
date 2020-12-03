@@ -5,7 +5,7 @@ from django.http.request import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
 
-from authentik.core.models import AUTHENTIK_USER_DEBUG
+from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.policies.types import PolicyResult
 
 
@@ -32,12 +32,12 @@ class AccessDeniedResponse(TemplateResponse):
         if self.error_message:
             context["error"] = self.error_message
         # Only show policy result if user is authenticated and
-        # either superuser or has AUTHENTIK_USER_DEBUG set
+        # either superuser or has USER_ATTRIBUTE_DEBUG set
         if self.policy_result:
             if self._request.user and self._request.user.is_authenticated:
                 if (
                     self._request.user.is_superuser
-                    or self._request.user.attributes.get(AUTHENTIK_USER_DEBUG, False)
+                    or self._request.user.attributes.get(USER_ATTRIBUTE_DEBUG, False)
                 ):
                     context["policy_result"] = self.policy_result
         return context
