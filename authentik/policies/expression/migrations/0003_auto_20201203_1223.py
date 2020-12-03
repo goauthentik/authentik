@@ -15,7 +15,9 @@ def replace_pb_prefix(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     for policy in ExpressionPolicy.objects.using(db_alias).all():
         # Because the previous migration had a broken replace, we have to replace here again
         policy.expression = policy.expression.replace("pb_flow_plan.", "context.")
-        policy.expression = policy.expression.replace("pb_is_sso_flow", "ak_is_sso_flow")
+        policy.expression = policy.expression.replace(
+            "pb_is_sso_flow", "ak_is_sso_flow"
+        )
         policy.save()
 
 
