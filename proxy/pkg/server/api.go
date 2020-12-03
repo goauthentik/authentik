@@ -75,7 +75,7 @@ func doGlobalSetup(config map[string]interface{}) {
 
 	var dsn string
 	if config[ConfigErrorReportingEnabled].(bool) {
-		dsn = "https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3"
+		dsn = "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8"
 		log.Debug("Error reporting enabled")
 	}
 

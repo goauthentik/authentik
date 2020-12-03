@@ -19,7 +19,7 @@ export class Config {
         return DefaultClient.fetch<Config>(["root", "config"]).then((config) => {
             if (config.error_reporting_enabled) {
                 Sentry.init({
-                    dsn: "https://33cdbcb23f8b436dbe0ee06847410b67@sentry.beryju.org/3",
+                    dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                     release: `authentik@${VERSION}`,
                     integrations: [new Integrations.BrowserTracing()],
                     tracesSampleRate: 1.0,
