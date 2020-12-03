@@ -74,15 +74,15 @@ export abstract class Table<T> extends LitElement {
                         <slot name="create-button"></slot>
                         <button
                             @click=${() => {this.fetch();}}
-                            class="pf-c-button pf-m-primary"
-                        >
+                            class="pf-c-button pf-m-primary">
                             ${gettext("Refresh")}
                         </button>
                     </div>
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
-                        .table=${this}
-                    ></ak-table-pagination>
+                        .pages=${this.data?.pagination}
+                        .pageChangeHandler=${(page: number) => {this.page = page; }}>
+                    </ak-table-pagination>
                 </div>
             </div>
             <table class="pf-c-table pf-m-compact pf-m-grid-md">
@@ -98,8 +98,9 @@ export abstract class Table<T> extends LitElement {
             <div class="pf-c-pagination pf-m-bottom">
                 <ak-table-pagination
                     class="pf-c-toolbar__item pf-m-pagination"
-                    .table=${this}
-                ></ak-table-pagination>
+                    .pages=${this.data?.pagination}
+                    .pageChangeHandler=${(page: number) => { this.page = page; }}>
+                </ak-table-pagination>
             </div>`;
     }
 

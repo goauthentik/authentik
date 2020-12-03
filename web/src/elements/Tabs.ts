@@ -5,6 +5,7 @@ import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { CURRENT_CLASS } from "../constants";
+import { gettext } from "django";
 
 @customElement("ak-tabs")
 export class Tabs extends LitElement {
@@ -20,7 +21,7 @@ export class Tabs extends LitElement {
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
             <button class="pf-c-tabs__link" @click=${() => { this.currentPage = slot; }}>
                 <span class="pf-c-tabs__item-text">
-                    ${page.attributes.getNamedItem("tab-title")?.value}
+                    ${page.getAttribute("data-tab-title")}
                 </span>
             </button>
         </li>`;
@@ -30,7 +31,7 @@ export class Tabs extends LitElement {
         const pages = Array.from(this.querySelectorAll("[slot]"));
         if (!this.currentPage) {
             if (pages.length < 1) {
-                return html`<h1>no tabs defined</h1>`;
+                return html`<h1>${gettext("no tabs defined")}</h1>`;
             }
             this.currentPage = pages[0].attributes.getNamedItem("slot")?.value;
         }

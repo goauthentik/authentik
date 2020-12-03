@@ -10,7 +10,7 @@ variables:
 stages:
   - stage: lint
     jobs:
-      - job: lint
+      - job: eslint
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -27,6 +27,23 @@ stages:
               command: 'custom'
               workingDir: 'web/'
               customCommand: 'run lint'
+      - job: lit_analyse
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '12.x'
+            displayName: 'Install Node.js'
+          - task: Npm@1
+            inputs:
+              command: 'install'
+              workingDir: 'web/'
+          - task: Npm@1
+            inputs:
+              command: 'custom'
+              workingDir: 'web/'
+              customCommand: 'run lit-analyse'
   - stage: build_local
     jobs:
       - job: build
