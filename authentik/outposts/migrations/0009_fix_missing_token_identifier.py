@@ -14,8 +14,10 @@ def fix_missing_token_identifier(apps: Apps, schema_editor: BaseDatabaseSchemaEd
         Outpost.objects.using(schema_editor.connection.alias).all().only("pk")
     ):
         user_identifier = outpost.user_identifier
-        user = User.objects.get(username=user_identifier)
-        tokens = Token.objects.filter(user=user)
+        users = User.objects.filter(username=user_identifier)
+        if not users.exists():
+            continue
+        tokens = Token.objects.filter(user=users.first())
         for token in tokens:
             if token.identifier != outpost.token_identifier:
                 token.identifier = outpost.token_identifier
