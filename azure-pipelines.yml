@@ -147,6 +147,8 @@ stages:
             displayName: Prepare Last tagged release
             inputs:
               script: |
+                # Copy current, latest config to local
+                cp authentik/lib/default.yml local.env.yml
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
@@ -154,7 +156,8 @@ stages:
           - task: CmdLine@2
             displayName: Migrate to last tagged release
             inputs:
-              script: pipenv run ./manage.py migrate
+              script:
+                pipenv run ./manage.py migrate
           - task: CmdLine@2
             displayName: Install current branch
             inputs:
@@ -165,7 +168,9 @@ stages:
           - task: CmdLine@2
             displayName: Migrate to current branch
             inputs:
-              script: pipenv run ./manage.py migrate
+              script: |
+                pipenv run python -m lifecycle.migrate
+                pipenv run ./manage.py migrate
       - job: coverage_unittest
         pool:
           vmImage: 'ubuntu-latest'
