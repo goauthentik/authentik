@@ -17,14 +17,16 @@ stages:
           - task: GoTool@0
             inputs:
               version: '1.15'
-          - task: Go@0
-            inputs:
-              command: 'get'
-              arguments: '-u github.com/go-swagger/go-swagger/cmd/swagger'
           - task: CmdLine@2
             inputs:
               script: |
-                $(go list -f {{.Target}} github.com/go-swagger/go-swagger/cmd/swagger) generate client -f ../swagger.yaml -A authentik -t pkg/
+                sudo apt install gnupg ca-certificates
+                sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
+                echo "deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main" | sudo tee /etc/apt/sources.list.d/goswagger.list
+                sudo apt update
+                sudo apt install swagger
+                mkdir -p $(GOPATH)
+                swagger generate client -f ../swagger.yaml -A authentik -t pkg/
               workingDirectory: 'proxy/'
           - task: PublishPipelineArtifact@1
             inputs:
