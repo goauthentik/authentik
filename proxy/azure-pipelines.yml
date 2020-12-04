@@ -25,7 +25,7 @@ stages:
                 echo "deb https://dl.bintray.com/go-swagger/goswagger-debian ubuntu main" | sudo tee /etc/apt/sources.list.d/goswagger.list
                 sudo apt update
                 sudo apt install swagger
-                mkdir -p $(GOPATH)
+                mkdir -p $(go env GOPATH)
                 swagger generate client -f ../swagger.yaml -A authentik -t pkg/
               workingDirectory: 'proxy/'
           - task: PublishPipelineArtifact@1
