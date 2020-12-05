@@ -14,8 +14,11 @@ export class LibraryApplication extends LitElement {
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
             css`
-                img.pf-icon {
-                    max-height: 24px;
+                a {
+                    height: 100%;
+                }
+                i.pf-icon {
+                    height: 36px;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
