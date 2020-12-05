@@ -9,7 +9,7 @@ To install authentik using the helm chart, run these commands:
 ```
 helm repo add authentik https://docker.beryju.org/chartrepo/authentik
 helm repo update
-helm repo install authentik/authentik --devel -f values.yaml
+helm install authentik/authentik --devel -f values.yaml
 ```
 
 This installation automatically applies database migrations on startup. After the installation is done, you can use `akadmin` as username and password.

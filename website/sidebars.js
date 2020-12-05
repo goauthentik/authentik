@@ -126,6 +126,7 @@ module.exports = {
                 "upgrading/to-0.10",
                 "upgrading/to-0.11",
                 "upgrading/to-0.12",
+                "upgrading/to-0.13",
             ],
         },
         {
