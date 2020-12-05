@@ -14,7 +14,7 @@ coverage:
 	coverage report
 
 lint-fix:
-	isort -rc .
+	isort -rc authentik tests lifecycle
 	black authentik tests lifecycle
 
 lint:

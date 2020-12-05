@@ -15,9 +15,7 @@ VERSION_CACHE_TIMEOUT = 2 * 60 * 60  # 2 hours
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
     try:
-        response = get(
-            "https://api.github.com/repos/beryju/authentik/releases/latest"
-        )
+        response = get("https://api.github.com/repos/beryju/authentik/releases/latest")
         response.raise_for_status()
         data = response.json()
         tag_name = data.get("tag_name")
