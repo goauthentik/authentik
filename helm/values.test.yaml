@@ -11,9 +11,9 @@ config:
 
 ingress:
   hosts:
-    - passbook.127.0.0.1.nip.io
+    - authentik.127.0.0.1.nip.io
 
-# These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
+# These values influence the bundled postgresql and redis charts, but are also used by authentik to connect
 postgresql:
   postgresqlPassword: EK-5jnKfjrGRm<77
 

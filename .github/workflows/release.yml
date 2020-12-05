@@ -1,4 +1,4 @@
-name: passbook-on-release
+name: authentik-on-release
 
 on:
   release:
@@ -18,13 +18,13 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/passbook:0.12.11-stable
-          -t beryju/passbook:latest
+          -t beryju/authentik:0.12.11-stable
+          -t beryju/authentik:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook:0.12.11-stable
+        run: docker push beryju/authentik:0.12.11-stable
       - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/passbook:latest
+        run: docker push beryju/authentik:latest
   build-proxy:
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,7 @@ jobs:
         run: |
           cd proxy
           go get -u github.com/go-swagger/go-swagger/cmd/swagger
-          swagger generate client -f ../swagger.yaml -A passbook -t pkg/
+          swagger generate client -f ../swagger.yaml -A authentik -t pkg/
           go build -v .
       - name: Docker Login Registry
         env:
@@ -48,13 +48,13 @@ jobs:
           cd proxy/
           docker build \
           --no-cache \
-          -t beryju/passbook-proxy:0.12.11-stable \
-          -t beryju/passbook-proxy:latest \
+          -t beryju/authentik-proxy:0.12.11-stable \
+          -t beryju/authentik-proxy:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-proxy:0.12.11-stable
+        run: docker push beryju/authentik-proxy:0.12.11-stable
       - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/passbook-proxy:latest
+        run: docker push beryju/authentik-proxy:latest
   build-static:
     runs-on: ubuntu-latest
     steps:
@@ -69,13 +69,13 @@ jobs:
           cd web/
           docker build \
           --no-cache \
-          -t beryju/passbook-static:0.12.11-stable \
-          -t beryju/passbook-static:latest \
+          -t beryju/authentik-static:0.12.11-stable \
+          -t beryju/authentik-static:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/passbook-static:0.12.11-stable
+        run: docker push beryju/authentik-static:0.12.11-stable
       - name: Push Docker Container to Registry (latest)
-        run: docker push beryju/passbook-static:latest
+        run: docker push beryju/authentik-static:latest
   test-release:
     needs:
       - build-server
@@ -87,11 +87,11 @@ jobs:
         run: |
           sudo apt-get install -y pwgen
           echo "PG_PASS=$(pwgen 40 1)" >> .env
-          echo "PASSBOOK_SECRET_KEY=$(pwgen 50 1)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
           docker-compose pull -q
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test passbook"
+          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
   sentry-release:
     needs:
       - test-release
@@ -103,7 +103,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: beryjuorg
-          SENTRY_PROJECT: passbook
+          SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
           tagName: 0.12.11-stable

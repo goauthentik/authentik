@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/passbook/proxy/pkg"
+	"github.com/BeryJu/authentik/proxy/pkg"
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"
@@ -24,10 +24,10 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{fmt.Sprintf("passbook-proxy@%s", pkg.VERSION)},
+		"User-Agent":    []string{fmt.Sprintf("authentik-proxy@%s", pkg.VERSION)},
 	}
 
-	value, set := os.LookupEnv("PASSBOOK_INSECURE")
+	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
 	if !set {
 		value = "false"
 	}
@@ -40,7 +40,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	}
 	ws.Dial(fmt.Sprintf(pathTemplate, scheme, pbURL.Host, outpostUUID.String()), header)
 
-	ac.logger.WithField("component", "ws").WithField("outpost", outpostUUID.String()).Debug("connecting to passbook")
+	ac.logger.WithField("component", "ws").WithField("outpost", outpostUUID.String()).Debug("connecting to authentik")
 
 	ac.wsConn = ws
 	// Send hello message with our version
@@ -52,7 +52,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	}
 	err := ws.WriteJSON(msg)
 	if err != nil {
-		ac.logger.WithField("component", "ws").WithError(err).Warning("Failed to hello to passbook")
+		ac.logger.WithField("component", "ws").WithError(err).Warning("Failed to hello to authentik")
 	}
 }
 

@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="pf-c-card">
+    <div class="pf-c-card__header pf-c-title pf-m-md">
+        {% trans "Static One-Time Passwords" %}
+    </div>
+    <div class="pf-c-card__body">
+        <p>
+            {% blocktrans with state=state|yesno:"Enabled,Disabled" %}
+            Status: {{ state }}
+            {% endblocktrans %}
+            {% if state %}
+            <i class="pf-icon pf-icon-ok"></i>
+            {% else %}
+            <i class="pf-icon pf-icon-error-circle-o"></i>
+            {% endif %}
+        </p>
+        <ul class="ak-otp-tokens">
+            {% for token in tokens %}
+            <li>{{ token.token }}</li>
+            {% endfor %}
+        </ul>
+        {% if not state %}
+            {% if stage.configure_flow %}
+                <a href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next={{ request.get_full_path }}" class="pf-c-button pf-m-primary">{% trans "Enable Static Tokens" %}</a>
+            {% endif %}
+        {% else %}
+        <a href="{% url 'authentik_stages_otp_static:disable' stage_uuid=stage.stage_uuid %}" class="pf-c-button pf-m-danger">{% trans "Disable Static Tokens" %}</a>
+        {% endif %}
+    </div>
+</div>

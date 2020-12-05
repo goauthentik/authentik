@@ -1,0 +1,18 @@
+{% extends base_template|default:"generic/form.html" %}
+
+{% load authentik_utils %}
+{% load i18n %}
+
+{% block above_form %}
+<h1>
+    {% blocktrans with type=form|form_verbose_name|title inst=form.instance %}
+    Update {{ inst }}
+    {% endblocktrans %}
+</h1>
+{% endblock %}
+
+{% block action %}
+{% blocktrans with type=form|form_verbose_name %}
+Update {{ type }}
+{% endblocktrans %}
+{% endblock %}

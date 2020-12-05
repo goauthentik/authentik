@@ -1,0 +1,37 @@
+# This is the default configuration file
+postgresql:
+  host: localhost
+  name: authentik
+  user: authentik
+  password: 'env://POSTGRES_PASSWORD'
+
+redis:
+  host: localhost
+  password: ''
+  cache_db: 0
+  message_queue_db: 1
+  ws_db: 2
+
+debug: false
+log_level: info
+
+# Error reporting, sends stacktrace to sentry.beryju.org
+error_reporting:
+  enabled: false
+  environment: customer
+  send_pii: false
+
+outposts:
+  docker_image_base: "beryju/authentik" # this is prepended to -proxy:version
+
+authentik:
+  avatars: gravatar  # gravatar or none
+  branding:
+    title: authentik
+    logo: /static/dist/assets/icons/icon_left_brand.svg
+  # Optionally add links to the footer on the login page
+  footer_links:
+    - name: Documentation
+      href: https://goauthentik.io/docs/
+    - name: authentik Website
+      href: https://goauthentik.io/

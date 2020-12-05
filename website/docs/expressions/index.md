@@ -4,7 +4,7 @@ title: Expressions
 
 Expressions allow you to write custom logic using Python code.
 
-Expressions are used in different places throughout passbook, and can do different things.
+Expressions are used in different places throughout authentik, and can do different things.
 
 :::info
 These functions/objects are available wherever expressions are used. For more specific information, see [Expression Policies](../policies/expression.md) and [Property Mappings](../property-mappings/expression.md)
@@ -12,7 +12,7 @@ These functions/objects are available wherever expressions are used. For more sp
 
 ## Global objects
 
--   `pb_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
+-   `ak_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
 -   `requests`: requests Session object. ([ref](https://requests.readthedocs.io/en/master/user/advanced/))
 
 ## Generally available functions
@@ -37,24 +37,24 @@ Example:
 user_email_local = regex_replace(request.user.email, '(.+)@.+', '')
 ```
 
-### `pb_is_group_member(user: User, **group_filters) -> bool`
+### `ak_is_group_member(user: User, **group_filters) -> bool`
 
 Check if `user` is member of a group matching `**group_filters`.
 
 Example:
 
 ```python
-return pb_is_group_member(request.user, name="test_group")
+return ak_is_group_member(request.user, name="test_group")
 ```
 
-### `pb_user_by(**filters) -> Optional[User]`
+### `ak_user_by(**filters) -> Optional[User]`
 
 Fetch a user matching `**filters`. Returns "None" if no user was found.
 
 Example:
 
 ```python
-other_user = pb_user_by(username="other_user")
+other_user = ak_user_by(username="other_user")
 ```
 
 ## Comparing IP Addresses

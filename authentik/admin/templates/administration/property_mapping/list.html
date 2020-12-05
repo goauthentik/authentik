@@ -1,0 +1,139 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load authentik_utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-blueprint"></i>
+            {% trans 'Property Mappings' %}
+        </h1>
+        <p>{% trans "Control how authentik exposes and interprets information." %}
+        </p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        {% if object_list %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+                <div class="pf-c-toolbar__bulk-select">
+                    <ak-dropdown class="pf-c-dropdown">
+                        <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                            <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                            <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                        </button>
+                        <ul class="pf-c-dropdown__menu" hidden>
+                            {% for type, name in types.items %}
+                            <li>
+                                <ak-modal-button href="{% url 'authentik_admin:property-mapping-create' %}?type={{ type }}">
+                                    <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                        {{ name|verbose_name }}<br>
+                                        <small>
+                                            {{ name|doc }}
+                                        </small>
+                                    </button>
+                                    <div slot="modal"></div>
+                                </ak-modal-button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </ak-dropdown>
+                    <button role="ak-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
+                </div>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Type' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for property_mapping in object_list %}
+                <tr role="row">
+                    <td role="cell">
+                        <span>
+                            {{ property_mapping.name }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ property_mapping|verbose_name }}
+                        </span>
+                    </td>
+                    <td>
+                        <ak-modal-button href="{% url 'authentik_admin:property-mapping-update' pk=property_mapping.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </ak-spinner-button>
+                            <div slot="modal"></div>
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:property-mapping-delete' pk=property_mapping.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
+                                {% trans 'Delete' %}
+                            </ak-spinner-button>
+                            <div slot="modal"></div>
+                        </ak-modal-button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-pagination pf-m-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+        {% else %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+            </div>
+        </div>
+        <div class="pf-c-empty-state">
+            <div class="pf-c-empty-state__content">
+                <i class="pf-icon pf-icon-blueprint pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Property Mappings.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                {% if request.GET.search != "" %}
+                    {% trans "Your search query doesn't match any property mappings." %}
+                {% else %}
+                    {% trans 'Currently no property mappings exist. Click the button below to create one.' %}
+                {% endif %}
+                </div>
+                <ak-dropdown class="pf-c-dropdown">
+                    <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                        <span class="pf-c-dropdown__toggle-text">{% trans 'Create' %}</span>
+                        <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-dropdown__menu" hidden>
+                        {% for type, name in types.items %}
+                        <li>
+                            <ak-modal-button href="{% url 'authentik_admin:property-mapping-create' %}?type={{ type }}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    {{ name|verbose_name }}<br>
+                                    <small>
+                                        {{ name|doc }}
+                                    </small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </ak-dropdown>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -8,7 +8,7 @@ from defusedxml import defuse_stdlib
 defuse_stdlib()
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "passbook.root.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

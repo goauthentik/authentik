@@ -9,30 +9,30 @@ test-e2e:
 	coverage run manage.py test --failfast -v 3 tests/e2e
 
 coverage:
-	coverage run manage.py test --failfast -v 3 passbook
+	coverage run manage.py test --failfast -v 3 authentik
 	coverage html
 	coverage report
 
 lint-fix:
-	isort -rc .
-	black passbook tests lifecycle
+	isort -rc authentik tests lifecycle
+	black authentik tests lifecycle
 
 lint:
-	pyright passbook tests lifecycle
-	bandit -r passbook tests lifecycle -x node_modules
-	pylint passbook tests lifecycle
+	pyright authentik tests lifecycle
+	bandit -r authentik tests lifecycle -x node_modules
+	pylint authentik tests lifecycle
 	prospector
 
 gen: coverage
 	./manage.py generate_swagger -o swagger.yaml -f yaml
 
 local-stack:
-	export PASSBOOK_TAG=testing
-	docker build -t beryju/passbook:testng .
+	export AUTHENTIK_TAG=testing
+	docker build -t beryju/authentik:testng .
 	docker-compose up -d
 	docker-compose run --rm server migrate
 
 build-static:
 	docker-compose -f scripts/ci.docker-compose.yml up -d
-	docker build -t beryju/passbook-static -f static.Dockerfile --network=scripts_default .
+	docker build -t beryju/authentik-static -f static.Dockerfile --network=scripts_default .
 	docker-compose -f scripts/ci.docker-compose.yml down -v

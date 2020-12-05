@@ -11,7 +11,7 @@ vCenter Server is the centralized management utility for VMware, and is used to 
 :::
 
 :::warning
-This requires passbook 0.10.3 or newer.
+This requires authentik 0.10.3 or newer.
 :::
 
 :::warning
@@ -27,9 +27,9 @@ It seems that the vCenter still needs to be joined to the Active Directory Domai
 The following placeholders will be used:
 
 -   `vcenter.company` is the FQDN of the vCenter server.
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-Since vCenter only allows OpenID-Connect in combination with Active Directory, it is recommended to have passbook sync with the same Active Directory.
+Since vCenter only allows OpenID-Connect in combination with Active Directory, it is recommended to have authentik sync with the same Active Directory.
 
 ### Step 1
 
@@ -61,7 +61,7 @@ Under _Providers_, create an OAuth2/OpenID Provider with these settings:
 -   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...".
 -   Scopes: Select the Scope Mapping you've created in Step 1
 
-![](./passbook_setup.png)
+![](./authentik_setup.png)
 
 ### Step 4
 
@@ -77,9 +77,9 @@ Click on _Change Identity Provider_ in the top-right corner.
 
 In the wizard, select "Microsoft ADFS" and click Next.
 
-Fill in the Client Identifier and Shared Secret from the Provider in passbook. For the OpenID Address, click on _View Setup URLs_ in passbook, and copy the OpenID Configuration URL.
+Fill in the Client Identifier and Shared Secret from the Provider in authentik. For the OpenID Address, click on _View Setup URLs_ in authentik, and copy the OpenID Configuration URL.
 
-On the next page, fill in your Active Directory Connection Details. These should be similar to what you have set in passbook.
+On the next page, fill in your Active Directory Connection Details. These should be similar to what you have set in authentik.
 
 ![](./vcenter_post_setup.png)
 

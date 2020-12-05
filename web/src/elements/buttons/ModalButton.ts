@@ -14,7 +14,7 @@ import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS } from "../../constants";
 
-@customElement("pb-modal-button")
+@customElement("ak-modal-button")
 export class ModalButton extends LitElement {
     @property()
     href?: string;
@@ -92,17 +92,17 @@ export class ModalButton extends LitElement {
                         if (data.indexOf("csrfmiddlewaretoken") !== -1) {
                             const modalSlot = this.querySelector("[slot=modal]");
                             if (!modalSlot) {
-                                console.debug("passbook/modalbutton: modal slot not found?");
+                                console.debug("authentik/modalbutton: modal slot not found?");
                                 return;
                             }
                             modalSlot.innerHTML = data;
-                            console.debug("passbook/modalbutton: re-showing form");
+                            console.debug("authentik/modalbutton: re-showing form");
                             this.updateHandlers();
                         } else {
                             this.open = false;
-                            console.debug("passbook/modalbutton: successful submit");
+                            console.debug("authentik/modalbutton: successful submit");
                             this.dispatchEvent(
-                                new CustomEvent("hashchange", {
+                                new CustomEvent("ak-refresh", {
                                     bubbles: true,
                                 })
                             );
@@ -133,7 +133,7 @@ export class ModalButton extends LitElement {
                     modalSlot.innerHTML = t;
                     this.updateHandlers();
                     this.open = true;
-                    this.querySelectorAll<SpinnerButton>("pb-spinner-button").forEach((sb) => {
+                    this.querySelectorAll<SpinnerButton>("ak-spinner-button").forEach((sb) => {
                         sb.setDone(PRIMARY_CLASS);
                     });
                 })

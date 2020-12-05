@@ -8,7 +8,7 @@ from typing import Any
 from psycopg2 import connect
 from structlog import get_logger
 
-from passbook.lib.config import CONFIG
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 

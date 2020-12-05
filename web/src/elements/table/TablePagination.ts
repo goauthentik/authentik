@@ -1,30 +1,18 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Table } from "./Table";
 import { COMMON_STYLES } from "../../common/styles";
+import { PBPagination } from "../../api/client";
 
-@customElement("pb-table-pagination")
+@customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
     @property({attribute: false})
-    table?: Table<unknown>;
+    pages?: PBPagination;
+
+    @property({attribute: false})
+    // eslint-disable-next-line
+    pageChangeHandler: (page: number) => void = (page: number) => {}
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
-    }
-
-    previousHandler(): void {
-        if (!this.table?.data?.pagination.previous) {
-            console.debug("passbook/tables: no previous");
-            return;
-        }
-        this.table.page = this.table?.data?.pagination.previous;
-    }
-
-    nextHandler(): void {
-        if (!this.table?.data?.pagination.next) {
-            console.debug("passbook/tables: no next");
-            return;
-        }
-        this.table.page = this.table?.data?.pagination.next;
     }
 
     render(): TemplateResult {
@@ -33,9 +21,9 @@ export class TablePagination extends LitElement {
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                         <span class="pf-c-options-menu__toggle-text">
-                            ${this.table?.data?.pagination.start_index} -
-                            ${this.table?.data?.pagination.end_index} of
-                            ${this.table?.data?.pagination.count}
+                            ${this.pages?.start_index} -
+                            ${this.pages?.end_index} of
+                            ${this.pages?.count}
                         </span>
                     </div>
                 </div>
@@ -43,8 +31,8 @@ export class TablePagination extends LitElement {
                     <div class="pf-c-pagination__nav-control pf-m-prev">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {this.previousHandler();}}
-                            ?disabled="${(this.table?.data?.pagination.previous || 0) > 0}"
+                            @click=${() => { this.pageChangeHandler(this.pages?.previous || 0); }}
+                            ?disabled="${(this.pages?.previous || 0) > 0}"
                             aria-label="{% trans 'Go to previous page' %}"
                         >
                             <i class="fas fa-angle-left" aria-hidden="true"></i>
@@ -53,8 +41,8 @@ export class TablePagination extends LitElement {
                     <div class="pf-c-pagination__nav-control pf-m-next">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {this.nextHandler();}}
-                            ?disabled="${(this.table?.data?.pagination.next || 0) > 0}"
+                            @click=${() => { this.pageChangeHandler(this.pages?.next || 0); }}
+                            ?disabled="${(this.pages?.next || 0) > 0}"
                             aria-label="{% trans 'Go to next page' %}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>

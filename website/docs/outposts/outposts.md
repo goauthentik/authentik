@@ -2,16 +2,16 @@
 title: Outposts
 ---
 
-An outpost is a single deployment of a passbook component, which can be deployed in a completely separate environment. Currently, only the Proxy Provider is supported as outpost.
+An outpost is a single deployment of a authentik component, which can be deployed in a completely separate environment. Currently, only the Proxy Provider is supported as outpost.
 
 ![](outposts.png)
 
-Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the Outpost to connect to passbook.
+Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the Outpost to connect to authentik.
 
-passbook can manage the deployment, updating and general lifecycle of an Outpost. To communicate with the underlying platforms on which the outpost is deployed, passbook has "Service Connections".
+authentik can manage the deployment, updating and general lifecycle of an Outpost. To communicate with the underlying platforms on which the outpost is deployed, authentik has "Service Connections".
 
--   If you've deployed passbook on docker-compose, passbook automatically create a Service Connection for the local docker socket.
--   If you've deployed passbook on Kubernetes, with `kubernetesIntegration` set to true (default), passbook automatically creates a Service Connection for the local Kubernetes Cluster.
+-   If you've deployed authentik on docker-compose, authentik automatically create a Service Connection for the local docker socket.
+-   If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates a Service Connection for the local Kubernetes Cluster.
 
 To deploy an outpost with these service connections, simply selected them during the creation of an Outpost. A background task is started, which creates the container/deployment. You can see that Status on the System Tasks page.
 

@@ -3,7 +3,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { ifDefined } from "lit-html/directives/if-defined";
 import { COMMON_STYLES } from "../../common/styles";
 
-@customElement("pb-aggregate-card")
+@customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {
     @property()
     icon?: string;
@@ -19,9 +19,6 @@ export class AggregateCard extends LitElement {
             .center-value {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;
-            }
-            .subtext {
-                font-size: var(--pf-global--FontSize--sm);
             }
         `]);
     }

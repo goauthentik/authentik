@@ -1,0 +1,116 @@
+{% extends "administration/base.html" %}
+
+{% load i18n %}
+{% load authentik_utils %}
+
+{% block content %}
+<section class="pf-c-page__main-section pf-m-light">
+    <div class="pf-c-content">
+        <h1>
+            <i class="pf-icon pf-icon-key"></i>
+            {% trans 'Certificate-Key Pairs' %}
+        </h1>
+        <p>{% trans "Import certificates of external providers or create certificates to sign requests with." %}</p>
+    </div>
+</section>
+<section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    <div class="pf-c-card">
+        {% if object_list %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+                <div class="pf-c-toolbar__bulk-select">
+                    <ak-modal-button href="{% url 'authentik_admin:certificatekeypair-create' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                            {% trans 'Create' %}
+                        </ak-spinner-button>
+                        <div slot="modal"></div>
+                    </ak-modal-button>
+                    <button role="ak-refresh" class="pf-c-button pf-m-primary">
+                        {% trans 'Refresh' %}
+                    </button>
+                </div>
+                {% include 'partials/pagination.html' %}
+            </div>
+        </div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
+            <thead>
+                <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'Name' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Private Key available' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Fingerprint' %}</th>
+                    <th role="cell"></th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                {% for kp in object_list %}
+                <tr role="row">
+                    <th role="columnheader">
+                        <div>
+                            <div>{{ kp.name }}</div>
+                        </div>
+                    </th>
+                    <td role="cell">
+                        <span>
+                            {% if kp.key_data is not None %}
+                            {% trans 'Yes' %}
+                            {% else %}
+                            {% trans 'No' %}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <code>{{ kp.fingerprint }}</code>
+                    </td>
+                    <td>
+                        <ak-modal-button href="{% url 'authentik_admin:certificatekeypair-update' pk=kp.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                                {% trans 'Edit' %}
+                            </ak-spinner-button>
+                            <div slot="modal"></div>
+                        </ak-modal-button>
+                        <ak-modal-button href="{% url 'authentik_admin:certificatekeypair-delete' pk=kp.pk %}">
+                            <ak-spinner-button slot="trigger" class="pf-m-danger">
+                                {% trans 'Delete' %}
+                            </ak-spinner-button>
+                            <div slot="modal"></div>
+                        </ak-modal-button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pf-c-pagination pf-m-bottom">
+            {% include 'partials/pagination.html' %}
+        </div>
+        {% else %}
+        <div class="pf-c-toolbar">
+            <div class="pf-c-toolbar__content">
+                {% include 'partials/toolbar_search.html' %}
+            </div>
+        </div>
+        <div class="pf-c-empty-state">
+            <div class="pf-c-empty-state__content">
+                <i class="pf-icon pf-icon-key pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-c-title pf-m-lg">
+                    {% trans 'No Certificates.' %}
+                </h1>
+                <div class="pf-c-empty-state__body">
+                {% if request.GET.search != "" %}
+                    {% trans "Your search query doesn't match any certificates." %}
+                {% else %}
+                    {% trans 'Currently no certificates exist. Click the button below to create one.' %}
+                {% endif %}
+                </div>
+                <ak-modal-button href="{% url 'authentik_admin:certificatekeypair-create' %}">
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
+                        {% trans 'Create' %}
+                    </ak-spinner-button>
+                    <div slot="modal"></div>
+                </ak-modal-button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

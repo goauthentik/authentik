@@ -16,13 +16,13 @@ Rancher is a platform built to address the needs of the DevOps teams deploying a
 The following placeholders will be used:
 
 -   `rancher.company` is the FQDN of the Rancher install.
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
 -   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
--   Issuer: `passbook`
+-   Issuer: `authentik`
 
 You can of course use a custom signing certificate, and adjust durations.
 

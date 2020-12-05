@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load authentik_utils %}
+
+<div class="pf-c-toolbar__item pf-m-pagination ">
+    <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
+        <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
+            <div class="pf-c-options-menu">
+                <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
+                    <span class="pf-c-options-menu__toggle-text">
+                        {% blocktrans with start_index=page_obj.start_index end_index=page_obj.end_index total_items=paginator.count %}
+                            {{ start_index }} - {{ end_index }} of {{ total_items }}
+                        {% endblocktrans %}
+                    </span>
+                </div>
+            </div>
+            <nav class="pf-c-pagination__nav" aria-label="Pagination">
+                <div class="pf-c-pagination__nav-control pf-m-prev">
+                    <a class="pf-c-button pf-m-plain"
+                        {% if page_obj.has_previous %}
+                        href="{{ request.path }}?{% query_transform page=page_obj.previous_page_number %}"
+                        {% else %}
+                        disabled
+                        {% endif %}
+                        aria-label="{% trans 'Go to previous page' %}">
+                        <i class="fas fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="pf-c-pagination__nav-control pf-m-next">
+                    <a class="pf-c-button pf-m-plain"
+                        {% if page_obj.has_next %}
+                        href="{{ request.path }}?{% query_transform page=page_obj.next_page_number %}"
+                        {% else %}
+                        disabled
+                        {% endif %}
+                        aria-label="{% trans 'Go to next page' %}">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>

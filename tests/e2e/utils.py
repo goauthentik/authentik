@@ -1,4 +1,4 @@
-"""passbook e2e testing utilities"""
+"""authentik e2e testing utilities"""
 import json
 from functools import wraps
 from glob import glob
@@ -24,14 +24,14 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog import get_logger
 
-from passbook.core.api.users import UserSerializer
-from passbook.core.models import User
+from authentik.core.api.users import UserSerializer
+from authentik.core.models import User
 
 
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
-    """Cached function that always returns pbadmin"""
-    return User.objects.get(username="pbadmin")
+    """Cached function that always returns akadmin"""
+    return User.objects.get(username="akadmin")
 
 
 class SeleniumTestCase(StaticLiveServerTestCase):
@@ -109,7 +109,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
-        self.driver.get(self.url("passbook_api:user-me") + "?format=json")
+        self.driver.get(self.url("authentik_api:user-me") + "?format=json")
         user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         user = UserSerializer(data=json.loads(user_json))
         user.is_valid()

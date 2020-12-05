@@ -1,4 +1,4 @@
-name: passbook-on-tag
+name: authentik-on-tag
 
 on:
   push:
@@ -14,17 +14,17 @@ jobs:
       - name: Pre-release test
         run: |
           sudo apt-get install -y pwgen
-          echo "PASSBOOK_TAG=latest" >> .env
+          echo "AUTHENTIK_TAG=latest" >> .env
           echo "PG_PASS=$(pwgen 40 1)" >> .env
-          echo "PASSBOOK_SECRET_KEY=$(pwgen 50 1)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(pwgen 50 1)" >> .env
           docker-compose pull -q
           docker build \
             --no-cache \
-            -t beryju/passbook:latest \
+            -t beryju/authentik:latest \
             -f Dockerfile .
           docker-compose up --no-start
           docker-compose start postgresql redis
-          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test passbook"
+          docker-compose run -u root --entrypoint /bin/bash server -c "pip install --no-cache -r requirements-dev.txt && ./manage.py test authentik"
       - name: Install Helm
         run: |
           apt update && apt install -y curl
@@ -33,7 +33,7 @@ jobs:
         run: |
           helm dependency update helm/
           helm package helm/
-          mv passbook-*.tgz passbook-chart.tgz
+          mv authentik-*.tgz authentik-chart.tgz
       - name: Extract version number
         id: get_version
         uses: actions/github-script@0.2.0
@@ -58,6 +58,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./passbook-chart.tgz
-          asset_name: passbook-chart.tgz
+          asset_path: ./authentik-chart.tgz
+          asset_name: authentik-chart.tgz
           asset_content_type: application/gzip

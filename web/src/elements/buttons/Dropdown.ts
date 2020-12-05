@@ -1,6 +1,6 @@
 import { customElement, html, LitElement, TemplateResult } from "lit-element";
 
-@customElement("pb-dropdown")
+@customElement("ak-dropdown")
 export class DropdownButton extends LitElement {
     constructor() {
         super();

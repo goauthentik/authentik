@@ -2,32 +2,32 @@
 title: Kubernetes installation
 ---
 
-For a mid to high-load installation, Kubernetes is recommended. passbook is installed using a helm-chart.
+For a mid to high-load installation, Kubernetes is recommended. authentik is installed using a helm-chart.
 
-To install passbook using the helm chart, run these commands:
+To install authentik using the helm chart, run these commands:
 
 ```
-helm repo add passbook https://docker.beryju.org/chartrepo/passbook
+helm repo add authentik https://docker.beryju.org/chartrepo/authentik
 helm repo update
-helm repo install passbook/passbook --devel -f values.yaml
+helm install authentik/authentik --devel -f values.yaml
 ```
 
-This installation automatically applies database migrations on startup. After the installation is done, you can use `pbadmin` as username and password.
+This installation automatically applies database migrations on startup. After the installation is done, you can use `akadmin` as username and password.
 
 ```yaml
 ###################################
-# Values directly affecting passbook
+# Values directly affecting authentik
 ###################################
 image:
-    name: beryju/passbook
-    name_static: beryju/passbook-static
-    name_outposts: beryju/passbook # Prefix used for Outpost deployments, Outpost type and version is appended
+    name: beryju/authentik
+    name_static: beryju/authentik-static
+    name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
     tag: 0.12.11-stable
 
 serverReplicas: 1
 workerReplicas: 1
 
-# Enable the Kubernetes integration which lets passbook deploy outposts into kubernetes
+# Enable the Kubernetes integration which lets authentik deploy outposts into kubernetes
 kubernetesIntegration: true
 
 config:
@@ -56,11 +56,11 @@ ingress:
         # kubernetes.io/ingress.class: nginx
         # kubernetes.io/tls-acme: "true"
     hosts:
-        - passbook.k8s.local
+        - authentik.k8s.local
     tls: []
     #  - secretName: chart-example-tls
     #    hosts:
-    #      - passbook.k8s.local
+    #      - authentik.k8s.local
 
 ###################################
 # Values controlling dependencies
@@ -70,9 +70,9 @@ install:
     postgresql: true
     redis: true
 
-# These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
+# These values influence the bundled postgresql and redis charts, but are also used by authentik to connect
 postgresql:
-    postgresqlDatabase: passbook
+    postgresqlDatabase: authentik
 
 redis:
     cluster:

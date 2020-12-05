@@ -8,7 +8,7 @@ title: Policies
 
 ### Reputation Policy
 
-passbook keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
+authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
 
 This policy can be used, for example, to prompt clients with a low score to pass a captcha before they can continue.
 
@@ -33,7 +33,7 @@ The following rules can be set:
 
 ### Have I Been Pwned Policy
 
-This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within passbook.
+This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within authentik.
 
 ### Password-Expiry Policy
 

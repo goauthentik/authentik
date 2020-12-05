@@ -5,8 +5,8 @@ resources:
   - repo: self
 
 variables:
-  POSTGRES_DB: passbook
-  POSTGRES_USER: passbook
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
     branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
@@ -31,7 +31,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run pylint passbook tests lifecycle
+              script: pipenv run pylint authentik tests lifecycle
       - job: black
         pool:
           vmImage: 'ubuntu-latest'
@@ -47,7 +47,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run black --check passbook tests lifecycle
+              script: pipenv run black --check authentik tests lifecycle
       - job: prospector
         pool:
           vmImage: 'ubuntu-latest'
@@ -80,7 +80,7 @@ stages:
                 pipenv install --dev
           - task: CmdLine@2
             inputs:
-              script: pipenv run bandit -r passbook tests lifecycle
+              script: pipenv run bandit -r authentik tests lifecycle
       - job: pyright
         pool:
           vmImage: ubuntu-latest
@@ -147,6 +147,8 @@ stages:
             displayName: Prepare Last tagged release
             inputs:
               script: |
+                # Copy current, latest config to local
+                cp authentik/lib/default.yml local.env.yml
                 git checkout $(git describe --abbrev=0 --match 'version/*')
                 sudo apt install -y libxmlsec1-dev pkg-config
                 sudo pip install -U wheel pipenv
@@ -154,7 +156,8 @@ stages:
           - task: CmdLine@2
             displayName: Migrate to last tagged release
             inputs:
-              script: pipenv run ./manage.py migrate
+              script:
+                pipenv run ./manage.py migrate
           - task: CmdLine@2
             displayName: Install current branch
             inputs:
@@ -165,7 +168,9 @@ stages:
           - task: CmdLine@2
             displayName: Migrate to current branch
             inputs:
-              script: pipenv run ./manage.py migrate
+              script: |
+                pipenv run python -m lifecycle.migrate
+                pipenv run ./manage.py migrate
       - job: coverage_unittest
         pool:
           vmImage: 'ubuntu-latest'
@@ -367,7 +372,7 @@ stages:
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
-            repository: 'beryju/passbook'
+            repository: 'beryju/authentik'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
             tags: "gh-${{ variables.branchName }}"

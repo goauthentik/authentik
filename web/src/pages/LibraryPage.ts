@@ -6,6 +6,7 @@ import { PBResponse } from "../api/client";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 
+@customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
     @property({attribute: false})
     application?: Application;
@@ -13,8 +14,11 @@ export class LibraryApplication extends LitElement {
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
             css`
-                img.pf-icon {
-                    max-height: 24px;
+                a {
+                    height: 100%;
+                }
+                i.pf-icon {
+                    height: 36px;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
@@ -25,7 +29,7 @@ export class LibraryApplication extends LitElement {
 
     render(): TemplateResult {
         if (!this.application) {
-            return html`<pb-spinner></pb-spinner>`;
+            return html`<ak-spinner></ak-spinner>`;
         }
         return html` <a href="${this.application.launch_url}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
@@ -45,7 +49,7 @@ export class LibraryApplication extends LitElement {
 
 }
 
-@customElement("pb-library")
+@customElement("ak-library")
 export class LibraryPage extends LitElement {
     @property({attribute: false})
     apps?: PBResponse<Application>;
@@ -72,7 +76,7 @@ export class LibraryPage extends LitElement {
 
     renderApps(): TemplateResult {
         return html`<div class="pf-l-gallery pf-m-gutter">
-            ${this.apps?.results.map((app) => html`<pb-library-app application=${app}></pb-library-app>`)}
+            ${this.apps?.results.map((app) => html`<ak-library-app .application=${app}></ak-library-app>`)}
         </div>`;
     }
 

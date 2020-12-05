@@ -3,7 +3,7 @@ import { customElement, property } from "lit-element";
 import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 
-@customElement("pb-action-button")
+@customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
     @property()
     url = "";
@@ -13,7 +13,7 @@ export class ActionButton extends SpinnerButton {
             return;
         }
         this.setLoading();
-        const csrftoken = getCookie("passbook_csrf");
+        const csrftoken = getCookie("authentik_csrf");
         if (!csrftoken) {
             console.debug("No csrf token in cookie");
             this.setDone(ERROR_CLASS);

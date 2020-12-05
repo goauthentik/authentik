@@ -7,7 +7,7 @@ import "codemirror/mode/xml/xml.js";
 import "codemirror/mode/yaml/yaml.js";
 import "codemirror/mode/python/python.js";
 
-@customElement("pb-codemirror")
+@customElement("ak-codemirror")
 export class CodeMirrorTextarea extends LitElement {
     @property({type: Boolean})
     readOnly = false;

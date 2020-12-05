@@ -12,13 +12,13 @@ Amazon Web Services (AWS) is the world’s most comprehensive and broadly adopte
 
 The following placeholders will be used:
 
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in passbook and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://signin.aws.amazon.com/saml`
 -   Audience: `urn:amazon:webservices`
--   Issuer: `passbook`
+-   Issuer: `authentik`
 -   Binding: `Post`
 
 You can of course use a custom signing certificate, and adjust durations.
@@ -31,7 +31,7 @@ After you've created the Property Mappings below, add them to the Provider.
 
 Create an application, assign policies, and assign this provider.
 
-Export the metadata from passbook, and create an Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
+Export the metadata from authentik, and create an Identity Provider [here](https://console.aws.amazon.com/iam/home#/providers).
 
 #### Role Mapping
 
@@ -42,23 +42,23 @@ This Mapping needs to have the SAML Name field set to "https://aws.amazon.com/SA
 As expression, you can return a static ARN like so
 
 ```python
-return "arn:aws:iam::123412341234:role/saml_role,arn:aws:iam::123412341234:saml-provider/passbook"
+return "arn:aws:iam::123412341234:role/saml_role,arn:aws:iam::123412341234:saml-provider/authentik"
 ```
 
 Or, if you want to assign AWS Roles based on Group membership, you can add a custom attribute to the Groups, for example "aws_role", and use this snippet below. Groups are sorted by name and later groups overwrite earlier groups' attributes.
 
 ```python
 role_name = user.group_attributes().get("aws_role", "")
-return f"arn:aws:iam::123412341234:role/{role_name},arn:aws:iam::123412341234:saml-provider/passbook"
+return f"arn:aws:iam::123412341234:role/{role_name},arn:aws:iam::123412341234:saml-provider/authentik"
 ```
 
 If you want to allow a user to choose from multiple roles, use this snippet
 
 ```python
 return [
-    "arn:aws:iam::123412341234:role/role_a,arn:aws:iam::123412341234:saml-provider/passbook",
-    "arn:aws:iam::123412341234:role/role_b,arn:aws:iam::123412341234:saml-provider/passbook",
-    "arn:aws:iam::123412341234:role/role_c,arn:aws:iam::123412341234:saml-provider/passbook",
+    "arn:aws:iam::123412341234:role/role_a,arn:aws:iam::123412341234:saml-provider/authentik",
+    "arn:aws:iam::123412341234:role/role_b,arn:aws:iam::123412341234:saml-provider/authentik",
+    "arn:aws:iam::123412341234:role/role_c,arn:aws:iam::123412341234:saml-provider/authentik",
 ]
 ```
 

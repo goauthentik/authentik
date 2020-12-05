@@ -8,7 +8,7 @@ import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
 import { User } from "../../api/user";
 import { until } from "lit-html/directives/until";
 
-@customElement("pb-sidebar-user")
+@customElement("ak-sidebar-user")
 export class SidebarUser extends LitElement {
     static get styles(): CSSResult[] {
         return [

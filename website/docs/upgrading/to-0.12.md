@@ -4,23 +4,23 @@ title: Upgrading to 0.12
 
 This update brings these headline features:
 
--   Rewrite Outpost state Logic, which now supports multiple concurrent Outpost instances.
--   Add Kubernetes Integration for Outposts, which deploys and maintains Outposts with High Availability in a Kubernetes Cluster
--   Add System Task Overview to see all background tasks, their status, the log output, and retry them
--   Alerts now disappear automatically
--   Audit Logs are now searchable
--   Users can now create their own Tokens to access the API
--   docker-compose deployment now uses traefik 2.3
+- Rewrite Outpost state Logic, which now supports multiple concurrent Outpost instances.
+- Add Kubernetes Integration for Outposts, which deploys and maintains Outposts with High Availability in a Kubernetes Cluster
+- Add System Task Overview to see all background tasks, their status, the log output, and retry them
+- Alerts now disappear automatically
+- Audit Logs are now searchable
+- Users can now create their own Tokens to access the API
+- docker-compose deployment now uses traefik 2.3
 
 Fixes:
 
--   Fix high CPU Usage of the proxy when Websocket connections fail
+- Fix high CPU Usage of the proxy when Websocket connections fail
 
 ## Upgrading
 
 ### docker-compose
 
-Docker-compose users should download the latest docker-compose file from [here](https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml). This includes the new traefik 2.3.
+Docker-compose users should download the latest docker-compose file from [here](https://raw.githubusercontent.com/BeryJu/authentik/master/docker-compose.yml). This includes the new traefik 2.3.
 
 Afterwards, you can simply run `docker-compose up -d` and then the normal upgrade command of `docker-compose run --rm server migrate`.
 
@@ -62,4 +62,4 @@ config:
 
 in order to be consistent with the rest of the settings.
 
-There is also a new setting called `kubernetesIntegration`, which controls the Kubernetes integration for passbook. When enabled (the default), a Service Account is created, which allows passbook to deploy and update Outposts.
+There is also a new setting called `kubernetesIntegration`, which controls the Kubernetes integration for authentik. When enabled (the default), a Service Account is created, which allows authentik to deploy and update Outposts.

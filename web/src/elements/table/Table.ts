@@ -21,6 +21,13 @@ export abstract class Table<T> extends LitElement {
         return COMMON_STYLES;
     }
 
+    constructor() {
+        super();
+        this.addEventListener("ak-refresh", () => {
+            this.fetch();
+        });
+    }
+
     public fetch(): void {
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
@@ -74,15 +81,15 @@ export abstract class Table<T> extends LitElement {
                         <slot name="create-button"></slot>
                         <button
                             @click=${() => {this.fetch();}}
-                            class="pf-c-button pf-m-primary"
-                        >
+                            class="pf-c-button pf-m-primary">
                             ${gettext("Refresh")}
                         </button>
                     </div>
-                    <pb-table-pagination
+                    <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
-                        .table=${this}
-                    ></pb-table-pagination>
+                        .pages=${this.data?.pagination}
+                        .pageChangeHandler=${(page: number) => {this.page = page; }}>
+                    </ak-table-pagination>
                 </div>
             </div>
             <table class="pf-c-table pf-m-compact pf-m-grid-md">
@@ -96,10 +103,11 @@ export abstract class Table<T> extends LitElement {
                 </tbody>
             </table>
             <div class="pf-c-pagination pf-m-bottom">
-                <pb-table-pagination
+                <ak-table-pagination
                     class="pf-c-toolbar__item pf-m-pagination"
-                    .table=${this}
-                ></pb-table-pagination>
+                    .pages=${this.data?.pagination}
+                    .pageChangeHandler=${(page: number) => { this.page = page; }}>
+                </ak-table-pagination>
             </div>`;
     }
 

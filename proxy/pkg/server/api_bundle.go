@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/BeryJu/passbook/proxy/pkg/client/crypto"
-	"github.com/BeryJu/passbook/proxy/pkg/models"
-	"github.com/BeryJu/passbook/proxy/pkg/proxy"
+	"github.com/BeryJu/authentik/proxy/pkg/client/crypto"
+	"github.com/BeryJu/authentik/proxy/pkg/models"
+	"github.com/BeryJu/authentik/proxy/pkg/proxy"
 	"github.com/jinzhu/copier"
 	"github.com/justinas/alice"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"

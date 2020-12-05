@@ -1,8 +1,8 @@
 ---
-title: passbook behind a reverse-proxy
+title: authentik behind a reverse-proxy
 ---
 
-If you want to access passbook behind a reverse-proxy, use a config like this. It is important that Websocket is enabled, so that Outposts can connect.
+If you want to access authentik behind a reverse-proxy, use a config like this. It is important that Websocket is enabled, so that Outposts can connect.
 
 ```
 map $http_upgrade $connection_upgrade {
@@ -31,7 +31,7 @@ server {
 
     # Proxy site
     location / {
-        proxy_pass https://<hostname of your passbook server>;
+        proxy_pass https://<hostname of your authentik server>;
         proxy_http_version 1.1;
         proxy_set_header X-Forwarded-Proto https;
         proxy_set_header X-Forwarded-Port 443;

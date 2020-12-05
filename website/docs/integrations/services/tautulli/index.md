@@ -15,11 +15,11 @@ Tautulli is a 3rd party application that you can run alongside your Plex Media S
 The following placeholders will be used:
 
 -   `tautulli.company` is the FQDN of the Tautulli install.
--   `passbook.company` is the FQDN of the passbook install.
+-   `authentik.company` is the FQDN of the authentik install.
 
-## passbook Setup
+## authentik Setup
 
-Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in passbook. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
+Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
 
 ```yaml
 tautulli_user: username
@@ -28,13 +28,13 @@ tautulli_password: password
 
 Add all Tautulli users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-Create an application in passbook. Create a Proxy provider with the following parameters:
+Create an application in authentik. Create a Proxy provider with the following parameters:
 
 -   Internal host
 
-    If Tautulli is running in docker, and you're deploying the passbook proxy on the same host, set the value to `http://tautulli:3579`, where tautulli is the name of your container.
+    If Tautulli is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://tautulli:3579`, where tautulli is the name of your container.
 
-    If Tautulli is running on a different server to where you are deploying the passbook proxy, set the value to `http://tautulli.company:3579`.
+    If Tautulli is running on a different server to where you are deploying the authentik proxy, set the value to `http://tautulli.company:3579`.
 
 -   External host
 

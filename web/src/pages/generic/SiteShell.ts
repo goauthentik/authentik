@@ -7,7 +7,7 @@ import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css"
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { SpinnerSize } from "../../elements/Spinner";
 
-@customElement("pb-site-shell")
+@customElement("ak-site-shell")
 export class SiteShell extends LitElement {
     @property()
     set url(value: string) {
@@ -45,6 +45,13 @@ export class SiteShell extends LitElement {
         ];
     }
 
+    constructor() {
+        super();
+        this.addEventListener("ak-refresh", () => {
+            this.loadContent();
+        });
+    }
+
     loadContent(): void {
         if (!this._url) {
             return;
@@ -55,7 +62,7 @@ export class SiteShell extends LitElement {
                 if (r.ok) {
                     return r;
                 }
-                console.debug(`passbook/site-shell: Request failed ${this._url}`);
+                console.debug(`authentik/site-shell: Request failed ${this._url}`);
                 window.location.hash = "#/";
                 throw new Error("Request failed");
             })
@@ -69,7 +76,7 @@ export class SiteShell extends LitElement {
             })
             .then(() => {
                 // Ensure anchors only change the hash
-                this.querySelectorAll<HTMLAnchorElement>("a:not(.pb-root-link)").forEach((a) => {
+                this.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
                     if (a.href === "") {
                         return;
                     }
@@ -78,12 +85,12 @@ export class SiteShell extends LitElement {
                         const qs = url.search || "";
                         a.href = `#${url.pathname}${qs}`;
                     } catch (e) {
-                        console.debug(`passbook/site-shell: error ${e}`);
+                        console.debug(`authentik/site-shell: error ${e}`);
                         a.href = `#${a.href}`;
                     }
                 });
                 // Create refresh buttons
-                this.querySelectorAll("[role=pb-refresh]").forEach((rt) => {
+                this.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
                     rt.addEventListener("click", () => {
                         this.loadContent();
                     });
@@ -108,7 +115,7 @@ export class SiteShell extends LitElement {
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">
                         <div class="pf-l-bullseye__item">
-                            <pb-spinner size=${SpinnerSize.Large}></pb-spinner>
+                            <ak-spinner size=${SpinnerSize.Large}></ak-spinner>
                         </div>
                     </div>
                 </div>`

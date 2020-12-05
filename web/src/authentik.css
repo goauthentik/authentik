@@ -1,0 +1,87 @@
+html {
+    --pf-c-nav__link--PaddingTop: 0.5rem;
+    --pf-c-nav__link--PaddingRight: 0.5rem;
+    --pf-c-nav__link--PaddingBottom: 0.5rem;
+    --pf-c-nav__link--PaddingLeft: 0.5rem;
+}
+
+/* Fix patternfly sidebar and header with open Modal */
+.pf-c-page__sidebar {
+    z-index: 0;
+}
+
+.pf-c-page__header {
+    z-index: 0;
+}
+
+/* Ensure card is displayed on small screens */
+.pf-c-login__main {
+    display: block;
+}
+
+/* login page's icons */
+.pf-c-login__main-footer-links-item-link img {
+    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+    width: 100%;
+    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+    height: 100%;
+    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+}
+
+/* fix multiple selects height */
+select[multiple] {
+    height: initial;
+}
+
+/* Form with user */
+.form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.form-control-static .left {
+    display: flex;
+    align-items: center;
+}
+.form-control-static img {
+    margin-right: var(--pf-global--spacer--xs);
+}
+.form-control-static a {
+    padding-top: var(--pf-global--spacer--xs);
+    padding-bottom: var(--pf-global--spacer--xs);
+    line-height: var(--pf-global--spacer--xl);
+}
+
+/* Static OTP Tokens, authentik.stages.otp_static */
+.ak-otp-tokens {
+    list-style: circle;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    margin-left: var(--pf-global--spacer--xs);
+}
+.ak-otp-tokens li {
+    font-size: var(--pf-global--FontSize--2xl);
+    font-family: monospace;
+}
+
+/* Fix pre elements within alerts */
+.pf-c-alert pre {
+    white-space: pre-wrap;
+}
+
+.pf-c-content h1 {
+    display: flex;
+    align-items: flex-start;
+}
+.pf-c-content h1 i {
+    font-style: normal;
+}
+.pf-c-content h1 :first-child {
+    margin-right: var(--pf-global--spacer--sm);
+}
+
+.subtext {
+    font-size: var(--pf-global--FontSize--sm);
+}

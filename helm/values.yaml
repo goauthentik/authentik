@@ -1,16 +1,16 @@
 ###################################
-# Values directly affecting passbook
+# Values directly affecting authentik
 ###################################
 image:
-  name: beryju/passbook
-  name_static: beryju/passbook-static
-  name_outposts: beryju/passbook # Prefix used for Outpost deployments, Outpost type and version is appended
+  name: beryju/authentik
+  name_static: beryju/authentik-static
+  name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
   tag: 0.12.11-stable
 
 serverReplicas: 1
 workerReplicas: 1
 
-# Enable the Kubernetes integration which lets passbook deploy outposts into kubernetes
+# Enable the Kubernetes integration which lets authentik deploy outposts into kubernetes
 kubernetesIntegration: true
 
 config:
@@ -38,11 +38,11 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - passbook.k8s.local
+    - authentik.k8s.local
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
-  #      - passbook.k8s.local
+  #      - authentik.k8s.local
 
 ###################################
 # Values controlling dependencies
@@ -52,9 +52,9 @@ install:
   postgresql: true
   redis: true
 
-# These values influence the bundled postgresql and redis charts, but are also used by passbook to connect
+# These values influence the bundled postgresql and redis charts, but are also used by authentik to connect
 postgresql:
-  postgresqlDatabase: passbook
+  postgresqlDatabase: authentik
 
 redis:
   cluster:

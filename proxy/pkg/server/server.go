@@ -80,7 +80,7 @@ func (s *Server) ServeHTTPS() {
 }
 
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/pbprox/ping" {
+	if r.URL.Path == "/akprox/ping" {
 		w.WriteHeader(204)
 		return
 	}

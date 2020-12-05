@@ -10,23 +10,23 @@ This update brings a lot of big features, such as:
 
 -   Proxy Provider
 
-    Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new passbook Proxy integrates more tightly with passbook via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on passbook Keypairs, and more.
+    Due to this new OAuth2 Provider, the Application Gateway Provider, now simply called "Proxy Provider" has been revamped as well. The new authentik Proxy integrates more tightly with authentik via the new Outposts system. The new proxy also supports multiple applications per proxy instance, can configure TLS based on authentik Keypairs, and more.
 
     See [Proxy](../providers/proxy.md)
 
 -   Outpost System
 
-    This is a new Object type, currently used only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with passbook.
+    This is a new Object type, currently used only by the Proxy Provider. It manages the creation and permissions of service accounts, which are used by the outposts to communicate with authentik.
 
     See [Outposts](../outposts/outposts.md)
 
 -   Flow Import/Export
 
-    Flows can now be imported and exported. This feature can be used as a backup system, or to share complex flows with other people. Example flows have also been added to the documentation to help you get going with passbook.
+    Flows can now be imported and exported. This feature can be used as a backup system, or to share complex flows with other people. Example flows have also been added to the documentation to help you get going with authentik.
 
 ## Under the hood
 
--   passbook now runs on Django 3.1 and Channels with complete ASGI enabled
+-   authentik now runs on Django 3.1 and Channels with complete ASGI enabled
 -   uwsgi has been replaced with Gunicorn and uvicorn
 -   Elastic APM has been replaced with Sentry Performance metrics
 -   Flow title is now configurable separately from the name
@@ -36,7 +36,7 @@ This update brings a lot of big features, such as:
 
 ### docker-compose
 
-The docker-compose file has been updated, please download the latest from `https://raw.githubusercontent.com/BeryJu/passbook/master/docker-compose.yml`.
+The docker-compose file has been updated, please download the latest from `https://raw.githubusercontent.com/BeryJu/authentik/master/docker-compose.yml`.
 By default, the new compose file uses a fixed version to prevent unintended updates.
 
 Before updating the file, stop all containers. Then download the file, pull the new containers and start the database.
@@ -68,7 +68,7 @@ error_reporting:
 
 ### Upgrading
 
-This upgrade only applies if you are upgrading from a running 0.9 instance. Passbook detects this on startup, and automatically executes this upgrade.
+This upgrade only applies if you are upgrading from a running 0.9 instance. Authentik detects this on startup, and automatically executes this upgrade.
 
 Because this upgrade brings the new OAuth2 Provider, the old providers will be lost in the process. Make sure to take note of the providers you want to bring over.
 

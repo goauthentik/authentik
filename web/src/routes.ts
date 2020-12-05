@@ -10,10 +10,10 @@ export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
     new Route(new RegExp("^/$")).redirect("/library/"),
     new Route(new RegExp("^#.*")).redirect("/library/"),
-    new Route(new RegExp("^/library/$"), html`<pb-library></pb-library>`),
-    new Route(new RegExp("^/administration/overview-ng/$"), html`<pb-admin-overview></pb-admin-overview>`),
-    new Route(new RegExp("^/applications/$"), html`<pb-application-list></pb-application-list>`),
+    new Route(new RegExp("^/library/$"), html`<ak-library></ak-library>`),
+    new Route(new RegExp("^/administration/overview-ng/$"), html`<ak-admin-overview></ak-admin-overview>`),
+    new Route(new RegExp("^/applications/$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
-        return html`<pb-application-view .args=${args}></pb-application-view>`;
+        return html`<ak-application-view .args=${args}></ak-application-view>`;
     }),
 ];

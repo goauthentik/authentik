@@ -8,27 +8,27 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/BeryJu/passbook/proxy/pkg/server"
+	"github.com/BeryJu/authentik/proxy/pkg/server"
 )
 
-const helpMessage = `passbook proxy
+const helpMessage = `authentik proxy
 
 Required environment variables:
- - PASSBOOK_HOST: URL to connect to (format "http://passbook.company")
- - PASSBOOK_TOKEN: Token to authenticate with
- - PASSBOOK_INSECURE: Skip SSL Certificate verification`
+ - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
+ - AUTHENTIK_TOKEN: Token to authenticate with
+ - AUTHENTIK_INSECURE: Skip SSL Certificate verification`
 
 // RunServer main entrypoint, runs the full server
 func RunServer() {
-	pbURL, found := os.LookupEnv("PASSBOOK_HOST")
+	pbURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
-		fmt.Println("env PASSBOOK_HOST not set!")
+		fmt.Println("env AUTHENTIK_HOST not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}
-	pbToken, found := os.LookupEnv("PASSBOOK_TOKEN")
+	pbToken, found := os.LookupEnv("AUTHENTIK_TOKEN")
 	if !found {
-		fmt.Println("env PASSBOOK_TOKEN not set!")
+		fmt.Println("env AUTHENTIK_TOKEN not set!")
 		fmt.Println(helpMessage)
 		os.Exit(1)
 	}

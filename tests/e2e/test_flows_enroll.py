@@ -8,13 +8,13 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-from passbook.core.models import User
-from passbook.flows.models import Flow, FlowDesignation, FlowStageBinding
-from passbook.stages.email.models import EmailStage, EmailTemplates
-from passbook.stages.identification.models import IdentificationStage
-from passbook.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from passbook.stages.user_login.models import UserLoginStage
-from passbook.stages.user_write.models import UserWriteStage
+from authentik.core.models import User
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.stages.email.models import EmailStage, EmailTemplates
+from authentik.stages.identification.models import IdentificationStage
+from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
+from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_write.models import UserWriteStage
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -101,8 +101,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pb-sidebar")))
-        self.driver.get(self.shell_url("passbook_core:user-settings"))
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
+        self.driver.get(self.shell_url("authentik_core:user-settings"))
 
         user = User.objects.get(username="foo")
         self.assertEqual(user.username, "foo")
@@ -196,7 +196,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         # We're now logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pb-sidebar")))
-        self.driver.get(self.shell_url("passbook_core:user-settings"))
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
+        self.driver.get(self.shell_url("authentik_core:user-settings"))
 
         self.assert_user(User.objects.get(username="foo"))

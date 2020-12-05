@@ -12,21 +12,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog import get_logger
 
-from passbook.core.models import Application
-from passbook.crypto.models import CertificateKeyPair
-from passbook.flows.models import Flow
-from passbook.policies.expression.models import ExpressionPolicy
-from passbook.policies.models import PolicyBinding
-from passbook.providers.oauth2.constants import (
+from authentik.core.models import Application
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding
+from authentik.providers.oauth2.constants import (
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from passbook.providers.oauth2.generators import (
+from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from passbook.providers.oauth2.models import (
+from authentik.providers.oauth2.models import (
     ClientTypes,
     OAuth2Provider,
     ResponseTypes,

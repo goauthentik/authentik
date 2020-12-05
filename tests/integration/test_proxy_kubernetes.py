@@ -2,11 +2,11 @@
 import yaml
 from django.test import TestCase
 
-from passbook.flows.models import Flow
-from passbook.outposts.apps import PassbookOutpostConfig
-from passbook.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
-from passbook.providers.proxy.controllers.kubernetes import ProxyKubernetesController
-from passbook.providers.proxy.models import ProxyProvider
+from authentik.flows.models import Flow
+from authentik.outposts.apps import AuthentikOutpostConfig
+from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
+from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class TestControllers(TestCase):
@@ -14,7 +14,7 @@ class TestControllers(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        PassbookOutpostConfig.init_local_connection()
+        AuthentikOutpostConfig.init_local_connection()
 
     def test_kubernetes_controller_static(self):
         """Test Kubernetes Controller"""

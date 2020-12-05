@@ -6,7 +6,7 @@
                 "pk": "59a576ce-2f23-4a63-b63a-d18dc7e550f5",
                 "slug": "default-unenrollment-flow"
             },
-            "model": "passbook_flows.flow",
+            "model": "authentik_flows.flow",
             "attrs": {
                 "name": "Default unenrollment flow",
                 "title": "Delete your account",
@@ -18,7 +18,7 @@
                 "pk": "c62ac2a4-2735-4a0f-abd0-8523d68c1209",
                 "name": "default-unenrollment-user-delete"
             },
-            "model": "passbook_stages_user_delete.userdeletestage",
+            "model": "authentik_stages_user_delete.userdeletestage",
             "attrs": {}
         },
         {
@@ -28,7 +28,7 @@
                 "stage": "c62ac2a4-2735-4a0f-abd0-8523d68c1209",
                 "order": 0
             },
-            "model": "passbook_flows.flowstagebinding",
+            "model": "authentik_flows.flowstagebinding",
             "attrs": {
                 "re_evaluate_policies": false
             }

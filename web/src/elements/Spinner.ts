@@ -10,7 +10,7 @@ export enum SpinnerSize {
     XLarge = "pf-m-xl",
 }
 
-@customElement("pb-spinner")
+@customElement("ak-spinner")
 export class Spinner extends LitElement {
     @property()
     size: SpinnerSize = SpinnerSize.Medium;

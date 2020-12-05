@@ -1,20 +1,11 @@
-@font-face {
-    font-family: "DIN 1451 Std";
-    src: url("/fonts/DINEngschriftStd.woff2") format("woff2"),
-        url("/fonts/DINEngschriftStd.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
-    --ifm-color-primary: #3578e5;
-    --ifm-color-primary-dark: #1d68e1;
-    --ifm-color-primary-darker: #1b62d4;
-    --ifm-color-primary-darkest: #1751af;
-    --ifm-color-primary-light: #4e89e8;
-    --ifm-color-primary-lighter: #5a91ea;
-    --ifm-color-primary-lightest: #80aaef;
+    --ifm-color-primary: #fd4b2d;
+    --ifm-color-primary-dark: #fd320f;
+    --ifm-color-primary-darker: #fb2602;
+    --ifm-color-primary-darkest: #cf1f02;
+    --ifm-color-primary-light: #fd644b;
+    --ifm-color-primary-lighter: #fd7159;
+    --ifm-color-primary-lightest: #fe9786;
     --ifm-navbar-link-hover-color: var(--ifm-navbar-link-color);
 }
 
@@ -28,9 +19,7 @@
 }
 
 .navbar__title {
-    font-family: "DIN 1451 Std";
-    font-size: 2em;
-    margin-top: 2px;
+    display: none;
 }
 
 .hero--primary {

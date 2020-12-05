@@ -1,0 +1,32 @@
+{% extends 'login/base_full.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+{{ block.super }}
+<style>
+.ak-loading,
+.pf-c-login__main >iframe {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.ak-hidden {
+    display: none
+}
+.pf-c-background-image::before {
+    background-image: url("{{ background_url }}");
+    background-position: center;
+}
+</style>
+{% endblock %}
+
+{% block main_container %}
+<ak-flow-shell-card
+    class="pf-c-login__main"
+    flowBodyUrl="{{ exec_url }}">
+</ak-flow-shell-card>
+{% endblock %}

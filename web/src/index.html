@@ -3,23 +3,23 @@
     <head>
         <link
             rel="preload"
-            href="/static/passbook/fonts/DINEngschriftStd.woff2"
+            href="/static/authentik/fonts/DINEngschriftStd.woff2"
             as="font"
             type="font/woff2"
             crossorigin
         />
         <link
             rel="preload"
-            href="/static/passbook/fonts/DINEngschriftStd.woff"
+            href="/static/authentik/fonts/DINEngschriftStd.woff"
             as="font"
             type="font/woff"
             crossorigin
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <title>passbook</title>
-        <link rel="icon" type="image/png" href="/static/dist/assets/images/logo.png" />
-        <link rel="shortcut icon" type="image/png" href="/static/dist/assets/images/logo.png" />
+        <title>authentik</title>
+        <link rel="icon" type="image/png" href="/static/dist/assets/icons/icon.png" />
+        <link rel="shortcut icon" type="image/png" href="/static/dist/assets/icons/icon.png" />
         <link
             rel="stylesheet"
             type="text/css"
@@ -35,24 +35,24 @@
             type="text/css"
             href="/static/node_modules/%40fortawesome/fontawesome-free/css/fontawesome.min.css"
         />
-        <link rel="stylesheet" type="text/css" href="/static/passbook/passbook.css" />
+        <link rel="stylesheet" type="text/css" href="/static/authentik/authentik.css" />
         <script src="/static/dist/main.js" type="module"></script>
     </head>
     <body>
-        <pb-messages url="/api/v2beta/root/messages/"></pb-messages>
+        <ak-messages url="/api/v2beta/root/messages/"></ak-messages>
         <div class="pf-c-page">
             <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content"
                 >Skip to content</a
             >
-            <pb-sidebar class="pf-c-page__sidebar"> </pb-sidebar>
-            <pb-router-outlet
+            <ak-sidebar class="pf-c-page__sidebar"> </ak-sidebar>
+            <ak-router-outlet
                 role="main"
                 class="pf-c-page__main"
                 tabindex="-1"
                 id="main-content"
                 defaultUrl="/library/"
             >
-            </pb-router-outlet>
+            </ak-router-outlet>
         </div>
     </body>
 </html>

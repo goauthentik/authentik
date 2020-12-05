@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """This file needs to be run from the root of the project to correctly
-import passbook. This is done by the dockerfile."""
+import authentik. This is done by the dockerfile."""
 from json import dumps
 from sys import stderr
 from time import sleep, time
@@ -9,7 +9,7 @@ from psycopg2 import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
 
-from passbook.lib.config import CONFIG
+from authentik.lib.config import CONFIG
 
 
 def j_print(event: str, log_level: str = "info", **kwargs):

@@ -12,10 +12,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
-from passbook.flows.models import Flow, FlowStageBinding
-from passbook.stages.otp_static.models import OTPStaticStage
-from passbook.stages.otp_time.models import OTPTimeStage
-from passbook.stages.otp_validate.models import OTPValidateStage
+from authentik.flows.models import Flow, FlowStageBinding
+from authentik.stages.otp_static.models import OTPStaticStage
+from authentik.stages.otp_time.models import OTPTimeStage
+from authentik.stages.otp_validate.models import OTPValidateStage
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -49,7 +49,7 @@ class TestFlowsOTP(SeleniumTestCase):
         totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
         self.driver.find_element(By.ID, "id_code").send_keys(totp.token())
         self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
         self.assert_user(USER())
 
     @retry()
@@ -63,12 +63,12 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
         self.assert_user(USER())
 
         self.driver.get(
             self.url(
-                "passbook_flows:configure",
+                "authentik_flows:configure",
                 stage_uuid=OTPTimeStage.objects.first().stage_uuid,
             )
         )
@@ -106,12 +106,12 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("passbook_core:overview"))
+        self.wait_for_url(self.shell_url("authentik_core:overview"))
         self.assert_user(USER())
 
         self.driver.get(
             self.url(
-                "passbook_flows:configure",
+                "authentik_flows:configure",
                 stage_uuid=OTPStaticStage.objects.first().stage_uuid,
             )
         )
@@ -120,7 +120,7 @@ class TestFlowsOTP(SeleniumTestCase):
         destination_url = self.driver.current_url
 
         token = self.driver.find_element(
-            By.CSS_SELECTOR, ".pb-otp-tokens li:nth-child(1)"
+            By.CSS_SELECTOR, ".ak-otp-tokens li:nth-child(1)"
         ).text
 
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()

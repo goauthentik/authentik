@@ -7,7 +7,7 @@ import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
 import { ColorStyles, PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
 
-@customElement("pb-spinner-button")
+@customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
     @property({type: Boolean})
     isRunning = false;
