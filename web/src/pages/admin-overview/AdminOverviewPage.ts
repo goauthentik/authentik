@@ -81,7 +81,16 @@ export class AdminOverviewPage extends LitElement {
                     <ak-top-applications-table></ak-top-applications-table>
                 </ak-aggregate-card>
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
-
+                    ${this.data ?
+        this.data?.worker_count < 1 ?
+            html`<p class="ak-aggregate-card">
+                                    <i class="fa fa-exclamation-triangle"></i> ${this.data?.worker_count}
+                                </p>
+                                <p class="subtext">${gettext("No workers connected.")}</p>` :
+            html`<p class="ak-aggregate-card">
+                                    <i class="fa fa-check-circle"></i> ${this.data?.worker_count}
+                                </p>`
+        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
                 </ak-aggregate-card>
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
                     ${this.data ?
