@@ -109,3 +109,7 @@ select[multiple] {
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
 }
+
+.subtext {
+    font-size: var(--pf-global--FontSize--sm);
+}

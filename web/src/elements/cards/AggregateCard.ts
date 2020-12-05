@@ -20,9 +20,6 @@ export class AggregateCard extends LitElement {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;
             }
-            .subtext {
-                font-size: var(--pf-global--FontSize--sm);
-            }
         `]);
     }
 
