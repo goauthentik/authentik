@@ -102,7 +102,7 @@ export class ModalButton extends LitElement {
                             this.open = false;
                             console.debug("authentik/modalbutton: successful submit");
                             this.dispatchEvent(
-                                new CustomEvent("hashchange", {
+                                new CustomEvent("ak-refresh", {
                                     bubbles: true,
                                 })
                             );

@@ -45,6 +45,13 @@ export class SiteShell extends LitElement {
         ];
     }
 
+    constructor() {
+        super();
+        this.addEventListener("ak-refresh", () => {
+            this.loadContent();
+        });
+    }
+
     loadContent(): void {
         if (!this._url) {
             return;

@@ -21,6 +21,13 @@ export abstract class Table<T> extends LitElement {
         return COMMON_STYLES;
     }
 
+    constructor() {
+        super();
+        this.addEventListener("ak-refresh", () => {
+            this.fetch();
+        });
+    }
+
     public fetch(): void {
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
