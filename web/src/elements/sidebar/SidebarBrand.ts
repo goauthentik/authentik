@@ -38,7 +38,7 @@ export class SidebarBrand extends LitElement {
         ];
     }
 
-    firstUpdated() {
+    firstUpdated(): void {
         Config.get().then((c) => (this.config = c));
     }
 
