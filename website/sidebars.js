@@ -99,6 +99,7 @@ module.exports = {
                     label: "as Provider",
                     items: [
                         "integrations/services/aws/index",
+                        "integrations/services/awx-tower/index",
                         "integrations/services/gitlab/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
@@ -106,7 +107,6 @@ module.exports = {
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",
                         "integrations/services/tautulli/index",
-                        "integrations/services/tower-awx/index",
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/vmware-vcenter/index",
                     ],
