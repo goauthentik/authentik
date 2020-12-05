@@ -1,7 +1,9 @@
-<img src="website/static/img/logo.svg" height="50" alt="authentik logo"><img src="website/static/img/brand_inverted.svg" height="50" alt="authentik">
+<img src="icons/icon_top_brand.svg" height="250" alt="authentik logo">
+
+---
 
 [![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/1?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
-![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/1?compact_message&style=flat-square)
+[![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/1?compact_message&style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/authentik?style=flat-square)](https://codecov.io/gh/BeryJu/authentik)
 ![Docker pulls](https://img.shields.io/docker/pulls/beryju/authentik.svg?style=flat-square)
 ![Latest version](https://img.shields.io/docker/v/beryju/authentik?sort=semver&style=flat-square)

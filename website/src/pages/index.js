@@ -84,7 +84,7 @@ function Home() {
                             </div>
                         </div>
                         <div className="col text--center hero_image">
-                            <img alt="authentik logo" src="/img/logo.png" />
+                            <img alt="authentik logo" src={useBaseUrl("img/icon_top_brand.svg")} />
                         </div>
                     </div>
                 </div>
@@ -92,14 +92,16 @@ function Home() {
             <main>
                 <section className={styles.features}>
                     <div className="container">
-                        <div className="row">
+                        <div className={clsx("row", styles.rowFeatures)}>
                             {features.map((props, idx) => (
                                 <Feature key={idx} {...props} />
                             ))}
                         </div>
                         <div className="row">
                             <div className="col col--5">
-                                <div></div>
+                                <div>
+                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_apps.png')} alt="library screenshot"/>
+                                </div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>What is authentik?</h2>
@@ -112,6 +114,25 @@ function Home() {
                                     signup/recovery/etc in your application, so
                                     you don't have to deal with it.
                                 </p>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col col--5 col--offset-2 padding-vert--xl">
+                                <h2>Upmost flexibility</h2>
+                                <p>
+                                    You can adopt authentik to your environment,
+                                    regardless of your requirements. Need an Active-
+                                    Directory integrated SSO Provider? Do you want
+                                    to implement a custom enrollment process for your
+                                    customers? Are you developing an application and
+                                    don't want to deal with User verification and recovery?
+                                    authentik can do all of that, and more!
+                                </p>
+                            </div>
+                            <div className="col col--5">
+                                <div>
+                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_admin.png')} alt="library screenshot" />
+                                </div>
                             </div>
                         </div>
                     </div>

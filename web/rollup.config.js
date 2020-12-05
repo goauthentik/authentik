@@ -16,6 +16,7 @@ const resources = [
     { src: "src/index.html", dest: "dist" },
     { src: "src/authentik.css", dest: "dist" },
     { src: "src/assets/*", dest: "dist/assets" },
+    { src: "../icons/*", dest: "dist/assets/icons" },
 ];
 
 export default [

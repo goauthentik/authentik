@@ -28,8 +28,7 @@ authentik:
   avatars: gravatar  # gravatar or none
   branding:
     title: authentik
-    title_show: true
-    logo: /static/dist/assets/images/logo.svg
+    logo: /static/dist/assets/icons/icon_left_brand.svg
   # Optionally add links to the footer on the login page
   footer_links:
     - name: Documentation

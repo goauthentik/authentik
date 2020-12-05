@@ -1,36 +1,8 @@
-@font-face {
-    font-family: "DIN 1451 Std";
-    src: url("assets/fonts/DINEngschriftStd.woff2") format("woff2"),
-        url("assets/fonts/DINEngschriftStd.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 html {
     --pf-c-nav__link--PaddingTop: 0.5rem;
     --pf-c-nav__link--PaddingRight: 0.5rem;
     --pf-c-nav__link--PaddingBottom: 0.5rem;
     --pf-c-nav__link--PaddingLeft: 0.5rem;
-}
-
-.ak-brand {
-    font-family: "DIN 1451 Std";
-    font-size: 4em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 0.5em;
-    color: var(--pf-global--Color--light-200);
-}
-
-.ak-brand > a:hover {
-    text-decoration: none;
-}
-
-.ak-brand > img {
-    max-height: 68px;
-    margin-right: 0.5em;
 }
 
 /* Fix patternfly sidebar and header with open Modal */

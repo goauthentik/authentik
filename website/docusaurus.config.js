@@ -4,7 +4,7 @@ module.exports = {
     url: "https://goauthentik.io",
     baseUrl: "/",
     onBrokenLinks: "throw",
-    favicon: "img/logo.png",
+    favicon: "img/icon.png",
     organizationName: "BeryJu",
     projectName: "authentik",
     themeConfig: {
@@ -12,7 +12,7 @@ module.exports = {
             title: "authentik",
             logo: {
                 alt: "authentik logo",
-                src: "img/logo.svg",
+                src: "img/icon_left_brand.svg",
             },
             hideOnScroll: true,
             items: [

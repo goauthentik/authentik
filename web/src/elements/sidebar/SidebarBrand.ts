@@ -6,7 +6,7 @@ import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { Config } from "../../api/config";
 
 export const DefaultConfig: Config = {
-    branding_logo: " /static/dist/assets/images/logo.svg",
+    branding_logo: " /static/dist/assets/icons/icon_left_brand.svg",
     branding_title: "authentik",
 
     error_reporting_enabled: false,
@@ -30,40 +30,22 @@ export class SidebarBrand extends LitElement {
                     align-items: center;
                     height: 82px;
                 }
-                .pf-c-brand {
-                    font-family: "DIN 1451 Std";
-                    line-height: 60px;
-                    font-size: 3rem;
-                    color: var(--pf-c-nav__link--m-current--Color);
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: center;
-                    width: 100%;
-                    margin: 0 1rem;
-                }
                 .pf-c-brand img {
-                    max-height: 60px;
-                    margin-right: 8px;
+                    width: 100%;
+                    padding: 0 .5rem;
                 }
             `,
         ];
     }
 
-    constructor() {
-        super();
+    firstUpdated() {
         Config.get().then((c) => (this.config = c));
     }
 
     render(): TemplateResult {
-        if (!this.config) {
-            return html``;
-        }
         return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand ak-brand">
                 <img src="${this.config.branding_logo}" alt="authentik icon" loading="lazy" />
-                ${this.config.branding_title
-        ? html`<span>${this.config.branding_title}</span>`
-        : ""}
             </div>
         </a>`;
     }
