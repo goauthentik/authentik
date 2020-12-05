@@ -62,7 +62,7 @@ def avatar(user: User) -> str:
     """Get avatar, depending on authentik.avatar setting"""
     mode = CONFIG.raw.get("authentik").get("avatars")
     if mode == "none":
-        return static("authentik/user-default.png")
+        return static("authentik/user_default.png")
     if mode == "gravatar":
         parameters = [
             ("s", "158"),
