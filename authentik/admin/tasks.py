@@ -15,9 +15,11 @@ VERSION_CACHE_TIMEOUT = 2 * 60 * 60  # 2 hours
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
     try:
-        data = get(
+        response = get(
             "https://api.github.com/repos/beryju/authentik/releases/latest"
-        ).json()
+        )
+        response.raise_for_status()
+        data = response.json()
         tag_name = data.get("tag_name")
         cache.set(VERSION_CACHE_KEY, tag_name.split("/")[1], VERSION_CACHE_TIMEOUT)
         self.set_status(
