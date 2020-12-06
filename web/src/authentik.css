@@ -104,6 +104,9 @@ select[multiple] {
     .pf-c-page {
         --pf-c-page--BackgroundColor: var(--ak-dark-background);
     }
+    .pf-c-title {
+        color: var(--ak-dark-foreground);
+    }
     /* Header sections */
     .pf-c-page__main-section {
         background-color: var(--ak-dark-background);
@@ -118,7 +121,8 @@ select[multiple] {
     .pf-c-card {
         --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
     }
-    .pf-c-card__header-main {
+    .pf-c-card__header-main,
+    .pf-c-card__body {
         color: var(--ak-dark-foreground);
     }
     .pf-c-toolbar {
@@ -145,6 +149,9 @@ select[multiple] {
     .pf-c-button.pf-m-control {
         --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter) var(--ak-dark-background-lighter) var(--pf-c-button--m-control--after--BorderBottomColor) var(--ak-dark-background-lighter);
         background-color: var(--ak-dark-background-light);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-form__label-text {
         color: var(--ak-dark-foreground);
     }
     .pf-c-check__label {
