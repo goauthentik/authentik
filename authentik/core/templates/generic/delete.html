@@ -28,16 +28,14 @@
                             {% endblocktrans %}
                         </p>
                         <input type="hidden" name="confirmdelete" value="yes">
-                        <div class="pf-c-form__group pf-m-action">
-                            <div class="pf-c-form__actions">
-                                <input class="pf-c-button pf-m-danger" type="submit" value="{% trans 'Delete' %}" />
-                                <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Back" %}</a>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<footer class="pf-c-modal-box__footer">
+    <input class="pf-c-button pf-m-danger" type="submit" value="{% trans 'Delete' %}" />
+    <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Back" %}</a>
+</footer>
 {% endblock %}
