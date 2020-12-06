@@ -65,7 +65,7 @@ class AuthentikOutpostConfig(AppConfig):
         socket = Path(unix_socket_path)
         if socket.exists() and access(socket, R_OK):
             LOGGER.debug("Detected local docker socket")
-            if not DockerServiceConnection.objects.filter(local=True).exists():
+            if len(DockerServiceConnection.objects.filter(local=True)) == 0:
                 LOGGER.debug("Created Service Connection for docker")
                 DockerServiceConnection.objects.create(
                     name="Local Docker connection",
