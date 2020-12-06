@@ -33,7 +33,7 @@ export function truncate(input?: string, max = 10): string {
 }
 
 export function htmlFromString(...strings: string[]): TemplateResult {
-    return html({ raw: strings, ...strings } as TemplateStringsArray);
+    return html(<TemplateStringsArray><unknown>strings);
 }
 
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
