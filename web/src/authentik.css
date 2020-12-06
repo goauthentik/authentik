@@ -85,3 +85,77 @@ select[multiple] {
 .subtext {
     font-size: var(--pf-global--FontSize--sm);
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ak-dark-foreground: #fafafa;
+        --ak-dark-foreground-darker: #bebebe;
+        --ak-dark-foreground-link: #5a5cb9;
+        --ak-dark-background: #18191a;
+        --ak-dark-background-darker: #000000;
+        --ak-dark-background-light: #1c1e21;
+        --ak-dark-background-lighter: #2b2e33;
+
+        --pf-global--Color--100: var(--ak-dark-foreground);
+        --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
+        --pf-global--link--Color: var(--ak-dark-foreground-link);
+    }
+    /* Global page background colour */
+    .pf-c-page {
+        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+    }
+    /* Header sections */
+    .pf-c-page__main-section {
+        background-color: var(--ak-dark-background);
+    }
+    .pf-c-page__main-section.pf-m-light {
+        background-color: var(--ak-dark-background-light);
+    }
+    .pf-c-content {
+        color: var(--ak-dark-foreground);
+    }
+    /* Card */
+    .pf-c-card {
+        --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
+    }
+    .pf-c-card__header-main {
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-toolbar {
+        --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
+    }
+    .pf-c-pagination.pf-m-bottom {
+        background-color: var(--ak-dark-background-light);
+    }
+    /* table */
+    .pf-c-table {
+        --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
+        --pf-c-table--cell--Color: var(--ak-dark-foreground);
+    }
+    /* inputs */
+    .pf-c-form-control {
+        --pf-c-form-control--BorderTopColor: var(--ak-dark-background-lighter);
+        --pf-c-form-control--BorderRightColor: var(--ak-dark-background-lighter);
+        --pf-c-form-control--BorderLeftColor: var(--ak-dark-background-lighter);
+        --pf-global--BackgroundColor--100: transparent;
+        background-color: var(--ak-dark-background-light);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-button.pf-m-control {
+        --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter) var(--ak-dark-background-lighter) var(--pf-c-button--m-control--after--BorderBottomColor) var(--ak-dark-background-lighter);
+        background-color: var(--ak-dark-background-light);
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-check__label {
+        color: var(--ak-dark-foreground);
+    }
+    /* inputs help text */
+    .pf-c-form__helper-text {
+        color: var(--ak-dark-foreground);
+    }
+    /* modal */
+    .pf-c-modal-box__footer {
+        background-color: var(--ak-dark-background-light);
+    }
+}
