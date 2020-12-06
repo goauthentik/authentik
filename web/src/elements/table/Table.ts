@@ -48,7 +48,7 @@ export abstract class Table<T> extends LitElement {
                                     <span class="pf-c-spinner__tail-ball"></span>
                                 </span>
                             </div>
-                            <h2 class="pf-c-title pf-m-lg">Loading</h2>
+                            <h2 class="pf-c-title pf-m-lg">${gettext("Loading")}</h2>
                         </div>
                     </div>
                 </div>
@@ -71,6 +71,14 @@ export abstract class Table<T> extends LitElement {
         });
     }
 
+    renderToolbar(): TemplateResult {
+        return html`<button
+            @click=${() => { this.fetch(); }}
+            class="pf-c-button pf-m-primary">
+            ${gettext("Refresh")}
+        </button>`;
+    }
+
     renderTable(): TemplateResult {
         if (!this.data) {
             this.fetch();
@@ -78,12 +86,7 @@ export abstract class Table<T> extends LitElement {
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
                     <div class="pf-c-toolbar__bulk-select">
-                        <slot name="create-button"></slot>
-                        <button
-                            @click=${() => {this.fetch();}}
-                            class="pf-c-button pf-m-primary">
-                            ${gettext("Refresh")}
-                        </button>
+                        ${this.renderToolbar()}
                     </div>
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"

@@ -48,6 +48,18 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             `,
         ];
     }
+
+    renderToolbar(): TemplateResult {
+        return html`
+        <ak-modal-button slot="create-button" href="/administration/policies/bindings/create/?target=${this.target}">
+            <ak-spinner-button slot="trigger" class="pf-m-primary">
+                ${gettext("Create")}
+            </ak-spinner-button>
+            <div slot="modal"></div>
+        </ak-modal-button>
+        ${super.renderToolbar()}
+        `
+    }
 }
 
 @customElement("ak-application-view")
@@ -108,7 +120,8 @@ export class ApplicationViewPage extends LitElement {
                 </section>
                 <div slot="page-2" data-tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <ak-bound-policies-list .target=${this.application.pk}></ak-bound-policies-list>
+                        <ak-bound-policies-list .target=${this.application.pk}>
+                        </ak-bound-policies-list>
                     </div>
                 </div>
             </ak-tabs>`;

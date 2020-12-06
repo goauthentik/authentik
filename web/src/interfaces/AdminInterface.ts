@@ -66,16 +66,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
             },
             {
                 name: "Policies",
-                children: [
-                    {
-                        name: "Policies",
-                        path: ["/administration/policies/"],
-                    },
-                    {
-                        name: "Bindings",
-                        path: ["/administration/policies/bindings/"],
-                    },
-                ],
+                path: ["/administration/policies/"],
             },
             {
                 name: "Property Mappings",
