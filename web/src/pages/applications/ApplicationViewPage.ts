@@ -8,6 +8,8 @@ import { Table } from "../../elements/table/Table";
 
 import "../../elements/Tabs";
 import "../../elements/AdminLoginsChart";
+import "../../elements/buttons/ModalButton";
+import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -50,15 +52,16 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
+        const createUrl = `/administration/policies/bindings/create/?target=${this.target}`;
         return html`
-        <ak-modal-button slot="create-button" href="/administration/policies/bindings/create/?target=${this.target}">
+        <ak-modal-button href=${createUrl}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
             <div slot="modal"></div>
         </ak-modal-button>
         ${super.renderToolbar()}
-        `
+        `;
     }
 }
 
