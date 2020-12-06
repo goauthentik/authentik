@@ -1,6 +1,6 @@
 import { DefaultClient, PBResponse } from "./client";
 
-let me: User;
+let _globalMePromise: Promise<User>;
 
 export class User {
     pk: number;
@@ -15,10 +15,10 @@ export class User {
     }
 
     static me(): Promise<User> {
-        if (me) {
-            return Promise.resolve<User>(me);
+        if (!_globalMePromise) {
+            _globalMePromise = DefaultClient.fetch<User>(["core", "users", "me"]);
         }
-        return DefaultClient.fetch<User>(["core", "users", "me"]).then(u => me = u);
+        return _globalMePromise;
     }
 
     static count(): Promise<number> {
