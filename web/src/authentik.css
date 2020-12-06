@@ -158,4 +158,8 @@ select[multiple] {
     .pf-c-modal-box__footer {
         background-color: var(--ak-dark-background-light);
     }
+    /* sidebar */
+    .pf-c-nav {
+        background-color: var(--ak-dark-background-light);
+    }
 }
