@@ -8278,6 +8278,12 @@ definitions:
         title: Case insensitive matching
         description: When enabled, user fields are matched regardless of their casing.
         type: boolean
+      show_matched_user:
+        title: Show matched user
+        description: When a valid username/email has been entered, and this option
+          is enabled, the user's username and avatar will be shown. Otherwise, the
+          text that the user entered will be shown
+        type: boolean
       template:
         title: Template
         type: string

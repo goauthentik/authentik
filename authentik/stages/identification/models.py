@@ -45,6 +45,16 @@ class IdentificationStage(Stage):
             "When enabled, user fields are matched regardless of their casing."
         ),
     )
+    show_matched_user = models.BooleanField(
+        default=True,
+        help_text=_(
+            (
+                "When a valid username/email has been entered, and this option is enabled, "
+                "the user's username and avatar will be shown. Otherwise, the text that the user "
+                "entered will be shown"
+            )
+        ),
+    )
 
     enrollment_flow = models.ForeignKey(
         Flow,

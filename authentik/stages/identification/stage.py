@@ -11,7 +11,7 @@ from structlog import get_logger
 
 from authentik.core.models import Source, User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import StageView
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.forms import IdentificationForm
 from authentik.stages.identification.models import IdentificationStage
@@ -84,10 +84,18 @@ class IdentificationStageView(FormView, StageView):
 
     def form_valid(self, form: IdentificationForm) -> HttpResponse:
         """Form data is valid"""
-        pre_user = self.get_user(form.cleaned_data.get("uid_field"))
+        user_identifier = form.cleaned_data.get("uid_field")
+        pre_user = self.get_user(user_identifier)
         if not pre_user:
             LOGGER.debug("invalid_login")
             messages.error(self.request, _("Failed to authenticate."))
             return self.form_invalid(form)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
+
+        current_stage: IdentificationStage = self.executor.current_stage
+        if not current_stage.show_matched_user:
+            self.executor.plan.context[
+                PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+            ] = user_identifier
+
         return self.executor.stage_ok()
