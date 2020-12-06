@@ -18,6 +18,7 @@ register = template.Library()
 LOGGER = get_logger()
 
 GRAVATAR_URL = "https://secure.gravatar.com"
+DEFAULT_AVATAR = static("authentik/user_default.png")
 
 
 @register.simple_tag(takes_context=True)
@@ -62,7 +63,7 @@ def avatar(user: User) -> str:
     """Get avatar, depending on authentik.avatar setting"""
     mode = CONFIG.raw.get("authentik").get("avatars")
     if mode == "none":
-        return static("authentik/user_default.png")
+        return DEFAULT_AVATAR
     if mode == "gravatar":
         parameters = [
             ("s", "158"),

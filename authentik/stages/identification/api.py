@@ -16,6 +16,7 @@ class IdentificationStageSerializer(ModelSerializer):
             "name",
             "user_fields",
             "case_insensitive_matching",
+            "show_matched_user",
             "template",
             "enrollment_flow",
             "recovery_flow",
