@@ -3,7 +3,7 @@ version: '3.7'
 services:
   postgresql:
     container_name: postgres
-    image: postgres:11
+    image: docker.beryju.org/proxy/library/postgres:11
     volumes:
     - db-data:/var/lib/postgresql/data
     environment:
@@ -15,7 +15,7 @@ services:
     restart: always
   redis:
     container_name: redis
-    image: redis
+    image: docker.beryju.org/proxy/library/redis
     ports:
     - 6379:6379
     restart: always

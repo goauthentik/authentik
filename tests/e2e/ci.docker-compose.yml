@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   chrome:
-    image: selenium/standalone-chrome:3.141
+    image: docker.beryju.org/proxy/selenium/standalone-chrome:3.141
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
