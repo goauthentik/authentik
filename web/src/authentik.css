@@ -169,4 +169,14 @@ select[multiple] {
     .pf-c-nav {
         background-color: var(--ak-dark-background-light);
     }
+    /* flows */
+    .pf-c-login__main {
+        background-color: var(--ak-dark-background);
+    }
+    .pf-c-login__main-footer-links-item-link > img {
+        filter: invert(1);
+    }
+    .form-control-static {
+        color: var(--ak-dark-foreground);
+    }
 }
