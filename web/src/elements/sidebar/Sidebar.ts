@@ -5,6 +5,8 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+// @ts-ignore
+import AKGlobal from "../../authentik.css";
 
 import { until } from "lit-html/directives/until";
 
@@ -31,6 +33,7 @@ export class Sidebar extends LitElement {
             GlobalsStyle,
             PageStyle,
             NavStyle,
+            AKGlobal,
             css`
                 .pf-c-nav__list .sidebar-brand {
                     max-height: 82px;

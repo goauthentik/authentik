@@ -36,24 +36,34 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
+                    <th role="columnheader"></th>
                     <th role="columnheader" scope="col">{% trans 'Name' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Slug' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Provider' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Provider Type' %}</th>
-                    <th role="cell"></th>
+                    <th role="columnheader"></th>
                 </tr>
             </thead>
             <tbody role="rowgroup">
                 {% for application in object_list %}
                 <tr role="row">
-                    <th role="columnheader">
+                    <td role="cell" {% if application.meta_icon %} style="vertical-align: bottom;" {% endif %}>
+                        {% if application.meta_icon %}
+                        <img class="app-icon pf-c-avatar" src="{{ application.meta_icon.url }}" alt="{% trans 'Application Icon' %}">
+                        {% else %}
+                        <i class="pf-icon pf-icon-arrow"></i>
+                        {% endif %}
+                    </td>
+                    <td role="cell">
                         <a href="/applications/{{ application.slug }}/">
-                            <div>{{ application.name }}</div>
+                            <div>
+                                {{ application.name }}
+                            </div>
                             {% if application.meta_publisher %}
                             <small>{{ application.meta_publisher }}</small>
                             {% endif %}
                         </a>
-                    </th>
+                    </td>
                     <td role="cell">
                         <code>{{ application.slug }}</span>
                     </td>

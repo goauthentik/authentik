@@ -16,9 +16,13 @@ export class AggregateCard extends LitElement {
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat([css`
+            .pf-c-card.pf-c-card-aggregate {
+                height: 100%;
+            }
             .center-value {
                 font-size: var(--pf-global--icon--FontSize--lg);
                 text-align: center;
+                color: var(--pf-global--Color--100);
             }
         `]);
     }
