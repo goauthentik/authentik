@@ -50,7 +50,7 @@ class TestProviderProxy(SeleniumTestCase):
             image=f"docker.beryju.org/proxy/beryju/authentik-proxy:{__version__}",
             detach=True,
             network_mode="host",
-            auto_remove=True,
+            # auto_remove=True,
             environment={
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,

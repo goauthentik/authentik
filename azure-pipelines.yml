@@ -285,13 +285,13 @@ stages:
             inputs:
               script: |
                 pipenv run make test-e2e
-          - task: CmdLine@2
-            condition: always()
-            displayName: Cleanup
-            inputs:
-              script: |
-                docker stop $(docker ps -aq)
-                docker container prune -f
+          # - task: CmdLine@2
+          #   condition: always()
+          #   displayName: Cleanup
+          #   inputs:
+          #     script: |
+          #       docker stop $(docker ps -aq)
+          #       docker container prune -f
           - task: CmdLine@2
             displayName: Prepare unittests and coverage for upload
             inputs:
