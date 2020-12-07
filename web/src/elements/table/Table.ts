@@ -72,7 +72,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<button
+        return html`&nbsp;<button
             @click=${() => { this.fetch(); }}
             class="pf-c-button pf-m-primary">
             ${gettext("Refresh")}
