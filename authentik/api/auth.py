@@ -31,7 +31,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
         _, password = auth_credentials.split(":")
     else:
         password = auth_credentials
-    if password == "":
+    if password == "":  # nosec
         return None
     tokens = Token.filter_not_expired(key=password, intent=TokenIntents.INTENT_API)
     if not tokens.exists():
