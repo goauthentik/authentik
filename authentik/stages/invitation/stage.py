@@ -7,7 +7,7 @@ from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-INVITATION_TOKEN_KEY = "token"
+INVITATION_TOKEN_KEY = "token"  # nosec
 INVITATION_IN_EFFECT = "invitation_in_effect"
 
 

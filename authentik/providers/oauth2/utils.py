@@ -85,7 +85,7 @@ def extract_client_auth(request: HttpRequest) -> Tuple[str, str]:
             user_pass = b64decode(b64_user_pass).decode("utf-8").split(":")
             client_id, client_secret = user_pass
         except (ValueError, Error):
-            client_id = client_secret = ""
+            client_id = client_secret = ""  # nosec
     else:
         client_id = request.POST.get("client_id", "")
         client_secret = request.POST.get("client_secret", "")

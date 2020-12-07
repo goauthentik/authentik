@@ -20,7 +20,7 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-QS_KEY_TOKEN = "token"
+QS_KEY_TOKEN = "token"  # nosec
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 
 
