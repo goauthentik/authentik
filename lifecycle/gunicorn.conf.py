@@ -13,7 +13,7 @@ group = "authentik"
 
 worker_class = "uvicorn.workers.UvicornWorker"
 # Docker containers don't have /tmp as tmpfs
-worker_tmp_dir = "/dev/shm"
+worker_tmp_dir = "/dev/shm"  # nosec
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 

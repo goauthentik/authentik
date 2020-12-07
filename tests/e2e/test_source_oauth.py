@@ -22,7 +22,7 @@ from authentik.providers.oauth2.generators import (
 from authentik.sources.oauth.models import OAuthSource
 from tests.e2e.utils import SeleniumTestCase, retry
 
-CONFIG_PATH = "/tmp/dex.yml"
+CONFIG_PATH = "/tmp/dex.yml"  # nosec
 LOGGER = get_logger()
 
 
@@ -66,7 +66,7 @@ class TestSourceOAuth2(SeleniumTestCase):
                     "username": "admin",
                 }
             ],
-            "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},
+            "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},  # nosec
             "web": {"http": "0.0.0.0:5556"},
         }
         with open(CONFIG_PATH, "w+") as _file:

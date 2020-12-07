@@ -1,7 +1,7 @@
 """OAuth/OpenID Constants"""
 
 GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
-GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
+GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 PROMPT_NONE = "none"
 PROMPT_CONSNET = "consent"
 SCOPE_OPENID = "openid"
