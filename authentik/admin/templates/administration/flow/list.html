@@ -53,10 +53,10 @@
                 {% for flow in object_list %}
                 <tr role="row">
                     <th role="columnheader">
-                        <div>
+                        <a href="/flows/{{ flow.slug }}/">
                             <div><code>{{ flow.slug }}</code></div>
                             <small>{{ flow.name }}</small>
-                        </div>
+                        </a>
                     </th>
                     <td role="cell">
                         <span>

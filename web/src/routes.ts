@@ -5,6 +5,7 @@ import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
+import "./pages/flows/FlowViewPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -15,5 +16,8 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/applications/$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<ak-application-view .args=${args}></ak-application-view>`;
+    }),
+    new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
+        return html`<ak-flow-view .args=${args}></ak-flow-view>`;
     }),
 ];

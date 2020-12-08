@@ -37,6 +37,7 @@ class FlowViewSet(ModelViewSet):
 
     queryset = Flow.objects.all()
     serializer_class = FlowSerializer
+    lookup_field = "slug"
 
 
 class FlowStageBindingSerializer(ModelSerializer):

@@ -39,6 +39,27 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
                 path: ["/administration/providers/"],
             },
             {
+                name: "Flows",
+                children: [
+                    {
+                        name: "Flows",
+                        path: ["/administration/flows/"],
+                    },
+                    {
+                        name: "Stages",
+                        path: ["/administration/stages/"],
+                    },
+                    {
+                        name: "Prompts",
+                        path: ["/administration/stages/prompts/"],
+                    },
+                    {
+                        name: "Invitations",
+                        path: ["/administration/stages/invitations/"],
+                    },
+                ],
+            },
+            {
                 name: "User Management",
                 children: [
                     {
@@ -71,27 +92,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
             {
                 name: "Property Mappings",
                 path: ["/administration/property-mappings/"],
-            },
-            {
-                name: "Flows",
-                children: [
-                    {
-                        name: "Flows",
-                        path: ["/administration/flows/"],
-                    },
-                    {
-                        name: "Stages",
-                        path: ["/administration/stages/"],
-                    },
-                    {
-                        name: "Prompts",
-                        path: ["/administration/stages/prompts/"],
-                    },
-                    {
-                        name: "Invitations",
-                        path: ["/administration/stages/invitations/"],
-                    },
-                ],
             },
             {
                 name: "Certificates",
