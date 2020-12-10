@@ -1,7 +1,7 @@
 import { customElement } from "lit-element";
 import { User } from "../api/user";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
-import { SLUG_REGEX } from "../pages/router/Route";
+import { SLUG_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [

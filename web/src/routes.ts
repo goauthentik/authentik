@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import { Route, SLUG_REGEX } from "./pages/router/Route";
+import { Route, SLUG_REGEX } from "./elements/router/Route";
 
 import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
