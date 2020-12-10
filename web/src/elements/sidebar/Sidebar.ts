@@ -20,15 +20,28 @@ export class SidebarItem {
     _children: SidebarItem[];
     condition: () => Promise<boolean>;
 
+    activeMatchers: RegExp[];
+
     constructor(name: string, path?: string) {
         this.name = name;
         this.path = path;
         this._children = [];
         this.condition = async () => true;
+        this.activeMatchers = [];
+        if (this.path) {
+            this.activeMatchers.push(new RegExp(`^${this.path}$`));
+        }
     }
 
     children(...children: SidebarItem[]): SidebarItem {
         this._children = children;
+        return this;
+    }
+
+    activeWhen(...regexp: string[]): SidebarItem {
+        regexp.forEach(r => {
+            this.activeMatchers.push(new RegExp(r));
+        });
         return this;
     }
 
@@ -45,7 +58,12 @@ export class SidebarItem {
         if (!this.path) {
             return false;
         }
-        return this.path == activePath;
+        return this.activeMatchers.some(v => {
+            const match = v.exec(activePath);
+            if (match !== null) {
+                return true;
+            }
+        });
     }
 }
 

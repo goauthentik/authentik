@@ -1,6 +1,7 @@
 import { customElement } from "lit-element";
 import { User } from "../api/user";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
+import { SLUG_REGEX } from "../pages/router/Route";
 import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
@@ -11,11 +12,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Administration").children(
         new SidebarItem("Overview", "/administration/overview-ng/"),
         new SidebarItem("System Tasks", "/administration/tasks/"),
-        new SidebarItem("Applications", "/administration/applications/"),
+        new SidebarItem("Applications", "/administration/applications/").activeWhen(
+            `^/applications/(?<slug>${SLUG_REGEX})/$`),
         new SidebarItem("Sources", "/administration/sources/"),
         new SidebarItem("Providers", "/administration/providers/"),
         new SidebarItem("Flows").children(
-            new SidebarItem("Flows", "/administration/flows/"),
+            new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})/$`),
             new SidebarItem("Stages", "/administration/stages/"),
             new SidebarItem("Prompts", "/administration/stages/prompts/"),
             new SidebarItem("Invitations", "/administration/stages/invitations/"),
@@ -31,7 +33,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Policies", "/administration/policies/"),
         new SidebarItem("Property Mappings", "/administration/property-mappings"),
         new SidebarItem("Certificates", "/administration/crypto/certificates"),
-        new SidebarItem("Tokens", "/administration/tokens/")
+        new SidebarItem("Tokens", "/administration/tokens/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     })
