@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { DefaultClient, PBResponse } from "../../api/client";
+import { PBResponse } from "../../api/client";
 import { Table } from "../../elements/table/Table";
 
 import "../../elements/Tabs";
