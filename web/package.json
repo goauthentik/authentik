@@ -9,8 +9,8 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@patternfly/patternfly": "^4.65.6",
-        "@sentry/browser": "^5.28.0",
-        "@sentry/tracing": "^5.28.0",
+        "@sentry/browser": "^5.29.0",
+        "@sentry/tracing": "^5.29.0",
         "@types/chart.js": "^2.9.28",
         "@types/codemirror": "0.0.102",
         "chart.js": "^2.9.4",
@@ -26,8 +26,8 @@
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^8.0.0",
-        "@typescript-eslint/eslint-plugin": "^4.9.0",
-        "@typescript-eslint/parser": "^4.9.0",
+        "@typescript-eslint/eslint-plugin": "^4.9.1",
+        "@typescript-eslint/parser": "^4.9.1",
         "eslint": "^7.15.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-lit": "^1.2.4",
