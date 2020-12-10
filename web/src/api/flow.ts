@@ -12,6 +12,7 @@ export enum FlowDesignation {
 
 export class Flow {
     pk: string;
+    policybindingmodel_ptr_id: string;
     name: string;
     slug: string;
     title: string;

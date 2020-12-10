@@ -21,6 +21,7 @@ class FlowSerializer(ModelSerializer):
         model = Flow
         fields = [
             "pk",
+            "policybindingmodel_ptr_id",
             "name",
             "slug",
             "title",

@@ -1129,7 +1129,7 @@ paths:
       tags:
         - flows
     parameters: []
-  /flows/instances/{flow_uuid}/:
+  /flows/instances/{slug}/:
     get:
       operationId: flows_instances_read
       description: Flow Viewset
@@ -1183,12 +1183,13 @@ paths:
       tags:
         - flows
     parameters:
-      - name: flow_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this Flow.
+        description: Visible in the URL.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
@@ -6804,6 +6805,10 @@ definitions:
         title: Flow uuid
         type: string
         format: uuid
+        readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
         readOnly: true
       name:
         title: Name

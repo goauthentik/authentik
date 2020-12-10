@@ -32,3 +32,4 @@ class ChannelsStorage(FallbackStorage):
                         "message": message.message,
                     },
                 )
+        return None

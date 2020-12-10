@@ -49,10 +49,7 @@ export class FlowViewPage extends LitElement {
                 </div>
             </section>
             <ak-tabs>
-                <section slot="page-1" data-tab-title="Users" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    ...tbd
-                </section>
-                <div slot="page-2" data-tab-title="Stage Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-2" data-tab-title="${gettext("Stage Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__header-main">
@@ -63,14 +60,14 @@ export class FlowViewPage extends LitElement {
                         </ak-bound-stages-list>
                     </div>
                 </div>
-                <div slot="page-3" data-tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-3" data-tab-title="${gettext("Policy Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__header-main">
                                 ${gettext("These policies control which users can access this flow.")}
                             </div>
                         </div>
-                        <ak-bound-policies-list .target=${this.flow.pk}>
+                        <ak-bound-policies-list .target=${this.flow.policybindingmodel_ptr_id}>
                         </ak-bound-policies-list>
                     </div>
                 </div>
