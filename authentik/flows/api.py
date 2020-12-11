@@ -41,31 +41,6 @@ class FlowViewSet(ModelViewSet):
     lookup_field = "slug"
 
 
-class FlowStageBindingSerializer(ModelSerializer):
-    """FlowStageBinding Serializer"""
-
-    class Meta:
-
-        model = FlowStageBinding
-        fields = [
-            "pk",
-            "target",
-            "stage",
-            "evaluate_on_plan",
-            "re_evaluate_policies",
-            "order",
-            "policies",
-        ]
-
-
-class FlowStageBindingViewSet(ModelViewSet):
-    """FlowStageBinding Viewset"""
-
-    queryset = FlowStageBinding.objects.all()
-    serializer_class = FlowStageBindingSerializer
-    filterset_fields = "__all__"
-
-
 class StageSerializer(ModelSerializer):
     """Stage Serializer"""
 
@@ -94,3 +69,31 @@ class StageViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Stage.objects.select_subclasses()
+
+
+class FlowStageBindingSerializer(ModelSerializer):
+    """FlowStageBinding Serializer"""
+
+    stage_obj = StageSerializer(read_only=True, source="stage")
+
+    class Meta:
+
+        model = FlowStageBinding
+        fields = [
+            "pk",
+            "target",
+            "stage",
+            "stage_obj",
+            "evaluate_on_plan",
+            "re_evaluate_policies",
+            "order",
+            "policies",
+        ]
+
+
+class FlowStageBindingViewSet(ModelViewSet):
+    """FlowStageBinding Viewset"""
+
+    queryset = FlowStageBinding.objects.all()
+    serializer_class = FlowStageBindingSerializer
+    filterset_fields = "__all__"
