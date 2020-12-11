@@ -23,13 +23,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     columns(): string[] {
-        return ["Policy", "Enabled", "Order", "Timeout", ""];
+        return ["Order", "Name", "Type", ""];
     }
 
     row(item: FlowStageBinding): string[] {
         return [
             item.order.toString(),
-            item.stage,
+            item.stage_obj.name,
+            item.stage_obj.verbose_name,
             `
             <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">

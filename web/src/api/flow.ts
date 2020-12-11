@@ -35,11 +35,23 @@ export class Flow {
     }
 }
 
+export class Stage {
+    pk: string;
+    name: string;
+    __type__: string;
+    verbose_name: string;
+
+    constructor() {
+        throw Error();
+    }
+}
+
 export class FlowStageBinding {
 
     pk: string;
     target: string;
     stage: string;
+    stage_obj: Stage;
     evaluate_on_plan: boolean;
     re_evaluate_policies: boolean;
     order: number;
