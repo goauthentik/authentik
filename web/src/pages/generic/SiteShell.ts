@@ -69,7 +69,7 @@ export class SiteShell extends LitElement {
                 showMessage({
                     level_tag: "error",
                     message: gettext(`Request failed: ${r.statusText}`),
-                })
+                });
                 throw new Error("Request failed");
             })
             .then((r) => r.text())
