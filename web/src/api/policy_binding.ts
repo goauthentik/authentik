@@ -26,4 +26,8 @@ export class PolicyBinding {
     static list(filter?: QueryArguments): Promise<PBResponse<PolicyBinding>> {
         return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "bindings"], filter);
     }
+
+    static adminUrl(rest: string): string {
+        return "/administration/policies/bindings/";
+    }
 }

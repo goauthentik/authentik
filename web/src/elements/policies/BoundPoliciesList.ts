@@ -33,13 +33,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.order}`,
             html`${item.timeout}`,
             html`
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
+            <ak-modal-button href="${PolicyBinding.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/delete/">
+            <ak-modal-button href="${PolicyBinding.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     Delete
                 </ak-spinner-button>
@@ -50,11 +50,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderToolbar(): TemplateResult {
-        const createUrl = `/administration/policies/bindings/create/?target=${this.target}`;
         return html`
-        <ak-modal-button href=${createUrl}>
+        <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
-                ${gettext("Create")}
+                ${gettext("Bind Policy")}
             </ak-spinner-button>
             <div slot="modal"></div>
         </ak-modal-button>
