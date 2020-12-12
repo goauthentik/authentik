@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { DefaultClient } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";

@@ -3789,7 +3789,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/all/{pbm_uuid}/:
+  /sources/all/{slug}/:
     get:
       operationId: sources_all_read
       description: Source Viewset
@@ -3802,12 +3802,13 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/ldap/:
     get:
       operationId: sources_ldap_list
@@ -6786,6 +6787,10 @@ definitions:
         title: Fsb uuid
         type: string
         format: uuid
+        readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
         readOnly: true
       target:
         title: Target

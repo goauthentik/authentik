@@ -69,4 +69,8 @@ export class FlowStageBinding {
     static list(filter?: QueryArguments): Promise<PBResponse<FlowStageBinding>> {
         return DefaultClient.fetch<PBResponse<FlowStageBinding>>(["flows", "bindings"], filter);
     }
+
+    static adminUrl(rest: string): string {
+        return `/administration/stages/bindings/${rest}`;
+    }
 }
