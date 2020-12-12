@@ -26,13 +26,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return ["Policy", "Enabled", "Order", "Timeout", ""];
     }
 
-    row(item: PolicyBinding): string[] {
+    row(item: PolicyBinding): TemplateResult[] {
         return [
-            item.policy_obj.name,
-            item.enabled ? "Yes" : "No",
-            item.order.toString(),
-            item.timeout.toString(),
-            `
+            html`${item.policy_obj.name}`,
+            html`${item.enabled ? "Yes" : "No"}`,
+            html`${item.order}`,
+            html`${item.timeout}`,
+            html`
             <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit

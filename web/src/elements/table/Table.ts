@@ -8,8 +8,9 @@ import "./TablePagination";
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
     abstract columns(): Array<string>;
-    abstract row(item: T): Array<any>;
+    abstract row(item: T): Array<TemplateResult>;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderExpanded(item: T): TemplateResult {
         if (this.expandable) {
             throw new Error("Expandable is enabled but renderExpanded is not overridden!");
@@ -23,8 +24,8 @@ export abstract class Table<T> extends LitElement {
     @property({type: Number})
     page = 1;
 
-    @property()
-    expandable: boolean = false;
+    @property({type: Boolean})
+    expandable = false;
 
     @property({attribute: false})
     expandedRows: boolean[] = [];
@@ -80,15 +81,15 @@ export abstract class Table<T> extends LitElement {
                 <tr role="row">
                     ${this.expandable ? html`<td class="pf-c-table__toggle" role="cell">
                     <button class="pf-c-button pf-m-plain ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" @click=${() => {
-                        this.expandedRows[idx] = !this.expandedRows[idx];
-                        this.requestUpdate();
-                    }}>
+    this.expandedRows[idx] = !this.expandedRows[idx];
+    this.requestUpdate();
+}}>
                         <div class="pf-c-table__toggle-icon"> <i class="fas fa-angle-down" aria-hidden="true"></i> </div>
                     </button>
                     </td>` : html``}
                     ${this.row(item).map((col) => {
-                        return html`<td role="cell">${col}</td>`;
-                    })}
+        return html`<td role="cell">${col}</td>`;
+    })}
                 </tr>
                 <tr class="pf-c-table__expandable-row ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" role="row">
                     <td></td>

@@ -28,11 +28,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         return ["Order", "Name", "Type", ""];
     }
 
-    row(item: FlowStageBinding): any[] {
+    row(item: FlowStageBinding): TemplateResult[] {
         return [
-            item.order.toString(),
-            item.stage_obj.name,
-            item.stage_obj.verbose_name,
+            html`${item.order}`,
+            html`${item.stage_obj.name}`,
+            html`${item.stage_obj.verbose_name}`,
             html`
             <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
@@ -56,7 +56,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         <td role="cell">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
-                    <p>Git URL: <small>http://github.com/mindreeper2420/rhuxd.git</small> </p>
+                    <p>Git URL: <small>${item.stage_obj.name}</small> </p>
                     <p>Latest commit SHA1 <small>64ae92893d7a98c71b3ef56835ed1c96354526be</small> </p>
                     <p>Status <small>20 total files changed</small> </p>
                     <p>License <small>Apache License 2.9</small> </p>

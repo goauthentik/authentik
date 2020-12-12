@@ -1,8 +1,11 @@
 import { gettext } from "django";
-import { customElement } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { Application } from "../../api/application";
 import { PBResponse } from "../../api/client";
 import { TablePage } from "../../elements/table/TablePage";
+
+import "../../elements/buttons/ModalButton";
+import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-application-list")
 export class ApplicationList extends TablePage<Application> {
@@ -27,13 +30,13 @@ export class ApplicationList extends TablePage<Application> {
         return ["Name", "Slug", "Provider", "Provider Type", ""];
     }
 
-    row(item: Application): string[] {
+    row(item: Application): TemplateResult[] {
         return [
-            item.name,
-            item.slug,
-            item.provider.toString(),
-            item.provider.toString(),
-            `
+            html`${item.name}`,
+            html`${item.slug}`,
+            html`${item.provider}`,
+            html`${item.provider}`,
+            html`
             <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
