@@ -6,6 +6,8 @@ import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css"
 // @ts-ignore
 import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { SpinnerSize } from "../../elements/Spinner";
+import { showMessage } from "../../elements/messages/MessageContainer";
+import { gettext } from "django";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -64,6 +66,10 @@ export class SiteShell extends LitElement {
                 }
                 console.debug(`authentik/site-shell: Request failed ${this._url}`);
                 window.location.hash = "#/";
+                showMessage({
+                    level_tag: "error",
+                    message: gettext(`Request failed: ${r.statusText}`),
+                })
                 throw new Error("Request failed");
             })
             .then((r) => r.text())
