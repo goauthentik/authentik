@@ -4,7 +4,7 @@ title: Upgrading to 0.13 (passbook -> authentik)
 
 After a long back and forth, we've finally switched to a more permanent name. Whilst the upgrade is pretty much seamless, there are some things you have to change before upgrading.
 
-# Headline changes:
+# Headline changes
 
 - New name (https://github.com/BeryJu/authentik/pull/361)
 - The web interface is now a semi-SPA Experience. This means that most operations are done through Asynchronous requests
@@ -14,7 +14,7 @@ After a long back and forth, we've finally switched to a more permanent name. Wh
 
 - The web interface now has a darkmode, which is enabled automatically based on your Operating system.
 
-# Smaller changes
+## Smaller changes
 
 - Add better support for Docker Service Connections with Certificates
 - Fix application API not returning the same format as other APIs
@@ -45,7 +45,7 @@ helm repo remove passbook
 helm repo add authentik https://docker.beryju.org/chartrepo/authentik
 ```
 
-:::notice
+:::note
 If you've set any custom image names in your values file, make sure to change them to authentik before upgrading.
 :::
 
@@ -66,7 +66,7 @@ helm upgrade passbook authentik/authentik --devel -f values.yaml
 
 - Some default values change, for example the SAML Provider's default issuer.
 
-    This only makes a difference for newly created objects.
+    This only makes a difference for newly created providers.
 
 - Expression Policies variables change
 
