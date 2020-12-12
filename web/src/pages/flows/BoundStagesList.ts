@@ -53,13 +53,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderExpanded(item: FlowStageBinding): TemplateResult {
         return html`
         <td></td>
-        <td role="cell">
+        <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
-                    <p>Git URL: <small>${item.stage_obj.name}</small> </p>
-                    <p>Latest commit SHA1 <small>64ae92893d7a98c71b3ef56835ed1c96354526be</small> </p>
-                    <p>Status <small>20 total files changed</small> </p>
-                    <p>License <small>Apache License 2.9</small> </p>
+                    <p>${gettext("These policies control when this stage will be applied to the flow.")}</p>
+                    <ak-bound-policies-list .target=${item.policybindingmodel_ptr_id}>
+                    </ak-bound-policies-list>
                 </div>
             </div>
         </td>

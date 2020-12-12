@@ -49,6 +49,7 @@ export class Stage {
 export class FlowStageBinding {
 
     pk: string;
+    policybindingmodel_ptr_id: string;
     target: string;
     stage: string;
     stage_obj: Stage;

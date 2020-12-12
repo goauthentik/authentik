@@ -81,6 +81,7 @@ class FlowStageBindingSerializer(ModelSerializer):
         model = FlowStageBinding
         fields = [
             "pk",
+            "policybindingmodel_ptr_id",
             "target",
             "stage",
             "stage_obj",
