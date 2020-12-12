@@ -28,3 +28,9 @@ class TestUserViews(TestCase):
         self.assertEqual(
             self.client.get(reverse("authentik_core:user-settings")).status_code, 200
         )
+
+    def test_user_details(self):
+        """Test UserDetailsView"""
+        self.assertEqual(
+            self.client.get(reverse("authentik_core:user-details")).status_code, 200
+        )

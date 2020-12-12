@@ -11,6 +11,7 @@ from django.http.response import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
+from django.views.generic.base import TemplateView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
@@ -26,14 +27,20 @@ from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.views import CreateAssignPermView
 
 
-class UserSettingsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
-    """Update User settings"""
+class UserSettingsView(TemplateView):
+    """Multiple SiteShells for user details and all stages"""
 
     template_name = "user/settings.html"
+
+
+class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+    """Update User details"""
+
+    template_name = "user/details.html"
     form_class = UserDetailForm
 
     success_message = _("Successfully updated user.")
-    success_url = reverse_lazy("authentik_core:user-settings")
+    success_url = reverse_lazy("authentik_core:user-details")
 
     def get_object(self):
         return self.request.user

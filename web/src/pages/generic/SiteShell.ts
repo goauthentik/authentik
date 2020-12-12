@@ -63,6 +63,9 @@ export class SiteShell extends LitElement {
         if (!this._url) {
             return;
         }
+        if (this.loading) {
+            return;
+        }
         this.loading = true;
         fetch(this._url)
             .then((r) => {
@@ -75,6 +78,7 @@ export class SiteShell extends LitElement {
                     level_tag: "error",
                     message: gettext(`Request failed: ${r.statusText}`),
                 });
+                this.loading = false;
                 throw new SentryIgnoredError("Request failed");
             })
             .then((r) => r.text())
