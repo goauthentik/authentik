@@ -142,7 +142,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # Wait until we've logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -224,7 +224,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # Wait until we've logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"), "foo"
@@ -317,7 +317,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         sleep(2)
         # Wait until we've logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(
             self.driver.find_element(By.ID, "id_username").get_attribute("value"),

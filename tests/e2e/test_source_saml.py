@@ -134,7 +134,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(
@@ -185,7 +185,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(
@@ -234,7 +234,7 @@ class TestSourceSAML(SeleniumTestCase):
 
         # Wait until we're logged in
         self.wait_for_url(self.shell_url("authentik_core:overview"))
-        self.driver.get(self.url("authentik_core:user-settings"))
+        self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
         self.assertNotEqual(
