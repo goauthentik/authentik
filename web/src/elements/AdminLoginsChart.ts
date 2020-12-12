@@ -1,5 +1,6 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import Chart from "chart.js";
+import { showMessage } from "./messages/MessageContainer";
 
 interface TickValue {
     value: number;
@@ -41,7 +42,13 @@ export class AdminLoginsChart extends LitElement {
     firstUpdated(): void {
         fetch(this.url)
             .then((r) => r.json())
-            .catch((e) => console.error(e))
+            .catch((e) => {
+                showMessage({
+                    level_tag: "error",
+                    message: "Unexpected error"
+                });
+                console.log(e);
+            })
             .then((r) => {
                 const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
                 if (!canvas) {

@@ -1,4 +1,5 @@
 import { LitElement, html, customElement, property, TemplateResult } from "lit-element";
+import { SentryIgnoredError } from "../../common/errors";
 
 enum ResponseType {
     redirect = "redirect",
@@ -30,7 +31,7 @@ export class FlowShellCard extends LitElement {
                     // Fallback when the flow does not exist, just redirect to the root
                     window.location.pathname = "/";
                 } else if (!r.ok) {
-                    throw Error(r.statusText);
+                    throw new SentryIgnoredError(r.statusText);
                 }
                 return r;
             })

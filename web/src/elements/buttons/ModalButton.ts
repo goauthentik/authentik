@@ -13,6 +13,7 @@ import fa from "@fortawesome/fontawesome-free/css/solid.css";
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS } from "../../constants";
+import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
@@ -110,7 +111,11 @@ export class ModalButton extends LitElement {
                         }
                     })
                     .catch((e) => {
-                        console.error(e);
+                        showMessage({
+                            level_tag: "error",
+                            message: "Unexpected error"
+                        });
+                        console.log(e);
                     });
             });
         });
@@ -139,7 +144,11 @@ export class ModalButton extends LitElement {
                     });
                 })
                 .catch((e) => {
-                    console.error(e);
+                    showMessage({
+                        level_tag: "error",
+                        message: "Unexpected error"
+                    });
+                    console.log(e);
                 });
         }
     }

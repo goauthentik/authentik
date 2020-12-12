@@ -8,6 +8,7 @@ import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.c
 import { SpinnerSize } from "../../elements/Spinner";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { gettext } from "django";
+import { SentryIgnoredError } from "../../common/errors";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -70,7 +71,7 @@ export class SiteShell extends LitElement {
                     level_tag: "error",
                     message: gettext(`Request failed: ${r.statusText}`),
                 });
-                throw new Error("Request failed");
+                throw new SentryIgnoredError("Request failed");
             })
             .then((r) => r.text())
             .then((t) => {

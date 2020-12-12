@@ -2,6 +2,7 @@ import { DefaultClient } from "./client";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
+import { SentryIgnoredError } from "../common/errors";
 
 export class Config {
     branding_logo: string;
@@ -24,6 +25,12 @@ export class Config {
                     integrations: [new Integrations.BrowserTracing()],
                     tracesSampleRate: 1.0,
                     environment: config.error_reporting_environment,
+                    beforeSend(event: Sentry.Event, hint: Sentry.EventHint) {
+                        if (hint.originalException instanceof SentryIgnoredError) {
+                            return null;
+                        }
+                        return event;
+                    },
                 });
                 console.debug("authentik/config: Sentry enabled.");
             }
