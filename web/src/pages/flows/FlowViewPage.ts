@@ -51,11 +51,6 @@ export class FlowViewPage extends LitElement {
             <ak-tabs>
                 <div slot="page-2" data-tab-title="${gettext("Stage Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__header-main">
-                                ${gettext("These policies control which users can access this flow.")}
-                            </div>
-                        </div>
                         <ak-bound-stages-list .target=${this.flow.pk}>
                         </ak-bound-stages-list>
                     </div>

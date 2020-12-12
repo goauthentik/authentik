@@ -159,6 +159,13 @@ select[multiple] {
         background-color: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
+    .pf-c-button.pf-m-tertiary {
+        --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
+        color: var(--ak-dark-foreground-darker);
+    }
+    .pf-c-button.pf-m-tertiary:hover {
+        --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter);
+    }
     .pf-c-form__label-text {
         color: var(--ak-dark-foreground);
     }
@@ -170,6 +177,12 @@ select[multiple] {
         color: var(--ak-dark-foreground);
     }
     /* modal */
+    .pf-c-modal-box__header {
+        background-color: var(--ak-dark-background-light);
+    }
+    .pf-c-modal-box__body {
+        background-color: var(--ak-dark-background-light);
+    }
     .pf-c-modal-box__footer {
         background-color: var(--ak-dark-background-light);
     }
