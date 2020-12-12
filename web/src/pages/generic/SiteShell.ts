@@ -121,7 +121,7 @@ export class SiteShell extends LitElement {
             html`<div class="pf-c-backdrop">
                     <div class="pf-l-bullseye">
                         <div class="pf-l-bullseye__item">
-                            <ak-spinner size=${SpinnerSize.Large}></ak-spinner>
+                            <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
                         </div>
                     </div>
                 </div>`
