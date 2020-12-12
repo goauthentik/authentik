@@ -1,5 +1,6 @@
 image:
   tag: gh-master
+  pullPolicy: Always
 
 serverReplicas: 1
 workerReplicas: 1

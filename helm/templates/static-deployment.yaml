@@ -24,7 +24,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-static
           image: "{{ .Values.image.name_static }}:{{ .Values.image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
             - name: http
               containerPort: 80

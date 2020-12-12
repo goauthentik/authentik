@@ -45,6 +45,7 @@ spec:
       initContainers:
         - name: authentik-database-migrations
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args: [migrate]
           envFrom:
             - configMapRef:
@@ -69,6 +70,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args: [server]
           envFrom:
             - configMapRef:

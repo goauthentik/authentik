@@ -48,7 +48,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args: [worker]
           envFrom:
             - configMapRef:
