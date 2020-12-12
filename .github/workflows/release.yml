@@ -80,6 +80,7 @@ jobs:
     needs:
       - build-server
       - build-static
+      - build-proxy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
