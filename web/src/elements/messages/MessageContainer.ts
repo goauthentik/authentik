@@ -1,26 +1,24 @@
-import { LitElement, html, customElement, TemplateResult } from "lit-element";
-import { DefaultClient } from "../api/client";
+import { gettext } from "django";
+import { LitElement, html, customElement, TemplateResult, property } from "lit-element";
+import { DefaultClient } from "../../api/client";
+import "./Message";
+import { APIMessage } from "./Message";
 
-const LEVEL_ICON_MAP: { [key: string]: string } = {
-    error: "fas fa-exclamation-circle",
-    warning: "fas fa-exclamation-triangle",
-    success: "fas fa-check-circle",
-    info: "fas fa-info",
-};
-
-const ID = function (prefix: string) {
-    return prefix + Math.random().toString(36).substr(2, 9);
-};
-
-interface Message {
-    level_tag: string;
-    tags: string;
-    message: string;
+export function showMessage(message: APIMessage): void {
+    const container = document.querySelector<MessageContainer>("ak-message-container");
+    if (!container) {
+        throw new Error("failed to find message container");
+    }
+    container.messages.push(message);
+    container.requestUpdate();
 }
 
-@customElement("ak-messages")
-export class Messages extends LitElement {
+@customElement("ak-message-container")
+export class MessageContainer extends LitElement {
     url = DefaultClient.makeUrl(["root", "messages"]);
+
+    @property({attribute: false})
+    messages: APIMessage[] = [];
 
     messageSocket?: WebSocket;
     retryDelay = 200;
@@ -52,6 +50,12 @@ export class Messages extends LitElement {
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/messages: closed ws connection: ${e}`);
+            if (this.retryDelay > 3000) {
+                showMessage({
+                    level_tag: "error",
+                    message: gettext("Connection error, reconnecting...")
+                });
+            }
             setTimeout(() => {
                 console.debug(`authentik/messages: reconnecting ws in ${this.retryDelay}ms`);
                 this.connect();
@@ -60,7 +64,8 @@ export class Messages extends LitElement {
         });
         this.messageSocket.addEventListener("message", (e) => {
             const data = JSON.parse(e.data);
-            this.renderMessage(data);
+            this.messages.push(data);
+            this.requestUpdate();
         });
         this.messageSocket.addEventListener("error", (e) => {
             console.warn(`authentik/messages: error ${e}`);
@@ -75,38 +80,25 @@ export class Messages extends LitElement {
         console.debug("authentik/messages: fetching messages over direct api");
         return fetch(this.url)
             .then((r) => r.json())
-            .then((r: Message[]) => {
-                r.forEach((m: Message) => {
-                    this.renderMessage(m);
+            .then((r: APIMessage[]) => {
+                r.forEach((m: APIMessage) => {
+                    this.messages.push(m);
+                    this.requestUpdate();
                 });
             });
     }
 
-    renderMessage(message: Message): void {
-        const container = <HTMLElement>this.querySelector(".pf-c-alert-group");
-        if (!container) {
-            console.warn("authentik/messages: failed to find container");
-            return;
-        }
-        const id = ID("ak-message");
-        const el = document.createElement("template");
-        el.innerHTML = `<li id=${id} class="pf-c-alert-group__item">
-            <div class="pf-c-alert pf-m-${message.level_tag} ${message.level_tag === "error" ? "pf-m-danger" : ""}">
-                <div class="pf-c-alert__icon">
-                    <i class="${LEVEL_ICON_MAP[message.level_tag]}"></i>
-                </div>
-                <p class="pf-c-alert__title">
-                    ${message.message}
-                </p>
-            </div>
-        </li>`;
-        setTimeout(() => {
-            this.querySelector(`#${id}`)?.remove();
-        }, 1500);
-        container.appendChild(el.content.firstChild!); // eslint-disable-line
-    }
-
     render(): TemplateResult {
-        return html`<ul class="pf-c-alert-group pf-m-toast"></ul>`;
+        return html`<ul class="pf-c-alert-group pf-m-toast">
+            ${this.messages.map((m) => {
+        return html`<ak-message
+                    .message=${m}
+                    .onRemove=${(m: APIMessage) => {
+        this.messages = this.messages.filter((v) => v !== m);
+        this.requestUpdate();
+    }}>
+                </ak-message>`;
+    })}
+        </ul>`;
     }
 }

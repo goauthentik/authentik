@@ -17,7 +17,7 @@ import "./elements/EmptyState";
 import "./elements/cards/AggregateCard";
 import "./elements/cards/AggregatePromiseCard";
 import "./elements/CodeMirror";
-import "./elements/Messages";
+import "./elements/messages/MessageContainer";
 import "./elements/Spinner";
 import "./elements/Tabs";
 import "./elements/router/RouterOutlet";

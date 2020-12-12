@@ -42,7 +42,7 @@ export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
             <div class="pf-c-empty-state__content">
                 <div class="pf-l-bullseye">
                     <div class="pf-l-bullseye__item">
-                        <ak-spinner size="${SpinnerSize.Large}"></ak-spinner>
+                        <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
                     </div>
                 </div>
             </div>
