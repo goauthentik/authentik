@@ -64,15 +64,21 @@ export class ModalButton extends LitElement {
         });
         // Make name field update slug field
         this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
+            const form = input.closest("form");
+            if (form === null) {
+                return;
+            }
+            const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
+            if (!slugField) {
+                return;
+            }
+            // Only attach handler if the slug is already equal to the name
+            // if not, they are probably completely different and shouldn't update
+            // each other
+            if (convertToSlug(input.value) !== slugField.value) {
+                return;
+            }
             input.addEventListener("input", () => {
-                const form = input.closest("form");
-                if (form === null) {
-                    return;
-                }
-                const slugField = form.querySelector<HTMLInputElement>("input[name=slug]");
-                if (!slugField) {
-                    return;
-                }
                 slugField.value = convertToSlug(input.value);
             });
         });
