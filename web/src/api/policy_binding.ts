@@ -28,6 +28,6 @@ export class PolicyBinding {
     }
 
     static adminUrl(rest: string): string {
-        return "/administration/policies/bindings/";
+        return `/administration/policies/bindings/${rest}`;
     }
 }

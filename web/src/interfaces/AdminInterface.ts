@@ -13,8 +13,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Overview", "/administration/overview-ng/"),
         new SidebarItem("System Tasks", "/administration/tasks/"),
         new SidebarItem("Applications", "/administration/applications/").activeWhen(
-            `^/applications/(?<slug>${SLUG_REGEX})/$`),
-        new SidebarItem("Sources", "/administration/sources/"),
+            `^/applications/(?<slug>${SLUG_REGEX})/$`
+        ),
+        new SidebarItem("Sources", "/administration/sources/").activeWhen(
+            `^/sources/(?<slug>${SLUG_REGEX})/$`,
+        ),
         new SidebarItem("Providers", "/administration/providers/"),
         new SidebarItem("Flows").children(
             new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})/$`),

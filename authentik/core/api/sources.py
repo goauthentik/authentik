@@ -32,6 +32,7 @@ class SourceViewSet(ReadOnlyModelViewSet):
 
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+    lookup_field = "slug"
 
     def get_queryset(self):
         return Source.objects.select_subclasses()
