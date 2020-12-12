@@ -80,7 +80,7 @@ class PolicyBindingCreateView(
             max_order = PolicyBinding.objects.filter(target=targets.first()).aggregate(
                 Max("order")
             )["order__max"]
-            if not max_order or not isinstance(max_order, int):
+            if not isinstance(max_order, int):
                 max_order = -1
             return {"target": targets.first(), "order": max_order + 1}
         return super().get_initial()

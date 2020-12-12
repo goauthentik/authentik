@@ -37,6 +37,11 @@ class FlowStageBindingForm(forms.ModelForm):
         queryset=Stage.objects.all().select_subclasses(), to_field_name="stage_uuid"
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "target" in self.initial:
+            self.fields["target"].widget = forms.HiddenInput()
+
     class Meta:
 
         model = FlowStageBinding
