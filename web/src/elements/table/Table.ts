@@ -2,20 +2,32 @@ import { gettext } from "django";
 import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
-import { htmlFromString } from "../../utils";
 
 import "./TablePagination";
 
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
     abstract columns(): Array<string>;
-    abstract row(item: T): Array<string>;
+    abstract row(item: T): Array<any>;
+
+    renderExpanded(item: T): TemplateResult {
+        if (this.expandable) {
+            throw new Error("Expandable is enabled but renderExpanded is not overridden!");
+        }
+        return html``;
+    }
 
     @property({attribute: false})
     data?: PBResponse<T>;
 
     @property({type: Number})
     page = 1;
+
+    @property()
+    expandable: boolean = false;
+
+    @property({attribute: false})
+    expandedRows: boolean[] = [];
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -60,14 +72,29 @@ export abstract class Table<T> extends LitElement {
         if (!this.data) {
             return;
         }
-        return this.data.results.map((item) => {
-            const fullRow = ["<tr role=\"row\">"].concat(
-                this.row(item).map((col) => {
-                    return `<td role="cell">${col}</td>`;
-                })
-            );
-            fullRow.push("</tr>");
-            return htmlFromString(...fullRow);
+        return this.data.results.map((item: T, idx: number) => {
+            if ((this.expandedRows.length - 1) < idx) {
+                this.expandedRows[idx] = false;
+            }
+            return html`<tbody role="rowgroup" class="${this.expandedRows[idx] ? "pf-m-expanded" : ""}">
+                <tr role="row">
+                    ${this.expandable ? html`<td class="pf-c-table__toggle" role="cell">
+                    <button class="pf-c-button pf-m-plain ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" @click=${() => {
+                        this.expandedRows[idx] = !this.expandedRows[idx];
+                        this.requestUpdate();
+                    }}>
+                        <div class="pf-c-table__toggle-icon"> <i class="fas fa-angle-down" aria-hidden="true"></i> </div>
+                    </button>
+                    </td>` : html``}
+                    ${this.row(item).map((col) => {
+                        return html`<td role="cell">${col}</td>`;
+                    })}
+                </tr>
+                <tr class="pf-c-table__expandable-row ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" role="row">
+                    <td></td>
+                    ${this.renderExpanded(item)}
+                </tr>
+            </tbody>`;
         });
     }
 
@@ -95,15 +122,14 @@ export abstract class Table<T> extends LitElement {
                     </ak-table-pagination>
                 </div>
             </div>
-            <table class="pf-c-table pf-m-compact pf-m-grid-md">
+            <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>
                     <tr role="row">
+                        ${this.expandable ? html`<td role="cell">` : html``}
                         ${this.columns().map((col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`)}
                     </tr>
                 </thead>
-                <tbody role="rowgroup">
-                    ${this.data ? this.renderRows() : this.renderLoading()}
-                </tbody>
+                ${this.data ? this.renderRows() : this.renderLoading()}
             </table>
             <div class="pf-c-pagination pf-m-bottom">
                 <ak-table-pagination
