@@ -2,7 +2,7 @@ import { customElement, html, LitElement, property, TemplateResult } from "lit-e
 
 export interface APIMessage {
     level_tag: string;
-    tags: string;
+    tags?: string;
     message: string;
 }
 

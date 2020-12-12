@@ -1,7 +1,17 @@
+import { gettext } from "django";
 import { LitElement, html, customElement, TemplateResult, property } from "lit-element";
 import { DefaultClient } from "../../api/client";
 import "./Message";
 import { APIMessage } from "./Message";
+
+export function showMessage(message: APIMessage): void {
+    const container = document.querySelector<MessageContainer>("ak-message-container");
+    if (!container) {
+        throw new Error("failed to find message container");
+    }
+    container.messages.push(message);
+    container.requestUpdate();
+}
 
 @customElement("ak-message-container")
 export class MessageContainer extends LitElement {
@@ -40,6 +50,12 @@ export class MessageContainer extends LitElement {
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/messages: closed ws connection: ${e}`);
+            if (this.retryDelay > 3000) {
+                showMessage({
+                    level_tag: "error",
+                    message: gettext("Connection error, reconnecting...")
+                });
+            }
             setTimeout(() => {
                 console.debug(`authentik/messages: reconnecting ws in ${this.retryDelay}ms`);
                 this.connect();
