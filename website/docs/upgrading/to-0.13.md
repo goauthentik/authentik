@@ -4,6 +4,21 @@ title: Upgrading to 0.13 (passbook -> authentik)
 
 After a long back and forth, we've finally switched to a more permanent name. Whilst the upgrade is pretty much seamless, there are some things you have to change before upgrading.
 
+# Headline changes:
+
+- New name (https://github.com/BeryJu/authentik/pull/361)
+- The web interface is now a semi-SPA Experience. This means that most operations are done through Asynchronous requests
+
+    In this initial release, this brings features such as a refresh button, a generally better User experience due to shorter loading times
+    and fewer visual context changes.
+
+- The web interface now has a darkmode, which is enabled automatically based on your Operating system.
+
+# Smaller changes
+
+- Add better support for Docker Service Connections with Certificates
+- Fix application API not returning the same format as other APIs
+
 ## Upgrading
 
 ### docker-compose
