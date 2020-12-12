@@ -1,7 +1,10 @@
 """Application API Views"""
 from django.db.models import QuerySet
+from django.http.response import Http404
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
+from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -71,8 +74,12 @@ class ApplicationViewSet(ModelViewSet):
     @action(detail=True)
     def metrics(self, request: Request, slug: str):
         """Metrics for application logins"""
-        # TODO: Check app read and audit read perms
-        app = Application.objects.get(slug=slug)
+        app = get_object_or_404(
+            get_objects_for_user(request.user, "authentik_core.view_application"),
+            slug=slug,
+        )
+        if not request.user.has_perm("authentik_audit.view_event"):
+            raise Http404
         return Response(
             get_events_per_1h(
                 action=EventAction.AUTHORIZE_APPLICATION,
