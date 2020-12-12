@@ -1,4 +1,4 @@
-<img src="icons/icon_top_brand.svg" height="250" alt="authentik logo">
+<img src="web/icons/icon_top_brand.svg" height="250" alt="authentik logo">
 
 ---
 
