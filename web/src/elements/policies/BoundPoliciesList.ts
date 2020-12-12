@@ -49,6 +49,22 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
+    renderEmpty(): TemplateResult {
+        return super.renderEmpty(html`<ak-empty-state header=${gettext("No Policies bound.")} icon="pf-icon-module">
+            <div slot="body">
+                ${gettext("No policies are currently bound to this object.")}
+            </div>
+            <div slot="primary">
+                <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
+                        ${gettext("Bind Policy")}
+                    </ak-spinner-button>
+                    <div slot="modal"></div>
+                </ak-modal-button>
+            </div>
+        </ak-empty-state>`);
+    }
+
     renderToolbar(): TemplateResult {
         return html`
         <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
