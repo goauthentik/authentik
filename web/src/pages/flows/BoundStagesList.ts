@@ -34,13 +34,13 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stage_obj.name}`,
             html`${item.stage_obj.verbose_name}`,
             html`
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
+            <ak-modal-button href="administration/stages/bindings/${item.pk}/update/">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/delete/">
+            <ak-modal-button href="administration/stages/bindings/${item.pk}/delete/">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     Delete
                 </ak-spinner-button>
@@ -67,12 +67,29 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         <td></td>`;
     }
 
+    renderEmpty(): TemplateResult {
+        const createUrl = `/administration/stages/bindings/create/?target=${this.target}`;
+        return super.renderEmpty(html`<ak-empty-state header=${gettext("No Stages bound")} icon="pf-icon-module">
+            <div slot="body">
+                ${gettext("No stages are currently bound to this flow.")}
+            </div>
+            <div slot="primary">
+                <ak-modal-button href=${createUrl}>
+                    <ak-spinner-button slot="trigger" class="pf-m-primary">
+                        ${gettext("Bind Stage")}
+                    </ak-spinner-button>
+                    <div slot="modal"></div>
+                </ak-modal-button>
+            </div>
+        </ak-empty-state>`);
+    }
+
     renderToolbar(): TemplateResult {
-        const createUrl = `/administration/policies/bindings/create/?target=${this.target}`;
+        const createUrl = `/administration/stages/bindings/create/?target=${this.target}`;
         return html`
         <ak-modal-button href=${createUrl}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
-                ${gettext("Create")}
+                ${gettext("Bind Stage")}
             </ak-spinner-button>
             <div slot="modal"></div>
         </ak-modal-button>

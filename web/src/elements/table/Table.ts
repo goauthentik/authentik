@@ -4,6 +4,7 @@ import { PBResponse } from "../../api/client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "./TablePagination";
+import "../EmptyState";
 
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
@@ -69,9 +70,24 @@ export abstract class Table<T> extends LitElement {
         </tr>`;
     }
 
+    renderEmpty(inner?: TemplateResult): TemplateResult {
+        return html`<tbody role="rowgroup">
+            <tr role="row">
+                <td role="cell" colspan="8">
+                    <div class="pf-l-bullseye">
+                        ${inner ? inner : html`<ak-empty-state header="none"></ak-empty-state>`}
+                    </div>
+                </td>
+            </tr>
+        </tbody>`;
+    }
+
     private renderRows(): TemplateResult[] | undefined {
         if (!this.data) {
             return;
+        }
+        if (this.data.pagination.count === 0) {
+            return [this.renderEmpty()];
         }
         return this.data.results.map((item: T, idx: number) => {
             if ((this.expandedRows.length - 1) < idx) {

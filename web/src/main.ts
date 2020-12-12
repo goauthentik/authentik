@@ -13,6 +13,7 @@ import "./elements/sidebar/SidebarUser";
 import "./elements/table/TablePagination";
 
 import "./elements/AdminLoginsChart";
+import "./elements/EmptyState";
 import "./elements/cards/AggregateCard";
 import "./elements/cards/AggregatePromiseCard";
 import "./elements/CodeMirror";
