@@ -15,6 +15,12 @@ class SourceSerializer(ModelSerializer):
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("source", "")
 
+    def to_representation(self, instance: Source):
+        # pyright: reportGeneralTypeIssues=false
+        if instance.__class__ == Source:
+            return super().to_representation(instance)
+        return instance.serializer(instance=instance).data
+
     class Meta:
 
         model = Source
@@ -26,6 +32,7 @@ class SourceViewSet(ReadOnlyModelViewSet):
 
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
+    lookup_field = "slug"
 
     def get_queryset(self):
         return Source.objects.select_subclasses()

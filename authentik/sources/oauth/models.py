@@ -5,6 +5,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
@@ -45,6 +46,12 @@ class OAuthSource(Source):
         from authentik.sources.oauth.forms import OAuthSourceForm
 
         return OAuthSourceForm
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.sources.oauth.api import OAuthSourceSerializer
+
+        return OAuthSourceSerializer
 
     @property
     def ui_login_button(self) -> UILoginButton:

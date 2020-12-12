@@ -9,7 +9,7 @@ import { Route } from "./Route";
 import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
 
-import "../generic/SiteShell";
+import "../../pages/generic/SiteShell";
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {

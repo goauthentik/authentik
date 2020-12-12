@@ -20,7 +20,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton
 from authentik.flows.models import Flow
-from authentik.lib.models import CreatedUpdatedModel
+from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -200,7 +200,7 @@ class Application(PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
-class Source(PolicyBindingModel):
+class Source(SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))

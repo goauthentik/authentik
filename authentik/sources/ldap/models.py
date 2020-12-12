@@ -7,6 +7,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, Connection, Server
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.lib.models import DomainlessURLValidator
@@ -72,6 +73,12 @@ class LDAPSource(Source):
         from authentik.sources.ldap.forms import LDAPSourceForm
 
         return LDAPSourceForm
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.sources.ldap.api import LDAPSourceSerializer
+
+        return LDAPSourceSerializer
 
     def state_cache_prefix(self, suffix: str) -> str:
         """Key by which the ldap source status is saved"""

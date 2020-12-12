@@ -3,7 +3,7 @@ import { html, LitElement, TemplateResult } from "lit-element";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 
 import "../elements/Messages";
-import "../pages/router/RouterOutlet";
+import "../elements/router/RouterOutlet";
 
 export abstract class Interface extends LitElement {
 

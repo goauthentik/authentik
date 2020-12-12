@@ -20,6 +20,11 @@ class PolicyBindingForm(forms.ModelForm):
         queryset=Policy.objects.all().select_subclasses(),
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "target" in self.initial:
+            self.fields["target"].widget = forms.HiddenInput()
+
     class Meta:
 
         model = PolicyBinding

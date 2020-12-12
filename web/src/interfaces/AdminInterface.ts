@@ -1,120 +1,45 @@
 import { customElement } from "lit-element";
 import { User } from "../api/user";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
+import { SLUG_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
-    {
-        name: "Library",
-        path: ["/library/"],
-    },
-    {
-        name: "Monitor",
-        path: ["/audit/audit/"],
-        condition: (): Promise<boolean> => {
-            return User.me().then(u => u.is_superuser);
-        },
-    },
-    {
-        name: "Administration",
-        children: [
-            {
-                name: "Overview",
-                path: ["/administration/overview-ng/"],
-            },
-            {
-                name: "System Tasks",
-                path: ["/administration/tasks/"],
-            },
-            {
-                name: "Applications",
-                path: ["/administration/applications/"],
-            },
-            {
-                name: "Sources",
-                path: ["/administration/sources/"],
-            },
-            {
-                name: "Providers",
-                path: ["/administration/providers/"],
-            },
-            {
-                name: "User Management",
-                children: [
-                    {
-                        name: "User",
-                        path: ["/administration/users/"],
-                    },
-                    {
-                        name: "Groups",
-                        path: ["/administration/groups/"],
-                    },
-                ],
-            },
-            {
-                name: "Outposts",
-                children: [
-                    {
-                        name: "Outposts",
-                        path: ["/administration/outposts/"],
-                    },
-                    {
-                        name: "Service Connections",
-                        path: ["/administration/outposts/service_connections/"],
-                    },
-                ],
-            },
-            {
-                name: "Policies",
-                children: [
-                    {
-                        name: "Policies",
-                        path: ["/administration/policies/"],
-                    },
-                    {
-                        name: "Bindings",
-                        path: ["/administration/policies/bindings/"],
-                    },
-                ],
-            },
-            {
-                name: "Property Mappings",
-                path: ["/administration/property-mappings/"],
-            },
-            {
-                name: "Flows",
-                children: [
-                    {
-                        name: "Flows",
-                        path: ["/administration/flows/"],
-                    },
-                    {
-                        name: "Stages",
-                        path: ["/administration/stages/"],
-                    },
-                    {
-                        name: "Prompts",
-                        path: ["/administration/stages/prompts/"],
-                    },
-                    {
-                        name: "Invitations",
-                        path: ["/administration/stages/invitations/"],
-                    },
-                ],
-            },
-            {
-                name: "Certificates",
-                path: ["/administration/crypto/certificates/"],
-            },
-            {
-                name: "Tokens",
-                path: ["/administration/tokens/"],
-            },
-        ],
-        condition: (): Promise<boolean> => {
-            return User.me().then(u => u.is_superuser);
-        },
-    },
+    new SidebarItem("Library", "/library/"),
+    new SidebarItem("Monitor", "/audit/audit").when((): Promise<boolean> => {
+        return User.me().then(u => u.is_superuser);
+    }),
+    new SidebarItem("Administration").children(
+        new SidebarItem("Overview", "/administration/overview-ng/"),
+        new SidebarItem("System Tasks", "/administration/tasks/"),
+        new SidebarItem("Applications", "/administration/applications/").activeWhen(
+            `^/applications/(?<slug>${SLUG_REGEX})/$`
+        ),
+        new SidebarItem("Sources", "/administration/sources/").activeWhen(
+            `^/sources/(?<slug>${SLUG_REGEX})/$`,
+        ),
+        new SidebarItem("Providers", "/administration/providers/"),
+        new SidebarItem("Flows").children(
+            new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})/$`),
+            new SidebarItem("Stages", "/administration/stages/"),
+            new SidebarItem("Prompts", "/administration/stages/prompts/"),
+            new SidebarItem("Invitations", "/administration/stages/invitations/"),
+        ),
+        new SidebarItem("User Management").children(
+            new SidebarItem("User", "/administration/users/"),
+            new SidebarItem("Groups", "/administration/groups/")
+        ),
+        new SidebarItem("Outposts").children(
+            new SidebarItem("Outposts", "/administration/outposts/"),
+            new SidebarItem("Service Connections", "/administration/outposts/service_connections/")
+        ),
+        new SidebarItem("Policies", "/administration/policies/"),
+        new SidebarItem("Property Mappings", "/administration/property-mappings"),
+        new SidebarItem("Certificates", "/administration/crypto/certificates"),
+        new SidebarItem("Tokens", "/administration/tokens/"),
+    ).when((): Promise<boolean> => {
+        return User.me().then(u => u.is_superuser);
+    })
 ];
 
 @customElement("ak-interface-admin")

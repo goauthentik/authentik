@@ -13,11 +13,58 @@ import { until } from "lit-html/directives/until";
 import "./SidebarBrand";
 import "./SidebarUser";
 
-export interface SidebarItem {
+export class SidebarItem {
     name: string;
-    path?: string[];
-    children?: SidebarItem[];
-    condition?: () => Promise<boolean>;
+    path?: string;
+
+    _children: SidebarItem[];
+    condition: () => Promise<boolean>;
+
+    activeMatchers: RegExp[];
+
+    constructor(name: string, path?: string) {
+        this.name = name;
+        this.path = path;
+        this._children = [];
+        this.condition = async () => true;
+        this.activeMatchers = [];
+        if (this.path) {
+            this.activeMatchers.push(new RegExp(`^${this.path}$`));
+        }
+    }
+
+    children(...children: SidebarItem[]): SidebarItem {
+        this._children = children;
+        return this;
+    }
+
+    activeWhen(...regexp: string[]): SidebarItem {
+        regexp.forEach(r => {
+            this.activeMatchers.push(new RegExp(r));
+        });
+        return this;
+    }
+
+    when(condition: () => Promise<boolean>): SidebarItem {
+        this.condition = condition;
+        return this;
+    }
+
+    hasChildren(): boolean {
+        return this._children.length > 0;
+    }
+
+    isActive(activePath: string): boolean {
+        if (!this.path) {
+            return false;
+        }
+        return this.activeMatchers.some(v => {
+            const match = v.exec(activePath);
+            if (match !== null) {
+                return true;
+            }
+        });
+    }
 }
 
 @customElement("ak-sidebar")
@@ -78,9 +125,9 @@ export class Sidebar extends LitElement {
                 return html``;
             }
         }
-        return html` <li class="pf-c-nav__item ${item.children ? "pf-m-expandable pf-m-expanded" : ""}">
+        return html` <li class="pf-c-nav__item ${item.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
             ${item.path ?
-        html`<a href="#${item.path}" class="pf-c-nav__link ${item.path.some((v) => v === this.activePath) ? "pf-m-current": ""}">
+        html`<a href="#${item.path}" class="pf-c-nav__link ${item.isActive(this.activePath) ? "pf-m-current": ""}">
                         ${item.name}
                     </a>` :
         html`<a class="pf-c-nav__link" aria-expanded="true">
@@ -91,7 +138,7 @@ export class Sidebar extends LitElement {
                     </a>
                     <section class="pf-c-nav__subnav">
                         <ul class="pf-c-nav__simple-list">
-                            ${item.children?.map((i) => until(this.renderItem(i), html``))}
+                            ${item._children.map((i) => until(this.renderItem(i), html``))}
                         </ul>
                     </section>`}
         </li>`;

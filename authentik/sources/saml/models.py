@@ -7,6 +7,7 @@ from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source
 from authentik.core.types import UILoginButton
@@ -142,6 +143,12 @@ class SAMLSource(Source):
         from authentik.sources.saml.forms import SAMLSourceForm
 
         return SAMLSourceForm
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.sources.saml.api import SAMLSourceSerializer
+
+        return SAMLSourceSerializer
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""

@@ -20,7 +20,7 @@
         <div class="pf-l-stack__item">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <form action="" method="post" class="pf-c-form">
+                    <form id="delete-form" action="" method="post" class="pf-c-form">
                         {% csrf_token %}
                         <p>
                             {% blocktrans with object_type=object|verbose_name name=object %}
@@ -35,7 +35,7 @@
     </div>
 </section>
 <footer class="pf-c-modal-box__footer">
-    <input class="pf-c-button pf-m-danger" type="submit" value="{% trans 'Delete' %}" />
+    <input class="pf-c-button pf-m-danger" type="submit" form="delete-form" value="{% trans 'Delete' %}" />
     <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Back" %}</a>
 </footer>
 {% endblock %}

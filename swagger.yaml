@@ -1129,7 +1129,7 @@ paths:
       tags:
         - flows
     parameters: []
-  /flows/instances/{flow_uuid}/:
+  /flows/instances/{slug}/:
     get:
       operationId: flows_instances_read
       description: Flow Viewset
@@ -1183,12 +1183,13 @@ paths:
       tags:
         - flows
     parameters:
-      - name: flow_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this Flow.
+        description: Visible in the URL.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
@@ -3788,7 +3789,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/all/{pbm_uuid}/:
+  /sources/all/{slug}/:
     get:
       operationId: sources_all_read
       description: Source Viewset
@@ -3801,12 +3802,13 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/ldap/:
     get:
       operationId: sources_ldap_list
@@ -6749,6 +6751,30 @@ definitions:
         description: Optional Private Key. If this is set, you can use this keypair
           for encryption.
         type: string
+  Stage:
+    title: Stage obj
+    description: Stage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      __type__:
+        title: 'type  '
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
   FlowStageBinding:
     description: FlowStageBinding Serializer
     required:
@@ -6762,6 +6788,10 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
+        readOnly: true
       target:
         title: Target
         type: string
@@ -6770,6 +6800,8 @@ definitions:
         title: Stage
         type: string
         format: uuid
+      stage_obj:
+        $ref: '#/definitions/Stage'
       evaluate_on_plan:
         title: Evaluate on plan
         description: Evaluate policies during the Flow planning process. Disable this
@@ -6804,6 +6836,10 @@ definitions:
         title: Flow uuid
         type: string
         format: uuid
+        readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
         readOnly: true
       name:
         title: Name
@@ -8093,29 +8129,6 @@ definitions:
           \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
         type: string
         minLength: 1
-  Stage:
-    description: Stage Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      __type__:
-        title: 'type  '
-        type: string
-        readOnly: true
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
   CaptchaStage:
     description: CaptchaStage Serializer
     required:

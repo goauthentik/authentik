@@ -1,10 +1,12 @@
 import { html } from "lit-html";
-import { Route, SLUG_REGEX } from "./pages/router/Route";
+import { Route, SLUG_REGEX } from "./elements/router/Route";
 
 import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
+import "./pages/sources/SourceViewPage";
+import "./pages/flows/FlowViewPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -15,5 +17,11 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/applications/$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<ak-application-view .args=${args}></ak-application-view>`;
+    }),
+    new Route(new RegExp(`^/sources/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
+        return html`<ak-source-view .args=${args}></ak-source-view>`;
+    }),
+    new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
+        return html`<ak-flow-view .args=${args}></ak-flow-view>`;
     }),
 ];

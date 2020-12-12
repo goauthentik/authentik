@@ -104,6 +104,7 @@ export class ModalButton extends LitElement {
                             this.dispatchEvent(
                                 new CustomEvent("ak-refresh", {
                                     bubbles: true,
+                                    composed: true,
                                 })
                             );
                         }
