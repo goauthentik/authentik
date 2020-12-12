@@ -56,6 +56,10 @@ export class SiteShell extends LitElement {
     }
 
     loadContent(): void {
+        const bodySlot = this.querySelector("[slot=body]");
+        if (!bodySlot) {
+            return;
+        }
         if (!this._url) {
             return;
         }
@@ -74,47 +78,76 @@ export class SiteShell extends LitElement {
                 throw new SentryIgnoredError("Request failed");
             })
             .then((r) => r.text())
-            .then((t) => {
-                const bodySlot = this.querySelector("[slot=body]");
-                if (!bodySlot) {
-                    return;
-                }
-                bodySlot.innerHTML = t;
+            .then((text) => {
+                bodySlot.innerHTML = text;
+                this.updateHandlers();
             })
             .then(() => {
-                // Ensure anchors only change the hash
-                this.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
-                    if (a.href === "") {
-                        return;
-                    }
-                    try {
-                        const url = new URL(a.href);
-                        const qs = url.search || "";
-                        a.href = `#${url.pathname}${qs}`;
-                    } catch (e) {
-                        console.debug(`authentik/site-shell: error ${e}`);
-                        a.href = `#${a.href}`;
-                    }
-                });
-                // Create refresh buttons
-                this.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
-                    rt.addEventListener("click", () => {
-                        this.loadContent();
-                    });
-                });
-                // Make get forms (search bar) notify us on submit so we can change the hash
-                this.querySelectorAll("form").forEach((f) => {
-                    f.addEventListener("submit", (e) => {
-                        e.preventDefault();
-                        const formData = new FormData(f);
-                        const qs = new URLSearchParams((<any>formData)).toString(); // eslint-disable-line
-                        window.location.hash = `#${this._url}?${qs}`;
-                    });
-                });
                 setTimeout(() => {
                     this.loading = false;
                 }, 100);
             });
+    }
+
+    updateHandlers(): void {
+        // Ensure anchors only change the hash
+        this.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
+            if (a.href === "") {
+                return;
+            }
+            try {
+                const url = new URL(a.href);
+                const qs = url.search || "";
+                a.href = `#${url.pathname}${qs}`;
+            } catch (e) {
+                console.debug(`authentik/site-shell: error ${e}`);
+                a.href = `#${a.href}`;
+            }
+        });
+        // Create refresh buttons
+        this.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
+            rt.addEventListener("click", () => {
+                this.loadContent();
+            });
+        });
+        // Make get forms (search bar) notify us on submit so we can change the hash
+        this.querySelectorAll<HTMLFormElement>("form[method=get]").forEach((form) => {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                const qs = new URLSearchParams((<any>formData)).toString(); // eslint-disable-line
+                window.location.hash = `#${this._url}?${qs}`;
+            });
+        });
+        // Make forms with POST Method have a correct action set
+        this.querySelectorAll<HTMLFormElement>("form[method=post]").forEach((form) => {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+                fetch(this._url ? this._url : form.action, {
+                    method: form.method,
+                    body: formData,
+                })
+                    .then((response) => {
+                        return response.text();
+                    })
+                    .then((data) => {
+                        const bodySlot = this.querySelector("[slot=body]");
+                        if (!bodySlot) {
+                            return;
+                        }
+                        bodySlot.innerHTML = data;
+                        this.updateHandlers();
+                    })
+                    .catch((e) => {
+                        showMessage({
+                            level_tag: "error",
+                            message: "Unexpected error"
+                        });
+                        console.log(e);
+                    });
+            });
+        });
     }
 
     render(): TemplateResult {
