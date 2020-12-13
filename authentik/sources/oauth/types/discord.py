@@ -11,7 +11,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 class DiscordOAuthRedirect(OAuthRedirect):
     """Discord OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source):
+    def get_additional_parameters(self, source):  # pragma: no cover
         return {
             "scope": "email identify",
         }

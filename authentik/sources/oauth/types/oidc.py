@@ -11,7 +11,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 class OpenIDConnectOAuthRedirect(OAuthRedirect):
     """OpenIDConnect OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source: OAuthSource):
+    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
             "scope": "openid email profile",
         }

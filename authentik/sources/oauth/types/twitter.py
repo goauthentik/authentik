@@ -18,6 +18,6 @@ class TwitterOAuthCallback(OAuthCallback):
     ) -> Dict[str, Any]:
         return {
             "username": info.get("screen_name"),
-            "email": info.get("email"),
+            "email": info.get("email", None),
             "name": info.get("name"),
         }

@@ -11,7 +11,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 class GoogleOAuthRedirect(OAuthRedirect):
     """Google OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source):
+    def get_additional_parameters(self, source):  # pragma: no cover
         return {
             "scope": "email profile",
         }

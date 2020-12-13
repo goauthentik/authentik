@@ -1,15 +1,14 @@
 """OAuth Source tests"""
 from django.shortcuts import reverse
-from django.test import Client, TestCase
+from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
 
 
-class OAuthSourceTests(TestCase):
+class TestOAuthSource(TestCase):
     """OAuth Source tests"""
 
     def setUp(self):
-        self.client = Client()
         self.source = OAuthSource.objects.create(
             name="test",
             slug="test",
