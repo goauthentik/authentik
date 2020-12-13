@@ -20,6 +20,8 @@ class TestTimeUtils(TestCase):
         """Test invalid expression"""
         with self.assertRaises(ValueError):
             timedelta_from_string("foo")
+        with self.assertRaises(ValueError):
+            timedelta_from_string("bar=baz")
 
     def test_validation(self):
         """Test Django model field validator"""

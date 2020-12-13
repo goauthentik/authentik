@@ -35,4 +35,6 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
         if key.lower() not in ALLOWED_KEYS:
             continue
         kwargs[key.lower()] = float(value)
+    if len(kwargs) < 1:
+        raise ValueError("No valid keys to pass to timedelta")
     return datetime.timedelta(**kwargs)
