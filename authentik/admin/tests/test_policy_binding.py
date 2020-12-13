@@ -1,11 +1,13 @@
 """admin tests"""
 from uuid import uuid4
 
+from django import forms
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from authentik.admin.views.policies_bindings import PolicyBindingCreateView
 from authentik.core.models import Application
+from authentik.policies.forms import PolicyBindingForm
 
 
 class TestPolicyBindingView(TestCase):
@@ -32,3 +34,10 @@ class TestPolicyBindingView(TestCase):
         request = self.factory.get("/", {"target": target.pk.hex})
         view = PolicyBindingCreateView(request=request)
         self.assertEqual(view.get_initial(), {"target": target, "order": 0})
+
+        self.assertTrue(
+            isinstance(
+                PolicyBindingForm(initial={"target": "foo"}).fields["target"].widget,
+                forms.HiddenInput,
+            )
+        )
