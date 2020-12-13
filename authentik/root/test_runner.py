@@ -4,7 +4,7 @@ from django.conf import settings
 from authentik.lib.config import CONFIG
 
 
-class PytestTestRunner:
+class PytestTestRunner:  # pragma: no cover
     """Runs pytest to discover and run tests."""
 
     def __init__(self, verbosity=1, failfast=False, keepdb=False, **_):
