@@ -276,6 +276,83 @@ class TestFlowExecutor(TestCase):
             {"type": "redirect", "to": reverse("authentik_core:shell")},
         )
 
+    def test_reevaluate_keep(self):
+        """Test planner with re-evaluate (everything is kept)"""
+        flow = Flow.objects.create(
+            name="test-default-context",
+            slug="test-default-context",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        true_policy = DummyPolicy.objects.create(result=True, wait_min=1, wait_max=2)
+
+        binding = FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+        )
+        binding2 = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name="dummy2"),
+            order=1,
+            re_evaluate_policies=True,
+        )
+        binding3 = FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name="dummy3"), order=2
+        )
+
+        PolicyBinding.objects.create(policy=true_policy, target=binding2, order=0)
+
+        # Here we patch the dummy policy to evaluate to true so the stage is included
+        with patch(
+            "authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE
+        ):
+
+            exec_url = reverse(
+                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+            )
+            # First request, run the planner
+            response = self.client.get(exec_url)
+
+            self.assertEqual(response.status_code, 200)
+            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+
+            self.assertEqual(plan.stages[0], binding.stage)
+            self.assertEqual(plan.stages[1], binding2.stage)
+            self.assertEqual(plan.stages[2], binding3.stage)
+
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+            self.assertIsInstance(plan.markers[2], StageMarker)
+
+            # Second request, this passes the first dummy stage
+            response = self.client.post(exec_url)
+            self.assertEqual(response.status_code, 302)
+
+            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+
+            self.assertEqual(plan.stages[0], binding2.stage)
+            self.assertEqual(plan.stages[1], binding3.stage)
+
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], StageMarker)
+
+            # Third request, this passes the first dummy stage
+            response = self.client.post(exec_url)
+            self.assertEqual(response.status_code, 302)
+
+            plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+
+            self.assertEqual(plan.stages[0], binding3.stage)
+
+            self.assertIsInstance(plan.markers[0], StageMarker)
+
+        # third request, this should trigger the re-evaluate
+        # We do this request without the patch, so the policy results in false
+        response = self.client.post(exec_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {"type": "redirect", "to": reverse("authentik_core:shell")},
+        )
+
     def test_reevaluate_remove_consecutive(self):
         """Test planner with re-evaluate (consecutive stages are removed)"""
         flow = Flow.objects.create(
