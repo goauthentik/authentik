@@ -61,7 +61,7 @@ class DataclassEncoder(JSONEncoder):
             return asdict(o)
         if isinstance(o, UUID):
             return str(o)
-        return super().default(o)
+        return super().default(o)  # pragma: no cover
 
 
 class EntryInvalidError(SentryIgnoredException):

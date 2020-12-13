@@ -1,4 +1,7 @@
 """flow views tests"""
+from django.test.client import RequestFactory
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.core.models import User
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse
@@ -9,8 +12,8 @@ from django.utils.encoding import force_str
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.flows.planner import FlowPlan
-from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN
+from authentik.flows.planner import FlowPlan, FlowPlanner
+from authentik.flows.views import FlowExecutorView, NEXT_ARG_NAME, SESSION_KEY_PLAN
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.http import AccessDeniedResponse
@@ -35,7 +38,7 @@ class TestFlowExecutor(TestCase):
     """Test views logic"""
 
     def setUp(self):
-        self.client = Client()
+        self.request_factory = RequestFactory()
 
     def test_existing_plan_diff_flow(self):
         """Check that a plan for a different flow cancels the current plan"""
@@ -428,3 +431,31 @@ class TestFlowExecutor(TestCase):
             force_str(response.content),
             {"type": "redirect", "to": reverse("authentik_core:shell")},
         )
+
+    def test_stageview_user_identifier(self):
+        """Test PLAN_CONTEXT_PENDING_USER_IDENTIFIER"""
+        flow = Flow.objects.create(
+            name="test-default-context",
+            slug="test-default-context",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+        )
+
+        ident = "test-identifier"
+
+        user = User.objects.create(username="test-user")
+        request = self.request_factory.get(
+            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = user
+        planner = FlowPlanner(flow)
+        plan = planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER_IDENTIFIER: ident})
+
+        executor = FlowExecutorView()
+        executor.plan = plan
+        executor.flow = flow
+
+        stage_view = StageView(executor)
+        self.assertEqual(ident, stage_view.get_context_data()["user"].username)
