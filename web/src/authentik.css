@@ -154,6 +154,9 @@ select[multiple] {
         background-color: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
+    .pf-c-form-control[readonly] {
+        background-color: var(--ak-dark-background-light);
+    }
     .pf-c-button.pf-m-control {
         --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter) var(--ak-dark-background-lighter) var(--pf-c-button--m-control--after--BorderBottomColor) var(--ak-dark-background-lighter);
         background-color: var(--ak-dark-background-light);
