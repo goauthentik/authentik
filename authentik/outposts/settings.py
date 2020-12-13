@@ -12,4 +12,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour="*"),
         "options": {"queue": "authentik_scheduled"},
     },
+    "outpost_token_ensurer": {
+        "task": "authentik.outposts.tasks.outpost_token_ensurer",
+        "schedule": crontab(minute="*/5"),
+        "options": {"queue": "authentik_scheduled"},
+    },
 }

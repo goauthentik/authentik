@@ -90,6 +90,16 @@ def outpost_pre_delete(outpost_pk: str):
             ProxyKubernetesController(outpost, service_connection).down()
 
 
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def outpost_token_ensurer(self: MonitoredTask):
+    """Periodically ensure that all Outposts have valid Service Accounts
+    and Tokens"""
+    all_outposts = Outpost.objects.all()
+    for outpost in all_outposts:
+        _ = outpost.token
+    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, f"Successfully checked {len(all_outposts)} Outposts."))
+
+
 @CELERY_APP.task()
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
