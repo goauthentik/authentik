@@ -1,5 +1,6 @@
 """API Authentication"""
 from base64 import b64decode
+from binascii import Error
 from typing import Any, Optional, Tuple, Union
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
@@ -24,7 +25,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
             return None
     try:
         auth_credentials = b64decode(auth_credentials.encode()).decode()
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, Error):
         return None
     # Accept credentials with username and without
     if ":" in auth_credentials:
