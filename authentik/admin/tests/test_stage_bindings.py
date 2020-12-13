@@ -1,4 +1,5 @@
 """admin tests"""
+from uuid import uuid4
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -18,7 +19,13 @@ class TestStageBindingView(TestCase):
         view = StageBindingCreateView(request=request)
         self.assertEqual(view.get_initial(), {})
 
-    def test_with_param(self):
+    def test_with_params_invalid(self):
+        """Test StageBindingCreateView with invalid get params"""
+        request = self.factory.get("/", {"target": uuid4()})
+        view = StageBindingCreateView(request=request)
+        self.assertEqual(view.get_initial(), {})
+
+    def test_with_params(self):
         """Test StageBindingCreateView with get params"""
         target = Flow.objects.create(name="test", slug="test")
         request = self.factory.get("/", {"target": target.pk.hex})

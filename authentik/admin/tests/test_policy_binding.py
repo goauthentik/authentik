@@ -1,4 +1,5 @@
 """admin tests"""
+from uuid import uuid4
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -18,7 +19,13 @@ class TestPolicyBindingView(TestCase):
         view = PolicyBindingCreateView(request=request)
         self.assertEqual(view.get_initial(), {})
 
-    def test_with_param(self):
+    def test_with_params_invalid(self):
+        """Test PolicyBindingCreateView with invalid get params"""
+        request = self.factory.get("/", {"target": uuid4()})
+        view = PolicyBindingCreateView(request=request)
+        self.assertEqual(view.get_initial(), {})
+
+    def test_with_params(self):
         """Test PolicyBindingCreateView with get params"""
         target = Application.objects.create(name="test")
         request = self.factory.get("/", {"target": target.pk.hex})
