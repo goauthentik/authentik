@@ -38,6 +38,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pytest.ini /
+COPY ./xml /
 COPY ./manage.py /
 COPY ./lifecycle/ /lifecycle
 

@@ -1,5 +1,6 @@
 """admin tests"""
 from uuid import uuid4
+
 from django.test import TestCase
 from django.test.client import RequestFactory
 

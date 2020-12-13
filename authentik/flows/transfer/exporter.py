@@ -11,7 +11,7 @@ from authentik.flows.transfer.common import (
     FlowBundle,
     FlowBundleEntry,
 )
-from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
+from authentik.policies.models import Policy, PolicyBinding
 from authentik.stages.prompt.models import PromptStage
 
 

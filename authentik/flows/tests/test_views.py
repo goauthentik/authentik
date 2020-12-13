@@ -1,19 +1,19 @@
 """flow views tests"""
-from django.test.client import RequestFactory
-from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
-from authentik.core.models import User
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import reverse
-from django.test import Client, TestCase
+from django.test import TestCase
+from django.test.client import RequestFactory
 from django.utils.encoding import force_str
 
+from authentik.core.models import User
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan, FlowPlanner
-from authentik.flows.views import FlowExecutorView, NEXT_ARG_NAME, SESSION_KEY_PLAN
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.http import AccessDeniedResponse
@@ -451,7 +451,9 @@ class TestFlowExecutor(TestCase):
         )
         request.user = user
         planner = FlowPlanner(flow)
-        plan = planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER_IDENTIFIER: ident})
+        plan = planner.plan(
+            request, default_context={PLAN_CONTEXT_PENDING_USER_IDENTIFIER: ident}
+        )
 
         executor = FlowExecutorView()
         executor.plan = plan
