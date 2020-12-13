@@ -139,7 +139,7 @@ class OAuthAuthorizationParams:
         is_open_id = SCOPE_OPENID in self.scope
 
         # Redirect URI validation.
-        if is_open_id and not self.redirect_uri:
+        if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError()
         if self.redirect_uri.lower() not in [
