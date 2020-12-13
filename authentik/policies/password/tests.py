@@ -9,6 +9,21 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 class TestPasswordPolicy(TestCase):
     """Test Password Policy"""
 
+    def test_invalid(self):
+        """Test without password"""
+        policy = PasswordPolicy.objects.create(
+            name="test_invalid",
+            amount_uppercase=1,
+            amount_lowercase=2,
+            amount_symbols=3,
+            length_min=24,
+            error_message="test message",
+        )
+        request = PolicyRequest(get_anonymous_user())
+        result: PolicyResult = policy.passes(request)
+        self.assertFalse(result.passing)
+        self.assertEqual(result.messages[0], "Password not set in context")
+
     def test_false(self):
         """Failing password case"""
         policy = PasswordPolicy.objects.create(
