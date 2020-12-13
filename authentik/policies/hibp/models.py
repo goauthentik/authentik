@@ -50,6 +50,7 @@ class HaveIBeenPwendPolicy(Policy):
                 field=self.password_field,
                 fields=request.context.keys(),
             )
+            return PolicyResult(False, _("Password not set in context"))
         password = request.context[self.password_field]
 
         pw_hash = sha1(password.encode("utf-8")).hexdigest()  # nosec
