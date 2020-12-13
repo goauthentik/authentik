@@ -22,16 +22,15 @@ class CertificateKeyPairSerializer(ModelSerializer):
     def validate_key_data(self, value):
         """Verify that input is a valid PEM RSA Key"""
         # Since this field is optional, data can be empty.
-        if value == "":
-            return value
-        try:
-            load_pem_private_key(
-                str.encode("\n".join([x.strip() for x in value.split("\n")])),
-                password=None,
-                backend=default_backend(),
-            )
-        except ValueError:
-            raise ValidationError("Unable to load private key.")
+        if value != "":
+            try:
+                load_pem_private_key(
+                    str.encode("\n".join([x.strip() for x in value.split("\n")])),
+                    password=None,
+                    backend=default_backend(),
+                )
+            except ValueError:
+                raise ValidationError("Unable to load private key.")
         return value
 
     class Meta:
