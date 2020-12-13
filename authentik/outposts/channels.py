@@ -2,8 +2,9 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
+from channels.exceptions import DenyConnection
 from dacite import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
@@ -39,18 +40,16 @@ class WebsocketMessage:
 class OutpostConsumer(AuthJsonConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
-    outpost: Outpost
+    outpost: Optional[Outpost] = None
 
     def connect(self):
-        if not super().connect():
-            return
+        super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
         outpost = get_objects_for_user(
             self.user, "authentik_outposts.view_outpost"
         ).filter(pk=uuid)
         if not outpost.exists():
-            self.close()
-            return
+            raise DenyConnection()
         self.accept()
         self.outpost = outpost.first()
         OutpostState(
@@ -60,7 +59,8 @@ class OutpostConsumer(AuthJsonConsumer):
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
-        OutpostState.for_channel(self.outpost, self.channel_name).delete()
+        if self.outpost:
+            OutpostState.for_channel(self.outpost, self.channel_name).delete()
         LOGGER.debug("removed channel from cache", channel_name=self.channel_name)
 
     def receive_json(self, content: Data):

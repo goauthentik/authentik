@@ -97,7 +97,12 @@ def outpost_token_ensurer(self: MonitoredTask):
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, f"Successfully checked {len(all_outposts)} Outposts."))
+    self.set_status(
+        TaskResult(
+            TaskResultStatus.SUCCESSFUL,
+            [f"Successfully checked {len(all_outposts)} Outposts."],
+        )
+    )
 
 
 @CELERY_APP.task()

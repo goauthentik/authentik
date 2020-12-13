@@ -1,4 +1,5 @@
 """Channels base classes"""
+from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from structlog import get_logger
 
@@ -17,16 +18,13 @@ class AuthJsonConsumer(JsonWebsocketConsumer):
         headers = dict(self.scope["headers"])
         if b"authorization" not in headers:
             LOGGER.warning("WS Request without authorization header")
-            self.close()
-            return False
+            raise DenyConnection()
 
         raw_header = headers[b"authorization"]
 
         token = token_from_header(raw_header)
         if not token:
             LOGGER.warning("Failed to authenticate")
-            self.close()
-            return False
+            raise DenyConnection()
 
         self.user = token.user
-        return True
