@@ -83,7 +83,10 @@ class OutpostDockerTests(TestCase):
     def tearDown(self) -> None:
         super().tearDown()
         self.container.kill()
-        rmtree(self.ssl_folder)
+        try:
+            rmtree(self.ssl_folder)
+        except PermissionError:
+            pass
 
     def test_docker_controller(self):
         """test that deployment requires update"""

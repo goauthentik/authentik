@@ -7087,6 +7087,9 @@ definitions:
         type: boolean
       url:
         title: Url
+        description: Can be in the format of 'unix://<path>' when connecting to a
+          local docker daemon, or 'https://<hostname>:2376' when connecting to a remote
+          system.
         type: string
         minLength: 1
       tls_verification:
