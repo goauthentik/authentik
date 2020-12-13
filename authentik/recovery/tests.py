@@ -32,3 +32,10 @@ class TestRecovery(TestCase):
             reverse("authentik_recovery:use-token", kwargs={"key": token.key})
         )
         self.assertEqual(int(self.client.session["_auth_user_id"]), token.user.pk)
+
+    def test_recovery_view_invalid(self):
+        """Test recovery view with invalid token"""
+        response = self.client.get(
+            reverse("authentik_recovery:use-token", kwargs={"key": "abc"})
+        )
+        self.assertEqual(response.status_code, 404)
