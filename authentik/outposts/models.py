@@ -140,7 +140,14 @@ class OutpostServiceConnection(models.Model):
 class DockerServiceConnection(OutpostServiceConnection):
     """Service Connection to a Docker endpoint"""
 
-    url = models.TextField()
+    url = models.TextField(
+        help_text=_(
+            (
+                "Can be in the format of 'unix://<path>' when connecting to a local docker daemon, "
+                "or 'https://<hostname>:2376' when connecting to a remote system."
+            )
+        )
+    )
     tls_verification = models.ForeignKey(
         CertificateKeyPair,
         null=True,

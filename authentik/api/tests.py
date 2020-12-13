@@ -11,9 +11,6 @@ from authentik.core.models import Token, TokenIntents
 class TestAPIAuth(TestCase):
     """Test API Authentication"""
 
-    def setUp(self) -> None:
-        super().setUp()
-
     def test_valid(self):
         """Test valid token"""
         token = Token.objects.create(
