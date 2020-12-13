@@ -12,7 +12,8 @@ After a long back and forth, we've finally switched to a more permanent name. Wh
     In this initial release, this brings features such as a refresh button, a generally better User experience due to shorter loading times
     and fewer visual context changes.
 
-- The web interface now has a darkmode, which is enabled automatically based on your Operating system.
+- The web interface now has a darkmode, which is enabled automatically based on your Operating system darkmode.
+- Application Icons can now be uploaded directly to authentik, rather than just being loaded from a URL
 
 ## Smaller changes
 
