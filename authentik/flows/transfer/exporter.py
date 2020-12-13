@@ -31,11 +31,6 @@ class FlowExporter:
 
     def _prepare_pbm(self):
         self.pbm_uuids = [self.flow.pbm_uuid]
-        for stage_subclass in Stage.__subclasses__():
-            if issubclass(stage_subclass, PolicyBindingModel):
-                self.pbm_uuids += stage_subclass.objects.filter(
-                    flow=self.flow
-                ).values_list("pbm_uuid", flat=True)
         self.pbm_uuids += FlowStageBinding.objects.filter(target=self.flow).values_list(
             "pbm_uuid", flat=True
         )
