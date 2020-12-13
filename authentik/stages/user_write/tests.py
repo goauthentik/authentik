@@ -87,6 +87,7 @@ class TestUserWriteStage(TestCase):
             "username": "test-user-new",
             "password": new_password,
             "attribute_some-custom-attribute": "test",
+            "some_ignored_attribute": "bar"
         }
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -109,6 +110,7 @@ class TestUserWriteStage(TestCase):
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["some-custom-attribute"], "test")
+        self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
     @patch(
         "authentik.flows.views.to_stage_response",
