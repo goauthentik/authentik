@@ -87,7 +87,7 @@ class TestUserWriteStage(TestCase):
             "username": "test-user-new",
             "password": new_password,
             "attribute_some-custom-attribute": "test",
-            "some_ignored_attribute": "bar"
+            "some_ignored_attribute": "bar",
         }
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

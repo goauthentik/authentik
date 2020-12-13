@@ -1,11 +1,11 @@
 """test admin api"""
 from json import loads
-from django.shortcuts import reverse
 
-from authentik import __version__
+from django.shortcuts import reverse
 from django.test import TestCase
 
-from authentik.core.models import User, Group
+from authentik import __version__
+from authentik.core.models import Group, User
 
 
 class TestAdminAPI(TestCase):

@@ -22,7 +22,6 @@ class AuthentikOutpostConfig(AppConfig):
 
     name = "authentik.outposts"
     label = "authentik_outposts"
-    mountpoint = "outposts/"
     verbose_name = "authentik Outpost"
 
     def ready(self):
