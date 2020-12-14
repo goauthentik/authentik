@@ -105,16 +105,7 @@ class ASGILogger:
             # https://code.djangoproject.com/ticket/31508
             # https://github.com/encode/uvicorn/issues/266
             return
-        try:
-            await self.app(scope, receive, send_hooked)
-        except TypeError as exc:
-            # https://github.com/encode/uvicorn/issues/244
-            if exc.args == (
-                "An asyncio.Future, a coroutine or an awaitable is required",
-            ):
-                pass
-            else:
-                raise exc
+        await self.app(scope, receive, send_hooked)
 
     def _get_ip(self) -> str:
         client_ip = None
