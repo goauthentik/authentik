@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, List, Optional
 from django.http import HttpRequest
 from structlog import get_logger
 
-from authentik.events.models import Event, EventAction, model_to_dict
+from authentik.events.models import Event, EventAction, model_to_dict, sanitize_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
@@ -22,7 +22,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     _messages: List[str]
 
-    policy: Optional["ExpressionPolicy"]
+    policy: Optional["ExpressionPolicy"] = None
 
     def __init__(self, policy_name: str):
         super().__init__()
@@ -63,20 +63,17 @@ class PolicyEvaluator(BaseEvaluator):
             context=self._context["context"],
         )
         if self.policy:
-            event.context["model"] = model_to_dict(self.policy)
+            event.context["model"] = sanitize_dict(model_to_dict(self.policy))
         if "http_request" in self._context:
             event.from_http(self._context["http_request"])
         else:
             event.save()
-        raise exc
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.
         Messages can be added using 'do ak_message()'."""
         try:
             result = super().evaluate(expression_source)
-        except (ValueError, SyntaxError) as exc:
-            return PolicyResult(False, str(exc))
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))

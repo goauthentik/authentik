@@ -80,11 +80,15 @@ class BaseEvaluator:
             span: Span
             span.set_data("expression", expression_source)
             param_keys = self._context.keys()
-            ast_obj = compile(
-                self.wrap_expression(expression_source, param_keys),
-                self._filename,
-                "exec",
-            )
+            try:
+                ast_obj = compile(
+                    self.wrap_expression(expression_source, param_keys),
+                    self._filename,
+                    "exec",
+                )
+            except (SyntaxError, ValueError) as exc:
+                self.handle_error(exc, expression_source)
+                raise exc
             try:
                 _locals = self._context
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
@@ -94,14 +98,14 @@ class BaseEvaluator:
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
             except Exception as exc:  # pylint: disable=broad-except
-                return self.handle_error(exc, expression_source)
+                self.handle_error(exc, expression_source)
+                raise exc
             return result
 
     # pylint: disable=unused-argument
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
         LOGGER.warning("Expression error", exc=exc)
-        raise exc
 
     def validate(self, expression: str) -> bool:
         """Validate expression's syntax, raise ValidationError if Syntax is invalid"""
