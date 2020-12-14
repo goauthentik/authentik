@@ -59,6 +59,7 @@ func getCommonOptions() *options.Options {
 }
 
 func doGlobalSetup(config map[string]interface{}) {
+	log.SetFormatter(&log.JSONFormatter{})
 	switch config[ConfigLogLevel].(string) {
 	case "debug":
 		log.SetLevel(log.DebugLevel)
