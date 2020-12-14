@@ -22,7 +22,7 @@ require (
 	github.com/oauth2-proxy/oauth2-proxy v1.1.2-0.20200817154438-5fa5b3186f39
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	github.com/pquerna/cachecontrol v0.0.0-20200819021114-67c6ae64274f // indirect
-	github.com/recws-org/recws v1.2.1
+	github.com/recws-org/recws v1.2.2
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/afero v1.4.1 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
