@@ -46,7 +46,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
                 "authentik_host_insecure": b64string(
                     str(self.controller.outpost.config.authentik_host_insecure)
                 ),
-                "token": b64string(self.controller.outpost.token.token_uuid.hex),
+                "token": b64string(self.controller.outpost.token.key),
             },
         )
 
