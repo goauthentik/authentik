@@ -72,7 +72,7 @@ services:
       traefik.http.services.static-service.loadbalancer.healthcheck.path: /
       traefik.http.services.static-service.loadbalancer.server.port: '80'
     volumes:
-      - ./media:/media
+      - ./media:/usr/share/nginx/html/media
   traefik:
     image: traefik:2.3
     command:
@@ -85,7 +85,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
       - "127.0.0.1:8080:8080"
     networks:
