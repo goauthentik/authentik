@@ -36,6 +36,7 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/BeryJu/authentik v0.0.0-20201213234502-f0f32453882b h1:tLc7ERt2fWSu14nXdsER4EP62KUPXwAB0OeLVAA4Rx0=
+github.com/BeryJu/authentik v0.0.0-20201214075318-41f9097592da h1:XB/MCgb0K+ngEETjBYKGiXcN2des8YtANetYboeT4Lg=
 github.com/Bose/minisentinel v0.0.0-20200130220412-917c5a9223bb h1:ZVN4Iat3runWOFLaBCDVU5a9X/XikSRBosye++6gojw=
 github.com/Bose/minisentinel v0.0.0-20200130220412-917c5a9223bb/go.mod h1:WsAABbY4HQBgd3mGuG4KMNTbHJCPvx9IVBHzysbknss=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
@@ -594,6 +595,8 @@ github.com/prometheus/procfs v0.0.0-20190507164030-5867b95ac084/go.mod h1:TjEm7z
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
 github.com/recws-org/recws v1.2.1 h1:bYocRkAsS71hlQ9AMCVS+hYXHEgEyQsAbYKXf394gZ8=
 github.com/recws-org/recws v1.2.1/go.mod h1:SxTgwQU/jqYSzEgUh4ifDxq/7enApS150f8nZ5Sczk8=
+github.com/recws-org/recws v1.2.2 h1:TkyyCEgMjsr1D2fnutY/DPhGnUKCLpJeXDAGy6rLmGE=
+github.com/recws-org/recws v1.2.2/go.mod h1:SxTgwQU/jqYSzEgUh4ifDxq/7enApS150f8nZ5Sczk8=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
 github.com/rogpeppe/go-internal v1.1.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rogpeppe/go-internal v1.2.2/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
