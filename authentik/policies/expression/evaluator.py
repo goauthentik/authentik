@@ -1,24 +1,28 @@
 """authentik expression policy evaluator"""
 from ipaddress import ip_address, ip_network
 from traceback import format_tb
-from typing import List
+from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
 from structlog import get_logger
 
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, model_to_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+if TYPE_CHECKING:
+    from authentik.policies.expression.models import ExpressionPolicy
 
 
 class PolicyEvaluator(BaseEvaluator):
     """Validate and evaluate python-based expressions"""
 
     _messages: List[str]
+
+    policy: Optional["ExpressionPolicy"]
 
     def __init__(self, policy_name: str):
         super().__init__()
@@ -58,6 +62,8 @@ class PolicyEvaluator(BaseEvaluator):
             error=error_string,
             context=self._context["context"],
         )
+        if self.policy:
+            event.context["model"] = model_to_dict(self.policy)
         if "http_request" in self._context:
             event.from_http(self._context["http_request"])
         else:
