@@ -14,7 +14,6 @@ module.exports = {
                 alt: "authentik logo",
                 src: "img/icon_left_brand.svg",
             },
-            hideOnScroll: true,
             items: [
                 {
                     to: "docs/",
