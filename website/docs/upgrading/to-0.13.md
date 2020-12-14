@@ -35,6 +35,13 @@ If you decided to rename the folder you're running the docker-compose file from,
 
 The only manual change you have to do is replace the `PASSBOOK_` prefix in your `.env` file, so `PASSBOOK_SECRET_KEY` gets changed to `AUTHENTIK_SECRET_KEY`.
 
+Additionally, the database name and username have to be changed, so add this block to your `.env` file:
+
+```
+PG_USER=passbook
+PG_DB=passbook
+```
+
 Afterwards, you can simply run `docker-compose up -d` and then the normal upgrade command of `docker-compose run --rm server migrate`.
 
 ### Kubernetes
