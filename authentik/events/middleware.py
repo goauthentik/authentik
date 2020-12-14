@@ -1,4 +1,4 @@
-"""Audit middleware"""
+"""Events middleware"""
 from functools import partial
 from typing import Callable
 
@@ -7,9 +7,9 @@ from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 
-from authentik.audit.models import Event, EventAction, model_to_dict
-from authentik.audit.signals import EventNewThread
 from authentik.core.middleware import LOCAL
+from authentik.events.models import Event, EventAction, model_to_dict
+from authentik.events.signals import EventNewThread
 
 
 class AuditMiddleware:

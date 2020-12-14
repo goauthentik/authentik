@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
 
-from authentik.audit.models import Event, EventAction
+from authentik.events.models import Event, EventAction
 
 
 def get_events_per_1h(**filter_kwargs) -> List[Dict[str, int]]:

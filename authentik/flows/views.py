@@ -17,8 +17,8 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from structlog import get_logger
 
-from authentik.audit.models import cleanse_dict
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
+from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner

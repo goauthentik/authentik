@@ -6,7 +6,7 @@ import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Library", "/library/"),
-    new SidebarItem("Monitor", "/audit/audit").when((): Promise<boolean> => {
+    new SidebarItem("Monitor", "/events/log").when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Administration").children(

@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from authentik.audit.models import Event
+from authentik.events.models import Event
 from authentik.stages.otp_time.models import OTPTimeStage
 
 

@@ -5,12 +5,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from structlog import get_logger
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()
 

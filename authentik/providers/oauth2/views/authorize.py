@@ -9,8 +9,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from structlog import get_logger
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import Application
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,

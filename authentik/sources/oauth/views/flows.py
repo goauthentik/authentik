@@ -1,8 +1,8 @@
 """OAuth Stages"""
 from django.http import HttpRequest, HttpResponse
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.sources.oauth.models import UserOAuthSourceConnection

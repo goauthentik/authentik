@@ -10,8 +10,8 @@ from django.utils.translation import gettext as _
 from django.views.generic import View
 from structlog import get_logger
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,

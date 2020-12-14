@@ -1,4 +1,4 @@
-"""authentik audit models"""
+"""authentik events models"""
 from inspect import getmodule, stack
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
@@ -21,7 +21,7 @@ from authentik.core.middleware import (
 from authentik.core.models import User
 from authentik.lib.utils.http import get_client_ip
 
-LOGGER = get_logger("authentik.audit")
+LOGGER = get_logger("authentik.events")
 
 
 def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -90,7 +90,7 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
 
 
 class EventAction(models.TextChoices):
-    """All possible actions to save into the audit log"""
+    """All possible actions to save into the events log"""
 
     LOGIN = "login"
     LOGIN_FAILED = "login_failed"
@@ -119,7 +119,7 @@ class EventAction(models.TextChoices):
 
 
 class Event(models.Model):
-    """An individual audit log event"""
+    """An individual Audit/Metrics/Notification/Error Event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
@@ -185,7 +185,7 @@ class Event(models.Model):
                 "you may not edit an existing %s" % self._meta.model_name
             )
         LOGGER.debug(
-            "Created Audit event",
+            "Created Event",
             action=self.action,
             context=self.context,
             client_ip=self.client_ip,
@@ -195,5 +195,5 @@ class Event(models.Model):
 
     class Meta:
 
-        verbose_name = _("Audit Event")
-        verbose_name_plural = _("Audit Events")
+        verbose_name = _("Event")
+        verbose_name_plural = _("Events")
