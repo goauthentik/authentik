@@ -111,6 +111,9 @@ class EventAction(models.TextChoices):
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
 
+    EXPRESSION_POLICY_EXCEPTION = "expression_policy_exception"
+    EXPRESSION_PROPERTY_MAPPING_EXCEPTION = "expression_property_mapping_exception"
+
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"
     MODEL_DELETED = "model_deleted"

@@ -93,10 +93,15 @@ class BaseEvaluator:
                 # pylint: disable=exec-used
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
-            except Exception as exc:
-                LOGGER.warning("Expression error", exc=exc)
-                raise
+            except Exception as exc:  # pylint: disable=broad-except
+                return self.handle_error(exc, expression_source)
             return result
+
+    # pylint: disable=unused-argument
+    def handle_error(self, exc: Exception, expression_source: str):
+        """Exception Handler"""
+        LOGGER.warning("Expression error", exc=exc)
+        raise exc
 
     def validate(self, expression: str) -> bool:
         """Validate expression's syntax, raise ValidationError if Syntax is invalid"""

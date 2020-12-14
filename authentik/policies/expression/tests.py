@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.events.models import Event, EventAction
 from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.types import PolicyRequest
 
@@ -37,6 +38,12 @@ class TestEvaluator(TestCase):
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("invalid syntax (test, line 3)",))
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.EXPRESSION_POLICY_EXCEPTION,
+                context__expression=template,
+            ).exists()
+        )
 
     def test_undefined(self):
         """test undefined result"""
@@ -46,6 +53,12 @@ class TestEvaluator(TestCase):
         result = evaluator.evaluate(template)
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("name 'foo' is not defined",))
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.EXPRESSION_POLICY_EXCEPTION,
+                context__expression=template,
+            ).exists()
+        )
 
     def test_validate(self):
         """test validate"""

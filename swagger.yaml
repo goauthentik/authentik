@@ -6711,7 +6711,8 @@ definitions:
           - source_linked
           - impersonation_started
           - impersonation_ended
-          - policy_exception
+          - expression_policy_exception
+          - expression_property_mapping_exception
           - model_created
           - model_updated
           - model_deleted

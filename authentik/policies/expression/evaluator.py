@@ -1,10 +1,12 @@
 """authentik expression policy evaluator"""
 from ipaddress import ip_address, ip_network
+from traceback import format_tb
 from typing import List
 
 from django.http import HttpRequest
 from structlog import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
@@ -45,7 +47,22 @@ class PolicyEvaluator(BaseEvaluator):
         self._context["ak_client_ip"] = ip_address(
             get_client_ip(request) or "255.255.255.255"
         )
-        self._context["request"] = request
+        self._context["http_request"] = request
+
+    def handle_error(self, exc: Exception, expression_source: str):
+        """Exception Handler"""
+        error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
+        event = Event.new(
+            EventAction.EXPRESSION_POLICY_EXCEPTION,
+            expression=expression_source,
+            error=error_string,
+            context=self._context["context"],
+        )
+        if "http_request" in self._context:
+            event.from_http(self._context["http_request"])
+        else:
+            event.save()
+        raise exc
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.
