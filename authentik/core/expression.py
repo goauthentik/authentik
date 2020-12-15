@@ -5,7 +5,7 @@ from typing import Optional
 from django.http import HttpRequest
 
 from authentik.core.models import User
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, model_to_dict
 from authentik.lib.expression.evaluator import BaseEvaluator
 
 
@@ -29,8 +29,9 @@ class PropertyMappingEvaluator(BaseEvaluator):
             EventAction.PROPERTY_MAPPING_EXCEPTION,
             expression=expression_source,
             error=error_string,
-            context=self._context,
         )
+        if "user" in self._context:
+            event.user = model_to_dict(self._context["user"])
         if "request" in self._context:
             event.from_http(self._context["request"])
             return
