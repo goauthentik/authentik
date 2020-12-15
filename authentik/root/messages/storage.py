@@ -16,7 +16,7 @@ class ChannelsStorage(FallbackStorage):
         self.channel = get_channel_layer()
 
     def _store(self, messages: list[Message], response, *args, **kwargs):
-        prefix = f"user_{self.request.user.pk}_messages_"
+        prefix = f"user_{self.request.session.session_key}_messages_"
         keys = cache.keys(f"{prefix}*")
         if len(keys) < 1:
             return super()._store(messages, response, *args, **kwargs)
