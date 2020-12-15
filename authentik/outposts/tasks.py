@@ -35,21 +35,23 @@ def outpost_controller_all():
 
 
 @CELERY_APP.task()
-def outpost_service_connection_state(state_pk: Any):
+def outpost_service_connection_state(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
-        OutpostServiceConnection.objects.filter(pk=state_pk).select_subclasses().first()
+        OutpostServiceConnection.objects.filter(pk=connection_pk)
+        .select_subclasses()
+        .first()
     )
     cache.delete(f"outpost_service_connection_{connection.pk.hex}")
-    _ = connection.state
+    state = connection.fetch_state()
+    cache.set(connection.state_key, state, timeout=0)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def outpost_service_connection_monitor(self: MonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
-    for connection in OutpostServiceConnection.objects.select_subclasses():
-        cache.delete(f"outpost_service_connection_{connection.pk.hex}")
-        _ = connection.state
+    for connection in OutpostServiceConnection.objects.all():
+        outpost_service_connection_state.delay(connection.pk)
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
 
 
