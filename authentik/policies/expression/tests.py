@@ -5,6 +5,7 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.events.models import Event, EventAction
 from authentik.policies.expression.evaluator import PolicyEvaluator
+from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.types import PolicyRequest
 
 
@@ -13,6 +14,14 @@ class TestEvaluator(TestCase):
 
     def setUp(self):
         self.request = PolicyRequest(user=get_anonymous_user())
+
+    def test_full(self):
+        """Test full with Policy instance"""
+        policy = ExpressionPolicy(name="test", expression="return 'test'")
+        policy.save()
+        request = PolicyRequest(get_anonymous_user())
+        result = policy.passes(request)
+        self.assertTrue(result.passing)
 
     def test_valid(self):
         """test simple value expression"""
