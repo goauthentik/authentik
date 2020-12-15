@@ -7,13 +7,16 @@ class MessageConsumer(JsonWebsocketConsumer):
     """Consumer which sends django.contrib.messages Messages over WS.
     channel_name is saved into cache with user_id, and when a add_message is called"""
 
+    session_key: str
+
     def connect(self):
         self.accept()
-        cache.set(f"user_{self.scope['user'].pk}_messages_{self.channel_name}", True)
+        self.session_key = self.scope["session"].session_key
+        cache.set(f"user_{self.session_key}_messages_{self.channel_name}", True, None)
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
-        cache.delete(f"user_{self.scope['user'].pk}_messages_{self.channel_name}")
+        cache.delete(f"user_{self.session_key}_messages_{self.channel_name}")
 
     def event_update(self, event: dict):
         """Event handler which is called by Messages Storage backend"""
