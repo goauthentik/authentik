@@ -8,6 +8,7 @@ from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
+from authentik.events.models import Event, EventAction, get_user
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -62,6 +63,11 @@ class PolicyProcess(Process):
             )
             try:
                 policy_result = self.binding.policy.passes(self.request)
+                if self.binding.policy.execution_logging:
+                    event = Event.new(
+                        EventAction.POLICY_EXECUTION, request=self.request
+                    )
+                    event.user = get_user(self.request.user)
             except PolicyException as exc:
                 LOGGER.debug("P_ENG(proc): error", exc=exc)
                 policy_result = PolicyResult(False, str(exc))
