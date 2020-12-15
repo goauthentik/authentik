@@ -40,7 +40,7 @@ class TestEvaluator(TestCase):
         self.assertEqual(result.messages, ("invalid syntax (test, line 3)",))
         self.assertTrue(
             Event.objects.filter(
-                action=EventAction.EXPRESSION_POLICY_EXCEPTION,
+                action=EventAction.POLICY_EXCEPTION,
                 context__expression=template,
             ).exists()
         )
@@ -55,7 +55,7 @@ class TestEvaluator(TestCase):
         self.assertEqual(result.messages, ("name 'foo' is not defined",))
         self.assertTrue(
             Event.objects.filter(
-                action=EventAction.EXPRESSION_POLICY_EXCEPTION,
+                action=EventAction.POLICY_EXCEPTION,
                 context__expression=template,
             ).exists()
         )

@@ -26,7 +26,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         """Exception Handler"""
         error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
         event = Event.new(
-            EventAction.EXPRESSION_PROPERTY_MAPPING_EXCEPTION,
+            EventAction.PROPERTY_MAPPING_EXCEPTION,
             expression=expression_source,
             error=error_string,
             context=self._context,
