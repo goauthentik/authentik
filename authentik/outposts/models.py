@@ -35,7 +35,6 @@ from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.template import render_to_string
 from authentik.outposts.docker_tls import DockerInlineTLS
-from authentik.outposts.tasks import outpost_service_connection_state
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -122,6 +121,8 @@ class OutpostServiceConnection(models.Model):
     @property
     def state(self) -> OutpostServiceConnectionState:
         """Get state of service connection"""
+        from authentik.outposts.tasks import outpost_service_connection_state
+
         state = cache.get(self.state_key, None)
         if not state:
             outpost_service_connection_state.delay(self.pk)
