@@ -19,13 +19,13 @@ from authentik.core.api.sources import SourceViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
-from authentik.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
+from authentik.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet, FlowCacheViewSet
 from authentik.outposts.api import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
     OutpostViewSet,
 )
-from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet
+from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet, PolicyCacheViewSet
 from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
@@ -82,6 +82,7 @@ router.register(
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
+router.register("flows/cached", FlowCacheViewSet, basename="flows_cache")
 router.register("flows/bindings", FlowStageBindingViewSet)
 
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
@@ -94,6 +95,7 @@ router.register("sources/saml", SAMLSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
 
 router.register("policies/all", PolicyViewSet)
+router.register("policies/cached", PolicyCacheViewSet, basename="policies_cache")
 router.register("policies/bindings", PolicyBindingViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("policies/group_membership", GroupMembershipPolicyViewSet)

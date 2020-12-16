@@ -19,8 +19,6 @@ class AdministrationOverviewSerializer(Serializer):
     version = SerializerMethodField()
     version_latest = SerializerMethodField()
     worker_count = SerializerMethodField()
-    cached_policies = SerializerMethodField()
-    cached_flows = SerializerMethodField()
 
     def get_version(self, _) -> str:
         """Get current version"""
@@ -38,14 +36,6 @@ class AdministrationOverviewSerializer(Serializer):
         """Ping workers"""
         return len(CELERY_APP.control.ping(timeout=0.5))
 
-    def get_cached_policies(self, _) -> int:
-        """Get cached policy count"""
-        return len(cache.keys("policy_*"))
-
-    def get_cached_flows(self, _) -> int:
-        """Get cached flow count"""
-        return len(cache.keys("flow_*"))
-
     def create(self, request: Request) -> Response:
         raise NotImplementedError
 
@@ -54,12 +44,12 @@ class AdministrationOverviewSerializer(Serializer):
 
 
 class AdministrationOverviewViewSet(ViewSet):
-    """Return single instance of AdministrationOverviewSerializer"""
+    """General overview information about authentik."""
 
     permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(responses={200: AdministrationOverviewSerializer(many=True)})
     def list(self, request: Request) -> Response:
-        """Return single instance of AdministrationOverviewSerializer"""
+        """General overview information about authentik."""
         serializer = AdministrationOverviewSerializer(True)
         return Response(serializer.data)
