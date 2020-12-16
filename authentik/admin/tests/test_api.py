@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from authentik import __version__
 from authentik.core.models import Group, User
+from authentik.core.tasks import clean_expired_models
 
 
 class TestAdminAPI(TestCase):
@@ -21,6 +22,7 @@ class TestAdminAPI(TestCase):
 
     def test_tasks(self):
         """Test Task API"""
+        clean_expired_models.delay()
         response = self.client.get(reverse("authentik_api:admin_system_tasks-list"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
@@ -30,6 +32,7 @@ class TestAdminAPI(TestCase):
 
     def test_tasks_retry(self):
         """Test Task API (retry)"""
+        clean_expired_models.delay()
         response = self.client.post(
             reverse(
                 "authentik_api:admin_system_tasks-retry",
