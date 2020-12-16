@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { until } from "lit-html/directives/until";
+import { Flow } from "../../api/flow";
 import { Policy } from "../../api/policy";
 import { Provider } from "../../api/provider";
 import { AggregateCard } from "../../elements/cards/AggregateCard";
@@ -62,8 +63,8 @@ export class ProviderStatusCard extends AdminStatusCard {
 
 }
 
-@customElement("ak-admin-status-card-policy")
-export class PolicyStatusCard extends AdminStatusCard {
+@customElement("ak-admin-status-card-policy-unbound")
+export class PolicyUnboundStatusCard extends AdminStatusCard {
 
     getPrimaryCounter(): Promise<number> {
         return Policy.list({
@@ -85,6 +86,68 @@ export class PolicyStatusCard extends AdminStatusCard {
                 icon: "fa fa-check-circle"
             });
         }
+    }
+
+}
+
+@customElement("ak-admin-status-card-policy-cache")
+export class PolicyCacheStatusCard extends AdminStatusCard {
+
+    getPrimaryCounter(): Promise<number> {
+        return Policy.cached();
+    }
+
+    getStatus(counter: number): Promise<AdminStatus> {
+        if (counter < 1) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle",
+                message: gettext("No policies cached. Users may experience slow response times."),
+            });
+        } else {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-check-circle"
+            });
+        }
+    }
+
+    renderHeaderLink(): TemplateResult {
+        return html`<ak-modal-button href="/administration/overview/cache/policy/">
+            <a slot="trigger">
+                <i class="fa fa-trash"> </i>
+            </a>
+            <div slot="modal"></div>
+        </ak-modal-button>`;
+    }
+
+}
+
+@customElement("ak-admin-status-card-flow-cache")
+export class FlowCacheStatusCard extends AdminStatusCard {
+
+    getPrimaryCounter(): Promise<number> {
+        return Flow.cached();
+    }
+
+    getStatus(counter: number): Promise<AdminStatus> {
+        if (counter < 1) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle",
+                message: gettext("No flows cached."),
+            });
+        } else {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-check-circle"
+            });
+        }
+    }
+
+    renderHeaderLink(): TemplateResult {
+        return html`<ak-modal-button href="/administration/overview/cache/flow/">
+            <a slot="trigger">
+                <i class="fa fa-trash"> </i>
+            </a>
+            <div slot="modal"></div>
+        </ak-modal-button>`;
     }
 
 }

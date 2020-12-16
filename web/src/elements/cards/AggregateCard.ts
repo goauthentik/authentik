@@ -31,15 +31,19 @@ export class AggregateCard extends LitElement {
         return html`<slot></slot>`;
     }
 
+    renderHeaderLink(): TemplateResult {
+        return html`${this.headerLink ? html`<a href="${this.headerLink}">
+            <i class="fa fa-external-link-alt"> </i>
+        </a>` : ""}`;
+    }
+
     render(): TemplateResult {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__header-main">
                     <i class="${ifDefined(this.icon)}"></i> ${this.header ? gettext(this.header) : ""}
                 </div>
-                ${this.headerLink ? html`<a href="${this.headerLink}">
-                    <i class="fa fa-external-link-alt"> </i>
-                </a>` : ""}
+                ${this.renderHeaderLink()}
             </div>
             <div class="pf-c-card__body center-value">
                 ${this.renderInner()}

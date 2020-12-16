@@ -11,57 +11,7 @@
 </section>
 <section class="pf-c-page__main-section">
     <div class="pf-l-gallery pf-m-gutter">
-        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Policies' %}
-                </div>
-                <ak-modal-button href="{% url 'authentik_admin:overview-clear-policy-cache' %}">
-                    <a slot="trigger">
-                        <i class="fa fa-trash"> </i>
-                    </a>
-                    <div slot="modal"></div>
-                </ak-modal-button>
-            </div>
-            <div class="pf-c-card__body">
-                {% if cached_policies < 1 %}
-                <p class="ak-aggregate-card">
-                    <i class="fa fa-exclamation-triangle"></i> {{ cached_policies }}
-                </p>
-                <p>{% trans 'No policies cached. Users may experience slow response times.' %}</p>
-                {% else %}
-                <p class="ak-aggregate-card">
-                    <i class="fa fa-check-circle"></i> {{ cached_policies }}
-                </p>
-                {% endif %}
-            </div>
-        </div>
 
-        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-compact">
-            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__header-main">
-                    <i class="pf-icon pf-icon-server"></i> {% trans 'Cached Flows' %}
-                </div>
-                <ak-modal-button href="{% url 'authentik_admin:overview-clear-flow-cache' %}">
-                    <a slot="trigger">
-                        <i class="fa fa-trash"> </i>
-                    </a>
-                    <div slot="modal"></div>
-                </ak-modal-button>
-            </div>
-            <div class="pf-c-card__body">
-                {% if cached_flows < 1 %}
-                <p class="ak-aggregate-card">
-                    <span class="fa fa-exclamation-triangle"></span> {{ cached_flows }}
-                </p>
-                <p>{% trans 'No flows cached.' %}</p>
-                {% else %}
-                <p class="ak-aggregate-card">
-                    <i class="fa fa-check-circle"></i> {{ cached_flows }}
-                </p>
-                {% endif %}
-            </div>
-        </div>
     </div>
 </section>
 {% endblock %}

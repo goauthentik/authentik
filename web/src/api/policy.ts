@@ -8,12 +8,18 @@ export class Policy {
         throw Error();
     }
 
-    static get(pk: string): Promise<PolicyBinding> {
-        return DefaultClient.fetch<PolicyBinding>(["policies", "all", pk]);
+    static get(pk: string): Promise<Policy> {
+        return DefaultClient.fetch<Policy>(["policies", "all", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<PolicyBinding>> {
-        return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "all"], filter);
+    static list(filter?: QueryArguments): Promise<PBResponse<Policy>> {
+        return DefaultClient.fetch<PBResponse<Policy>>(["policies", "all"], filter);
+    }
+
+    static cached(): Promise<number> {
+        return DefaultClient.fetch<PBResponse<Policy>>(["policies", "cached"]).then(r => {
+            return r.pagination.count;
+        });
     }
 }
 

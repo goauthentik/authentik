@@ -41,6 +41,17 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>
                 </ak-aggregate-card>
+                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
+                </ak-admin-status-card-provider>
+                <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header="Policies" headerLink="#/administration/policies/">
+                </ak-admin-status-card-policy-unbound>
+                <ak-aggregate-card-promise
+                    icon="pf-icon pf-icon-user"
+                    header="Users"
+                    headerLink="#/administration/users/"
+                    .promise=${this.users}>
+                </ak-aggregate-card-promise>
+                <!-- Version card -->
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
                     ${this.data ?
         this.data?.worker_count < 1 ?
@@ -53,16 +64,10 @@ export class AdminOverviewPage extends LitElement {
                                 </p>`
         : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
                 </ak-aggregate-card>
-                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
-                </ak-admin-status-card-provider>
-                <ak-admin-status-card-policy class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
-                </ak-admin-status-card-policy>
-                <ak-aggregate-card-promise
-                    icon="pf-icon pf-icon-user"
-                    header="Users"
-                    headerLink="#/administration/users/"
-                    .promise=${this.users}>
-                </ak-aggregate-card-promise>
+                <ak-admin-status-card-policy-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Cached Policies">
+                </ak-admin-status-card-policy-cache>
+                <ak-admin-status-card-flow-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Cached Flows">
+                </ak-admin-status-card-flow-cache>
             </div>
         </section>`;
     }
