@@ -42,9 +42,8 @@ def outpost_service_connection_state(connection_pk: Any):
         .select_subclasses()
         .first()
     )
-    cache.delete(f"outpost_service_connection_{connection.pk.hex}")
     state = connection.fetch_state()
-    cache.set(connection.state_key, state, timeout=0)
+    cache.set(connection.state_key, state, timeout=None)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
