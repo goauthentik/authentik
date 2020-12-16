@@ -75,10 +75,10 @@ export class SidebarItem {
         }
         return html` <li class="pf-c-nav__item ${this.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
             ${this.path ?
-                html`<a href="#${this.path}" class="pf-c-nav__link ${this.isActive(activePath) ? "pf-m-current" : ""}">
+        html`<a href="#${this.path}" class="pf-c-nav__link ${this.isActive(activePath) ? "pf-m-current" : ""}">
                         ${this.name}
                     </a>` :
-                html`<a class="pf-c-nav__link" aria-expanded="true">
+        html`<a class="pf-c-nav__link" aria-expanded="true">
                         ${this.name}
                         <span class="pf-c-nav__toggle">
                             <i class="fas fa-angle-right" aria-hidden="true"></i>
