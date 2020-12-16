@@ -10,8 +10,6 @@ from rest_framework.viewsets import ViewSet
 
 from authentik import __version__
 from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
-from authentik.core.models import Provider
-from authentik.policies.models import Policy
 from authentik.root.celery import CELERY_APP
 
 
@@ -21,8 +19,6 @@ class AdministrationOverviewSerializer(Serializer):
     version = SerializerMethodField()
     version_latest = SerializerMethodField()
     worker_count = SerializerMethodField()
-    providers_without_application = SerializerMethodField()
-    policies_without_binding = SerializerMethodField()
     cached_policies = SerializerMethodField()
     cached_flows = SerializerMethodField()
 
@@ -41,16 +37,6 @@ class AdministrationOverviewSerializer(Serializer):
     def get_worker_count(self, _) -> int:
         """Ping workers"""
         return len(CELERY_APP.control.ping(timeout=0.5))
-
-    def get_providers_without_application(self, _) -> int:
-        """Count of providers without application"""
-        return len(Provider.objects.filter(application=None))
-
-    def get_policies_without_binding(self, _) -> int:
-        """Count of policies not bound or use in prompt stages"""
-        return len(
-            Policy.objects.filter(bindings__isnull=True, promptstage__isnull=True)
-        )
 
     def get_cached_policies(self, _) -> int:
         """Get cached policy count"""

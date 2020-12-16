@@ -1,6 +1,6 @@
 """Provider API Views"""
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.models import Provider
 
@@ -38,6 +38,9 @@ class ProviderViewSet(ModelViewSet):
 
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
+    filterset_fields = {
+        'application': ['isnull'],
+    }
 
     def get_queryset(self):
         return Provider.objects.select_subclasses()

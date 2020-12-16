@@ -68,6 +68,10 @@ class PolicyViewSet(ReadOnlyModelViewSet):
 
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
+    filterset_fields = {
+        'bindings': ['isnull'],
+        'promptstage': ['isnull'],
+    }
 
     def get_queryset(self):
         return Policy.objects.select_subclasses()
