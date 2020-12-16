@@ -14,6 +14,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
+from rest_framework.serializers import Serializer
 from structlog import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
@@ -127,7 +128,7 @@ class User(GuardianUserMixin, AbstractUser):
         verbose_name_plural = _("Users")
 
 
-class Provider(models.Model):
+class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     name = models.TextField()
@@ -154,6 +155,11 @@ class Provider(models.Model):
     @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
+        raise NotImplementedError
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        """Get serializer for this model"""
         raise NotImplementedError
 
     def __str__(self):

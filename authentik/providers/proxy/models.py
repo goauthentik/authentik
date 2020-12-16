@@ -8,6 +8,7 @@ from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
@@ -107,6 +108,12 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         from authentik.providers.proxy.forms import ProxyProviderForm
 
         return ProxyProviderForm
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.providers.proxy.api import ProxyProviderSerializer
+
+        return ProxyProviderSerializer
 
     @property
     def launch_url(self) -> Optional[str]:

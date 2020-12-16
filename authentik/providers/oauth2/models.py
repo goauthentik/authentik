@@ -18,6 +18,7 @@ from django.utils import dateformat, timezone
 from django.utils.translation import gettext_lazy as _
 from jwkest.jwk import Key, RSAKey, SYMKey, import_rsa_key
 from jwkest.jws import JWS
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
@@ -262,6 +263,12 @@ class OAuth2Provider(Provider):
         main_url = self.redirect_uris.split("\n")[0]
         launch_url = urlparse(main_url)
         return main_url.replace(launch_url.path, "")
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.providers.oauth2.api import OAuth2ProviderSerializer
+
+        return OAuth2ProviderSerializer
 
     @property
     def form(self) -> Type[ModelForm]:
