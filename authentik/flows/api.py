@@ -3,7 +3,11 @@ from django.core.cache import cache
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    SerializerMethodField,
+)
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage

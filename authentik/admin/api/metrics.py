@@ -1,4 +1,4 @@
-"""authentik administration overview"""
+"""authentik administration metrics"""
 import time
 from collections import Counter
 from datetime import timedelta
@@ -47,7 +47,7 @@ def get_events_per_1h(**filter_kwargs) -> List[Dict[str, int]]:
 
 
 class AdministrationMetricsSerializer(Serializer):
-    """Overview View"""
+    """Login Metrics per 1h"""
 
     logins_per_1h = SerializerMethodField()
     logins_failed_per_1h = SerializerMethodField()
@@ -68,12 +68,12 @@ class AdministrationMetricsSerializer(Serializer):
 
 
 class AdministrationMetricsViewSet(ViewSet):
-    """Return single instance of AdministrationMetricsSerializer"""
+    """Login Metrics per 1h"""
 
     permission_classes = [IsAdminUser]
 
     @swagger_auto_schema(responses={200: AdministrationMetricsSerializer(many=True)})
     def list(self, request: Request) -> Response:
-        """Return single instance of AdministrationMetricsSerializer"""
+        """Login Metrics per 1h"""
         serializer = AdministrationMetricsSerializer(True)
         return Response(serializer.data)

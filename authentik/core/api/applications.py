@@ -11,7 +11,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
-from authentik.admin.api.overview_metrics import get_events_per_1h
+from authentik.admin.api.metrics import get_events_per_1h
 from authentik.audit.models import EventAction
 from authentik.core.models import Application
 from authentik.policies.engine import PolicyEngine

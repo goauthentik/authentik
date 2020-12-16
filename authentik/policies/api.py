@@ -7,7 +7,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
     ModelSerializer,
-    PrimaryKeyRelatedField, Serializer,
+    PrimaryKeyRelatedField,
+    Serializer,
     SerializerMethodField,
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
@@ -74,8 +75,8 @@ class PolicyViewSet(ReadOnlyModelViewSet):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
     filterset_fields = {
-        'bindings': ['isnull'],
-        'promptstage': ['isnull'],
+        "bindings": ["isnull"],
+        "promptstage": ["isnull"],
     }
 
     def get_queryset(self):

@@ -5,9 +5,10 @@ from drf_yasg2.views import get_schema_view
 from rest_framework import routers
 from rest_framework.permissions import AllowAny
 
-from authentik.admin.api.overview import AdministrationOverviewViewSet
-from authentik.admin.api.overview_metrics import AdministrationMetricsViewSet
+from authentik.admin.api.metrics import AdministrationMetricsViewSet
 from authentik.admin.api.tasks import TaskViewSet
+from authentik.admin.api.version import VersionViewSet
+from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigsViewSet
 from authentik.api.v2.messages import MessagesViewSet
 from authentik.audit.api import EventViewSet
@@ -19,13 +20,22 @@ from authentik.core.api.sources import SourceViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
-from authentik.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet, FlowCacheViewSet
+from authentik.flows.api import (
+    FlowCacheViewSet,
+    FlowStageBindingViewSet,
+    FlowViewSet,
+    StageViewSet,
+)
 from authentik.outposts.api import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
     OutpostViewSet,
 )
-from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet, PolicyCacheViewSet
+from authentik.policies.api import (
+    PolicyBindingViewSet,
+    PolicyCacheViewSet,
+    PolicyViewSet,
+)
 from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
@@ -63,9 +73,8 @@ router = routers.DefaultRouter()
 router.register("root/messages", MessagesViewSet, basename="messages")
 router.register("root/config", ConfigsViewSet, basename="configs")
 
-router.register(
-    "admin/overview", AdministrationOverviewViewSet, basename="admin_overview"
-)
+router.register("admin/version", VersionViewSet, basename="admin_version")
+router.register("admin/workers", WorkerViewSet, basename="admin_workers")
 router.register("admin/metrics", AdministrationMetricsViewSet, basename="admin_metrics")
 router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks")
 

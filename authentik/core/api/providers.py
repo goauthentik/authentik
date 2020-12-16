@@ -39,7 +39,7 @@ class ProviderViewSet(ModelViewSet):
     queryset = Provider.objects.all()
     serializer_class = ProviderSerializer
     filterset_fields = {
-        'application': ['isnull'],
+        "application": ["isnull"],
     }
 
     def get_queryset(self):
