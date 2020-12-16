@@ -11,7 +11,7 @@
         "@patternfly/patternfly": "^4.70.2",
         "@sentry/browser": "^5.29.0",
         "@sentry/tracing": "^5.29.0",
-        "@types/chart.js": "^2.9.28",
+        "@types/chart.js": "^2.9.29",
         "@types/codemirror": "0.0.102",
         "chart.js": "^2.9.4",
         "codemirror": "^5.58.3",
