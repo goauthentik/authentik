@@ -65,6 +65,32 @@ export class SidebarItem {
             }
         });
     }
+
+    async render(activePath: string): Promise<TemplateResult> {
+        if (this.condition) {
+            const result = await this.condition();
+            if (!result) {
+                return html``;
+            }
+        }
+        return html` <li class="pf-c-nav__item ${this.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
+            ${this.path ?
+                html`<a href="#${this.path}" class="pf-c-nav__link ${this.isActive(activePath) ? "pf-m-current" : ""}">
+                        ${this.name}
+                    </a>` :
+                html`<a class="pf-c-nav__link" aria-expanded="true">
+                        ${this.name}
+                        <span class="pf-c-nav__toggle">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </span>
+                    </a>
+                    <section class="pf-c-nav__subnav">
+                        <ul class="pf-c-nav__simple-list">
+                            ${this._children.map((i) => until(i.render(activePath), html``))}
+                        </ul>
+                    </section>`}
+        </li>`;
+    }
 }
 
 @customElement("ak-sidebar")
@@ -118,37 +144,11 @@ export class Sidebar extends LitElement {
         });
     }
 
-    async renderItem(item: SidebarItem): Promise<TemplateResult> {
-        if (item.condition) {
-            const result = await item.condition();
-            if (!result) {
-                return html``;
-            }
-        }
-        return html` <li class="pf-c-nav__item ${item.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
-            ${item.path ?
-        html`<a href="#${item.path}" class="pf-c-nav__link ${item.isActive(this.activePath) ? "pf-m-current": ""}">
-                        ${item.name}
-                    </a>` :
-        html`<a class="pf-c-nav__link" aria-expanded="true">
-                        ${item.name}
-                        <span class="pf-c-nav__toggle">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
-                    </a>
-                    <section class="pf-c-nav__subnav">
-                        <ul class="pf-c-nav__simple-list">
-                            ${item._children.map((i) => until(this.renderItem(i), html``))}
-                        </ul>
-                    </section>`}
-        </li>`;
-    }
-
     render(): TemplateResult {
         return html`<nav class="pf-c-nav" aria-label="Global">
             <ak-sidebar-brand></ak-sidebar-brand>
             <ul class="pf-c-nav__list">
-                ${this.items.map((i) => until(this.renderItem(i), html``))}
+                ${this.items.map((i) => until(i.render(this.activePath), html``))}
             </ul>
             <ak-sidebar-user></ak-sidebar-user>
         </nav>`;
