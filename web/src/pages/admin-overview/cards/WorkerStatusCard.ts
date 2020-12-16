@@ -7,7 +7,7 @@ import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 export class WorkersStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return DefaultClient.fetch<PBResponse<number>>(["admins", "workers"]).then((r) => {
+        return DefaultClient.fetch<PBResponse<number>>(["admin", "workers"]).then((r) => {
             return r.pagination.count;
         });
     }
