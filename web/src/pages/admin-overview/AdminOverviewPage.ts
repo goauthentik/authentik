@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 import { DefaultClient } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
 

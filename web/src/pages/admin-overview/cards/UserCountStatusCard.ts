@@ -9,6 +9,7 @@ export class UserCountStatusCard extends AdminStatusCard<number> {
         return User.count();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getStatus(value: number): Promise<AdminStatus> {
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success"
