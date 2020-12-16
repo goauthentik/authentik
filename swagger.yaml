@@ -22,32 +22,16 @@ paths:
   /admin/metrics/:
     get:
       operationId: admin_metrics_list
-      description: Return single instance of AdministrationMetricsSerializer
+      description: Login Metrics per 1h
       parameters: []
       responses:
         '200':
-          description: Overview View
+          description: Login Metrics per 1h
           schema:
             description: ''
             type: array
             items:
               $ref: '#/definitions/AdministrationMetrics'
-      tags:
-        - admin
-    parameters: []
-  /admin/overview/:
-    get:
-      operationId: admin_overview_list
-      description: Return single instance of AdministrationOverviewSerializer
-      parameters: []
-      responses:
-        '200':
-          description: Overview View
-          schema:
-            description: ''
-            type: array
-            items:
-              $ref: '#/definitions/AdministrationOverview'
       tags:
         - admin
     parameters: []
@@ -82,6 +66,95 @@ paths:
         in: path
         required: true
         type: string
+  /admin/version/:
+    get:
+      operationId: admin_version_list
+      description: Get running and latest version.
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Get running and latest version.
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/Version'
+      tags:
+        - admin
+    parameters: []
+  /admin/workers/:
+    get:
+      operationId: admin_workers_list
+      description: Get currently connected worker count.
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  description: ''
+                  type: object
+                  properties: {}
+      tags:
+        - admin
+    parameters: []
   /audit/events/:
     get:
       operationId: audit_events_list
@@ -1062,6 +1135,59 @@ paths:
         required: true
         type: string
         format: uuid
+  /flows/cached/:
+    get:
+      operationId: flows_cached_list
+      description: Info about cached flows
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  description: ''
+                  type: object
+                  properties: {}
+      tags:
+        - flows
+    parameters: []
   /flows/instances/:
     get:
       operationId: flows_instances_list
@@ -1702,6 +1828,16 @@ paths:
       operationId: policies_all_list
       description: Policy Viewset
       parameters:
+        - name: bindings__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: promptstage__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1919,6 +2055,59 @@ paths:
         required: true
         type: string
         format: uuid
+  /policies/cached/:
+    get:
+      operationId: policies_cached_list
+      description: Info about cached policies
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  description: ''
+                  type: object
+                  properties: {}
+      tags:
+        - policies
+    parameters: []
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -3264,6 +3453,11 @@ paths:
       operationId: providers_all_list
       description: Provider Viewset
       parameters:
+        - name: application__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -3309,6 +3503,22 @@ paths:
                   $ref: '#/definitions/Provider'
       tags:
         - providers
+    post:
+      operationId: providers_all_create
+      description: Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Provider'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Provider'
+      tags:
+        - providers
     parameters: []
   /providers/all/{id}/:
     get:
@@ -3320,6 +3530,47 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    put:
+      operationId: providers_all_update
+      description: Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    patch:
+      operationId: providers_all_partial_update
+      description: Provider Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Provider'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Provider'
+      tags:
+        - providers
+    delete:
+      operationId: providers_all_delete
+      description: Provider Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
       tags:
         - providers
     parameters:
@@ -6421,7 +6672,7 @@ paths:
         format: uuid
 definitions:
   AdministrationMetrics:
-    description: Overview View
+    description: Login Metrics per 1h
     type: object
     properties:
       logins_per_1h:
@@ -6431,38 +6682,6 @@ definitions:
       logins_failed_per_1h:
         title: Logins failed per 1h
         type: string
-        readOnly: true
-  AdministrationOverview:
-    description: Overview View
-    type: object
-    properties:
-      version:
-        title: Version
-        type: string
-        readOnly: true
-      version_latest:
-        title: Version latest
-        type: string
-        readOnly: true
-      worker_count:
-        title: Worker count
-        type: integer
-        readOnly: true
-      providers_without_application:
-        title: Providers without application
-        type: integer
-        readOnly: true
-      policies_without_binding:
-        title: Policies without binding
-        type: integer
-        readOnly: true
-      cached_policies:
-        title: Cached policies
-        type: integer
-        readOnly: true
-      cached_flows:
-        title: Cached flows
-        type: integer
         readOnly: true
   Task:
     description: Serialize TaskInfo and TaskResult
@@ -6494,6 +6713,22 @@ definitions:
         type: array
         items:
           type: string
+  Version:
+    description: Get running and latest version.
+    type: object
+    properties:
+      version_current:
+        title: Version current
+        type: string
+        readOnly: true
+      version_latest:
+        title: Version latest
+        type: string
+        readOnly: true
+      outdated:
+        title: Outdated
+        type: boolean
+        readOnly: true
   Event:
     description: Event Serializer
     required:
@@ -7480,6 +7715,7 @@ definitions:
     description: Provider Serializer
     required:
       - name
+      - application
       - authorization_flow
     type: object
     properties:
@@ -7491,6 +7727,9 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      application:
+        title: Application
+        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.

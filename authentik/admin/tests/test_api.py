@@ -19,12 +19,19 @@ class TestAdminAPI(TestCase):
         self.group.save()
         self.client.force_login(self.user)
 
-    def test_overview(self):
-        """Test Overview API"""
-        response = self.client.get(reverse("authentik_api:admin_overview-list"))
+    def test_version(self):
+        """Test Version API"""
+        response = self.client.get(reverse("authentik_api:admin_version-list"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertEqual(body["version"], __version__)
+        self.assertEqual(body["version_current"], __version__)
+
+    def test_workers(self):
+        """Test Workers API"""
+        response = self.client.get(reverse("authentik_api:admin_workers-list"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(body["pagination"]["count"], 0)
 
     def test_metrics(self):
         """Test metrics API"""

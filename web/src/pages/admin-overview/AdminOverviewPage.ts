@@ -42,7 +42,7 @@ export class AdminOverviewPage extends LitElement {
                 </ak-admin-status-card-policy-unbound>
                 <ak-admin-status-card-user-count class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-user" header="Users" headerLink="#/administration/users/">
                 </ak-admin-status-card-user-count>
-                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header="Version">
+                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header="Version" headerLink="https://github.com/BeryJu/authentik/releases">
                 </ak-admin-status-version>
                 <ak-admin-status-card-workers class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
                 </ak-admin-status-card-workers>
