@@ -1,7 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { DefaultClient } from "../../api/Client";
-import { User } from "../../api/Users";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/AdminLoginsChart";
@@ -12,20 +11,15 @@ import "./cards/FlowCacheStatusCard";
 import "./cards/PolicyCacheStatusCard";
 import "./cards/PolicyUnboundStatusCard";
 import "./cards/ProviderStatusCard";
+import "./cards/UserCountStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
-    @property({attribute: false})
-    users?: Promise<number>;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
-    }
-
-    firstUpdated(): void {
-        this.users = User.count();
     }
 
     render(): TemplateResult {
@@ -46,12 +40,8 @@ export class AdminOverviewPage extends LitElement {
                 </ak-admin-status-card-provider>
                 <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header="Policies" headerLink="#/administration/policies/">
                 </ak-admin-status-card-policy-unbound>
-                <ak-aggregate-card-promise
-                    icon="pf-icon pf-icon-user"
-                    header="Users"
-                    headerLink="#/administration/users/"
-                    .promise=${this.users}>
-                </ak-aggregate-card-promise>
+                <ak-admin-status-card-user-count class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-user" header="Users" headerLink="#/administration/users/">
+                </ak-admin-status-card-user-count>
                 <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header="Version">
                 </ak-admin-status-version>
                 <ak-admin-status-card-workers class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">

@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { COMMON_STYLES } from "../../common/styles";
+import { ColorStyles } from "../../constants";
 
 @customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {
@@ -24,7 +25,7 @@ export class AggregateCard extends LitElement {
                 text-align: center;
                 color: var(--pf-global--Color--100);
             }
-        `]);
+        `, ColorStyles]);
     }
 
     renderInner(): TemplateResult {

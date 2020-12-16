@@ -18,12 +18,12 @@ export class PolicyUnboundStatusCard extends AdminStatusCard<number> {
     getStatus(value: number): Promise<AdminStatus> {
         if (value > 0) {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-exclamation-triangle",
+                icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: gettext("Policies without binding exist."),
             });
         } else {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-check-circle"
+                icon: "fa fa-check-circle pf-m-success"
             });
         }
     }

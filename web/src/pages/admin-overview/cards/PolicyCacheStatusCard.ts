@@ -15,12 +15,12 @@ export class PolicyCacheStatusCard extends AdminStatusCard<number> {
     getStatus(value: number): Promise<AdminStatus> {
         if (value < 1) {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-exclamation-triangle",
+                icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: gettext("No policies cached. Users may experience slow response times."),
             });
         } else {
             return Promise.resolve<AdminStatus>({
-                icon: "fa fa-check-circle"
+                icon: "fa fa-check-circle pf-m-success"
             });
         }
     }
