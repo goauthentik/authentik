@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
 
-from authentik import __version__
 from authentik.root.celery import CELERY_APP
 
 

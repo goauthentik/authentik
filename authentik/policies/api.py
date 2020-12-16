@@ -1,7 +1,6 @@
 """policy API Views"""
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
