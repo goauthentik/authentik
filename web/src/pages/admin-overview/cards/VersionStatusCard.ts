@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { Version } from "../../../api/Versions";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
@@ -22,6 +22,10 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 message: gettext("Up-to-date!")
             });
         }
+    }
+
+    renderValue(): TemplateResult {
+        return html`${this.value?.version_current}`;
     }
 
 }

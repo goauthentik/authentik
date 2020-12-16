@@ -14,8 +14,4 @@ export class Version {
         return DefaultClient.fetch<Version>(["admin", "version"]);
     }
 
-    toString(): string {
-        return this.version_current;
-    }
-
 }
