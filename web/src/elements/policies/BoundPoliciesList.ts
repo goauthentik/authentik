@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { PBResponse } from "../../api/client";
-import { PolicyBinding } from "../../api/policy_binding";
+import { PolicyBinding } from "../../api/policy";
 import { Table } from "../../elements/table/Table";
 
 import "../../elements/Tabs";

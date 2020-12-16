@@ -1,9 +1,20 @@
 import { DefaultClient, PBResponse, QueryArguments } from "./client";
 
-export interface Policy {
+export class Policy {
     pk: string;
     name: string;
-    [key: string]: unknown;
+
+    constructor() {
+        throw Error();
+    }
+
+    static get(pk: string): Promise<PolicyBinding> {
+        return DefaultClient.fetch<PolicyBinding>(["policies", "all", pk]);
+    }
+
+    static list(filter?: QueryArguments): Promise<PBResponse<PolicyBinding>> {
+        return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "all"], filter);
+    }
 }
 
 export class PolicyBinding {
