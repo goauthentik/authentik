@@ -28,7 +28,7 @@ class VersionSerializer(Serializer):
     def get_version_latest(self, _) -> str:
         """Get latest version from cache"""
         version_in_cache = cache.get(VERSION_CACHE_KEY)
-        if not version_in_cache:
+        if not version_in_cache:  # pragma: no cover
             update_latest_version.delay()
             return __version__
         return version_in_cache
