@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { Policy } from "../../../api/policy";
+import { Policy } from "../../../api/Policies";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-policy-unbound")

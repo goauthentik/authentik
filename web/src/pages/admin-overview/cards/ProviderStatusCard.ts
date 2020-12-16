@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { Provider } from "../../../api/provider";
+import { Provider } from "../../../api/Providers";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-provider")

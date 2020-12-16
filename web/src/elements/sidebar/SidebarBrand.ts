@@ -3,7 +3,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
-import { Config } from "../../api/config";
+import { Config } from "../../api/Config";
 
 export const DefaultConfig: Config = {
     branding_logo: " /static/dist/assets/icons/icon_left_brand.svg",

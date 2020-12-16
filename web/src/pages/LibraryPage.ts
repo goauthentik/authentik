@@ -1,8 +1,8 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { Application } from "../api/application";
-import { PBResponse } from "../api/client";
+import { Application } from "../api/Applications";
+import { PBResponse } from "../api/Client";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 

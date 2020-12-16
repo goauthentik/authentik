@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { AuditEvent, TopNEvent } from "../../api/events";
+import { AuditEvent, TopNEvent } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Spinner";

@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./client";
+import { DefaultClient, PBResponse, QueryArguments } from "./Client";
 
 export enum FlowDesignation {
     Authentication = "authentication",

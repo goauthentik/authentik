@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
-import { Application } from "../../api/application";
-import { PBResponse } from "../../api/client";
+import { Application } from "../../api/Applications";
+import { PBResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";

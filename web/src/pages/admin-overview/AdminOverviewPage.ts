@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { DefaultClient } from "../../api/client";
-import { User } from "../../api/user";
+import { DefaultClient } from "../../api/Client";
+import { User } from "../../api/Users";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/AdminLoginsChart";

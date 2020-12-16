@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { DefaultClient, PBResponse } from "../../../api/client";
+import { DefaultClient, PBResponse } from "../../../api/Client";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-workers")

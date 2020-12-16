@@ -7,7 +7,7 @@ import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
-import { Source } from "../../api/source";
+import { Source } from "../../api/Sources";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {

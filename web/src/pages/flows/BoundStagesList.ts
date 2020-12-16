@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/client";
+import { PBResponse } from "../../api/Client";
 import { Table } from "../../elements/table/Table";
 
 import "../../elements/Tabs";
@@ -8,7 +8,7 @@ import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
-import { FlowStageBinding } from "../../api/flow";
+import { FlowStageBinding } from "../../api/Flows";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {

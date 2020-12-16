@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
 import { TemplateResult, html } from "lit-html";
-import { Policy } from "../../../api/policy";
+import { Policy } from "../../../api/Policies";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 import "../../../elements/buttons/ModalButton";
 

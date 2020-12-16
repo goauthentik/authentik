@@ -1,5 +1,5 @@
 import { customElement } from "lit-element";
-import { User } from "../api/user";
+import { User } from "../api/Users";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 import { SLUG_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";

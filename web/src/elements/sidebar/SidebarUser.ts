@@ -5,7 +5,7 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 import fa from "@fortawesome/fontawesome-free/css/all.css";
 // @ts-ignore
 import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { User } from "../../api/user";
+import { User } from "../../api/Users";
 import { until } from "lit-html/directives/until";
 
 @customElement("ak-sidebar-user")

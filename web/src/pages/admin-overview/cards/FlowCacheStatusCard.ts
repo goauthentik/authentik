@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
-import { Flow } from "../../../api/flow";
+import { Flow } from "../../../api/Flows";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import "../../../elements/buttons/ModalButton";
 
