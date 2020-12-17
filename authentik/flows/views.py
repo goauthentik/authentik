@@ -149,7 +149,7 @@ class FlowExecutorView(View):
             NEXT_ARG_NAME, "authentik_core:shell"
         )
         self.cancel()
-        return redirect_with_qs(next_param)
+        return to_stage_response(self.request, redirect_with_qs(next_param))
 
     def stage_ok(self) -> HttpResponse:
         """Callback called by stages upon successful completion.
