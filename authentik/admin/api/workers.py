@@ -15,6 +15,9 @@ class WorkerViewSet(ListModelMixin, GenericViewSet):
     serializer_class = Serializer
     permission_classes = [IsAdminUser]
 
+    def get_queryset(self):
+        return None
+
     def list(self, request: Request) -> Response:
         """Get currently connected worker count."""
         return Response(
