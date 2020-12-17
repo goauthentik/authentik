@@ -62,7 +62,7 @@ class TestFlowExecutor(TestCase):
                     "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
                 ),
             )
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 302)
             self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
@@ -105,9 +105,8 @@ class TestFlowExecutor(TestCase):
         response = self.client.get(
             reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response, AccessDeniedResponse)
-        self.assertInHTML(EmptyFlowException.__doc__, response.rendered_content)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:shell"))
 
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""
@@ -121,11 +120,8 @@ class TestFlowExecutor(TestCase):
         dest = "/unique-string"
         url = reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": dest},
-        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:shell"))
 
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""

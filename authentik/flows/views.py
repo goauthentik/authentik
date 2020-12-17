@@ -83,7 +83,9 @@ class FlowExecutorView(View):
                 return to_stage_response(self.request, self.handle_invalid_flow(exc))
             except EmptyFlowException as exc:
                 LOGGER.warning("f(exec): Flow is empty", exc=exc)
-                return to_stage_response(self.request, self.handle_invalid_flow(exc))
+                # To match behaviour with loading an empty flow plan from cache,
+                # we don't show an error message here, but rather call _flow_done()
+                return self._flow_done()
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         next_stage = self.plan.next(self.request)
