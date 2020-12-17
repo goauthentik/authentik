@@ -162,10 +162,12 @@ select[multiple] {
         background-color: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
+    .pf-m-tertiary,
     .pf-c-button.pf-m-tertiary {
         --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
         color: var(--ak-dark-foreground-darker);
     }
+    .pf-m-tertiary:hover,
     .pf-c-button.pf-m-tertiary:hover {
         --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter);
     }
@@ -196,6 +198,9 @@ select[multiple] {
     /* flows */
     .pf-c-login__main {
         background-color: var(--ak-dark-background);
+    }
+    .pf-c-login__main-body {
+        color: var(--ak-dark-foreground);
     }
     .pf-c-login__main-footer-links-item-link > img {
         filter: invert(1);
