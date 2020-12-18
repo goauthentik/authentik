@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
@@ -12,6 +13,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from guardian.shortcuts import get_objects_for_user
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.planner import cache_key
@@ -65,8 +67,8 @@ class FlowViewSet(ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def diagram(self, request: Request, slug: str) -> Response:
-        # TODO: Check perms
-        flow = Flow.objects.get(slug=slug)
+        """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
+        flow = get_object_or_404(get_objects_for_user(request.user, "authentik_flows.view_flow").filter(slug=slug))
         header = [
             DiagramElement("st", "start", "Start"),
         ]
@@ -74,7 +76,7 @@ class FlowViewSet(ModelViewSet):
         footer = []
         # First, collect all elements we need
         for s_index, stage_binding in enumerate(
-            FlowStageBinding.objects.filter(target=flow).order_by("order")
+            get_objects_for_user(request.user, "authentik_flows.view_flowstagebinding").filter(target=flow).order_by('order')
         ):
             body.append(
                 DiagramElement(
@@ -84,7 +86,7 @@ class FlowViewSet(ModelViewSet):
                 )
             )
             for p_index, policy_binding in enumerate(
-                PolicyBinding.objects.filter(target=stage_binding).order_by("order")
+                get_objects_for_user(request.user, "authentik_policies.view_policybinding").filter(target=stage_binding).order_by('order')
             ):
                 body.append(
                     DiagramElement(
