@@ -1,5 +1,8 @@
 """Flow API Views"""
+from dataclasses import dataclass
+
 from django.core.cache import cache
+from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,6 +15,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelV
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.planner import cache_key
+from authentik.policies.models import PolicyBinding
 
 
 class FlowSerializer(ModelSerializer):
@@ -40,12 +44,82 @@ class FlowSerializer(ModelSerializer):
         ]
 
 
+@dataclass
+class DiagramElement:
+    """Single element used in a diagram"""
+
+    identifier: str
+    type: str
+    rest: str
+
+    def __str__(self) -> str:
+        return f"{self.identifier}=>{self.type}: {self.rest}"
+
+
 class FlowViewSet(ModelViewSet):
     """Flow Viewset"""
 
     queryset = Flow.objects.all()
     serializer_class = FlowSerializer
     lookup_field = "slug"
+
+    @action(detail=True, methods=["get"])
+    def diagram(self, request: Request, slug: str) -> Response:
+        # TODO: Check perms
+        flow = Flow.objects.get(slug=slug)
+        header = [
+            DiagramElement("st", "start", "Start"),
+        ]
+        body = []
+        footer = []
+        # First, collect all elements we need
+        for s_index, stage_binding in enumerate(
+            FlowStageBinding.objects.filter(target=flow).order_by("order")
+        ):
+            body.append(
+                DiagramElement(
+                    f"stage_{s_index}",
+                    "operation",
+                    f"Stage\n{stage_binding.stage.name}",
+                )
+            )
+            for p_index, policy_binding in enumerate(
+                PolicyBinding.objects.filter(target=stage_binding).order_by("order")
+            ):
+                body.append(
+                    DiagramElement(
+                        f"stage_{s_index}_policy_{p_index}",
+                        "condition",
+                        f"Policy\n{policy_binding.policy.name}",
+                    )
+                )
+        # If the 2nd last element is a policy, we need to have an item to point to
+        # for a negative case
+        body.append(
+            DiagramElement("e", "end", "End|future"),
+        )
+        if len(body) == 1:
+            footer.append("st(right)->e")
+        else:
+            # Actual diagram flow
+            footer.append(f"st(right)->{body[0].identifier}")
+            for index in range(len(body) - 1):
+                element: DiagramElement = body[index]
+                if element.type == "condition":
+                    # Policy passes, link policy yes to next stage
+                    footer.append(
+                        f"{element.identifier}(yes, right)->{body[index + 1].identifier}"
+                    )
+                    # Policy doesn't pass, go to stage after next stage
+                    footer.append(
+                        f"{element.identifier}(no, bottom)->{body[index + 2].identifier}"
+                    )
+                elif element.type == "operation":
+                    footer.append(
+                        f"{element.identifier}(bottom)->{body[index + 1].identifier}"
+                    )
+        diagram = "\n".join([str(x) for x in header + body + footer])
+        return Response(diagram)
 
 
 class StageSerializer(ModelSerializer):
