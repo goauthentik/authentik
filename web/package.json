@@ -10,7 +10,7 @@
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@patternfly/patternfly": "^4.70.2",
         "@sentry/browser": "^5.29.1",
-        "@sentry/tracing": "^5.29.1",
+        "@sentry/tracing": "^5.29.2",
         "@types/chart.js": "^2.9.29",
         "@types/codemirror": "0.0.102",
         "chart.js": "^2.9.4",
