@@ -1316,6 +1316,27 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /flows/instances/{slug}/diagram/:
+    get:
+      operationId: flows_instances_diagram
+      description: Return diagram for flow with slug `slug`, in the format used by
+        flowchart.js
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    parameters:
+      - name: slug
+        in: path
+        description: Visible in the URL.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
