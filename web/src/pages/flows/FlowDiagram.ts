@@ -16,9 +16,10 @@ export class FlowDiagram extends LitElement {
         Flow.diagram(this.flowSlug!).then((data) => {
             var diagram = FlowChart.parse(data);
             diagram.drawSVG(this, {
-                'font-color': 'white',
-                'line-color': 'white',
-                'element-color': 'white',
+                'font-color': '#fafafa',
+                'line-color': '#bebebe',
+                'element-color': '#bebebe',
+                'fill': "#2b2e33",
             });
         })
         return html``;
