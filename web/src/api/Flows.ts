@@ -30,6 +30,10 @@ export class Flow {
         return DefaultClient.fetch<Flow>(["flows", "instances", slug]);
     }
 
+    static diagram(slug: string): Promise<string> {
+        return DefaultClient.fetch<string>(["flows", "instances", slug, "diagram"]);
+    }
+
     static list(filter?: QueryArguments): Promise<PBResponse<Flow>> {
         return DefaultClient.fetch<PBResponse<Flow>>(["flows", "instances"], filter);
     }
