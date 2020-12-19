@@ -34,6 +34,15 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ())
 
+    def test_engine_simple(self):
+        """Ensure simplest use-case"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(result.messages, ("dummy",))
+
     def test_engine(self):
         """Ensure all policies passes (Mix of false and true -> false)"""
         pbm = PolicyBindingModel.objects.create()
