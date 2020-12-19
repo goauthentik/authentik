@@ -1,11 +1,20 @@
-import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("ak-sidebar-hamburger")
 export class SidebarHamburger extends LitElement {
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(
+            css`
+                :host {
+                    position: absolute;
+                    top: var(--pf-c-page__main-section--PaddingTop);
+                    right: var(--pf-c-page__main-section--PaddingRight);
+                    z-index: 250;
+                }
+            `
+        );
     }
 
     onClick(): void {

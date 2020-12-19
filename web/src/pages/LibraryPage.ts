@@ -5,7 +5,6 @@ import { Application } from "../api/Applications";
 import { PBResponse } from "../api/Client";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
-import "../elements/sidebar/SidebarHamburger";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -86,8 +85,6 @@ export class LibraryPage extends LitElement {
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <ak-sidebar-hamburger>
-                        </ak-sidebar-hamburger>
                         <i class="pf-icon pf-icon-applications"></i>
                         ${gettext("Applications")}
                     </h1>
