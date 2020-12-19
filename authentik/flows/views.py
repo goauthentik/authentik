@@ -21,7 +21,12 @@ from authentik.audit.models import cleanse_dict
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
+    FlowPlan,
+    FlowPlanner,
+)
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.http import AccessDeniedResponse
@@ -145,9 +150,13 @@ class FlowExecutorView(View):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
-        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:shell"
-        )
+        next_param = None
+        if self.plan:
+            next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
+        if not next_param:
+            next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
+                NEXT_ARG_NAME, "authentik_core:shell"
+            )
         self.cancel()
         return to_stage_response(self.request, redirect_with_qs(next_param))
 
