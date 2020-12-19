@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { AuditEvent, TopNEvent } from "../../api/Events";
+import { Event, TopNEvent } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Spinner";
@@ -16,7 +16,7 @@ export class TopApplicationsTable extends LitElement {
     }
 
     firstUpdated(): void {
-        AuditEvent.topForUser("authorize_application").then(events => this.topN = events);
+        Event.topForUser("authorize_application").then(events => this.topN = events);
     }
 
     renderRow(event: TopNEvent): TemplateResult {
