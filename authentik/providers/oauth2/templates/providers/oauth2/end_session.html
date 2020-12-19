@@ -4,6 +4,16 @@
 {% load i18n %}
 {% load authentik_utils %}
 
+{% block head %}
+{{ block.super }}
+<style>
+.pf-c-background-image::before {
+    background-image: url("{% static 'dist/assets/images/flow_background.jpg' %}");
+    background-position: center;
+}
+</style>
+{% endblock %}
+
 {% block title %}
 {% trans 'End session' %}
 {% endblock %}
