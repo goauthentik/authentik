@@ -5,11 +5,6 @@ html {
     --pf-c-nav__link--PaddingLeft: 0.5rem;
 }
 
-/* Fix patternfly sidebar and header with open Modal */
-.pf-c-page__sidebar {
-    z-index: 0;
-}
-
 .pf-c-page__header {
     z-index: 0;
 }
