@@ -150,7 +150,9 @@ class FlowExecutorView(View):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
-        next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
+        next_param = None
+        if self.plan:
+            next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
         if not next_param:
             next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
                 NEXT_ARG_NAME, "authentik_core:shell"
