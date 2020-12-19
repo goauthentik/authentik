@@ -21,7 +21,12 @@ from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
+from authentik.flows.planner import (
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
+    FlowPlan,
+    FlowPlanner,
+)
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.http import AccessDeniedResponse
@@ -83,7 +88,9 @@ class FlowExecutorView(View):
                 return to_stage_response(self.request, self.handle_invalid_flow(exc))
             except EmptyFlowException as exc:
                 LOGGER.warning("f(exec): Flow is empty", exc=exc)
-                return to_stage_response(self.request, self.handle_invalid_flow(exc))
+                # To match behaviour with loading an empty flow plan from cache,
+                # we don't show an error message here, but rather call _flow_done()
+                return self._flow_done()
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         next_stage = self.plan.next(self.request)
@@ -143,11 +150,15 @@ class FlowExecutorView(View):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
-        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:shell"
-        )
+        next_param = None
+        if self.plan:
+            next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
+        if not next_param:
+            next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
+                NEXT_ARG_NAME, "authentik_core:shell"
+            )
         self.cancel()
-        return redirect_with_qs(next_param)
+        return to_stage_response(self.request, redirect_with_qs(next_param))
 
     def stage_ok(self) -> HttpResponse:
         """Callback called by stages upon successful completion.

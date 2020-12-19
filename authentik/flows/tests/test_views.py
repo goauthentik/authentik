@@ -8,7 +8,7 @@ from django.test.client import RequestFactory
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
-from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan, FlowPlanner
@@ -40,6 +40,10 @@ class TestFlowExecutor(TestCase):
     def setUp(self):
         self.request_factory = RequestFactory()
 
+    @patch(
+        "authentik.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
     def test_existing_plan_diff_flow(self):
         """Check that a plan for a different flow cancels the current plan"""
         flow = Flow.objects.create(
@@ -62,7 +66,7 @@ class TestFlowExecutor(TestCase):
                     "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
                 ),
             )
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 302)
             self.assertEqual(cancel_mock.call_count, 2)
 
     @patch(
@@ -105,10 +109,13 @@ class TestFlowExecutor(TestCase):
         response = self.client.get(
             reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response, AccessDeniedResponse)
-        self.assertInHTML(EmptyFlowException.__doc__, response.rendered_content)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:shell"))
 
+    @patch(
+        "authentik.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
     def test_invalid_flow_redirect(self):
         """Tests that an invalid flow still redirects"""
         flow = Flow.objects.create(
@@ -121,11 +128,8 @@ class TestFlowExecutor(TestCase):
         dest = "/unique-string"
         url = reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            force_str(response.content),
-            {"type": "redirect", "to": dest},
-        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:shell"))
 
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""
@@ -161,6 +165,10 @@ class TestFlowExecutor(TestCase):
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         self.assertEqual(len(plan.stages), 1)
 
+    @patch(
+        "authentik.flows.views.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
     def test_reevaluate_remove_last(self):
         """Test planner with re-evaluate (last stage is removed)"""
         flow = Flow.objects.create(

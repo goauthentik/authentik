@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/client";
+import { PBResponse } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "./TablePagination";

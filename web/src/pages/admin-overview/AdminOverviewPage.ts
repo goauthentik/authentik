@@ -1,69 +1,25 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { AdminOverview } from "../../api/admin_overview";
-import { DefaultClient } from "../../api/client";
-import { User } from "../../api/user";
+import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { DefaultClient } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
-import { AggregatePromiseCard } from "../../elements/cards/AggregatePromiseCard";
-import { SpinnerSize } from "../../elements/Spinner";
 
 import "../../elements/AdminLoginsChart";
+import "../../elements/cards/AggregatePromiseCard";
 import "./TopApplicationsTable";
-
-@customElement("ak-admin-status-card")
-export class AdminStatusCard extends AggregatePromiseCard {
-
-    @property({type: Number})
-    value?: number;
-
-    @property()
-    warningText?: string;
-
-    @property({type: Number})
-    lessThanThreshold?: number;
-
-    renderNone(): TemplateResult {
-        return html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`;
-    }
-
-    renderGood(): TemplateResult {
-        return html`<p class="ak-aggregate-card">
-            <i class="fa fa-check-circle"></i> ${this.value}
-        </p>`;
-    }
-
-    renderBad(): TemplateResult {
-        return html`<p class="ak-aggregate-card">
-            <i class="fa fa-exclamation-triangle"></i> ${this.value}
-        </p>
-        <p class="subtext">${this.warningText ? gettext(this.warningText) : ""}</p>`;
-    }
-
-    renderInner(): TemplateResult {
-        if (!this.value) {
-            return this.renderNone();
-        }
-
-        return html``;
-    }
-
-}
+import "./cards/AdminStatusCard";
+import "./cards/FlowCacheStatusCard";
+import "./cards/PolicyCacheStatusCard";
+import "./cards/PolicyUnboundStatusCard";
+import "./cards/ProviderStatusCard";
+import "./cards/UserCountStatusCard";
+import "./cards/VersionStatusCard";
+import "./cards/WorkerStatusCard";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
-    @property({attribute: false})
-    data?: AdminOverview;
-
-    @property({attribute: false})
-    users?: Promise<number>;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
-    }
-
-    firstUpdated(): void {
-        AdminOverview.get().then(value => this.data = value);
-        this.users = User.count();
     }
 
     render(): TemplateResult {
@@ -80,48 +36,20 @@ export class AdminOverviewPage extends LitElement {
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>
                 </ak-aggregate-card>
-                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
-                    ${this.data ?
-        this.data?.worker_count < 1 ?
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-exclamation-triangle"></i> ${this.data?.worker_count}
-                                </p>
-                                <p class="subtext">${gettext("No workers connected.")}</p>` :
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-check-circle"></i> ${this.data?.worker_count}
-                                </p>`
-        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
-                </ak-aggregate-card>
-                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
-                    ${this.data ?
-        this.data?.providers_without_application > 1 ?
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-exclamation-triangle"></i> 0
-                                </p>
-                                <p class="subtext">${gettext("At least one Provider has no application assigned.")}</p>` :
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-check-circle"></i> 0
-                                </p>`
-        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
-                </ak-aggregate-card>
-                <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Policies" headerLink="#/administration/policies/">
-                    ${this.data ?
-        this.data?.policies_without_binding > 1 ?
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-exclamation-triangle"></i> 0
-                                </p>
-                                <p class="subtext">${gettext("Policies without binding exist.")}</p>` :
-            html`<p class="ak-aggregate-card">
-                                    <i class="fa fa-check-circle"></i> 0
-                                </p>`
-        : html`<ak-spinner size=${SpinnerSize.Large}></ak-spinner>`}
-                </ak-aggregate-card>
-                <ak-aggregate-card-promise
-                    icon="pf-icon pf-icon-user"
-                    header="Users"
-                    headerLink="#/administration/users/"
-                    .promise=${this.users}>
-                </ak-aggregate-card-promise>
+                <ak-admin-status-card-provider class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-plugged" header="Providers" headerLink="#/administration/providers/">
+                </ak-admin-status-card-provider>
+                <ak-admin-status-card-policy-unbound class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-infrastructure" header="Policies" headerLink="#/administration/policies/">
+                </ak-admin-status-card-policy-unbound>
+                <ak-admin-status-card-user-count class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-user" header="Users" headerLink="#/administration/users/">
+                </ak-admin-status-card-user-count>
+                <ak-admin-status-version class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-bundle" header="Version" headerLink="https://github.com/BeryJu/authentik/releases">
+                </ak-admin-status-version>
+                <ak-admin-status-card-workers class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Workers">
+                </ak-admin-status-card-workers>
+                <ak-admin-status-card-policy-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Cached Policies">
+                </ak-admin-status-card-policy-cache>
+                <ak-admin-status-card-flow-cache class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Cached Flows">
+                </ak-admin-status-card-flow-cache>
             </div>
         </section>`;
     }

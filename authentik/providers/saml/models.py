@@ -7,6 +7,7 @@ from django.forms import ModelForm
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 from structlog import get_logger
 
 from authentik.core.models import PropertyMapping, Provider
@@ -144,6 +145,12 @@ class SAMLProvider(Provider):
         """Guess launch_url based on acs URL"""
         launch_url = urlparse(self.acs_url)
         return self.acs_url.replace(launch_url.path, "")
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.providers.saml.api import SAMLPropertyMappingSerializer
+
+        return SAMLPropertyMappingSerializer
 
     @property
     def form(self) -> Type[ModelForm]:

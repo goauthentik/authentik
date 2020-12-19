@@ -1,4 +1,4 @@
-import { NotFoundError, RequestError } from "./errors";
+import { NotFoundError, RequestError } from "./Error";
 
 export const VERSION = "v2beta";
 

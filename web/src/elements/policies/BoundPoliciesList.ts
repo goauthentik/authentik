@@ -1,8 +1,8 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/client";
-import { PolicyBinding } from "../../api/policy_binding";
+import { PBResponse } from "../../api/Client";
 import { Table } from "../../elements/table/Table";
+import { PolicyBinding } from "../../api/PolicyBindings";
 
 import "../../elements/Tabs";
 import "../../elements/AdminLoginsChart";

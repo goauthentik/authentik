@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./client";
+import { DefaultClient, PBResponse, QueryArguments } from "./Client";
 
 export enum FlowDesignation {
     Authentication = "authentication",
@@ -32,6 +32,12 @@ export class Flow {
 
     static list(filter?: QueryArguments): Promise<PBResponse<Flow>> {
         return DefaultClient.fetch<PBResponse<Flow>>(["flows", "instances"], filter);
+    }
+
+    static cached(): Promise<number> {
+        return DefaultClient.fetch<PBResponse<Flow>>(["flows", "cached"]).then(r => {
+            return r.pagination.count;
+        });
     }
 }
 

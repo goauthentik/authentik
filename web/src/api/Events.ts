@@ -1,4 +1,4 @@
-import { DefaultClient } from "./client";
+import { DefaultClient } from "./Client";
 
 export class Event {
     // events/events/top_per_user/?filter_action=authorize_application

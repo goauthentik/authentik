@@ -114,16 +114,23 @@ class OutpostServiceConnection(models.Model):
     objects = InheritanceManager()
 
     @property
+    def state_key(self) -> str:
+        """Key used to save connection state in cache"""
+        return f"outpost_service_connection_{self.pk.hex}"
+
+    @property
     def state(self) -> OutpostServiceConnectionState:
         """Get state of service connection"""
-        state_key = f"outpost_service_connection_{self.pk.hex}"
-        state = cache.get(state_key, None)
+        from authentik.outposts.tasks import outpost_service_connection_state
+
+        state = cache.get(self.state_key, None)
         if not state:
-            state = self._get_state()
-            cache.set(state_key, state, timeout=0)
+            outpost_service_connection_state.delay(self.pk)
+            return OutpostServiceConnectionState("", False)
         return state
 
-    def _get_state(self) -> OutpostServiceConnectionState:
+    def fetch_state(self) -> OutpostServiceConnectionState:
+        """Fetch current Service Connection state"""
         raise NotImplementedError
 
     @property
@@ -203,7 +210,7 @@ class DockerServiceConnection(OutpostServiceConnection):
             raise ServiceConnectionInvalid from exc
         return client
 
-    def _get_state(self) -> OutpostServiceConnectionState:
+    def fetch_state(self) -> OutpostServiceConnectionState:
         try:
             client = self.client()
             return OutpostServiceConnectionState(
@@ -239,7 +246,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
     def __str__(self) -> str:
         return f"Kubernetes Service-Connection {self.name}"
 
-    def _get_state(self) -> OutpostServiceConnectionState:
+    def fetch_state(self) -> OutpostServiceConnectionState:
         try:
             client = self.client()
             api_instance = VersionApi(client)
@@ -247,7 +254,7 @@ class KubernetesServiceConnection(OutpostServiceConnection):
             return OutpostServiceConnectionState(
                 version=version.git_version, healthy=True
             )
-        except (OpenApiException, HTTPError):
+        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
             return OutpostServiceConnectionState(version="", healthy=False)
 
     def client(self) -> ApiClient:

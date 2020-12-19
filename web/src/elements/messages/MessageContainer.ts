@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, TemplateResult, property } from "lit-element";
-import { DefaultClient } from "../../api/client";
+import { DefaultClient } from "../../api/Client";
 import "./Message";
 import { APIMessage } from "./Message";
 

@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse } from "./client";
+import { DefaultClient, PBResponse } from "./Client";
 
 let _globalMePromise: Promise<User>;
 

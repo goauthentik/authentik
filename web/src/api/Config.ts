@@ -1,4 +1,4 @@
-import { DefaultClient } from "./client";
+import { DefaultClient } from "./Client";
 import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";

@@ -3,6 +3,15 @@
 {% load i18n %}
 {% load authentik_utils %}
 
+{% block head %}
+{{ block.super }}
+<style>
+    .pf-c-empty-state {
+        height: 100vh;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
 <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
     <div class="pf-c-empty-state">

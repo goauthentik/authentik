@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from authentik.policies.models import Policy
 
 
-class PolicyRequest:
+class PolicyRequest(dict):
     """Data-class to hold policy request data"""
 
     user: User
@@ -20,6 +20,7 @@ class PolicyRequest:
     context: Dict[str, str]
 
     def __init__(self, user: User):
+        super().__init__()
         self.user = user
         self.http_request = None
         self.obj = None
@@ -29,7 +30,7 @@ class PolicyRequest:
         return f"<PolicyRequest user={self.user}>"
 
 
-class PolicyResult:
+class PolicyResult(dict):
     """Small data-class to hold policy results"""
 
     passing: bool
@@ -39,6 +40,7 @@ class PolicyResult:
     source_results: Optional[List["PolicyResult"]]
 
     def __init__(self, passing: bool, *messages: str):
+        super().__init__()
         self.passing = passing
         self.messages = messages
         self.source_policy = None

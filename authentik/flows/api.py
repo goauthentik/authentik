@@ -1,7 +1,14 @@
 """Flow API Views"""
 from django.core.cache import cache
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.mixins import ListModelMixin
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    SerializerMethodField,
+)
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.planner import cache_key
@@ -98,3 +105,14 @@ class FlowStageBindingViewSet(ModelViewSet):
     queryset = FlowStageBinding.objects.all()
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
+
+
+class FlowCacheViewSet(ListModelMixin, GenericViewSet):
+    """Info about cached flows"""
+
+    queryset = Flow.objects.none()
+    serializer_class = Serializer
+
+    def list(self, request: Request) -> Response:
+        """Info about cached flows"""
+        return Response(data={"pagination": {"count": len(cache.keys("flow_*"))}})

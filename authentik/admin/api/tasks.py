@@ -66,7 +66,7 @@ class TaskViewSet(ViewSet):
                     "successful": True,
                 }
             )
-        except ImportError:
+        except ImportError:  # pragma: no cover
             # if we get an import error, the module path has probably changed
             task.delete()
             return Response({"successful": False})

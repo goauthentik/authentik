@@ -5,7 +5,7 @@ image:
   name: beryju/authentik
   name_static: beryju/authentik-static
   name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
-  tag: 0.13.0-stable
+  tag: 0.13.3-stable
   pullPolicy: IfNotPresent
 
 serverReplicas: 1

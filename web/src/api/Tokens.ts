@@ -1,4 +1,4 @@
-import { DefaultClient } from "./client";
+import { DefaultClient } from "./Client";
 
 interface TokenResponse {
     key: string;

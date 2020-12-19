@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { COMMON_STYLES } from "../../common/styles";
+import { ColorStyles } from "../../constants";
 
 @customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {
@@ -24,11 +25,17 @@ export class AggregateCard extends LitElement {
                 text-align: center;
                 color: var(--pf-global--Color--100);
             }
-        `]);
+        `, ColorStyles]);
     }
 
     renderInner(): TemplateResult {
         return html`<slot></slot>`;
+    }
+
+    renderHeaderLink(): TemplateResult {
+        return html`${this.headerLink ? html`<a href="${this.headerLink}">
+            <i class="fa fa-external-link-alt"> </i>
+        </a>` : ""}`;
     }
 
     render(): TemplateResult {
@@ -37,9 +44,7 @@ export class AggregateCard extends LitElement {
                 <div class="pf-c-card__header-main">
                     <i class="${ifDefined(this.icon)}"></i> ${this.header ? gettext(this.header) : ""}
                 </div>
-                ${this.headerLink ? html`<a href="${this.headerLink}">
-                    <i class="fa fa-external-link-alt"> </i>
-                </a>` : ""}
+                ${this.renderHeaderLink()}
             </div>
             <div class="pf-c-card__body center-value">
                 ${this.renderInner()}

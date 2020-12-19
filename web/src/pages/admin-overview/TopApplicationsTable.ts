@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Event, TopNEvents } from "../../api/events";
+import { AuditEvent, TopNEvent } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Spinner";
@@ -9,17 +9,17 @@ import "../../elements/Spinner";
 export class TopApplicationsTable extends LitElement {
 
     @property({attribute: false})
-    topN?: TopNEvents[];
+    topN?: TopNEvent[];
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
     }
 
     firstUpdated(): void {
-        Event.topForUser("authorize_application").then(events => this.topN = events);
+        AuditEvent.topForUser("authorize_application").then(events => this.topN = events);
     }
 
-    renderRow(event: TopNEvents): TemplateResult {
+    renderRow(event: TopNEvent): TemplateResult {
         return html`<tr role="row">
             <td role="cell">
                 ${event.application.name}

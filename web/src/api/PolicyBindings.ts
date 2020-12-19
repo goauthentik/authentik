@@ -1,10 +1,5 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./client";
-
-export interface Policy {
-    pk: string;
-    name: string;
-    [key: string]: unknown;
-}
+import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { Policy } from "./Policies";
 
 export class PolicyBinding {
     pk: string;

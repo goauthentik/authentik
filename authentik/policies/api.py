@@ -1,11 +1,16 @@
 """policy API Views"""
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.mixins import ListModelMixin
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import (
     ModelSerializer,
     PrimaryKeyRelatedField,
+    Serializer,
     SerializerMethodField,
 )
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.policies.forms import GENERAL_FIELDS
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
@@ -68,6 +73,10 @@ class PolicyViewSet(ReadOnlyModelViewSet):
 
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
+    filterset_fields = {
+        "bindings": ["isnull"],
+        "promptstage": ["isnull"],
+    }
 
     def get_queryset(self):
         return Policy.objects.select_subclasses()
@@ -98,3 +107,14 @@ class PolicyBindingViewSet(ModelViewSet):
     serializer_class = PolicyBindingSerializer
     filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
     search_fields = ["policy__name"]
+
+
+class PolicyCacheViewSet(ListModelMixin, GenericViewSet):
+    """Info about cached policies"""
+
+    queryset = Policy.objects.none()
+    serializer_class = Serializer
+
+    def list(self, request: Request) -> Response:
+        """Info about cached policies"""
+        return Response(data={"pagination": {"count": len(cache.keys("policy_*"))}})

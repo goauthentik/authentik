@@ -13,7 +13,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/library/"),
     new Route(new RegExp("^#.*")).redirect("/library/"),
     new Route(new RegExp("^/library/$"), html`<ak-library></ak-library>`),
-    new Route(new RegExp("^/administration/overview-ng/$"), html`<ak-admin-overview></ak-admin-overview>`),
+    new Route(new RegExp("^/administration/overview/$"), html`<ak-admin-overview></ak-admin-overview>`),
     new Route(new RegExp("^/applications/$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})/$`)).then((args) => {
         return html`<ak-application-view .args=${args}></ak-application-view>`;

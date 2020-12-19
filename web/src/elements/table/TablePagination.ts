@@ -1,6 +1,6 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
-import { PBPagination } from "../../api/client";
+import { PBPagination } from "../../api/Client";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
