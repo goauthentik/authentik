@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import Token
+from authentik.events.models import Event, EventAction
 
 
 class TokenSerializer(ModelSerializer):

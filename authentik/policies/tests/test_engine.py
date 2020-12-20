@@ -7,13 +7,14 @@ from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
+from authentik.policies.tests.test_process import clear_policy_cache
 
 
 class TestPolicyEngine(TestCase):
     """PolicyEngine tests"""
 
     def setUp(self):
-        cache.clear()
+        clear_policy_cache()
         self.user = User.objects.create_user(username="policyuser")
         self.policy_false = DummyPolicy.objects.create(
             result=False, wait_min=0, wait_max=1
@@ -33,6 +34,15 @@ class TestPolicyEngine(TestCase):
         result = engine.build().result
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ())
+
+    def test_engine_simple(self):
+        """Ensure simplest use-case"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(result.messages, ("dummy",))
 
     def test_engine(self):
         """Ensure all policies passes (Mix of false and true -> false)"""
@@ -75,10 +85,18 @@ class TestPolicyEngine(TestCase):
     def test_engine_cache(self):
         """Ensure empty policy list passes"""
         pbm = PolicyBindingModel.objects.create()
-        PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
+        binding = PolicyBinding.objects.create(
+            target=pbm, policy=self.policy_false, order=0
+        )
         engine = PolicyEngine(pbm, self.user)
-        self.assertEqual(len(cache.keys("policy_*")), 0)
+        self.assertEqual(
+            len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 0
+        )
         self.assertEqual(engine.build().passing, False)
-        self.assertEqual(len(cache.keys("policy_*")), 1)
+        self.assertEqual(
+            len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 1
+        )
         self.assertEqual(engine.build().passing, False)
-        self.assertEqual(len(cache.keys("policy_*")), 1)
+        self.assertEqual(
+            len(cache.keys(f"policy_{binding.policy_binding_uuid.hex}*")), 1
+        )

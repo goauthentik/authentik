@@ -81,6 +81,16 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 
     name = models.TextField(blank=True, null=True)
 
+    execution_logging = models.BooleanField(
+        default=False,
+        help_text=_(
+            (
+                "When this option is enabled, all executions of this policy will be logged. "
+                "By default, only execution errors are logged."
+            )
+        ),
+    )
+
     objects = InheritanceAutoManager()
 
     @property

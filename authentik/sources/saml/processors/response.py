@@ -13,10 +13,11 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.saml.exceptions import (
@@ -54,11 +55,14 @@ class ResponseProcessor:
     _root: Any
     _root_xml: str
 
+    _http_request: HttpRequest
+
     def __init__(self, source: SAMLSource):
         self._source = source
 
     def parse(self, request: HttpRequest):
         """Check if `request` contains SAML Response data, parse and validate it."""
+        self._http_request = request
         # First off, check if we have any SAML Data at all.
         raw_response = request.POST.get("SAMLResponse", None)
         if not raw_response:
@@ -187,6 +191,11 @@ class ResponseProcessor:
 
         name_id_filter = self._get_name_id_filter()
         matching_users = User.objects.filter(**name_id_filter)
+        # Ensure redirect is carried through when user was trying to
+        # authorize application
+        final_redirect = self._http_request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:shell"
+        )
         if matching_users.exists():
             # User exists already, switch to authentication flow
             return self._flow_response(
@@ -195,6 +204,7 @@ class ResponseProcessor:
                 **{
                     PLAN_CONTEXT_PENDING_USER: matching_users.first(),
                     PLAN_CONTEXT_AUTHENTICATION_BACKEND: DEFAULT_BACKEND,
+                    PLAN_CONTEXT_REDIRECT: final_redirect,
                 },
             )
         return self._flow_response(

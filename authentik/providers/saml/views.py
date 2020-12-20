@@ -11,8 +11,8 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog import get_logger
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import Application, Provider
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,

@@ -10,15 +10,16 @@ from django.utils.translation import gettext as _
 from django.views.generic import View
 from structlog import get_logger
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
-from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.utils import delete_none_keys
 from authentik.sources.oauth.auth import AuthorizedServiceBackend
@@ -135,11 +136,17 @@ class OAuthCallback(OAuthClientMixin, View):
 
     def handle_login_flow(self, flow: Flow, **kwargs) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
+        # Ensure redirect is carried through when user was trying to
+        # authorize application
+        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:shell"
+        )
         kwargs.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
                 PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_REDIRECT: final_redirect,
             }
         )
         # We run the Flow planner here so we can pass the Pending user in the context

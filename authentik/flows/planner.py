@@ -8,8 +8,8 @@ from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
-from authentik.audit.models import cleanse_dict
 from authentik.core.models import User
+from authentik.events.models import cleanse_dict
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowStageBinding, Stage
@@ -19,6 +19,7 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
+PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
 
 

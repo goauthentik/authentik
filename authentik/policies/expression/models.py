@@ -31,11 +31,14 @@ class ExpressionPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Evaluate and render expression. Returns PolicyResult(false) on error."""
         evaluator = PolicyEvaluator(self.name)
+        evaluator.policy = self
         evaluator.set_policy_request(request)
         return evaluator.evaluate(self.expression)
 
     def save(self, *args, **kwargs):
-        PolicyEvaluator(self.name).validate(self.expression)
+        evaluator = PolicyEvaluator(self.name)
+        evaluator.policy = self
+        evaluator.validate(self.expression)
         return super().save(*args, **kwargs)
 
     class Meta:

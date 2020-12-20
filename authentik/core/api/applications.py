@@ -12,8 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.admin.api.metrics import get_events_per_1h
-from authentik.audit.models import EventAction
 from authentik.core.models import Application
+from authentik.events.models import EventAction
 from authentik.policies.engine import PolicyEngine
 
 
@@ -78,7 +78,7 @@ class ApplicationViewSet(ModelViewSet):
             get_objects_for_user(request.user, "authentik_core.view_application"),
             slug=slug,
         )
-        if not request.user.has_perm("authentik_audit.view_event"):
+        if not request.user.has_perm("authentik_events.view_event"):
             raise Http404
         return Response(
             get_events_per_1h(

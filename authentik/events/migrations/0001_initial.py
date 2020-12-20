@@ -63,8 +63,8 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name": "Audit Event",
-                "verbose_name_plural": "Audit Events",
+                "verbose_name": "Event",
+                "verbose_name_plural": "Events",
             },
         ),
     ]

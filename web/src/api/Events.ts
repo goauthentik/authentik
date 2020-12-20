@@ -1,9 +1,9 @@
 import { DefaultClient } from "./Client";
 
-export class AuditEvent {
-    //audit/events/top_per_user/?filter_action=authorize_application
+export class Event {
+    // events/events/top_per_user/?filter_action=authorize_application
     static topForUser(action: string): Promise<TopNEvent[]> {
-        return DefaultClient.fetch<TopNEvent[]>(["audit", "events", "top_per_user"], {
+        return DefaultClient.fetch<TopNEvent[]>(["events", "events", "top_per_user"], {
             "filter_action": action,
         });
     }

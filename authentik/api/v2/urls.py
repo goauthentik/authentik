@@ -11,7 +11,6 @@ from authentik.admin.api.version import VersionViewSet
 from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigsViewSet
 from authentik.api.v2.messages import MessagesViewSet
-from authentik.audit.api import EventViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
@@ -20,6 +19,7 @@ from authentik.core.api.sources import SourceViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
+from authentik.events.api import EventViewSet
 from authentik.flows.api import (
     FlowCacheViewSet,
     FlowStageBindingViewSet,
@@ -96,7 +96,7 @@ router.register("flows/bindings", FlowStageBindingViewSet)
 
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
-router.register("audit/events", EventViewSet)
+router.register("events/events", EventViewSet)
 
 router.register("sources/all", SourceViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)

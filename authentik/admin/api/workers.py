@@ -15,7 +15,7 @@ class WorkerViewSet(ListModelMixin, GenericViewSet):
     serializer_class = Serializer
     permission_classes = [IsAdminUser]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return None
 
     def list(self, request: Request) -> Response:
