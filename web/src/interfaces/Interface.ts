@@ -18,6 +18,10 @@ export abstract class Interface extends LitElement {
 
     constructor() {
         super();
+        this.sidebarOpen = window.outerWidth >= 1280;
+        window.addEventListener("resize", () => {
+            this.sidebarOpen = window.outerWidth >= 1280;
+        });
         window.addEventListener("ak-sidebar-toggle", () => {
             this.sidebarOpen = !this.sidebarOpen;
         });
