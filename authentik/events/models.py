@@ -1,4 +1,5 @@
 """authentik events models"""
+import re
 from dataclasses import asdict, is_dataclass
 from inspect import getmodule, stack
 from typing import Any, Dict, Optional, Union
@@ -23,6 +24,9 @@ from authentik.core.models import User
 from authentik.lib.utils.http import get_client_ip
 
 LOGGER = get_logger("authentik.events")
+# Special keys which are *not* cleaned, even when the default filter
+# is matched
+ALLOWED_SPECIAL_KEYS = re.compile("passing", flags=re.I)
 
 
 def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -30,7 +34,9 @@ def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     final_dict = {}
     for key, value in source.items():
         try:
-            if SafeExceptionReporterFilter.hidden_settings.search(key):
+            if SafeExceptionReporterFilter.hidden_settings.search(
+                key
+            ) and not ALLOWED_SPECIAL_KEYS.search(key):
                 final_dict[key] = SafeExceptionReporterFilter.cleansed_substitute
             else:
                 final_dict[key] = value

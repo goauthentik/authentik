@@ -58,7 +58,6 @@ class PolicyProcess(Process):
         try:
             policy_result = self.binding.policy.passes(self.request)
             if self.binding.policy.execution_logging:
-                print("test")
                 event = Event.new(
                     EventAction.POLICY_EXECUTION,
                     request=self.request,
