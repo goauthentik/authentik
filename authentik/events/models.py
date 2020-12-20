@@ -18,6 +18,7 @@ from authentik.core.middleware import (
 from authentik.core.models import User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.utils.http import get_client_ip
+from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger("authentik.events")
 
@@ -142,3 +143,31 @@ class Event(models.Model):
 
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+
+
+class EventAlertAction(models.Model):
+    """Action which is executed when a Trigger matches"""
+
+    name = models.TextField(unique=True)
+
+    def execute(self, event: Event):
+        """execute which is executed when alert trigger matches"""
+        # TODO: do execute
+
+
+class EventAlertTrigger(PolicyBindingModel):
+    """Alert which is triggered when a certain criteria matches against Events"""
+
+    name = models.TextField(unique=True)
+    action = models.ForeignKey(
+        EventAlertAction,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+
+        verbose_name = _("Event Alert Trigger")
+        verbose_name_plural = _("Event Alert Triggers")

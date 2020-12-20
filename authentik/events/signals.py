@@ -7,12 +7,14 @@ from django.contrib.auth.signals import (
     user_logged_out,
     user_login_failed,
 )
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
+from authentik.events.tasks import event_alert_handler
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_created, invitation_used
 from authentik.stages.user_write.signals import user_write
@@ -105,3 +107,10 @@ def on_password_changed(sender, user: User, password: str, **_):
     """Log password change"""
     thread = EventNewThread(EventAction.PASSWORD_SET, None, user=user)
     thread.run()
+
+
+@receiver(post_save, sender=Event)
+# pylint: disable=unused-argument
+def event_post_save_alert(sender, instance: Event, **_):
+    """Start task to check if any policies trigger an alert on this event"""
+    event_alert_handler.delay(instance.event_uuid.hex)
