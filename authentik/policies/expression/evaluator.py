@@ -21,6 +21,7 @@ class PolicyEvaluator(BaseEvaluator):
     def __init__(self, policy_name: str):
         super().__init__()
         self._messages = []
+        self._context["ak_logger"] = get_logger(policy_name)
         self._context["ak_message"] = self.expr_func_message
         self._context["ip_address"] = ip_address
         self._context["ip_network"] = ip_network
