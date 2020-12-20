@@ -128,6 +128,8 @@ class EventAction(models.TextChoices):
     MODEL_UPDATED = "model_updated"
     MODEL_DELETED = "model_deleted"
 
+    UPDATE_AVAILABLE = "update_available"
+
     CUSTOM_PREFIX = "custom_"
 
 
