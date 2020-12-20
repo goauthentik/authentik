@@ -6,7 +6,6 @@ from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.events.utils import model_to_dict
 from authentik.lib.expression.evaluator import BaseEvaluator
 
 
@@ -32,7 +31,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
             error=error_string,
         )
         if "user" in self._context:
-            event.user = model_to_dict(self._context["user"])
+            event.set_user(self._context["user"])
         if "request" in self._context:
             event.from_http(self._context["request"])
             return

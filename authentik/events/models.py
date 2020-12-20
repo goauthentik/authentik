@@ -15,6 +15,7 @@ from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
+from authentik.core.models import User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.utils.http import get_client_ip
 
@@ -88,6 +89,12 @@ class Event(models.Model):
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
+
+    def set_user(self, user: User) -> "Event":
+        """Set `.user` based on user, ensuring the correct attributes are copied.
+        This should only be used when self.from_http is *not* used."""
+        self.user = get_user(user)
+        return self
 
     def from_http(
         self, request: HttpRequest, user: Optional[settings.AUTH_USER_MODEL] = None
