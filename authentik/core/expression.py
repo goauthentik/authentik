@@ -5,7 +5,8 @@ from typing import Optional
 from django.http import HttpRequest
 
 from authentik.core.models import User
-from authentik.events.models import Event, EventAction, model_to_dict
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict
 from authentik.lib.expression.evaluator import BaseEvaluator
 
 

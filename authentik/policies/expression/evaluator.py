@@ -6,13 +6,8 @@ from typing import TYPE_CHECKING, List, Optional
 from django.http import HttpRequest
 from structlog import get_logger
 
-from authentik.events.models import (
-    Event,
-    EventAction,
-    get_user,
-    model_to_dict,
-    sanitize_dict,
-)
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user, model_to_dict, sanitize_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip

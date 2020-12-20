@@ -8,8 +8,9 @@ from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.middleware import LOCAL
-from authentik.events.models import Event, EventAction, model_to_dict
+from authentik.events.models import Event, EventAction
 from authentik.events.signals import EventNewThread
+from authentik.events.utils import model_to_dict
 
 
 class AuditMiddleware:
