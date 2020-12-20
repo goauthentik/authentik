@@ -1,4 +1,5 @@
 """authentik events models"""
+from dataclasses import asdict, is_dataclass
 from inspect import getmodule, stack
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
@@ -78,6 +79,8 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     }"""
     final_dict = {}
     for key, value in source.items():
+        if is_dataclass(value):
+            value = asdict(value)
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
         elif isinstance(value, models.Model):
