@@ -1,15 +1,15 @@
-"""audit event tests"""
+"""events event tests"""
 
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.audit.models import Event
+from authentik.events.models import Event
 from authentik.policies.dummy.models import DummyPolicy
 
 
-class TestAuditEvent(TestCase):
-    """Test Audit Event"""
+class TestEvents(TestCase):
+    """Test Event"""
 
     def test_new_with_model(self):
         """Create a new Event passing a model as kwarg"""

@@ -1,4 +1,4 @@
-"""Audit API Views"""
+"""Events API Views"""
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
 from drf_yasg2.utils import swagger_auto_schema
@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.audit.models import Event, EventAction
+from authentik.events.models import Event, EventAction
 
 
 class EventSerializer(ModelSerializer):

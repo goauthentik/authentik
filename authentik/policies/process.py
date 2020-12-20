@@ -8,6 +8,7 @@ from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
 from structlog import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -48,40 +49,48 @@ class PolicyProcess(Process):
 
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
+        LOGGER.debug(
+            "P_ENG(proc): Running policy",
+            policy=self.binding.policy,
+            user=self.request.user,
+            process="PolicyProcess",
+        )
+        try:
+            policy_result = self.binding.policy.passes(self.request)
+            if self.binding.policy.execution_logging:
+                event = Event.new(
+                    EventAction.POLICY_EXECUTION,
+                    request=self.request,
+                    result=policy_result,
+                )
+                event.set_user(self.request.user)
+                event.save()
+        except PolicyException as exc:
+            LOGGER.debug("P_ENG(proc): error", exc=exc)
+            policy_result = PolicyResult(False, str(exc))
+        policy_result.source_policy = self.binding.policy
+        # Invert result if policy.negate is set
+        if self.binding.negate:
+            policy_result.passing = not policy_result.passing
+        LOGGER.debug(
+            "P_ENG(proc): Finished",
+            policy=self.binding.policy,
+            result=policy_result,
+            process="PolicyProcess",
+            passing=policy_result.passing,
+            user=self.request.user,
+        )
+        key = cache_key(self.binding, self.request)
+        cache.set(key, policy_result)
+        LOGGER.debug("P_ENG(proc): Cached policy evaluation", key=key)
+        return policy_result
+
+    def run(self):  # pragma: no cover
+        """Task wrapper to run policy checking"""
         with Hub.current.start_span(
             op="policy.process.execute",
         ) as span:
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
-            LOGGER.debug(
-                "P_ENG(proc): Running policy",
-                policy=self.binding.policy,
-                user=self.request.user,
-                process="PolicyProcess",
-            )
-            try:
-                policy_result = self.binding.policy.passes(self.request)
-            except PolicyException as exc:
-                LOGGER.debug("P_ENG(proc): error", exc=exc)
-                policy_result = PolicyResult(False, str(exc))
-            policy_result.source_policy = self.binding.policy
-            # Invert result if policy.negate is set
-            if self.binding.negate:
-                policy_result.passing = not policy_result.passing
-            LOGGER.debug(
-                "P_ENG(proc): Finished",
-                policy=self.binding.policy,
-                result=policy_result,
-                process="PolicyProcess",
-                passing=policy_result.passing,
-                user=self.request.user,
-            )
-            key = cache_key(self.binding, self.request)
-            cache.set(key, policy_result)
-            LOGGER.debug("P_ENG(proc): Cached policy evaluation", key=key)
-            return policy_result
-
-    def run(self):
-        """Task wrapper to run policy checking"""
-        self.connection.send(self.execute())
+            self.connection.send(self.execute())

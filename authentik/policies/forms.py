@@ -5,7 +5,7 @@ from django import forms
 from authentik.lib.widgets import GroupedModelChoiceField
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
-GENERAL_FIELDS = ["name"]
+GENERAL_FIELDS = ["name", "execution_logging"]
 GENERAL_SERIALIZER_FIELDS = ["pk", "name"]
 
 

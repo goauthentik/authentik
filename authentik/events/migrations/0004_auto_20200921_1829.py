@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_audit", "0003_auto_20200917_1155"),
+        ("authentik_events", "0003_auto_20200917_1155"),
     ]
 
     operations = [

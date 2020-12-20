@@ -51,7 +51,7 @@ class VersionViewSet(ListModelMixin, GenericViewSet):
 
     permission_classes = [IsAdminUser]
 
-    def get_queryset(self):
+    def get_queryset(self):  # pragma: no cover
         return None
 
     @swagger_auto_schema(responses={200: VersionSerializer(many=True)})

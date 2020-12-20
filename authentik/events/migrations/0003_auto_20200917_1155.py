@@ -3,11 +3,11 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.audit.models
+import authentik.events.models
 
 
 def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    Event = apps.get_model("authentik_audit", "Event")
+    Event = apps.get_model("authentik_events", "Event")
 
     db_alias = schema_editor.connection.alias
     for event in Event.objects.all():
@@ -15,7 +15,7 @@ def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         # Because event objects cannot be updated, we have to re-create them
         event.pk = None
         event.user_json = (
-            authentik.audit.models.get_user(event.user) if event.user else {}
+            authentik.events.models.get_user(event.user) if event.user else {}
         )
         event._state.adding = True
         event.save()
@@ -24,7 +24,7 @@ def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_audit", "0002_auto_20200918_2116"),
+        ("authentik_events", "0002_auto_20200918_2116"),
     ]
 
     operations = [

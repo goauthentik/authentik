@@ -1,22 +1,29 @@
 """authentik expression policy evaluator"""
 from ipaddress import ip_address, ip_network
-from typing import List
+from traceback import format_tb
+from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
 from structlog import get_logger
 
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict, sanitize_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+if TYPE_CHECKING:
+    from authentik.policies.expression.models import ExpressionPolicy
 
 
 class PolicyEvaluator(BaseEvaluator):
     """Validate and evaluate python-based expressions"""
 
     _messages: List[str]
+
+    policy: Optional["ExpressionPolicy"] = None
 
     def __init__(self, policy_name: str):
         super().__init__()
@@ -45,15 +52,30 @@ class PolicyEvaluator(BaseEvaluator):
         self._context["ak_client_ip"] = ip_address(
             get_client_ip(request) or "255.255.255.255"
         )
-        self._context["request"] = request
+        self._context["http_request"] = request
+
+    def handle_error(self, exc: Exception, expression_source: str):
+        """Exception Handler"""
+        error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
+        event = Event.new(
+            EventAction.POLICY_EXCEPTION,
+            expression=expression_source,
+            error=error_string,
+            request=self._context["request"],
+        )
+        if self.policy:
+            event.context["model"] = sanitize_dict(model_to_dict(self.policy))
+        if "http_request" in self._context:
+            event.from_http(self._context["http_request"])
+        else:
+            event.set_user(self._context["request"].user)
+            event.save()
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.
         Messages can be added using 'do ak_message()'."""
         try:
             result = super().evaluate(expression_source)
-        except (ValueError, SyntaxError) as exc:
-            return PolicyResult(False, str(exc))
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))

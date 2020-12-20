@@ -1,6 +1,7 @@
 """policy structures"""
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from django.db.models import Model
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
     from authentik.policies.models import Policy
 
 
+@dataclass
 class PolicyRequest:
     """Data-class to hold policy request data"""
 
@@ -20,6 +22,7 @@ class PolicyRequest:
     context: Dict[str, str]
 
     def __init__(self, user: User):
+        super().__init__()
         self.user = user
         self.http_request = None
         self.obj = None
@@ -29,6 +32,7 @@ class PolicyRequest:
         return f"<PolicyRequest user={self.user}>"
 
 
+@dataclass
 class PolicyResult:
     """Small data-class to hold policy results"""
 
@@ -39,6 +43,7 @@ class PolicyResult:
     source_results: Optional[List["PolicyResult"]]
 
     def __init__(self, passing: bool, *messages: str):
+        super().__init__()
         self.passing = passing
         self.messages = messages
         self.source_policy = None
@@ -49,5 +54,5 @@ class PolicyResult:
 
     def __str__(self):
         if self.messages:
-            return f"PolicyResult passing={self.passing} messages={self.messages}"
-        return f"PolicyResult passing={self.passing}"
+            return f"<PolicyResult passing={self.passing} messages={self.messages}>"
+        return f"<PolicyResult passing={self.passing}>"

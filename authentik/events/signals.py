@@ -1,4 +1,4 @@
-"""authentik audit signal listener"""
+"""authentik events signal listener"""
 from threading import Thread
 from typing import Any, Dict, Optional
 
@@ -10,9 +10,9 @@ from django.contrib.auth.signals import (
 from django.dispatch import receiver
 from django.http import HttpRequest
 
-from authentik.audit.models import Event, EventAction
 from authentik.core.models import User
 from authentik.core.signals import password_changed
+from authentik.events.models import Event, EventAction
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_created, invitation_used
 from authentik.stages.user_write.signals import user_write
