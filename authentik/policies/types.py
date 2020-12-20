@@ -30,7 +30,7 @@ class PolicyRequest(dict):
         return f"<PolicyRequest user={self.user}>"
 
 
-class PolicyResult(dict):
+class PolicyResult:
     """Small data-class to hold policy results"""
 
     passing: bool
