@@ -75,7 +75,7 @@ class FlowViewSet(ModelViewSet):
         header = [
             DiagramElement("st", "start", "Start"),
         ]
-        body = []
+        body: list[DiagramElement] = []
         footer = []
         # First, collect all elements we need
         for s_index, stage_binding in enumerate(
@@ -122,8 +122,11 @@ class FlowViewSet(ModelViewSet):
                         f"{element.identifier}(yes, right)->{body[index + 1].identifier}"
                     )
                     # Policy doesn't pass, go to stage after next stage
+                    no_element = body[index + 1]
+                    if no_element.type != "end":
+                        no_element = body[index + 2]
                     footer.append(
-                        f"{element.identifier}(no, bottom)->{body[index + 2].identifier}"
+                        f"{element.identifier}(no, bottom)->{no_element.identifier}"
                     )
                 elif element.type == "operation":
                     footer.append(
