@@ -6952,6 +6952,7 @@ definitions:
           - model_created
           - model_updated
           - model_deleted
+          - update_available
           - custom_
       app:
         title: App
