@@ -104,9 +104,11 @@ class Event(models.Model):
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
         if hasattr(request, "user"):
+            original_user = None
+            if hasattr(request, "session"):
+                original_user = request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None)
             self.user = get_user(
-                request.user,
-                request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None),
+                request.user, original_user
             )
         if user:
             self.user = get_user(user)
@@ -138,6 +140,9 @@ class Event(models.Model):
             user=self.user,
         )
         return super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"<Event action={self.action} user={self.user} context={self.context}>"
 
     class Meta:
 

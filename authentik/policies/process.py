@@ -20,7 +20,7 @@ LOGGER = get_logger()
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
     prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}"
-    if request.http_request:
+    if request.http_request and hasattr(request.http_request, "session"):
         prefix += f"_{request.http_request.session.session_key}"
     if request.user:
         prefix += f"#{request.user.pk}"

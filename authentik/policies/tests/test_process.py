@@ -1,6 +1,6 @@
 """policy process tests"""
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
@@ -22,6 +22,7 @@ class TestPolicyProcess(TestCase):
 
     def setUp(self):
         clear_policy_cache()
+        self.factory = RequestFactory()
         self.user = User.objects.create_user(username="policyuser")
 
     def test_invalid(self):
@@ -77,7 +78,11 @@ class TestPolicyProcess(TestCase):
         )
         binding = PolicyBinding(policy=policy)
 
+        http_request = self.factory.get("/")
+        http_request.user = self.user
+
         request = PolicyRequest(self.user)
+        request.http_request = http_request
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
@@ -89,8 +94,10 @@ class TestPolicyProcess(TestCase):
         self.assertTrue(events.exists())
         self.assertEqual(len(events), 1)
         event = events.first()
+        self.assertEqual(event.user["username"], self.user.username)
         self.assertEqual(event.context["result"]["passing"], False)
         self.assertEqual(event.context["result"]["messages"], ["dummy"])
+        self.assertEqual(event.client_ip, "127.0.0.1")
 
     def test_raises(self):
         """Test policy that raises error"""
@@ -103,4 +110,13 @@ class TestPolicyProcess(TestCase):
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("division by zero",))
-        # self.assert
+
+        events = Event.objects.filter(
+            action=EventAction.POLICY_EXCEPTION,
+            context__policy_uuid=policy_raises.policy_uuid.hex,
+        )
+        self.assertTrue(events.exists())
+        self.assertEqual(len(events), 1)
+        event = events.first()
+        self.assertEqual(event.user["username"], self.user.username)
+        self.assertIn("division by zero", event.context["error"])
