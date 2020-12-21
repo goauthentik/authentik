@@ -84,6 +84,7 @@ class TestPolicyProcess(TestCase):
 
         events = Event.objects.filter(
             action=EventAction.POLICY_EXECUTION,
+            context__policy_uuid=policy.policy_uuid.hex,
         )
         self.assertTrue(events.exists())
         self.assertEqual(len(events), 1)
