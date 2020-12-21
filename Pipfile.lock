@@ -1083,11 +1083,11 @@
                 "standard"
             ],
             "hashes": [
-                "sha256:2a7b17f4d9848d6557ccc2274a5f7c97f1daf037d130a0c6918f67cd9bc8cdf5",
-                "sha256:6fcce74c00b77d4f4b3ed7ba1b2a370d27133bfdb46f835b7a76dfe0a8c110ae"
+                "sha256:6707fa7f4dbd86fd6982a2d4ecdaad2704e4514d23a1e4278104311288b04691",
+                "sha256:d19ca083bebd212843e01f689900e5c637a292c63bb336c7f0735a99300a5f38"
             ],
             "index": "pypi",
-            "version": "==0.13.1"
+            "version": "==0.13.2"
         },
         "uvloop": {
             "hashes": [
