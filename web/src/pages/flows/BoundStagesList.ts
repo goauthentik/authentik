@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { PBResponse } from "../../api/Client";
-import { Table } from "../../elements/table/Table";
+import { Table, TableColumn } from "../../elements/table/Table";
 
 import "../../elements/Tabs";
 import "../../elements/AdminLoginsChart";
@@ -25,8 +25,13 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         });
     }
 
-    columns(): string[] {
-        return ["Order", "Name", "Type", ""];
+    columns(): TableColumn[] {
+        return [
+            new TableColumn("Order"),
+            new TableColumn("Name"),
+            new TableColumn("Type"),
+            new TableColumn(""),
+        ];
     }
 
     row(item: FlowStageBinding): TemplateResult[] {

@@ -6,6 +6,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import { TableColumn } from "../../elements/table/Table";
 
 @customElement("ak-application-list")
 export class ApplicationList extends TablePage<Application> {
@@ -21,13 +22,19 @@ export class ApplicationList extends TablePage<Application> {
 
     apiEndpoint(page: number): Promise<PBResponse<Application>> {
         return Application.list({
-            ordering: "order",
+            ordering: this.order || "order",
             page: page,
         });
     }
 
-    columns(): string[] {
-        return ["Name", "Slug", "Provider", "Provider Type", ""];
+    columns(): TableColumn[] {
+        return [
+            new TableColumn("Name", "name"),
+            new TableColumn("Slug", "slug"),
+            new TableColumn("Provider"),
+            new TableColumn("Provider Type"),
+            new TableColumn(""),
+        ];
     }
 
     row(item: Application): TemplateResult[] {
