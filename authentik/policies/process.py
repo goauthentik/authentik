@@ -53,7 +53,12 @@ class PolicyProcess(Process):
         event = Event.new(
             action=action,
             policy_uuid=self.binding.policy.policy_uuid.hex,
-            request=self.request,
+            request={
+                # We can't pass the request 1:1 because it may contain a HTTPRequest
+                # with values that we can't pickle
+                "context": self.request.context,
+                "obj": self.request.obj,
+            },
             **kwargs,
         )
         event.set_user(self.request.user)

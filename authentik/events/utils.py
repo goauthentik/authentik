@@ -65,7 +65,6 @@ def get_user(user: User, original_user: Optional[User] = None) -> Dict[str, Any]
         return original_data
     return user_data
 
-
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     """clean source of all Models that would interfere with the JSONField.
     Models are replaced with a dictionary of {
@@ -79,6 +78,8 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
             value = asdict(value)
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
+        elif isinstance(value, User):
+            final_dict[key] = sanitize_dict(get_user(value))
         elif isinstance(value, models.Model):
             final_dict[key] = sanitize_dict(model_to_dict(value))
         elif isinstance(value, UUID):
