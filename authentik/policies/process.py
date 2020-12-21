@@ -1,8 +1,8 @@
 """authentik policy task"""
 from multiprocessing import Process
 from multiprocessing.connection import Connection
-from typing import Optional
 from traceback import format_tb
+from typing import Optional
 
 from django.core.cache import cache
 from sentry_sdk.hub import Hub
@@ -48,13 +48,13 @@ class PolicyProcess(Process):
         if connection:
             self.connection = connection
 
-    def create_event(self, action: EventAction, **kwargs) -> Event:
+    def create_event(self, action: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
         event = Event.new(
             action=action,
             policy_uuid=self.binding.policy.policy_uuid.hex,
             request=self.request,
-            **kwargs
+            **kwargs,
         )
         event.set_user(self.request.user)
         if self.request.http_request:

@@ -1,10 +1,9 @@
 """evaluator tests"""
-from authentik.policies.exceptions import PolicyException
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.events.models import Event, EventAction
+from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.types import PolicyRequest

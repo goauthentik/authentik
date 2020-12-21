@@ -1,17 +1,14 @@
 """authentik expression policy evaluator"""
-from authentik.policies.exceptions import PolicyException
 from ipaddress import ip_address, ip_network
-from traceback import format_tb
 from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
 from structlog import get_logger
 
-from authentik.events.models import Event, EventAction
-from authentik.events.utils import model_to_dict, sanitize_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
+from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()

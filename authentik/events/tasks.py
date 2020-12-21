@@ -2,12 +2,11 @@
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
-from authentik.events.models import Event, EventAction, EventAlertTrigger
+from authentik.events.models import Event, EventAlertTrigger
 from authentik.policies.engine import PolicyEngine
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
-IGNORED_EVENT_TYPES = [EventAction.POLICY_EXECUTION, EventAction.POLICY_EXCEPTION]
 
 
 @CELERY_APP.task()
@@ -23,13 +22,15 @@ def event_alert_handler(event_uuid: str):
 def event_trigger_handler(event_uuid: str, trigger_name: str):
     """Check if policies attached to EventAlertTrigger match event"""
     event: Event = Event.objects.get(event_uuid=event_uuid)
-
-    # TODO: Better recursion detection
-    if event.action in IGNORED_EVENT_TYPES:
-        LOGGER.debug("e(trigger): attempting to prevent infinite loop")
-        return
-
     trigger: EventAlertTrigger = EventAlertTrigger.objects.get(name=trigger_name)
+
+    if "policy_uuid" in event.context:
+        policy_uuid = event.context["policy_uuid"]
+        if trigger.policies.filter(policy_uuid=policy_uuid).exists():
+            # Event has been created by a policy that is attached
+            # to this trigger. To prevent infinite loops, we stop here
+            LOGGER.debug("e(trigger): attempting to prevent infinite loop")
+            return
 
     if not trigger.action:
         LOGGER.debug("e(trigger): event trigger has no action")

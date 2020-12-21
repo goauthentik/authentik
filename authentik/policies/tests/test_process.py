@@ -1,6 +1,6 @@
 """policy process tests"""
 from django.core.cache import cache
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction

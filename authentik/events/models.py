@@ -106,10 +106,10 @@ class Event(models.Model):
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None)
-            self.user = get_user(
-                request.user, original_user
-            )
+                original_user = request.session.get(
+                    SESSION_IMPERSONATE_ORIGINAL_USER, None
+                )
+            self.user = get_user(request.user, original_user)
         if user:
             self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
