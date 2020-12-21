@@ -49,6 +49,7 @@ class ApplicationViewSet(ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
     lookup_field = "slug"
+    ordering = ['name']
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
@@ -63,7 +64,7 @@ class ApplicationViewSet(ModelViewSet):
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
         allowed_applications = []
-        for application in queryset.order_by("name"):
+        for application in queryset:
             engine = PolicyEngine(application, self.request.user, self.request)
             engine.build()
             if engine.passing:
