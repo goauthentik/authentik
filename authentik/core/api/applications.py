@@ -48,6 +48,13 @@ class ApplicationViewSet(ModelViewSet):
 
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer
+    search_fields = [
+        "name",
+        "slug",
+        "meta_launch_url",
+        "meta_description",
+        "meta_publisher",
+    ]
     lookup_field = "slug"
     ordering = ['name']
 

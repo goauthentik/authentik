@@ -38,7 +38,6 @@ class ApplicationListView(
         "name",
         "slug",
         "meta_launch_url",
-        "meta_icon_url",
         "meta_description",
         "meta_publisher",
     ]
