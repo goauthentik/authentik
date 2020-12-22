@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.admin.api.metrics import get_events_per_1h
+from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.events.models import EventAction
 from authentik.policies.engine import PolicyEngine
@@ -21,6 +22,7 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
+    provider = ProviderSerializer(source="get_provider")
 
     def get_launch_url(self, instance: Application) -> str:
         """Get generated launch URL"""
@@ -56,7 +58,7 @@ class ApplicationViewSet(ModelViewSet):
         "meta_publisher",
     ]
     lookup_field = "slug"
-    ordering = ['name']
+    ordering = ["name"]
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""

@@ -7,7 +7,6 @@ from typing import Dict, List
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import ExtractHour
-from django.http import response
 from django.utils.timezone import now
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.fields import SerializerMethodField
@@ -60,7 +59,7 @@ class AdministrationMetricsSerializer(Serializer):
         """Get failed logins per hour for the last 24 hours"""
         return get_events_per_1h(action=EventAction.LOGIN_FAILED)
 
-    def create(self, request: Request) -> response:
+    def create(self, request: Request) -> Response:
         raise NotImplementedError
 
     def update(self, request: Request) -> Response:
