@@ -1,19 +1,35 @@
+import { property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
+import { ifDefined } from "lit-html/directives/if-defined";
 import { Table } from "./Table";
+import "./TableSearch";
 
 export abstract class TablePage<T> extends Table<T> {
     abstract pageTitle(): string;
-    abstract pageDescription(): string;
+    abstract pageDescription(): string | undefined;
     abstract pageIcon(): string;
+    abstract searchEnabled(): boolean;
+
+    renderSearch(): TemplateResult {
+        if (!this.searchEnabled()) {
+            return super.renderSearch();
+        }
+        return html`<ak-table-search value=${ifDefined(this.search)} .onSearch=${(value: string) => {
+            this.search = value;
+            this.fetch();
+        }}>
+        </ak-table-search>`;
+    }
 
     render(): TemplateResult {
+        const description = this.pageDescription();
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
                         <i class="${this.pageIcon()}"></i>
                         ${this.pageTitle()}
                     </h1>
-                    <p>${this.pageDescription()}</p>
+                    ${description ? html`<p>${description}</p>` : html``}
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">

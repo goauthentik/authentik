@@ -10,6 +10,9 @@ import { TableColumn } from "../../elements/table/Table";
 
 @customElement("ak-application-list")
 export class ApplicationList extends TablePage<Application> {
+    searchEnabled(): boolean {
+        return true;
+    }
     pageTitle(): string {
         return gettext("Applications");
     }
@@ -24,6 +27,7 @@ export class ApplicationList extends TablePage<Application> {
         return Application.list({
             ordering: this.order || "order",
             page: page,
+            search: this.search || "",
         });
     }
 

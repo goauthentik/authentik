@@ -90,6 +90,9 @@ export abstract class Table<T> extends LitElement {
     @property({type: String})
     order?: string;
 
+    @property({type: String})
+    search?: string;
+
     @property({type: Boolean})
     expandable = false;
 
@@ -108,6 +111,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     public fetch(): void {
+        this.data = undefined;
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
@@ -188,12 +192,17 @@ export abstract class Table<T> extends LitElement {
         </button>`;
     }
 
+    renderSearch(): TemplateResult {
+        return html``;
+    }
+
     renderTable(): TemplateResult {
         if (!this.data) {
             this.fetch();
         }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
+                    ${this.renderSearch()}
                     <div class="pf-c-toolbar__bulk-select">
                         ${this.renderToolbar()}
                     </div>
