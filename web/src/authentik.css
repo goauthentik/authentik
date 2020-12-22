@@ -81,6 +81,10 @@ select[multiple] {
     font-size: var(--pf-global--FontSize--sm);
 }
 
+.pf-c-page__main {
+    z-index: auto !important;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
