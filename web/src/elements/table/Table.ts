@@ -12,14 +12,14 @@ export class TableColumn {
     title: string;
     orderBy?: string;
 
-    onClick = () => {};
+    onClick?: () => void;
 
     constructor(title: string, orderBy?: string) {
         this.title = title;
         this.orderBy = orderBy;
     }
 
-    headerClickHandler(table: Table<any>): void {
+    headerClickHandler(table: Table<unknown>): void {
         if (!this.orderBy) {
             return;
         }
@@ -31,18 +31,18 @@ export class TableColumn {
         table.fetch();
     }
 
-    private getSortIndicator(table: Table<any>): string {
+    private getSortIndicator(table: Table<unknown>): string {
         switch (table.order) {
-            case this.orderBy:
-                return "fa-long-arrow-alt-down";
-            case `-${this.orderBy}`:
-                return "fa-long-arrow-alt-up";
-            default:
-                return "fa-arrows-alt-v";
+        case this.orderBy:
+            return "fa-long-arrow-alt-down";
+        case `-${this.orderBy}`:
+            return "fa-long-arrow-alt-up";
+        default:
+            return "fa-arrows-alt-v";
         }
     }
 
-    renderSortable(table: Table<any>): TemplateResult {
+    renderSortable(table: Table<unknown>): TemplateResult {
         return html`
             <button class="pf-c-table__button" @click=${() => this.headerClickHandler(table)}>
                 <div class="pf-c-table__button-content">
@@ -54,13 +54,13 @@ export class TableColumn {
             </button>`;
     }
 
-    render(table: Table<any>): TemplateResult {
+    render(table: Table<unknown>): TemplateResult {
         return html`<th
             role="columnheader"
             scope="col"
             class="
-                ${this.orderBy ? 'pf-c-table__sort ' : ' '}
-                ${(table.order === this.orderBy || table.order === `-${this.orderBy}`) ? 'pf-m-selected ' : ''}
+                ${this.orderBy ? "pf-c-table__sort " : " "}
+                ${(table.order === this.orderBy || table.order === `-${this.orderBy}`) ? "pf-m-selected " : ""}
             ">
             ${this.orderBy ? this.renderSortable(table) : html`${gettext(this.title)}`}
         </th>`;

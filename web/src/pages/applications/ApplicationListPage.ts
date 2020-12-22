@@ -46,8 +46,8 @@ export class ApplicationList extends TablePage<Application> {
         return [
             html`
             ${item.meta_icon ?
-                html`<img class="app-icon pf-c-avatar" src="${item.meta_icon}" alt="${gettext('Application Icon')}">` :
-                html`<i class="pf-icon pf-icon-arrow"></i>`}`,
+        html`<img class="app-icon pf-c-avatar" src="${item.meta_icon}" alt="${gettext("Application Icon")}">` :
+        html`<i class="pf-icon pf-icon-arrow"></i>`}`,
             html`<a href="#/applications/${item.slug}/">
                 <div>
                     ${item.name}
