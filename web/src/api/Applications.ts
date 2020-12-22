@@ -1,10 +1,11 @@
 import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { Provider } from "./Providers";
 
 export class Application {
     pk: string;
     name: string;
     slug: string;
-    provider: number;
+    provider: Provider;
 
     launch_url: string;
     meta_launch_url: string;
@@ -23,5 +24,9 @@ export class Application {
 
     static list(filter?: QueryArguments): Promise<PBResponse<Application>> {
         return DefaultClient.fetch<PBResponse<Application>>(["core", "applications"], filter);
+    }
+
+    static adminUrl(rest: string): string {
+        return `/administration/applications/${rest}`;
     }
 }

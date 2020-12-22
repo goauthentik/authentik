@@ -33,6 +33,7 @@ export class ApplicationList extends TablePage<Application> {
 
     columns(): TableColumn[] {
         return [
+            new TableColumn(""),
             new TableColumn("Name", "name"),
             new TableColumn("Slug", "slug"),
             new TableColumn("Provider"),
@@ -43,18 +44,27 @@ export class ApplicationList extends TablePage<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            html`${item.name}`,
-            html`${item.slug}`,
-            html`${item.provider}`,
-            html`${item.provider}`,
             html`
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/update/">
+            ${item.meta_icon ?
+                html`<img class="app-icon pf-c-avatar" src="${item.meta_icon}" alt="${gettext('Application Icon')}">` :
+                html`<i class="pf-icon pf-icon-arrow"></i>`}`,
+            html`<a href="#/applications/${item.slug}/">
+                <div>
+                    ${item.name}
+                </div>
+                ${item.meta_publisher ? html`<small>${item.meta_publisher}</small>` : html``}
+            </a>`,
+            html`<code>${item.slug}</code>`,
+            html`${item.provider.name}`,
+            html`${item.provider.verbose_name}`,
+            html`
+            <ak-modal-button href="${Application.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     Edit
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="administration/policies/bindings/${item.pk}/delete/">
+            <ak-modal-button href="${Application.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     Delete
                 </ak-spinner-button>
@@ -62,5 +72,17 @@ export class ApplicationList extends TablePage<Application> {
             </ak-modal-button>
             `,
         ];
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`
+        <ak-modal-button href=${Application.adminUrl("create/")}>
+            <ak-spinner-button slot="trigger" class="pf-m-primary">
+                ${gettext("Create")}
+            </ak-spinner-button>
+            <div slot="modal"></div>
+        </ak-modal-button>
+        ${super.renderToolbar()}
+        `;
     }
 }
