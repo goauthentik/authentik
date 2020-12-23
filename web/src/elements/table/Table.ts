@@ -202,7 +202,7 @@ export abstract class Table<T> extends LitElement {
         }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
-                    ${this.renderSearch()}
+                    ${this.renderSearch()}&nbsp;
                     <div class="pf-c-toolbar__bulk-select">
                         ${this.renderToolbar()}
                     </div>
