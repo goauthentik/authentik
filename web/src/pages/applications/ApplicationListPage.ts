@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement, html, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/Applications";
 import { PBResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
@@ -23,9 +23,12 @@ export class ApplicationList extends TablePage<Application> {
         return gettext("pf-icon pf-icon-applications");
     }
 
+    @property()
+    order = "name";
+
     apiEndpoint(page: number): Promise<PBResponse<Application>> {
         return Application.list({
-            ordering: this.order || "order",
+            ordering: this.order,
             page: page,
             search: this.search || "",
         });
