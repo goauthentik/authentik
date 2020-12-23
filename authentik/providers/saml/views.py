@@ -1,5 +1,8 @@
 """authentik SAML IDP Views"""
+from django.urls.base import reverse_lazy
+from authentik.providers.saml.forms import SAMLProviderImportForm
 from typing import Optional
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
@@ -9,6 +12,7 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.edit import FormView
 from structlog import get_logger
 
 from authentik.core.models import Application, Provider
@@ -237,3 +241,26 @@ class DescriptorDownloadView(View):
                 "Content-Disposition"
             ] = f'attachment; filename="{provider.name}_authentik_meta.xml"'
             return response
+
+
+class MetadataImportView(LoginRequiredMixin, FormView):
+    """Import flow from JSON Export; only allowed for superusers
+    as these flows can contain python code"""
+
+    form_class = SAMLProviderImportForm
+    template_name = "administration/flow/import.html"
+    success_url = reverse_lazy("authentik_admin:flows")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form: SAMLProviderImportForm) -> HttpResponse:
+        importer = FlowImporter(form.cleaned_data["flow"].read().decode())
+        successful = importer.apply()
+        if not successful:
+            messages.error(self.request, _("Failed to import flow."))
+        else:
+            messages.success(self.request, _("Successfully imported flow."))
+        return super().form_valid(form)
