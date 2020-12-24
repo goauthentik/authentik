@@ -103,6 +103,7 @@ module.exports = {
                         "integrations/services/gitlab/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
+                        "integrations/services/nextcloud/index",
                         "integrations/services/rancher/index",
                         "integrations/services/sentry/index",
                         "integrations/services/sonarr/index",

@@ -4,6 +4,8 @@ export class Provider {
     pk: number;
     name: string;
     authorization_flow: string;
+    verbose_name: string;
+    verbose_name_plural: string;
 
     constructor() {
         throw Error();
