@@ -21,6 +21,7 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
+    provider = ProviderSerializer(source="get_provider", required=False)
 
     def get_launch_url(self, instance: Application) -> str:
         """Get generated launch URL"""
