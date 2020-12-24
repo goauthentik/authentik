@@ -234,7 +234,8 @@ class KubernetesServiceConnection(OutpostServiceConnection):
                 "Paste your kubeconfig here. authentik will automatically use "
                 "the currently selected context."
             )
-        )
+        ),
+        blank=True,
     )
 
     @property
