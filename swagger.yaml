@@ -6982,7 +6982,6 @@ definitions:
           - suspicious_request
           - password_set
           - token_view
-          - invitation_created
           - invitation_used
           - authorize_application
           - source_linked

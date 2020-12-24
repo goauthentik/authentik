@@ -43,3 +43,7 @@ class InvitationViewSet(ModelViewSet):
 
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
+
+    def perform_create(self, serializer: InvitationSerializer):
+        serializer.instance.created_by = self.request.user
+        return super().perform_create(serializer)
