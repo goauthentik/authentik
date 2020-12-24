@@ -1,9 +1,8 @@
 """event_matcher tests"""
-from authentik.events.models import Event, EventAction
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.models import Group
+from authentik.events.models import Event, EventAction
 from authentik.policies.event_matcher.models import EventMatcherPolicy
 from authentik.policies.types import PolicyRequest
 

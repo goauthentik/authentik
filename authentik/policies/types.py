@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional
 
 from django.db.models import Model
 from django.http import HttpRequest
@@ -19,7 +19,7 @@ class PolicyRequest:
     user: User
     http_request: Optional[HttpRequest]
     obj: Optional[Model]
-    context: Dict[str, str]
+    context: dict[str, Any]
 
     def __init__(self, user: User):
         super().__init__()
@@ -37,10 +37,10 @@ class PolicyResult:
     """Small data-class to hold policy results"""
 
     passing: bool
-    messages: Tuple[str, ...]
+    messages: tuple[str, ...]
 
     source_policy: Optional[Policy]
-    source_results: Optional[List["PolicyResult"]]
+    source_results: Optional[list["PolicyResult"]]
 
     def __init__(self, passing: bool, *messages: str):
         super().__init__()

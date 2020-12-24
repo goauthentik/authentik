@@ -2,8 +2,8 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
 from authentik.policies.event_matcher.models import EventMatcherPolicy
+from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
 
 
 class EventMatcherPolicySerializer(ModelSerializer):

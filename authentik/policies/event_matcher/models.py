@@ -5,8 +5,8 @@ from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
-from authentik.events.models import Event, EventAction
 
+from authentik.events.models import Event, EventAction
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
@@ -32,9 +32,9 @@ class EventMatcherPolicy(Policy):
         return EventMatcherPolicyForm
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        if 'event' not in request.context:
+        if "event" not in request.context:
             return PolicyResult(False)
-        event: Event = request.context['event']
+        event: Event = request.context["event"]
         if self.action != "":
             if event.action != self.action:
                 return PolicyResult(False, "Action did not match.")

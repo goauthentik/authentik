@@ -1,10 +1,10 @@
-"""events event tests"""
+"""event tests"""
 
-from authentik.core.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.core.models import Group
 from authentik.events.models import Event
 from authentik.policies.dummy.models import DummyPolicy
 

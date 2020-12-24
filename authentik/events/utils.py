@@ -65,6 +65,7 @@ def get_user(user: User, original_user: Optional[User] = None) -> Dict[str, Any]
         return original_data
     return user_data
 
+
 def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     """clean source of all Models that would interfere with the JSONField.
     Models are replaced with a dictionary of {

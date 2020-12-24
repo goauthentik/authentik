@@ -2,8 +2,8 @@
 
 from django import forms
 
-from authentik.policies.forms import GENERAL_FIELDS
 from authentik.policies.event_matcher.models import EventMatcherPolicy
+from authentik.policies.forms import GENERAL_FIELDS
 
 
 class EventMatcherPolicyForm(forms.ModelForm):
