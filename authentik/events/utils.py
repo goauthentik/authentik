@@ -30,7 +30,7 @@ def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
                 final_dict[key] = SafeExceptionReporterFilter.cleansed_substitute
             else:
                 final_dict[key] = value
-        except TypeError:
+        except TypeError:  # pragma: no cover
             final_dict[key] = value
         if isinstance(value, dict):
             final_dict[key] = cleanse_dict(value)

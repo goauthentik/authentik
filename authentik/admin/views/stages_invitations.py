@@ -19,7 +19,6 @@ from authentik.admin.views.utils import (
 from authentik.lib.views import CreateAssignPermView
 from authentik.stages.invitation.forms import InvitationForm
 from authentik.stages.invitation.models import Invitation
-from authentik.stages.invitation.signals import invitation_created
 
 
 class InvitationListView(
@@ -59,7 +58,6 @@ class InvitationCreateView(
         obj = form.save(commit=False)
         obj.created_by = self.request.user
         obj.save()
-        invitation_created.send(sender=self, request=self.request, invitation=obj)
         return HttpResponseRedirect(self.success_url)
 
 

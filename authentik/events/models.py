@@ -36,7 +36,6 @@ class EventAction(models.TextChoices):
 
     TOKEN_VIEW = "token_view"  # nosec
 
-    INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
 
     AUTHORIZE_APPLICATION = "authorize_application"

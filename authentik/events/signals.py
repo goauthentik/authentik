@@ -16,7 +16,7 @@ from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.events.tasks import event_alert_handler
 from authentik.stages.invitation.models import Invitation
-from authentik.stages.invitation.signals import invitation_created, invitation_used
+from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.user_write.signals import user_write
 
 
@@ -78,16 +78,6 @@ def on_user_login_failed(
 ):
     """Failed Login"""
     thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)
-    thread.run()
-
-
-@receiver(invitation_created)
-# pylint: disable=unused-argument
-def on_invitation_created(sender, request: HttpRequest, invitation: Invitation, **_):
-    """Log Invitation creation"""
-    thread = EventNewThread(
-        EventAction.INVITE_CREATED, request, invitation_uuid=invitation.invite_uuid.hex
-    )
     thread.run()
 
 
