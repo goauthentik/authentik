@@ -13,6 +13,7 @@ from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.admin.api.metrics import get_events_per_1h
 from authentik.audit.models import EventAction
+from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.policies.engine import PolicyEngine
 
