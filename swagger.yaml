@@ -4,7 +4,8 @@ info:
   contact:
     email: hello@beryju.org
   license:
-    name: MIT License
+    name: GNU GPLv3
+    url: https://github.com/BeryJu/authentik/blob/master/LICENSE
   version: v2
 basePath: /api/v2beta
 consumes:
