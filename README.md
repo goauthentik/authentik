@@ -1,4 +1,4 @@
-<img src="https://goauthentik.io/img/icon_top_brand.svg" height="250" alt="authentik logo">
+<img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="250" alt="authentik logo">
 
 ---
 
