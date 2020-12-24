@@ -1,4 +1,5 @@
 """core Configs API"""
+from django.db.models import Model
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -19,10 +20,10 @@ class ConfigSerializer(Serializer):
     error_reporting_environment = ReadOnlyField()
     error_reporting_send_pii = ReadOnlyField()
 
-    def create(self, request: Request) -> Response:
+    def create(self, validated_data: dict) -> Model:
         raise NotImplementedError
 
-    def update(self, request: Request) -> Response:
+    def update(self, instance: Model, validated_data: dict) -> Model:
         raise NotImplementedError
 
 

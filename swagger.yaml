@@ -6729,11 +6729,55 @@ definitions:
         title: Outdated
         type: boolean
         readOnly: true
+  Provider:
+    title: Provider
+    description: Provider Serializer
+    required:
+      - name
+      - application
+      - authorization_flow
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      application:
+        title: Application
+        type: string
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   Application:
     description: Application Serializer
     required:
       - name
       - slug
+      - provider
     type: object
     properties:
       pk:
@@ -6755,9 +6799,7 @@ definitions:
         maxLength: 50
         minLength: 1
       provider:
-        title: Provider
-        type: integer
-        x-nullable: true
+        $ref: '#/definitions/Provider'
       launch_url:
         title: Launch url
         type: string
@@ -7720,40 +7762,6 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-  Provider:
-    description: Provider Serializer
-    required:
-      - name
-      - application
-      - authorization_flow
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      application:
-        title: Application
-        type: string
-      authorization_flow:
-        title: Authorization flow
-        description: Flow used when authorizing this provider.
-        type: string
-        format: uuid
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-      __type__:
-        title: 'type  '
-        type: string
-        readOnly: true
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:
@@ -7845,6 +7853,14 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   ProxyProvider:
     description: ProxyProvider Serializer
     required:
@@ -7898,6 +7914,14 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   SAMLProvider:
     description: SAMLProvider Serializer
     required:
@@ -7984,6 +8008,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   Config:
     description: Serialize authentik Config into DRF Object
     type: object

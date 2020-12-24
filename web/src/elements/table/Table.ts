@@ -6,10 +6,72 @@ import { COMMON_STYLES } from "../../common/styles";
 import "./TablePagination";
 import "../EmptyState";
 
+
+export class TableColumn {
+
+    title: string;
+    orderBy?: string;
+
+    onClick?: () => void;
+
+    constructor(title: string, orderBy?: string) {
+        this.title = title;
+        this.orderBy = orderBy;
+    }
+
+    headerClickHandler(table: Table<unknown>): void {
+        if (!this.orderBy) {
+            return;
+        }
+        if (table.order === this.orderBy) {
+            table.order = `-${this.orderBy}`;
+        } else {
+            table.order = this.orderBy;
+        }
+        table.fetch();
+    }
+
+    private getSortIndicator(table: Table<unknown>): string {
+        switch (table.order) {
+        case this.orderBy:
+            return "fa-long-arrow-alt-down";
+        case `-${this.orderBy}`:
+            return "fa-long-arrow-alt-up";
+        default:
+            return "fa-arrows-alt-v";
+        }
+    }
+
+    renderSortable(table: Table<unknown>): TemplateResult {
+        return html`
+            <button class="pf-c-table__button" @click=${() => this.headerClickHandler(table)}>
+                <div class="pf-c-table__button-content">
+                    <span class="pf-c-table__text">${gettext(this.title)}</span>
+                    <span class="pf-c-table__sort-indicator">
+                        <i class="fas ${this.getSortIndicator(table)}"></i>
+                    </span>
+                </div>
+            </button>`;
+    }
+
+    render(table: Table<unknown>): TemplateResult {
+        return html`<th
+            role="columnheader"
+            scope="col"
+            class="
+                ${this.orderBy ? "pf-c-table__sort " : " "}
+                ${(table.order === this.orderBy || table.order === `-${this.orderBy}`) ? "pf-m-selected " : ""}
+            ">
+            ${this.orderBy ? this.renderSortable(table) : html`${gettext(this.title)}`}
+        </th>`;
+    }
+
+}
+
 export abstract class Table<T> extends LitElement {
     abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
-    abstract columns(): Array<string>;
-    abstract row(item: T): Array<TemplateResult>;
+    abstract columns(): TableColumn[];
+    abstract row(item: T): TemplateResult[];
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderExpanded(item: T): TemplateResult {
@@ -24,6 +86,12 @@ export abstract class Table<T> extends LitElement {
 
     @property({type: Number})
     page = 1;
+
+    @property({type: String})
+    order?: string;
+
+    @property({type: String})
+    search?: string;
 
     @property({type: Boolean})
     expandable = false;
@@ -43,6 +111,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     public fetch(): void {
+        this.data = undefined;
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
@@ -123,12 +192,17 @@ export abstract class Table<T> extends LitElement {
         </button>`;
     }
 
+    renderSearch(): TemplateResult {
+        return html``;
+    }
+
     renderTable(): TemplateResult {
         if (!this.data) {
             this.fetch();
         }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
+                    ${this.renderSearch()}&nbsp;
                     <div class="pf-c-toolbar__bulk-select">
                         ${this.renderToolbar()}
                     </div>
@@ -143,7 +217,7 @@ export abstract class Table<T> extends LitElement {
                 <thead>
                     <tr role="row">
                         ${this.expandable ? html`<td role="cell">` : html``}
-                        ${this.columns().map((col) => html`<th role="columnheader" scope="col">${gettext(col)}</th>`)}
+                        ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
                 ${this.data ? this.renderRows() : this.renderLoading()}

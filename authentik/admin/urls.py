@@ -36,9 +36,6 @@ urlpatterns = [
     ),
     # Applications
     path(
-        "applications/", applications.ApplicationListView.as_view(), name="applications"
-    ),
-    path(
         "applications/create/",
         applications.ApplicationCreateView.as_view(),
         name="application-create",
