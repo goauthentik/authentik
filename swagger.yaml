@@ -6777,7 +6777,6 @@ definitions:
     required:
       - name
       - slug
-      - provider
     type: object
     properties:
       pk:
