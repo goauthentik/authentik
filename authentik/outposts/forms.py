@@ -1,7 +1,11 @@
 """Outpost forms"""
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from kubernetes.client.configuration import Configuration
+from kubernetes.config.config_exception import ConfigException
+from kubernetes.config.kube_config import load_kube_config_from_dict
 
 from authentik.admin.fields import CodeMirrorWidget, YAMLField
 from authentik.crypto.models import CertificateKeyPair
@@ -70,6 +74,23 @@ class DockerServiceConnectionForm(forms.ModelForm):
 
 class KubernetesServiceConnectionForm(forms.ModelForm):
     """Kubernetes service-connection form"""
+
+    def clean_kubeconfig(self):
+        """Validate kubeconfig by attempting to load it"""
+        kubeconfig = self.cleaned_data["kubeconfig"]
+        if kubeconfig == {}:
+            if not self.cleaned_data["local"]:
+                raise ValidationError(
+                    _("You can only use an empty kubeconfig when local is enabled.")
+                )
+            # Empty kubeconfig is valid
+            return kubeconfig
+        config = Configuration()
+        try:
+            load_kube_config_from_dict(kubeconfig, client_configuration=config)
+        except ConfigException:
+            raise ValidationError(_("Invalid kubeconfig"))
+        return kubeconfig
 
     class Meta:
 
