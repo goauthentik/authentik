@@ -7390,7 +7390,6 @@ definitions:
     description: KubernetesServiceConnection Serializer
     required:
       - name
-      - kubeconfig
     type: object
     properties:
       pk:
