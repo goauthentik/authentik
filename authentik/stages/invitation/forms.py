@@ -25,8 +25,5 @@ class InvitationForm(forms.ModelForm):
 
         model = Invitation
         fields = ["expires", "fixed_data"]
-        labels = {
-            "fixed_data": _("Optional fixed data to enforce on user enrollment."),
-        }
         widgets = {"fixed_data": CodeMirrorWidget()}
         field_classes = {"fixed_data": YAMLField}
