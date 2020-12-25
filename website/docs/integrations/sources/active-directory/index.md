@@ -55,3 +55,7 @@ The other settings might need to be adjusted based on the setup of your domain.
 After you save the source, a synchronization will start in the background. When its done, you cen see the summary on the System Tasks page.
 
 ![](./03_ak_status.png)
+
+To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
+
+![](./04_ak_stage.png)
