@@ -34,8 +34,11 @@ class UserSerializer(ModelSerializer):
 class UserViewSet(ModelViewSet):
     """User Viewset"""
 
-    queryset = User.objects.all().exclude(pk=get_anonymous_user().pk)
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     @swagger_auto_schema(responses={200: UserSerializer(many=False)})
     @action(detail=False)
