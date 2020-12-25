@@ -53,5 +53,5 @@ class PasswordStageForm(forms.ModelForm):
         fields = ["name", "backends", "configure_flow", "failed_attempts_before_cancel"]
         widgets = {
             "name": forms.TextInput(),
-            "backends": forms.SelectMultiple(get_authentication_backends()),
+            "backends": forms.SelectMultiple(choices=get_authentication_backends()),
         }
