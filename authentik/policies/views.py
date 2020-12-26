@@ -24,6 +24,10 @@ class RequestValidationError(SentryIgnoredException):
 
     response: Optional[HttpResponse]
 
+    def __init__(self, response: Optional[HttpResponse] = None):
+        super().__init__()
+        if response:
+            self.response = response
 
 class BaseMixin:
     """Base Mixin class, used to annotate View Member variables"""

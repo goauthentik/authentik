@@ -24,7 +24,7 @@ from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PROMPT_CONSNET,
     PROMPT_NONE,
@@ -332,6 +332,32 @@ class OAuthFulfillmentStage(StageView):
 class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
+    params: OAuthAuthorizationParams
+
+    def pre_permission_check(self):
+        """Check prompt parameter before checking permission/authentication,
+        see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.6"""
+        try:
+            self.params = OAuthAuthorizationParams.from_request(self.request)
+        except OAuth2Error as error:
+            raise RequestValidationError(
+                bad_request_message(
+                    self.request, error.description, title=error.error
+                )
+            )
+        except OAuth2Provider.DoesNotExist:
+            raise Http404
+        if self.params.prompt == PROMPT_NONE and not self.request.user.is_authenticated:
+            # When "prompt" is set to "none" but the user is not logged in, show an error message
+            error = AuthorizeError(
+                self.params.redirect_uri, "interaction_required", self.params.grant_type
+            )
+            raise RequestValidationError(
+                bad_request_message(
+                    self.request, error.description, title=error.error
+                )
+            )
+
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
         self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
@@ -340,13 +366,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check access to application, start FlowPLanner, return to flow executor shell"""
-        # Extract params so we can save them in the plan context
-        try:
-            params = OAuthAuthorizationParams.from_request(request)
-        except OAuth2Error as error:
-            return bad_request_message(request, error.description, title=error.error)
-        except OAuth2Provider.DoesNotExist:
-            raise Http404
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         # planner.use_cache = False
@@ -357,9 +376,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_APPLICATION: self.application,
                 # OAuth2 related params
-                PLAN_CONTEXT_PARAMS: params,
+                PLAN_CONTEXT_PARAMS: self.params,
                 PLAN_CONTEXT_SCOPE_DESCRIPTIONS: UserInfoView().get_scope_descriptions(
-                    params.scope
+                    self.params.scope
                 ),
                 # Consent related params
                 PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/oauth2/consent.html",
@@ -367,7 +386,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         )
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
-        if PROMPT_CONSNET in params.prompt:
+        if PROMPT_CONSNET in self.params.prompt:
             if not any([isinstance(x, ConsentStageView) for x in plan.stages]):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
