@@ -37,8 +37,9 @@
         <table class="pf-c-table pf-m-compact pf-m-grid-xl" role="grid">
             <thead>
                 <tr role="row">
+                    <th role="columnheader" scope="col">{% trans 'ID' %}</th>
+                    <th role="columnheader" scope="col">{% trans 'Created by' %}</th>
                     <th role="columnheader" scope="col">{% trans 'Expiry' %}</th>
-                    <th role="columnheader" scope="col">{% trans 'Link' %}</th>
                     <th role="cell"></th>
                 </tr>
             </thead>
@@ -47,12 +48,17 @@
                 <tr role="row">
                     <td role="cell">
                         <span>
-                            {{ invitation.expiry }}
+                            {{ invitation.invite_uuid }}
                         </span>
                     </td>
                     <td role="cell">
                         <span>
-                            {{ invitation.Link }}
+                            {{ invitation.created_by }}
+                        </span>
+                    </td>
+                    <td role="cell">
+                        <span>
+                            {{ invitation.expiry|default:"-" }}
                         </span>
                     </td>
                     <td>

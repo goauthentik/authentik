@@ -9,6 +9,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "./BoundStagesList";
+import "./FlowDiagram";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -49,6 +50,12 @@ export class FlowViewPage extends LitElement {
                 </div>
             </section>
             <ak-tabs>
+                <div slot="page-1" data-tab-title="${gettext("Flow Diagram")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <ak-flow-diagram flowSlug=${this.flow.slug}>
+                        </ak-flow-diagram>
+                    </div>
+                </div>
                 <div slot="page-2" data-tab-title="${gettext("Stage Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <ak-bound-stages-list .target=${this.flow.pk}>
