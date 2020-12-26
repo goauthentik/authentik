@@ -23,6 +23,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.lib.utils.template import render_to_string
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
@@ -486,7 +487,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         # Because this function is called after the AUTHORIZE_APPLICATION Event has been created,
         # we use the timestamp of that.
         auth_event = Event.objects.filter(
-            action=EventAction.AUTHORIZE_APPLICATION, user=user
+            action=EventAction.AUTHORIZE_APPLICATION, user=get_user(user)
         ).latest("created")
         auth_time = int(dateformat.format(auth_event.created, "U"))
 
