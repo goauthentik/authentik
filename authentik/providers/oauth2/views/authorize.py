@@ -348,11 +348,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
-                self.params.redirect_uri, "interaction_required", self.params.grant_type
+                self.params.redirect_uri, "login_required", self.params.grant_type
             )
-            raise RequestValidationError(
-                bad_request_message(self.request, error.description, title=error.error)
-            )
+            raise RequestValidationError(redirect(error.create_uri(
+                self.params.redirect_uri, self.params.state)))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
