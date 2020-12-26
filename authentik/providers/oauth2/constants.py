@@ -17,3 +17,5 @@ SCOPE_GITHUB_USER_READ = "read:user"
 SCOPE_GITHUB_USER_EMAIL = "user:email"
 # Read info about teams
 SCOPE_GITHUB_ORG_READ = "read:org"
+
+ACR_AUTHENTIK_DEFAULT = "goauthentik.io/providers/oauth2/default"

@@ -27,6 +27,7 @@ from authentik.events.utils import get_user
 from authentik.lib.utils.template import render_to_string
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
+from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
 from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
@@ -392,6 +393,7 @@ class IDToken:
     exp: Optional[int] = None
     iat: Optional[int] = None
     auth_time: Optional[int] = None
+    acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
 
     nonce: Optional[str] = None
     at_hash: Optional[str] = None

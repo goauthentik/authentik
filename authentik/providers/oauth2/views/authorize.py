@@ -135,6 +135,7 @@ class OAuthAuthorizationParams:
             code_challenge_method=query_dict.get("code_challenge_method"),
         )
 
+    # pylint: disable=too-many-branches
     def __post_init__(self):
         try:
             self.provider: OAuth2Provider = OAuth2Provider.objects.get(
