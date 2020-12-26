@@ -114,9 +114,13 @@ class TokenUpdateView(
 
     def get_object(self) -> Token:
         identifier = self.kwargs.get("identifier")
-        return get_objects_for_user(
-            self.request.user, self.permission_required, self.model
-        ).filter(intent=TokenIntents.INTENT_API, identifier=identifier).first()
+        return (
+            get_objects_for_user(
+                self.request.user, self.permission_required, self.model
+            )
+            .filter(intent=TokenIntents.INTENT_API, identifier=identifier)
+            .first()
+        )
 
 
 class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
@@ -130,6 +134,10 @@ class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessage
 
     def get_object(self) -> Token:
         identifier = self.kwargs.get("identifier")
-        return get_objects_for_user(
-            self.request.user, self.permission_required, self.model
-        ).filter(intent=TokenIntents.INTENT_API, identifier=identifier).first()
+        return (
+            get_objects_for_user(
+                self.request.user, self.permission_required, self.model
+            )
+            .filter(intent=TokenIntents.INTENT_API, identifier=identifier)
+            .first()
+        )
