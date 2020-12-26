@@ -344,7 +344,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
         try:
             params = OAuthAuthorizationParams.from_request(request)
         except OAuth2Error as error:
-            # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         except OAuth2Provider.DoesNotExist:
             raise Http404
