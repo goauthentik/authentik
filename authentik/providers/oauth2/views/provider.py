@@ -7,7 +7,7 @@ from django.views import View
 from structlog import get_logger
 
 from authentik.core.models import Application
-from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
+from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT, SCOPE_OPENID
 from authentik.providers.oauth2.models import OAuth2Provider
 
 LOGGER = get_logger()
@@ -56,6 +56,10 @@ class ProviderInfoView(View):
                 "client_secret_basic",
             ],
             "acr_values_supported": [ACR_AUTHENTIK_DEFAULT],
+            "scopes_supported": [
+                # We only advertise the 'openid' scope, as the rest vary depending on application
+                SCOPE_OPENID,
+            ],
         }
 
     # pylint: disable=unused-argument
