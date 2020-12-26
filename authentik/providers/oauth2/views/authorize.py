@@ -341,21 +341,17 @@ class AuthorizationFlowInitView(PolicyAccessView):
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except OAuth2Error as error:
             raise RequestValidationError(
-                bad_request_message(
-                    self.request, error.description, title=error.error
-                )
+                bad_request_message(self.request, error.description, title=error.error)
             )
         except OAuth2Provider.DoesNotExist:
             raise Http404
-        if self.params.prompt == PROMPT_NONE and not self.request.user.is_authenticated:
+        if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
                 self.params.redirect_uri, "interaction_required", self.params.grant_type
             )
             raise RequestValidationError(
-                bad_request_message(
-                    self.request, error.description, title=error.error
-                )
+                bad_request_message(self.request, error.description, title=error.error)
             )
 
     def resolve_provider_application(self):

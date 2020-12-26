@@ -29,6 +29,7 @@ class RequestValidationError(SentryIgnoredException):
         if response:
             self.response = response
 
+
 class BaseMixin:
     """Base Mixin class, used to annotate View Member variables"""
 
