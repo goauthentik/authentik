@@ -6,42 +6,13 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, UpdateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from django.views.generic import UpdateView
+from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.core.forms.applications import ApplicationForm
 from authentik.core.models import Application
 from authentik.lib.views import CreateAssignPermView
-
-
-class ApplicationListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    ListView,
-):
-    """Show list of all applications"""
-
-    model = Application
-    permission_required = "authentik_core.view_application"
-    ordering = "name"
-    template_name = "administration/application/list.html"
-
-    search_fields = [
-        "name",
-        "slug",
-        "meta_launch_url",
-        "meta_icon_url",
-        "meta_description",
-        "meta_publisher",
-    ]
 
 
 class ApplicationCreateView(

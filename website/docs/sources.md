@@ -25,6 +25,10 @@ This source allows authentik to act as a SAML Service Provider. Just like the SA
 
 This source allows you to import users and groups from an LDAP Server.
 
+:::info
+For Active Directory, follow the [Active Directory Integration](https://goauthentik.io/docs/integrations/sources/active-directory/index)
+:::
+
 -   Server URI: URI to your LDAP server/Domain Controller.
 -   Bind CN: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 -   Bind password: Password used during the bind process.

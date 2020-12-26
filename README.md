@@ -1,4 +1,4 @@
-<img src="web/icons/icon_top_brand.svg" height="250" alt="authentik logo">
+<img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="250" alt="authentik logo">
 
 ---
 
@@ -21,8 +21,8 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Screenshots
 
-![](website/static/img/screen_apps.png)
-![](website/static/img/screen_admin.png)
+![](https://goauthentik.io/img/screen_apps.png)
+![](https://goauthentik.io/img/screen_admin.png)
 
 ## Development
 

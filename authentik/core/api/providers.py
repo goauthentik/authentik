@@ -2,15 +2,16 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.core.models import Provider
 
 
-class ProviderSerializer(ModelSerializer):
+class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
-    __type__ = SerializerMethodField(method_name="get_type")
+    object_type = SerializerMethodField()
 
-    def get_type(self, obj):
+    def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("provider", "")
 
@@ -29,7 +30,9 @@ class ProviderSerializer(ModelSerializer):
             "application",
             "authorization_flow",
             "property_mappings",
-            "__type__",
+            "object_type",
+            "verbose_name",
+            "verbose_name_plural",
         ]
 
 

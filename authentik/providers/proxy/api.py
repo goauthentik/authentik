@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -33,7 +34,7 @@ class OpenIDConnectConfigurationSerializer(Serializer):
         raise NotImplementedError
 
 
-class ProxyProviderSerializer(ModelSerializer):
+class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
     """ProxyProvider Serializer"""
 
     def create(self, validated_data):
@@ -60,6 +61,8 @@ class ProxyProviderSerializer(ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
+            "verbose_name",
+            "verbose_name_plural",
         ]
 
 

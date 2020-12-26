@@ -82,7 +82,7 @@ class PolicyAccessView(AccessMixin, View):
         policy_engine.build()
         result = policy_engine.result
         LOGGER.debug(
-            "AccessMixin user_has_access",
+            "PolicyAccessView user_has_access",
             user=user,
             app=self.application,
             result=result,

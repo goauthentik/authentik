@@ -1,5 +1,6 @@
 """User API Views"""
 from drf_yasg2.utils import swagger_auto_schema
+from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -35,6 +36,9 @@ class UserViewSet(ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     @swagger_auto_schema(responses={200: UserSerializer(many=False)})
     @action(detail=False)

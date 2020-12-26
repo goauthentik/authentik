@@ -1,6 +1,5 @@
 """authentik flows invitation forms"""
 from django import forms
-from django.utils.translation import gettext as _
 
 from authentik.admin.fields import CodeMirrorWidget, YAMLField
 from authentik.stages.invitation.models import Invitation, InvitationStage
@@ -25,8 +24,5 @@ class InvitationForm(forms.ModelForm):
 
         model = Invitation
         fields = ["expires", "fixed_data"]
-        labels = {
-            "fixed_data": _("Optional fixed data to enforce on user enrollment."),
-        }
         widgets = {"fixed_data": CodeMirrorWidget()}
         field_classes = {"fixed_data": YAMLField}

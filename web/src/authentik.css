@@ -81,6 +81,10 @@ select[multiple] {
     font-size: var(--pf-global--FontSize--sm);
 }
 
+.pf-c-page__main {
+    z-index: auto !important;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
@@ -131,6 +135,12 @@ select[multiple] {
         --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
+    }
+    .pf-c-table__text {
+        color: var(--ak-dark-foreground) !important;
+    }
+    .pf-c-table__sort-indicator i {
+        color: var(--ak-dark-foreground) !important;
     }
     /* class for pagination text */
     .pf-c-options-menu__toggle {

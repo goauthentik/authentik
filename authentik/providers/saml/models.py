@@ -148,9 +148,9 @@ class SAMLProvider(Provider):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.providers.saml.api import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api import SAMLProviderSerializer
 
-        return SAMLPropertyMappingSerializer
+        return SAMLProviderSerializer
 
     @property
     def form(self) -> Type[ModelForm]:
