@@ -14,7 +14,7 @@ export class FlowDiagram extends LitElement {
     @property()
     set flowSlug(value: string) {
         Flow.diagram(value).then((data) => {
-            this.diagram = FlowChart.parse(data);
+            this.diagram = FlowChart.parse(data.diagram);
         });
     }
 

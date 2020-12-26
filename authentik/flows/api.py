@@ -2,13 +2,16 @@
 from dataclasses import dataclass
 
 from django.core.cache import cache
+from django.db.models import Model
 from django.shortcuts import get_object_or_404
+from drf_yasg2.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
+    CharField,
     ModelSerializer,
     Serializer,
     SerializerMethodField,
@@ -45,6 +48,18 @@ class FlowSerializer(ModelSerializer):
         ]
 
 
+class FlowDiagramSerializer(Serializer):
+    """response of the flow's /diagram/ action"""
+
+    diagram = CharField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
 @dataclass
 class DiagramElement:
     """Single element used in a diagram"""
@@ -64,6 +79,7 @@ class FlowViewSet(ModelViewSet):
     serializer_class = FlowSerializer
     lookup_field = "slug"
 
+    @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, methods=["get"])
     def diagram(self, request: Request, slug: str) -> Response:
         """Return diagram for flow with slug `slug`, in the format used by flowchart.js"""
@@ -133,7 +149,7 @@ class FlowViewSet(ModelViewSet):
                         f"{element.identifier}(bottom)->{body[index + 1].identifier}"
                     )
         diagram = "\n".join([str(x) for x in header + body + footer])
-        return Response(diagram)
+        return Response({"diagram": diagram})
 
 
 class StageSerializer(ModelSerializer):

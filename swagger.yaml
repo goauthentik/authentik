@@ -1325,9 +1325,9 @@ paths:
       parameters: []
       responses:
         '200':
-          description: ''
+          description: response of the flow's /diagram/ action
           schema:
-            $ref: '#/definitions/Flow'
+            $ref: '#/definitions/FlowDiagram'
       tags:
         - flows
     parameters:
@@ -7197,6 +7197,15 @@ definitions:
         title: Cache count
         type: string
         readOnly: true
+  FlowDiagram:
+    description: response of the flow's /diagram/ action
+    type: object
+    properties:
+      diagram:
+        title: Diagram
+        type: string
+        readOnly: true
+        minLength: 1
   Outpost:
     description: Outpost Serializer
     required:

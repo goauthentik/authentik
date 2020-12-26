@@ -1,15 +1,33 @@
 """API flow tests"""
-from django.test import RequestFactory, TestCase
+from django.shortcuts import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.api import FlowViewSet, StageSerializer, StageViewSet
+from authentik.flows.api import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
 
+DIAGRAM_EXPECTED = """st=>start: Start
+stage_0=>operation: Stage
+dummy1
+stage_1=>operation: Stage
+dummy2
+stage_1_policy_0=>condition: Policy
+None
+e=>end: End|future
+st(right)->stage_0
+stage_0(bottom)->stage_1
+stage_1(bottom)->stage_1_policy_0
+stage_1_policy_0(yes, right)->e
+stage_1_policy_0(no, bottom)->e"""
+DIAGRAM_SHORT_EXPECTED = """st=>start: Start
+e=>end: End|future
+st(right)->e"""
 
-class TestFlowsAPI(TestCase):
+
+class TestFlowsAPI(APITestCase):
     """API tests"""
 
     def test_models(self):
@@ -28,11 +46,9 @@ class TestFlowsAPI(TestCase):
         self.assertIn(dummy, StageViewSet().get_queryset())
 
     def test_api_diagram(self):
-        """Test flow diagram. This only tests that the code works,
-        the result is not validated."""
-        factory = RequestFactory()
-        request = factory.get("/")
-        request.user = User.objects.get(username="akadmin")
+        """Test flow diagram."""
+        user = User.objects.get(username="akadmin")
+        self.client.force_login(user)
 
         flow = Flow.objects.create(
             name="test-default-context",
@@ -53,4 +69,24 @@ class TestFlowsAPI(TestCase):
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
 
-        FlowViewSet().diagram(request, slug=flow.slug)
+        response = self.client.get(
+            reverse("authentik_api:flow-diagram", kwargs={"slug": flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"diagram": DIAGRAM_EXPECTED})
+
+    def test_api_diagram_no_stages(self):
+        """Test flow diagram with no stages."""
+        user = User.objects.get(username="akadmin")
+        self.client.force_login(user)
+
+        flow = Flow.objects.create(
+            name="test-default-context",
+            slug="test-default-context",
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-diagram", kwargs={"slug": flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {"diagram": DIAGRAM_SHORT_EXPECTED})
