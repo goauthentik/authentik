@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from structlog import get_logger
@@ -342,9 +343,11 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # Extract params so we can save them in the plan context
         try:
             params = OAuthAuthorizationParams.from_request(request)
-        except (ClientIdError, RedirectUriError) as error:
+        except OAuth2Error as error:
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
+        except OAuth2Provider.DoesNotExist:
+            raise Http404
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         # planner.use_cache = False

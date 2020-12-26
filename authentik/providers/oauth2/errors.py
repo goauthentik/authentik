@@ -1,8 +1,10 @@
 """OAuth errors"""
 from urllib.parse import quote
 
+from authentik.lib.sentry import SentryIgnoredException
 
-class OAuth2Error(Exception):
+
+class OAuth2Error(SentryIgnoredException):
     """Base class for all OAuth2 Errors"""
 
     error: str
