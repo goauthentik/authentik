@@ -484,10 +484,9 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         exp_time = int(
             now + timedelta_from_string(self.provider.token_validity).seconds
         )
-        # Because this function is called after the AUTHORIZE_APPLICATION Event has been created,
-        # we use the timestamp of that.
+        # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = Event.objects.filter(
-            action=EventAction.AUTHORIZE_APPLICATION, user=get_user(user)
+            action=EventAction.LOGIN, user=get_user(user)
         ).latest("created")
         auth_time = int(dateformat.format(auth_event.created, "U"))
 
