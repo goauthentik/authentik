@@ -1,5 +1,6 @@
 """authentik OAuth2 Authorization views"""
 from dataclasses import dataclass, field
+from datetime import timedelta
 from typing import List, Optional, Set
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 from uuid import uuid4
@@ -12,6 +13,7 @@ from structlog import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
@@ -27,6 +29,7 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PROMPT_CONSNET,
+    PROMPT_LOGIN,
     PROMPT_NONE,
     SCOPE_OPENID,
 )
@@ -54,7 +57,7 @@ LOGGER = get_logger()
 PLAN_CONTEXT_PARAMS = "params"
 PLAN_CONTEXT_SCOPE_DESCRIPTIONS = "scope_descriptions"
 
-ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET}
+ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET, PROMPT_LOGIN}
 
 
 @dataclass
@@ -71,6 +74,8 @@ class OAuthAuthorizationParams:
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)
+
+    max_age: Optional[int] = None
 
     code_challenge: Optional[str] = None
     code_challenge_method: Optional[str] = None
@@ -125,6 +130,7 @@ class OAuthAuthorizationParams:
             prompt=ALLOWED_PROMPT_PARAMS.intersection(
                 set(query_dict.get("prompt", "").split())
             ),
+            max_age=query_dict.get("max_age"),
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method"),
         )
@@ -182,6 +188,10 @@ class OAuthAuthorizationParams:
                 raise AuthorizeError(
                     self.redirect_uri, "invalid_request", self.grant_type
                 )
+
+        # max_age directly from the Querystring will be a string
+        if self.max_age:
+            self.max_age = int(self.max_age)
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
@@ -350,8 +360,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
             error = AuthorizeError(
                 self.params.redirect_uri, "login_required", self.params.grant_type
             )
-            raise RequestValidationError(redirect(error.create_uri(
-                self.params.redirect_uri, self.params.state)))
+            raise RequestValidationError(
+                redirect(error.create_uri(self.params.redirect_uri, self.params.state))
+            )
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
@@ -360,7 +371,23 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
     # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Check access to application, start FlowPLanner, return to flow executor shell"""
+        """Start FlowPLanner, return to flow executor shell"""
+        # After we've checked permissions, and the user has access, check if we need
+        # to re-authenticate the user
+        if self.params.max_age:
+            current_age: timedelta = (
+                timezone.now()
+                - Event.objects.filter(
+                    action=EventAction.LOGIN, user=get_user(self.request.user)
+                )
+                .latest("created")
+                .created
+            )
+            if current_age.total_seconds() > self.params.max_age:
+                return self.handle_no_permission()
+        # If prompt=login, we need to re-authenticate the user regardless
+        if PROMPT_LOGIN in self.params.prompt:
+            return self.handle_no_permission()
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         # planner.use_cache = False

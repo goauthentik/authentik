@@ -4,6 +4,7 @@ GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 PROMPT_NONE = "none"
 PROMPT_CONSNET = "consent"
+PROMPT_LOGIN = "login"
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
