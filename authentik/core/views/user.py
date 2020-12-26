@@ -107,21 +107,16 @@ class TokenUpdateView(
 
     model = Token
     form_class = UserTokenForm
-    permission_required = "authentik_core.update_token"
+    permission_required = "authentik_core.change_token"
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:user-tokens")
     success_message = _("Successfully updated Token")
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        kwargs = super().get_context_data(**kwargs)
-        kwargs["container_template"] = "user/base.html"
-        return kwargs
-
     def get_object(self) -> Token:
         identifier = self.kwargs.get("identifier")
         return get_objects_for_user(
-            self.request.user, "authentik_core.update_token", self.model
-        ).filter(intent=TokenIntents.INTENT_API, identifier=identifier)
+            self.request.user, self.permission_required, self.model
+        ).filter(intent=TokenIntents.INTENT_API, identifier=identifier).first()
 
 
 class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
@@ -133,7 +128,8 @@ class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessage
     success_url = reverse_lazy("authentik_core:user-tokens")
     success_message = _("Successfully deleted Token")
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        kwargs = super().get_context_data(**kwargs)
-        kwargs["container_template"] = "user/base.html"
-        return kwargs
+    def get_object(self) -> Token:
+        identifier = self.kwargs.get("identifier")
+        return get_objects_for_user(
+            self.request.user, self.permission_required, self.model
+        ).filter(intent=TokenIntents.INTENT_API, identifier=identifier).first()
