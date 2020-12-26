@@ -94,11 +94,6 @@ class TokenCreateView(
     success_url = reverse_lazy("authentik_core:user-tokens")
     success_message = _("Successfully created Token")
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        kwargs = super().get_context_data(**kwargs)
-        kwargs["container_template"] = "user/base.html"
-        return kwargs
-
     def form_valid(self, form: UserTokenForm) -> HttpResponse:
         form.instance.user = self.request.user
         form.instance.intent = TokenIntents.INTENT_API
