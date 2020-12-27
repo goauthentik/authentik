@@ -1,6 +1,6 @@
 """authentik SAML IDP Forms"""
 
-from xml.etree.ElementTree import ParseError
+from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
 from django import forms
@@ -94,6 +94,7 @@ class SAMLPropertyMappingForm(forms.ModelForm):
 class SAMLProviderImportForm(forms.Form):
     """Create a SAML Provider from SP Metadata."""
 
+    provider_name = forms.CharField()
     metadata = forms.FileField(
         validators=[FileExtensionValidator(allowed_extensions=["xml"])]
     )

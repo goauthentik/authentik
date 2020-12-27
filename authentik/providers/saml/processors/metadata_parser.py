@@ -1,37 +1,21 @@
 """SAML ServiceProvider Metadata Parser and dataclass"""
-from base64 import b64decode
 from dataclasses import dataclass
 from typing import Optional
-from urllib.parse import quote_plus
-from xml.etree.ElementTree import Element
 
 import xmlsec
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
-from defusedxml import ElementTree
 from lxml import etree  # nosec
 from structlog import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
-from authentik.providers.saml.utils.encoding import (
-    PEM_FOOTER,
-    PEM_HEADER,
-    decode_base64_and_inflate,
-)
+from authentik.providers.saml.utils.encoding import PEM_FOOTER, PEM_HEADER
 from authentik.sources.saml.processors.constants import (
-    DSA_SHA1,
     NS_MAP,
     NS_SAML_METADATA,
-    NS_SAML_PROTOCOL,
-    RSA_SHA1,
-    RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
-    SAML_NAME_ID_FORMAT_EMAIL,
 )
 
 LOGGER = get_logger()
@@ -52,7 +36,7 @@ class ServiceProviderMetadata:
 
     entity_id: str
 
-    acs_binding: SAMLBindings
+    acs_binding: str
     acs_location: str
 
     auth_n_request_signed: bool
@@ -68,6 +52,8 @@ class ServiceProviderMetadata:
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
         if self.signing_keypair:
+            self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
+            self.signing_keypair.save()
             provider.signing_kp = self.signing_keypair
         return provider
 
@@ -90,7 +76,7 @@ class ServiceProviderMetadataParser:
             certificate_data=raw_cert,
         )
 
-    def check_signature(self, root: Element, keypair: CertificateKeyPair):
+    def check_signature(self, root: etree.Element, keypair: CertificateKeyPair):
         """If Metadata is signed, check validity of signature"""
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath(
@@ -143,7 +129,8 @@ class ServiceProviderMetadataParser:
         acs_location = acs_service.attrib["Location"]
 
         signing_keypair = self.get_signing_cert(root)
-        self.check_signature(root, signing_keypair)
+        if signing_keypair:
+            self.check_signature(root, signing_keypair)
 
         return ServiceProviderMetadata(
             entity_id=entity_id,

@@ -1,6 +1,7 @@
 """authentik SAML IDP Views"""
 from typing import Optional
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
@@ -32,6 +33,9 @@ from authentik.providers.saml.forms import SAMLProviderImportForm
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.metadata import MetadataProcessor
+from authentik.providers.saml.processors.metadata_parser import (
+    ServiceProviderMetadataParser,
+)
 from authentik.providers.saml.processors.request_parser import (
     AuthNRequest,
     AuthNRequestParser,
@@ -249,8 +253,7 @@ class DescriptorDownloadView(View):
 
 
 class MetadataImportView(LoginRequiredMixin, FormView):
-    """Import flow from JSON Export; only allowed for superusers
-    as these flows can contain python code"""
+    """Import Metadata from XML, and create provider"""
 
     form_class = SAMLProviderImportForm
     template_name = "administration/flow/import.html"
@@ -262,10 +265,13 @@ class MetadataImportView(LoginRequiredMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form: SAMLProviderImportForm) -> HttpResponse:
-        importer = FlowImporter(form.cleaned_data["flow"].read().decode())
-        successful = importer.apply()
-        if not successful:
-            messages.error(self.request, _("Failed to import flow."))
-        else:
+        try:
+            metadata = ServiceProviderMetadataParser().parse(
+                form.cleaned_data["flow"].read().decode()
+            )
+            provider = metadata.to_provider(form.cleaned_data["provider_name"])
+            provider.save()
             messages.success(self.request, _("Successfully imported flow."))
+        except ValueError:
+            messages.error(self.request, _("Failed to import flow."))
         return super().form_valid(form)
