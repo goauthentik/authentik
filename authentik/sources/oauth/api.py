@@ -1,4 +1,5 @@
 """OAuth Source Serializer"""
+from authentik.core.api.utils import MetaNameSerializer
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -6,7 +7,7 @@ from authentik.admin.forms.source import SOURCE_SERIALIZER_FIELDS
 from authentik.sources.oauth.models import OAuthSource
 
 
-class OAuthSourceSerializer(ModelSerializer):
+class OAuthSourceSerializer(ModelSerializer, MetaNameSerializer):
     """OAuth Source Serializer"""
 
     class Meta:
