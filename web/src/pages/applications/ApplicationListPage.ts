@@ -58,8 +58,8 @@ export class ApplicationList extends TablePage<Application> {
                 ${item.meta_publisher ? html`<small>${item.meta_publisher}</small>` : html``}
             </a>`,
             html`<code>${item.slug}</code>`,
-            html`${item.provider.name}`,
-            html`${item.provider.verbose_name}`,
+            html`${item.provider?.name}`,
+            html`${item.provider?.verbose_name}`,
             html`
             <ak-modal-button href="${Application.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
