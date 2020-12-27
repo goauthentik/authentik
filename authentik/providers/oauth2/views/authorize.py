@@ -95,7 +95,7 @@ class OAuthAuthorizationParams:
         # Because in this endpoint we handle both GET
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
-        state = query_dict.get("state", "")
+        state = query_dict.get("state")
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
@@ -193,11 +193,14 @@ class OAuthAuthorizationParams:
     def check_nonce(self):
         """Nonce parameter validation."""
         if not self.nonce:
+            self.nonce = self.state
+            LOGGER.warning("Using state as nonce for OpenID Request")
+        if not self.nonce:
             if SCOPE_OPENID in self.scope:
+                LOGGER.warning("Missing nonce for OpenID Request")
                 raise AuthorizeError(
                     self.redirect_uri, "invalid_request", self.grant_type, self.state
                 )
-            self.nonce = ""
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
@@ -354,10 +357,17 @@ class OAuthFulfillmentStage(StageView):
                 self.params.state,
             )
 
-        uri = uri._replace(
-            query=urlencode(query_params, doseq=True),
-            fragment=uri.fragment + urlencode(query_fragment, doseq=True),
-        )
+        replace_kwargs = {}
+        if self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+            replace_kwargs = {
+                "fragment": uri.fragment + urlencode(query_fragment, doseq=True),
+            }
+        else:
+            replace_kwargs = {
+                "query": urlencode(query_params, doseq=True),
+            }
+
+        uri = uri._replace(**replace_kwargs)
 
         return urlunsplit(uri)
 
