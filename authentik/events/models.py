@@ -47,6 +47,8 @@ class EventAction(models.TextChoices):
     POLICY_EXCEPTION = "policy_exception"
     PROPERTY_MAPPING_EXCEPTION = "property_mapping_exception"
 
+    CONFIGURATION_ERROR = "configuration_error"
+
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"
     MODEL_DELETED = "model_deleted"
