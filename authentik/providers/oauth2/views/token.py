@@ -248,9 +248,7 @@ class TokenView(View):
             "expires_in": timedelta_from_string(
                 refresh_token.provider.token_validity
             ).seconds,
-            "id_token": self.params.provider.encode(
-                self.params.refresh_token.id_token.to_dict()
-            ),
+            "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
         }
 
         return dic
