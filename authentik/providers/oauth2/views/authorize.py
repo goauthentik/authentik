@@ -119,6 +119,7 @@ class OAuthAuthorizationParams:
                 grant_type,
             )
 
+        max_age = query_dict.get("max_age")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
             redirect_uri=query_dict.get("redirect_uri", ""),
@@ -130,12 +131,11 @@ class OAuthAuthorizationParams:
             prompt=ALLOWED_PROMPT_PARAMS.intersection(
                 set(query_dict.get("prompt", "").split())
             ),
-            max_age=query_dict.get("max_age"),
+            max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method"),
         )
 
-    # pylint: disable=too-many-branches
     def __post_init__(self):
         try:
             self.provider: OAuth2Provider = OAuth2Provider.objects.get(
@@ -189,10 +189,6 @@ class OAuthAuthorizationParams:
                 raise AuthorizeError(
                     self.redirect_uri, "invalid_request", self.grant_type
                 )
-
-        # max_age directly from the Querystring will be a string
-        if self.max_age:
-            self.max_age = int(self.max_age)
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""

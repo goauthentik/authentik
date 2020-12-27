@@ -60,6 +60,11 @@ class ProviderInfoView(View):
                 # We only advertise the 'openid' scope, as the rest vary depending on application
                 SCOPE_OPENID,
             ],
+            # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
+            "request_parameter_supported": False,
+            # Because claims are dynamic and per-application, the only fixed Claim is "sub"
+            "claims_supported": ["sub"],
+            "claims_parameter_supported": False,
         }
 
     # pylint: disable=unused-argument
