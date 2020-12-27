@@ -153,6 +153,13 @@ class OAuthAuthorizationParams:
         if self.redirect_uri.lower() not in [
             x.lower() for x in self.provider.redirect_uris.split()
         ]:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                provider=self.provider,
+                message="Invalid redirect URI was used.",
+                client_used=self.redirect_uri,
+                configured=self.provider.redirect_uris.split(),
+            ).save()
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,

@@ -230,6 +230,11 @@ class OAuth2Provider(Provider):
             # if the user selected RS256 but didn't select a
             # CertificateKeyPair, we fall back to HS256
             if not self.rsa_key:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    provider=self,
+                    message="Provider was configured for RS256, but no key was selected.",
+                ).save()
                 self.jwt_alg = JWTAlgorithms.HS256
                 self.save()
             else:

@@ -7011,6 +7011,7 @@ definitions:
           - policy_execution
           - policy_exception
           - property_mapping_exception
+          - configuration_error
           - model_created
           - model_updated
           - model_deleted
