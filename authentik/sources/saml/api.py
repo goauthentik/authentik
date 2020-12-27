@@ -3,10 +3,11 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.forms.source import SOURCE_FORM_FIELDS
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.sources.saml.models import SAMLSource
 
 
-class SAMLSourceSerializer(ModelSerializer):
+class SAMLSourceSerializer(ModelSerializer, MetaNameSerializer):
     """SAMLSource Serializer"""
 
     class Meta:

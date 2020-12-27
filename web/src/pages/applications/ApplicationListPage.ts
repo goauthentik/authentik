@@ -9,7 +9,7 @@ import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 
 @customElement("ak-application-list")
-export class ApplicationList extends TablePage<Application> {
+export class ApplicationListPage extends TablePage<Application> {
     searchEnabled(): boolean {
         return true;
     }

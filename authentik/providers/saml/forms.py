@@ -1,8 +1,13 @@
 """authentik SAML IDP Forms"""
 
+from xml.etree.ElementTree import ParseError  # nosec
+
+from defusedxml.ElementTree import fromstring
 from django import forms
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.utils.html import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from authentik.admin.fields import CodeMirrorWidget
 from authentik.core.expression import PropertyMappingEvaluator
@@ -83,3 +88,22 @@ class SAMLPropertyMappingForm(forms.ModelForm):
                 )
             ),
         }
+
+
+class SAMLProviderImportForm(forms.Form):
+    """Create a SAML Provider from SP Metadata."""
+
+    provider_name = forms.CharField()
+    metadata = forms.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=["xml"])]
+    )
+
+    def clean_metadata(self):
+        """Check if the flow is valid XML"""
+        metadata = self.cleaned_data["metadata"].read()
+        try:
+            fromstring(metadata)
+        except ParseError:
+            raise ValidationError(_("Invalid XML Syntax"))
+        self.cleaned_data["metadata"].seek(0)
+        return self.cleaned_data["metadata"]

@@ -1,14 +1,18 @@
 """authentik SAML IDP Views"""
 from typing import Optional
 
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.edit import FormView
 from structlog import get_logger
 
 from authentik.core.models import Application, Provider
@@ -25,9 +29,13 @@ from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.providers.saml.forms import SAMLProviderImportForm
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.metadata import MetadataProcessor
+from authentik.providers.saml.processors.metadata_parser import (
+    ServiceProviderMetadataParser,
+)
 from authentik.providers.saml.processors.request_parser import (
     AuthNRequest,
     AuthNRequestParser,
@@ -242,3 +250,28 @@ class DescriptorDownloadView(View):
                 "Content-Disposition"
             ] = f'attachment; filename="{provider.name}_authentik_meta.xml"'
             return response
+
+
+class MetadataImportView(LoginRequiredMixin, FormView):
+    """Import Metadata from XML, and create provider"""
+
+    form_class = SAMLProviderImportForm
+    template_name = "providers/saml/import.html"
+    success_url = reverse_lazy("authentik_admin:providers")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form: SAMLProviderImportForm) -> HttpResponse:
+        try:
+            metadata = ServiceProviderMetadataParser().parse(
+                form.cleaned_data["metadata"].read().decode()
+            )
+            provider = metadata.to_provider(form.cleaned_data["provider_name"])
+            provider.save()
+            messages.success(self.request, _("Successfully created Provider"))
+        except ValueError:
+            messages.error(self.request, _("Failed to import Metadata."))
+        return super().form_valid(form)

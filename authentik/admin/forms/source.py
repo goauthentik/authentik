@@ -14,4 +14,6 @@ SOURCE_SERIALIZER_FIELDS = [
     "enabled",
     "authentication_flow",
     "enrollment_flow",
+    "verbose_name",
+    "verbose_name_plural",
 ]

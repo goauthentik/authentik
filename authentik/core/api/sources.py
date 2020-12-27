@@ -3,10 +3,11 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.admin.forms.source import SOURCE_SERIALIZER_FIELDS
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.core.models import Source
 
 
-class SourceSerializer(ModelSerializer):
+class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
     __type__ = SerializerMethodField(method_name="get_type")
