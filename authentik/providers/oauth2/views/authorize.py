@@ -71,7 +71,7 @@ class OAuthAuthorizationParams:
     response_type: str
     scope: List[str]
     state: str
-    nonce: str
+    nonce: Optional[str]
     prompt: Set[str]
     grant_type: str
 
@@ -128,7 +128,7 @@ class OAuthAuthorizationParams:
             grant_type=grant_type,
             scope=query_dict.get("scope", "").split(),
             state=state,
-            nonce=query_dict.get("nonce", ""),
+            nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(
                 set(query_dict.get("prompt", "").split())
             ),
@@ -192,14 +192,12 @@ class OAuthAuthorizationParams:
 
     def check_nonce(self):
         """Nonce parameter validation."""
-        if (
-            SCOPE_OPENID in self.scope
-            and self.grant_type == GrantTypes.IMPLICIT
-            and not self.nonce
-        ):
-            raise AuthorizeError(
-                self.redirect_uri, "invalid_request", self.grant_type, self.state
-            )
+        if not self.nonce:
+            if SCOPE_OPENID in self.scope:
+                raise AuthorizeError(
+                    self.redirect_uri, "invalid_request", self.grant_type, self.state
+                )
+            self.nonce = ""
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
