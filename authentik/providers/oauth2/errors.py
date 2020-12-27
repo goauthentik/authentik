@@ -1,7 +1,9 @@
 """OAuth errors"""
+from typing import Optional
 from urllib.parse import quote
 
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.providers.oauth2.models import GrantTypes
 
 
 class OAuth2Error(SentryIgnoredException):
@@ -98,27 +100,34 @@ class AuthorizeError(OAuth2Error):
         "the registration parameter",
     }
 
-    def __init__(self, redirect_uri, error, grant_type):
+    def __init__(
+        self,
+        redirect_uri: str,
+        error: str,
+        grant_type: str,
+        state: Optional[str] = None,
+    ):
         super().__init__()
         self.error = error
         self.description = self._errors[error]
         self.redirect_uri = redirect_uri
         self.grant_type = grant_type
+        self.state = state
 
-    def create_uri(self, redirect_uri: str, state: str) -> str:
+    def create_uri(self, redirect_uri: str) -> str:
         """Get a redirect URI with the error message"""
         description = quote(str(self.description))
 
         # See:
         # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
-        hash_or_question = "#" if self.grant_type == "implicit" else "?"
+        hash_or_question = "#" if self.grant_type == GrantTypes.IMPLICIT else "?"
 
         uri = "{0}{1}error={2}&error_description={3}".format(
             redirect_uri, hash_or_question, self.error, description
         )
 
         # Add state if present.
-        uri = uri + ("&state={0}".format(state) if state else "")
+        uri = uri + ("&state={0}".format(self.state) if self.state else "")
 
         return uri
 
