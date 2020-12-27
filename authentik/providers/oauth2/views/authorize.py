@@ -56,6 +56,7 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
 PLAN_CONTEXT_SCOPE_DESCRIPTIONS = "scope_descriptions"
+SESSION_NEEDS_LOGIN = "authentik_oauth2_needs_login"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET, PROMPT_LOGIN}
 
@@ -398,7 +399,11 @@ class AuthorizationFlowInitView(PolicyAccessView):
             if current_age.total_seconds() > self.params.max_age:
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
-        if PROMPT_LOGIN in self.params.prompt:
+        if (
+            PROMPT_LOGIN in self.params.prompt
+            and SESSION_NEEDS_LOGIN not in self.request.session
+        ):
+            self.request.session[SESSION_NEEDS_LOGIN] = True
             return self.handle_no_permission()
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
