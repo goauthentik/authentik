@@ -7847,6 +7847,11 @@ definitions:
           - code token
           - code id_token
           - code id_token token
+      include_claims_in_id_token:
+        title: Include claims in id_token
+        description: Include User claims from scopes in the id_token, for applications
+          that don't access the userinfo endpoint.
+        type: boolean
       jwt_alg:
         title: JWT Algorithm
         description: Algorithm used to sign the JWT Token

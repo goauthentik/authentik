@@ -21,6 +21,7 @@ class OAuth2ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "client_secret",
             "token_validity",
             "response_type",
+            "include_claims_in_id_token",
             "jwt_alg",
             "rsa_key",
             "redirect_uris",
