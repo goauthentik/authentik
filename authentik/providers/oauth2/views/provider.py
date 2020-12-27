@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT, SCOPE_OPENID
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import GrantTypes, OAuth2Provider, ScopeMapping
 
 LOGGER = get_logger()
 
@@ -55,6 +55,11 @@ class ProviderInfoView(View):
                     kwargs={"application_slug": provider.application.slug},
                 )
             ),
+            "grant_types_supported": [
+                GrantTypes.AUTHORIZATION_CODE,
+                GrantTypes.IMPLICIT,
+                GrantTypes.HYBRID,
+            ],
             "id_token_signing_alg_values_supported": [provider.jwt_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
             "subject_types_supported": ["public"],
