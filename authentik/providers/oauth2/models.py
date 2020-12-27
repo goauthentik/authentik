@@ -84,10 +84,6 @@ class ResponseTypes(models.TextChoices):
     """Response Type required by the client."""
 
     CODE = "code", _("code (Authorization Code Flow)")
-    CODE_ADFS = (
-        "code#adfs",
-        _("code (ADFS Compatibility Mode, sends id_token as access_token)"),
-    )
     ID_TOKEN = "id_token", _("id_token (Implicit Flow)")
     ID_TOKEN_TOKEN = "id_token token", _("id_token token (Implicit Flow)")
     CODE_TOKEN = "code token", _("code token (Hybrid Flow)")
@@ -218,19 +214,17 @@ class OAuth2Provider(Provider):
     )
 
     def create_refresh_token(
-        self, user: User, scope: List[str], id_token: Optional["IDToken"] = None
+        self, user: User, scope: List[str], request: HttpRequest
     ) -> "RefreshToken":
         """Create and populate a RefreshToken object."""
         token = RefreshToken(
             user=user,
             provider=self,
-            access_token=uuid4().hex,
             refresh_token=uuid4().hex,
             expires=timezone.now() + timedelta_from_string(self.token_validity),
             scope=scope,
         )
-        if id_token:
-            token.id_token = id_token
+        token.access_token = token.create_access_token(user, request)
         return token
 
     def get_jwt_keys(self) -> List[Key]:
@@ -444,9 +438,7 @@ class IDToken:
 class RefreshToken(ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token"""
 
-    access_token = models.CharField(
-        max_length=255, unique=True, verbose_name=_("Access Token")
-    )
+    access_token = models.TextField(verbose_name=_("Access Token"))
     refresh_token = models.CharField(
         max_length=255, unique=True, verbose_name=_("Refresh Token")
     )
@@ -484,6 +476,13 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
             .rstrip(b"=")
             .decode("ascii")
         )
+
+    def create_access_token(self, user: User, request: HttpRequest) -> str:
+        """Create access token with a similar format as Okta, Keycloak, ADFS"""
+        token = self.create_id_token(user, request).to_dict()
+        token["cid"] = self.provider.client_id
+        token["uid"] = uuid4().hex
+        return self.provider.encode(token)
 
     def create_id_token(self, user: User, request: HttpRequest) -> IDToken:
         """Creates the id_token.

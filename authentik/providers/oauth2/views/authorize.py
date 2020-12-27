@@ -101,7 +101,7 @@ class OAuthAuthorizationParams:
         response_type = query_dict.get("response_type", "")
         grant_type = None
         # Determine which flow to use.
-        if response_type in [ResponseTypes.CODE, ResponseTypes.CODE_ADFS]:
+        if response_type in [ResponseTypes.CODE]:
             grant_type = GrantTypes.AUTHORIZATION_CODE
         elif response_type in [
             ResponseTypes.ID_TOKEN,
@@ -273,7 +273,6 @@ class OAuthFulfillmentStage(StageView):
         """Create a final Response URI the user is redirected to."""
         uri = urlsplit(self.params.redirect_uri)
         query_params = parse_qs(uri.query)
-        query_fragment = {}
 
         try:
             code = None
@@ -290,64 +289,17 @@ class OAuthFulfillmentStage(StageView):
                 query_params["state"] = [
                     str(self.params.state) if self.params.state else ""
                 ]
-            elif self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                token = self.provider.create_refresh_token(
-                    user=self.request.user,
-                    scope=self.params.scope,
+
+                uri = uri._replace(query=urlencode(query_params, doseq=True))
+                return urlunsplit(uri)
+            if self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                query_fragment = self.create_implicit_response(code)
+
+                uri = uri._replace(
+                    fragment=uri.fragment + urlencode(query_fragment, doseq=True),
                 )
-
-                # Check if response_type must include access_token in the response.
-                if self.params.response_type in [
-                    ResponseTypes.ID_TOKEN_TOKEN,
-                    ResponseTypes.CODE_ID_TOKEN_TOKEN,
-                    ResponseTypes.ID_TOKEN,
-                    ResponseTypes.CODE_TOKEN,
-                ]:
-                    query_fragment["access_token"] = token.access_token
-
-                # We don't need id_token if it's an OAuth2 request.
-                if SCOPE_OPENID in self.params.scope:
-                    id_token = token.create_id_token(
-                        user=self.request.user,
-                        request=self.request,
-                    )
-                    id_token.nonce = self.params.nonce
-
-                    # Include at_hash when access_token is being returned.
-                    if "access_token" in query_fragment:
-                        id_token.at_hash = token.at_hash
-
-                    if self.params.response_type in [
-                        ResponseTypes.CODE_ID_TOKEN,
-                        ResponseTypes.CODE_ID_TOKEN_TOKEN,
-                    ]:
-                        id_token.c_hash = code.c_hash
-
-                    # Check if response_type must include id_token in the response.
-                    if self.params.response_type in [
-                        ResponseTypes.ID_TOKEN,
-                        ResponseTypes.ID_TOKEN_TOKEN,
-                        ResponseTypes.CODE_ID_TOKEN,
-                        ResponseTypes.CODE_ID_TOKEN_TOKEN,
-                    ]:
-                        query_fragment["id_token"] = self.provider.encode(
-                            id_token.to_dict()
-                        )
-                    token.id_token = id_token
-
-                # Store the token.
-                token.save()
-
-                # Code parameter must be present if it's Hybrid Flow.
-                if self.params.grant_type == GrantTypes.HYBRID:
-                    query_fragment["code"] = code.code
-
-                query_fragment["token_type"] = "bearer"
-                query_fragment["expires_in"] = timedelta_from_string(
-                    self.provider.token_validity
-                ).seconds
-                query_fragment["state"] = self.params.state if self.params.state else ""
-
+                return urlunsplit(uri)
+            raise OAuth2Error()
         except OAuth2Error as error:
             LOGGER.exception("Error when trying to create response uri", error=error)
             raise AuthorizeError(
@@ -357,19 +309,67 @@ class OAuthFulfillmentStage(StageView):
                 self.params.state,
             )
 
-        replace_kwargs = {}
-        if self.params.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-            replace_kwargs = {
-                "fragment": uri.fragment + urlencode(query_fragment, doseq=True),
-            }
-        else:
-            replace_kwargs = {
-                "query": urlencode(query_params, doseq=True),
-            }
+    def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
+        """Create implicit response's URL Fragment dictionary"""
+        query_fragment = {}
 
-        uri = uri._replace(**replace_kwargs)
+        token = self.provider.create_refresh_token(
+            user=self.request.user,
+            scope=self.params.scope,
+            request=self.request,
+        )
 
-        return urlunsplit(uri)
+        # Check if response_type must include access_token in the response.
+        if self.params.response_type in [
+            ResponseTypes.ID_TOKEN_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.CODE_TOKEN,
+        ]:
+            query_fragment["access_token"] = token.access_token
+
+        # We don't need id_token if it's an OAuth2 request.
+        if SCOPE_OPENID in self.params.scope:
+            id_token = token.create_id_token(
+                user=self.request.user,
+                request=self.request,
+            )
+            id_token.nonce = self.params.nonce
+
+            # Include at_hash when access_token is being returned.
+            if "access_token" in query_fragment:
+                id_token.at_hash = token.at_hash
+
+            if self.params.response_type in [
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ]:
+                id_token.c_hash = code.c_hash
+
+            # Check if response_type must include id_token in the response.
+            if self.params.response_type in [
+                ResponseTypes.ID_TOKEN,
+                ResponseTypes.ID_TOKEN_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ]:
+                query_fragment["id_token"] = self.provider.encode(id_token.to_dict())
+            token.id_token = id_token
+
+        # Store the token.
+        token.save()
+
+        # Code parameter must be present if it's Hybrid Flow.
+        if self.params.grant_type == GrantTypes.HYBRID:
+            query_fragment["code"] = code.code
+
+        query_fragment["token_type"] = "bearer"
+        query_fragment["expires_in"] = timedelta_from_string(
+            self.provider.token_validity
+        ).seconds
+        query_fragment["state"] = self.params.state if self.params.state else ""
+
+        return query_fragment
 
 
 class AuthorizationFlowInitView(PolicyAccessView):

@@ -177,6 +177,7 @@ class TokenView(View):
         refresh_token = self.params.authorization_code.provider.create_refresh_token(
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
+            request=self.request,
         )
 
         if self.params.authorization_code.is_open_id:
@@ -204,13 +205,6 @@ class TokenView(View):
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
-        # if self.params.provider.response_type == ResponseTypes.CODE_ADFS:
-        #     # This seems to be expected by some OIDC Clients
-        #     # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
-        #     # Maybe this should be a setting
-        #     # in the future?
-        #     response_dict["access_token"] = response_dict["id_token"]
-
         return response_dict
 
     def create_refresh_response_dic(self) -> Dict[str, Any]:
@@ -227,6 +221,7 @@ class TokenView(View):
         refresh_token: RefreshToken = provider.create_refresh_token(
             user=self.params.refresh_token.user,
             scope=self.params.scope,
+            request=self.request,
         )
 
         # If the Token has an id_token it's an Authentication request.
