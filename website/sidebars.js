@@ -128,6 +128,7 @@ module.exports = {
                 "releases/0.11",
                 "releases/0.12",
                 "releases/0.13",
+                "releases/0.14",
             ],
         },
         {
