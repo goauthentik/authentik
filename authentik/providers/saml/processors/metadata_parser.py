@@ -24,8 +24,9 @@ LOGGER = get_logger()
 def format_pem_certificate(unformatted_cert: str) -> str:
     """Format single, inline certificate into PEM Format"""
     chunks, chunk_size = len(unformatted_cert), 64
-    lines = [unformatted_cert[i:i + chunk_size] for i in range(0, chunks, chunk_size)]
-    lines.insert(0, PEM_HEADER)
+    lines = [PEM_HEADER]
+    for i in range(0, chunks, chunk_size):
+        lines.append(unformatted_cert[i : i + chunk_size])  # noqa: E203
     lines.append(PEM_FOOTER)
     return "\n".join(lines)
 

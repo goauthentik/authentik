@@ -22,6 +22,7 @@ from authentik.admin.views import (
     tokens,
     users,
 )
+from authentik.providers.saml.views import MetadataImportView
 
 urlpatterns = [
     path(
@@ -115,6 +116,11 @@ urlpatterns = [
         "providers/create/",
         providers.ProviderCreateView.as_view(),
         name="provider-create",
+    ),
+    path(
+        "providers/create/saml/from-metadata/",
+        MetadataImportView.as_view(),
+        name="provider-saml-from-metadata",
     ),
     path(
         "providers/<int:pk>/update/",

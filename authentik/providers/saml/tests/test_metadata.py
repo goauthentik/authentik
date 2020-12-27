@@ -1,4 +1,5 @@
 """Test Service-Provider Metadata Parser"""
+# flake8: noqa
 
 from django.test import TestCase
 

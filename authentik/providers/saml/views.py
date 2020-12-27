@@ -256,8 +256,8 @@ class MetadataImportView(LoginRequiredMixin, FormView):
     """Import Metadata from XML, and create provider"""
 
     form_class = SAMLProviderImportForm
-    template_name = "administration/flow/import.html"
-    success_url = reverse_lazy("authentik_admin:flows")
+    template_name = "providers/saml/import.html"
+    success_url = reverse_lazy("authentik_admin:providers")
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
@@ -267,11 +267,11 @@ class MetadataImportView(LoginRequiredMixin, FormView):
     def form_valid(self, form: SAMLProviderImportForm) -> HttpResponse:
         try:
             metadata = ServiceProviderMetadataParser().parse(
-                form.cleaned_data["flow"].read().decode()
+                form.cleaned_data["metadata"].read().decode()
             )
             provider = metadata.to_provider(form.cleaned_data["provider_name"])
             provider.save()
-            messages.success(self.request, _("Successfully imported flow."))
+            messages.success(self.request, _("Successfully created Provider"))
         except ValueError:
-            messages.error(self.request, _("Failed to import flow."))
+            messages.error(self.request, _("Failed to import Metadata."))
         return super().form_valid(form)
