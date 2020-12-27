@@ -1,12 +1,11 @@
 """authentik SAML IDP Views"""
-from django.urls.base import reverse_lazy
-from authentik.providers.saml.forms import SAMLProviderImportForm
 from typing import Optional
-from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.validators import URLValidator
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
@@ -29,6 +28,7 @@ from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.providers.saml.forms import SAMLProviderImportForm
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.metadata import MetadataProcessor

@@ -1,12 +1,13 @@
 """authentik SAML IDP Forms"""
 
+from xml.etree.ElementTree import ParseError
+
+from defusedxml.ElementTree import fromstring
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.utils.html import mark_safe
 from django.utils.translation import gettext as _
-from django.core.validators import FileExtensionValidator
-from defusedxml.ElementTree import fromstring
-from xml.etree.ElementTree import ParseError
 from django.utils.translation import gettext_lazy as _
 
 from authentik.admin.fields import CodeMirrorWidget
