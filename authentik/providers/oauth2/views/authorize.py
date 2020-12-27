@@ -177,11 +177,15 @@ class OAuthAuthorizationParams:
             in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_scope", self.grant_type, self.state
+            )
 
         # Nonce parameter validation.
         if is_open_id and self.grant_type == GrantTypes.IMPLICIT and not self.nonce:
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_request", self.grant_type, self.state
+            )
 
         # Response type parameter validation.
         if is_open_id:
@@ -191,14 +195,14 @@ class OAuthAuthorizationParams:
                 actual_response_type = actual_response_type[:hash_index]
             if self.response_type != actual_response_type:
                 raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type
+                    self.redirect_uri, "invalid_request", self.grant_type, self.state
                 )
 
         # PKCE validation of the transformation method.
         if self.code_challenge:
             if not (self.code_challenge_method in ["plain", "S256"]):
                 raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type
+                    self.redirect_uri, "invalid_request", self.grant_type, self.state
                 )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
@@ -244,6 +248,7 @@ class OAuthFulfillmentStage(StageView):
                     self.params.redirect_uri,
                     "consent_required",
                     self.params.grant_type,
+                    self.params.state,
                 )
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
@@ -257,8 +262,7 @@ class OAuthFulfillmentStage(StageView):
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
             self.executor.stage_invalid()
-            uri = error.create_uri(self.params.redirect_uri)
-            return redirect(uri)
+            return redirect(error.create_uri())
 
     def create_response_uri(self) -> str:
         """Create a final Response URI the user is redirected to."""
@@ -361,7 +365,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         try:
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:
-            raise RequestValidationError(redirect(error.create_uri(error.redirect_uri)))
+            raise RequestValidationError(redirect(error.create_uri()))
         except OAuth2Error as error:
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
@@ -371,11 +375,12 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
             error = AuthorizeError(
-                self.params.redirect_uri, "login_required", self.params.grant_type
+                self.params.redirect_uri,
+                "login_required",
+                self.params.grant_type,
+                self.params.state,
             )
-            raise RequestValidationError(
-                redirect(error.create_uri(self.params.redirect_uri))
-            )
+            raise RequestValidationError(redirect(error.create_uri()))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")

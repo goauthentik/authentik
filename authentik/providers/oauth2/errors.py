@@ -1,5 +1,4 @@
 """OAuth errors"""
-from typing import Optional
 from urllib.parse import quote
 
 from authentik.lib.sentry import SentryIgnoredException
@@ -105,7 +104,7 @@ class AuthorizeError(OAuth2Error):
         redirect_uri: str,
         error: str,
         grant_type: str,
-        state: Optional[str] = None,
+        state: str,
     ):
         super().__init__()
         self.error = error
@@ -114,7 +113,7 @@ class AuthorizeError(OAuth2Error):
         self.grant_type = grant_type
         self.state = state
 
-    def create_uri(self, redirect_uri: str) -> str:
+    def create_uri(self) -> str:
         """Get a redirect URI with the error message"""
         description = quote(str(self.description))
 
@@ -123,7 +122,7 @@ class AuthorizeError(OAuth2Error):
         hash_or_question = "#" if self.grant_type == GrantTypes.IMPLICIT else "?"
 
         uri = "{0}{1}error={2}&error_description={3}".format(
-            redirect_uri, hash_or_question, self.error, description
+            self.redirect_uri, hash_or_question, self.error, description
         )
 
         # Add state if present.
