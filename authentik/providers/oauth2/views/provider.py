@@ -8,7 +8,7 @@ from structlog import get_logger
 
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT, SCOPE_OPENID
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 
 LOGGER = get_logger()
 
@@ -21,6 +21,13 @@ class ProviderInfoView(View):
 
     def get_info(self, provider: OAuth2Provider) -> Dict[str, Any]:
         """Get dictionary for OpenID Connect information"""
+        scopes = list(
+            ScopeMapping.objects.filter(provider=provider).values_list(
+                "scope_name", flat=True
+            )
+        )
+        if SCOPE_OPENID not in scopes:
+            scopes.append(SCOPE_OPENID)
         return {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -56,10 +63,7 @@ class ProviderInfoView(View):
                 "client_secret_basic",
             ],
             "acr_values_supported": [ACR_AUTHENTIK_DEFAULT],
-            "scopes_supported": [
-                # We only advertise the 'openid' scope, as the rest vary depending on application
-                SCOPE_OPENID,
-            ],
+            "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,
             # Because claims are dynamic and per-application, the only fixed Claim is "sub"
