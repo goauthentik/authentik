@@ -74,11 +74,13 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             # goes to the same pod
             "nginx.ingress.kubernetes.io/affinity": "cookie",
             "traefik.ingress.kubernetes.io/affinity": "true",
+            "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
+            "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
         }
         annotations.update(
             self.controller.outpost.config.kubernetes_ingress_annotations
         )
-        return dict()
+        return annotations
 
     def get_reference_object(self) -> NetworkingV1beta1Ingress:
         """Get deployment object for outpost"""
