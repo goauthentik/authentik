@@ -70,6 +70,15 @@ class SubModes(models.TextChoices):
     )
 
 
+class IssuerMode(models.TextChoices):
+    """Configure how the `iss` field is created."""
+
+    GLOBAL = "global", _("Same identifier is used for all providers")
+    PER_PROVIDER = "per_provider", _(
+        "Each provider has a different issuer, based on the application slug."
+    )
+
+
 class ResponseTypes(models.TextChoices):
     """Response Type required by the client."""
 
@@ -193,6 +202,13 @@ class OAuth2Provider(Provider):
             )
         ),
     )
+    issuer_mode = models.TextField(
+        choices=IssuerMode.choices,
+        default=IssuerMode.PER_PROVIDER,
+        help_text=_(
+            ("Configure how the issuer field of the ID Token should be filled.")
+        ),
+    )
 
     rsa_key = models.ForeignKey(
         CertificateKeyPair,
@@ -254,6 +270,8 @@ class OAuth2Provider(Provider):
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
+        if self.issuer_mode == IssuerMode.GLOBAL:
+            return request.build_absolute_uri("/")
         try:
             mountpoint = AuthentikProviderOAuth2Config.mountpoints[
                 "authentik.providers.oauth2.urls"

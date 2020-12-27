@@ -7887,6 +7887,13 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      issuer_mode:
+        title: Issuer mode
+        description: Configure how the issuer field of the ID Token should be filled.
+        type: string
+        enum:
+          - global
+          - per_provider
       verbose_name:
         title: Verbose name
         type: string

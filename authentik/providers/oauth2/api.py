@@ -27,6 +27,7 @@ class OAuth2ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "redirect_uris",
             "sub_mode",
             "property_mappings",
+            "issuer_mode",
             "verbose_name",
             "verbose_name_plural",
         ]
