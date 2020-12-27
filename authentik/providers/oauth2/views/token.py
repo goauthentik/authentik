@@ -18,7 +18,6 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
     RefreshToken,
-    ResponseTypes,
 )
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 
@@ -205,12 +204,12 @@ class TokenView(View):
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
-        if self.params.provider.response_type == ResponseTypes.CODE_ADFS:
-            # This seems to be expected by some OIDC Clients
-            # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
-            # Maybe this should be a setting
-            # in the future?
-            response_dict["access_token"] = response_dict["id_token"]
+        # if self.params.provider.response_type == ResponseTypes.CODE_ADFS:
+        #     # This seems to be expected by some OIDC Clients
+        #     # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
+        #     # Maybe this should be a setting
+        #     # in the future?
+        #     response_dict["access_token"] = response_dict["id_token"]
 
         return response_dict
 

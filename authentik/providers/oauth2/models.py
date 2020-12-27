@@ -152,11 +152,6 @@ class OAuth2Provider(Provider):
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
     )
-    response_type = models.TextField(
-        choices=ResponseTypes.choices,
-        default=ResponseTypes.CODE,
-        help_text=_(ResponseTypes.__doc__),
-    )
     jwt_alg = models.CharField(
         max_length=10,
         choices=JWTAlgorithms.choices,

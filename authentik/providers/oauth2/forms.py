@@ -55,7 +55,6 @@ class OAuth2ProviderForm(forms.ModelForm):
             "client_secret",
             "token_validity",
             "jwt_alg",
-            "response_type",
             "property_mappings",
             "rsa_key",
             "redirect_uris",

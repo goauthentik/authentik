@@ -106,7 +106,6 @@ class OAuthAuthorizationParams:
         elif response_type in [
             ResponseTypes.ID_TOKEN,
             ResponseTypes.ID_TOKEN_TOKEN,
-            ResponseTypes.CODE_TOKEN,
         ]:
             grant_type = GrantTypes.IMPLICIT
         elif response_type in [
@@ -150,7 +149,6 @@ class OAuthAuthorizationParams:
         self.check_redirect_uri()
         self.check_scope()
         self.check_nonce()
-        self.check_response_type()
         self.check_code_challenge()
 
     def check_redirect_uri(self):
@@ -202,18 +200,6 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(
                 self.redirect_uri, "invalid_request", self.grant_type, self.state
             )
-
-    def check_response_type(self):
-        """Response type parameter validation."""
-        if SCOPE_OPENID in self.scope:
-            actual_response_type = self.provider.response_type
-            if "#" in self.provider.response_type:
-                hash_index = actual_response_type.index("#")
-                actual_response_type = actual_response_type[:hash_index]
-            if self.response_type != actual_response_type:
-                raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type, self.state
-                )
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""

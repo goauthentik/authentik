@@ -7835,18 +7835,6 @@ definitions:
           hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
-      response_type:
-        title: Response type
-        description: Response Type required by the client.
-        type: string
-        enum:
-          - code
-          - code#adfs
-          - id_token
-          - id_token token
-          - code token
-          - code id_token
-          - code id_token token
       include_claims_in_id_token:
         title: Include claims in id_token
         description: Include User claims from scopes in the id_token, for applications

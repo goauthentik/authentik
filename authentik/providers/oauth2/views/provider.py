@@ -13,7 +13,12 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     SCOPE_OPENID,
 )
-from authentik.providers.oauth2.models import GrantTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    GrantTypes,
+    OAuth2Provider,
+    ResponseTypes,
+    ScopeMapping,
+)
 
 LOGGER = get_logger()
 
@@ -53,7 +58,14 @@ class ProviderInfoView(View):
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:token-introspection")
             ),
-            "response_types_supported": [provider.response_type],
+            "response_types_supported": [
+                ResponseTypes.CODE,
+                ResponseTypes.ID_TOKEN,
+                ResponseTypes.ID_TOKEN_TOKEN,
+                ResponseTypes.CODE_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ],
             "jwks_uri": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",

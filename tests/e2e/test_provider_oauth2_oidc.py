@@ -26,12 +26,7 @@ from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from authentik.providers.oauth2.models import (
-    ClientTypes,
-    OAuth2Provider,
-    ResponseTypes,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 LOGGER = get_logger()
@@ -91,7 +86,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
             redirect_uris="http://localhost:9009/",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -129,7 +123,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
             redirect_uris="http://localhost:9009/auth/callback",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -175,7 +168,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
@@ -236,7 +228,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,

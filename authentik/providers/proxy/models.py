@@ -22,7 +22,6 @@ from authentik.providers.oauth2.models import (
     ClientTypes,
     JWTAlgorithms,
     OAuth2Provider,
-    ResponseTypes,
     ScopeMapping,
 )
 
@@ -127,7 +126,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
-        self.response_type = ResponseTypes.CODE
         self.jwt_alg = JWTAlgorithms.RS256
         self.rsa_key = CertificateKeyPair.objects.first()
         scopes = ScopeMapping.objects.filter(
