@@ -316,6 +316,12 @@ class OAuthFulfillmentStage(StageView):
                     if "access_token" in query_fragment:
                         id_token.at_hash = token.at_hash
 
+                    if self.params.response_type in [
+                        ResponseTypes.CODE_ID_TOKEN,
+                        ResponseTypes.CODE_ID_TOKEN_TOKEN,
+                    ]:
+                        id_token.c_hash = code.c_hash
+
                     # Check if response_type must include id_token in the response.
                     if self.params.response_type in [
                         ResponseTypes.ID_TOKEN,
