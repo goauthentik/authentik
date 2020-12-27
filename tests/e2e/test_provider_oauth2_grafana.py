@@ -112,11 +112,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         sleep(2)
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "pf-c-title").text,

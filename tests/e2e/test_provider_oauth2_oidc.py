@@ -107,12 +107,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         sleep(2)
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "pf-c-title").text,
