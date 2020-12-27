@@ -2,6 +2,7 @@
 from importlib import import_module
 
 from django.contrib import messages
+from django.db.models import Model
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
 from drf_yasg2.utils import swagger_auto_schema
@@ -26,10 +27,10 @@ class TaskSerializer(Serializer):
     status = IntegerField(source="result.status.value")
     messages = ListField(source="result.messages")
 
-    def create(self, request: Request) -> Response:
+    def create(self, validated_data: dict) -> Model:
         raise NotImplementedError
 
-    def update(self, request: Request) -> Response:
+    def update(self, instance: Model, validated_data: dict) -> Model:
         raise NotImplementedError
 
 

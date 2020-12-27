@@ -119,6 +119,11 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                provider=self.provider,
+                message=str(exc),
+            ).save()
             LOGGER.info(exc)
             return bad_request_message(self.request, str(exc))
         return None

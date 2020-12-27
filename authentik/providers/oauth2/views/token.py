@@ -18,7 +18,6 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
     RefreshToken,
-    ResponseTypes,
 )
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 
@@ -93,7 +92,10 @@ class TokenParams:
                 self.refresh_token = RefreshToken.objects.get(
                     refresh_token=raw_token, provider=self.provider
                 )
-
+                # https://tools.ietf.org/html/rfc6749#section-6
+                # Fallback to original token's scopes when none are given
+                if self.scope == []:
+                    self.scope = self.refresh_token.scope
             except RefreshToken.DoesNotExist:
                 LOGGER.warning(
                     "Refresh token does not exist",
@@ -175,6 +177,7 @@ class TokenView(View):
         refresh_token = self.params.authorization_code.provider.create_refresh_token(
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
+            request=self.request,
         )
 
         if self.params.authorization_code.is_open_id:
@@ -202,13 +205,6 @@ class TokenView(View):
             "id_token": refresh_token.provider.encode(refresh_token.id_token.to_dict()),
         }
 
-        if self.params.provider.response_type == ResponseTypes.CODE_ADFS:
-            # This seems to be expected by some OIDC Clients
-            # namely VMware vCenter. This is not documented in any OpenID or OAuth2 Standard.
-            # Maybe this should be a setting
-            # in the future?
-            response_dict["access_token"] = response_dict["id_token"]
-
         return response_dict
 
     def create_refresh_response_dic(self) -> Dict[str, Any]:
@@ -225,6 +221,7 @@ class TokenView(View):
         refresh_token: RefreshToken = provider.create_refresh_token(
             user=self.params.refresh_token.user,
             scope=self.params.scope,
+            request=self.request,
         )
 
         # If the Token has an id_token it's an Authentication request.
@@ -248,9 +245,7 @@ class TokenView(View):
             "expires_in": timedelta_from_string(
                 refresh_token.provider.token_validity
             ).seconds,
-            "id_token": self.params.provider.encode(
-                self.params.refresh_token.id_token.to_dict()
-            ),
+            "id_token": self.params.provider.encode(refresh_token.id_token.to_dict()),
         }
 
         return dic

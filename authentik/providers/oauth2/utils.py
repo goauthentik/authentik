@@ -6,7 +6,6 @@ from typing import List, Optional, Tuple
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils.cache import patch_vary_headers
-from jwkest.jwt import JWT
 from structlog import get_logger
 
 from authentik.providers.oauth2.errors import BearerTokenError
@@ -140,17 +139,3 @@ def protected_resource_view(scopes: List[str]):
         return view_wrapper
 
     return wrapper
-
-
-def client_id_from_id_token(id_token):
-    """
-    Extracts the client id from a JSON Web Token (JWT).
-    Returns a string or None.
-    """
-    payload = JWT().unpack(id_token).payload()
-    aud = payload.get("aud", None)
-    if aud is None:
-        return None
-    if isinstance(aud, list):
-        return aud[0]
-    return aud

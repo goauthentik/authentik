@@ -121,13 +121,13 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Upgrading",
+            label: "Release Notes",
             items: [
-                "upgrading/to-0.9",
-                "upgrading/to-0.10",
-                "upgrading/to-0.11",
-                "upgrading/to-0.12",
-                "upgrading/to-0.13",
+                "releases/0.9",
+                "releases/0.10",
+                "releases/0.11",
+                "releases/0.12",
+                "releases/0.13",
             ],
         },
         {

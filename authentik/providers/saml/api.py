@@ -2,10 +2,11 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 
 
-class SAMLProviderSerializer(ModelSerializer):
+class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
     """SAMLProvider Serializer"""
 
     class Meta:
@@ -25,6 +26,8 @@ class SAMLProviderSerializer(ModelSerializer):
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
+            "verbose_name",
+            "verbose_name_plural",
         ]
 
 

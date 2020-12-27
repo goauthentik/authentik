@@ -24,12 +24,7 @@ from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from authentik.providers.oauth2.models import (
-    ClientTypes,
-    OAuth2Provider,
-    ResponseTypes,
-    ScopeMapping,
-)
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 LOGGER = get_logger()
@@ -96,7 +91,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
             redirect_uris="http://localhost:3000/",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -112,11 +106,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
         sleep(2)
         self.assertEqual(
             self.driver.find_element(By.CLASS_NAME, "pf-c-title").text,
@@ -139,7 +128,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -201,7 +189,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             rsa_key=CertificateKeyPair.objects.first(),
             redirect_uris="http://localhost:3000/login/generic_oauth",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -266,7 +253,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name="grafana",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
@@ -340,7 +326,6 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name="grafana",
             authorization_flow=authorization_flow,
-            response_type=ResponseTypes.CODE,
             client_type=ClientTypes.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,

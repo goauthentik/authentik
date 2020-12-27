@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { PBResponse } from "../../api/Client";
-import { Table } from "../../elements/table/Table";
+import { Table, TableColumn } from "../../elements/table/Table";
 import { PolicyBinding } from "../../api/PolicyBindings";
 
 import "../../elements/Tabs";
@@ -22,8 +22,14 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         });
     }
 
-    columns(): string[] {
-        return ["Policy", "Enabled", "Order", "Timeout", ""];
+    columns(): TableColumn[] {
+        return [
+            new TableColumn("Policy"),
+            new TableColumn("Enabled", "enabled"),
+            new TableColumn("Order", "order"),
+            new TableColumn("Timeout", "timeout"),
+            new TableColumn(""),
+        ];
     }
 
     row(item: PolicyBinding): TemplateResult[] {

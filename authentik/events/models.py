@@ -35,7 +35,6 @@ class EventAction(models.TextChoices):
 
     TOKEN_VIEW = "token_view"  # nosec
 
-    INVITE_CREATED = "invitation_created"
     INVITE_USED = "invitation_used"
 
     AUTHORIZE_APPLICATION = "authorize_application"
@@ -47,6 +46,8 @@ class EventAction(models.TextChoices):
     POLICY_EXECUTION = "policy_execution"
     POLICY_EXCEPTION = "policy_exception"
     PROPERTY_MAPPING_EXCEPTION = "property_mapping_exception"
+
+    CONFIGURATION_ERROR = "configuration_error"
 
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"

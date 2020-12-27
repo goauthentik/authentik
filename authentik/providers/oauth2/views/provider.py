@@ -7,7 +7,18 @@ from django.views import View
 from structlog import get_logger
 
 from authentik.core.models import Application
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.constants import (
+    ACR_AUTHENTIK_DEFAULT,
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_REFRESH_TOKEN,
+    SCOPE_OPENID,
+)
+from authentik.providers.oauth2.models import (
+    GrantTypes,
+    OAuth2Provider,
+    ResponseTypes,
+    ScopeMapping,
+)
 
 LOGGER = get_logger()
 
@@ -20,6 +31,13 @@ class ProviderInfoView(View):
 
     def get_info(self, provider: OAuth2Provider) -> Dict[str, Any]:
         """Get dictionary for OpenID Connect information"""
+        scopes = list(
+            ScopeMapping.objects.filter(provider=provider).values_list(
+                "scope_name", flat=True
+            )
+        )
+        if SCOPE_OPENID not in scopes:
+            scopes.append(SCOPE_OPENID)
         return {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -40,13 +58,25 @@ class ProviderInfoView(View):
             "introspection_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:token-introspection")
             ),
-            "response_types_supported": [provider.response_type],
+            "response_types_supported": [
+                ResponseTypes.CODE,
+                ResponseTypes.ID_TOKEN,
+                ResponseTypes.ID_TOKEN_TOKEN,
+                ResponseTypes.CODE_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN,
+                ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ],
             "jwks_uri": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",
                     kwargs={"application_slug": provider.application.slug},
                 )
             ),
+            "grant_types_supported": [
+                GRANT_TYPE_AUTHORIZATION_CODE,
+                GRANT_TYPE_REFRESH_TOKEN,
+                GrantTypes.IMPLICIT,
+            ],
             "id_token_signing_alg_values_supported": [provider.jwt_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
             "subject_types_supported": ["public"],
@@ -54,6 +84,13 @@ class ProviderInfoView(View):
                 "client_secret_post",
                 "client_secret_basic",
             ],
+            "acr_values_supported": [ACR_AUTHENTIK_DEFAULT],
+            "scopes_supported": scopes,
+            # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
+            "request_parameter_supported": False,
+            # Because claims are dynamic and per-application, the only fixed Claim is "sub"
+            "claims_supported": ["sub"],
+            "claims_parameter_supported": False,
         }
 
     # pylint: disable=unused-argument

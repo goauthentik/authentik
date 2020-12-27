@@ -49,6 +49,7 @@ type APIController struct {
 func getCommonOptions() *options.Options {
 	commonOpts := options.NewOptions()
 	commonOpts.Cookie.Name = "authentik_proxy"
+	commonOpts.Cookie.Expire = 24 * time.Hour
 	commonOpts.EmailDomains = []string{"*"}
 	commonOpts.ProviderType = "oidc"
 	commonOpts.ProxyPrefix = "/akprox"

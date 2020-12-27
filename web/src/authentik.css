@@ -136,6 +136,21 @@ select[multiple] {
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
     }
+    .pf-c-table__text {
+        color: var(--ak-dark-foreground) !important;
+    }
+    .pf-c-table__sort-indicator i {
+        color: var(--ak-dark-foreground) !important;
+    }
+    /* table, on mobile */
+    @media screen and (max-width: 1200px) {
+        .pf-m-grid-xl.pf-c-table tbody:first-of-type {
+            border-top-color: var(--ak-dark-background);
+        }
+        .pf-m-grid-xl.pf-c-table tr:not(.pf-c-table__expandable-row) {
+            border-bottom-color: var(--ak-dark-background);
+        }
+    }
     /* class for pagination text */
     .pf-c-options-menu__toggle {
         color: var(--ak-dark-foreground);

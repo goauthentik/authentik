@@ -4,7 +4,8 @@ info:
   contact:
     email: hello@beryju.org
   license:
-    name: MIT License
+    name: GNU GPLv3
+    url: https://github.com/BeryJu/authentik/blob/master/LICENSE
   version: v2
 basePath: /api/v2beta
 consumes:
@@ -1306,6 +1307,27 @@ paths:
       responses:
         '204':
           description: ''
+      tags:
+        - flows
+    parameters:
+      - name: slug
+        in: path
+        description: Visible in the URL.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+  /flows/instances/{slug}/diagram/:
+    get:
+      operationId: flows_instances_diagram
+      description: Return diagram for flow with slug `slug`, in the format used by
+        flowchart.js
+      parameters: []
+      responses:
+        '200':
+          description: response of the flow's /diagram/ action
+          schema:
+            $ref: '#/definitions/FlowDiagram'
       tags:
         - flows
     parameters:
@@ -6729,6 +6751,49 @@ definitions:
         title: Outdated
         type: boolean
         readOnly: true
+  Provider:
+    title: Provider
+    description: Provider Serializer
+    required:
+      - name
+      - application
+      - authorization_flow
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      application:
+        title: Application
+        type: string
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   Application:
     description: Application Serializer
     required:
@@ -6755,9 +6820,7 @@ definitions:
         maxLength: 50
         minLength: 1
       provider:
-        title: Provider
-        type: integer
-        x-nullable: true
+        $ref: '#/definitions/Provider'
       launch_url:
         title: Launch url
         type: string
@@ -6940,7 +7003,6 @@ definitions:
           - suspicious_request
           - password_set
           - token_view
-          - invitation_created
           - invitation_used
           - authorize_application
           - source_linked
@@ -6949,6 +7011,7 @@ definitions:
           - policy_execution
           - policy_exception
           - property_mapping_exception
+          - configuration_error
           - model_created
           - model_updated
           - model_deleted
@@ -7134,6 +7197,15 @@ definitions:
         title: Cache count
         type: string
         readOnly: true
+  FlowDiagram:
+    description: response of the flow's /diagram/ action
+    type: object
+    properties:
+      diagram:
+        title: Diagram
+        type: string
+        readOnly: true
+        minLength: 1
   Outpost:
     description: Outpost Serializer
     required:
@@ -7349,7 +7421,6 @@ definitions:
     description: KubernetesServiceConnection Serializer
     required:
       - name
-      - kubeconfig
     type: object
     properties:
       pk:
@@ -7720,40 +7791,6 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-  Provider:
-    description: Provider Serializer
-    required:
-      - name
-      - application
-      - authorization_flow
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      application:
-        title: Application
-        type: string
-      authorization_flow:
-        title: Authorization flow
-        description: Flow used when authorizing this provider.
-        type: string
-        format: uuid
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-      __type__:
-        title: 'type  '
-        type: string
-        readOnly: true
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:
@@ -7798,18 +7835,11 @@ definitions:
           hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
-      response_type:
-        title: Response type
-        description: Response Type required by the client.
-        type: string
-        enum:
-          - code
-          - code#adfs
-          - id_token
-          - id_token token
-          - code token
-          - code id_token
-          - code id_token token
+      include_claims_in_id_token:
+        title: Include claims in id_token
+        description: Include User claims from scopes in the id_token, for applications
+          that don't access the userinfo endpoint.
+        type: boolean
       jwt_alg:
         title: JWT Algorithm
         description: Algorithm used to sign the JWT Token
@@ -7845,6 +7875,21 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      issuer_mode:
+        title: Issuer mode
+        description: Configure how the issuer field of the ID Token should be filled.
+        type: string
+        enum:
+          - global
+          - per_provider
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   ProxyProvider:
     description: ProxyProvider Serializer
     required:
@@ -7898,6 +7943,14 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   SAMLProvider:
     description: SAMLProvider Serializer
     required:
@@ -7984,6 +8037,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   Config:
     description: Serialize authentik Config into DRF Object
     type: object
@@ -8605,6 +8666,7 @@ definitions:
         x-nullable: true
       fixed_data:
         title: Fixed data
+        description: Optional fixed data to enforce on user enrollment.
         type: object
   OTPStaticStage:
     description: OTPStaticStage Serializer

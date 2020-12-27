@@ -14,7 +14,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Administration").children(
-        new SidebarItem("Applications", "/administration/applications/").activeWhen(
+        new SidebarItem("Applications", "/applications/").activeWhen(
             `^/applications/(?<slug>${SLUG_REGEX})/$`
         ),
         new SidebarItem("Sources", "/administration/sources/").activeWhen(

@@ -40,7 +40,7 @@ Use these settings:
 -   Bind CN: `<name of your service user>@ad.company`
 -   Bind Password: The password you've given the user above
 -   Base DN: The base DN which you want authentik to sync
--   Property Mappings: Select all and click the right arrow
+-   Property Mappings: Shift-Select all
 
 The other settings might need to be adjusted based on the setup of your domain.
 
@@ -55,3 +55,7 @@ The other settings might need to be adjusted based on the setup of your domain.
 After you save the source, a synchronization will start in the background. When its done, you cen see the summary on the System Tasks page.
 
 ![](./03_ak_status.png)
+
+To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
+
+![](./04_ak_stage.png)

@@ -2,10 +2,11 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 
 
-class OAuth2ProviderSerializer(ModelSerializer):
+class OAuth2ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """OAuth2Provider Serializer"""
 
     class Meta:
@@ -19,12 +20,15 @@ class OAuth2ProviderSerializer(ModelSerializer):
             "client_id",
             "client_secret",
             "token_validity",
-            "response_type",
+            "include_claims_in_id_token",
             "jwt_alg",
             "rsa_key",
             "redirect_uris",
             "sub_mode",
             "property_mappings",
+            "issuer_mode",
+            "verbose_name",
+            "verbose_name_plural",
         ]
 
 
