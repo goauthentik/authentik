@@ -78,6 +78,8 @@ class FlowViewSet(ModelViewSet):
     queryset = Flow.objects.all()
     serializer_class = FlowSerializer
     lookup_field = "slug"
+    search_fields = ["name", "slug", "designation", "title"]
+    filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
     @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, methods=["get"])

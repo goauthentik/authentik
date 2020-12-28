@@ -868,6 +868,11 @@ paths:
       operationId: events_events_list
       description: Event Read-Only Viewset
       parameters:
+        - name: action
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -919,6 +924,11 @@ paths:
       operationId: events_events_top_per_user
       description: Get the top_n events grouped by user count
       parameters:
+        - name: action
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1194,6 +1204,26 @@ paths:
       operationId: flows_instances_list
       description: Flow Viewset
       parameters:
+        - name: flow_uuid
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: slug
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: designation
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.

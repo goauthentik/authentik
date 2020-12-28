@@ -48,6 +48,15 @@ class EventViewSet(ReadOnlyModelViewSet):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    ordering = ["-created"]
+    search_fields = [
+        "user",
+        "action",
+        "app",
+        "context",
+        "client_ip",
+    ]
+    filterset_fields = ["action"]
 
     @swagger_auto_schema(
         method="GET", responses={200: EventTopPerUserSerialier(many=True)}
