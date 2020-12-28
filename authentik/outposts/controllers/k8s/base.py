@@ -93,7 +93,8 @@ class KubernetesObjectReconciler(Generic[T]):
     def reconcile(self, current: T, reference: T):
         """Check what operations should be done, should be raised as
         ReconcileTrigger"""
-        raise NotImplementedError
+        if current.metadata.annotations != reference.metadata.annotations:
+            raise NeedsUpdate()
 
     def create(self, reference: T):
         """API Wrapper to create object"""

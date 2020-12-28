@@ -18,6 +18,7 @@ from kubernetes.client import (
 
 from authentik import __version__
 from authentik.lib.config import CONFIG
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
@@ -43,6 +44,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
+        super().reconcile(current, reference)
         if current.spec.replicas != reference.spec.replicas:
             raise NeedsUpdate()
         if (
@@ -63,8 +65,14 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         """Get deployment object for outpost"""
         # Generate V1ContainerPort objects
         container_ports = []
-        for port_name, port in self.controller.deployment_ports.items():
-            container_ports.append(V1ContainerPort(container_port=port, name=port_name))
+        for port in self.controller.deployment_ports:
+            container_ports.append(
+                V1ContainerPort(
+                    container_port=port.port,
+                    name=port.name,
+                    protocol=port.protocol.upper(),
+                )
+            )
         meta = self.get_object_meta(name=self.name)
         secret_name = f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
         image_prefix = CONFIG.y("outposts.docker_image_base")
@@ -118,7 +126,9 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         )
 
     def create(self, reference: V1Deployment):
-        return self.api.create_namespaced_deployment(self.namespace, reference)
+        return self.api.create_namespaced_deployment(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: V1Deployment):
         return self.api.delete_namespaced_deployment(
