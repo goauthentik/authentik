@@ -36,7 +36,7 @@ export abstract class Interface extends LitElement {
                 <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}" .items=${this.sidebar}>
                 </ak-sidebar>
                 <main class="pf-c-page__main">
-                    <ak-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library/">
+                    <ak-router-outlet role="main" class="pf-c-page__main" tabindex="-1" id="main-content" defaultUrl="/library">
                     </ak-router-outlet>
                 </main>
             </div>`;
