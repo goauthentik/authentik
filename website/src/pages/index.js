@@ -11,8 +11,8 @@ const features = [
         title: "Easy to Use",
         description: (
             <>
-                Identity made easy. authentik makes single-sign on, user
-                enrollment and access control simple.
+                Identity made easy. authentik makes single-sign on (SSO), user
+                enrollment, and access control simple.
             </>
         ),
     },
@@ -20,7 +20,7 @@ const features = [
         title: "Realise your workflow",
         description: (
             <>
-                authentik lets you build your Workflow as you need it, no
+                authentik lets you build your workflow as you need it, no
                 limitations.
             </>
         ),
@@ -109,16 +109,16 @@ function Home() {
                                     authentik is an open-source Identity Provider
                                     focused on flexibility and versatility. You
                                     can use authentik in an existing environment
-                                    to add support for new protocols. authentik
-                                    is also a great solution for implementing
-                                    signup/recovery/etc in your application, so
-                                    you don't have to deal with it.
+                                    to add support for new protocols, implement
+                                    sign-up/recovery/etc. in your application so
+                                    you don't have to deal with it, and many other
+                                    things.
                                 </p>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col col--5 col--offset-2 padding-vert--xl">
-                                <h2>Upmost flexibility</h2>
+                                <h2>Utmost flexibility</h2>
                                 <p>
                                     You can adopt authentik to your environment,
                                     regardless of your requirements. Need an Active-
