@@ -178,7 +178,7 @@ export abstract class Table<T> extends LitElement {
                 </tr>
                 <tr class="pf-c-table__expandable-row ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" role="row">
                     <td></td>
-                    ${this.renderExpanded(item)}
+                    ${this.expandedRows[idx] ? this.renderExpanded(item) : html``}
                 </tr>
             </tbody>`;
         });
