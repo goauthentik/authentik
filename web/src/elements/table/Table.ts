@@ -144,7 +144,7 @@ export abstract class Table<T> extends LitElement {
             <tr role="row">
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
-                        ${inner ? inner : html`<ak-empty-state header="none"></ak-empty-state>`}
+                        ${inner ? inner : html`<ak-empty-state header="${gettext("No elements found.")}"></ak-empty-state>`}
                     </div>
                 </td>
             </tr>
