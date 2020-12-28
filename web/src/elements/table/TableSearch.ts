@@ -26,9 +26,9 @@ export class TableSearch extends LitElement {
         if (el.value === "") return;
         this.onSearch(el?.value);
     }}>
-                        <input class="pf-c-form-control" name="search" type="search" placeholder="Search..." value="${ifDefined(this.value)}" @search=${() => {
+                        <input class="pf-c-form-control" name="search" type="search" placeholder="Search..." value="${ifDefined(this.value)}" @search=${(ev: Event) => {
     if (!this.onSearch) return;
-    this.onSearch("");
+    this.onSearch((ev.target as HTMLInputElement).value);
 }}>
                         <button class="pf-c-button pf-m-control" type="submit">
                             <i class="fas fa-search" aria-hidden="true"></i>

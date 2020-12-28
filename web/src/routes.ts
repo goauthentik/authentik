@@ -7,6 +7,7 @@ import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
 import "./pages/sources/SourceViewPage";
 import "./pages/flows/FlowViewPage";
+import "./pages/events/EventListPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -24,4 +25,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-flow-view .args=${args}></ak-flow-view>`;
     }),
+    new Route(new RegExp("^/events$"), html`<ak-event-list></ak-event-list>`),
 ];

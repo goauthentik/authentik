@@ -154,6 +154,7 @@ class DockerController(BaseController):
                         ),
                         "AUTHENTIK_TOKEN": self.outpost.token.key,
                     },
+                    "labels": self._get_labels(),
                 }
             },
         }

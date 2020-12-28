@@ -9,7 +9,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Monitor").children(
         new SidebarItem("Overview", "/administration/overview"),
         new SidebarItem("System Tasks", "/administration/tasks/"),
-        new SidebarItem("Events", "/events/log/"),
+        new SidebarItem("Events", "/events"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
