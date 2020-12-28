@@ -14,6 +14,8 @@ from authentik.outposts.controllers.k8s.secret import SecretReconciler
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.models import KubernetesServiceConnection, Outpost
 
+FIELD_MANAGER = "goauthentik.io"
+
 
 class KubernetesController(BaseController):
     """Manage deployment of outpost in kubernetes"""

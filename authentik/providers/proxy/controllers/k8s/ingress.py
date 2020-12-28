@@ -19,6 +19,7 @@ from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
+from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 from authentik.providers.proxy.models import ProxyProvider
 
 if TYPE_CHECKING:
@@ -124,7 +125,9 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         )
 
     def create(self, reference: NetworkingV1beta1Ingress):
-        return self.api.create_namespaced_ingress(self.namespace, reference)
+        return self.api.create_namespaced_ingress(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: NetworkingV1beta1Ingress):
         return self.api.delete_namespaced_ingress(

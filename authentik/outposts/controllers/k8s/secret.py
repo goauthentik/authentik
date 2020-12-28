@@ -8,6 +8,7 @@ from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
+from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -51,7 +52,9 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         )
 
     def create(self, reference: V1Secret):
-        return self.api.create_namespaced_secret(self.namespace, reference)
+        return self.api.create_namespaced_secret(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: V1Secret):
         return self.api.delete_namespaced_secret(

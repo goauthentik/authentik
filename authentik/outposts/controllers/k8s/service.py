@@ -8,6 +8,7 @@ from authentik.outposts.controllers.k8s.base import (
     NeedsUpdate,
 )
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -44,7 +45,9 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         )
 
     def create(self, reference: V1Service):
-        return self.api.create_namespaced_service(self.namespace, reference)
+        return self.api.create_namespaced_service(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: V1Service):
         return self.api.delete_namespaced_service(
