@@ -50,3 +50,7 @@ export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     }
     return actual;
 }
+
+export function time(t: string): Date {
+    return new Date(parseInt(t, 10) * 1000);
+}
