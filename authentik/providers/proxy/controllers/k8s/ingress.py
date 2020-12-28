@@ -40,6 +40,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
     def reconcile(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
+        super().reconcile(current, reference)
         # Create a list of all expected host and tls hosts
         expected_hosts = []
         expected_hosts_tls = []

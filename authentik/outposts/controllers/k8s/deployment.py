@@ -44,6 +44,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
+        super().reconcile(current, reference)
         if current.spec.replicas != reference.spec.replicas:
             raise NeedsUpdate()
         if (

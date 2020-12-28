@@ -26,6 +26,7 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
 
     def reconcile(self, current: V1Service, reference: V1Service):
+        super().reconcile(current, reference)
         if len(current.spec.ports) != len(reference.spec.ports):
             raise NeedsUpdate()
         for port in reference.spec.ports:

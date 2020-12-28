@@ -31,6 +31,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
 
     def reconcile(self, current: V1Secret, reference: V1Secret):
+        super().reconcile(current, reference)
         for key in reference.data.keys():
             if current.data[key] != reference.data[key]:
                 raise NeedsUpdate()
