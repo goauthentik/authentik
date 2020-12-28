@@ -2,6 +2,7 @@
 from typing import Dict
 from urllib.parse import urlparse
 
+from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost
 from authentik.providers.proxy.models import ProxyProvider
@@ -12,10 +13,10 @@ class ProxyDockerController(DockerController):
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection):
         super().__init__(outpost, connection)
-        self.deployment_ports = {
-            "http": 4180,
-            "https": 4443,
-        }
+        self.deployment_ports = [
+            DeploymentPort(4180, "http", "tcp"),
+            DeploymentPort(4443, "https", "tcp"),
+        ]
 
     def _get_labels(self) -> Dict[str, str]:
         hosts = []

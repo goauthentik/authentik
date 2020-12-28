@@ -15,11 +15,11 @@ from kubernetes.client.models.networking_v1beta1_ingress_rule import (
     NetworkingV1beta1IngressRule,
 )
 
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 from authentik.providers.proxy.models import ProxyProvider
 
 if TYPE_CHECKING:
@@ -106,7 +106,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                         NetworkingV1beta1HTTPIngressPath(
                             backend=NetworkingV1beta1IngressBackend(
                                 service_name=self.name,
-                                service_port=self.controller.deployment_ports["http"],
+                                service_port="http",
                             ),
                             path="/",
                         )

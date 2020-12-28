@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Secret
 
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController

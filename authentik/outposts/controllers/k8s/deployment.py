@@ -18,11 +18,11 @@ from kubernetes.client import (
 
 from authentik import __version__
 from authentik.lib.config import CONFIG
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
-from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 from authentik.outposts.models import Outpost
 
 if TYPE_CHECKING:
@@ -65,8 +65,14 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         """Get deployment object for outpost"""
         # Generate V1ContainerPort objects
         container_ports = []
-        for port_name, port in self.controller.deployment_ports.items():
-            container_ports.append(V1ContainerPort(container_port=port, name=port_name))
+        for port in self.controller.deployment_ports:
+            container_ports.append(
+                V1ContainerPort(
+                    container_port=port.port,
+                    name=port.name,
+                    protocol=port.protocol.upper(),
+                )
+            )
         meta = self.get_object_meta(name=self.name)
         secret_name = f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
         image_prefix = CONFIG.y("outposts.docker_image_base")

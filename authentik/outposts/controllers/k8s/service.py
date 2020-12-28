@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
 
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
 )
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
-from authentik.outposts.controllers.kubernetes import FIELD_MANAGER
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -37,8 +37,15 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         """Get deployment object for outpost"""
         meta = self.get_object_meta(name=self.name)
         ports = []
-        for port_name, port in self.controller.deployment_ports.items():
-            ports.append(V1ServicePort(name=port_name, port=port))
+        for port in self.controller.deployment_ports:
+            ports.append(
+                V1ServicePort(
+                    name=port.name,
+                    port=port.port,
+                    protocol=port.protocol.upper(),
+                    target_port=port.port,
+                )
+            )
         selector_labels = DeploymentReconciler(self.controller).get_pod_meta()
         return V1Service(
             metadata=meta,
