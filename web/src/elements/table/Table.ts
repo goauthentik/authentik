@@ -115,6 +115,7 @@ export abstract class Table<T> extends LitElement {
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
+            this.expandedRows = [];
         });
     }
 
