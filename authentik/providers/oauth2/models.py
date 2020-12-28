@@ -398,7 +398,7 @@ class AuthorizationCode(ExpiringModel, BaseGrantModel):
         verbose_name_plural = _("Authorization Codes")
 
     def __str__(self):
-        return "{0} - {1}".format(self.provider, self.code)
+        return f"Authorization code for {self.provider} for user {self.user}"
 
 
 @dataclass
@@ -461,7 +461,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         self._id_token = json.dumps(asdict(value))
 
     def __str__(self):
-        return f"{self.provider} - {self.access_token}"
+        return f"Refresh Token for {self.provider} for user {self.access_token.user}"
 
     @property
     def at_hash(self):
