@@ -461,7 +461,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         self._id_token = json.dumps(asdict(value))
 
     def __str__(self):
-        return f"Refresh Token for {self.provider} for user {self.access_token.user}"
+        return f"Refresh Token for {self.provider} for user {self.user}"
 
     @property
     def at_hash(self):
