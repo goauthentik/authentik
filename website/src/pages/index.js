@@ -121,8 +121,8 @@ function Home() {
                                 <h2>Utmost flexibility</h2>
                                 <p>
                                     You can adopt authentik to your environment,
-                                    regardless of your requirements. Need an Active-
-                                    Directory integrated SSO Provider? Do you want
+                                    regardless of your requirements. Need an Active-Directory
+                                    integrated SSO Provider? Do you want
                                     to implement a custom enrollment process for your
                                     customers? Are you developing an application and
                                     don't want to deal with User verification and recovery?

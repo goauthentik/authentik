@@ -101,6 +101,7 @@ module.exports = {
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
                         "integrations/services/gitlab/index",
+                        "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
                         "integrations/services/nextcloud/index",
