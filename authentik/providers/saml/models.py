@@ -42,7 +42,13 @@ class SAMLProvider(Provider):
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(
         default="",
-        help_text=_("Value of the audience restriction field of the asseration."),
+        blank=True,
+        help_text=_(
+            (
+                "Value of the audience restriction field of the asseration. When left empty, "
+                "no audience restriction will be added."
+            )
+        ),
     )
     issuer = models.TextField(
         help_text=_("Also known as EntityID"), default="authentik"
