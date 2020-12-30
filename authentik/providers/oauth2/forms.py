@@ -53,13 +53,14 @@ class OAuth2ProviderForm(forms.ModelForm):
             "client_type",
             "client_id",
             "client_secret",
-            "response_type",
             "token_validity",
             "jwt_alg",
+            "property_mappings",
             "rsa_key",
             "redirect_uris",
             "sub_mode",
-            "property_mappings",
+            "include_claims_in_id_token",
+            "issuer_mode",
         ]
         widgets = {
             "name": forms.TextInput(),

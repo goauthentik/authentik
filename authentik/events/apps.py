@@ -10,7 +10,6 @@ class AuthentikEventsConfig(AppConfig):
     name = "authentik.events"
     label = "authentik_events"
     verbose_name = "authentik Events"
-    mountpoint = "events/"
 
     def ready(self):
         import_module("authentik.events.signals")

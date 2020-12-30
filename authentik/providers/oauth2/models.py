@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional, Type
 from urllib.parse import urlparse
 from uuid import uuid4
 
+from dacite import from_dict
 from django.conf import settings
 from django.db import models
 from django.forms import ModelForm
@@ -22,9 +23,12 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.lib.utils.template import render_to_string
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
+from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
 from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
@@ -67,14 +71,19 @@ class SubModes(models.TextChoices):
     )
 
 
+class IssuerMode(models.TextChoices):
+    """Configure how the `iss` field is created."""
+
+    GLOBAL = "global", _("Same identifier is used for all providers")
+    PER_PROVIDER = "per_provider", _(
+        "Each provider has a different issuer, based on the application slug."
+    )
+
+
 class ResponseTypes(models.TextChoices):
     """Response Type required by the client."""
 
     CODE = "code", _("code (Authorization Code Flow)")
-    CODE_ADFS = (
-        "code#adfs",
-        _("code (ADFS Compatibility Mode, sends id_token as access_token)"),
-    )
     ID_TOKEN = "id_token", _("id_token (Implicit Flow)")
     ID_TOKEN_TOKEN = "id_token token", _("id_token token (Implicit Flow)")
     CODE_TOKEN = "code token", _("code token (Hybrid Flow)")
@@ -140,11 +149,6 @@ class OAuth2Provider(Provider):
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
     )
-    response_type = models.TextField(
-        choices=ResponseTypes.choices,
-        default=ResponseTypes.CODE,
-        help_text=_(ResponseTypes.__doc__),
-    )
     jwt_alg = models.CharField(
         max_length=10,
         choices=JWTAlgorithms.choices,
@@ -190,6 +194,13 @@ class OAuth2Provider(Provider):
             )
         ),
     )
+    issuer_mode = models.TextField(
+        choices=IssuerMode.choices,
+        default=IssuerMode.PER_PROVIDER,
+        help_text=_(
+            ("Configure how the issuer field of the ID Token should be filled.")
+        ),
+    )
 
     rsa_key = models.ForeignKey(
         CertificateKeyPair,
@@ -203,19 +214,17 @@ class OAuth2Provider(Provider):
     )
 
     def create_refresh_token(
-        self, user: User, scope: List[str], id_token: Optional["IDToken"] = None
+        self, user: User, scope: List[str], request: HttpRequest
     ) -> "RefreshToken":
         """Create and populate a RefreshToken object."""
         token = RefreshToken(
             user=user,
             provider=self,
-            access_token=uuid4().hex,
             refresh_token=uuid4().hex,
             expires=timezone.now() + timedelta_from_string(self.token_validity),
             scope=scope,
         )
-        if id_token:
-            token.id_token = id_token
+        token.access_token = token.create_access_token(user, request)
         return token
 
     def get_jwt_keys(self) -> List[Key]:
@@ -227,6 +236,11 @@ class OAuth2Provider(Provider):
             # if the user selected RS256 but didn't select a
             # CertificateKeyPair, we fall back to HS256
             if not self.rsa_key:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    provider=self,
+                    message="Provider was configured for RS256, but no key was selected.",
+                ).save()
                 self.jwt_alg = JWTAlgorithms.HS256
                 self.save()
             else:
@@ -246,6 +260,8 @@ class OAuth2Provider(Provider):
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
+        if self.issuer_mode == IssuerMode.GLOBAL:
+            return request.build_absolute_uri("/")
         try:
             mountpoint = AuthentikProviderOAuth2Config.mountpoints[
                 "authentik.providers.oauth2.urls"
@@ -365,12 +381,24 @@ class AuthorizationCode(ExpiringModel, BaseGrantModel):
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
     )
 
+    @property
+    def c_hash(self):
+        """https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
+        hashed_code = sha256(self.code.encode("ascii")).hexdigest().encode("ascii")
+        return (
+            base64.urlsafe_b64encode(
+                binascii.unhexlify(hashed_code[: len(hashed_code) // 2])
+            )
+            .rstrip(b"=")
+            .decode("ascii")
+        )
+
     class Meta:
         verbose_name = _("Authorization Code")
         verbose_name_plural = _("Authorization Codes")
 
     def __str__(self):
-        return "{0} - {1}".format(self.provider, self.code)
+        return f"Authorization code for {self.provider} for user {self.user}"
 
 
 @dataclass
@@ -390,19 +418,14 @@ class IDToken:
     exp: Optional[int] = None
     iat: Optional[int] = None
     auth_time: Optional[int] = None
+    acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
+
+    c_hash: Optional[str] = None
 
     nonce: Optional[str] = None
     at_hash: Optional[str] = None
 
     claims: Dict[str, Any] = field(default_factory=dict)
-
-    @staticmethod
-    def from_dict(data: Dict[str, Any]) -> "IDToken":
-        """Reconstruct ID Token from json dictionary"""
-        token = IDToken()
-        for key, value in data.items():
-            setattr(token, key, value)
-        return token
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
@@ -415,9 +438,7 @@ class IDToken:
 class RefreshToken(ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token"""
 
-    access_token = models.CharField(
-        max_length=255, unique=True, verbose_name=_("Access Token")
-    )
+    access_token = models.TextField(verbose_name=_("Access Token"))
     refresh_token = models.CharField(
         max_length=255, unique=True, verbose_name=_("Refresh Token")
     )
@@ -432,7 +453,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         """Load ID Token from json"""
         if self._id_token:
             raw_token = json.loads(self._id_token)
-            return IDToken.from_dict(raw_token)
+            return from_dict(IDToken, raw_token)
         return IDToken()
 
     @id_token.setter
@@ -440,7 +461,7 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         self._id_token = json.dumps(asdict(value))
 
     def __str__(self):
-        return f"{self.provider} - {self.access_token}"
+        return f"Refresh Token for {self.provider} for user {self.user}"
 
     @property
     def at_hash(self):
@@ -455,6 +476,13 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
             .rstrip(b"=")
             .decode("ascii")
         )
+
+    def create_access_token(self, user: User, request: HttpRequest) -> str:
+        """Create access token with a similar format as Okta, Keycloak, ADFS"""
+        token = self.create_id_token(user, request).to_dict()
+        token["cid"] = self.provider.client_id
+        token["uid"] = uuid4().hex
+        return self.provider.encode(token)
 
     def create_id_token(self, user: User, request: HttpRequest) -> IDToken:
         """Creates the id_token.
@@ -482,8 +510,11 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
         exp_time = int(
             now + timedelta_from_string(self.provider.token_validity).seconds
         )
-        user_auth_time = user.last_login or user.date_joined
-        auth_time = int(dateformat.format(user_auth_time, "U"))
+        # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
+        auth_event = Event.objects.filter(
+            action=EventAction.LOGIN, user=get_user(user)
+        ).latest("created")
+        auth_time = int(dateformat.format(auth_event.created, "U"))
 
         token = IDToken(
             iss=self.provider.get_issuer(request),

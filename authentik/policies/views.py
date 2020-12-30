@@ -11,11 +11,23 @@ from structlog import get_logger
 
 from authentik.core.models import Application, Provider, User
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
+from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.http import AccessDeniedResponse
 from authentik.policies.types import PolicyResult
 
 LOGGER = get_logger()
+
+
+class RequestValidationError(SentryIgnoredException):
+    """Error raised in pre_permission_check, when a request is invalid."""
+
+    response: Optional[HttpResponse]
+
+    def __init__(self, response: Optional[HttpResponse] = None):
+        super().__init__()
+        if response:
+            self.response = response
 
 
 class BaseMixin:
@@ -31,6 +43,10 @@ class PolicyAccessView(AccessMixin, View):
     provider: Provider
     application: Application
 
+    def pre_permission_check(self):
+        """Optionally hook in before permission check to check if a request is valid.
+        Can raise `RequestValidationError` to return a response."""
+
     def resolve_provider_application(self):
         """Resolve self.provider and self.application. *.DoesNotExist Exceptions cause a normal
         AccessDenied view to be shown. An Http404 exception
@@ -38,6 +54,12 @@ class PolicyAccessView(AccessMixin, View):
         raise NotImplementedError
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        try:
+            self.pre_permission_check()
+        except RequestValidationError as exc:
+            if exc.response:
+                return exc.response
+            return self.handle_no_permission()
         try:
             self.resolve_provider_application()
         except (Application.DoesNotExist, Provider.DoesNotExist):

@@ -15,6 +15,7 @@ from kubernetes.client.models.networking_v1beta1_ingress_rule import (
     NetworkingV1beta1IngressRule,
 )
 
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
@@ -39,6 +40,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
     def reconcile(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
+        super().reconcile(current, reference)
         # Create a list of all expected host and tls hosts
         expected_hosts = []
         expected_hosts_tls = []
@@ -74,11 +76,13 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
             # goes to the same pod
             "nginx.ingress.kubernetes.io/affinity": "cookie",
             "traefik.ingress.kubernetes.io/affinity": "true",
+            "nginx.ingress.kubernetes.io/proxy-buffers-number": "4",
+            "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
         }
         annotations.update(
             self.controller.outpost.config.kubernetes_ingress_annotations
         )
-        return dict()
+        return annotations
 
     def get_reference_object(self) -> NetworkingV1beta1Ingress:
         """Get deployment object for outpost"""
@@ -102,7 +106,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
                         NetworkingV1beta1HTTPIngressPath(
                             backend=NetworkingV1beta1IngressBackend(
                                 service_name=self.name,
-                                service_port=self.controller.deployment_ports["http"],
+                                service_port="http",
                             ),
                             path="/",
                         )
@@ -122,7 +126,9 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         )
 
     def create(self, reference: NetworkingV1beta1Ingress):
-        return self.api.create_namespaced_ingress(self.namespace, reference)
+        return self.api.create_namespaced_ingress(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: NetworkingV1beta1Ingress):
         return self.api.delete_namespaced_ingress(

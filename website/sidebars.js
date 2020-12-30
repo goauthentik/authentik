@@ -101,6 +101,7 @@ module.exports = {
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
                         "integrations/services/gitlab/index",
+                        "integrations/services/grafana/index",
                         "integrations/services/harbor/index",
                         "integrations/services/home-assistant/index",
                         "integrations/services/nextcloud/index",
@@ -121,13 +122,14 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Upgrading",
+            label: "Release Notes",
             items: [
-                "upgrading/to-0.9",
-                "upgrading/to-0.10",
-                "upgrading/to-0.11",
-                "upgrading/to-0.12",
-                "upgrading/to-0.13",
+                "releases/0.9",
+                "releases/0.10",
+                "releases/0.11",
+                "releases/0.12",
+                "releases/0.13",
+                "releases/0.14",
             ],
         },
         {

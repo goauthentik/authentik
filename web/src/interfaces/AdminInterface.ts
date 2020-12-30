@@ -5,16 +5,16 @@ import { SLUG_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
-    new SidebarItem("Library", "/library/"),
+    new SidebarItem("Library", "/library"),
     new SidebarItem("Monitor").children(
-        new SidebarItem("Overview", "/administration/overview/"),
+        new SidebarItem("Overview", "/administration/overview"),
         new SidebarItem("System Tasks", "/administration/tasks/"),
-        new SidebarItem("Events", "/events/log/"),
+        new SidebarItem("Events", "/events"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Administration").children(
-        new SidebarItem("Applications", "/applications/").activeWhen(
+        new SidebarItem("Applications", "/applications").activeWhen(
             `^/applications/(?<slug>${SLUG_REGEX})/$`
         ),
         new SidebarItem("Sources", "/administration/sources/").activeWhen(
@@ -31,7 +31,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Flows").children(
-        new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})/$`),
+        new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
         new SidebarItem("Stages", "/administration/stages/"),
         new SidebarItem("Prompts", "/administration/stages/prompts/"),
         new SidebarItem("Invitations", "/administration/stages/invitations/"),

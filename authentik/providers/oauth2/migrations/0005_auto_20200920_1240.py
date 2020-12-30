@@ -19,10 +19,6 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 choices=[
                     ("code", "code (Authorization Code Flow)"),
-                    (
-                        "code#adfs",
-                        "code (ADFS Compatibility Mode, sends id_token as access_token)",
-                    ),
                     ("id_token", "id_token (Implicit Flow)"),
                     ("id_token token", "id_token token (Implicit Flow)"),
                     ("code token", "code token (Hybrid Flow)"),

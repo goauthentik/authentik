@@ -7,7 +7,7 @@ from authentik.providers.proxy.models import ProxyProvider
 
 
 class ProxyProviderForm(forms.ModelForm):
-    """Security Gateway Provider form"""
+    """Proxy Provider form"""
 
     instance: ProxyProvider
 

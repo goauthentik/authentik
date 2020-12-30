@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Secret
 
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import (
     KubernetesObjectReconciler,
     NeedsUpdate,
@@ -30,6 +31,7 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}-api"
 
     def reconcile(self, current: V1Secret, reference: V1Secret):
+        super().reconcile(current, reference)
         for key in reference.data.keys():
             if current.data[key] != reference.data[key]:
                 raise NeedsUpdate()
@@ -51,7 +53,9 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         )
 
     def create(self, reference: V1Secret):
-        return self.api.create_namespaced_secret(self.namespace, reference)
+        return self.api.create_namespaced_secret(
+            self.namespace, reference, field_manager=FIELD_MANAGER
+        )
 
     def delete(self, reference: V1Secret):
         return self.api.delete_namespaced_secret(

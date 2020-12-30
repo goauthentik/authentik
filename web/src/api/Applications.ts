@@ -5,7 +5,7 @@ export class Application {
     pk: string;
     name: string;
     slug: string;
-    provider: Provider;
+    provider?: Provider;
 
     launch_url: string;
     meta_launch_url: string;

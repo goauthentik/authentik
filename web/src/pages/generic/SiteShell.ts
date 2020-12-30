@@ -30,17 +30,6 @@ export class SiteShell extends LitElement {
                 ::slotted(*) {
                     height: 100%;
                 }
-                :host .pf-l-bullseye {
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    top: 0;
-                    left: 0;
-                    z-index: 2000;
-                }
-                .pf-c-backdrop {
-                    --pf-c-backdrop--BackgroundColor: rgba(0, 0, 0, 0) !important;
-                }
             `,
             BackdropStyle,
             BullseyeStyle,
@@ -156,11 +145,9 @@ export class SiteShell extends LitElement {
 
     render(): TemplateResult {
         return html` ${this.loading ?
-            html`<div class="pf-c-backdrop">
-                    <div class="pf-l-bullseye">
-                        <div class="pf-l-bullseye__item">
-                            <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
-                        </div>
+            html`<div class="pf-l-bullseye">
+                    <div class="pf-l-bullseye__item">
+                        <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
                     </div>
                 </div>`
             : ""}

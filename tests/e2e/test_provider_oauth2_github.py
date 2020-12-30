@@ -17,7 +17,7 @@ from authentik.providers.oauth2.generators import (
     generate_client_id,
     generate_client_secret,
 )
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ResponseTypes
+from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -73,7 +73,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            response_type=ResponseTypes.CODE,
             redirect_uris="http://localhost:3000/login/github",
             authorization_flow=authorization_flow,
         )
@@ -128,7 +127,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            response_type=ResponseTypes.CODE,
             redirect_uris="http://localhost:3000/login/github",
             authorization_flow=authorization_flow,
         )
@@ -198,7 +196,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            response_type=ResponseTypes.CODE,
             redirect_uris="http://localhost:3000/login/github",
             authorization_flow=authorization_flow,
         )

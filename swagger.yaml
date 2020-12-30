@@ -868,6 +868,11 @@ paths:
       operationId: events_events_list
       description: Event Read-Only Viewset
       parameters:
+        - name: action
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -919,6 +924,11 @@ paths:
       operationId: events_events_top_per_user
       description: Get the top_n events grouped by user count
       parameters:
+        - name: action
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1194,6 +1204,26 @@ paths:
       operationId: flows_instances_list
       description: Flow Viewset
       parameters:
+        - name: flow_uuid
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: slug
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: designation
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -7011,6 +7041,7 @@ definitions:
           - policy_execution
           - policy_exception
           - property_mapping_exception
+          - configuration_error
           - model_created
           - model_updated
           - model_deleted
@@ -7834,18 +7865,11 @@ definitions:
           hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
-      response_type:
-        title: Response type
-        description: Response Type required by the client.
-        type: string
-        enum:
-          - code
-          - code#adfs
-          - id_token
-          - id_token token
-          - code token
-          - code id_token
-          - code id_token token
+      include_claims_in_id_token:
+        title: Include claims in id_token
+        description: Include User claims from scopes in the id_token, for applications
+          that don't access the userinfo endpoint.
+        type: boolean
       jwt_alg:
         title: JWT Algorithm
         description: Algorithm used to sign the JWT Token
@@ -7881,6 +7905,13 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      issuer_mode:
+        title: Issuer mode
+        description: Configure how the issuer field of the ID Token should be filled.
+        type: string
+        enum:
+          - global
+          - per_provider
       verbose_name:
         title: Verbose name
         type: string
@@ -8132,6 +8163,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       __type__:
         title: 'type  '
         type: string
@@ -8180,6 +8219,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       server_uri:
         title: Server URI
         type: string
@@ -8295,6 +8342,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       provider_type:
         title: Provider type
         type: string
