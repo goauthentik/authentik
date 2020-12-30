@@ -10,7 +10,6 @@ from lxml import etree  # nosec
 from structlog import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.utils.encoding import PEM_FOOTER, PEM_HEADER
 from authentik.sources.saml.processors.constants import (
@@ -56,10 +55,14 @@ class ServiceProviderMetadata:
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
-        if self.signing_keypair:
+        if self.signing_keypair and self.auth_n_request_signed:
             self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
             self.signing_keypair.save()
-            provider.signing_kp = self.signing_keypair
+            provider.verification_kp = self.signing_keypair
+        if self.assertion_signed:
+            provider.signing_kp = CertificateKeyPair.objects.exclude(
+                key_data__iexact=""
+            ).first()
         return provider
 
 

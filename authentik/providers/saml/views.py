@@ -277,7 +277,7 @@ class MetadataImportView(LoginRequiredMixin, FormView):
             LOGGER.warning(exc)
             messages.error(
                 self.request,
-                _("Failed to import Metadata: %(message)s", {"message": str(exc)}),
+                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
             )
             return super().form_invalid(form)
         return super().form_valid(form)
