@@ -94,6 +94,9 @@ class SAMLProviderImportForm(forms.Form):
     """Create a SAML Provider from SP Metadata."""
 
     provider_name = forms.CharField()
+    authorization_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
+    )
     metadata = forms.FileField(
         validators=[FileExtensionValidator(allowed_extensions=["xml"])]
     )
