@@ -272,6 +272,11 @@ class MetadataImportView(LoginRequiredMixin, FormView):
             provider = metadata.to_provider(form.cleaned_data["provider_name"])
             provider.save()
             messages.success(self.request, _("Successfully created Provider"))
-        except ValueError:
-            messages.error(self.request, _("Failed to import Metadata."))
+        except ValueError as exc:
+            LOGGER.warning(exc)
+            messages.error(
+                self.request,
+                _("Failed to import Metadata: %(message)s", {"message": str(exc)}),
+            )
+            return super().form_invalid(form)
         return super().form_valid(form)
