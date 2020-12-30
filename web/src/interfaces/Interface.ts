@@ -8,7 +8,7 @@ import "../elements/sidebar/SidebarHamburger";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
-    sidebarOpen?: boolean;
+    sidebarOpen: boolean = true;
 
     abstract get sidebar(): SidebarItem[];
 
