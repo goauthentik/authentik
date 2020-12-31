@@ -29,7 +29,7 @@ export class SidebarItem {
         this.condition = async () => true;
         this.activeMatchers = [];
         if (this.path) {
-            this.activeMatchers.push(new RegExp(`^${this.path}$`));
+            this.activeMatchers.push(new RegExp(`^${this.path}`));
         }
     }
 
