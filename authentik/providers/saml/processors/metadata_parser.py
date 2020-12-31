@@ -5,6 +5,7 @@ from typing import Optional
 import xmlsec
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
+from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog import get_logger
 
@@ -23,6 +24,8 @@ LOGGER = get_logger()
 
 def format_pem_certificate(unformatted_cert: str) -> str:
     """Format single, inline certificate into PEM Format"""
+    # Ensure that all linebreaks are gone
+    unformatted_cert = unformatted_cert.replace("\n", "")
     chunks, chunk_size = len(unformatted_cert), 64
     lines = [PEM_HEADER]
     for i in range(0, chunks, chunk_size):
@@ -52,10 +55,14 @@ class ServiceProviderMetadata:
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
-        if self.signing_keypair:
+        if self.signing_keypair and self.auth_n_request_signed:
             self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
             self.signing_keypair.save()
-            provider.signing_kp = self.signing_keypair
+            provider.verification_kp = self.signing_keypair
+        if self.assertion_signed:
+            provider.signing_kp = CertificateKeyPair.objects.exclude(
+                key_data__iexact=""
+            ).first()
         return provider
 
 
@@ -104,7 +111,7 @@ class ServiceProviderMetadataParser:
 
     def parse(self, raw_xml: str) -> ServiceProviderMetadata:
         """Parse raw XML to ServiceProviderMetadata"""
-        root = etree.fromstring(raw_xml)  # nosec
+        root = fromstring(raw_xml.encode())
 
         entity_id = root.attrib["entityID"]
         sp_sso_descriptors = root.findall(f"{{{NS_SAML_METADATA}}}SPSSODescriptor")

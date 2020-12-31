@@ -8004,9 +8004,9 @@ definitions:
         minLength: 1
       audience:
         title: Audience
-        description: Value of the audience restriction field of the asseration.
+        description: Value of the audience restriction field of the asseration. When
+          left empty, no audience restriction will be added.
         type: string
-        minLength: 1
       issuer:
         title: Issuer
         description: Also known as EntityID

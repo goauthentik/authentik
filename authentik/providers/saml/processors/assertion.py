@@ -127,11 +127,14 @@ class AssertionProcessor:
         conditions = Element(f"{{{NS_SAML_ASSERTION}}}Conditions")
         conditions.attrib["NotBefore"] = self._valid_not_before
         conditions.attrib["NotOnOrAfter"] = self._valid_not_on_or_after
-        audience_restriction = SubElement(
-            conditions, f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"
-        )
-        audience = SubElement(audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience")
-        audience.text = self.provider.audience
+        if self.provider.audience != "":
+            audience_restriction = SubElement(
+                conditions, f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"
+            )
+            audience = SubElement(
+                audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience"
+            )
+            audience.text = self.provider.audience
         return conditions
 
     def get_name_id(self) -> Element:

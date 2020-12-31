@@ -36,17 +36,17 @@ class SAMLProviderForm(forms.ModelForm):
             "name",
             "authorization_flow",
             "acs_url",
-            "audience",
             "issuer",
             "sp_binding",
+            "audience",
+            "signing_kp",
+            "verification_kp",
+            "property_mappings",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
             "digest_algorithm",
             "signature_algorithm",
-            "signing_kp",
-            "verification_kp",
-            "property_mappings",
         ]
         widgets = {
             "name": forms.TextInput(),
@@ -94,6 +94,9 @@ class SAMLProviderImportForm(forms.Form):
     """Create a SAML Provider from SP Metadata."""
 
     provider_name = forms.CharField()
+    authorization_flow = forms.ModelChoiceField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
+    )
     metadata = forms.FileField(
         validators=[FileExtensionValidator(allowed_extensions=["xml"])]
     )

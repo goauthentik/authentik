@@ -93,4 +93,8 @@ class PolicyProcess(Process):
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
-            self.connection.send(self.execute())
+            try:
+                self.connection.send(self.execute())
+            except Exception as exc:  # pylint: disable=broad-except
+                LOGGER.warning(exc)
+                self.connection.send(PolicyResult(False, str(exc)))
