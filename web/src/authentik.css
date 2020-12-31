@@ -137,6 +137,9 @@ select[multiple] {
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
     }
     .pf-c-table__text {
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-table__sort:not(.pf-m-selected) .pf-c-table__button .pf-c-table__text {
         color: var(--ak-dark-foreground) !important;
     }
     .pf-c-table__sort-indicator i {
