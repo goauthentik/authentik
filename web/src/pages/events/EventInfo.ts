@@ -94,6 +94,29 @@ export class EventInfo extends LitElement {
                         <code>${this.event.context.expression}</code>
                     </div>
                 </div>`;
+        case "policy_execution":
+                return html`<div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Request")}</h3>
+                        <ul class="pf-c-list">
+                            <li>${gettext("Object")}: ${(this.event.context.request as EventContext).obj as string}</li>
+                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context)}</code></span></li>
+                        </ul>
+                    </div>
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Result")}</h3>
+                        <ul class="pf-c-list">
+                            <li>${gettext("Passing")}: ${(this.event.context.result as EventContext).passing}</li>
+                            <li>${gettext("Messages")}:
+                                <ul class="pf-c-list">
+                                    ${((this.event.context.result as EventContext).messages as string[]).map(msg => {
+                                        return html`<li>${msg}</li>`;
+                                    })}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>`;
         case "configuration_error":
             return html`<h3>${this.event.context.message}</h3>`;
         case "update_available":

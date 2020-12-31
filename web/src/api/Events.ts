@@ -8,7 +8,7 @@ export interface EventUser {
 }
 
 export interface EventContext {
-    [key: string]: EventContext | string | number;
+    [key: string]: EventContext | string | number | string[];
 }
 
 export class Event {
