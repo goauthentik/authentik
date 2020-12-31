@@ -95,7 +95,7 @@ export class EventInfo extends LitElement {
                     </div>
                 </div>`;
         case "policy_execution":
-                return html`<div class="pf-l-flex">
+            return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Request")}</h3>
                         <ul class="pf-c-list">
@@ -110,8 +110,8 @@ export class EventInfo extends LitElement {
                             <li>${gettext("Messages")}:
                                 <ul class="pf-c-list">
                                     ${((this.event.context.result as EventContext).messages as string[]).map(msg => {
-                                        return html`<li>${msg}</li>`;
-                                    })}
+        return html`<li>${msg}</li>`;
+    })}
                                 </ul>
                             </li>
                         </ul>
