@@ -56,6 +56,7 @@ class PolicyEngine:
             raise ValueError(f"{pbm} is not instance of PolicyBindingModel")
         self.__pbm = pbm
         self.request = PolicyRequest(user)
+        self.request.obj = pbm
         if request:
             self.request.http_request = request
         self.__cached_policies = []
