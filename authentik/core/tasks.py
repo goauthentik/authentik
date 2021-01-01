@@ -8,7 +8,7 @@ from dbbackup.db.exceptions import CommandConnectorError
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core import management
 from django.utils.timezone import now
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus

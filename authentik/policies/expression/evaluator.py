@@ -4,7 +4,7 @@ from traceback import format_tb
 from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict, sanitize_dict

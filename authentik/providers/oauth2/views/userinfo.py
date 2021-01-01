@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.constants import (
     SCOPE_GITHUB_ORG_READ,

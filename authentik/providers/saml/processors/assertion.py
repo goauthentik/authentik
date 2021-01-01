@@ -6,7 +6,7 @@ import xmlsec
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.lib.utils.time import timedelta_from_string
@@ -95,7 +95,7 @@ class AssertionProcessor:
                 attribute_statement.append(attribute)
 
             except PropertyMappingExpressionException as exc:
-                LOGGER.warning(exc)
+                LOGGER.warning(str(exc))
                 continue
         return attribute_statement
 

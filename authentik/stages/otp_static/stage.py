@@ -4,7 +4,7 @@ from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import FormView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView

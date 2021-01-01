@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable, Dict, List
 
 from django.utils.text import slugify
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.callback import OAuthCallback

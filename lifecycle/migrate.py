@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from psycopg2 import connect
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 

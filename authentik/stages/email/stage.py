@@ -8,7 +8,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Token
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER

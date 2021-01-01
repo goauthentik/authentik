@@ -4,7 +4,7 @@ from typing import Any, Dict
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (

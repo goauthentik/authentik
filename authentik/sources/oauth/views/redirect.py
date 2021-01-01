@@ -4,7 +4,7 @@ from typing import Any, Dict
 from django.http import Http404
 from django.urls import reverse
 from django.views.generic import RedirectView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin

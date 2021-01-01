@@ -7,7 +7,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic.base import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE

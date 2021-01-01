@@ -4,7 +4,7 @@ from django.apps import AppConfig, apps
 from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 from guardian.admin import GuardedModelAdmin
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 

@@ -8,7 +8,7 @@ from channels.exceptions import DenyConnection
 from dacite import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState

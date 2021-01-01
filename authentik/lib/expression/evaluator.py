@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from requests import Session
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 

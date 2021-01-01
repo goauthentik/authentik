@@ -8,7 +8,7 @@ from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
