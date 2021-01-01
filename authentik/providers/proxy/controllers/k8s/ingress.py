@@ -142,5 +142,8 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
         return self.api.patch_namespaced_ingress(
-            current.metadata.name, self.namespace, reference
+            current.metadata.name,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )

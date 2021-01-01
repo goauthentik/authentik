@@ -67,5 +67,8 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
 
     def update(self, current: V1Secret, reference: V1Secret):
         return self.api.patch_namespaced_secret(
-            current.metadata.name, self.namespace, reference
+            current.metadata.name,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )
