@@ -410,10 +410,10 @@
         },
         "h11": {
             "hashes": [
-                "sha256:3c6c61d69c6f13d41f1b80ab0322f1872702a3ba26e12aa864c928f6a43fbaab",
-                "sha256:ab6c335e1b6ef34b205d5ca3e228c9299cc7218b049819ec84a388c2525e5d87"
+                "sha256:36a3cb8c0a032f56e2da7084577878a035d3b61d104230d4bd49c0c6b555a9c6",
+                "sha256:47222cb6067e4a307d535814917cd98fd0a57b6788ce715755fa2b6c28b56042"
             ],
-            "version": "==0.11.0"
+            "version": "==0.12.0"
         },
         "hiredis": {
             "hashes": [
@@ -1006,11 +1006,11 @@
         },
         "structlog": {
             "hashes": [
-                "sha256:7a48375db6274ed1d0ae6123c486472aa1d0890b08d314d2b016f3aa7f35990b",
-                "sha256:8a672be150547a93d90a7d74229a29e765be05bd156a35cdcc527ebf68e9af92"
+                "sha256:33dd6bd5f49355e52c1c61bb6a4f20d0b48ce0328cc4a45fe872d38b97a05ccd",
+                "sha256:af79dfa547d104af8d60f86eac12fb54825f54a46bc998e4504ef66177103174"
             ],
             "index": "pypi",
-            "version": "==20.1.0"
+            "version": "==20.2.0"
         },
         "swagger-spec-validator": {
             "hashes": [
