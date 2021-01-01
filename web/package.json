@@ -14,7 +14,7 @@
         "@types/chart.js": "^2.9.29",
         "@types/codemirror": "0.0.103",
         "chart.js": "^2.9.4",
-        "codemirror": "^5.59.0",
+        "codemirror": "^5.59.1",
         "construct-style-sheets-polyfill": "^2.4.6",
         "flowchart.js": "^1.15.0",
         "lit-element": "^2.4.0",
