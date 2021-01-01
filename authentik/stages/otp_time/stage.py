@@ -8,7 +8,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from lxml.etree import tostring  # nosec
 from qrcode import QRCode
 from qrcode.image.svg import SvgFillImage
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView

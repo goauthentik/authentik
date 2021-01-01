@@ -8,7 +8,7 @@ from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel

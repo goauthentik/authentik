@@ -6,7 +6,7 @@ from urllib.parse import parse_qsl
 from django.utils.crypto import constant_time_compare, get_random_string
 from requests.exceptions import RequestException
 from requests.models import Response
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 

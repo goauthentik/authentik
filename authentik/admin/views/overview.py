@@ -5,7 +5,7 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.admin.forms.overview import FlowCacheClearForm, PolicyCacheClearForm
 from authentik.admin.mixins import AdminRequiredMixin

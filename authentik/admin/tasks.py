@@ -2,7 +2,7 @@
 from django.core.cache import cache
 from packaging.version import parse
 from requests import RequestException, get
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.events.models import Event, EventAction

@@ -1,7 +1,7 @@
 """Channels base classes"""
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.api.auth import token_from_header
 from authentik.core.models import User

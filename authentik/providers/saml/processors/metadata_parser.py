@@ -7,7 +7,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
 from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider

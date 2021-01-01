@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import (

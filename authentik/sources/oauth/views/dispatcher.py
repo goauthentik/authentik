@@ -2,7 +2,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER, RequestKind

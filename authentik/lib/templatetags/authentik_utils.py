@@ -8,7 +8,7 @@ from django.http.request import HttpRequest
 from django.template import Context
 from django.templatetags.static import static
 from django.utils.html import escape, mark_safe
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.lib.config import CONFIG

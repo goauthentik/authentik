@@ -5,7 +5,7 @@ from typing import Any, Optional, Tuple, Union
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.request import Request
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User
 

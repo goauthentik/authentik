@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 from django.http import HttpRequest, HttpResponse
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
 from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken

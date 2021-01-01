@@ -11,7 +11,7 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
-from structlog import get_logger
+from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
 LOGGER = get_logger()

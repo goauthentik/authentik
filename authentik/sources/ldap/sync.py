@@ -4,7 +4,7 @@ from typing import Any, Dict
 import ldap3
 import ldap3.core.exceptions
 from django.db.utils import IntegrityError
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, User

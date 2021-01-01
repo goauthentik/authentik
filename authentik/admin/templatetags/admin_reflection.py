@@ -2,7 +2,7 @@
 from django import template
 from django.db.models import Model
 from django.utils.html import mark_safe
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 register = template.Library()
 LOGGER = get_logger()

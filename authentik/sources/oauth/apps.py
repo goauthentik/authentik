@@ -3,7 +3,7 @@ from importlib import import_module
 
 from django.apps import AppConfig
 from django.conf import settings
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 
@@ -23,4 +23,4 @@ class AuthentikSourceOAuthConfig(AppConfig):
                 import_module(source_type)
                 LOGGER.debug("Loaded OAuth Source Type", type=source_type)
             except ImportError as exc:
-                LOGGER.debug(exc)
+                LOGGER.debug(str(exc))

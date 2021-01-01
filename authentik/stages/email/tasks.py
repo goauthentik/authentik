@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 from celery import group
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP

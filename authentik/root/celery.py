@@ -5,7 +5,7 @@ from logging.config import dictConfig
 from celery import Celery
 from celery.signals import after_task_publish, setup_logging, task_postrun, task_prerun
 from django.conf import settings
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")

@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import cleanse_dict

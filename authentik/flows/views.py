@@ -15,7 +15,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict

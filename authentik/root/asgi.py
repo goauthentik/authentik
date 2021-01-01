@@ -16,7 +16,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from defusedxml import defuse_stdlib
 from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 # DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
 

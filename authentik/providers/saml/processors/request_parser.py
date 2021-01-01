@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 import xmlsec
 from defusedxml import ElementTree
 from lxml import etree  # nosec
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider

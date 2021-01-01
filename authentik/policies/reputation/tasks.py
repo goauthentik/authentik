@@ -1,6 +1,6 @@
 """Reputation tasks"""
 from django.core.cache import cache
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus

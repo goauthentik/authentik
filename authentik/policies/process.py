@@ -6,7 +6,7 @@ from typing import Optional
 from django.core.cache import cache
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.policies.exceptions import PolicyException
@@ -96,5 +96,5 @@ class PolicyProcess(Process):
             try:
                 self.connection.send(self.execute())
             except Exception as exc:  # pylint: disable=broad-except
-                LOGGER.warning(exc)
+                LOGGER.warning(str(exc))
                 self.connection.send(PolicyResult(False, str(exc)))

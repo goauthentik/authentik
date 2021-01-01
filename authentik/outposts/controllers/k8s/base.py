@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from kubernetes.client import V1ObjectMeta
 from kubernetes.client.rest import ApiException
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.lib.sentry import SentryIgnoredException

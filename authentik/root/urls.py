@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps
