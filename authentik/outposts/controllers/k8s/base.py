@@ -93,7 +93,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def reconcile(self, current: T, reference: T):
         """Check what operations should be done, should be raised as
         ReconcileTrigger"""
-        if current.metadata.annotations != reference.metadata.annotations:
+        if current.metadata.labels != reference.metadata.labels:
             raise NeedsUpdate()
 
     def create(self, reference: T):
