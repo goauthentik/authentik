@@ -14,6 +14,7 @@ class EmailStageSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
+            "use_global_settings",
             "host",
             "port",
             "username",

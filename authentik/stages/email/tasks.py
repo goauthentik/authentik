@@ -48,7 +48,8 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
         message_object = EmailMultiAlternatives()
         for key, value in message.items():
             setattr(message_object, key, value)
-        message_object.from_email = stage.from_address
+        if not stage.use_global_settings:
+            message_object.from_email = stage.from_address
         # Because we use the Message-ID as UID for the task, manually assign it
         message_object.extra_headers["Message-ID"] = message_id
 
@@ -61,5 +62,6 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
             )
         )
     except (SMTPException, ConnectionError) as exc:
+        LOGGER.debug("Error sending email, retrying...", exc=exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc

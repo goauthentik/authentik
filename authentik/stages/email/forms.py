@@ -19,6 +19,10 @@ class EmailStageForm(forms.ModelForm):
         model = EmailStage
         fields = [
             "name",
+            "use_global_settings",
+            "token_expiry",
+            "subject",
+            "template",
             "host",
             "port",
             "username",
@@ -27,9 +31,6 @@ class EmailStageForm(forms.ModelForm):
             "use_ssl",
             "timeout",
             "from_address",
-            "token_expiry",
-            "subject",
-            "template",
         ]
         widgets = {
             "name": forms.TextInput(),

@@ -8579,6 +8579,11 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      use_global_settings:
+        title: Use global settings
+        description: When enabled, global Email connection settings will be used and
+          connection settings below will be ignored.
+        type: boolean
       host:
         title: Host
         type: string

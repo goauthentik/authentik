@@ -28,6 +28,16 @@ class EmailTemplates(models.TextChoices):
 class EmailStage(Stage):
     """Sends an Email to the user with a token to confirm their Email address."""
 
+    use_global_settings = models.BooleanField(
+        default=False,
+        help_text=_(
+            (
+                "When enabled, global Email connection settings will be used and "
+                "connection settings below will be ignored."
+            )
+        ),
+    )
+
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)
     username = models.TextField(default="", blank=True)
@@ -65,7 +75,9 @@ class EmailStage(Stage):
 
     @property
     def backend(self) -> BaseEmailBackend:
-        """Get fully configured EMail Backend instance"""
+        """Get fully configured Email Backend instance"""
+        if self.use_global_settings:
+            return get_connection()
         return get_connection(
             host=self.host,
             port=self.port,
