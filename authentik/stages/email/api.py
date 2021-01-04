@@ -2,11 +2,15 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, get_template_choices
 
 
 class EmailStageSerializer(ModelSerializer):
     """EmailStage Serializer"""
+
+    def __init__(self, *args, **kwrags):
+        super().__init__(*args, **kwrags)
+        self.fields["template"].choices = get_template_choices()
 
     class Meta:
 

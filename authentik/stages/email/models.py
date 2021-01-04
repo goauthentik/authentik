@@ -1,6 +1,8 @@
 """email stage models"""
+from pathlib import Path
 from typing import Type
 
+from django.conf import settings
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.db import models
@@ -23,6 +25,21 @@ class EmailTemplates(models.TextChoices):
         "email/account_confirmation.html",
         _("Account Confirmation"),
     )
+
+
+def get_template_choices():
+    """Get all available Email templates, including dynamically mounted ones.
+    Directories are taken from TEMPLATES.DIR setting"""
+    static_choices = EmailTemplates.choices
+
+    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
+    for template_dir in dirs:
+        if not template_dir.exists():
+            continue
+        for template in template_dir.glob("**/*.html"):
+            path = str(template)
+            static_choices.append((path, f"Custom Template: {path}"))
+    return static_choices
 
 
 class EmailStage(Stage):
@@ -52,7 +69,7 @@ class EmailStage(Stage):
     )
     subject = models.TextField(default="authentik")
     template = models.TextField(
-        choices=EmailTemplates.choices, default=EmailTemplates.PASSWORD_RESET
+        choices=get_template_choices(), default=EmailTemplates.PASSWORD_RESET
     )
 
     @property
