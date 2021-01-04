@@ -1,4 +1,5 @@
 """email stage models"""
+from os import R_OK, access
 from pathlib import Path
 from typing import Type
 
@@ -10,8 +11,11 @@ from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
+from structlog.stdlib import get_logger
 
 from authentik.flows.models import Stage
+
+LOGGER = get_logger()
 
 
 class EmailTemplates(models.TextChoices):
@@ -38,6 +42,11 @@ def get_template_choices():
             continue
         for template in template_dir.glob("**/*.html"):
             path = str(template)
+            if not access(path, R_OK):
+                LOGGER.warning(
+                    "Custom template file is not readable, check permissions", path=path
+                )
+                continue
             static_choices.append((path, f"Custom Template: {path}"))
     return static_choices
 
