@@ -67,5 +67,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
 
     def update(self, current: V1Service, reference: V1Service):
         return self.api.patch_namespaced_service(
-            current.metadata.name, self.namespace, reference
+            current.metadata.name,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )

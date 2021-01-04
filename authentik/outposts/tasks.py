@@ -6,7 +6,7 @@ from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.db.models.base import Model
 from django.utils.text import slugify
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.reflection import path_to_class

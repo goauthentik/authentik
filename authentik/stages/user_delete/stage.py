@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER

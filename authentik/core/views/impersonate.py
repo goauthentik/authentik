@@ -3,7 +3,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,

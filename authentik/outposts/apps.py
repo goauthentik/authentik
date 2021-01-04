@@ -12,7 +12,7 @@ from django.db import ProgrammingError
 from docker.constants import DEFAULT_UNIX_SOCKET
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 

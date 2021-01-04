@@ -24,7 +24,7 @@ from kubernetes.config.incluster_config import load_incluster_config
 from kubernetes.config.kube_config import load_kube_config_from_dict
 from model_utils.managers import InheritanceManager
 from packaging.version import LegacyVersion, Version, parse
-from structlog import get_logger
+from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__

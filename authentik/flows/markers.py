@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
 from django.http.request import HttpRequest
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.flows.models import Stage

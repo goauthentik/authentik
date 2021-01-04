@@ -1,7 +1,7 @@
 """Base Controller"""
 from dataclasses import dataclass
 
-from structlog import get_logger
+from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
 from authentik.lib.sentry import SentryIgnoredException

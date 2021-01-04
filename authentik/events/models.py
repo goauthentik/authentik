@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,

@@ -1,7 +1,7 @@
 """Logout stage logic"""
 from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponse
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.flows.stage import StageView
 

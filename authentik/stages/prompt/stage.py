@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.flows.stage import StageView
 from authentik.stages.prompt.forms import PromptForm

@@ -7,7 +7,7 @@ from django.forms import ModelForm
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult

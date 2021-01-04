@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar
 
 from kubernetes.client import V1ObjectMeta
 from kubernetes.client.rest import ApiException
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.lib.sentry import SentryIgnoredException
@@ -93,7 +93,7 @@ class KubernetesObjectReconciler(Generic[T]):
     def reconcile(self, current: T, reference: T):
         """Check what operations should be done, should be raised as
         ReconcileTrigger"""
-        if current.metadata.annotations != reference.metadata.annotations:
+        if current.metadata.labels != reference.metadata.labels:
             raise NeedsUpdate()
 
     def create(self, reference: T):

@@ -30,6 +30,12 @@ export class SiteShell extends LitElement {
                 ::slotted(*) {
                     height: 100%;
                 }
+                .pf-l-bullseye {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                }
             `,
             BackdropStyle,
             BullseyeStyle,

@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider
 from authentik.events.models import Event, EventAction
@@ -128,7 +128,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
                 provider=self.provider,
                 message=str(exc),
             ).save()
-            LOGGER.info(exc)
+            LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))
         return None
 
@@ -152,7 +152,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             )
             self.request.session[SESSION_KEY_AUTH_N_REQUEST] = auth_n_request
         except CannotHandleAssertion as exc:
-            LOGGER.info(exc)
+            LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))
         return None
 
@@ -270,8 +270,14 @@ class MetadataImportView(LoginRequiredMixin, FormView):
                 form.cleaned_data["metadata"].read().decode()
             )
             provider = metadata.to_provider(form.cleaned_data["provider_name"])
+            provider.authorization_flow = form.cleaned_data["authorization_flow"]
             provider.save()
             messages.success(self.request, _("Successfully created Provider"))
-        except ValueError:
-            messages.error(self.request, _("Failed to import Metadata."))
+        except ValueError as exc:
+            LOGGER.warning(str(exc))
+            messages.error(
+                self.request,
+                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
+            )
+            return super().form_invalid(form)
         return super().form_valid(form)

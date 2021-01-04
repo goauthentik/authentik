@@ -5,7 +5,7 @@ from urllib.parse import parse_qsl
 from requests.exceptions import RequestException
 from requests.models import Response
 from requests_oauthlib import OAuth1
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.exceptions import OAuthSourceException

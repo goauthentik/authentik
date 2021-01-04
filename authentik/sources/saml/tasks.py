@@ -1,6 +1,6 @@
 """authentik saml source tasks"""
 from django.utils.timezone import now
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus

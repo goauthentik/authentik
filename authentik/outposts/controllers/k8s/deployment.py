@@ -140,5 +140,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
 
     def update(self, current: V1Deployment, reference: V1Deployment):
         return self.api.patch_namespaced_deployment(
-            current.metadata.name, self.namespace, reference
+            current.metadata.name,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )

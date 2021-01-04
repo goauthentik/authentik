@@ -2,7 +2,7 @@
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.http import HttpRequest
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 

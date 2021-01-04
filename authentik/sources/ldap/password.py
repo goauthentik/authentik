@@ -5,7 +5,7 @@ from typing import Optional
 
 import ldap3
 import ldap3.core.exceptions
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.sources.ldap.models import LDAPSource

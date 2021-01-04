@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils.cache import patch_vary_headers
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.models import RefreshToken

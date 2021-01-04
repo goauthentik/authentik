@@ -9,7 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction

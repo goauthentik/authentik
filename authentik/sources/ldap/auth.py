@@ -4,7 +4,7 @@ from typing import Optional
 import ldap3
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.sources.ldap.models import LDAPSource

@@ -37,10 +37,19 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
     def name(self) -> str:
         return f"authentik-outpost-{self.controller.outpost.uuid.hex}"
 
+    def _check_annotations(self, reference: NetworkingV1beta1Ingress):
+        """Check that all annotations *we* set are correct"""
+        for key, value in self.get_ingress_annotations().items():
+            if key not in reference.metadata.annotations:
+                raise NeedsUpdate()
+            if reference.metadata.annotations[key] != value:
+                raise NeedsUpdate()
+
     def reconcile(
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
         super().reconcile(current, reference)
+        self._check_annotations(reference)
         # Create a list of all expected host and tls hosts
         expected_hosts = []
         expected_hosts_tls = []
@@ -142,5 +151,8 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         self, current: NetworkingV1beta1Ingress, reference: NetworkingV1beta1Ingress
     ):
         return self.api.patch_namespaced_ingress(
-            current.metadata.name, self.namespace, reference
+            current.metadata.name,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )

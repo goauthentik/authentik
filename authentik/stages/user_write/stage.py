@@ -4,7 +4,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.backends import ModelBackend
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.middleware import SESSION_IMPERSONATE_USER
 from authentik.core.models import User

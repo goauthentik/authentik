@@ -7,7 +7,7 @@ from time import time
 from django import db
 from django.core.management.base import BaseCommand
 from django.test import RequestFactory
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.core.models import User

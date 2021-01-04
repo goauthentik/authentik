@@ -2,7 +2,7 @@
 from django import forms
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.admin.fields import ArrayFieldSelectMultiple
 from authentik.flows.models import Flow, FlowDesignation

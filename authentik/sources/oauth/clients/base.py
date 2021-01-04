@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from requests import Session
 from requests.exceptions import RequestException
 from requests.models import Response
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.sources.oauth.models import OAuthSource

@@ -3,7 +3,7 @@ from ipaddress import ip_address, ip_network
 from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator

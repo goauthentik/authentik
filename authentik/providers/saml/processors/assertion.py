@@ -6,7 +6,7 @@ import xmlsec
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.lib.utils.time import timedelta_from_string
@@ -95,7 +95,7 @@ class AssertionProcessor:
                 attribute_statement.append(attribute)
 
             except PropertyMappingExpressionException as exc:
-                LOGGER.warning(exc)
+                LOGGER.warning(str(exc))
                 continue
         return attribute_statement
 
@@ -127,11 +127,14 @@ class AssertionProcessor:
         conditions = Element(f"{{{NS_SAML_ASSERTION}}}Conditions")
         conditions.attrib["NotBefore"] = self._valid_not_before
         conditions.attrib["NotOnOrAfter"] = self._valid_not_on_or_after
-        audience_restriction = SubElement(
-            conditions, f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"
-        )
-        audience = SubElement(audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience")
-        audience.text = self.provider.audience
+        if self.provider.audience != "":
+            audience_restriction = SubElement(
+                conditions, f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"
+            )
+            audience = SubElement(
+                audience_restriction, f"{{{NS_SAML_ASSERTION}}}Audience"
+            )
+            audience.text = self.provider.audience
         return conditions
 
     def get_name_id(self) -> Element:

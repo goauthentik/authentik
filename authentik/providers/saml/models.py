@@ -8,7 +8,7 @@ from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
@@ -42,7 +42,13 @@ class SAMLProvider(Provider):
     acs_url = models.URLField(verbose_name=_("ACS URL"))
     audience = models.TextField(
         default="",
-        help_text=_("Value of the audience restriction field of the asseration."),
+        blank=True,
+        help_text=_(
+            (
+                "Value of the audience restriction field of the asseration. When left empty, "
+                "no audience restriction will be added."
+            )
+        ),
     )
     issuer = models.TextField(
         help_text=_("Also known as EntityID"), default="authentik"

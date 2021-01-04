@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, reverse
 from django.urls import NoReverseMatch
 from django.utils.http import urlencode
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 

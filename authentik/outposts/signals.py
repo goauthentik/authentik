@@ -2,7 +2,7 @@
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost

@@ -84,7 +84,9 @@ class TestServiceProviderMetadataParser(TestCase):
             provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata"
         )
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
-        self.assertEqual(provider.signing_kp.certificate_data, CERT)
+        self.assertEqual(provider.verification_kp.certificate_data, CERT)
+        self.assertIsNotNone(provider.signing_kp)
+        self.assertEqual(provider.audience, "")
 
     def test_with_signing_cert_invalid_signature(self):
         """Test Metadata with signing cert (invalid signature)"""
