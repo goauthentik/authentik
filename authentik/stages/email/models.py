@@ -16,11 +16,11 @@ class EmailTemplates(models.TextChoices):
     """Templates used for rendering the Email"""
 
     PASSWORD_RESET = (
-        "stages/email/for_email/password_reset.html",
+        "email/password_reset.html",
         _("Password Reset"),
     )  # nosec
     ACCOUNT_CONFIRM = (
-        "stages/email/for_email/account_confirmation.html",
+        "email/account_confirmation.html",
         _("Account Confirmation"),
     )
 

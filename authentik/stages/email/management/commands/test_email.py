@@ -19,12 +19,9 @@ class Command(BaseCommand):  # pragma: no cover
         )
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
-            template_name="stages/email/for_email/generic.html",
+            template_name="email/setup.html",
             to=[options["to"]],
-            template_context={
-                "title": "authentik Test-Email",
-                "body": "This is a test email",
-            },
+            template_context={},
         )
         try:
             # pyright: reportGeneralTypeIssues=false

@@ -8630,8 +8630,8 @@ definitions:
         title: Template
         type: string
         enum:
-          - stages/email/for_email/password_reset.html
-          - stages/email/for_email/account_confirmation.html
+          - email/password_reset.html
+          - email/account_confirmation.html
   IdentificationStage:
     description: IdentificationStage Serializer
     required:
