@@ -8,22 +8,13 @@ This stage can be used for email verification. authentik's background worker wil
 
 ## Custom Templates
 
-You can also use custom email templates, to use your own design or layout. To do this, simply add the following line to the docker-compose file:
+You can also use custom email templates, to use your own design or layout.
 
-```yanl
-    [...]
-    volumes:
-      - ./backups:/backups
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Add this line
-      - ./templates:/templates
-    env_file:
-    [...]
-```
+Place any custom templates in the `custom-templates` Folder, which is in the same folder as your docker-compose file. Afterwards, you'll be able to select the template when creating/editing an Email stage.
 
-And run `docker-compose up -d`.
-
-Afterwards, any HTML file you place in the `templates` folder, and you'll be able to select them in the Email stage edit Form:
+:::info
+This is currently only supported for docker-compose installs, and supported starting version 0.15.
+:::
 
 :::info
 If you've add the line and created a file, and can't see if, check the logs using `docker-compose logs -f worker`.

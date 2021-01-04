@@ -29,6 +29,7 @@ services:
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
     volumes:
       - ./media:/media
+      - ./custom-templates:/templates
     ports:
       - 8000
     networks:
@@ -57,6 +58,7 @@ services:
     volumes:
       - ./backups:/backups
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./custom-templates:/templates
     env_file:
       - .env
   static:
