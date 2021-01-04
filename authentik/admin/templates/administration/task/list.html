@@ -38,7 +38,7 @@
                 {% for task in object_list %}
                 <tr role="row">
                     <th role="columnheader">
-                        <pre>{{ task.task_name }}</pre>
+                        <span>{{ task.html_name|join:"_&shy;" }}</span>
                     </th>
                     <td role="cell">
                         <span>
