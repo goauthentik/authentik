@@ -21,6 +21,17 @@ error_reporting:
   environment: customer
   send_pii: false
 
+# Global email settings
+email:
+  host: localhost
+  port: 25
+  username: ""
+  password: ""
+  use_tls: false
+  use_ssl: false
+  timeout: 10
+  from: authentik@localhost
+
 outposts:
   docker_image_base: "beryju/authentik" # this is prepended to -proxy:version
 
