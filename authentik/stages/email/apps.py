@@ -2,6 +2,7 @@
 from importlib import import_module
 
 from django.apps import AppConfig
+from django.db import ProgrammingError
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 from structlog.stdlib import get_logger
@@ -17,10 +18,17 @@ class AuthentikStageEmailConfig(AppConfig):
     verbose_name = "authentik Stages.Email"
 
     def ready(self):
+        import_module("authentik.stages.email.tasks")
+        try:
+            self.validate_stage_templates()
+        except ProgrammingError:
+            pass
+
+    def validate_stage_templates(self):
+        """Ensure all stage's templates actually exist"""
         from authentik.stages.email.models import EmailStage, EmailTemplates
         from authentik.events.models import Event, EventAction
 
-        import_module("authentik.stages.email.tasks")
         for stage in EmailStage.objects.all():
             try:
                 get_template(stage.template)
