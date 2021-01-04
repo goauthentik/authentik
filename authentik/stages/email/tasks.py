@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 from celery import group
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
+from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
@@ -38,7 +39,7 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
-    self.set_uid(message_id)
+    self.set_uid(slugify(message_id))
     try:
         stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
         backend = stage.backend
