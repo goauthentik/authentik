@@ -47,7 +47,8 @@ def get_template_choices():
                     "Custom template file is not readable, check permissions", path=path
                 )
                 continue
-            static_choices.append((path, f"Custom Template: {path}"))
+            rel_path = template.relative_to(template_dir)
+            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
     return static_choices
 
 
