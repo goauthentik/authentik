@@ -1,325 +1,285 @@
 /* -------------------------------------
-GLOBAL RESETS
+    GLOBAL
+    A very basic CSS reset
 ------------------------------------- */
-
-/*All the styling goes here*/
+* {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  font-size: 14px;
+}
 
 img {
-    border: none;
-    -ms-interpolation-mode: bicubic;
-    max-width: 100%;
+  max-width: 100%;
 }
 
 body {
-    background-color: #fafafa;
-    font-family: sans-serif;
-    -webkit-font-smoothing: antialiased;
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0;
-    padding: 0;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: none;
+  width: 100% !important;
+  height: 100%;
+  line-height: 1.6em;
+  /* 1.6em * 14px = 22.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
+  /*line-height: 22px;*/
 }
 
-table {
-    border-collapse: separate;
-    mso-table-lspace: 0pt;
-    mso-table-rspace: 0pt;
-    width: 100%; }
-    table td {
-        font-family: sans-serif;
-        font-size: 14px;
-        vertical-align: top;
-    }
+/* Let's make sure all tables have defaults */
+table td {
+  vertical-align: top;
+}
 
-    /* -------------------------------------
+/* -------------------------------------
     BODY & CONTAINER
-    ------------------------------------- */
+------------------------------------- */
+body {
+  background-color: #f6f6f6;
+}
 
-    .body {
-        background-color: #fafafa;
-        width: 100%;
-    }
+.body-wrap {
+  background-color: #f6f6f6;
+  width: 100%;
+}
 
-    /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
-    .container {
-        display: block;
-        margin: 0 auto !important;
-        /* makes it centered */
-        max-width: 580px;
-        padding: 10px;
-        width: 580px;
-    }
+.container {
+  display: block !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+  /* makes it centered */
+  clear: both !important;
+}
 
-    /* This should also be a block element, so that it will fill 100% of the .container */
-    .content {
-        box-sizing: border-box;
-        display: block;
-        margin: 0 auto;
-        max-width: 580px;
-        padding: 10px;
-    }
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: block;
+  padding: 20px;
+}
 
-    /* -------------------------------------
+/* -------------------------------------
     HEADER, FOOTER, MAIN
-    ------------------------------------- */
-    .main {
-        background: #ffffff;
-        border-radius: 3px;
-        width: 100%;
-    }
+------------------------------------- */
+.main {
+  background-color: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 3px;
+}
 
-    .wrapper {
-        box-sizing: border-box;
-        padding: 20px;
-    }
+.content-wrap {
+  padding: 20px;
+}
 
-    .content-block {
-        padding-bottom: 10px;
-        padding-top: 10px;
-    }
+.content-block {
+  padding: 0 0 20px;
+}
 
-    .footer {
-        clear: both;
-        margin-top: 10px;
-        text-align: center;
-        width: 100%;
-    }
-    .footer td,
-    .footer p,
-    .footer span,
-    .footer a {
-        color: #999999;
-        font-size: 12px;
-        text-align: center;
-    }
+.header {
+  width: 100%;
+  margin-bottom: 20px;
+}
 
-    /* -------------------------------------
+.footer {
+  width: 100%;
+  clear: both;
+  color: #999;
+  padding: 20px;
+}
+.footer p, .footer a, .footer td {
+  color: #999;
+  font-size: 12px;
+}
+
+/* -------------------------------------
     TYPOGRAPHY
-    ------------------------------------- */
-    h1,
-    h2,
-    h3,
-    h4 {
-        color: #000000;
-        font-family: sans-serif;
-        font-weight: 400;
-        line-height: 1.4;
-        margin: 0;
-        margin-bottom: 30px;
-    }
+------------------------------------- */
+h1, h2, h3 {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  color: #000;
+  margin: 40px 0 0;
+  line-height: 1.2em;
+  font-weight: 400;
+}
 
-    h1 {
-        font-size: 35px;
-        font-weight: 300;
-        text-align: center;
-        text-transform: capitalize;
-    }
+h1 {
+  font-size: 32px;
+  font-weight: 500;
+  /* 1.2em * 32px = 38.4px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
+  /*line-height: 38px;*/
+}
 
-    p,
-    ul,
-    ol {
-        font-family: sans-serif;
-        font-size: 14px;
-        font-weight: normal;
-        margin: 0;
-        margin-bottom: 15px;
-    }
-    p li,
-    ul li,
-    ol li {
-        list-style-position: inside;
-        margin-left: 5px;
-    }
+h2 {
+  font-size: 24px;
+  /* 1.2em * 24px = 28.8px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
+  /*line-height: 29px;*/
+}
 
-    a {
-        color: #06c;
-        border-radius: 3px;
-        text-decoration: underline;
-    }
+h3 {
+  font-size: 18px;
+  /* 1.2em * 18px = 21.6px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
+  /*line-height: 22px;*/
+}
 
-    /* -------------------------------------
-    BUTTONS
-    ------------------------------------- */
-    .btn {
-        box-sizing: border-box;
-        width: 100%; }
-        .btn > tbody > tr > td {
-            padding-bottom: 15px; }
-            .btn table {
-                width: auto;
-            }
-            .btn table td {
-                background-color: #ffffff;
-                border-radius: 5px;
-                text-align: center;
-            }
-            .btn a {
-                background-color: #ffffff;
-                border: solid 1px #06c;
-                border-radius: 5px;
-                box-sizing: border-box;
-                color: #06c;
-                cursor: pointer;
-                display: inline-block;
-                font-size: 14px;
-                font-weight: bold;
-                margin: 0;
-                padding: 12px 25px;
-                text-decoration: none;
-                text-transform: capitalize;
-            }
+h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
 
-            .btn-primary table td {
-                background-color: #06c;
-            }
+p, ul, ol {
+  margin-bottom: 10px;
+  font-weight: normal;
+}
+p li, ul li, ol li {
+  margin-left: 5px;
+  list-style-position: inside;
+}
 
-            .btn-primary a {
-                background-color: #06c;
-                border-color: #06c;
-                color: #ffffff;
-            }
+/* -------------------------------------
+    LINKS & BUTTONS
+------------------------------------- */
+a {
+  color: #348eda;
+  text-decoration: underline;
+}
 
-            /* -------------------------------------
-            OTHER STYLES THAT MIGHT BE USEFUL
-            ------------------------------------- */
-            .last {
-                margin-bottom: 0;
-            }
+.btn-primary {
+  text-decoration: none;
+  color: #FFF;
+  background-color: #348eda;
+  border: solid #348eda;
+  border-width: 10px 20px;
+  line-height: 2em;
+  /* 2em * 14px = 28px, use px to get airier line-height also in Thunderbird, and Yahoo!, Outlook.com, AOL webmail clients */
+  /*line-height: 28px;*/
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 5px;
+  text-transform: capitalize;
+}
 
-            .first {
-                margin-top: 0;
-            }
+/* -------------------------------------
+    OTHER STYLES THAT MIGHT BE USEFUL
+------------------------------------- */
+.last {
+  margin-bottom: 0;
+}
 
-            .align-center {
-                text-align: center;
-            }
+.first {
+  margin-top: 0;
+}
 
-            .align-right {
-                text-align: right;
-            }
+.aligncenter {
+  text-align: center;
+}
 
-            .align-left {
-                text-align: left;
-            }
+.alignright {
+  text-align: right;
+}
 
-            .clear {
-                clear: both;
-            }
+.alignleft {
+  text-align: left;
+}
 
-            .mt0 {
-                margin-top: 0;
-            }
+.clear {
+  clear: both;
+}
 
-            .mb0 {
-                margin-bottom: 0;
-            }
+/* -------------------------------------
+    ALERTS
+    Change the class depending on warning email, good email or bad email
+------------------------------------- */
+.alert {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 500;
+  padding: 20px;
+  text-align: center;
+  border-radius: 3px 3px 0 0;
+}
+.alert a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.alert-brand {
+  background-color: #fd4b2d;
+}
+.alert-warning {
+  background-color: #F0AB00;
+}
+.alert-danger {
+  background-color: #C9190B;
+}
+.alert-success {
+  background-color: #3E8635;
+}
 
-            .preheader {
-                color: transparent;
-                display: none;
-                height: 0;
-                max-height: 0;
-                max-width: 0;
-                opacity: 0;
-                overflow: hidden;
-                mso-hide: all;
-                visibility: hidden;
-                width: 0;
-            }
+/* -------------------------------------
+    INVOICE
+    Styles for the billing table
+------------------------------------- */
+.invoice {
+  margin: 40px auto;
+  text-align: left;
+  width: 80%;
+}
+.invoice td {
+  padding: 5px 0;
+}
+.invoice .invoice-items {
+  width: 100%;
+}
+.invoice .invoice-items td {
+  border-top: #eee 1px solid;
+}
+.invoice .invoice-items .total td {
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+  font-weight: 700;
+}
 
-            .powered-by a {
-                text-decoration: none;
-            }
+/* -------------------------------------
+    RESPONSIVE AND MOBILE FRIENDLY STYLES
+------------------------------------- */
+@media only screen and (max-width: 640px) {
+  body {
+    padding: 0 !important;
+  }
 
-            hr {
-                border: 0;
-                border-bottom: 1px solid #fafafa;
-                margin: 20px 0;
-            }
+  h1, h2, h3, h4 {
+    font-weight: 800 !important;
+    margin: 20px 0 5px !important;
+  }
 
-            /* -------------------------------------
-            RESPONSIVE AND MOBILE FRIENDLY STYLES
-            ------------------------------------- */
-            @media only screen and (max-width: 620px) {
-                table[class=body] h1 {
-                    font-size: 28px !important;
-                    margin-bottom: 10px !important;
-                }
-                table[class=body] p,
-                table[class=body] ul,
-                table[class=body] ol,
-                table[class=body] td,
-                table[class=body] span,
-                table[class=body] a {
-                    font-size: 16px !important;
-                }
-                table[class=body] .wrapper,
-                table[class=body] .article {
-                    padding: 10px !important;
-                }
-                table[class=body] .content {
-                    padding: 0 !important;
-                }
-                table[class=body] .container {
-                    padding: 0 !important;
-                    width: 100% !important;
-                }
-                table[class=body] .main {
-                    border-left-width: 0 !important;
-                    border-radius: 0 !important;
-                    border-right-width: 0 !important;
-                }
-                table[class=body] .btn table {
-                    width: 100% !important;
-                }
-                table[class=body] .btn a {
-                    width: 100% !important;
-                }
-                table[class=body] .img-responsive {
-                    height: auto !important;
-                    max-width: 100% !important;
-                    width: auto !important;
-                }
-            }
+  h1 {
+    font-size: 22px !important;
+  }
 
-            /* -------------------------------------
-            PRESERVE THESE STYLES IN THE HEAD
-            ------------------------------------- */
-            @media all {
-                .ExternalClass {
-                    width: 100%;
-                }
-                .ExternalClass,
-                .ExternalClass p,
-                .ExternalClass span,
-                .ExternalClass font,
-                .ExternalClass td,
-                .ExternalClass div {
-                    line-height: 100%;
-                }
-                .apple-link a {
-                    color: inherit !important;
-                    font-family: inherit !important;
-                    font-size: inherit !important;
-                    font-weight: inherit !important;
-                    line-height: inherit !important;
-                    text-decoration: none !important;
-                }
-                #MessageViewBody a {
-                    color: inherit;
-                    text-decoration: none;
-                    font-size: inherit;
-                    font-family: inherit;
-                    font-weight: inherit;
-                    line-height: inherit;
-                }
-                .btn-primary table td:hover {
-                    background-color: #34495e !important;
-                }
-                .btn-primary a:hover {
-                    background-color: #34495e !important;
-                    border-color: #34495e !important;
-                }
-            }
+  h2 {
+    font-size: 18px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+
+  .container {
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .content {
+    padding: 0 !important;
+  }
+
+  .content-wrap {
+    padding: 10px !important;
+  }
+
+  .invoice {
+    width: 100% !important;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */
