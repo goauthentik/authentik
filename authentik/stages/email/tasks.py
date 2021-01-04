@@ -39,7 +39,7 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
-    self.set_uid(slugify(message_id))
+    self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
         stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
         backend = stage.backend
