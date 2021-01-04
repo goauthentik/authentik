@@ -14,9 +14,14 @@ class Command(BaseCommand):  # pragma: no cover
     @no_translations
     def handle(self, *args, **options):
         """Send a test-email with global settings"""
-        stage = EmailStage.objects.create(
-            name=f"temp-global-stage-{uuid4()}", use_global_settings=True
-        )
+        delete_stage = False
+        if options["stage"]:
+            stage = EmailStage.objects.get(name=options["stage"])
+        else:
+            stage = EmailStage.objects.create(
+                name=f"temp-global-stage-{uuid4()}", use_global_settings=True
+            )
+            delete_stage = True
         message = TemplateEmailMessage(
             subject="authentik Test-Email",
             template_name="email/setup.html",
@@ -29,7 +34,9 @@ class Command(BaseCommand):  # pragma: no cover
                 stage.pk, message.__dict__
             )
         finally:
-            stage.delete()
+            if delete_stage:
+                stage.delete()
 
     def add_arguments(self, parser):
         parser.add_argument("to", type=str)
+        parser.add_argument("-s", "--stage", type=str)
