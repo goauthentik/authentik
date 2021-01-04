@@ -1,5 +1,6 @@
 """email tests"""
 from os import unlink
+from pathlib import Path
 from tempfile import gettempdir, mkstemp
 from typing import Any
 
@@ -23,5 +24,5 @@ class TestEmailStageTemplates(TestCase):
         """Test with custom template"""
         with self.settings(TEMPLATES=get_templates_setting(gettempdir())):
             _, file = mkstemp(suffix=".html")
-            self.assertEqual(get_template_choices()[-1][0], file)
+            self.assertEqual(get_template_choices()[-1][0], Path(file).name)
             unlink(file)
