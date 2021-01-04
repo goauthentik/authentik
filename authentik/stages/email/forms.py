@@ -14,9 +14,7 @@ class EmailStageSendForm(forms.Form):
 class EmailStageForm(forms.ModelForm):
     """Form to create/edit Email Stage"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["template"].choices = get_template_choices()
+    template = forms.ChoiceField(choices=get_template_choices)
 
     class Meta:
 
