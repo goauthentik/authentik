@@ -54,12 +54,10 @@ spec:
             - configMapRef:
                 name: "{{ include "authentik.fullname" . }}-config"
               prefix: "AUTHENTIK_"
+            - secretRef:
+                name: {{ include "authentik.fullname" . }}-secret-key
+              prefix: AUTHENTIK_
           env:
-            - name: AUTHENTIK_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ include "authentik.fullname" . }}-secret-key"
-                  key: secret_key
             - name: AUTHENTIK_REDIS__PASSWORD
               valueFrom:
                 secretKeyRef:

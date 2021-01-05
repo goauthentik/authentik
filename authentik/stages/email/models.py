@@ -1,6 +1,9 @@
 """email stage models"""
+from os import R_OK, access
+from pathlib import Path
 from typing import Type
 
+from django.conf import settings
 from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 from django.db import models
@@ -8,25 +11,59 @@ from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
+from structlog.stdlib import get_logger
 
 from authentik.flows.models import Stage
+
+LOGGER = get_logger()
 
 
 class EmailTemplates(models.TextChoices):
     """Templates used for rendering the Email"""
 
     PASSWORD_RESET = (
-        "stages/email/for_email/password_reset.html",
+        "email/password_reset.html",
         _("Password Reset"),
     )  # nosec
     ACCOUNT_CONFIRM = (
-        "stages/email/for_email/account_confirmation.html",
+        "email/account_confirmation.html",
         _("Account Confirmation"),
     )
 
 
+def get_template_choices():
+    """Get all available Email templates, including dynamically mounted ones.
+    Directories are taken from TEMPLATES.DIR setting"""
+    static_choices = EmailTemplates.choices
+
+    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
+    for template_dir in dirs:
+        if not template_dir.exists():
+            continue
+        for template in template_dir.glob("**/*.html"):
+            path = str(template)
+            if not access(path, R_OK):
+                LOGGER.warning(
+                    "Custom template file is not readable, check permissions", path=path
+                )
+                continue
+            rel_path = template.relative_to(template_dir)
+            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
+    return static_choices
+
+
 class EmailStage(Stage):
     """Sends an Email to the user with a token to confirm their Email address."""
+
+    use_global_settings = models.BooleanField(
+        default=False,
+        help_text=_(
+            (
+                "When enabled, global Email connection settings will be used and "
+                "connection settings below will be ignored."
+            )
+        ),
+    )
 
     host = models.TextField(default="localhost")
     port = models.IntegerField(default=25)
@@ -42,7 +79,7 @@ class EmailStage(Stage):
     )
     subject = models.TextField(default="authentik")
     template = models.TextField(
-        choices=EmailTemplates.choices, default=EmailTemplates.PASSWORD_RESET
+        choices=get_template_choices(), default=EmailTemplates.PASSWORD_RESET
     )
 
     @property
@@ -65,7 +102,9 @@ class EmailStage(Stage):
 
     @property
     def backend(self) -> BaseEmailBackend:
-        """Get fully configured EMail Backend instance"""
+        """Get fully configured Email Backend instance"""
+        if self.use_global_settings:
+            return get_connection()
         return get_connection(
             host=self.host,
             port=self.port,

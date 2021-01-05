@@ -135,7 +135,10 @@ module.exports = {
         {
             type: "category",
             label: "Troubleshooting",
-            items: ["troubleshooting/access"],
+            items: [
+                "troubleshooting/access",
+                "troubleshooting/emails",
+            ],
         },
         {
             type: "category",

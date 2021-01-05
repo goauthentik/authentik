@@ -197,7 +197,7 @@ ROOT_URLCONF = "authentik.root.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -238,6 +238,18 @@ DATABASES = {
         "PASSWORD": CONFIG.y("postgresql.password"),
     }
 }
+
+# Email
+EMAIL_HOST = CONFIG.y("email.host")
+EMAIL_PORT = int(CONFIG.y("email.port"))
+EMAIL_HOST_USER = CONFIG.y("email.username")
+EMAIL_HOST_PASSWORD = CONFIG.y("email.password")
+EMAIL_USE_TLS = CONFIG.y("email.use_tls")
+EMAIL_USE_SSL = CONFIG.y("email.use_ssl")
+EMAIL_TIMEOUT = int(CONFIG.y("email.timeout"))
+DEFAULT_FROM_EMAIL = CONFIG.y("email.from")
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_SUBJECT_PREFIX = "[authentik] "
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

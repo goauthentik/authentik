@@ -20,6 +20,12 @@ export class EventInfo extends LitElement {
                     display: block;
                     white-space: pre-wrap;
                 }
+                .pf-l-flex {
+                    justify-content: space-between;
+                }
+                .pf-l-flex__item {
+                    min-width: 25%;
+                }
             `
         );
     }
@@ -97,9 +103,13 @@ export class EventInfo extends LitElement {
         case "policy_execution":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
+                        <h3>${gettext("Binding")}</h3>
+                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                    </div>
+                    <div class="pf-l-flex__item">
                         <h3>${gettext("Request")}</h3>
                         <ul class="pf-c-list">
-                            <li>${gettext("Object")}: ${(this.event.context.request as EventContext).obj as string}</li>
+                            <li>${gettext("Object")}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
                             <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context)}</code></span></li>
                         </ul>
                     </div>

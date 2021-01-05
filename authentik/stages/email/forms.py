@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from authentik.stages.email.models import EmailStage
+from authentik.stages.email.models import EmailStage, get_template_choices
 
 
 class EmailStageSendForm(forms.Form):
@@ -14,11 +14,17 @@ class EmailStageSendForm(forms.Form):
 class EmailStageForm(forms.ModelForm):
     """Form to create/edit Email Stage"""
 
+    template = forms.ChoiceField(choices=get_template_choices)
+
     class Meta:
 
         model = EmailStage
         fields = [
             "name",
+            "use_global_settings",
+            "token_expiry",
+            "subject",
+            "template",
             "host",
             "port",
             "username",
@@ -27,9 +33,6 @@ class EmailStageForm(forms.ModelForm):
             "use_ssl",
             "timeout",
             "from_address",
-            "token_expiry",
-            "subject",
-            "template",
         ]
         widgets = {
             "name": forms.TextInput(),

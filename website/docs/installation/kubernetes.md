@@ -14,6 +14,8 @@ helm install authentik/authentik --devel -f values.yaml
 
 This installation automatically applies database migrations on startup. After the installation is done, you can use `akadmin` as username and password.
 
+It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts, configuration issues. They can also be used by [Email stages](flow/stages/email/index.md) to send verification/recovery emails.
+
 ```yaml
 ###################################
 # Values directly affecting authentik
@@ -41,6 +43,21 @@ config:
     # Log level used by web and worker
     # Can be either debug, info, warning, error
     logLevel: warning
+    # Global Email settings
+    email:
+        # SMTP Host Emails are sent to
+        host: localhost
+        port: 25
+        # Optionally authenticate
+        username: ""
+        password: ""
+        # Use StartTLS
+        useTls: false
+        # Use SSL
+        useSsl: false
+        timeout: 10
+        # Email address authentik will send from, should have a correct @domain
+        from: authentik@localhost
 
 # Enable Database Backups to S3
 # backup:
@@ -80,6 +97,4 @@ redis:
     master:
         persistence:
             enabled: false
-        # https://stackoverflow.com/a/59189742
-        disableCommands: []
 ```

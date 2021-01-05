@@ -8579,6 +8579,11 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      use_global_settings:
+        title: Use global settings
+        description: When enabled, global Email connection settings will be used and
+          connection settings below will be ignored.
+        type: boolean
       host:
         title: Host
         type: string
@@ -8625,8 +8630,8 @@ definitions:
         title: Template
         type: string
         enum:
-          - stages/email/for_email/password_reset.html
-          - stages/email/for_email/account_confirmation.html
+          - email/password_reset.html
+          - email/account_confirmation.html
   IdentificationStage:
     description: IdentificationStage Serializer
     required:

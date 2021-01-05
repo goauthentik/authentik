@@ -87,6 +87,14 @@ class TestEmailStage(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
 
+    def test_use_global_settings(self):
+        """Test use_global_settings"""
+        host = "some-unique-string"
+        with self.settings(
+            EMAIL_HOST=host, EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+        ):
+            self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
+
     def test_token(self):
         """Test with token"""
         # Make sure token exists

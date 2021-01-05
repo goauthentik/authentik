@@ -52,6 +52,11 @@ class TaskInfo:
 
     task_description: Optional[str] = field(default=None)
 
+    @property
+    def html_name(self) -> list[str]:
+        """Get task_name, but split on underscores, so we can join in the html template."""
+        return self.task_name.split("_")
+
     @staticmethod
     def all() -> Dict[str, "TaskInfo"]:
         """Get all TaskInfo objects"""

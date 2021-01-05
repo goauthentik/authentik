@@ -9,7 +9,7 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 ## Installation
 
-See [Docker-compose](installation/docker-compose.md) or [Kubernetes](installation/kubernetes.md)
+See [Docker-compose](installation/docker-compose) or [Kubernetes](installation/kubernetes)
 
 ## Screenshots
 

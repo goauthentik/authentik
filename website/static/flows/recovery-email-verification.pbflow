@@ -92,7 +92,7 @@
                 "from_address": "system@authentik.local",
                 "token_expiry": 30,
                 "subject": "authentik",
-                "template": "stages/email/for_email/password_reset.html"
+                "template": "email/password_reset.html"
             }
         },
         {

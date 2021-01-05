@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 from celery import group
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
+from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
@@ -38,7 +39,7 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
-    self.set_uid(message_id)
+    self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
         stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
         backend = stage.backend
@@ -48,7 +49,8 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
         message_object = EmailMultiAlternatives()
         for key, value in message.items():
             setattr(message_object, key, value)
-        message_object.from_email = stage.from_address
+        if not stage.use_global_settings:
+            message_object.from_email = stage.from_address
         # Because we use the Message-ID as UID for the task, manually assign it
         message_object.extra_headers["Message-ID"] = message_id
 
@@ -61,5 +63,6 @@ def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any])
             )
         )
     except (SMTPException, ConnectionError) as exc:
+        LOGGER.debug("Error sending email, retrying...", exc=exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc

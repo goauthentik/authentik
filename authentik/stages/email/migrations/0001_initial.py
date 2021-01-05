@@ -50,15 +50,15 @@ class Migration(migrations.Migration):
                     models.TextField(
                         choices=[
                             (
-                                "stages/email/for_email/password_reset.html",
+                                "email/password_reset.html",
                                 "Password Reset",
                             ),
                             (
-                                "stages/email/for_email/account_confirmation.html",
+                                "email/account_confirmation.html",
                                 "Account Confirmation",
                             ),
                         ],
-                        default="stages/email/for_email/password_reset.html",
+                        default="email/password_reset.html",
                     ),
                 ),
             ],

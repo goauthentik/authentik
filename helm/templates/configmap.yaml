@@ -8,7 +8,6 @@ data:
   POSTGRESQL__USER: "{{ .Values.postgresql.postgresqlUsername }}"
   {{- if .Values.backup }}
   POSTGRESQL__S3_BACKUP__ACCESS_KEY: "{{ .Values.backup.accessKey }}"
-  POSTGRESQL__S3_BACKUP__SECRET_KEY: "{{ .Values.backup.secretKey }}"
   POSTGRESQL__S3_BACKUP__BUCKET: "{{ .Values.backup.bucket }}"
   POSTGRESQL__S3_BACKUP__REGION: "{{ .Values.backup.region }}"
   POSTGRESQL__S3_BACKUP__HOST: "{{ .Values.backup.host }}"
@@ -19,3 +18,10 @@ data:
   ERROR_REPORTING__SEND_PII: "{{ .Values.config.errorReporting.sendPii }}"
   LOG_LEVEL: "{{ .Values.config.logLevel }}"
   OUTPOSTS__DOCKER_IMAGE_BASE: "{{ .Values.image.name_outposts }}"
+  EMAIL__HOST: "{{ .Values.config.email.host }}"
+  EMAIL__PORT: "{{ .Values.config.email.port }}"
+  EMAIL__USERNAM: "{{ .Values.config.email.username }}"
+  EMAIL__USE_TLS: "{{ .Values.config.email.use_tls }}"
+  EMAIL__USE_SSL: "{{ .Values.config.email.use_ssl }}"
+  EMAIL__TIMEOUT: "{{ .Values.config.email.timeout }}"
+  EMAIL__FROM: "{{ .Values.config.email.from }}"
