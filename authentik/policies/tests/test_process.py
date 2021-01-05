@@ -2,7 +2,7 @@
 from django.core.cache import cache
 from django.test import TestCase
 
-from authentik.core.models import User
+from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
@@ -75,7 +75,9 @@ class TestPolicyProcess(TestCase):
         policy = DummyPolicy.objects.create(
             result=False, wait_min=0, wait_max=1, execution_logging=True
         )
-        binding = PolicyBinding(policy=policy)
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name="test")
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
