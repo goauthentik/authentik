@@ -1,6 +1,6 @@
 """EventAlertTrigger API Views"""
 from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from authentik.events.models import EventAlertTrigger
 
@@ -18,7 +18,7 @@ class EventAlertTriggerSerializer(ModelSerializer):
         ]
 
 
-class EventAlertTriggerViewSet(ViewSet):
+class EventAlertTriggerViewSet(ModelViewSet):
     """EventAlertTrigger Viewset"""
 
     queryset = EventAlertTrigger.objects.all()
