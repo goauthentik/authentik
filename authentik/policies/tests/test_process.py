@@ -65,7 +65,9 @@ class TestPolicyProcess(TestCase):
     def test_exception(self):
         """Test policy execution"""
         policy = Policy.objects.create()
-        binding = PolicyBinding(policy=policy)
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name="test")
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
@@ -106,7 +108,9 @@ class TestPolicyProcess(TestCase):
         policy_raises = ExpressionPolicy.objects.create(
             name="raises", expression="{{ 0/0 }}"
         )
-        binding = PolicyBinding(policy=policy_raises)
+        binding = PolicyBinding(
+            policy=policy_raises, target=Application.objects.create(name="test")
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()

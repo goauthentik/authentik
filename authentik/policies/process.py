@@ -50,6 +50,8 @@ class PolicyProcess(Process):
 
     def create_event(self, action: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
+        # Keep a reference to http_request even if its None, because cleanse_dict will remove it
+        http_request = self.request.http_request
         event = Event.new(
             action=action,
             policy_uuid=self.binding.policy.policy_uuid.hex,
@@ -58,8 +60,8 @@ class PolicyProcess(Process):
             **kwargs,
         )
         event.set_user(self.request.user)
-        if self.request.http_request:
-            event.from_http(self.request.http_request)
+        if http_request:
+            event.from_http(http_request)
         else:
             event.save()
 
