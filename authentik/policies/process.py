@@ -61,6 +61,7 @@ class PolicyProcess(Process):
                 event = Event.new(
                     EventAction.POLICY_EXECUTION,
                     request=self.request,
+                    binding=self.binding,
                     result=policy_result,
                 )
                 event.set_user(self.request.user)
