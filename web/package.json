@@ -23,7 +23,7 @@
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-cssimport": "^1.0.2",
         "rollup-plugin-external-globals": "^0.6.1",
-        "tslib": "^2.0.3"
+        "tslib": "^2.1.0"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^8.1.0",
