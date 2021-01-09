@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/BeryJu/authentik/proxy/pkg/server"
+	"github.com/BeryJu/authentik/outpost/pkg/server"
 )
 
 const helpMessage = `authentik proxy

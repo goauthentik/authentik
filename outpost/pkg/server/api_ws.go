@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/authentik/proxy/pkg"
+	"github.com/BeryJu/authentik/outpost/pkg"
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"

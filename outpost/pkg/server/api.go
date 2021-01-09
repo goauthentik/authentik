@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/authentik/proxy/pkg"
-	"github.com/BeryJu/authentik/proxy/pkg/client"
-	"github.com/BeryJu/authentik/proxy/pkg/client/outposts"
+	"github.com/BeryJu/authentik/outpost/pkg"
+	"github.com/BeryJu/authentik/outpost/pkg/client"
+	"github.com/BeryJu/authentik/outpost/pkg/client/outposts"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-openapi/runtime"
 	"github.com/recws-org/recws"
