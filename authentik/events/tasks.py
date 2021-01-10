@@ -57,7 +57,9 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         )
 
         for transport in trigger.transports.all():
-            notification_transport.delay(notification.pk, transport.pk)
+            notification_transport.apply_async(
+                args=[notification.pk, transport.pk], queue="authentik_events"
+            )
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)

@@ -72,7 +72,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-update",
+        name="default-notify-exception",
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
