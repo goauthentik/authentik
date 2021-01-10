@@ -15,6 +15,7 @@ class NotificationTriggerSerializer(ModelSerializer):
             "pk",
             "name",
             "transport",
+            "severity",
         ]
 
 

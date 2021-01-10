@@ -205,6 +205,13 @@ class NotificationTrigger(PolicyBindingModel):
         blank=True,
         null=True,
     )
+    severity = models.TextField(
+        choices=NotificationSeverity.choices,
+        default=NotificationSeverity.NOTICE,
+        help_text=_(
+            "Controls which severity level the created notifications will have."
+        ),
+    )
     group = models.ForeignKey(
         Group,
         help_text=_(

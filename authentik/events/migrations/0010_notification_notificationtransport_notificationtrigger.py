@@ -69,6 +69,18 @@ class Migration(migrations.Migration):
                         to="authentik_events.notificationtransport",
                     ),
                 ),
+                (
+                    "severity",
+                    models.TextField(
+                        choices=[
+                            ("notice", "Notice"),
+                            ("warning", "Warning"),
+                            ("alert", "Alert"),
+                        ],
+                        default="notice",
+                        help_text="Controls which severity level the created notifications will have.",
+                    ),
+                ),
             ],
             options={
                 "verbose_name": "Notification Trigger",
