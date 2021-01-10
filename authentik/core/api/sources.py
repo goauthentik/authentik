@@ -31,7 +31,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 class SourceViewSet(ReadOnlyModelViewSet):
     """Source Viewset"""
 
-    queryset = Source.objects.all()
+    queryset = Source.objects.none()
     serializer_class = SourceSerializer
     lookup_field = "slug"
 

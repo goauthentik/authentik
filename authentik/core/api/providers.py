@@ -39,7 +39,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 class ProviderViewSet(ModelViewSet):
     """Provider Viewset"""
 
-    queryset = Provider.objects.all()
+    queryset = Provider.objects.none()
     serializer_class = ProviderSerializer
     filterset_fields = {
         "application": ["isnull"],
