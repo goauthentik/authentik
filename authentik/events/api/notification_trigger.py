@@ -14,7 +14,7 @@ class NotificationTriggerSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
-            "transport",
+            "transports",
             "severity",
         ]
 

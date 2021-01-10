@@ -2,7 +2,13 @@
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
-from authentik.events.models import Event, NotificationTrigger
+from authentik.events.models import (
+    Event,
+    Notification,
+    NotificationTransport,
+    NotificationTrigger,
+)
+from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.engine import PolicyEngine
 from authentik.root.celery import CELERY_APP
 
@@ -32,14 +38,41 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
             LOGGER.debug("e(trigger): attempting to prevent infinite loop")
             return
 
-    if not trigger.transport:
-        LOGGER.debug("e(trigger): event trigger has no transport")
+    if not trigger.group:
+        LOGGER.debug("e(trigger): trigger has no group")
         return
 
     policy_engine = PolicyEngine(trigger, get_anonymous_user())
     policy_engine.request.context["event"] = event
     policy_engine.build()
     result = policy_engine.result
-    if result.passing:
-        LOGGER.debug("e(trigger): event trigger matched")
-        trigger.transport.execute(event)
+    if not result.passing:
+        return
+
+    LOGGER.debug("e(trigger): event trigger matched")
+    # Create the notification objects
+    for user in trigger.group.users.all():
+        notification = Notification.objects.create(
+            severity=trigger.severity, body=event.summary, event=event, user=user
+        )
+
+        for transport in trigger.transports.all():
+            notification_transport.delay(notification.pk, transport.pk)
+
+
+@CELERY_APP.task(bind=True, base=MonitoredTask)
+def notification_transport(
+    self: MonitoredTask, notification_pk: int, transport_pk: int
+):
+    """Send notification over specified transport"""
+    self.save_on_success = False
+    try:
+        notification: Notification = Notification.objects.get(pk=notification_pk)
+        transport: NotificationTransport = NotificationTransport.objects.get(
+            pk=transport_pk
+        )
+        transport.send(notification)
+        self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+    except Exception as exc:
+        self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+        raise exc

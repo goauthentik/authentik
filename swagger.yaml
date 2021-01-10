@@ -979,6 +979,132 @@ paths:
         required: true
         type: string
         format: uuid
+  /events/notifications/:
+    get:
+      operationId: events_notifications_list
+      description: Notification Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Notification'
+      tags:
+        - events
+    post:
+      operationId: events_notifications_create
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    parameters: []
+  /events/notifications/{id}/:
+    get:
+      operationId: events_notifications_read
+      description: Notification Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    put:
+      operationId: events_notifications_update
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    patch:
+      operationId: events_notifications_partial_update
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    delete:
+      operationId: events_notifications_delete
+      description: Notification Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Notification.
+        required: true
+        type: integer
   /events/transports/:
     get:
       operationId: events_transports_list
@@ -7463,6 +7589,41 @@ definitions:
       unique_users:
         title: Unique users
         type: integer
+  Notification:
+    description: Notification Serializer
+    required:
+      - severity
+      - body
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      severity:
+        title: Severity
+        type: string
+        enum:
+          - notice
+          - warning
+          - alert
+      body:
+        title: Body
+        type: string
+        minLength: 1
+      created:
+        title: Created
+        type: string
+        format: date-time
+        readOnly: true
+      event:
+        title: Event
+        type: string
+        format: uuid
+        x-nullable: true
+      seen:
+        title: Seen
+        type: boolean
   NotificationTransport:
     description: NotificationTransport Serializer
     required:
@@ -7481,6 +7642,7 @@ definitions:
     description: NotificationTrigger Serializer
     required:
       - name
+      - transports
     type: object
     properties:
       pk:
@@ -7492,10 +7654,17 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      transport:
-        title: Transport
-        type: integer
-        x-nullable: true
+      transports:
+        description: Select which transports should be used to notify the user. If
+          none are selected, the notification will only be shown in the authentik
+          UI.
+        type: array
+        items:
+          description: Select which transports should be used to notify the user.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
+          type: integer
+        uniqueItems: true
       severity:
         title: Severity
         description: Controls which severity level the created notifications will

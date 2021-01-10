@@ -142,6 +142,13 @@ class Event(models.Model):
         )
         return super().save(*args, **kwargs)
 
+    @property
+    def summary(self) -> str:
+        """Return a summary of this event."""
+        if "message" in self.context:
+            return self.context["message"]
+        return f"{self.action}: {self.context}"
+
     def __str__(self) -> str:
         return f"<Event action={self.action} user={self.user} context={self.context}>"
 
@@ -156,9 +163,9 @@ class NotificationTransport(models.Model):
 
     name = models.TextField(unique=True)
 
-    def execute(self, event: Event):
-        """execute which is executed when Notification trigger matches"""
-        # TODO: do execute
+    def send(self, notification: "Notification"):
+        """Send notification to user, called from async task"""
+        # TODO: do send
 
     class Meta:
 
@@ -195,15 +202,17 @@ class Notification(models.Model):
 
 
 class NotificationTrigger(PolicyBindingModel):
-    """Notification which is triggered when a certain criteria matches against Events"""
+    """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
-    transport = models.ForeignKey(
+    transports = models.ManyToManyField(
         NotificationTransport,
-        on_delete=models.SET_DEFAULT,
-        default=None,
-        blank=True,
-        null=True,
+        help_text=_(
+            (
+                "Select which transports should be used to notify the user. If none are "
+                "selected, the notification will only be shown in the authentik UI."
+            )
+        ),
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,

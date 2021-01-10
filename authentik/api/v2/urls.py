@@ -20,6 +20,7 @@ from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
 from authentik.events.api.event import EventViewSet
+from authentik.events.api.notification import NotificationViewSet
 from authentik.events.api.notification_transport import NotificationTransportViewSet
 from authentik.events.api.notification_trigger import NotificationTriggerViewSet
 from authentik.flows.api import (
@@ -39,9 +40,9 @@ from authentik.policies.api import (
     PolicyViewSet,
 )
 from authentik.policies.dummy.api import DummyPolicyViewSet
+from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
-from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.group_membership.api import GroupMembershipPolicyViewSet
 from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
@@ -100,6 +101,7 @@ router.register("flows/bindings", FlowStageBindingViewSet)
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
 router.register("events/events", EventViewSet)
+router.register("events/notifications", NotificationViewSet)
 router.register("events/transports", NotificationTransportViewSet)
 router.register("events/triggers", NotificationTriggerViewSet)
 
