@@ -1,5 +1,4 @@
 """Notification API Views"""
-from django.db.models.query import QuerySet
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
