@@ -15,11 +15,11 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    policy = EventMatcherPolicy.objects.using(db_alias).update_or_create(
+    policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-configuration-error",
         defaults={"action": EventAction.CONFIGURATION_ERROR},
     )
-    trigger = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
         name="default-notify-configuration-error",
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
@@ -39,11 +39,11 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    policy = EventMatcherPolicy.objects.using(db_alias).update_or_create(
+    policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-update",
         defaults={"action": EventAction.UPDATE_AVAILABLE},
     )
-    trigger = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
         name="default-notify-update",
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
@@ -63,15 +63,15 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    policy_policy_exc = EventMatcherPolicy.objects.using(db_alias).update_or_create(
+    policy_policy_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-policy-exception",
         defaults={"action": EventAction.POLICY_EXCEPTION},
     )
-    policy_pm_exc = EventMatcherPolicy.objects.using(db_alias).update_or_create(
+    policy_pm_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-property-mapping-exception",
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
-    trigger = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
         name="default-notify-update",
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
