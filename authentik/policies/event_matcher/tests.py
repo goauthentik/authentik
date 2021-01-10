@@ -41,9 +41,7 @@ class TestEventMatcherPolicy(TestCase):
         event.app = "foo"
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            app="bar"
-        )
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(app="bar")
         response = policy.passes(request)
         self.assertFalse(response.passing)
         self.assertTupleEqual(response.messages, ("App did not match.",))
