@@ -15,6 +15,7 @@ class EventMatcherPolicyForm(forms.ModelForm):
         fields = GENERAL_FIELDS + [
             "action",
             "client_ip",
+            "app",
         ]
         widgets = {
             "name": forms.TextInput(),

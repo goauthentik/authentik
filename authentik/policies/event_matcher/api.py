@@ -14,6 +14,7 @@ class EventMatcherPolicySerializer(ModelSerializer):
         fields = GENERAL_SERIALIZER_FIELDS + [
             "action",
             "client_ip",
+            "app",
         ]
 
 

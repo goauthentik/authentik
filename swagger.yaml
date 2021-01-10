@@ -7369,6 +7369,15 @@ definitions:
         title: Transport
         type: integer
         x-nullable: true
+      severity:
+        title: Severity
+        description: Controls which severity level the created notifications will
+          have.
+        type: string
+        enum:
+          - notice
+          - warning
+          - alert
   Stage:
     title: Stage obj
     description: Stage Serializer
