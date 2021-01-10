@@ -14,7 +14,7 @@ from django.http import HttpRequest
 from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
-from authentik.events.tasks import event_alert_handler
+from authentik.events.tasks import event_notification_handler
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.user_write.signals import user_write
@@ -101,6 +101,6 @@ def on_password_changed(sender, user: User, password: str, **_):
 
 @receiver(post_save, sender=Event)
 # pylint: disable=unused-argument
-def event_post_save_alert(sender, instance: Event, **_):
-    """Start task to check if any policies trigger an alert on this event"""
-    event_alert_handler.delay(instance.event_uuid.hex)
+def event_post_save_notification(sender, instance: Event, **_):
+    """Start task to check if any policies trigger an notification on this event"""
+    event_notification_handler.delay(instance.event_uuid.hex)

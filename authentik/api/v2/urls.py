@@ -20,8 +20,8 @@ from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.users import UserViewSet
 from authentik.crypto.api import CertificateKeyPairViewSet
 from authentik.events.api.event import EventViewSet
-from authentik.events.api.event_alert_action import EventAlertActionViewSet
-from authentik.events.api.event_alert_trigger import EventAlertTriggerViewSet
+from authentik.events.api.notification_transport import NotificationTransportViewSet
+from authentik.events.api.notification_trigger import NotificationTriggerViewSet
 from authentik.flows.api import (
     FlowCacheViewSet,
     FlowStageBindingViewSet,
@@ -99,8 +99,8 @@ router.register("flows/bindings", FlowStageBindingViewSet)
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
 
 router.register("events/events", EventViewSet)
-router.register("events/alert_actions", EventAlertActionViewSet)
-router.register("events/alert_triggers", EventAlertTriggerViewSet)
+router.register("events/transports", NotificationTransportViewSet)
+router.register("events/triggers", NotificationTriggerViewSet)
 
 router.register("sources/all", SourceViewSet)
 router.register("sources/ldap", LDAPSourceViewSet)

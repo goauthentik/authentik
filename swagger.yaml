@@ -863,259 +863,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /events/alert_actions/:
-    get:
-      operationId: events_alert_actions_list
-      description: EventAlertAction Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EventAlertAction'
-      tags:
-        - events
-    post:
-      operationId: events_alert_actions_create
-      description: EventAlertAction Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      tags:
-        - events
-    parameters: []
-  /events/alert_actions/{id}/:
-    get:
-      operationId: events_alert_actions_read
-      description: EventAlertAction Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      tags:
-        - events
-    put:
-      operationId: events_alert_actions_update
-      description: EventAlertAction Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      tags:
-        - events
-    patch:
-      operationId: events_alert_actions_partial_update
-      description: EventAlertAction Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertAction'
-      tags:
-        - events
-    delete:
-      operationId: events_alert_actions_delete
-      description: EventAlertAction Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - events
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this event alert action.
-        required: true
-        type: integer
-  /events/alert_triggers/:
-    get:
-      operationId: events_alert_triggers_list
-      description: EventAlertTrigger Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/EventAlertTrigger'
-      tags:
-        - events
-    post:
-      operationId: events_alert_triggers_create
-      description: EventAlertTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      tags:
-        - events
-    parameters: []
-  /events/alert_triggers/{pbm_uuid}/:
-    get:
-      operationId: events_alert_triggers_read
-      description: EventAlertTrigger Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      tags:
-        - events
-    put:
-      operationId: events_alert_triggers_update
-      description: EventAlertTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      tags:
-        - events
-    patch:
-      operationId: events_alert_triggers_partial_update
-      description: EventAlertTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/EventAlertTrigger'
-      tags:
-        - events
-    delete:
-      operationId: events_alert_triggers_delete
-      description: EventAlertTrigger Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - events
-    parameters:
-      - name: pbm_uuid
-        in: path
-        description: A UUID string identifying this Event Alert Trigger.
-        required: true
-        type: string
-        format: uuid
   /events/events/:
     get:
       operationId: events_events_list
@@ -1229,6 +976,259 @@ paths:
       - name: event_uuid
         in: path
         description: A UUID string identifying this Event.
+        required: true
+        type: string
+        format: uuid
+  /events/transports/:
+    get:
+      operationId: events_transports_list
+      description: NotificationTransport Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    post:
+      operationId: events_transports_create
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    parameters: []
+  /events/transports/{id}/:
+    get:
+      operationId: events_transports_read
+      description: NotificationTransport Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    put:
+      operationId: events_transports_update
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    patch:
+      operationId: events_transports_partial_update
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    delete:
+      operationId: events_transports_delete
+      description: NotificationTransport Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Notification Transport.
+        required: true
+        type: integer
+  /events/triggers/:
+    get:
+      operationId: events_triggers_list
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    post:
+      operationId: events_triggers_create
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    parameters: []
+  /events/triggers/{pbm_uuid}/:
+    get:
+      operationId: events_triggers_read
+      description: NotificationTrigger Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    put:
+      operationId: events_triggers_update
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    patch:
+      operationId: events_triggers_partial_update
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    delete:
+      operationId: events_triggers_delete
+      description: NotificationTrigger Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this Notification Trigger.
         required: true
         type: string
         format: uuid
@@ -7260,39 +7260,6 @@ definitions:
         description: Optional Private Key. If this is set, you can use this keypair
           for encryption.
         type: string
-  EventAlertAction:
-    description: EventAlertAction Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-  EventAlertTrigger:
-    description: EventAlertTrigger Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Pbm uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      action:
-        title: Action
-        type: integer
-        x-nullable: true
   Event:
     description: Event Serializer
     required:
@@ -7369,6 +7336,39 @@ definitions:
       unique_users:
         title: Unique users
         type: integer
+  NotificationTransport:
+    description: NotificationTransport Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  NotificationTrigger:
+    description: NotificationTrigger Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      transport:
+        title: Transport
+        type: integer
+        x-nullable: true
   Stage:
     title: Stage obj
     description: Stage Serializer

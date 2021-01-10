@@ -15,7 +15,7 @@ from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
@@ -151,29 +151,74 @@ class Event(models.Model):
         verbose_name_plural = _("Events")
 
 
-class EventAlertAction(models.Model):
+class NotificationTransport(models.Model):
     """Action which is executed when a Trigger matches"""
 
     name = models.TextField(unique=True)
 
     def execute(self, event: Event):
-        """execute which is executed when alert trigger matches"""
+        """execute which is executed when Notification trigger matches"""
         # TODO: do execute
 
+    class Meta:
 
-class EventAlertTrigger(PolicyBindingModel):
-    """Alert which is triggered when a certain criteria matches against Events"""
+        verbose_name = _("Notification Transport")
+        verbose_name_plural = _("Notification Transports")
+
+
+class NotificationSeverity(models.TextChoices):
+    """Severity images that a notification can have"""
+
+    NOTICE = "notice", _("Notice")
+    WARNING = "warning", _("Warning")
+    ALERT = "alert", _("Alert")
+
+
+class Notification(models.Model):
+    """Event Notification"""
+
+    severity = models.TextField(choices=NotificationSeverity.choices)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
+    seen = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
+        return f"Notification for user {self.user}: {body_trunc}"
+
+    class Meta:
+
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+
+
+class NotificationTrigger(PolicyBindingModel):
+    """Notification which is triggered when a certain criteria matches against Events"""
 
     name = models.TextField(unique=True)
-    action = models.ForeignKey(
-        EventAlertAction,
+    transport = models.ForeignKey(
+        NotificationTransport,
         on_delete=models.SET_DEFAULT,
         default=None,
         blank=True,
         null=True,
     )
+    group = models.ForeignKey(
+        Group,
+        help_text=_(
+            (
+                "Define which group of users this notification should be sent and shown to. "
+                "If left empty, Notification won't ben sent."
+            )
+        ),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     class Meta:
 
-        verbose_name = _("Event Alert Trigger")
-        verbose_name_plural = _("Event Alert Triggers")
+        verbose_name = _("Notification Trigger")
+        verbose_name_plural = _("Notification Triggers")
