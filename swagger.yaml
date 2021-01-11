@@ -1046,7 +1046,7 @@ paths:
       tags:
         - events
     parameters: []
-  /events/notifications/{id}/:
+  /events/notifications/{uuid}/:
     get:
       operationId: events_notifications_read
       description: Notification Viewset
@@ -1100,11 +1100,12 @@ paths:
       tags:
         - events
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this Notification.
+        description: A UUID string identifying this Notification.
         required: true
-        type: integer
+        type: string
+        format: uuid
   /events/transports/:
     get:
       operationId: events_transports_list
@@ -1172,7 +1173,7 @@ paths:
       tags:
         - events
     parameters: []
-  /events/transports/{id}/:
+  /events/transports/{uuid}/:
     get:
       operationId: events_transports_read
       description: NotificationTransport Viewset
@@ -1226,11 +1227,38 @@ paths:
       tags:
         - events
     parameters:
-      - name: id
+      - name: uuid
         in: path
-        description: A unique integer value identifying this Notification Transport.
+        description: A UUID string identifying this Notification Transport.
         required: true
-        type: integer
+        type: string
+        format: uuid
+  /events/transports/{uuid}/test/:
+    post:
+      operationId: events_transports_test
+      description: |-
+        Send example notification using selected transport. Requires
+        Modify permissions.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Notification Transport.
+        required: true
+        type: string
+        format: uuid
   /events/triggers/:
     get:
       operationId: events_triggers_list
@@ -7597,8 +7625,9 @@ definitions:
     type: object
     properties:
       pk:
-        title: ID
-        type: integer
+        title: Uuid
+        type: string
+        format: uuid
         readOnly: true
       severity:
         title: Severity
@@ -7628,16 +7657,28 @@ definitions:
     description: NotificationTransport Serializer
     required:
       - name
+      - mode
     type: object
     properties:
       pk:
-        title: ID
-        type: integer
+        title: Uuid
+        type: string
+        format: uuid
         readOnly: true
       name:
         title: Name
         type: string
         minLength: 1
+      mode:
+        title: Mode
+        type: string
+        enum:
+          - webhook
+          - webhook_slack
+          - email
+      webhook_url:
+        title: Webhook url
+        type: string
   NotificationTrigger:
     description: NotificationTrigger Serializer
     required:
@@ -7663,7 +7704,8 @@ definitions:
           description: Select which transports should be used to notify the user.
             If none are selected, the notification will only be shown in the authentik
             UI.
-          type: integer
+          type: string
+          format: uuid
         uniqueItems: true
       severity:
         title: Severity

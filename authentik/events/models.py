@@ -9,8 +9,10 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from requests import post
 from structlog.stdlib import get_logger
 
+from authentik import __version__
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
@@ -19,6 +21,8 @@ from authentik.core.models import Group, User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
+from authentik.stages.email.tasks import send_mail
+from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
 
@@ -158,14 +162,103 @@ class Event(models.Model):
         verbose_name_plural = _("Events")
 
 
+class TransportMode(models.TextChoices):
+    """Modes that a notification transport can send a notification"""
+
+    WEBHOOK = "webhook", _("Generic Webhook")
+    WEBHOOK_SLACK = "webhook_slack", _("Slack Webhook (Slack/Discord)")
+    EMAIL = "email", _("Email")
+
+
 class NotificationTransport(models.Model):
     """Action which is executed when a Trigger matches"""
 
-    name = models.TextField(unique=True)
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    def send(self, notification: "Notification"):
+    name = models.TextField(unique=True)
+    mode = models.TextField(choices=TransportMode.choices)
+
+    webhook_url = models.TextField(blank=True)
+
+    def send(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""
-        # TODO: do send
+        if self.mode == TransportMode.WEBHOOK:
+            return self.send_webhook(notification)
+        if self.mode == TransportMode.WEBHOOK_SLACK:
+            return self.send_webhook_slack(notification)
+        if self.mode == TransportMode.EMAIL:
+            return self.send_email(notification)
+        raise ValueError(f"Invalid mode {self.mode} set")
+
+    def send_webhook(self, notification: "Notification") -> list[str]:
+        """Send notification to generic webhook"""
+        response = post(
+            self.webhook_url,
+            json={
+                "body": notification.body,
+                "severity": notification.severity,
+            },
+        )
+        return [
+            response.status_code,
+            response.text,
+        ]
+
+    def send_webhook_slack(self, notification: "Notification") -> list[str]:
+        """Send notification to slack or slack-compatible endpoints"""
+        body = {
+            "username": "authentik",
+            "icon_url": "https://goauthentik.io/img/icon.png",
+            "attachments": [
+                {
+                    "author_name": "authentik",
+                    "author_link": "https://goauthentik.io",
+                    "author_icon": "https://goauthentik.io/img/icon.png",
+                    "title": notification.body,
+                    "color": "#fd4b2d",
+                    "fields": [
+                        {
+                            "title": _("Severity"),
+                            "value": notification.severity,
+                            "short": True,
+                        },
+                        {
+                            "title": _("Dispatched for user"),
+                            "value": str(notification.user),
+                            "short": True,
+                        },
+                    ],
+                    "footer": f"authentik v{__version__}",
+                }
+            ],
+        }
+        if notification.event:
+            body["attachments"][0]["title"] = notification.event.action
+            body["attachments"][0]["text"] = notification.event.action
+        response = post(self.webhook_url, json=body)
+        return [
+            response.status_code,
+            response.text,
+        ]
+
+    def send_email(self, notification: "Notification") -> list[str]:
+        """Send notification via global email configuration"""
+        body_trunc = (
+            (notification.body[:75] + "..")
+            if len(notification.body) > 75
+            else notification.body
+        )
+        mail = TemplateEmailMessage(
+            subject=f"authentik Notification: {body_trunc}",
+            template_name="email/setup.html",
+            to=[notification.user.email],
+            template_context={
+                "body": notification.body,
+            },
+        )
+        # Email is sent directly here, as the call to send() should have been from a task.
+        # pyright: reportGeneralTypeIssues=false
+        return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
 
     class Meta:
 
@@ -184,6 +277,7 @@ class NotificationSeverity(models.TextChoices):
 class Notification(models.Model):
     """Event Notification"""
 
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     severity = models.TextField(choices=NotificationSeverity.choices)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)

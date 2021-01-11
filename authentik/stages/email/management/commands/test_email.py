@@ -30,9 +30,7 @@ class Command(BaseCommand):  # pragma: no cover
         )
         try:
             # pyright: reportGeneralTypeIssues=false
-            send_mail(  # pylint: disable=no-value-for-parameter
-                message.__dict__, stage.pk
-            )
+            send_mail(message.__dict__, stage.pk)
         finally:
             if delete_stage:
                 stage.delete()
