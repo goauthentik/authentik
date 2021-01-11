@@ -9,15 +9,20 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from requests import post
 from structlog.stdlib import get_logger
 
+from authentik import __version__
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.utils.http import get_client_ip
+from authentik.policies.models import PolicyBindingModel
+from authentik.stages.email.tasks import send_mail
+from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
 
@@ -104,10 +109,12 @@ class Event(models.Model):
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
         if hasattr(request, "user"):
-            self.user = get_user(
-                request.user,
-                request.session.get(SESSION_IMPERSONATE_ORIGINAL_USER, None),
-            )
+            original_user = None
+            if hasattr(request, "session"):
+                original_user = request.session.get(
+                    SESSION_IMPERSONATE_ORIGINAL_USER, None
+                )
+            self.user = get_user(request.user, original_user)
         if user:
             self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
@@ -139,7 +146,189 @@ class Event(models.Model):
         )
         return super().save(*args, **kwargs)
 
+    @property
+    def summary(self) -> str:
+        """Return a summary of this event."""
+        if "message" in self.context:
+            return self.context["message"]
+        return f"{self.action}: {self.context}"
+
+    def __str__(self) -> str:
+        return f"<Event action={self.action} user={self.user} context={self.context}>"
+
     class Meta:
 
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+
+
+class TransportMode(models.TextChoices):
+    """Modes that a notification transport can send a notification"""
+
+    WEBHOOK = "webhook", _("Generic Webhook")
+    WEBHOOK_SLACK = "webhook_slack", _("Slack Webhook (Slack/Discord)")
+    EMAIL = "email", _("Email")
+
+
+class NotificationTransport(models.Model):
+    """Action which is executed when a Trigger matches"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    name = models.TextField(unique=True)
+    mode = models.TextField(choices=TransportMode.choices)
+
+    webhook_url = models.TextField(blank=True)
+
+    def send(self, notification: "Notification") -> list[str]:
+        """Send notification to user, called from async task"""
+        if self.mode == TransportMode.WEBHOOK:
+            return self.send_webhook(notification)
+        if self.mode == TransportMode.WEBHOOK_SLACK:
+            return self.send_webhook_slack(notification)
+        if self.mode == TransportMode.EMAIL:
+            return self.send_email(notification)
+        raise ValueError(f"Invalid mode {self.mode} set")
+
+    def send_webhook(self, notification: "Notification") -> list[str]:
+        """Send notification to generic webhook"""
+        response = post(
+            self.webhook_url,
+            json={
+                "body": notification.body,
+                "severity": notification.severity,
+            },
+        )
+        return [
+            response.status_code,
+            response.text,
+        ]
+
+    def send_webhook_slack(self, notification: "Notification") -> list[str]:
+        """Send notification to slack or slack-compatible endpoints"""
+        body = {
+            "username": "authentik",
+            "icon_url": "https://goauthentik.io/img/icon.png",
+            "attachments": [
+                {
+                    "author_name": "authentik",
+                    "author_link": "https://goauthentik.io",
+                    "author_icon": "https://goauthentik.io/img/icon.png",
+                    "title": notification.body,
+                    "color": "#fd4b2d",
+                    "fields": [
+                        {
+                            "title": _("Severity"),
+                            "value": notification.severity,
+                            "short": True,
+                        },
+                        {
+                            "title": _("Dispatched for user"),
+                            "value": str(notification.user),
+                            "short": True,
+                        },
+                    ],
+                    "footer": f"authentik v{__version__}",
+                }
+            ],
+        }
+        if notification.event:
+            body["attachments"][0]["title"] = notification.event.action
+            body["attachments"][0]["text"] = notification.event.action
+        response = post(self.webhook_url, json=body)
+        return [
+            response.status_code,
+            response.text,
+        ]
+
+    def send_email(self, notification: "Notification") -> list[str]:
+        """Send notification via global email configuration"""
+        body_trunc = (
+            (notification.body[:75] + "..")
+            if len(notification.body) > 75
+            else notification.body
+        )
+        mail = TemplateEmailMessage(
+            subject=f"authentik Notification: {body_trunc}",
+            template_name="email/setup.html",
+            to=[notification.user.email],
+            template_context={
+                "body": notification.body,
+            },
+        )
+        # Email is sent directly here, as the call to send() should have been from a task.
+        # pyright: reportGeneralTypeIssues=false
+        return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
+
+    class Meta:
+
+        verbose_name = _("Notification Transport")
+        verbose_name_plural = _("Notification Transports")
+
+
+class NotificationSeverity(models.TextChoices):
+    """Severity images that a notification can have"""
+
+    NOTICE = "notice", _("Notice")
+    WARNING = "warning", _("Warning")
+    ALERT = "alert", _("Alert")
+
+
+class Notification(models.Model):
+    """Event Notification"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    severity = models.TextField(choices=NotificationSeverity.choices)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
+    seen = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        body_trunc = (self.body[:75] + "..") if len(self.body) > 75 else self.body
+        return f"Notification for user {self.user}: {body_trunc}"
+
+    class Meta:
+
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+
+
+class NotificationTrigger(PolicyBindingModel):
+    """Decide when to create a Notification based on policies attached to this object."""
+
+    name = models.TextField(unique=True)
+    transports = models.ManyToManyField(
+        NotificationTransport,
+        help_text=_(
+            (
+                "Select which transports should be used to notify the user. If none are "
+                "selected, the notification will only be shown in the authentik UI."
+            )
+        ),
+    )
+    severity = models.TextField(
+        choices=NotificationSeverity.choices,
+        default=NotificationSeverity.NOTICE,
+        help_text=_(
+            "Controls which severity level the created notifications will have."
+        ),
+    )
+    group = models.ForeignKey(
+        Group,
+        help_text=_(
+            (
+                "Define which group of users this notification should be sent and shown to. "
+                "If left empty, Notification won't ben sent."
+            )
+        ),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+
+    class Meta:
+
+        verbose_name = _("Notification Trigger")
+        verbose_name_plural = _("Notification Triggers")

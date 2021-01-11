@@ -1,6 +1,7 @@
 """authentik policy task"""
 from multiprocessing import Process
 from multiprocessing.connection import Connection
+from traceback import format_tb
 from typing import Optional
 
 from django.core.cache import cache
@@ -19,7 +20,7 @@ LOGGER = get_logger()
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
     prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}"
-    if request.http_request:
+    if request.http_request and hasattr(request.http_request, "session"):
         prefix += f"_{request.http_request.session.session_key}"
     if request.user:
         prefix += f"#{request.user.pk}"
@@ -47,6 +48,23 @@ class PolicyProcess(Process):
         if connection:
             self.connection = connection
 
+    def create_event(self, action: str, **kwargs):
+        """Create event with common values from `self.request` and `self.binding`."""
+        # Keep a reference to http_request even if its None, because cleanse_dict will remove it
+        http_request = self.request.http_request
+        event = Event.new(
+            action=action,
+            policy_uuid=self.binding.policy.policy_uuid.hex,
+            binding=self.binding,
+            request=self.request,
+            **kwargs,
+        )
+        event.set_user(self.request.user)
+        if http_request:
+            event.from_http(http_request)
+        else:
+            event.save()
+
     def execute(self) -> PolicyResult:
         """Run actual policy, returns result"""
         LOGGER.debug(
@@ -58,15 +76,11 @@ class PolicyProcess(Process):
         try:
             policy_result = self.binding.policy.passes(self.request)
             if self.binding.policy.execution_logging:
-                event = Event.new(
-                    EventAction.POLICY_EXECUTION,
-                    request=self.request,
-                    binding=self.binding,
-                    result=policy_result,
-                )
-                event.set_user(self.request.user)
-                event.save()
+                self.create_event(EventAction.POLICY_EXECUTION, result=policy_result)
         except PolicyException as exc:
+            # Create policy exception event
+            error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
+            self.create_event(EventAction.POLICY_EXCEPTION, error=error_string)
             LOGGER.debug("P_ENG(proc): error", exc=exc)
             policy_result = PolicyResult(False, str(exc))
         policy_result.source_policy = self.binding.policy

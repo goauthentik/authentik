@@ -1,6 +1,6 @@
 """policy process tests"""
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 
 from authentik.core.models import Application, User
 from authentik.events.models import Event, EventAction
@@ -22,6 +22,7 @@ class TestPolicyProcess(TestCase):
 
     def setUp(self):
         clear_policy_cache()
+        self.factory = RequestFactory()
         self.user = User.objects.create_user(username="policyuser")
 
     def test_invalid(self):
@@ -64,7 +65,9 @@ class TestPolicyProcess(TestCase):
     def test_exception(self):
         """Test policy execution"""
         policy = Policy.objects.create()
-        binding = PolicyBinding(policy=policy)
+        binding = PolicyBinding(
+            policy=policy, target=Application.objects.create(name="test")
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
@@ -79,29 +82,47 @@ class TestPolicyProcess(TestCase):
             policy=policy, target=Application.objects.create(name="test")
         )
 
+        http_request = self.factory.get("/")
+        http_request.user = self.user
+
         request = PolicyRequest(self.user)
+        request.http_request = http_request
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
 
         events = Event.objects.filter(
             action=EventAction.POLICY_EXECUTION,
+            context__policy_uuid=policy.policy_uuid.hex,
         )
         self.assertTrue(events.exists())
         self.assertEqual(len(events), 1)
         event = events.first()
+        self.assertEqual(event.user["username"], self.user.username)
         self.assertEqual(event.context["result"]["passing"], False)
         self.assertEqual(event.context["result"]["messages"], ["dummy"])
+        self.assertEqual(event.client_ip, "127.0.0.1")
 
     def test_raises(self):
         """Test policy that raises error"""
         policy_raises = ExpressionPolicy.objects.create(
             name="raises", expression="{{ 0/0 }}"
         )
-        binding = PolicyBinding(policy=policy_raises)
+        binding = PolicyBinding(
+            policy=policy_raises, target=Application.objects.create(name="test")
+        )
 
         request = PolicyRequest(self.user)
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("division by zero",))
-        # self.assert
+
+        events = Event.objects.filter(
+            action=EventAction.POLICY_EXCEPTION,
+            context__policy_uuid=policy_raises.policy_uuid.hex,
+        )
+        self.assertTrue(events.exists())
+        self.assertEqual(len(events), 1)
+        event = events.first()
+        self.assertEqual(event.user["username"], self.user.username)
+        self.assertIn("division by zero", event.context["error"])

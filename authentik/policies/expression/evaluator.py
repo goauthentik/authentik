@@ -1,16 +1,14 @@
 """authentik expression policy evaluator"""
 from ipaddress import ip_address, ip_network
-from traceback import format_tb
 from typing import TYPE_CHECKING, List, Optional
 
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.events.models import Event, EventAction
-from authentik.events.utils import model_to_dict, sanitize_dict
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
+from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
@@ -57,32 +55,22 @@ class PolicyEvaluator(BaseEvaluator):
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
-        error_string = "\n".join(format_tb(exc.__traceback__) + [str(exc)])
-        event = Event.new(
-            EventAction.POLICY_EXCEPTION,
-            expression=expression_source,
-            error=error_string,
-            request=self._context["request"],
-        )
-        if self.policy:
-            event.context["model"] = sanitize_dict(model_to_dict(self.policy))
-        if "http_request" in self._context:
-            event.from_http(self._context["http_request"])
-        else:
-            event.set_user(self._context["request"].user)
-            event.save()
+        raise PolicyException(str(exc)) from exc
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.
         Messages can be added using 'do ak_message()'."""
         try:
             result = super().evaluate(expression_source)
+        except PolicyException as exc:
+            # PolicyExceptions should be propagated back to the process,
+            # which handles recording and returning a correct result
+            raise exc
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))
         else:
-            policy_result = PolicyResult(False)
-            policy_result.messages = tuple(self._messages)
+            policy_result = PolicyResult(False, *self._messages)
             if result is None:
                 LOGGER.warning(
                     "Expression policy returned None",

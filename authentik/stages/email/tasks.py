@@ -1,7 +1,7 @@
 """email stage tasks"""
 from email.utils import make_msgid
 from smtplib import SMTPException
-from typing import Any, Dict, List
+from typing import Any, Optional
 
 from celery import group
 from django.core.mail import EmailMultiAlternatives
@@ -16,11 +16,11 @@ from authentik.stages.email.models import EmailStage
 LOGGER = get_logger()
 
 
-def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
+def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
     """Wrapper to convert EmailMessage to dict and send it from worker"""
     tasks = []
     for message in messages:
-        tasks.append(send_mail.s(stage.pk, message.__dict__))
+        tasks.append(send_mail.s(message.__dict__, stage.pk))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -35,13 +35,18 @@ def send_mails(stage: EmailStage, *messages: List[EmailMultiAlternatives]):
     retry_backoff=True,
     base=MonitoredTask,
 )
-def send_mail(self: MonitoredTask, email_stage_pk: int, message: Dict[Any, Any]):
+def send_mail(
+    self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Optional[int] = None
+):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
-        stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
+        if not email_stage_pk:
+            stage: EmailStage = EmailStage()
+        else:
+            stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
         backend = stage.backend
         backend.open()
         # Since django's EmailMessage objects are not JSON serialisable,

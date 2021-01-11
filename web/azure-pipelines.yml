@@ -69,6 +69,12 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: |
+              set -x
+              echo '##vso[task.setvariable variable=branchName]$(echo "$(System.PullRequest.SourceBranch)" | sed "s/\//-/g")'
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'

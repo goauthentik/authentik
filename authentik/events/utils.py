@@ -5,8 +5,10 @@ from typing import Any, Dict, Optional
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.handlers.wsgi import WSGIRequest
 from django.db import models
 from django.db.models.base import Model
+from django.http.request import HttpRequest
 from django.views.debug import SafeExceptionReporterFilter
 from guardian.utils import get_anonymous_user
 
@@ -83,10 +85,14 @@ def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
             value = asdict(value)
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
+        elif isinstance(value, User):
+            final_dict[key] = sanitize_dict(get_user(value))
         elif isinstance(value, models.Model):
             final_dict[key] = sanitize_dict(model_to_dict(value))
         elif isinstance(value, UUID):
             final_dict[key] = value.hex
+        elif isinstance(value, (HttpRequest, WSGIRequest)):
+            continue
         else:
             final_dict[key] = value
     return final_dict

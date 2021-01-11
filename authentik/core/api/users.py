@@ -34,7 +34,7 @@ class UserSerializer(ModelSerializer):
 class UserViewSet(ModelViewSet):
     """User Viewset"""
 
-    queryset = User.objects.all()
+    queryset = User.objects.none()
     serializer_class = UserSerializer
 
     def get_queryset(self):

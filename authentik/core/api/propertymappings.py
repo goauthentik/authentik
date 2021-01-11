@@ -23,7 +23,7 @@ class PropertyMappingSerializer(ModelSerializer):
 class PropertyMappingViewSet(ReadOnlyModelViewSet):
     """PropertyMapping Viewset"""
 
-    queryset = PropertyMapping.objects.all()
+    queryset = PropertyMapping.objects.none()
     serializer_class = PropertyMappingSerializer
 
     def get_queryset(self):
