@@ -979,6 +979,413 @@ paths:
         required: true
         type: string
         format: uuid
+  /events/notifications/:
+    get:
+      operationId: events_notifications_list
+      description: Notification Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/Notification'
+      tags:
+        - events
+    post:
+      operationId: events_notifications_create
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    parameters: []
+  /events/notifications/{uuid}/:
+    get:
+      operationId: events_notifications_read
+      description: Notification Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    put:
+      operationId: events_notifications_update
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    patch:
+      operationId: events_notifications_partial_update
+      description: Notification Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Notification'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Notification'
+      tags:
+        - events
+    delete:
+      operationId: events_notifications_delete
+      description: Notification Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Notification.
+        required: true
+        type: string
+        format: uuid
+  /events/transports/:
+    get:
+      operationId: events_transports_list
+      description: NotificationTransport Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    post:
+      operationId: events_transports_create
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    parameters: []
+  /events/transports/{uuid}/:
+    get:
+      operationId: events_transports_read
+      description: NotificationTransport Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    put:
+      operationId: events_transports_update
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    patch:
+      operationId: events_transports_partial_update
+      description: NotificationTransport Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    delete:
+      operationId: events_transports_delete
+      description: NotificationTransport Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Notification Transport.
+        required: true
+        type: string
+        format: uuid
+  /events/transports/{uuid}/test/:
+    post:
+      operationId: events_transports_test
+      description: |-
+        Send example notification using selected transport. Requires
+        Modify permissions.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTransport'
+      tags:
+        - events
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Notification Transport.
+        required: true
+        type: string
+        format: uuid
+  /events/triggers/:
+    get:
+      operationId: events_triggers_list
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    post:
+      operationId: events_triggers_create
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    parameters: []
+  /events/triggers/{pbm_uuid}/:
+    get:
+      operationId: events_triggers_read
+      description: NotificationTrigger Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    put:
+      operationId: events_triggers_update
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    patch:
+      operationId: events_triggers_partial_update
+      description: NotificationTrigger Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationTrigger'
+      tags:
+        - events
+    delete:
+      operationId: events_triggers_delete
+      description: NotificationTrigger Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this Notification Trigger.
+        required: true
+        type: string
+        format: uuid
   /flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -2284,6 +2691,133 @@ paths:
       - name: policy_uuid
         in: path
         description: A UUID string identifying this Dummy Policy.
+        required: true
+        type: string
+        format: uuid
+  /policies/event_matcher/:
+    get:
+      operationId: policies_event_matcher_list
+      description: Event Matcher Policy Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/EventMatcherPolicy'
+      tags:
+        - policies
+    post:
+      operationId: policies_event_matcher_create
+      description: Event Matcher Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      tags:
+        - policies
+    parameters: []
+  /policies/event_matcher/{policy_uuid}/:
+    get:
+      operationId: policies_event_matcher_read
+      description: Event Matcher Policy Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      tags:
+        - policies
+    put:
+      operationId: policies_event_matcher_update
+      description: Event Matcher Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      tags:
+        - policies
+    patch:
+      operationId: policies_event_matcher_partial_update
+      description: Event Matcher Policy Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/EventMatcherPolicy'
+      tags:
+        - policies
+    delete:
+      operationId: policies_event_matcher_delete
+      description: Event Matcher Policy Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: policy_uuid
+        in: path
+        description: A UUID string identifying this Group Membership Policy.
         required: true
         type: string
         format: uuid
@@ -7083,6 +7617,105 @@ definitions:
       unique_users:
         title: Unique users
         type: integer
+  Notification:
+    description: Notification Serializer
+    required:
+      - severity
+      - body
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      severity:
+        title: Severity
+        type: string
+        enum:
+          - notice
+          - warning
+          - alert
+      body:
+        title: Body
+        type: string
+        minLength: 1
+      created:
+        title: Created
+        type: string
+        format: date-time
+        readOnly: true
+      event:
+        title: Event
+        type: string
+        format: uuid
+        x-nullable: true
+      seen:
+        title: Seen
+        type: boolean
+  NotificationTransport:
+    description: NotificationTransport Serializer
+    required:
+      - name
+      - mode
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      mode:
+        title: Mode
+        type: string
+        enum:
+          - webhook
+          - webhook_slack
+          - email
+      webhook_url:
+        title: Webhook url
+        type: string
+  NotificationTrigger:
+    description: NotificationTrigger Serializer
+    required:
+      - name
+      - transports
+    type: object
+    properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      transports:
+        description: Select which transports should be used to notify the user. If
+          none are selected, the notification will only be shown in the authentik
+          UI.
+        type: array
+        items:
+          description: Select which transports should be used to notify the user.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
+          type: string
+          format: uuid
+        uniqueItems: true
+      severity:
+        title: Severity
+        description: Controls which severity level the created notifications will
+          have.
+        type: string
+        enum:
+          - notice
+          - warning
+          - alert
   Stage:
     title: Stage obj
     description: Stage Serializer
@@ -7557,6 +8190,96 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+  EventMatcherPolicy:
+    description: Event Matcher Policy Serializer
+    type: object
+    properties:
+      pk:
+        title: Policy uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        x-nullable: true
+      action:
+        title: Action
+        description: Match created events with this action type. When left empty,
+          all action types will be matched.
+        type: string
+        enum:
+          - login
+          - login_failed
+          - logout
+          - user_write
+          - suspicious_request
+          - password_set
+          - token_view
+          - invitation_used
+          - authorize_application
+          - source_linked
+          - impersonation_started
+          - impersonation_ended
+          - policy_execution
+          - policy_exception
+          - property_mapping_exception
+          - configuration_error
+          - model_created
+          - model_updated
+          - model_deleted
+          - update_available
+          - custom_
+      client_ip:
+        title: Client ip
+        description: Matches Event's Client IP (strict matching, for network matching
+          use an Expression Policy)
+        type: string
+      app:
+        title: App
+        description: Match events created by selected application. When left empty,
+          all applications are matched.
+        type: string
+        enum:
+          - authentik.admin
+          - authentik.api
+          - authentik.events
+          - authentik.crypto
+          - authentik.flows
+          - authentik.outposts
+          - authentik.lib
+          - authentik.policies
+          - authentik.policies.dummy
+          - authentik.policies.event_matcher
+          - authentik.policies.expiry
+          - authentik.policies.expression
+          - authentik.policies.group_membership
+          - authentik.policies.hibp
+          - authentik.policies.password
+          - authentik.policies.reputation
+          - authentik.providers.proxy
+          - authentik.providers.oauth2
+          - authentik.providers.saml
+          - authentik.recovery
+          - authentik.sources.ldap
+          - authentik.sources.oauth
+          - authentik.sources.saml
+          - authentik.stages.captcha
+          - authentik.stages.consent
+          - authentik.stages.dummy
+          - authentik.stages.email
+          - authentik.stages.prompt
+          - authentik.stages.identification
+          - authentik.stages.invitation
+          - authentik.stages.user_delete
+          - authentik.stages.user_login
+          - authentik.stages.user_logout
+          - authentik.stages.user_write
+          - authentik.stages.otp_static
+          - authentik.stages.otp_time
+          - authentik.stages.otp_validate
+          - authentik.stages.password
+          - authentik.core
   ExpressionPolicy:
     description: Group Membership Policy Serializer
     required:
