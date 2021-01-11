@@ -9,7 +9,7 @@ from authentik.events.models import (
     NotificationTrigger,
 )
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import PolicyEngine, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -43,6 +43,8 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         return
 
     policy_engine = PolicyEngine(trigger, get_anonymous_user())
+    policy_engine.mode = PolicyEngineMode.MODE_OR
+    policy_engine.empty_result = False
     policy_engine.request.context["event"] = event
     policy_engine.build()
     result = policy_engine.result

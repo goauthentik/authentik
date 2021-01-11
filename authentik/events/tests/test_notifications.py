@@ -25,6 +25,18 @@ class TestEventsNotifications(TestCase):
         self.group.users.add(self.user)
         self.group.save()
 
+    def test_trigger_empty(self):
+        """Test trigger without any policies attached"""
+        transport = NotificationTransport.objects.create(name="transport")
+        trigger = NotificationTrigger.objects.create(name="trigger", group=self.group)
+        trigger.transports.add(transport)
+        trigger.save()
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX).save()
+        self.assertEqual(execute_mock.call_count, 0)
+
     def test_trigger_single(self):
         """Test simple transport triggering"""
         transport = NotificationTransport.objects.create(name="transport")
