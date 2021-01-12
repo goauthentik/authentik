@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from authentik.core.models import User
 from authentik.policies.dummy.models import DummyPolicy
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import PolicyEngine, PolicyEngineMode
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.tests.test_process import clear_policy_cache
@@ -44,15 +44,38 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ("dummy",))
 
-    def test_engine(self):
-        """Ensure all policies passes (Mix of false and true -> false)"""
+    def test_engine_mode_and(self):
+        """Ensure all policies passes with AND mode (false and true -> false)"""
         pbm = PolicyBindingModel.objects.create()
         PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
         PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=1)
         engine = PolicyEngine(pbm, self.user)
         result = engine.build().result
         self.assertEqual(result.passing, False)
-        self.assertEqual(result.messages, ("dummy",))
+        self.assertEqual(
+            result.messages,
+            (
+                "dummy",
+                "dummy",
+            ),
+        )
+
+    def test_engine_mode_or(self):
+        """Ensure all policies passes with OR mode (false and true -> true)"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
+        PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=1)
+        engine = PolicyEngine(pbm, self.user)
+        engine.mode = PolicyEngineMode.MODE_OR
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(
+            result.messages,
+            (
+                "dummy",
+                "dummy",
+            ),
+        )
 
     def test_engine_negate(self):
         """Test negate flag"""
