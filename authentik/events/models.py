@@ -203,6 +203,8 @@ class NotificationTransport(models.Model):
                 json={
                     "body": notification.body,
                     "severity": notification.severity,
+                    "user_email": notification.user.email,
+                    "user_username": notification.user.username,
                 },
             )
             response.raise_for_status()

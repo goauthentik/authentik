@@ -38,9 +38,9 @@ class NotificationTriggerForm(forms.ModelForm):
         model = NotificationTrigger
         fields = [
             "name",
+            "group",
             "transports",
             "severity",
-            "group",
         ]
         widgets = {
             "name": forms.TextInput(),

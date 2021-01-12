@@ -4,7 +4,7 @@ from django.apps.registry import Apps
 from django.db import migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-from authentik.events.models import EventAction
+from authentik.events.models import EventAction, TransportMode
 
 
 def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -18,14 +18,14 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
     admin_group = Group.objects.using(db_alias).filter(
         name="authentik Admins", is_superuser=True
-    )
+    ).first()
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-configuration-error",
         defaults={"action": EventAction.CONFIGURATION_ERROR},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-configuration-error", defaults={"trigger": admin_group}
+        name="default-notify-configuration-error", defaults={"group": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -47,14 +47,14 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     admin_group = Group.objects.using(db_alias).filter(
         name="authentik Admins", is_superuser=True
-    )
+    ).first()
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-update",
         defaults={"action": EventAction.UPDATE_AVAILABLE},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-update", defaults={"trigger": admin_group}
+        name="default-notify-update", defaults={"group": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -76,7 +76,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     admin_group = Group.objects.using(db_alias).filter(
         name="authentik Admins", is_superuser=True
-    )
+    ).first()
 
     policy_policy_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-policy-exception",
@@ -87,7 +87,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-exception", defaults={"trigger": admin_group}
+        name="default-notify-exception", defaults={"group": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -102,6 +102,16 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={
             "order": 1,
         },
+    )
+
+
+def transport_email_global(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    db_alias = schema_editor.connection.alias
+    NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
+
+    NotificationTransport.objects.using(db_alias).update_or_create(
+        name="default-email-transport",
+        defaults={"mode": TransportMode.EMAIL},
     )
 
 
@@ -121,4 +131,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(notify_configuration_error),
         migrations.RunPython(notify_update),
         migrations.RunPython(notify_exception),
+        migrations.RunPython(transport_email_global),
     ]
