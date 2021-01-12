@@ -1,6 +1,6 @@
 """authentik events models"""
-
 from inspect import getmodule, stack
+from smtplib import SMTPException
 from typing import Optional, Union
 from uuid import uuid4
 
@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
-from requests import post
+from requests import RequestException, post
 from structlog.stdlib import get_logger
 
 from authentik import __version__
@@ -19,12 +19,17 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Group, User
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
+from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
+
+
+class NotificationTransportError(SentryIgnoredException):
+    """Error raised when a notification fails to be delivered"""
 
 
 class EventAction(models.TextChoices):
@@ -192,13 +197,17 @@ class NotificationTransport(models.Model):
 
     def send_webhook(self, notification: "Notification") -> list[str]:
         """Send notification to generic webhook"""
-        response = post(
-            self.webhook_url,
-            json={
-                "body": notification.body,
-                "severity": notification.severity,
-            },
-        )
+        try:
+            response = post(
+                self.webhook_url,
+                json={
+                    "body": notification.body,
+                    "severity": notification.severity,
+                },
+            )
+            response.raise_for_status()
+        except RequestException as exc:
+            raise NotificationTransportError from exc
         return [
             response.status_code,
             response.text,
@@ -235,7 +244,11 @@ class NotificationTransport(models.Model):
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
             body["attachments"][0]["text"] = notification.event.action
-        response = post(self.webhook_url, json=body)
+        try:
+            response = post(self.webhook_url, json=body)
+            response.raise_for_status()
+        except RequestException as exc:
+            raise NotificationTransportError from exc
         return [
             response.status_code,
             response.text,
@@ -257,8 +270,11 @@ class NotificationTransport(models.Model):
             },
         )
         # Email is sent directly here, as the call to send() should have been from a task.
-        # pyright: reportGeneralTypeIssues=false
-        return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
+        try:
+            # pyright: reportGeneralTypeIssues=false
+            return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
+        except (SMTPException, ConnectionError) as exc:
+            raise NotificationTransportError from exc
 
     class Meta:
 

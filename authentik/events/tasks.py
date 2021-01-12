@@ -6,6 +6,7 @@ from authentik.events.models import (
     Event,
     Notification,
     NotificationTransport,
+    NotificationTransportError,
     NotificationTrigger,
 )
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
@@ -64,7 +65,12 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
             )
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(
+    bind=True,
+    autoretry_for=(NotificationTransportError),
+    retry_backoff=True,
+    base=MonitoredTask,
+)
 def notification_transport(
     self: MonitoredTask, notification_pk: int, transport_pk: int
 ):
@@ -77,6 +83,6 @@ def notification_transport(
         )
         transport.send(notification)
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except Exception as exc:
+    except NotificationTransportError as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
         raise exc
