@@ -7,4 +7,4 @@ class AuthentikStageOTPValidateConfig(AppConfig):
 
     name = "authentik.stages.otp_validate"
     label = "authentik_stages_otp_validate"
-    verbose_name = "authentik OTP.Validate"
+    verbose_name = "authentik Stages.OTP.Validate"

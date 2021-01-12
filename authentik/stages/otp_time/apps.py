@@ -7,5 +7,5 @@ class AuthentikStageOTPTimeConfig(AppConfig):
 
     name = "authentik.stages.otp_time"
     label = "authentik_stages_otp_time"
-    verbose_name = "authentik OTP.Time"
+    verbose_name = "authentik Stages.OTP.Time"
     mountpoint = "-/user/otp/time/"
