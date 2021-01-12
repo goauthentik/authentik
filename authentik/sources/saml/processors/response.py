@@ -13,7 +13,8 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_REDIRECT, PLAN_CONTEXT_SOURCE,
+    PLAN_CONTEXT_REDIRECT,
+    PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )

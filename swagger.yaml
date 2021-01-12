@@ -2817,7 +2817,7 @@ paths:
     parameters:
       - name: policy_uuid
         in: path
-        description: A UUID string identifying this Group Membership Policy.
+        description: A UUID string identifying this Event Matcher Policy.
         required: true
         type: string
         format: uuid

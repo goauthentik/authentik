@@ -87,5 +87,5 @@ class EventMatcherPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _("Group Membership Policy")
-        verbose_name_plural = _("Group Membership Policies")
+        verbose_name = _("Event Matcher Policy")
+        verbose_name_plural = _("Event Matcher Policies")

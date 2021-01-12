@@ -1,6 +1,7 @@
 """authentik Event Matcher Policy forms"""
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from authentik.policies.event_matcher.models import EventMatcherPolicy
 from authentik.policies.forms import GENERAL_FIELDS
@@ -21,3 +22,4 @@ class EventMatcherPolicyForm(forms.ModelForm):
             "name": forms.TextInput(),
             "client_ip": forms.TextInput(),
         }
+        labels = {"client_ip": _("Client IP")}

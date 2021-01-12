@@ -15,7 +15,8 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_REDIRECT, PLAN_CONTEXT_SOURCE,
+    PLAN_CONTEXT_REDIRECT,
+    PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
