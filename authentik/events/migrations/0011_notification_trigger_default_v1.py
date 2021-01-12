@@ -16,9 +16,11 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    admin_group = Group.objects.using(db_alias).filter(
-        name="authentik Admins", is_superuser=True
-    ).first()
+    admin_group = (
+        Group.objects.using(db_alias)
+        .filter(name="authentik Admins", is_superuser=True)
+        .first()
+    )
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-configuration-error",
@@ -45,9 +47,11 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    admin_group = Group.objects.using(db_alias).filter(
-        name="authentik Admins", is_superuser=True
-    ).first()
+    admin_group = (
+        Group.objects.using(db_alias)
+        .filter(name="authentik Admins", is_superuser=True)
+        .first()
+    )
 
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-update",
@@ -74,9 +78,11 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
-    admin_group = Group.objects.using(db_alias).filter(
-        name="authentik Admins", is_superuser=True
-    ).first()
+    admin_group = (
+        Group.objects.using(db_alias)
+        .filter(name="authentik Admins", is_superuser=True)
+        .first()
+    )
 
     policy_policy_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-policy-exception",

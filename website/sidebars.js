@@ -87,6 +87,15 @@ module.exports = {
         },
         {
             type: "category",
+            label: "Events",
+            items: [
+                "events/index",
+                "events/notifications",
+                "events/transports"
+            ],
+        },
+        {
+            type: "category",
             label: "Integrations",
             items: [
                 {
