@@ -16,6 +16,7 @@ class NotificationTriggerSerializer(ModelSerializer):
             "name",
             "transports",
             "severity",
+            "group",
         ]
 
 

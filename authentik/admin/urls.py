@@ -5,6 +5,7 @@ from authentik.admin.views import (
     applications,
     certificate_key_pair,
     events_notifications_transports,
+    events_notifications_triggers,
     flows,
     groups,
     outposts,
@@ -368,5 +369,21 @@ urlpatterns = [
         "events/transports/<uuid:pk>/delete/",
         events_notifications_transports.NotificationTransportDeleteView.as_view(),
         name="notification-transport-delete",
+    ),
+    # Event Notification Triggers
+    path(
+        "events/triggers/create/",
+        events_notifications_triggers.NotificationTriggerCreateView.as_view(),
+        name="notification-trigger-create",
+    ),
+    path(
+        "events/triggers/<uuid:pk>/update/",
+        events_notifications_triggers.NotificationTriggerUpdateView.as_view(),
+        name="notification-trigger-update",
+    ),
+    path(
+        "events/triggers/<uuid:pk>/delete/",
+        events_notifications_triggers.NotificationTriggerDeleteView.as_view(),
+        name="notification-trigger-delete",
     ),
 ]

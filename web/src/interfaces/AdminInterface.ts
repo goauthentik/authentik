@@ -14,7 +14,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     }),
     new SidebarItem("Events").children(
         new SidebarItem("Log", "/events/log"),
-        new SidebarItem("Notification Triggers", "/administration/tasks/"),
+        new SidebarItem("Notification Triggers", "/events/triggers"),
         new SidebarItem("Notification Transports", "/events/transports"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);

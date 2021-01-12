@@ -44,7 +44,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     Edit
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>
+            </ak-modal-button>&nbsp;
             <ak-modal-button href="${PolicyBinding.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     Delete

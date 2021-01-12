@@ -7720,6 +7720,13 @@ definitions:
           - notice
           - warning
           - alert
+      group:
+        title: Group
+        description: Define which group of users this notification should be sent
+          and shown to. If left empty, Notification won't ben sent.
+        type: string
+        format: uuid
+        x-nullable: true
   Stage:
     title: Stage obj
     description: Stage Serializer

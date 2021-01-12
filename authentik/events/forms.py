@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from authentik.events.models import NotificationTransport
+from authentik.events.models import NotificationTransport, NotificationTrigger
 
 
 class NotificationTransportForm(forms.ModelForm):
@@ -25,8 +25,23 @@ class NotificationTransportForm(forms.ModelForm):
         }
         help_texts = {
             "webhook_url": _(
-                (
-                    "Only required when the Generic or Slack Webhook is used."
-                )
+                ("Only required when the Generic or Slack Webhook is used.")
             ),
+        }
+
+
+class NotificationTriggerForm(forms.ModelForm):
+    """NotificationTrigger Form"""
+
+    class Meta:
+
+        model = NotificationTrigger
+        fields = [
+            "name",
+            "transports",
+            "severity",
+            "group",
+        ]
+        widgets = {
+            "name": forms.TextInput(),
         }
