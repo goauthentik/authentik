@@ -67,7 +67,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 
 @CELERY_APP.task(
     bind=True,
-    autoretry_for=(NotificationTransportError),
+    autoretry_for=(NotificationTransportError,),
     retry_backoff=True,
     base=MonitoredTask,
 )

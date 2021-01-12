@@ -7676,6 +7676,10 @@ definitions:
           - webhook
           - webhook_slack
           - email
+      mode_verbose:
+        title: Mode verbose
+        type: string
+        readOnly: true
       webhook_url:
         title: Webhook url
         type: string

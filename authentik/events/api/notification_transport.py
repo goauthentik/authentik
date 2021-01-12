@@ -2,6 +2,7 @@
 from django.http.response import Http404
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -11,11 +12,19 @@ from authentik.events.models import (
     Notification,
     NotificationSeverity,
     NotificationTransport,
+    NotificationTransportError,
+    TransportMode,
 )
 
 
 class NotificationTransportSerializer(ModelSerializer):
     """NotificationTransport Serializer"""
+
+    mode_verbose = SerializerMethodField()
+
+    def get_mode_verbose(self, instance: NotificationTransport):
+        """Return selected mode with a UI Label"""
+        return TransportMode(instance.mode).label
 
     class Meta:
 
@@ -24,6 +33,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "pk",
             "name",
             "mode",
+            "mode_verbose",
             "webhook_url",
         ]
 
@@ -44,10 +54,13 @@ class NotificationTransportViewSet(ModelViewSet):
         ).filter(pk=pk)
         if not transports.exists():
             raise Http404
-        transport = transports.first()
+        transport: NotificationTransport = transports.first()
         notification = Notification(
             severity=NotificationSeverity.NOTICE,
             body=f"Test Notification from transport {transport.name}",
             user=request.user,
         )
-        return Response(transport.send(notification))
+        try:
+            return Response(transport.send(notification))
+        except NotificationTransportError as exc:
+            return Response(str(exc.__cause__ or None), status=503)
