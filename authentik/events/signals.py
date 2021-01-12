@@ -1,4 +1,6 @@
 """authentik events signal listener"""
+from authentik.flows.planner import FlowPlan, PLAN_CONTEXT_SOURCE
+from authentik.flows.views import SESSION_KEY_PLAN
 from threading import Thread
 from typing import Any, Dict, Optional
 
@@ -46,6 +48,11 @@ class EventNewThread(Thread):
 def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     """Log successful login"""
     thread = EventNewThread(EventAction.LOGIN, request)
+    if SESSION_KEY_PLAN in request.session:
+        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        if PLAN_CONTEXT_SOURCE in flow_plan.context:
+            # Login request came from an external source, save it in the context
+            thread.kwargs["using_source"] = flow_plan.context[PLAN_CONTEXT_SOURCE]
     thread.user = user
     thread.run()
 

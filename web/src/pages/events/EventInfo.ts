@@ -136,6 +136,15 @@ export class EventInfo extends LitElement {
             // Action types which typically don't record any extra context.
             // If context is not empty, we fall to the default response.
         case "login":
+            if ("using_source" in this.event.context) {
+                return html`<div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Using source")}</h3>
+                        ${this.getModelInfo(this.event.context.using_source as EventContext)}
+                    </div>
+                </div>`;
+            }
+            return this.defaultResponse();
         case "logout":
             if (this.event.context === {}) {
                 return html`<span>${gettext("No additional data available.")}</span>`;
