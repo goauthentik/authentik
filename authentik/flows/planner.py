@@ -21,6 +21,7 @@ PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
+PLAN_CONTEXT_SOURCE = "source"
 
 
 def cache_key(flow: Flow, user: Optional[User] = None) -> str:

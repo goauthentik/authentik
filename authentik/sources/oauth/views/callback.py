@@ -15,7 +15,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_REDIRECT,
+    PLAN_CONTEXT_REDIRECT, PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
@@ -146,6 +146,7 @@ class OAuthCallback(OAuthClientMixin, View):
                 # Since we authenticate the user by their token, they have no backend set
                 PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
                 PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_REDIRECT: final_redirect,
             }
         )
@@ -224,6 +225,7 @@ class OAuthCallback(OAuthClientMixin, View):
             # Since we authenticate the user by their token, they have no backend set
             PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
             PLAN_CONTEXT_SSO: True,
+            PLAN_CONTEXT_SOURCE: self.source,
             PLAN_CONTEXT_PROMPT: delete_none_keys(
                 self.get_user_enroll_context(source, access, info)
             ),

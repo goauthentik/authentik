@@ -13,7 +13,7 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
-    PLAN_CONTEXT_REDIRECT,
+    PLAN_CONTEXT_REDIRECT, PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
     FlowPlanner,
 )
@@ -217,6 +217,7 @@ class ResponseProcessor:
         self, request: HttpRequest, flow: Flow, **kwargs
     ) -> HttpResponse:
         kwargs[PLAN_CONTEXT_SSO] = True
+        kwargs[PLAN_CONTEXT_SOURCE] = self._source
         request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs)
         return redirect_with_qs(
             "authentik_flows:flow-executor-shell",
