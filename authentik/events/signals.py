@@ -1,6 +1,4 @@
 """authentik events signal listener"""
-from authentik.flows.planner import FlowPlan, PLAN_CONTEXT_SOURCE
-from authentik.flows.views import SESSION_KEY_PLAN
 from threading import Thread
 from typing import Any, Dict, Optional
 
@@ -17,6 +15,8 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.events.tasks import event_notification_handler
+from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.user_write.signals import user_write

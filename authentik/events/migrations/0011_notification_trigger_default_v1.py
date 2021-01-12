@@ -9,18 +9,23 @@ from authentik.events.models import EventAction
 
 def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
+    Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
+    admin_group = Group.objects.using(db_alias).filter(
+        name="authentik Admins", is_superuser=True
+    )
+
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-configuration-error",
         defaults={"action": EventAction.CONFIGURATION_ERROR},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-configuration-error",
+        name="default-notify-configuration-error", defaults={"trigger": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -33,18 +38,23 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
 def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
+    Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
 
+    admin_group = Group.objects.using(db_alias).filter(
+        name="authentik Admins", is_superuser=True
+    )
+
     policy, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-update",
         defaults={"action": EventAction.UPDATE_AVAILABLE},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-update",
+        name="default-notify-update", defaults={"trigger": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -57,11 +67,16 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
+    Group = apps.get_model("authentik_core", "Group")
     PolicyBinding = apps.get_model("authentik_policies", "PolicyBinding")
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+
+    admin_group = Group.objects.using(db_alias).filter(
+        name="authentik Admins", is_superuser=True
+    )
 
     policy_policy_exc, _ = EventMatcherPolicy.objects.using(db_alias).update_or_create(
         name="default-match-policy-exception",
@@ -72,7 +87,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-exception",
+        name="default-notify-exception", defaults={"trigger": admin_group}
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -97,6 +112,7 @@ class Migration(migrations.Migration):
             "authentik_events",
             "0010_notification_notificationtransport_notificationtrigger",
         ),
+        ("authentik_core", "0016_auto_20201202_2234"),
         ("authentik_policies_event_matcher", "0003_auto_20210110_1907"),
         ("authentik_policies", "0004_policy_execution_logging"),
     ]
