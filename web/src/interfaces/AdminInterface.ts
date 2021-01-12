@@ -9,11 +9,17 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Monitor").children(
         new SidebarItem("Overview", "/administration/overview"),
         new SidebarItem("System Tasks", "/administration/tasks/"),
-        new SidebarItem("Events", "/events"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
-    new SidebarItem("Administration").children(
+    new SidebarItem("Events").children(
+        new SidebarItem("Log", "/events/log"),
+        new SidebarItem("Notification Triggers", "/administration/tasks/"),
+        new SidebarItem("Notification Transports", "/events/transports"),
+    ).when((): Promise<boolean> => {
+        return User.me().then(u => u.is_superuser);
+    }),
+    new SidebarItem("Resources").children(
         new SidebarItem("Applications", "/applications").activeWhen(
             `^/applications/(?<slug>${SLUG_REGEX})$`
         ),
@@ -23,10 +29,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Providers", "/administration/providers/"),
         new SidebarItem("Outposts", "/administration/outposts/"),
         new SidebarItem("Outpost Service Connections", "/administration/outposts/service_connections/"),
+    ).when((): Promise<boolean> => {
+        return User.me().then(u => u.is_superuser);
+    }),
+    new SidebarItem("Customisation").children(
         new SidebarItem("Policies", "/administration/policies/"),
         new SidebarItem("Property Mappings", "/administration/property-mappings"),
-        new SidebarItem("Certificates", "/administration/crypto/certificates"),
-        new SidebarItem("Tokens", "/administration/tokens/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
@@ -38,9 +46,11 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
-    new SidebarItem("User Management").children(
+    new SidebarItem("Identity & Cryptography").children(
         new SidebarItem("User", "/administration/users/"),
-        new SidebarItem("Groups", "/administration/groups/")
+        new SidebarItem("Groups", "/administration/groups/"),
+        new SidebarItem("Certificates", "/administration/crypto/certificates"),
+        new SidebarItem("Tokens", "/administration/tokens/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),

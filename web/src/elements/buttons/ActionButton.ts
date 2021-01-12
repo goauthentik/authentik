@@ -49,7 +49,7 @@ export class ActionButton extends SpinnerButton {
                             level_tag: "error",
                             message: t
                         });
-                    })
+                    });
                 }
                 this.setDone(ERROR_CLASS);
             });
