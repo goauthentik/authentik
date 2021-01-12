@@ -276,6 +276,9 @@ class NotificationTransport(models.Model):
         except (SMTPException, ConnectionError) as exc:
             raise NotificationTransportError from exc
 
+    def __str__(self) -> str:
+        return f"Notification Transport {self.name}"
+
     class Meta:
 
         verbose_name = _("Notification Transport")
@@ -343,6 +346,9 @@ class NotificationTrigger(PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+
+    def __str__(self) -> str:
+        return f"Notification Trigger {self.name}"
 
     class Meta:
 
