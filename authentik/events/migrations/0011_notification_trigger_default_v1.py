@@ -4,7 +4,7 @@ from django.apps.registry import Apps
 from django.db import migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-from authentik.events.models import EventAction, TransportMode
+from authentik.events.models import EventAction, NotificationSeverity, TransportMode
 
 
 def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -27,7 +27,8 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         defaults={"action": EventAction.CONFIGURATION_ERROR},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-configuration-error", defaults={"group": admin_group}
+        name="default-notify-configuration-error",
+        defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -58,7 +59,8 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"action": EventAction.UPDATE_AVAILABLE},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-update", defaults={"group": admin_group}
+        name="default-notify-update",
+        defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -93,7 +95,8 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
     trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
-        name="default-notify-exception", defaults={"group": admin_group}
+        name="default-notify-exception",
+        defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
