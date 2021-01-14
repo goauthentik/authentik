@@ -31,10 +31,11 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         name="default-notify-configuration-error",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
-    default_transport = NotificationTransport.objects.using(db_alias).get(
-        name="default-email-transport"
+    trigger.transports.set(
+        NotificationTransport.objects.using(db_alias).filter(
+            name="default-email-transport"
+        )
     )
-    trigger.transports.add(default_transport)
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -69,10 +70,11 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-notify-update",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
-    default_transport = NotificationTransport.objects.using(db_alias).get(
-        name="default-email-transport"
+    trigger.transports.set(
+        NotificationTransport.objects.using(db_alias).filter(
+            name="default-email-transport"
+        )
     )
-    trigger.transports.add(default_transport)
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
@@ -111,10 +113,11 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-notify-exception",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
-    default_transport = NotificationTransport.objects.using(db_alias).get(
-        name="default-email-transport"
+    trigger.transports.set(
+        NotificationTransport.objects.using(db_alias).filter(
+            name="default-email-transport"
+        )
     )
-    trigger.transports.add(default_transport)
     trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
