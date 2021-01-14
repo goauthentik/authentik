@@ -1,9 +1,11 @@
+import { EventContext } from "./Events";
+
 export class Group {
 
     group_uuid: string;
     name: string;
     is_superuser: boolean;
-    attributes: object;
+    attributes: EventContext;
     parent?: Group;
 
     constructor() {

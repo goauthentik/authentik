@@ -36,23 +36,26 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         if trigger.policies.filter(policy_uuid=policy_uuid).exists():
             # Event has been created by a policy that is attached
             # to this trigger. To prevent infinite loops, we stop here
-            LOGGER.debug("e(trigger): attempting to prevent infinite loop")
+            LOGGER.debug(
+                "e(trigger): attempting to prevent infinite loop", trigger=trigger
+            )
             return
 
     if not trigger.group:
-        LOGGER.debug("e(trigger): trigger has no group")
+        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
         return
 
     policy_engine = PolicyEngine(trigger, get_anonymous_user())
     policy_engine.mode = PolicyEngineMode.MODE_OR
     policy_engine.empty_result = False
+    policy_engine.use_cache = False
     policy_engine.request.context["event"] = event
     policy_engine.build()
     result = policy_engine.result
     if not result.passing:
         return
 
-    LOGGER.debug("e(trigger): event trigger matched")
+    LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
     for user in trigger.group.users.all():
         notification = Notification.objects.create(
