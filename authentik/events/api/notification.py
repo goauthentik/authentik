@@ -13,7 +13,6 @@ class NotificationSerializer(ModelSerializer):
 
     body = ReadOnlyField()
     severity = ReadOnlyField()
-    created = ReadOnlyField()
     event = EventSerializer()
 
     class Meta:
