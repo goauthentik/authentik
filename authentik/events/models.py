@@ -139,9 +139,7 @@ class Event(models.Model):
 
     def save(self, *args, **kwargs):
         if not self._state.adding:
-            raise ValidationError(
-                "you may not edit an existing %s" % self._meta.model_name
-            )
+            raise ValidationError("you may not edit an existing Event")
         LOGGER.debug(
             "Created Event",
             action=self.action,
@@ -209,7 +207,7 @@ class NotificationTransport(models.Model):
             )
             response.raise_for_status()
         except RequestException as exc:
-            raise NotificationTransportError from exc
+            raise NotificationTransportError(exc.response.text) from exc
         return [
             response.status_code,
             response.text,
@@ -217,6 +215,26 @@ class NotificationTransport(models.Model):
 
     def send_webhook_slack(self, notification: "Notification") -> list[str]:
         """Send notification to slack or slack-compatible endpoints"""
+        fields = [
+            {
+                "title": _("Severity"),
+                "value": notification.severity,
+                "short": True,
+            },
+            {
+                "title": _("Dispatched for user"),
+                "value": str(notification.user),
+                "short": True,
+            },
+        ]
+        if notification.event:
+            for key, value in notification.event.context.items():
+                if not isinstance(value, str):
+                    continue
+                # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
+                if len(fields) >= 25:
+                    continue
+                fields.append({"title": key[:256], "value": value[:1024]})
         body = {
             "username": "authentik",
             "icon_url": "https://goauthentik.io/img/icon.png",
@@ -227,18 +245,7 @@ class NotificationTransport(models.Model):
                     "author_icon": "https://goauthentik.io/img/icon.png",
                     "title": notification.body,
                     "color": "#fd4b2d",
-                    "fields": [
-                        {
-                            "title": _("Severity"),
-                            "value": notification.severity,
-                            "short": True,
-                        },
-                        {
-                            "title": _("Dispatched for user"),
-                            "value": str(notification.user),
-                            "short": True,
-                        },
-                    ],
+                    "fields": fields,
                     "footer": f"authentik v{__version__}",
                 }
             ],
@@ -250,7 +257,7 @@ class NotificationTransport(models.Model):
             response = post(self.webhook_url, json=body)
             response.raise_for_status()
         except RequestException as exc:
-            raise NotificationTransportError from exc
+            raise NotificationTransportError(exc.response.text) from exc
         return [
             response.status_code,
             response.text,
