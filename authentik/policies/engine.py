@@ -82,8 +82,10 @@ class PolicyEngine:
 
     def _iter_bindings(self) -> Iterator[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
-        return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by(
-            "order"
+        return (
+            PolicyBinding.objects.filter(target=self.__pbm, enabled=True)
+            .order_by("order")
+            .iterator()
         )
 
     def _check_policy_type(self, policy: Policy):
