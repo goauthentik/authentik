@@ -31,6 +31,9 @@ export class EventInfo extends LitElement {
     }
 
     getModelInfo(context: EventContext): TemplateResult {
+        if (context === null) {
+            return html`<span>-</span>`;
+        }
         return html`<ul class="pf-c-list">
             <li>${gettext("UID")}: ${context.pk as string}</li>
             <li>${gettext("Name")}: ${context.name as string}</li>
@@ -89,7 +92,6 @@ export class EventInfo extends LitElement {
                 ${this.getModelInfo(this.event.context.token as EventContext)}
                 `;
         case "property_mapping_exception":
-        case "policy_exception":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Exception")}</h3>
@@ -98,6 +100,24 @@ export class EventInfo extends LitElement {
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Expression")}</h3>
                         <code>${this.event.context.expression}</code>
+                    </div>
+                </div>`;
+        case "policy_exception":
+            return html`<div class="pf-l-flex">
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Binding")}</h3>
+                        ${this.getModelInfo(this.event.context.binding as EventContext)}
+                    </div>
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Request")}</h3>
+                        <ul class="pf-c-list">
+                            <li>${gettext("Object")}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
+                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context)}</code></span></li>
+                        </ul>
+                    </div>
+                    <div class="pf-l-flex__item">
+                        <h3>${gettext("Exception")}</h3>
+                        <code>${this.event.context.error}</code>
                     </div>
                 </div>`;
         case "policy_execution":
