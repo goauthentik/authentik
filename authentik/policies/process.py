@@ -48,12 +48,13 @@ class PolicyProcess(Process):
         if connection:
             self.connection = connection
 
-    def create_event(self, action: str, **kwargs):
+    def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
         # Keep a reference to http_request even if its None, because cleanse_dict will remove it
         http_request = self.request.http_request
         event = Event.new(
             action=action,
+            message=message,
             policy_uuid=self.binding.policy.policy_uuid.hex,
             binding=self.binding,
             request=self.request,
@@ -76,7 +77,11 @@ class PolicyProcess(Process):
         try:
             policy_result = self.binding.policy.passes(self.request)
             if self.binding.policy.execution_logging:
-                self.create_event(EventAction.POLICY_EXECUTION, message="Policy Execution", result=policy_result)
+                self.create_event(
+                    EventAction.POLICY_EXECUTION,
+                    message="Policy Execution",
+                    result=policy_result,
+                )
         except PolicyException as exc:
             # Create policy exception event
             error_string = "".join(format_tb(exc.__traceback__)) + str(exc)

@@ -28,7 +28,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
         event = Event.new(
             EventAction.PROPERTY_MAPPING_EXCEPTION,
             expression=expression_source,
-            error=error_string,
+            message=error_string,
         )
         if "user" in self._context:
             event.set_user(self._context["user"])

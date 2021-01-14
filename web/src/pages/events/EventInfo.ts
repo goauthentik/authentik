@@ -95,7 +95,7 @@ export class EventInfo extends LitElement {
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Exception")}</h3>
-                        <code>${this.event.context.error || this.event.context.message}</code>
+                        <code>${this.event.context.message || this.event.context.error}</code>
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Expression")}</h3>
@@ -117,7 +117,7 @@ export class EventInfo extends LitElement {
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Exception")}</h3>
-                        <code>${this.event.context.error}</code>
+                        <code>${this.event.context.message || this.event.context.error}</code>
                     </div>
                 </div>`;
         case "policy_execution":
