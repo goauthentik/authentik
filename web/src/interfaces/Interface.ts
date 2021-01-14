@@ -5,7 +5,7 @@ import { SidebarItem } from "../elements/sidebar/Sidebar";
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/sidebar/SidebarHamburger";
-import "../elements/notifications/NotificationDrawer"
+import "../elements/notifications/NotificationDrawer";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})

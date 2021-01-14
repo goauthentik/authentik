@@ -1,4 +1,4 @@
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 // @ts-ignore
 import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 // @ts-ignore

@@ -103,6 +103,9 @@ select[multiple] {
     .pf-c-page {
         --pf-c-page--BackgroundColor: var(--ak-dark-background);
     }
+    .pf-c-drawer__content {
+        --pf-c-drawer__content--BackgroundColor: var(--ak-dark-background);
+    }
     .pf-c-title {
         color: var(--ak-dark-foreground);
     }
