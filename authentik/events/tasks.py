@@ -11,6 +11,7 @@ from authentik.events.models import (
 )
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.engine import PolicyEngine, PolicyEngineMode
+from authentik.policies.models import PolicyBinding
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -45,6 +46,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
         return
 
+    LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
     policy_engine = PolicyEngine(trigger, get_anonymous_user())
     policy_engine.mode = PolicyEngineMode.MODE_OR
     policy_engine.empty_result = False

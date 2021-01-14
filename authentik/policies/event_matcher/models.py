@@ -74,16 +74,13 @@ class EventMatcherPolicy(Policy):
         if "event" not in request.context:
             return PolicyResult(False)
         event: Event = request.context["event"]
-        if self.action != "":
-            if event.action != self.action:
-                return PolicyResult(False, "Action did not match.")
-        if self.client_ip != "":
-            if event.client_ip != self.client_ip:
-                return PolicyResult(False, "Client IP did not match.")
-        if self.app != "":
-            if event.app != self.app:
-                return PolicyResult(False, "App did not match.")
-        return PolicyResult(True)
+        if event.action != self.action:
+            return PolicyResult(True, "Action matchede.")
+        if event.client_ip != self.client_ip:
+            return PolicyResult(True, "Client IP matchede.")
+        if event.app != self.app:
+            return PolicyResult(True, "App matchede.")
+        return PolicyResult(False)
 
     class Meta:
 

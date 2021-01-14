@@ -69,6 +69,7 @@ class TestEventsNotifications(TestCase):
     def test_policy_error_recursive(self):
         """Test Policy error which would cause recursion"""
         transport = NotificationTransport.objects.create(name="transport")
+        NotificationTrigger.objects.filter(name__startswith="default").delete()
         trigger = NotificationTrigger.objects.create(name="trigger", group=self.group)
         trigger.transports.add(transport)
         trigger.save()
