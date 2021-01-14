@@ -7663,7 +7663,6 @@ definitions:
     description: NotificationTrigger Serializer
     required:
       - name
-      - transports
     type: object
     properties:
       pk:
@@ -7676,17 +7675,35 @@ definitions:
         type: string
         minLength: 1
       transports:
-        description: Select which transports should be used to notify the user. If
-          none are selected, the notification will only be shown in the authentik
-          UI.
+        description: ''
         type: array
         items:
-          description: Select which transports should be used to notify the user.
-            If none are selected, the notification will only be shown in the authentik
-            UI.
-          type: string
-          format: uuid
-        uniqueItems: true
+          description: Action which is executed when a Trigger matches
+          required:
+            - name
+            - mode
+          type: object
+          properties:
+            uuid:
+              title: Uuid
+              type: string
+              format: uuid
+              readOnly: true
+            name:
+              title: Name
+              type: string
+              minLength: 1
+            mode:
+              title: Mode
+              type: string
+              enum:
+                - webhook
+                - webhook_slack
+                - email
+            webhook_url:
+              title: Webhook url
+              type: string
+        readOnly: true
       severity:
         title: Severity
         description: Controls which severity level the created notifications will
@@ -7697,12 +7714,58 @@ definitions:
           - warning
           - alert
       group:
-        title: Group
-        description: Define which group of users this notification should be sent
-          and shown to. If left empty, Notification won't ben sent.
-        type: string
-        format: uuid
-        x-nullable: true
+        description: Custom Group model which supports a basic hierarchy
+        required:
+          - name
+        type: object
+        properties:
+          group_uuid:
+            title: Group uuid
+            type: string
+            format: uuid
+            readOnly: true
+          name:
+            title: Name
+            type: string
+            maxLength: 80
+            minLength: 1
+          is_superuser:
+            title: Is superuser
+            description: Users added to this group will be superusers.
+            type: boolean
+          attributes:
+            title: Attributes
+            type: object
+          parent:
+            description: Custom Group model which supports a basic hierarchy
+            required:
+              - name
+              - parent
+            type: object
+            properties:
+              group_uuid:
+                title: Group uuid
+                type: string
+                format: uuid
+                readOnly: true
+              name:
+                title: Name
+                type: string
+                maxLength: 80
+                minLength: 1
+              is_superuser:
+                title: Is superuser
+                description: Users added to this group will be superusers.
+                type: boolean
+              attributes:
+                title: Attributes
+                type: object
+              parent:
+                title: Parent
+                type: string
+                format: uuid
+            readOnly: true
+        readOnly: true
   Stage:
     title: Stage obj
     description: Stage Serializer

@@ -1,11 +1,12 @@
 import { DefaultClient, QueryArguments, PBResponse } from "./Client";
+import { Group } from "./Groups";
 
 export class Trigger {
     pk: string;
     name: string;
     transports: string[];
     severity: string;
-    group?: string;
+    group?: Group;
 
     constructor() {
         throw Error();

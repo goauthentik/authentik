@@ -50,7 +50,7 @@ export class TriggerListPage extends TablePage<Trigger> {
         return [
             html`${item.name}`,
             html`${item.severity}`,
-            html`${item.group || gettext("None (trigger disabled)")}`,
+            html`${item.group?.name || gettext("None (trigger disabled)")}`,
             html`
             <ak-modal-button href="${Trigger.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">

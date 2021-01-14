@@ -11,6 +11,7 @@ class NotificationTriggerSerializer(ModelSerializer):
     class Meta:
 
         model = NotificationTrigger
+        depth = 2
         fields = [
             "pk",
             "name",
