@@ -1029,22 +1029,6 @@ paths:
                   $ref: '#/definitions/Notification'
       tags:
         - events
-    post:
-      operationId: events_notifications_create
-      description: Notification Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/Notification'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/Notification'
-      tags:
-        - events
     parameters: []
   /events/notifications/{uuid}/:
     get:
@@ -7619,9 +7603,6 @@ definitions:
         type: integer
   Notification:
     description: Notification Serializer
-    required:
-      - severity
-      - body
     type: object
     properties:
       pk:
@@ -7632,24 +7613,19 @@ definitions:
       severity:
         title: Severity
         type: string
-        enum:
-          - notice
-          - warning
-          - alert
+        readOnly: true
       body:
         title: Body
         type: string
-        minLength: 1
+        readOnly: true
       created:
         title: Created
         type: string
-        format: date-time
         readOnly: true
       event:
         title: Event
         type: string
-        format: uuid
-        x-nullable: true
+        readOnly: true
       seen:
         title: Seen
         type: boolean
