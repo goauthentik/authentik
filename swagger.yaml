@@ -7603,6 +7603,8 @@ definitions:
         type: integer
   Notification:
     description: Notification Serializer
+    required:
+      - event
     type: object
     properties:
       pk:
@@ -7623,9 +7625,7 @@ definitions:
         type: string
         readOnly: true
       event:
-        title: Event
-        type: string
-        readOnly: true
+        $ref: '#/definitions/Event'
       seen:
         title: Seen
         type: boolean

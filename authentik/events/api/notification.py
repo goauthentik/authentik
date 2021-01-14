@@ -4,6 +4,7 @@ from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.events.api.event import EventSerializer
 from authentik.events.models import Notification
 
 
@@ -13,7 +14,7 @@ class NotificationSerializer(ModelSerializer):
     body = ReadOnlyField()
     severity = ReadOnlyField()
     created = ReadOnlyField()
-    event = ReadOnlyField()
+    event = EventSerializer()
 
     class Meta:
 
