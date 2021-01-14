@@ -15,6 +15,7 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
         Group.objects.using(db_alias)
@@ -30,6 +31,11 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         name="default-notify-configuration-error",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
+    default_transport = NotificationTransport.objects.using(db_alias).get(
+        name="default-email-transport"
+    )
+    trigger.transports.add(default_transport)
+    trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
         policy=policy,
@@ -47,6 +53,7 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
         Group.objects.using(db_alias)
@@ -62,6 +69,11 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-notify-update",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
+    default_transport = NotificationTransport.objects.using(db_alias).get(
+        name="default-email-transport"
+    )
+    trigger.transports.add(default_transport)
+    trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
         policy=policy,
@@ -79,6 +91,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
     NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
         Group.objects.using(db_alias)
@@ -98,6 +111,11 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-notify-exception",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
+    default_transport = NotificationTransport.objects.using(db_alias).get(
+        name="default-email-transport"
+    )
+    trigger.transports.add(default_transport)
+    trigger.save()
     PolicyBinding.objects.using(db_alias).update_or_create(
         target=trigger,
         policy=policy_policy_exc,
@@ -137,8 +155,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(transport_email_global),
         migrations.RunPython(notify_configuration_error),
         migrations.RunPython(notify_update),
         migrations.RunPython(notify_exception),
-        migrations.RunPython(transport_email_global),
     ]
