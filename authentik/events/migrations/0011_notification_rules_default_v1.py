@@ -14,7 +14,7 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
-    NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
@@ -27,7 +27,7 @@ def notify_configuration_error(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
         name="default-match-configuration-error",
         defaults={"action": EventAction.CONFIGURATION_ERROR},
     )
-    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationRule.objects.using(db_alias).update_or_create(
         name="default-notify-configuration-error",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
@@ -53,7 +53,7 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
-    NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
@@ -66,7 +66,7 @@ def notify_update(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-match-update",
         defaults={"action": EventAction.UPDATE_AVAILABLE},
     )
-    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationRule.objects.using(db_alias).update_or_create(
         name="default-notify-update",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
@@ -92,7 +92,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     EventMatcherPolicy = apps.get_model(
         "authentik_policies_event_matcher", "EventMatcherPolicy"
     )
-    NotificationTrigger = apps.get_model("authentik_events", "NotificationTrigger")
+    NotificationRule = apps.get_model("authentik_events", "NotificationRule")
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
 
     admin_group = (
@@ -109,7 +109,7 @@ def notify_exception(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         name="default-match-property-mapping-exception",
         defaults={"action": EventAction.PROPERTY_MAPPING_EXCEPTION},
     )
-    trigger, _ = NotificationTrigger.objects.using(db_alias).update_or_create(
+    trigger, _ = NotificationRule.objects.using(db_alias).update_or_create(
         name="default-notify-exception",
         defaults={"group": admin_group, "severity": NotificationSeverity.ALERT},
     )
@@ -150,7 +150,7 @@ class Migration(migrations.Migration):
     dependencies = [
         (
             "authentik_events",
-            "0010_notification_notificationtransport_notificationtrigger",
+            "0010_notification_notificationtransport_notificationrule",
         ),
         ("authentik_core", "0016_auto_20201202_2234"),
         ("authentik_policies_event_matcher", "0003_auto_20210110_1907"),

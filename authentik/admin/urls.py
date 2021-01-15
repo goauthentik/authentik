@@ -4,8 +4,8 @@ from django.urls import path
 from authentik.admin.views import (
     applications,
     certificate_key_pair,
+    events_notifications_rules,
     events_notifications_transports,
-    events_notifications_triggers,
     flows,
     groups,
     outposts,
@@ -370,20 +370,20 @@ urlpatterns = [
         events_notifications_transports.NotificationTransportDeleteView.as_view(),
         name="notification-transport-delete",
     ),
-    # Event Notification Triggers
+    # Event Notification Rules
     path(
-        "events/triggers/create/",
-        events_notifications_triggers.NotificationTriggerCreateView.as_view(),
-        name="notification-trigger-create",
+        "events/rules/create/",
+        events_notifications_rules.NotificationRuleCreateView.as_view(),
+        name="notification-rule-create",
     ),
     path(
-        "events/triggers/<uuid:pk>/update/",
-        events_notifications_triggers.NotificationTriggerUpdateView.as_view(),
-        name="notification-trigger-update",
+        "events/rules/<uuid:pk>/update/",
+        events_notifications_rules.NotificationRuleUpdateView.as_view(),
+        name="notification-rule-update",
     ),
     path(
-        "events/triggers/<uuid:pk>/delete/",
-        events_notifications_triggers.NotificationTriggerDeleteView.as_view(),
-        name="notification-trigger-delete",
+        "events/rules/<uuid:pk>/delete/",
+        events_notifications_rules.NotificationRuleDeleteView.as_view(),
+        name="notification-rule-delete",
     ),
 ]

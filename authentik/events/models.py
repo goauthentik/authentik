@@ -174,7 +174,7 @@ class TransportMode(models.TextChoices):
 
 
 class NotificationTransport(models.Model):
-    """Action which is executed when a Trigger matches"""
+    """Action which is executed when a Rule matches"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
@@ -323,7 +323,7 @@ class Notification(models.Model):
         verbose_name_plural = _("Notifications")
 
 
-class NotificationTrigger(PolicyBindingModel):
+class NotificationRule(PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
@@ -357,9 +357,9 @@ class NotificationTrigger(PolicyBindingModel):
     )
 
     def __str__(self) -> str:
-        return f"Notification Trigger {self.name}"
+        return f"Notification Rule {self.name}"
 
     class Meta:
 
-        verbose_name = _("Notification Trigger")
-        verbose_name_plural = _("Notification Triggers")
+        verbose_name = _("Notification Rule")
+        verbose_name_plural = _("Notification Rules")

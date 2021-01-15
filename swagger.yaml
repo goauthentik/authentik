@@ -1090,6 +1090,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /events/rules/:
+    get:
+      operationId: events_rules_list
+      description: NotificationRule Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/NotificationRule'
+      tags:
+        - events
+    post:
+      operationId: events_rules_create
+      description: NotificationRule Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      tags:
+        - events
+    parameters: []
+  /events/rules/{pbm_uuid}/:
+    get:
+      operationId: events_rules_read
+      description: NotificationRule Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      tags:
+        - events
+    put:
+      operationId: events_rules_update
+      description: NotificationRule Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      tags:
+        - events
+    patch:
+      operationId: events_rules_partial_update
+      description: NotificationRule Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/NotificationRule'
+      tags:
+        - events
+    delete:
+      operationId: events_rules_delete
+      description: NotificationRule Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - events
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this Notification Rule.
+        required: true
+        type: string
+        format: uuid
   /events/transports/:
     get:
       operationId: events_transports_list
@@ -1240,133 +1367,6 @@ paths:
       - name: uuid
         in: path
         description: A UUID string identifying this Notification Transport.
-        required: true
-        type: string
-        format: uuid
-  /events/triggers/:
-    get:
-      operationId: events_triggers_list
-      description: NotificationTrigger Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/NotificationTrigger'
-      tags:
-        - events
-    post:
-      operationId: events_triggers_create
-      description: NotificationTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      tags:
-        - events
-    parameters: []
-  /events/triggers/{pbm_uuid}/:
-    get:
-      operationId: events_triggers_read
-      description: NotificationTrigger Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      tags:
-        - events
-    put:
-      operationId: events_triggers_update
-      description: NotificationTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      tags:
-        - events
-    patch:
-      operationId: events_triggers_partial_update
-      description: NotificationTrigger Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/NotificationTrigger'
-      tags:
-        - events
-    delete:
-      operationId: events_triggers_delete
-      description: NotificationTrigger Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - events
-    parameters:
-      - name: pbm_uuid
-        in: path
-        description: A UUID string identifying this Notification Trigger.
         required: true
         type: string
         format: uuid
@@ -7630,38 +7630,8 @@ definitions:
       seen:
         title: Seen
         type: boolean
-  NotificationTransport:
-    description: NotificationTransport Serializer
-    required:
-      - name
-      - mode
-    type: object
-    properties:
-      pk:
-        title: Uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      mode:
-        title: Mode
-        type: string
-        enum:
-          - webhook
-          - webhook_slack
-          - email
-      mode_verbose:
-        title: Mode verbose
-        type: string
-        readOnly: true
-      webhook_url:
-        title: Webhook url
-        type: string
-  NotificationTrigger:
-    description: NotificationTrigger Serializer
+  NotificationRule:
+    description: NotificationRule Serializer
     required:
       - name
     type: object
@@ -7679,7 +7649,7 @@ definitions:
         description: ''
         type: array
         items:
-          description: Action which is executed when a Trigger matches
+          description: Action which is executed when a Rule matches
           required:
             - name
             - mode
@@ -7767,6 +7737,36 @@ definitions:
                 format: uuid
             readOnly: true
         readOnly: true
+  NotificationTransport:
+    description: NotificationTransport Serializer
+    required:
+      - name
+      - mode
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      mode:
+        title: Mode
+        type: string
+        enum:
+          - webhook
+          - webhook_slack
+          - email
+      mode_verbose:
+        title: Mode verbose
+        type: string
+        readOnly: true
+      webhook_url:
+        title: Webhook url
+        type: string
   Stage:
     title: Stage obj
     description: Stage Serializer

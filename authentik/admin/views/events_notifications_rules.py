@@ -1,4 +1,4 @@
-"""authentik NotificationTrigger administration"""
+"""authentik NotificationRule administration"""
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -10,30 +10,30 @@ from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
-from authentik.events.forms import NotificationTriggerForm
-from authentik.events.models import NotificationTrigger
+from authentik.events.forms import NotificationRuleForm
+from authentik.events.models import NotificationRule
 from authentik.lib.views import CreateAssignPermView
 
 
-class NotificationTriggerCreateView(
+class NotificationRuleCreateView(
     SuccessMessageMixin,
     BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
 ):
-    """Create new NotificationTrigger"""
+    """Create new NotificationRule"""
 
-    model = NotificationTrigger
-    form_class = NotificationTriggerForm
-    permission_required = "authentik_events.add_notificationtrigger"
+    model = NotificationRule
+    form_class = NotificationRuleForm
+    permission_required = "authentik_events.add_NotificationRule"
 
     template_name = "generic/create.html"
     success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully created Notification Trigger")
+    success_message = _("Successfully created Notification Rule")
 
 
-class NotificationTriggerUpdateView(
+class NotificationRuleUpdateView(
     SuccessMessageMixin,
     BackSuccessUrlMixin,
     LoginRequiredMixin,
@@ -42,23 +42,23 @@ class NotificationTriggerUpdateView(
 ):
     """Update application"""
 
-    model = NotificationTrigger
-    form_class = NotificationTriggerForm
-    permission_required = "authentik_events.change_notificationtrigger"
+    model = NotificationRule
+    form_class = NotificationRuleForm
+    permission_required = "authentik_events.change_NotificationRule"
 
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully updated Notification Trigger")
+    success_message = _("Successfully updated Notification Rule")
 
 
-class NotificationTriggerDeleteView(
+class NotificationRuleDeleteView(
     LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
 ):
     """Delete application"""
 
-    model = NotificationTrigger
-    permission_required = "authentik_events.delete_notificationtrigger"
+    model = NotificationRule
+    permission_required = "authentik_events.delete_NotificationRule"
 
     template_name = "generic/delete.html"
     success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Notification Trigger")
+    success_message = _("Successfully deleted Notification Rule")

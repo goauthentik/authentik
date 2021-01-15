@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name="NotificationTrigger",
+            name="NotificationRule",
             fields=[
                 (
                     "policybindingmodel_ptr",
@@ -93,8 +93,8 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name": "Notification Trigger",
-                "verbose_name_plural": "Notification Triggers",
+                "verbose_name": "Notification Rule",
+                "verbose_name_plural": "Notification Rules",
             },
             bases=("authentik_policies.policybindingmodel",),
         ),

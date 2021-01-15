@@ -7,20 +7,20 @@ import "../../elements/policies/BoundPoliciesList";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Trigger } from "../../api/EventTriggers";
+import { Rule } from "../../api/EventRules";
 
-@customElement("ak-event-trigger-list")
-export class TriggerListPage extends TablePage<Trigger> {
+@customElement("ak-event-rule-list")
+export class RuleListPage extends TablePage<Rule> {
     expandable = true;
 
     searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
-        return gettext("Notification Triggers");
+        return gettext("Notification Rules");
     }
     pageDescription(): string {
-        return gettext("Send notifications on whenever a specific Event is created and matched by policies.");
+        return gettext("Send notifications whenever a specific Event is created and matched by policies.");
     }
     pageIcon(): string {
         return gettext("pf-icon pf-icon-attention-bell");
@@ -29,8 +29,8 @@ export class TriggerListPage extends TablePage<Trigger> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<PBResponse<Trigger>> {
-        return Trigger.list({
+    apiEndpoint(page: number): Promise<PBResponse<Rule>> {
+        return Rule.list({
             ordering: this.order,
             page: page,
             search: this.search || "",
@@ -46,19 +46,19 @@ export class TriggerListPage extends TablePage<Trigger> {
         ];
     }
 
-    row(item: Trigger): TemplateResult[] {
+    row(item: Rule): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.severity}`,
-            html`${item.group?.name || gettext("None (trigger disabled)")}`,
+            html`${item.group?.name || gettext("None (rule disabled)")}`,
             html`
-            <ak-modal-button href="${Trigger.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${Rule.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>&nbsp;
-            <ak-modal-button href="${Trigger.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${Rule.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -70,7 +70,7 @@ export class TriggerListPage extends TablePage<Trigger> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Trigger.adminUrl("create/")}>
+        <ak-modal-button href=${Rule.adminUrl("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
@@ -80,7 +80,7 @@ export class TriggerListPage extends TablePage<Trigger> {
         `;
     }
 
-    renderExpanded(item: Trigger): TemplateResult {
+    renderExpanded(item: Rule): TemplateResult {
         return html`
         <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

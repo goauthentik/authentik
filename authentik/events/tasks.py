@@ -5,9 +5,9 @@ from structlog import get_logger
 from authentik.events.models import (
     Event,
     Notification,
+    NotificationRule,
     NotificationTransport,
     NotificationTransportError,
-    NotificationTrigger,
 )
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.engine import PolicyEngine, PolicyEngineMode
@@ -20,7 +20,7 @@ LOGGER = get_logger()
 @CELERY_APP.task()
 def event_notification_handler(event_uuid: str):
     """Start task for each trigger definition"""
-    for trigger in NotificationTrigger.objects.all():
+    for trigger in NotificationRule.objects.all():
         event_trigger_handler.apply_async(
             args=[event_uuid, trigger.name], queue="authentik_events"
         )
@@ -28,20 +28,20 @@ def event_notification_handler(event_uuid: str):
 
 @CELERY_APP.task()
 def event_trigger_handler(event_uuid: str, trigger_name: str):
-    """Check if policies attached to NotificationTrigger match event"""
+    """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.get(event_uuid=event_uuid)
-    trigger: NotificationTrigger = NotificationTrigger.objects.get(name=trigger_name)
+    trigger: NotificationRule = NotificationRule.objects.get(name=trigger_name)
 
     if "policy_uuid" in event.context:
         policy_uuid = event.context["policy_uuid"]
         if PolicyBinding.objects.filter(
-            target__in=NotificationTrigger.objects.all().values_list(
+            target__in=NotificationRule.objects.all().values_list(
                 "pbm_uuid", flat=True
             ),
             policy=policy_uuid,
         ).exists():
             # If policy that caused this event to be created is attached
-            # to *any* NotificationTrigger, we return early.
+            # to *any* NotificationRule, we return early.
             # This is the most effective way to prevent infinite loops.
             LOGGER.debug(
                 "e(trigger): attempting to prevent infinite loop", trigger=trigger

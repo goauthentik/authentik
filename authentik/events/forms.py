@@ -2,7 +2,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from authentik.events.models import NotificationTransport, NotificationTrigger
+from authentik.events.models import NotificationRule, NotificationTransport
 
 
 class NotificationTransportForm(forms.ModelForm):
@@ -30,12 +30,12 @@ class NotificationTransportForm(forms.ModelForm):
         }
 
 
-class NotificationTriggerForm(forms.ModelForm):
-    """NotificationTrigger Form"""
+class NotificationRuleForm(forms.ModelForm):
+    """NotificationRule Form"""
 
     class Meta:
 
-        model = NotificationTrigger
+        model = NotificationRule
         fields = [
             "name",
             "group",

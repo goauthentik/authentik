@@ -1,7 +1,7 @@
 import { customElement, html, LitElement, TemplateResult } from "lit-element";
 
 @customElement("ak-notification-trigger")
-export class NotificationTrigger extends LitElement {
+export class NotificationRule extends LitElement {
 
     constructor() {
         super();
