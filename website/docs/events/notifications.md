@@ -2,6 +2,10 @@
 title: Notifications
 ---
 
+:::note
+To prevent infinite loops (events created by policies which are attached to a Notification rule), **any events created by a policy which is attached to any Notification Trigger do not trigger notifications.**
+:::
+
 ## Filtering Events
 
 Starting with authentik 0.15, you can create notification triggers, which can alert you based on the creation of certain events.

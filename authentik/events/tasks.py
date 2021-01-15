@@ -11,6 +11,7 @@ from authentik.events.models import (
 )
 from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.engine import PolicyEngine, PolicyEngineMode
+from authentik.policies.models import PolicyBinding
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -33,9 +34,15 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 
     if "policy_uuid" in event.context:
         policy_uuid = event.context["policy_uuid"]
-        if trigger.policies.filter(policy_uuid=policy_uuid).exists():
-            # Event has been created by a policy that is attached
-            # to this trigger. To prevent infinite loops, we stop here
+        if PolicyBinding.objects.filter(
+            target__in=NotificationTrigger.objects.all().values_list(
+                "pbm_uuid", flat=True
+            ),
+            policy=policy_uuid,
+        ).exists():
+            # If policy that caused this event to be created is attached
+            # to *any* NotificationTrigger, we return early.
+            # This is the most effective way to prevent infinite loops.
             LOGGER.debug(
                 "e(trigger): attempting to prevent infinite loop", trigger=trigger
             )
