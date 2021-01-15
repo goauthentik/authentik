@@ -17,8 +17,10 @@ export class NotificationDrawer extends LitElement {
         return COMMON_STYLES.concat(
             css`
                 .pf-c-notification-drawer__header {
-                    height: 82px;
+                    height: 114px;
                     padding: var(--pf-c-page__main-section--PaddingTop) var(--pf-c-page__main-section--PaddingRight) var(--pf-c-page__main-section--PaddingBottom) var(--pf-c-page__main-section--PaddingLeft);
+                    display: flex;
+                    flex-direction: column;
                 }
             `
         );
@@ -72,13 +74,13 @@ export class NotificationDrawer extends LitElement {
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
-                    <h1 class="pf-c-notification-drawer__header-title">
+                <div class="pf-c-notification-drawer__header pf-c-content">
+                    <h1>
                         ${gettext("Notifications")}
                     </h1>
-                    <span class="pf-c-notification-drawer__header-status">
+                    <p>
                         ${gettext(`${this.unread} unread`)}
-                    </span>
+                    </p>
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">

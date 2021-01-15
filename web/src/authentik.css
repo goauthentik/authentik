@@ -228,4 +228,11 @@ select[multiple] {
     .form-control-static {
         color: var(--ak-dark-foreground);
     }
+    /* notifications */
+    .pf-c-notification-drawer {
+        --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background);
+    }
+    .pf-c-notification-drawer__header {
+        background-color: var(--ak-dark-background-lighter);
+    }
 }
