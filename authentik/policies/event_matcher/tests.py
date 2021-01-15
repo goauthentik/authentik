@@ -10,19 +10,43 @@ from authentik.policies.types import PolicyRequest
 class TestEventMatcherPolicy(TestCase):
     """EventMatcherPolicy tests"""
 
-    def test_drop_action(self):
-        """Test drop event"""
+    def test_match_action(self):
+        """Test match action"""
         event = Event.new(EventAction.LOGIN)
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
         policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            action=EventAction.LOGIN_FAILED
+            action=EventAction.LOGIN
         )
         response = policy.passes(request)
-        self.assertFalse(response.passing)
-        self.assertTupleEqual(response.messages, ("Action did not match.",))
+        self.assertTrue(response.passing)
+        self.assertTupleEqual(response.messages, ("Action matched.",))
 
-    def test_drop_client_ip(self):
+    def test_match_client_ip(self):
+        """Test match client_ip"""
+        event = Event.new(EventAction.LOGIN)
+        event.client_ip = "1.2.3.4"
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
+            client_ip="1.2.3.4"
+        )
+        response = policy.passes(request)
+        self.assertTrue(response.passing)
+        self.assertTupleEqual(response.messages, ("Client IP matched.",))
+
+    def test_match_app(self):
+        """Test match app"""
+        event = Event.new(EventAction.LOGIN)
+        event.app = "foo"
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(app="foo")
+        response = policy.passes(request)
+        self.assertTrue(response.passing)
+        self.assertTupleEqual(response.messages, ("App matched.",))
+
+    def test_drop(self):
         """Test drop event"""
         event = Event.new(EventAction.LOGIN)
         event.client_ip = "1.2.3.4"
@@ -33,30 +57,6 @@ class TestEventMatcherPolicy(TestCase):
         )
         response = policy.passes(request)
         self.assertFalse(response.passing)
-        self.assertTupleEqual(response.messages, ("Client IP did not match.",))
-
-    def test_drop_app(self):
-        """Test drop event"""
-        event = Event.new(EventAction.LOGIN)
-        event.app = "foo"
-        request = PolicyRequest(get_anonymous_user())
-        request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(app="bar")
-        response = policy.passes(request)
-        self.assertFalse(response.passing)
-        self.assertTupleEqual(response.messages, ("App did not match.",))
-
-    def test_passing(self):
-        """Test passing event"""
-        event = Event.new(EventAction.LOGIN)
-        event.client_ip = "1.2.3.4"
-        request = PolicyRequest(get_anonymous_user())
-        request.context["event"] = event
-        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            client_ip="1.2.3.4"
-        )
-        response = policy.passes(request)
-        self.assertTrue(response.passing)
 
     def test_invalid(self):
         """Test passing event"""

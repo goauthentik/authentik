@@ -7623,6 +7623,7 @@ definitions:
       created:
         title: Created
         type: string
+        format: date-time
         readOnly: true
       event:
         $ref: '#/definitions/Event'
