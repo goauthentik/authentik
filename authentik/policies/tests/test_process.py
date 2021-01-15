@@ -125,4 +125,4 @@ class TestPolicyProcess(TestCase):
         self.assertEqual(len(events), 1)
         event = events.first()
         self.assertEqual(event.user["username"], self.user.username)
-        self.assertIn("division by zero", event.context["error"])
+        self.assertIn("division by zero", event.context["message"])
