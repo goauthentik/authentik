@@ -2,13 +2,11 @@
 
 ## Supported Versions
 
-As authentik is currently in a pre-stable, only the latest "stable" version is supported. After authentik 1.0, this will change.
-
-| Version  | Supported          |
-| -------- | ------------------ |
-| 0.12.x   | :white_check_mark: |
-| 0.13.x   | :white_check_mark: |
-| 0.14.x   | :white_check_mark: |
+| Version    | Supported          |
+| ---------- | ------------------ |
+| 0.13.x     | :white_check_mark: |
+| 0.14.x     | :white_check_mark: |
+| 2021.1.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
