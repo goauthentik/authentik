@@ -28,7 +28,7 @@ export class Tabs extends LitElement {
     }
 
     render(): TemplateResult {
-        const pages = Array.from(this.querySelectorAll("[slot]"));
+        const pages = Array.from(this.querySelectorAll("[slot^='page-']"));
         if (!this.currentPage) {
             if (pages.length < 1) {
                 return html`<h1>${gettext("no tabs defined")}</h1>`;

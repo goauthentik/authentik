@@ -34,8 +34,8 @@ export class LibraryApplication extends LitElement {
         return html` <a href="${this.application.launch_url}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 ${this.application.meta_icon
-        ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.meta_icon)}" alt="Application Icon"/>`
-        : html`<i class="pf-icon pf-icon-arrow"></i>`}
+                    ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.meta_icon)}" alt="Application Icon"/>`
+                    : html`<i class="pf-icon pf-icon-arrow"></i>`}
             </div>
             <div class="pf-c-card__title">
                 <p id="card-1-check-label">${this.application.name}</p>
@@ -92,8 +92,8 @@ export class LibraryPage extends LitElement {
             </section>
             <section class="pf-c-page__main-section">
             ${loading(this.apps, html`${(this.apps?.results.length || 0) > 0 ?
-        this.renderApps() :
-        this.renderEmptyState()}`)}
+                this.renderApps() :
+                this.renderEmptyState()}`)}
             </section>
         </main>`;
     }
