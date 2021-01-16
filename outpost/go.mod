@@ -1,17 +1,16 @@
-module github.com/BeryJu/authentik/outpost
+module goauthentik.io/outpost
 
 go 1.14
 
 require (
 	cloud.google.com/go v0.64.0 // indirect
-	github.com/BeryJu/authentik/proxy v0.0.0-20210116180903-8acb9dde5f2f
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.9.0
 	github.com/go-openapi/errors v0.19.9
 	github.com/go-openapi/runtime v0.19.24
-	github.com/go-openapi/strfmt v0.19.11
+	github.com/go-openapi/strfmt v0.19.12
 	github.com/go-openapi/swag v0.19.12
-	github.com/go-openapi/validate v0.20.0
+	github.com/go-openapi/validate v0.20.1
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-swagger/go-swagger v0.25.0 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect

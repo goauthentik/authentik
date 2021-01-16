@@ -9,14 +9,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/BeryJu/authentik/outpost/pkg/client/crypto"
-	"github.com/BeryJu/authentik/outpost/pkg/models"
 	"github.com/jinzhu/copier"
 	"github.com/justinas/alice"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/middleware"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/validation"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/outpost/pkg/client/crypto"
+	"goauthentik.io/outpost/pkg/models"
 )
 
 type providerBundle struct {

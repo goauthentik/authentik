@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/BeryJu/authentik/outpost/pkg/ak"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/outpost/pkg/ak"
 )
 
 // Server represents an HTTP server

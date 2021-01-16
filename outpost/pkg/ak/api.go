@@ -6,12 +6,12 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/BeryJu/authentik/outpost/pkg"
-	"github.com/BeryJu/authentik/outpost/pkg/client"
-	"github.com/BeryJu/authentik/outpost/pkg/client/outposts"
 	"github.com/go-openapi/runtime"
 	"github.com/pkg/errors"
 	"github.com/recws-org/recws"
+	"goauthentik.io/outpost/pkg"
+	"goauthentik.io/outpost/pkg/client"
+	"goauthentik.io/outpost/pkg/client/outposts"
 
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"

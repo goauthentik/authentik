@@ -10,8 +10,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/BeryJu/authentik/outpost/pkg/ak"
-	"github.com/BeryJu/authentik/outpost/pkg/proxy"
+	"goauthentik.io/outpost/pkg/ak"
+	"goauthentik.io/outpost/pkg/proxy"
 )
 
 const helpMessage = `authentik proxy

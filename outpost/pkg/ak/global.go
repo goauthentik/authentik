@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/authentik/outpost/pkg"
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/outpost/pkg"
 )
 
 func doGlobalSetup(config map[string]interface{}) {

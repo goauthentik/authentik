@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BeryJu/authentik/outpost/pkg"
 	"github.com/go-openapi/strfmt"
 	"github.com/gorilla/websocket"
 	"github.com/recws-org/recws"
+	"goauthentik.io/outpost/pkg"
 )
 
 func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {

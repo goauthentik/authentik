@@ -37,7 +37,6 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/BeryJu/authentik v0.0.0-20210108085217-fd6d99f4f999 h1:ymxzvnxKNUomJIRG1VP3I6ls5mWn8r1xWD82bHASEk0=
 github.com/BeryJu/authentik v0.0.0-20210116180903-8acb9dde5f2f h1:pLOJgn8bIzavtn0h874lys3gs7uk1RnMqMWIttOWY8Y=
-github.com/BeryJu/authentik/outpost v0.0.0-20210108085217-fd6d99f4f999 h1:XYHeaZx7fm4JNx77MHMO6ek/Gdp+sZa2jIJyjC294Gw=
 github.com/BeryJu/authentik/proxy v0.0.0-20210108085217-fd6d99f4f999 h1:XYHeaZx7fm4JNx77MHMO6ek/Gdp+sZa2jIJyjC294Gw=
 github.com/BeryJu/authentik/proxy v0.0.0-20210116180903-8acb9dde5f2f h1:bp617AbteaVcZBXMtr4/A+FSSVGKqRWlTo5chcirq8k=
 github.com/BeryJu/authentik/proxy v0.0.0-20210116180903-8acb9dde5f2f/go.mod h1:6/VeRMuLHUE3Ywr1uIpjxnmOJJsAfld7OOOi+uocxQw=
@@ -239,6 +238,8 @@ github.com/go-openapi/strfmt v0.19.5 h1:0utjKrw+BAh8s57XE9Xz8DUBsVvPmRUB6styvl9w
 github.com/go-openapi/strfmt v0.19.5/go.mod h1:eftuHTlB/dI8Uq8JJOyRlieZf+WkkxUuk0dgdHXr2Qk=
 github.com/go-openapi/strfmt v0.19.11 h1:0+YvbNh05rmBkgztd6zHp4OCFn7Mtu30bn46NQo2ZRw=
 github.com/go-openapi/strfmt v0.19.11/go.mod h1:UukAYgTaQfqJuAFlNxxMWNvMYiwiXtLsF2VwmoFtbtc=
+github.com/go-openapi/strfmt v0.19.12 h1:GcJYVoo6b2fsAzIxHTL6bTIcGo7vCJTfty+mdyj5VXo=
+github.com/go-openapi/strfmt v0.19.12/go.mod h1:UukAYgTaQfqJuAFlNxxMWNvMYiwiXtLsF2VwmoFtbtc=
 github.com/go-openapi/swag v0.17.0/go.mod h1:AByQ+nYG6gQg71GINrmuDXCPWdL640yX49/kXLo40Tg=
 github.com/go-openapi/swag v0.18.0/go.mod h1:AByQ+nYG6gQg71GINrmuDXCPWdL640yX49/kXLo40Tg=
 github.com/go-openapi/swag v0.19.2/go.mod h1:POnQmlKehdgb5mhVOsnJFsivZCEZ/vjK9gh66Z9tfKk=
@@ -259,6 +260,8 @@ github.com/go-openapi/validate v0.19.15 h1:oUHZO8jD7p5oRLANlXF0U8ic9ePBUkDQyRZdN
 github.com/go-openapi/validate v0.19.15/go.mod h1:tbn/fdOwYHgrhPBzidZfJC2MIVvs9GA7monOmWBbeCI=
 github.com/go-openapi/validate v0.20.0 h1:pzutNCCBZGZlE+u8HD3JZyWdc/TVbtVwlWUp8/vgUKk=
 github.com/go-openapi/validate v0.20.0/go.mod h1:b60iJT+xNNLfaQJUqLI7946tYiFEOuE9E4k54HpKcJ0=
+github.com/go-openapi/validate v0.20.1 h1:QGQ5CvK74E28t3DkegGweKR+auemUi5IdpMc4x3UW6s=
+github.com/go-openapi/validate v0.20.1/go.mod h1:b60iJT+xNNLfaQJUqLI7946tYiFEOuE9E4k54HpKcJ0=
 github.com/go-redis/redis/v7 v7.2.0 h1:CrCexy/jYWZjW0AyVoHlcJUeZN19VWlbepTh1Vq6dJs=
 github.com/go-redis/redis/v7 v7.2.0/go.mod h1:JDNMw23GTyLNC4GZu9njt15ctBQVn7xjRfnwdHj/Dcg=
 github.com/go-redis/redis/v7 v7.4.0 h1:7obg6wUoj05T0EpY0o8B59S9w5yeMWql7sw2kwNW1x4=
@@ -703,6 +706,7 @@ go.opencensus.io v0.22.4/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/multierr v1.1.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
 go.uber.org/zap v1.10.0/go.mod h1:vwi/ZaCAaUcBkycHslxD9B2zi4UTXhF60s6SWpuDF0Q=
+goauthentik.io/outpost v0.0.0-20210108085217-fd6d99f4f999 h1:XYHeaZx7fm4JNx77MHMO6ek/Gdp+sZa2jIJyjC294Gw=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20181029021203-45a5f77698d3/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

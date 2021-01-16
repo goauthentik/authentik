@@ -3,8 +3,8 @@ package proxy
 import (
 	"net/url"
 
-	"github.com/BeryJu/authentik/outpost/pkg/models"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/outpost/pkg/models"
 )
 
 func (s *Server) Refresh() error {

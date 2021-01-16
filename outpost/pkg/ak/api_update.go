@@ -4,8 +4,8 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 
-	"github.com/BeryJu/authentik/outpost/pkg/client/outposts"
-	"github.com/BeryJu/authentik/outpost/pkg/models"
+	"goauthentik.io/outpost/pkg/client/outposts"
+	"goauthentik.io/outpost/pkg/models"
 )
 
 func (a *APIController) Update() ([]*models.ProxyOutpostConfig, error) {
