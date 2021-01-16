@@ -1,4 +1,4 @@
-package server
+package ak
 
 import (
 	"crypto/tls"
@@ -40,7 +40,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	}
 	ws.Dial(fmt.Sprintf(pathTemplate, scheme, pbURL.Host, outpostUUID.String()), header)
 
-	ac.logger.WithField("component", "ws").WithField("outpost", outpostUUID.String()).Debug("connecting to authentik")
+	ac.logger.WithField("component", "ak-ws").WithField("outpost", outpostUUID.String()).Debug("connecting to authentik")
 
 	ac.wsConn = ws
 	// Send hello message with our version
@@ -52,7 +52,7 @@ func (ac *APIController) initWS(pbURL url.URL, outpostUUID strfmt.UUID) {
 	}
 	err := ws.WriteJSON(msg)
 	if err != nil {
-		ac.logger.WithField("component", "ws").WithError(err).Warning("Failed to hello to authentik")
+		ac.logger.WithField("component", "ak-ws").WithError(err).Warning("Failed to hello to authentik")
 	}
 }
 
@@ -87,7 +87,7 @@ func (ac *APIController) startWSHandler() {
 		}
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
-			err := ac.UpdateIfRequired()
+			err := ac.Server.Refresh()
 			if err != nil {
 				ac.logger.WithField("loop", "ws-handler").WithError(err).Debug("Failed to update")
 			}

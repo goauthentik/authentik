@@ -1,4 +1,4 @@
-package server
+package proxy
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/BeryJu/authentik/outpost/pkg/client/crypto"
 	"github.com/BeryJu/authentik/outpost/pkg/models"
-	"github.com/BeryJu/authentik/outpost/pkg/proxy"
 	"github.com/jinzhu/copier"
 	"github.com/justinas/alice"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/apis/options"
@@ -23,11 +22,13 @@ import (
 type providerBundle struct {
 	http.Handler
 
-	a     *APIController
-	proxy *proxy.OAuthProxy
+	s     *Server
+	proxy *OAuthProxy
 	Host  string
 
 	cert *tls.Certificate
+
+	log *log.Entry
 }
 
 func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *options.Options {
@@ -37,7 +38,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 		return nil
 	}
 	providerOpts := &options.Options{}
-	copier.Copy(&providerOpts, &pb.a.commonOpts)
+	copier.Copy(&providerOpts, getCommonOptions())
 	providerOpts.ClientID = provider.ClientID
 	providerOpts.ClientSecret = provider.ClientSecret
 
@@ -66,22 +67,22 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 	}
 
 	if provider.Certificate != nil {
-		pb.a.logger.WithField("provider", provider.ClientID).Debug("Enabling TLS")
-		cert, err := pb.a.client.Crypto.CryptoCertificatekeypairsRead(&crypto.CryptoCertificatekeypairsReadParams{
+		pb.log.WithField("provider", provider.ClientID).Debug("Enabling TLS")
+		cert, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsRead(&crypto.CryptoCertificatekeypairsReadParams{
 			Context: context.Background(),
 			KpUUID:  *provider.Certificate,
-		}, pb.a.auth)
+		}, pb.s.ak.Auth)
 		if err != nil {
-			pb.a.logger.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch certificate")
+			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
 		x509cert, err := tls.X509KeyPair([]byte(*cert.Payload.CertificateData), []byte(cert.Payload.KeyData))
 		if err != nil {
-			pb.a.logger.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to parse certificate")
+			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to parse certificate")
 			return providerOpts
 		}
 		pb.cert = &x509cert
-		pb.a.logger.WithField("provider", provider.ClientID).WithField("certificate-key-pair", *cert.Payload.Name).Debug("Loaded certificates")
+		pb.log.WithField("provider", provider.ClientID).WithField("certificate-key-pair", *cert.Payload.Name).Debug("Loaded certificates")
 	}
 	return providerOpts
 }
@@ -119,7 +120,7 @@ func (pb *providerBundle) Build(provider *models.ProxyOutpostConfig) {
 		log.Printf("%s", err)
 		os.Exit(1)
 	}
-	oauthproxy, err := proxy.NewOAuthProxy(opts)
+	oauthproxy, err := NewOAuthProxy(opts)
 	if err != nil {
 		log.Errorf("ERROR: Failed to initialise OAuth2 Proxy: %v", err)
 		os.Exit(1)

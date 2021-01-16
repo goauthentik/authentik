@@ -1,4 +1,4 @@
-package server
+package ak
 
 import (
 	"crypto/rand"
@@ -13,8 +13,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func generateSelfSignedCert() (tls.Certificate, error) {
-
+// GenerateSelfSignedCert Generate a self-signed TLS Certificate, to be used as fallback
+func GenerateSelfSignedCert() (tls.Certificate, error) {
 	priv, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		log.Fatalf("Failed to generate private key: %v", err)

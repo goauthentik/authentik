@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -8,18 +8,21 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/BeryJu/authentik/outpost/pkg/server"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/BeryJu/authentik/outpost/pkg/ak"
+	"github.com/BeryJu/authentik/outpost/pkg/proxy"
 )
 
 const helpMessage = `authentik proxy
 
 Required environment variables:
- - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
- - AUTHENTIK_TOKEN: Token to authenticate with
- - AUTHENTIK_INSECURE: Skip SSL Certificate verification`
+- AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
+- AUTHENTIK_TOKEN: Token to authenticate with
+- AUTHENTIK_INSECURE: Skip SSL Certificate verification`
 
-// RunServer main entrypoint, runs the full server
-func RunServer() {
+func main() {
+	log.SetLevel(log.DebugLevel)
 	pbURL, found := os.LookupEnv("AUTHENTIK_HOST")
 	if !found {
 		fmt.Println("env AUTHENTIK_HOST not set!")
@@ -42,10 +45,12 @@ func RunServer() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	ac := server.NewAPIController(*pbURLActual, pbToken)
+	ac := ak.NewAPIController(*pbURLActual, pbToken)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
+
+	ac.Server = proxy.NewServer(ac)
 
 	ac.Start()
 

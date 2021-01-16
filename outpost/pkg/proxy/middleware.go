@@ -1,4 +1,4 @@
-package server
+package proxy
 
 import (
 	"bufio"
@@ -95,7 +95,7 @@ type loggingHandler struct {
 func LoggingHandler(h http.Handler) http.Handler {
 	return loggingHandler{
 		handler: h,
-		logger:  log.WithField("component", "http-server"),
+		logger:  log.WithField("component", "proxy-http-server"),
 	}
 }
 

@@ -1,4 +1,4 @@
-package server
+package proxy
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/BeryJu/authentik/outpost/pkg/ak"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -15,68 +16,24 @@ import (
 type Server struct {
 	Handlers map[string]*providerBundle
 
-	stop   chan struct{} // channel for waiting shutdown
-	logger *log.Entry
-
+	stop        chan struct{} // channel for waiting shutdown
+	logger      *log.Entry
+	ak          *ak.APIController
 	defaultCert tls.Certificate
 }
 
 // NewServer initialise a new HTTP Server
-func NewServer() *Server {
-	defaultCert, err := generateSelfSignedCert()
+func NewServer(ac *ak.APIController) *Server {
+	defaultCert, err := ak.GenerateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
 	}
 	return &Server{
 		Handlers:    make(map[string]*providerBundle),
-		logger:      log.WithField("component", "http-server"),
+		logger:      log.WithField("component", "proxy-http-server"),
 		defaultCert: defaultCert,
+		ak:          ac,
 	}
-}
-
-// ServeHTTP constructs a net.Listener and starts handling HTTP requests
-func (s *Server) ServeHTTP() {
-	listenAddress := "0.0.0.0:4180"
-	listener, err := net.Listen("tcp", listenAddress)
-	if err != nil {
-		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
-	}
-	s.logger.Printf("listening on %s", listener.Addr())
-	s.serve(listener)
-	s.logger.Printf("closing %s", listener.Addr())
-}
-
-func (s *Server) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	handler, ok := s.Handlers[info.ServerName]
-	if !ok {
-		s.logger.WithField("server-name", info.ServerName).Debug("Handler does not exist")
-		return &s.defaultCert, nil
-	}
-	if handler.cert == nil {
-		s.logger.WithField("server-name", info.ServerName).Debug("Handler does not have a certificate")
-		return &s.defaultCert, nil
-	}
-	return handler.cert, nil
-}
-
-// ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
-func (s *Server) ServeHTTPS() {
-	listenAddress := "0.0.0.0:4443"
-	config := &tls.Config{
-		MinVersion:     tls.VersionTLS12,
-		MaxVersion:     tls.VersionTLS12,
-		GetCertificate: s.getCertificates,
-	}
-
-	ln, err := net.Listen("tcp", listenAddress)
-	if err != nil {
-		s.logger.Fatalf("FATAL: listen (%s) failed - %s", listenAddress, err)
-	}
-	s.logger.Printf("listening on %s", ln.Addr())
-
-	tlsListener := tls.NewListener(tcpKeepAliveListener{ln.(*net.TCPListener)}, config)
-	s.serve(tlsListener)
-	s.logger.Printf("closing %s", tlsListener.Addr())
 }
 
 func (s *Server) handler(w http.ResponseWriter, r *http.Request) {

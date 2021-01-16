@@ -1,4 +1,4 @@
-package server
+package ak
 
 type websocketInstruction int
 
