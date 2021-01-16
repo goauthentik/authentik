@@ -70,10 +70,11 @@ func (ac *APIController) Shutdown() {
 
 func (ac *APIController) startWSHandler() {
 	notConnectedBackoff := 1
+	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
 		if !ac.wsConn.IsConnected() {
 			notConnectedWait := time.Duration(notConnectedBackoff) * time.Second
-			ac.logger.WithField("loop", "ws-handler").WithField("wait", notConnectedWait).Info("Not connected, trying again...")
+			logger.WithField("wait", notConnectedWait).Info("Not connected, trying again...")
 			time.Sleep(notConnectedWait)
 			notConnectedBackoff += notConnectedBackoff
 			continue
@@ -81,15 +82,16 @@ func (ac *APIController) startWSHandler() {
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
-			ac.logger.WithField("loop", "ws-handler").Println("read:", err)
+			logger.Println("read:", err)
 			ac.wsConn.CloseAndReconnect()
 			continue
 		}
 		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
+			logger.Debug("Got update trigger...")
 			err := ac.Server.Refresh()
 			if err != nil {
-				ac.logger.WithField("loop", "ws-handler").WithError(err).Debug("Failed to update")
+				logger.WithError(err).Debug("Failed to update")
 			}
 		}
 	}

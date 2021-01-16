@@ -427,6 +427,7 @@ _LOGGING_HANDLER_MAP = {
     "dbbackup": "ERROR",
     "kubernetes": "INFO",
     "asyncio": "WARNING",
+    "aioredis": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
     # pyright: reportGeneralTypeIssues=false
