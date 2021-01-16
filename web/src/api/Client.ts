@@ -1,3 +1,4 @@
+import { getCookie } from "../utils";
 import { NotFoundError, RequestError } from "./Error";
 
 export const VERSION = "v2beta";
@@ -21,6 +22,36 @@ export class Client {
     fetch<T>(url: string[], query?: QueryArguments): Promise<T> {
         const finalUrl = this.makeUrl(url, query);
         return fetch(finalUrl)
+            .then((r) => {
+                if (r.status > 300) {
+                    switch (r.status) {
+                    case 404:
+                        throw new NotFoundError(`URL ${finalUrl} not found`);
+                    default:
+                        throw new RequestError(r.statusText);
+                    }
+                }
+                return r;
+            })
+            .then((r) => r.json())
+            .then((r) => <T>r);
+    }
+
+    update<T>(url: string[], body: T, query?: QueryArguments): Promise<T> {
+        const finalUrl = this.makeUrl(url, query);
+        const csrftoken = getCookie("authentik_csrf");
+        const request = new Request(finalUrl, {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken,
+                },
+        });
+        return fetch(request, {
+            method: "PATCH",
+            mode: "same-origin",
+            body: JSON.stringify(body),
+        })
             .then((r) => {
                 if (r.status > 300) {
                     switch (r.status) {
