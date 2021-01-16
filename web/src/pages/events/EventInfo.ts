@@ -46,11 +46,11 @@ export class EventInfo extends LitElement {
         return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Context")}</h3>
-                        <code>${JSON.stringify(this.event?.context)}</code>
+                        <code>${JSON.stringify(this.event?.context, null, 4)}</code>
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${gettext("User")}</h3>
-                        <code>${JSON.stringify(this.event?.user)}</code>
+                        <code>${JSON.stringify(this.event?.user, null, 4)}</code>
                     </div>
                 </div>`;
     }
@@ -112,7 +112,7 @@ export class EventInfo extends LitElement {
                         <h3>${gettext("Request")}</h3>
                         <ul class="pf-c-list">
                             <li>${gettext("Object")}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
-                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context)}</code></span></li>
+                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
                     <div class="pf-l-flex__item">
@@ -130,7 +130,7 @@ export class EventInfo extends LitElement {
                         <h3>${gettext("Request")}</h3>
                         <ul class="pf-c-list">
                             <li>${gettext("Object")}: ${this.getModelInfo((this.event.context.request as EventContext).obj as EventContext)}</li>
-                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context)}</code></span></li>
+                            <li><span>${gettext("Context")}: <code>${JSON.stringify((this.event.context.request as EventContext).context, null, 4)}</code></span></li>
                         </ul>
                     </div>
                     <div class="pf-l-flex__item">
