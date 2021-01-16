@@ -4,11 +4,19 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
+from authentik.core.models import Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
-from authentik.outposts.models import Outpost
+from authentik.outposts.models import Outpost, OutpostServiceConnection
 from authentik.outposts.tasks import outpost_post_save, outpost_pre_delete
 
 LOGGER = get_logger()
+UPDATE_TRIGGERING_MODELS = (
+    Outpost,
+    OutpostServiceConnection,
+    Provider,
+    CertificateKeyPair,
+)
 
 
 @receiver(post_save)
@@ -21,6 +29,8 @@ def post_save_update(sender, instance: Model, **_):
     if instance.__module__ == "django.db.migrations.recorder":
         return
     if instance.__module__ == "__fake__":
+        return
+    if sender not in UPDATE_TRIGGERING_MODELS:
         return
     outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
 

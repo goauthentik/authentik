@@ -124,14 +124,12 @@ def outpost_post_save(model_class: str, model_pk: Any):
         _ = instance.token
         LOGGER.debug("Trigger reconcile for outpost")
         outpost_controller.delay(instance.pk)
-        return
 
     if isinstance(instance, (OutpostModel, Outpost)):
         LOGGER.debug(
             "triggering outpost update from outpostmodel/outpost", instance=instance
         )
         outpost_send_update(instance)
-        return
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
