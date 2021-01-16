@@ -22,6 +22,9 @@ export class NotificationDrawer extends LitElement {
                     display: flex;
                     flex-direction: column;
                 }
+                .pf-c-notification-drawer__list-item-description {
+                    white-space: pre;
+                }
             `
         );
     }
@@ -29,7 +32,7 @@ export class NotificationDrawer extends LitElement {
     firstUpdated(): void {
         Notification.list().then(r => {
             this.notifications = r;
-            this.unread = r.results.filter((n) => n.seen).length;
+            this.unread = r.results.filter((n) => !n.seen).length;
         });
     }
 
@@ -60,12 +63,8 @@ export class NotificationDrawer extends LitElement {
                     ${item.event?.action}
                 </h2>
             </div>
-            <div class="pf-c-notification-drawer__list-item-description">
-                ${item.body}
-            </div>
-            <div class="pf-c-notification-drawer__list-item-timestamp">
-                ${age}
-            </div>
+            <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
+            <small class="pf-c-notification-drawer__list-item-timestamp">${age}</small>
         </li>`;
     }
 

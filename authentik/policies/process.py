@@ -93,8 +93,8 @@ class PolicyProcess(Process):
             )
             # Create policy exception event
             self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
-            LOGGER.debug("P_ENG(proc): error", exc=exc)
-            policy_result = PolicyResult(False, str(exc))
+            LOGGER.debug("P_ENG(proc): error", exc=src_exc)
+            policy_result = PolicyResult(False, str(src_exc))
         policy_result.source_policy = self.binding.policy
         # Invert result if policy.negate is set
         if self.binding.negate:
