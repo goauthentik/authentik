@@ -55,6 +55,10 @@ class PolicyEvaluator(BaseEvaluator):
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
+        # So, this is a bit questionable. Essentially, we are edit the stacktrace
+        # so the user only sees information relevant to them
+        # and none of our surrounding error handling
+        exc.__traceback__ = exc.__traceback__.tb_next
         raise PolicyException(exc)
 
     def evaluate(self, expression_source: str) -> PolicyResult:

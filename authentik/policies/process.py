@@ -15,6 +15,7 @@ from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+TRACEBACK_HEADER = "Traceback (most recent call last):\n"
 
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
@@ -85,7 +86,11 @@ class PolicyProcess(Process):
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc
-            error_string = "".join(format_tb(src_exc.__traceback__)) + str(src_exc)
+            error_string = (
+                TRACEBACK_HEADER
+                + "".join(format_tb(src_exc.__traceback__))
+                + str(src_exc)
+            )
             # Create policy exception event
             self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
             LOGGER.debug("P_ENG(proc): error", exc=exc)
