@@ -8,7 +8,7 @@ from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.middleware import LOCAL
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict
 
@@ -63,7 +63,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
     ):
         """Signal handler for all object's post_save"""
-        if isinstance(instance, Event):
+        if isinstance(instance, (Event, Notification)):
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
@@ -75,7 +75,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, **_
     ):
         """Signal handler for all object's pre_delete"""
-        if isinstance(instance, Event):
+        if isinstance(instance, (Event, Notification)):
             return
 
         EventNewThread(

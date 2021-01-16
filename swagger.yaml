@@ -984,6 +984,31 @@ paths:
       operationId: events_notifications_list
       description: Notification Viewset
       parameters:
+        - name: severity
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: body
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: created
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: event
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: seen
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.

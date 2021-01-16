@@ -39,6 +39,13 @@ class NotificationViewSet(
 
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+    filterset_fields = [
+        "severity",
+        "body",
+        "created",
+        "event",
+        "seen",
+    ]
 
     def get_queryset(self):
         if not self.request:
