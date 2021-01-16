@@ -9,6 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.forms.overview import FlowCacheClearForm, PolicyCacheClearForm
 from authentik.admin.mixins import AdminRequiredMixin
+from authentik.core.api.applications import user_app_cache_key
 
 LOGGER = get_logger()
 
@@ -26,6 +27,9 @@ class PolicyCacheClearView(AdminRequiredMixin, SuccessMessageMixin, FormView):
         keys = cache.keys("policy_*")
         cache.delete_many(keys)
         LOGGER.debug("Cleared Policy cache", keys=len(keys))
+        # Also delete user application cache
+        keys = user_app_cache_key("*")
+        cache.delete_many(keys)
         return super().post(request, *args, **kwargs)
 
 

@@ -20,7 +20,6 @@ UPDATE_TRIGGERING_MODELS = (
 
 
 @receiver(post_save)
-# pylint: disable=unused-argument
 def post_save_update(sender, instance: Model, **_):
     """If an Outpost is saved, Ensure that token is created/updated
 
