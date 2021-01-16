@@ -55,7 +55,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
-        raise PolicyException(str(exc)) from exc
+        raise PolicyException(exc)
 
     def evaluate(self, expression_source: str) -> PolicyResult:
         """Parse and evaluate expression. Policy is expected to return a truthy object.

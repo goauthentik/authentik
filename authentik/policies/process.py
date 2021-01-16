@@ -83,8 +83,10 @@ class PolicyProcess(Process):
                     result=policy_result,
                 )
         except PolicyException as exc:
+            # Either use passed original exception or whatever we have
+            src_exc = exc.src_exc if exc.src_exc else exc
+            error_string = "".join(format_tb(src_exc.__traceback__)) + str(src_exc)
             # Create policy exception event
-            error_string = "".join(format_tb(exc.__traceback__)) + str(exc)
             self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
             LOGGER.debug("P_ENG(proc): error", exc=exc)
             policy_result = PolicyResult(False, str(exc))
