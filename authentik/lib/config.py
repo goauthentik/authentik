@@ -5,12 +5,14 @@ from contextlib import contextmanager
 from glob import glob
 from json import dumps
 from time import time
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
 from django.http import HttpRequest
+
+from authentik import __version__
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -19,10 +21,9 @@ ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
 
-def context_processor(request: HttpRequest) -> Dict[str, Any]:
+def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects config object into every template"""
-    kwargs = {"config": CONFIG.raw}
-    return kwargs
+    return {"config": CONFIG.raw, "ak_version": __version__}
 
 
 class ConfigLoader:
