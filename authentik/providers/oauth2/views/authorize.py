@@ -145,7 +145,7 @@ class OAuthAuthorizationParams:
             )
         except OAuth2Provider.DoesNotExist:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
-            raise ClientIdError()
+            raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
         self.check_scope()
         self.check_nonce()
@@ -155,24 +155,18 @@ class OAuthAuthorizationParams:
         """Redirect URI validation."""
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError()
+            raise RedirectUriError("", self.provider.redirect_uris.split())
         if self.redirect_uri.lower() not in [
             x.lower() for x in self.provider.redirect_uris.split()
         ]:
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                provider=self.provider,
-                message="Invalid redirect URI was used.",
-                client_used=self.redirect_uri,
-                configured=self.provider.redirect_uris.split(),
-            ).save()
             LOGGER.warning(
                 "Invalid redirect uri",
                 redirect_uri=self.redirect_uri,
                 excepted=self.provider.redirect_uris.split(),
             )
-            raise RedirectUriError()
-
+            raise RedirectUriError(
+                self.redirect_uri, self.provider.redirect_uris.split()
+            )
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
@@ -262,10 +256,12 @@ class OAuthFulfillmentStage(StageView):
             ).from_http(self.request)
             return redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
+            error.to_event().from_http(request)
             self.executor.stage_invalid()
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
+            error.to_event().from_http(request)
             self.executor.stage_invalid()
             return redirect(error.create_uri())
 
@@ -383,8 +379,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         try:
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:
+            error.to_event().from_http(self.request)
             raise RequestValidationError(redirect(error.create_uri()))
         except OAuth2Error as error:
+            error.to_event().from_http(self.request)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
             )
@@ -398,6 +396,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.grant_type,
                 self.params.state,
             )
+            error.to_event().from_http(self.request)
             raise RequestValidationError(redirect(error.create_uri()))
 
     def resolve_provider_application(self):

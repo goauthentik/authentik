@@ -1,6 +1,8 @@
 """OAuth errors"""
+from typing import Optional
 from urllib.parse import quote
 
+from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.providers.oauth2.models import GrantTypes
 
@@ -21,6 +23,13 @@ class OAuth2Error(SentryIgnoredException):
     def __repr__(self) -> str:
         return self.error
 
+    def to_event(self, message: Optional[str] = None) -> Event:
+        """Create configuration_error Event and save it."""
+        return Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=message or self.description,
+        )
+
 
 class RedirectUriError(OAuth2Error):
     """The request fails due to a missing, invalid, or mismatching
@@ -28,9 +37,23 @@ class RedirectUriError(OAuth2Error):
 
     error = "Redirect URI Error"
     description = (
-        "The request fails due to a missing, invalid, or mismatching"
-        " redirection URI (redirect_uri)."
+        "The request fails due to a missing, invalid, or mismatching "
+        "redirection URI (redirect_uri)."
     )
+
+    provided_uri: str
+    allowed_uris: list[str]
+
+    def __init__(self, provided_uri: str, allowed_uris: list[str]) -> None:
+        super().__init__()
+        self.provided_uri = provided_uri
+        self.allowed_uris = allowed_uris
+
+    def to_event(self) -> Event:
+        return super().to_event(
+            f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
+            f"Allowed redirect URIs are {','.join(self.allowed_uris)}"
+        )
 
 
 class ClientIdError(OAuth2Error):
@@ -38,6 +61,15 @@ class ClientIdError(OAuth2Error):
 
     error = "Client ID Error"
     description = "The client identifier (client_id) is missing or invalid."
+
+    client_id: str
+
+    def __init__(self, client_id: str) -> None:
+        super().__init__()
+        self.client_id = client_id
+
+    def to_event(self) -> Event:
+        return super().to_event(f"Invalid client identifier: {self.client_id}.")
 
 
 class UserAuthError(OAuth2Error):
