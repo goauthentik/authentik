@@ -32,7 +32,7 @@ REQUEST_MOCK_VALID = Mock(
     return_value=MockResponse(
         200,
         """{
-            "tag_name": "version/1.2.3"
+            "tag_name": "version/99999999.9999999"
         }""",
     )
 )
@@ -47,10 +47,10 @@ class TestAdminTasks(TestCase):
     def test_version_valid_response(self):
         """Test Update checker with valid response"""
         update_latest_version.delay().get()
-        self.assertEqual(cache.get(VERSION_CACHE_KEY), "1.2.3")
+        self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
         self.assertTrue(
             Event.objects.filter(
-                action=EventAction.UPDATE_AVAILABLE, context__new_version="1.2.3"
+                action=EventAction.UPDATE_AVAILABLE, context__new_version="99999999.9999999"
             ).exists()
         )
         # test that a consecutive check doesn't create a duplicate event
@@ -58,7 +58,7 @@ class TestAdminTasks(TestCase):
         self.assertEqual(
             len(
                 Event.objects.filter(
-                    action=EventAction.UPDATE_AVAILABLE, context__new_version="1.2.3"
+                    action=EventAction.UPDATE_AVAILABLE, context__new_version="99999999.9999999"
                 )
             ),
             1,
