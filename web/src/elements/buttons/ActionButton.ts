@@ -15,11 +15,6 @@ export class ActionButton extends SpinnerButton {
         }
         this.setLoading();
         const csrftoken = getCookie("authentik_csrf");
-        if (!csrftoken) {
-            console.debug("No csrf token in cookie");
-            this.setDone(ERROR_CLASS);
-            return;
-        }
         const request = new Request(this.url, {
             headers: { "X-CSRFToken": csrftoken },
         });

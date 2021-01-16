@@ -30,9 +30,12 @@ export class NotificationDrawer extends LitElement {
     }
 
     firstUpdated(): void {
-        Notification.list().then(r => {
+        Notification.list({
+            seen: false,
+            ordering: "-created"
+        }).then(r => {
             this.notifications = r;
-            this.unread = r.results.filter((n) => !n.seen).length;
+            this.unread = r.results.length;
         });
     }
 
@@ -62,6 +65,15 @@ export class NotificationDrawer extends LitElement {
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
                     ${item.event?.action}
                 </h2>
+            </div>
+            <div class="pf-c-notification-drawer__list-item-action">
+                <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {
+                    Notification.markSeen(item.pk).then(() => {
+                        this.firstUpdated();
+                    });
+                }}>
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
             <small class="pf-c-notification-drawer__list-item-timestamp">${age}</small>

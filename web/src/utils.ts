@@ -1,8 +1,8 @@
 import { html, TemplateResult } from "lit-html";
 import { SpinnerSize } from "./elements/Spinner";
 
-export function getCookie(name: string): string | undefined {
-    let cookieValue = undefined;
+export function getCookie(name: string): string {
+    let cookieValue = "";
     if (document.cookie && document.cookie !== "") {
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
