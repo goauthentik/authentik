@@ -4,7 +4,7 @@ WORKDIR /work
 
 COPY . .
 
-RUN go build -o /work/proxy .
+RUN go build -o /work/proxy ./cmd/proxy
 
 # Copy binary to alpine
 FROM gcr.io/distroless/base-debian10:debug

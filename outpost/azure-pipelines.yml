@@ -27,10 +27,10 @@ stages:
                 sudo apt install swagger
                 mkdir -p $(go env GOPATH)
                 swagger generate client -f ../swagger.yaml -A authentik -t pkg/
-              workingDirectory: 'proxy/'
+              workingDirectory: 'outpost/'
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'proxy/pkg/'
+              targetPath: 'outpost/pkg/'
               artifact: 'swagger_client'
               publishLocation: 'pipeline'
   - stage: lint
@@ -50,13 +50,13 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'swagger_client'
-              path: "proxy/pkg/"
+              path: "outpost/pkg/"
           - task: CmdLine@2
             inputs:
               script: |
                 $(go list -f {{.Target}} golang.org/x/lint/golint) ./...
-              workingDirectory: 'proxy/'
-  - stage: build_go
+              workingDirectory: 'outpost/'
+  - stage: proxy_build_go
     jobs:
       - job: build_go
         pool:
@@ -69,14 +69,15 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'swagger_client'
-              path: "proxy/pkg/"
+              path: "outpost/pkg/"
           - task: Go@0
             inputs:
               command: 'build'
-              workingDirectory: 'proxy/'
-  - stage: build_docker
+              arguments: './cmd/proxy'
+              workingDirectory: 'outpost/'
+  - stage: proxy_build_docker
     jobs:
-      - job: build_proxy
+      - job: build
         pool:
           vmImage: 'ubuntu-latest'
         steps:
@@ -87,7 +88,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'swagger_client'
-              path: "proxy/pkg/"
+              path: "outpost/pkg/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -97,8 +98,8 @@ stages:
           - task: Docker@2
             inputs:
               containerRegistry: 'dockerhub'
-              repository: 'beryju/authentik-proxy'
+              repository: 'beryju/authentik-outpost'
               command: 'buildAndPush'
-              Dockerfile: 'proxy/Dockerfile'
-              buildContext: 'proxy/'
+              Dockerfile: 'outpost/proxy.Dockerfile'
+              buildContext: 'outpost/'
               tags: "gh-${{ variables.branchName }}"
