@@ -23,7 +23,7 @@ export class NotificationDrawer extends LitElement {
                     flex-direction: column;
                 }
                 .pf-c-notification-drawer__list-item-description {
-                    white-space: pre;
+                    white-space: pre-wrap;
                 }
             `
         );
