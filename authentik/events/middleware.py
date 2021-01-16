@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
+from guardian.models import UserObjectPermission
 
 from authentik.core.middleware import LOCAL
 from authentik.events.models import Event, EventAction, Notification
@@ -63,7 +64,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, created: bool, **_
     ):
         """Signal handler for all object's post_save"""
-        if isinstance(instance, (Event, Notification)):
+        if isinstance(instance, (Event, Notification, UserObjectPermission)):
             return
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
@@ -75,7 +76,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, **_
     ):
         """Signal handler for all object's pre_delete"""
-        if isinstance(instance, (Event, Notification)):
+        if isinstance(instance, (Event, Notification, UserObjectPermission)):
             return
 
         EventNewThread(
