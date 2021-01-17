@@ -31,6 +31,7 @@ def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
     autoretry_for=(
         SMTPException,
         ConnectionError,
+        OSError,
     ),
     retry_backoff=True,
     base=MonitoredTask,
@@ -44,7 +45,7 @@ def send_mail(
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
         if not email_stage_pk:
-            stage: EmailStage = EmailStage()
+            stage: EmailStage = EmailStage(use_global_settings=True)
         else:
             stage: EmailStage = EmailStage.objects.get(pk=email_stage_pk)
         backend = stage.backend
