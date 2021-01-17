@@ -1,5 +1,5 @@
 """authentik policy task"""
-from multiprocessing import Process
+from multiprocessing import get_context
 from multiprocessing.connection import Connection
 from traceback import format_tb
 from typing import Optional
@@ -28,7 +28,11 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     return prefix
 
 
-class PolicyProcess(Process):
+FORK_CTX = get_context("fork")
+PROCESS_CLASS = FORK_CTX.Process
+
+
+class PolicyProcess(PROCESS_CLASS):
     """Evaluate a single policy within a seprate process"""
 
     connection: Connection
