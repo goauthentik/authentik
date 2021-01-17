@@ -282,7 +282,7 @@ class NotificationTransport(models.Model):
         try:
             # pyright: reportGeneralTypeIssues=false
             return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
-        except (SMTPException, ConnectionError) as exc:
+        except (SMTPException, ConnectionError, OSError) as exc:
             raise NotificationTransportError from exc
 
     def __str__(self) -> str:
