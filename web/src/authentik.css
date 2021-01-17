@@ -81,7 +81,7 @@ select[multiple] {
     font-size: var(--pf-global--FontSize--sm);
 }
 
-.pf-c-page__main {
+.pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
     z-index: auto !important;
 }
 
