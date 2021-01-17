@@ -31,7 +31,11 @@ def authenticate(
 
     Customized version of django's authenticate, which accepts a list of backends"""
     for backend_path in backends:
-        backend: BaseBackend = path_to_class(backend_path)()
+        try:
+            backend: BaseBackend = path_to_class(backend_path)()
+        except ImportError:
+            LOGGER.warning("Failed to import backend", path=backend_path)
+            continue
         LOGGER.debug("Attempting authentication...", backend=backend)
         user = backend.authenticate(request, **credentials)
         if user is None:
