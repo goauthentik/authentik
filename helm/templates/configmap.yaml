@@ -20,7 +20,7 @@ data:
   OUTPOSTS__DOCKER_IMAGE_BASE: "{{ .Values.image.name_outposts }}"
   EMAIL__HOST: "{{ .Values.config.email.host }}"
   EMAIL__PORT: "{{ .Values.config.email.port }}"
-  EMAIL__USERNAM: "{{ .Values.config.email.username }}"
+  EMAIL__USERNAME: "{{ .Values.config.email.username }}"
   EMAIL__USE_TLS: "{{ .Values.config.email.use_tls }}"
   EMAIL__USE_SSL: "{{ .Values.config.email.use_ssl }}"
   EMAIL__TIMEOUT: "{{ .Values.config.email.timeout }}"

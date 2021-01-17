@@ -117,7 +117,7 @@ spec:
               memory: 300M
             limits:
               cpu: 300m
-              memory: 600MiB
+              memory: 600M
       volumes:
         - name: authentik-uploads
           persistentVolumeClaim:
