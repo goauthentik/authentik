@@ -86,7 +86,7 @@ class ApplicationViewSet(ModelViewSet):
                 engine.build()
                 if engine.passing:
                     allowed_applications.append(application)
-            cache.set(user_app_cache_key(self.request.user.pk), allowed_applications)
+            cache.set(user_app_cache_key(self.request.user.pk), allowed_applications, timeout=86400)
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
