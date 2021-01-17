@@ -117,7 +117,7 @@ class PolicyEngine:
                 task = PolicyProcess(binding, self.request, task_end)
                 task.daemon = False
                 LOGGER.debug("P_ENG: Starting Process", policy=binding.policy)
-                if CURRENT_PROCESS._config.get("daemon"):
+                if not CURRENT_PROCESS._config.get("daemon"):
                     task.run()
                 else:
                     task.start()
