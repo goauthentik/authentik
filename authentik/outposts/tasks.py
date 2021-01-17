@@ -49,9 +49,15 @@ def outpost_service_connection_state(connection_pk: Any):
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def outpost_service_connection_monitor(self: MonitoredTask):
     """Regularly check the state of Outpost Service Connections"""
-    for connection in OutpostServiceConnection.objects.all():
+    connections = OutpostServiceConnection.objects.all()
+    for connection in connections.iterator():
         outpost_service_connection_state.delay(connection.pk)
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
+    self.set_status(
+        TaskResult(
+            TaskResultStatus.SUCCESSFUL,
+            [f"Successfully updated {len(connections)} connections."],
+        )
+    )
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
