@@ -50,7 +50,8 @@ class TestAdminTasks(TestCase):
         self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
         self.assertTrue(
             Event.objects.filter(
-                action=EventAction.UPDATE_AVAILABLE, context__new_version="99999999.9999999"
+                action=EventAction.UPDATE_AVAILABLE,
+                context__new_version="99999999.9999999",
             ).exists()
         )
         # test that a consecutive check doesn't create a duplicate event
@@ -58,7 +59,8 @@ class TestAdminTasks(TestCase):
         self.assertEqual(
             len(
                 Event.objects.filter(
-                    action=EventAction.UPDATE_AVAILABLE, context__new_version="99999999.9999999"
+                    action=EventAction.UPDATE_AVAILABLE,
+                    context__new_version="99999999.9999999",
                 )
             ),
             1,
