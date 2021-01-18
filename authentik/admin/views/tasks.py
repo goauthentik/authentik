@@ -4,7 +4,7 @@ from typing import Any, Dict
 from django.views.generic.base import TemplateView
 
 from authentik.admin.mixins import AdminRequiredMixin
-from authentik.lib.tasks import TaskInfo, TaskResultStatus
+from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
 
 
 class TaskListView(AdminRequiredMixin, TemplateView):

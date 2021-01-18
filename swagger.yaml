@@ -7584,6 +7584,8 @@ definitions:
           - policy_execution
           - policy_exception
           - property_mapping_exception
+          - system_task_execution
+          - system_task_exception
           - configuration_error
           - model_created
           - model_updated
@@ -8300,6 +8302,8 @@ definitions:
           - policy_execution
           - policy_exception
           - property_mapping_exception
+          - system_task_execution
+          - system_task_exception
           - configuration_error
           - model_created
           - model_updated

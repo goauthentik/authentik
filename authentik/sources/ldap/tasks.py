@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
 
-from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync import LDAPSynchronizer

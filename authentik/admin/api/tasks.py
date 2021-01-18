@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ViewSet
 
-from authentik.lib.tasks import TaskInfo
+from authentik.events.monitored_tasks import TaskInfo
 
 
 class TaskSerializer(Serializer):

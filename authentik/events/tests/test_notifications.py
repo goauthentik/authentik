@@ -87,4 +87,4 @@ class TestEventsNotifications(TestCase):
                 "authentik.events.models.NotificationTransport.send", execute_mock
             ):
                 Event.new(EventAction.CUSTOM_PREFIX).save()
-        self.assertEqual(passes.call_count, 0)
+        self.assertEqual(passes.call_count, 1)
