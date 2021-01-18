@@ -1,2 +1,2 @@
 """authentik"""
-__version__ = "2021.1.1-stable"
+__version__ = "2021.1.2-stable"
