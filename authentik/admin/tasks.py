@@ -6,7 +6,7 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__
 from authentik.events.models import Event, EventAction
-from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

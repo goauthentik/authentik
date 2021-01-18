@@ -8,7 +8,7 @@ from django.db.models.base import Model
 from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
-from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.models import (

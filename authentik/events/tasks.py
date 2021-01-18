@@ -9,7 +9,7 @@ from authentik.events.models import (
     NotificationTransport,
     NotificationTransportError,
 )
-from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.policies.engine import PolicyEngine, PolicyEngineMode
 from authentik.policies.models import PolicyBinding
 from authentik.root.celery import CELERY_APP

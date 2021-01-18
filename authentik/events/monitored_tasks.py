@@ -8,6 +8,8 @@ from typing import Any, Dict, List, Optional
 from celery import Task
 from django.core.cache import cache
 
+from authentik.events.models import Event, EventAction
+
 
 class TaskResultStatus(Enum):
     """Possible states of tasks"""
@@ -122,6 +124,13 @@ class MonitoredTask(Task):
                 task_call_args=args,
                 task_call_kwargs=kwargs,
             ).save(self.result_timeout_hours)
+            Event.new(
+                EventAction.SYSTEM_TASK_EXECUTION,
+                message=(
+                    f"Task {self.__name__} finished successfully: "
+                    "\n".join(self._result.messages)
+                ),
+            ).save()
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
@@ -138,6 +147,13 @@ class MonitoredTask(Task):
             task_call_args=args,
             task_call_kwargs=kwargs,
         ).save(self.result_timeout_hours)
+        Event.new(
+            EventAction.SYSTEM_TASK_EXCEPTION,
+            message=(
+                f"Task {self.__name__} encountered an error: "
+                "\n".join(self._result.messages)
+            ),
+        ).save()
         return super().on_failure(exc, task_id, args, kwargs, einfo=einfo)
 
     def run(self, *args, **kwargs):

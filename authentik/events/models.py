@@ -22,7 +22,6 @@ from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
-from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
@@ -56,6 +55,9 @@ class EventAction(models.TextChoices):
     POLICY_EXECUTION = "policy_execution"
     POLICY_EXCEPTION = "policy_exception"
     PROPERTY_MAPPING_EXCEPTION = "property_mapping_exception"
+
+    SYSTEM_TASK_EXECUTION = "system_task_execution"
+    SYSTEM_TASK_EXCEPTION = "system_task_exception"
 
     CONFIGURATION_ERROR = "configuration_error"
 
@@ -280,6 +282,8 @@ class NotificationTransport(models.Model):
         )
         # Email is sent directly here, as the call to send() should have been from a task.
         try:
+            from authentik.stages.email.tasks import send_mail
+
             # pyright: reportGeneralTypeIssues=false
             return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
         except (SMTPException, ConnectionError, OSError) as exc:

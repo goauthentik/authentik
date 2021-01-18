@@ -3,7 +3,7 @@ from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.lib.tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.saml.models import SAMLSource
