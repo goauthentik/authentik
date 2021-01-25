@@ -558,11 +558,11 @@
         },
         "ldap3": {
             "hashes": [
-                "sha256:37d633e20fa360c302b1263c96fe932d40622d0119f1bddcb829b03462eeeeb7",
-                "sha256:7c3738570766f5e5e74a56fade15470f339d5c436d821cf476ef27da0a4de8b0"
+                "sha256:18c3ee656a6775b9b0d60f7c6c5b094d878d1d90fc03d56731039f0a4b546a91",
+                "sha256:c1df41d89459be6f304e0ceec4b00fdea533dbbcd83c802b1272dcdb94620b57"
             ],
             "index": "pypi",
-            "version": "==2.8.1"
+            "version": "==2.9"
         },
         "lxml": {
             "hashes": [
