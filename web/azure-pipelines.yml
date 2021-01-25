@@ -2,10 +2,10 @@ trigger:
   - master
 
 variables:
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    branchName: ${{ replace(variables['System.PullRequest.SourceBranch'], '/', '-') }}
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/') }}:
     branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
-    branchName: $(System.PullRequest.SourceBranch)
 
 stages:
   - stage: lint
@@ -74,12 +74,13 @@ stages:
             targetType: 'inline'
             script: |
               set -x
-              echo '##vso[task.setvariable variable=branchName]$(echo "$(System.PullRequest.SourceBranch)" | sed "s/\//-/g")'
+              branchName=$(echo "$(System.PullRequest.SourceBranch)" | sed "s/\//-/g")'
+              echo '##vso[task.setvariable variable=branchName]$branchName
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
             repository: 'beryju/authentik-static'
             command: 'buildAndPush'
             Dockerfile: 'web/Dockerfile'
-            tags: "gh-${{ variables.branchName }}"
+            tags: "gh-$(branchName)"
             buildContext: 'web/'
