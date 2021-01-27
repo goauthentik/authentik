@@ -274,7 +274,7 @@ class NotificationTransport(models.Model):
         )
         mail = TemplateEmailMessage(
             subject=f"authentik Notification: {body_trunc}",
-            template_name="email/setup.html",
+            template_name="email/generic.html",
             to=[notification.user.email],
             template_context={
                 "body": notification.body,
