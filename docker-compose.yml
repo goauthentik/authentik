@@ -19,7 +19,7 @@ services:
     networks:
       - internal
   server:
-    image: beryju/authentik:${AUTHENTIK_TAG:-2021.1.2-stable}
+    image: beryju/authentik:${AUTHENTIK_TAG:-2021.1.3-stable}
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: redis
@@ -45,7 +45,7 @@ services:
     env_file:
       - .env
   worker:
-    image: beryju/authentik:${AUTHENTIK_TAG:-2021.1.2-stable}
+    image: beryju/authentik:${AUTHENTIK_TAG:-2021.1.3-stable}
     command: worker
     networks:
       - internal
@@ -62,7 +62,7 @@ services:
     env_file:
       - .env
   static:
-    image: beryju/authentik-static:${AUTHENTIK_TAG:-2021.1.2-stable}
+    image: beryju/authentik-static:${AUTHENTIK_TAG:-2021.1.3-stable}
     networks:
       - internal
     labels:
