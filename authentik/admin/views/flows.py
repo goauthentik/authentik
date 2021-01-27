@@ -17,6 +17,7 @@ from authentik.admin.views.utils import (
     SearchListMixin,
     UserPaginateListMixin,
 )
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -25,7 +26,7 @@ from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter
 from authentik.flows.views import SESSION_KEY_PLAN, FlowPlanner
 from authentik.lib.utils.urls import redirect_with_qs
-from authentik.lib.views import CreateAssignPermView
+from authentik.lib.views import CreateAssignPermView, bad_request_message
 
 
 class FlowListView(
@@ -103,8 +104,17 @@ class FlowDebugExecuteView(LoginRequiredMixin, PermissionRequiredMixin, DetailVi
         flow: Flow = self.get_object()
         planner = FlowPlanner(flow)
         planner.use_cache = False
-        plan = planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: request.user})
-        self.request.session[SESSION_KEY_PLAN] = plan
+        try:
+            plan = planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: request.user})
+            self.request.session[SESSION_KEY_PLAN] = plan
+        except FlowNonApplicableException as exc:
+            return bad_request_message(
+                request,
+                _(
+                    "Flow not applicable to current user/request: %(messages)s"
+                    % {"messages": str(exc)}
+                ),
+            )
         return redirect_with_qs(
             "authentik_flows:flow-executor-shell",
             self.request.GET,
