@@ -1,9 +1,11 @@
 """flow exceptions"""
 
+from authentik.lib.sentry import SentryIgnoredException
 
-class FlowNonApplicableException(BaseException):
+
+class FlowNonApplicableException(SentryIgnoredException):
     """Flow does not apply to current user (denied by policy)."""
 
 
-class EmptyFlowException(BaseException):
+class EmptyFlowException(SentryIgnoredException):
     """Flow has no stages."""
