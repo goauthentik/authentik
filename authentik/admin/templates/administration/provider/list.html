@@ -160,6 +160,17 @@
                             </ak-modal-button>
                         </li>
                         {% endfor %}
+                        <li>
+                            <ak-modal-button href="{% url 'authentik_admin:provider-saml-from-metadata' %}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                    {% trans 'SAML Provider from Metadata' %}<br>
+                                    <small>
+                                        {% trans "Create a SAML Provider by importing its Metadata." %}
+                                    </small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>
                     </ul>
                 </ak-dropdown>
             </div>
