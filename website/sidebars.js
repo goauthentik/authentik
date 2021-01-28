@@ -119,6 +119,7 @@ module.exports = {
                         "integrations/services/sonarr/index",
                         "integrations/services/tautulli/index",
                         "integrations/services/ubuntu-landscape/index",
+                        "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
                     ],
                 },
