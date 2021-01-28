@@ -269,9 +269,10 @@ class MetadataImportView(LoginRequiredMixin, FormView):
             metadata = ServiceProviderMetadataParser().parse(
                 form.cleaned_data["metadata"].read().decode()
             )
-            provider = metadata.to_provider(form.cleaned_data["provider_name"])
-            provider.authorization_flow = form.cleaned_data["authorization_flow"]
-            provider.save()
+            metadata.to_provider(
+                form.cleaned_data["provider_name"],
+                form.cleaned_data["authorization_flow"],
+            )
             messages.success(self.request, _("Successfully created Provider"))
         except ValueError as exc:
             LOGGER.warning(str(exc))
