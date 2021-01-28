@@ -17,17 +17,17 @@ def create_default_property_mappings(apps, schema_editor):
         },
         {
             "FriendlyName": "cn",
-            "Name": "urn:oid:2.5.4.3",
+            "Name": "http://schemas.xmlsoap.org/claims/CommonName",
             "Expression": "return user.name",
         },
         {
             "FriendlyName": "mail",
-            "Name": "urn:oid:0.9.2342.19200300.100.1.3",
+            "Name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
             "Expression": "return user.email",
         },
         {
             "FriendlyName": "displayName",
-            "Name": "urn:oid:2.16.840.1.113730.3.1.241",
+            "Name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
             "Expression": "return user.username",
         },
         {
@@ -37,8 +37,8 @@ def create_default_property_mappings(apps, schema_editor):
         },
         {
             "FriendlyName": "member-of",
-            "Name": "member-of",
-            "Expression": "for group in user.groups.all():\n    yield group.name",
+            "Name": "http://schemas.xmlsoap.org/claims/Group",
+            "Expression": "for group in user.ak_groups.all():\n    yield group.name",
         },
     ]
     for default in defaults:
