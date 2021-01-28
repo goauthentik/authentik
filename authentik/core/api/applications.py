@@ -11,12 +11,15 @@ from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
+from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import get_events_per_1h
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.events.models import EventAction
 from authentik.policies.engine import PolicyEngine
+
+LOGGER = get_logger()
 
 
 def user_app_cache_key(user_pk: str) -> str:
@@ -74,23 +77,35 @@ class ApplicationViewSet(ModelViewSet):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
+    def _get_allowed_applications(self, queryset: QuerySet) -> list[Application]:
+        applications = []
+        for application in queryset:
+            engine = PolicyEngine(application, self.request.user, self.request)
+            engine.build()
+            if engine.passing:
+                applications.append(application)
+        return applications
+
     def list(self, request: Request) -> Response:
         """Custom list method that checks Policy based access instead of guardian"""
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
-        allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
-        if not allowed_applications:
-            allowed_applications = []
-            for application in queryset:
-                engine = PolicyEngine(application, self.request.user, self.request)
-                engine.build()
-                if engine.passing:
-                    allowed_applications.append(application)
-            cache.set(
-                user_app_cache_key(self.request.user.pk),
-                allowed_applications,
-                timeout=86400,
-            )
+
+        should_cache = "search" not in request.GET
+
+        allowed_applications = []
+        if not should_cache:
+            allowed_applications = self._get_allowed_applications(queryset)
+        if should_cache:
+            LOGGER.debug("Caching allowed application list")
+            allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
+            if not allowed_applications:
+                allowed_applications = self._get_allowed_applications(queryset)
+                cache.set(
+                    user_app_cache_key(self.request.user.pk),
+                    allowed_applications,
+                    timeout=86400,
+                )
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
