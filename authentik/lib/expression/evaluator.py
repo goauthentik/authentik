@@ -60,7 +60,7 @@ class BaseEvaluator:
     @staticmethod
     def expr_func_is_group_member(user: User, **group_filters) -> bool:
         """Check if `user` is member of group with name `group_name`"""
-        return user.groups.filter(**group_filters).exists()
+        return user.ak_groups.filter(**group_filters).exists()
 
     def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
