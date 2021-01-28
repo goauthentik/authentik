@@ -11,3 +11,13 @@ Default fields are exposed through auto-generated Property Mappings, which are p
 | SSO (POST binding)     | `/application/saml/<application slug>/sso/binding/post/`     |
 | IdP-initiated login    | `/application/saml/<application slug>/sso/binding/init/`     |
 | Metadata Download      | `/application/saml/<application slug>/metadata/`             |
+
+## Name ID
+
+You can select a custom SAML Property Mapping after which the NameID field will be generated. If left default, the following checks are done:
+
+- When the request asks for `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, the NameID will be set to the user's email address.
+- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, the NameID will be set to the hashed user ID.
+- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`, the NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier.
+- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`, the NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.
+- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`, the NameID will be set based on the user's session ID.

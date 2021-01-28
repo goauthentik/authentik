@@ -3,6 +3,7 @@ from hashlib import sha256
 from types import GeneratorType
 
 import xmlsec
+from django.conf import settings
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -23,6 +24,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
@@ -141,20 +143,27 @@ class AssertionProcessor:
         """Get NameID Element"""
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
+        persistent = sha256(
+            f"{self.http_request.user.id}-{settings.SECRET_KEY}".encode("ascii")
+        ).hexdigest()
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_PERSISTENT:
-            name_id.text = self.http_request.user.username
+            name_id.text = persistent
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get(
-                "distinguishedName", ""
+                "distinguishedName", persistent
             )
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_WINDOWS:
             # This attribute is statically set by the LDAP source
+            name_id.text = self.http_request.user.attributes.get("upn", persistent)
+            return name_id
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+            # Use the hash of the user's session, which changes every session
             session_key: str = self.http_request.user.session.session_key
             name_id.text = sha256(session_key.encode()).hexdigest()
             return name_id
