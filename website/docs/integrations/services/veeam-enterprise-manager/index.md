@@ -17,6 +17,8 @@ The following placeholders will be used:
 -   `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
 -   `authentik.company` is the FQDN of the authentik install.
 
+You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
+
 ## In Veeam Enterprise Manager
 
 Login to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
@@ -38,3 +40,5 @@ Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click t
 ## Finish in Veeam Enterprise Manager
 
 Back on Veeam Enterprise Manager, click on "Import from File", and select the XML file that you've downloaded from authentik. Make sure the "Enable SAML 2.0" checkbox is still enabled, and click save.
+
+To map Veeam Enterprise Manager permissions to an authentik user, you have to create an External Group. In Veeam Enterprise Manager, under Configuration, navigate to Roles. Click the "Add..." button and select "External Group". Type in the name of a group you're member of.
