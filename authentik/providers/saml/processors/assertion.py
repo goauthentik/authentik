@@ -139,13 +139,30 @@ class AssertionProcessor:
             audience.text = self.provider.audience
         return conditions
 
+    # pylint: disable=too-many-return-statements
     def get_name_id(self) -> Element:
         """Get NameID Element"""
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
+        # persistent is used as a fallback, so always generate it
         persistent = sha256(
             f"{self.http_request.user.id}-{settings.SECRET_KEY}".encode("ascii")
         ).hexdigest()
+        name_id.text = persistent
+        # If name_id_mapping is set, we override the value, regardless of what the SP asks for
+        if self.provider.name_id_mapping:
+            try:
+                value = self.provider.name_id_mapping.evaluate(
+                    user=self.http_request.user,
+                    request=self.http_request,
+                    provider=self.provider,
+                )
+                if value is not None:
+                    name_id.text = value
+                return name_id
+            except PropertyMappingExpressionException as exc:
+                LOGGER.warning(str(exc))
+                return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
             return name_id

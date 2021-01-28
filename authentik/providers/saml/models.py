@@ -65,6 +65,21 @@ class SAMLProvider(Provider):
         ),
     )
 
+    name_id_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("NameID Property Mapping"),
+        help_text=_(
+            (
+                "Configure how the NameID value will be created. When left empty, "
+                "the NameIDPolicy of the incoming request will be considered"
+            )
+        ),
+    )
+
     assertion_valid_not_before = models.TextField(
         default="minutes=-5",
         validators=[timedelta_string_validator],

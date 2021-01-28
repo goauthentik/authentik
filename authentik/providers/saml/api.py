@@ -22,6 +22,7 @@ class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
             "property_mappings",
+            "name_id_mapping",
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",

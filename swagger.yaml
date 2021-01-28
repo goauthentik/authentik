@@ -8839,6 +8839,12 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      name_id_mapping:
+        title: NameID Property Mapping
+        description: Configure how the NameID value will be created. When left empty,
+          the NameIDPolicy of the incoming request will be considered
+        type: string
+        x-nullable: true
       digest_algorithm:
         title: Digest algorithm
         type: string

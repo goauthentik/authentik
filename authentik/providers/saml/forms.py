@@ -42,6 +42,7 @@ class SAMLProviderForm(forms.ModelForm):
             "signing_kp",
             "verification_kp",
             "property_mappings",
+            "name_id_mapping",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
@@ -84,7 +85,9 @@ class SAMLPropertyMappingForm(forms.ModelForm):
             "saml_name": mark_safe(
                 _(
                     "URN OID used by SAML. This is optional. "
-                    '<a href="https://www.rfc-editor.org/rfc/rfc2798.html#section-2">Reference</a>'
+                    '<a href="https://www.rfc-editor.org/rfc/rfc2798.html#section-2">Reference</a>.'
+                    " If this property mapping is used for NameID Property, "
+                    "this field is discarded."
                 )
             ),
         }
