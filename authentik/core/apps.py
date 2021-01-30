@@ -1,4 +1,6 @@
 """authentik core app config"""
+from importlib import import_module
+
 from django.apps import AppConfig
 
 
@@ -9,3 +11,6 @@ class AuthentikCoreConfig(AppConfig):
     label = "authentik_core"
     verbose_name = "authentik Core"
     mountpoint = ""
+
+    def ready(self):
+        import_module("authentik.core.signals")
