@@ -91,7 +91,7 @@ class ApplicationViewSet(ModelViewSet):
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
 
-        should_cache = "search" not in request.GET
+        should_cache = request.GET.get("search", "") == ""
 
         allowed_applications = []
         if not should_cache:
