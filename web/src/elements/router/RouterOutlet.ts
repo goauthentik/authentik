@@ -26,7 +26,7 @@ export class RouterOutlet extends LitElement {
             ColorStyles,
             css`
                 :host {
-                    height: 100%;
+                    height: 100vh;
                 }
             `,
         ].concat(...COMMON_STYLES);
