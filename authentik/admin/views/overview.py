@@ -28,7 +28,7 @@ class PolicyCacheClearView(AdminRequiredMixin, SuccessMessageMixin, FormView):
         cache.delete_many(keys)
         LOGGER.debug("Cleared Policy cache", keys=len(keys))
         # Also delete user application cache
-        keys = user_app_cache_key("*")
+        keys = cache.keys(user_app_cache_key("*"))
         cache.delete_many(keys)
         return super().post(request, *args, **kwargs)
 
