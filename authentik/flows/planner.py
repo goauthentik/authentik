@@ -15,6 +15,7 @@ from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.engine import PolicyEngine
 
+LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
@@ -41,8 +42,6 @@ class FlowPlan:
     context: Dict[str, Any] = field(default_factory=dict)
     markers: List[StageMarker] = field(default_factory=list)
 
-    _logger: BoundLogger = field(default_factory=get_logger)
-
     def append(self, stage: Stage, marker: Optional[StageMarker] = None):
         """Append `stage` to all stages, optionall with stage marker"""
         self.stages.append(stage)
@@ -56,14 +55,10 @@ class FlowPlan:
         marker = self.markers[0]
 
         if marker.__class__ is not StageMarker:
-            self._logger.debug(
-                "f(plan_inst): stage has marker", stage=stage, marker=marker
-            )
+            LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
         marked_stage = marker.process(self, stage, http_request)
         if not marked_stage:
-            self._logger.debug(
-                "f(plan_inst): marker returned none, next stage", stage=stage
-            )
+            LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
             self.stages.remove(stage)
             self.markers.remove(marker)
             if not self.has_stages:
