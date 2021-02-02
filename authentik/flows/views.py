@@ -65,6 +65,7 @@ class FlowExecutorView(View):
         message = exc.__doc__ if exc.__doc__ else str(exc)
         return self.stage_invalid(error_message=message)
 
+    # pylint: disable=unused-argument
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
         # Early check if theres an active Plan for the current session
         if SESSION_KEY_PLAN in self.request.session:
