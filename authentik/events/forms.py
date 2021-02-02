@@ -15,6 +15,7 @@ class NotificationTransportForm(forms.ModelForm):
             "name",
             "mode",
             "webhook_url",
+            "send_once",
         ]
         widgets = {
             "name": forms.TextInput(),

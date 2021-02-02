@@ -184,6 +184,12 @@ class NotificationTransport(models.Model):
     mode = models.TextField(choices=TransportMode.choices)
 
     webhook_url = models.TextField(blank=True)
+    send_once = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only send notification once, for example when sending a webhook into a chat channel."
+        ),
+    )
 
     def send(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""

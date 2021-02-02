@@ -8,6 +8,7 @@ from authentik.core.models import Group, User
 from authentik.events.models import (
     Event,
     EventAction,
+    Notification,
     NotificationRule,
     NotificationTransport,
 )
@@ -21,7 +22,7 @@ class TestEventsNotifications(TestCase):
 
     def setUp(self) -> None:
         self.group = Group.objects.create(name="test-group")
-        self.user = User.objects.create(name="test-user")
+        self.user = User.objects.create(name="test-user", username="test")
         self.group.users.add(self.user)
         self.group.save()
 
@@ -88,3 +89,26 @@ class TestEventsNotifications(TestCase):
             ):
                 Event.new(EventAction.CUSTOM_PREFIX).save()
         self.assertEqual(passes.call_count, 1)
+
+    def test_transport_once(self):
+        """Test transport's send_once"""
+        user2 = User.objects.create(name="test2-user", username="test2")
+        self.group.users.add(user2)
+        self.group.save()
+
+        transport = NotificationTransport.objects.create(
+            name="transport", send_once=True
+        )
+        NotificationRule.objects.filter(name__startswith="default").delete()
+        trigger = NotificationRule.objects.create(name="trigger", group=self.group)
+        trigger.transports.add(transport)
+        trigger.save()
+        matcher = EventMatcherPolicy.objects.create(
+            name="matcher", action=EventAction.CUSTOM_PREFIX
+        )
+        PolicyBinding.objects.create(target=trigger, policy=matcher, order=0)
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX).save()
+        self.assertEqual(Notification.objects.count(), 1)

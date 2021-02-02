@@ -65,15 +65,17 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
-    for user in trigger.group.users.all():
-        notification = Notification.objects.create(
-            severity=trigger.severity, body=event.summary, event=event, user=user
-        )
-
-        for transport in trigger.transports.all():
+    for transport in trigger.transports.all():
+        for user in trigger.group.users.all():
+            LOGGER.debug("created notif")
+            notification = Notification.objects.create(
+                severity=trigger.severity, body=event.summary, event=event, user=user
+            )
             notification_transport.apply_async(
                 args=[notification.pk, transport.pk], queue="authentik_events"
             )
+            if transport.send_once:
+                break
 
 
 @CELERY_APP.task(
