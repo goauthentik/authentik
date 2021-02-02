@@ -1,6 +1,6 @@
 """authentik benchmark command"""
 from csv import DictWriter
-from multiprocessing import Manager, Process, cpu_count
+from multiprocessing import Manager, Process, cpu_count, get_context
 from sys import stdout
 from time import time
 
@@ -15,9 +15,11 @@ from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 
 LOGGER = get_logger()
+FORK_CTX = get_context("fork")
+PROCESS_CLASS = FORK_CTX.Process
 
 
-class FlowPlanProcess(Process):  # pragma: no cover
+class FlowPlanProcess(PROCESS_CLASS):  # pragma: no cover
     """Test process which executes flow planner"""
 
     def __init__(self, index, return_dict, flow, user) -> None:
