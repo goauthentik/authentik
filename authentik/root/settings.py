@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import importlib
+import logging
 import os
 import sys
 from json import dumps
@@ -336,7 +337,7 @@ if not DEBUG and _ERROR_REPORTING:
             RedisIntegration(),
         ],
         before_send=before_send,
-        release="authentik@%s" % __version__,
+        release=f"authentik@{__version__}",
         traces_sample_rate=0.6,
         environment=CONFIG.y("error_reporting.environment", "customer"),
         send_default_pii=CONFIG.y_bool("error_reporting.send_pii", False),
@@ -353,23 +354,28 @@ if not DEBUG and _ERROR_REPORTING:
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
+LOG_LEVEL = CONFIG.y("log_level").upper()
+
 
 structlog.configure_once(
     processors=[
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
+        structlog.threadlocal.merge_threadlocal_context,
         add_process_id,
         add_common_fields(CONFIG.y("error_reporting.environment", "customer")),
         structlog_add_request_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(),
+        structlog.processors.TimeStamper(fmt="iso", utc=False),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
     ],
     context_class=structlog.threadlocal.wrap_dict(dict),
     logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.stdlib.BoundLogger,
+    wrapper_class=structlog.make_filtering_bound_logger(
+        getattr(logging, LOG_LEVEL, logging.WARNING)
+    ),
     cache_logger_on_first_use=True,
 )
 
@@ -410,8 +416,6 @@ LOGGING = {
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-LOG_LEVEL = CONFIG.y("log_level").upper()
-
 
 _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
