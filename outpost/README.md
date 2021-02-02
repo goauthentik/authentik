@@ -1,4 +1,4 @@
-# authentik Proxy
+# authentik outpost
 
 [![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/3?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=3)
 ![Docker pulls (proxy)](https://img.shields.io/docker/pulls/beryju/authentik-proxy.svg?style=flat-square)
