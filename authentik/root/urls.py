@@ -50,7 +50,7 @@ for _authentik_app in get_apps():
         LOGGER.debug(
             "Mounted URLs",
             app_name=_authentik_app.name,
-            mountpoint=mountpoint,
+            app_mountpoint=mountpoint,
             namespace=namespace,
         )
 

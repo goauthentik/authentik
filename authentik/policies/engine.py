@@ -8,14 +8,13 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
 
-LOGGER = get_logger()
 CURRENT_PROCESS = current_process()
 
 
@@ -49,6 +48,7 @@ class PolicyEngine:
     use_cache: bool
     request: PolicyRequest
 
+    logger: BoundLogger
     mode: PolicyEngineMode
     # Allow objects with no policies attached to pass
     empty_result: bool
@@ -62,6 +62,7 @@ class PolicyEngine:
     def __init__(
         self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None
     ):
+        self.logger = get_logger().bind()
         self.mode = PolicyEngineMode.MODE_AND
         # For backwards compatibility, set empty_result to true
         # objects with no policies attached will pass.
@@ -105,18 +106,18 @@ class PolicyEngine:
                 key = cache_key(binding, self.request)
                 cached_policy = cache.get(key, None)
                 if cached_policy and self.use_cache:
-                    LOGGER.debug(
+                    self.logger.debug(
                         "P_ENG: Taking result from cache",
                         policy=binding.policy,
                         cache_key=key,
                     )
                     self.__cached_policies.append(cached_policy)
                     continue
-                LOGGER.debug("P_ENG: Evaluating policy", policy=binding.policy)
+                self.logger.debug("P_ENG: Evaluating policy", policy=binding.policy)
                 our_end, task_end = Pipe(False)
                 task = PolicyProcess(binding, self.request, task_end)
                 task.daemon = False
-                LOGGER.debug("P_ENG: Starting Process", policy=binding.policy)
+                self.logger.debug("P_ENG: Starting Process", policy=binding.policy)
                 if not CURRENT_PROCESS._config.get("daemon"):
                     task.run()
                 else:

@@ -59,6 +59,5 @@ def before_send(event, hint):
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
         if isinstance(exc_value, ignored_classes):
-            LOGGER.info("Supressing error %r", exc_value)
             return None
     return event

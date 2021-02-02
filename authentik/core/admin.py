@@ -4,9 +4,6 @@ from django.apps import AppConfig, apps
 from django.contrib import admin
 from django.contrib.admin.sites import AlreadyRegistered
 from guardian.admin import GuardedModelAdmin
-from structlog.stdlib import get_logger
-
-LOGGER = get_logger()
 
 
 def admin_autoregister(app: AppConfig):
@@ -20,5 +17,4 @@ def admin_autoregister(app: AppConfig):
 
 for _app in apps.get_app_configs():
     if _app.label.startswith("authentik_"):
-        LOGGER.debug("Registering application for dj-admin", application=_app.label)
         admin_autoregister(_app)

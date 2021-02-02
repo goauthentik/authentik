@@ -27,7 +27,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from authentik import __version__
 from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
-from authentik.lib.logging import add_common_fields, add_process_id
+from authentik.lib.logging import add_process_id
 from authentik.lib.sentry import before_send
 
 
@@ -363,7 +363,6 @@ structlog.configure_once(
         structlog.stdlib.add_logger_name,
         structlog.threadlocal.merge_threadlocal_context,
         add_process_id,
-        add_common_fields(CONFIG.y("error_reporting.environment", "customer")),
         structlog_add_request_id,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.TimeStamper(fmt="iso", utc=False),

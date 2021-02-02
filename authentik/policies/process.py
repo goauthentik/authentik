@@ -17,6 +17,9 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 TRACEBACK_HEADER = "Traceback (most recent call last):\n"
 
+FORK_CTX = get_context("fork")
+PROCESS_CLASS = FORK_CTX.Process
+
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
@@ -26,10 +29,6 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     if request.user:
         prefix += f"#{request.user.pk}"
     return prefix
-
-
-FORK_CTX = get_context("fork")
-PROCESS_CLASS = FORK_CTX.Process
 
 
 class PolicyProcess(PROCESS_CLASS):
@@ -103,17 +102,16 @@ class PolicyProcess(PROCESS_CLASS):
         # Invert result if policy.negate is set
         if self.binding.negate:
             policy_result.passing = not policy_result.passing
+        key = cache_key(self.binding, self.request)
+        cache.set(key, policy_result)
         LOGGER.debug(
-            "P_ENG(proc): Finished",
+            "P_ENG(proc): finished and cached ",
             policy=self.binding.policy,
             result=policy_result,
             process="PolicyProcess",
             passing=policy_result.passing,
             user=self.request.user,
         )
-        key = cache_key(self.binding, self.request)
-        cache.set(key, policy_result)
-        LOGGER.debug("P_ENG(proc): Cached policy evaluation", key=key)
         return policy_result
 
     def run(self):  # pragma: no cover
