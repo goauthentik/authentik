@@ -254,7 +254,6 @@ class NotificationTransport(models.Model):
         }
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
-            body["attachments"][0]["text"] = notification.event.action
         try:
             response = post(self.webhook_url, json=body)
             response.raise_for_status()
