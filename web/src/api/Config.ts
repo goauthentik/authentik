@@ -23,7 +23,7 @@ export class Config {
                     dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                     release: `authentik@${VERSION}`,
                     integrations: [new Integrations.BrowserTracing()],
-                    tracesSampleRate: 1.0,
+                    tracesSampleRate: 0.6,
                     environment: config.error_reporting_environment,
                     beforeSend(event: Sentry.Event, hint: Sentry.EventHint) {
                         if (hint.originalException instanceof SentryIgnoredError) {
