@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
-from structlog.stdlib import get_logger
+from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
 from authentik.events.models import cleanse_dict
@@ -14,8 +14,6 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.engine import PolicyEngine
-
-LOGGER = get_logger()
 
 PLAN_CONTEXT_PENDING_USER = "pending_user"
 PLAN_CONTEXT_SSO = "is_sso"
@@ -43,6 +41,8 @@ class FlowPlan:
     context: Dict[str, Any] = field(default_factory=dict)
     markers: List[StageMarker] = field(default_factory=list)
 
+    _logger: BoundLogger = field(default_factory=get_logger)
+
     def append(self, stage: Stage, marker: Optional[StageMarker] = None):
         """Append `stage` to all stages, optionall with stage marker"""
         self.stages.append(stage)
@@ -56,10 +56,14 @@ class FlowPlan:
         marker = self.markers[0]
 
         if marker.__class__ is not StageMarker:
-            LOGGER.debug("f(plan_inst): stage has marker", stage=stage, marker=marker)
+            self._logger.debug(
+                "f(plan_inst): stage has marker", stage=stage, marker=marker
+            )
         marked_stage = marker.process(self, stage, http_request)
         if not marked_stage:
-            LOGGER.debug("f(plan_inst): marker returned none, next stage", stage=stage)
+            self._logger.debug(
+                "f(plan_inst): marker returned none, next stage", stage=stage
+            )
             self.stages.remove(stage)
             self.markers.remove(marker)
             if not self.has_stages:
@@ -88,10 +92,13 @@ class FlowPlanner:
 
     flow: Flow
 
+    _logger: BoundLogger
+
     def __init__(self, flow: Flow):
         self.use_cache = True
         self.allow_empty_flows = False
         self.flow = flow
+        self._logger = get_logger().bind(flow=flow)
 
     def plan(
         self, request: HttpRequest, default_context: Optional[Dict[str, Any]] = None
@@ -103,7 +110,9 @@ class FlowPlanner:
             span.set_data("flow", self.flow)
             span.set_data("request", request)
 
-            LOGGER.debug("f(plan): Starting planning process", flow=self.flow)
+            self._logger.debug(
+                "f(plan): starting planning process",
+            )
             # Bit of a workaround here, if there is a pending user set in the default context
             # we use that user for our cache key
             # to make sure they don't get the generic response
@@ -125,15 +134,16 @@ class FlowPlanner:
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)
             if cached_plan and self.use_cache:
-                LOGGER.debug(
-                    "f(plan): Taking plan from cache",
-                    flow=self.flow,
+                self._logger.debug(
+                    "f(plan): taking plan from cache",
                     key=cached_plan_key,
                 )
                 # Reset the context as this isn't factored into caching
                 cached_plan.context = default_context or {}
                 return cached_plan
-            LOGGER.debug("f(plan): building plan", flow=self.flow)
+            self._logger.debug(
+                "f(plan): building plan",
+            )
             plan = self._build_plan(user, request, default_context)
             cache.set(cache_key(self.flow, user), plan)
             if not plan.stages and not self.allow_empty_flows:
@@ -165,39 +175,34 @@ class FlowPlanner:
                 stage = binding.stage
                 marker = StageMarker()
                 if binding.evaluate_on_plan:
-                    LOGGER.debug(
+                    self._logger.debug(
                         "f(plan): evaluating on plan",
                         stage=binding.stage,
-                        flow=self.flow,
                     )
                     engine = PolicyEngine(binding, user, request)
                     engine.request.context = plan.context
                     engine.build()
                     if engine.passing:
-                        LOGGER.debug(
-                            "f(plan): Stage passing",
+                        self._logger.debug(
+                            "f(plan): stage passing",
                             stage=binding.stage,
-                            flow=self.flow,
                         )
                     else:
                         stage = None
                 else:
-                    LOGGER.debug(
+                    self._logger.debug(
                         "f(plan): not evaluating on plan",
                         stage=binding.stage,
-                        flow=self.flow,
                     )
                 if binding.re_evaluate_policies and stage:
-                    LOGGER.debug(
-                        "f(plan): Stage has re-evaluate marker",
+                    self._logger.debug(
+                        "f(plan): stage has re-evaluate marker",
                         stage=binding.stage,
-                        flow=self.flow,
                     )
                     marker = ReevaluateMarker(binding=binding, user=user)
                 if stage:
                     plan.append(stage, marker)
-        LOGGER.debug(
-            "f(plan): Finished building",
-            flow=self.flow,
+        self._logger.debug(
+            "f(plan): finished building",
         )
         return plan
