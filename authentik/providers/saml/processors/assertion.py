@@ -80,7 +80,8 @@ class AssertionProcessor:
                     continue
 
                 attribute = Element(f"{{{NS_SAML_ASSERTION}}}Attribute")
-                attribute.attrib["FriendlyName"] = mapping.friendly_name
+                if mapping.friendly_name and mapping.friendly_name != "":
+                    attribute.attrib["FriendlyName"] = mapping.friendly_name
                 attribute.attrib["Name"] = mapping.saml_name
 
                 if not isinstance(value, (list, GeneratorType)):
