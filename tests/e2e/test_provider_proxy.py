@@ -37,7 +37,7 @@ class TestProviderProxy(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "docker.beryju.org/proxy/traefik/whoami:latest",
+            "image": "traefik/whoami:latest",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
@@ -47,7 +47,7 @@ class TestProviderProxy(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image=f"docker.beryju.org/proxy/beryju/authentik-proxy:{__version__}",
+            image=f"beryju/authentik-proxy:{__version__}",
             detach=True,
             network_mode="host",
             auto_remove=True,

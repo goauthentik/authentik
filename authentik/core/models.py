@@ -22,6 +22,7 @@ from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton
 from authentik.flows.models import Flow
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -313,7 +314,7 @@ class TokenIntents(models.TextChoices):
     INTENT_RECOVERY = "recovery"
 
 
-class Token(ExpiringModel):
+class Token(ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
     token_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -341,7 +342,7 @@ class Token(ExpiringModel):
         ]
 
 
-class PropertyMapping(models.Model):
+class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -353,6 +354,11 @@ class PropertyMapping(models.Model):
     @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
+        raise NotImplementedError
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        """Get serializer for this model"""
         raise NotImplementedError
 
     def evaluate(

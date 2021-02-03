@@ -250,7 +250,7 @@ stages:
               publishLocation: 'pipeline'
       - job: coverage_e2e
         pool:
-          name: coventry
+          vmImage: 'ubuntu-latest'
         steps:
           - task: UsePythonVersion@0
             inputs:

@@ -251,7 +251,7 @@ class TestSourceOAuth1(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "docker.beryju.org/proxy/beryju/oauth1-test-server",
+            "image": "beryju/oauth1-test-server",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

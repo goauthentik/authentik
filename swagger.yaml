@@ -3597,6 +3597,11 @@ paths:
       operationId: propertymappings_all_list
       description: PropertyMapping Viewset
       parameters:
+        - name: managed
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -8364,6 +8369,7 @@ definitions:
           - authentik.stages.otp_time
           - authentik.stages.otp_validate
           - authentik.stages.password
+          - authentik.managed
           - authentik.core
   ExpressionPolicy:
     description: Group Membership Policy Serializer
@@ -8540,8 +8546,16 @@ definitions:
         title: Expression
         type: string
         minLength: 1
-      __type__:
-        title: 'type  '
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
   LDAPPropertyMapping:
@@ -8569,6 +8583,14 @@ definitions:
         title: Object field
         type: string
         minLength: 1
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   SAMLPropertyMapping:
     description: SAMLPropertyMapping Serializer
     required:
@@ -8598,6 +8620,14 @@ definitions:
         title: Expression
         type: string
         minLength: 1
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   ScopeMapping:
     description: ScopeMapping Serializer
     required:
@@ -8629,6 +8659,14 @@ definitions:
         title: Expression
         type: string
         minLength: 1
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:

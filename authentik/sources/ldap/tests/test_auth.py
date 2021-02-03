@@ -4,6 +4,7 @@ from unittest.mock import Mock, PropertyMock, patch
 from django.test import TestCase
 
 from authentik.core.models import User
+from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
@@ -18,6 +19,7 @@ class LDAPSyncTests(TestCase):
     """LDAP Sync tests"""
 
     def setUp(self):
+        ObjectManager().run()
         self.source = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",

@@ -75,7 +75,7 @@ class TestSourceSAML(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[Dict[str, Any]]:
         return {
-            "image": "docker.beryju.org/proxy/kristophjunge/test-saml-idp:1.15",
+            "image": "kristophjunge/test-saml-idp:1.15",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,

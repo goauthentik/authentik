@@ -21,8 +21,8 @@ export class Notification {
         return DefaultClient.fetch<PBResponse<Notification>>(["events", "notifications"], filter);
     }
 
-    static markSeen(pk: string): Promise<Notification> {
-        return DefaultClient.update<Notification>(["events", "notifications", pk], {
+    static markSeen(pk: string): Promise<{seen: boolean}> {
+        return DefaultClient.update(["events", "notifications", pk], {
             "seen": true
         });
     }

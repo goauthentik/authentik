@@ -73,6 +73,8 @@ export abstract class Table<T> extends LitElement {
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
 
+    private isLoading = false;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     renderExpanded(item: T): TemplateResult {
         if (this.expandable) {
@@ -111,11 +113,18 @@ export abstract class Table<T> extends LitElement {
     }
 
     public fetch(): void {
+        if (this.isLoading) {
+            return;
+        }
+        this.isLoading = true;
         this.data = undefined;
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
             this.expandedRows = [];
+            this.isLoading = false;
+        }).catch(() => {
+            this.isLoading = false;
         });
     }
 
@@ -167,15 +176,15 @@ export abstract class Table<T> extends LitElement {
                 <tr role="row">
                     ${this.expandable ? html`<td class="pf-c-table__toggle" role="cell">
                     <button class="pf-c-button pf-m-plain ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" @click=${() => {
-    this.expandedRows[idx] = !this.expandedRows[idx];
-    this.requestUpdate();
-}}>
+                        this.expandedRows[idx] = !this.expandedRows[idx];
+                        this.requestUpdate();
+                    }}>
                         <div class="pf-c-table__toggle-icon"> <i class="fas fa-angle-down" aria-hidden="true"></i> </div>
                     </button>
                     </td>` : html``}
                     ${this.row(item).map((col) => {
-        return html`<td role="cell">${col}</td>`;
-    })}
+                        return html`<td role="cell">${col}</td>`;
+                    })}
                 </tr>
                 <tr class="pf-c-table__expandable-row ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" role="row">
                     <td></td>
@@ -190,23 +199,29 @@ export abstract class Table<T> extends LitElement {
             @click=${() => { this.fetch(); }}
             class="pf-c-button pf-m-primary">
             ${gettext("Refresh")}
-        </button>`;
+        </button>&nbsp;`;
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        return html``;
     }
 
     renderSearch(): TemplateResult {
         return html``;
     }
 
+    firstUpdated(): void {
+        this.fetch();
+    }
+
     renderTable(): TemplateResult {
-        if (!this.data) {
-            this.fetch();
-        }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
                     ${this.renderSearch()}&nbsp;
                     <div class="pf-c-toolbar__bulk-select">
                         ${this.renderToolbar()}
-                    </div>
+                    </div>&nbsp;
+                    ${this.renderToolbarAfter()}
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
                         .pages=${this.data?.pagination}

@@ -225,6 +225,12 @@ class SAMLPropertyMapping(PropertyMapping):
 
         return SAMLPropertyMappingForm
 
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.providers.saml.api import SAMLPropertyMappingSerializer
+
+        return SAMLPropertyMappingSerializer
+
     def __str__(self):
         name = self.friendly_name if self.friendly_name != "" else self.saml_name
         return f"{self.name} ({name})"

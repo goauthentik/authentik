@@ -39,13 +39,21 @@ class SAMLProviderViewSet(ModelViewSet):
     serializer_class = SAMLProviderSerializer
 
 
-class SAMLPropertyMappingSerializer(ModelSerializer):
+class SAMLPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
     """SAMLPropertyMapping Serializer"""
 
     class Meta:
 
         model = SAMLPropertyMapping
-        fields = ["pk", "name", "saml_name", "friendly_name", "expression"]
+        fields = [
+            "pk",
+            "name",
+            "saml_name",
+            "friendly_name",
+            "expression",
+            "verbose_name",
+            "verbose_name_plural",
+        ]
 
 
 class SAMLPropertyMappingViewSet(ModelViewSet):

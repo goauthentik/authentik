@@ -4,7 +4,7 @@ import { NotFoundError, RequestError } from "./Error";
 export const VERSION = "v2beta";
 
 export interface QueryArguments {
-    [key: string]: number | string | boolean;
+    [key: string]: number | string | boolean | null;
 }
 
 export class Client {
@@ -12,6 +12,7 @@ export class Client {
         let builtUrl = `/api/${VERSION}/${url.join("/")}/`;
         if (query) {
             const queryString = Object.keys(query)
+                .filter((k) => query[k] !== null)
                 .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k]))
                 .join("&");
             builtUrl += `?${queryString}`;

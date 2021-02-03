@@ -10,6 +10,7 @@ import "./pages/flows/FlowViewPage";
 import "./pages/events/EventListPage";
 import "./pages/events/TransportListPage";
 import "./pages/events/RuleListPage";
+import "./pages/property-mappings/PropertyMappingListPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -30,4 +31,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/log$"), html`<ak-event-list></ak-event-list>`),
     new Route(new RegExp("^/events/transports$"), html`<ak-event-transport-list></ak-event-transport-list>`),
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
+    new Route(new RegExp("^/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
 ];

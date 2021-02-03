@@ -130,6 +130,7 @@ INSTALLED_APPS = [
     "django_prometheus",
     "channels",
     "dbbackup",
+    "authentik.managed.apps.AuthentikManagedConfig",
 ]
 
 GUARDIAN_MONKEY_PATCH = False

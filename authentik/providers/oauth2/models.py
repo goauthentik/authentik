@@ -118,6 +118,12 @@ class ScopeMapping(PropertyMapping):
 
         return ScopeMappingForm
 
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.providers.oauth2.api import ScopeMappingSerializer
+
+        return ScopeMappingSerializer
+
     def __str__(self):
         return f"Scope Mapping {self.name} ({self.scope_name})"
 

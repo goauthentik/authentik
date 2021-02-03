@@ -30,6 +30,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
+from authentik.managed.manager import ObjectManager
 
 
 # pylint: disable=invalid-name
@@ -123,6 +124,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def apply_default_data(self):
         """apply objects created by migrations after tables have been truncated"""
+        # Not all default objects are managed, like users for example
+        # Hence we still have to load all migrations and apply them, then run the ObjectManager
         # Find all migration files
         # load all functions
         migration_files = glob("**/migrations/*.py", recursive=True)
@@ -147,6 +150,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
                             func(apps, schema_editor)
                         except IntegrityError:
                             pass
+        ObjectManager().run()
 
 
 def retry(max_retires=3, exceptions=None):

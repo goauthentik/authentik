@@ -170,6 +170,9 @@ select[multiple] {
         color: var(--ak-dark-foreground);
     }
     /* inputs */
+    .pf-c-input-group {
+        --pf-c-input-group--BackgroundColor: transparent;
+    }
     .pf-c-form-control {
         --pf-c-form-control--BorderTopColor: var(--ak-dark-background-lighter);
         --pf-c-form-control--BorderRightColor: var(--ak-dark-background-lighter);
