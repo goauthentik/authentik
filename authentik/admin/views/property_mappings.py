@@ -1,29 +1,25 @@
 """authentik PropertyMapping administration"""
-from django.contrib.messages import views
-from authentik.admin.forms.policies import PolicyTestForm
-from django.http import HttpResponse
 from json import dumps
 from typing import Any
-from django.db.models import QuerySet
-from django.views.generic import FormView
-from django.views.generic.detail import DetailView
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from django.views.generic import FormView
+from django.views.generic.detail import DetailView
+from guardian.mixins import PermissionRequiredMixin
 
+from authentik.admin.forms.policies import PolicyTestForm
 from authentik.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
-    InheritanceListView,
     InheritanceUpdateView,
-    SearchListMixin,
-    UserPaginateListMixin,
 )
 from authentik.core.models import PropertyMapping
 
@@ -75,7 +71,9 @@ class PropertyMappingDeleteView(
     success_message = _("Successfully deleted Property Mapping")
 
 
-class PropertyMappingTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, FormView):
+class PropertyMappingTestView(
+    LoginRequiredMixin, DetailView, PermissionRequiredMixin, FormView
+):
     """View to test property mappings"""
 
     model = PropertyMapping
@@ -86,7 +84,9 @@ class PropertyMappingTestView(LoginRequiredMixin, DetailView, PermissionRequired
 
     def get_object(self, queryset=None) -> PropertyMapping:
         return (
-            PropertyMapping.objects.filter(pk=self.kwargs.get("pk")).select_subclasses().first()
+            PropertyMapping.objects.filter(pk=self.kwargs.get("pk"))
+            .select_subclasses()
+            .first()
         )
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -103,7 +103,9 @@ class PropertyMappingTestView(LoginRequiredMixin, DetailView, PermissionRequired
 
         context = self.get_context_data(form=form)
         try:
-            result = mapping.evaluate(user, self.request, **form.cleaned_data.get("context", {}))
+            result = mapping.evaluate(
+                user, self.request, **form.cleaned_data.get("context", {})
+            )
             context["result"] = dumps(result, indent=4)
         except Exception as exc:  # pylint: disable=broad-except
             context["result"] = str(exc)

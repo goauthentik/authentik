@@ -3,7 +3,42 @@
 {% load i18n %}
 
 {% block above_form %}
-<h1>{% blocktrans with policy=policy %}Test policy {{ policy }}{% endblocktrans %}</h1>
+<h1>{% blocktrans with policy=policy %}Test {{ policy }}{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block beneath_form %}
+{% if result %}
+<div class="pf-c-form__group ">
+    <div class="pf-c-form__group-label">
+        <label class="pf-c-form__label" for="context-1">
+            <span class="pf-c-form__label-text">{% trans 'Passing' %}</span>
+        </label>
+    </div>
+    <div class="pf-c-form__group-control">
+        <div class="c-form__horizontal-group">
+            <span class="pf-c-form__label-text">{{ result.passing|yesno:"Yes,No" }}</span>
+        </div>
+    </div>
+</div>
+<div class="pf-c-form__group ">
+    <div class="pf-c-form__group-label">
+        <label class="pf-c-form__label" for="context-1">
+            <span class="pf-c-form__label-text">{% trans 'Messages' %}</span>
+        </label>
+    </div>
+    <div class="pf-c-form__group-control">
+        <div class="c-form__horizontal-group">
+            <ul>
+                {% for m in result.messages %}
+                <li><span class="pf-c-form__label-text">{{ m }}</span></li>
+                {% empty %}
+                <li><span class="pf-c-form__label-text">-</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block action %}

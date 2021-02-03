@@ -1,7 +1,6 @@
 """authentik Policy administration"""
 from typing import Any, Dict
 
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -121,8 +120,6 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         result = proc.execute()
-        if result.passing:
-            messages.success(self.request, _("User successfully passed policy."))
-        else:
-            messages.error(self.request, _("User didn't pass policy."))
-        return self.render_to_response(self.get_context_data(form=form, result=result))
+        context = self.get_context_data(form=form)
+        context["result"] = result
+        return self.render_to_response(context)

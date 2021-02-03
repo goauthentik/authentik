@@ -45,8 +45,8 @@ def update_latest_version(self: MonitoredTask):
             ).exists():
                 return
             event_dict = {"new_version": upstream_version}
-            if m := re.search(URL_FINDER, data.get("body", "")):
-                event_dict["message"] = f"Changelog: {m.group()}"
+            if match := re.search(URL_FINDER, data.get("body", "")):
+                event_dict["message"] = f"Changelog: {match.group()}"
             Event.new(EventAction.UPDATE_AVAILABLE, **event_dict).save()
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
