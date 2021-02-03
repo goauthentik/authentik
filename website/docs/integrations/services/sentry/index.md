@@ -41,8 +41,8 @@ In authentik, get the Metadata URL by right-clicking `Download Metadata` and sel
 
 On the next screen, input these Values
 
-IdP User ID: `urn:oid:0.9.2342.19200300.100.1.1`
-User Email: `urn:oid:0.9.2342.19200300.100.1.3`
-First Name: `urn:oid:2.5.4.3`
+IdP User ID: `http://schemas.goauthentik.io/2021/02/saml/uid`
+User Email: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+First Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 
 After confirming, Sentry will authenticate with authentik, and you should be redirected back to a page confirming your settings.

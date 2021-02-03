@@ -42,7 +42,7 @@ In NextCloud, navigate to `Settings`, then `SSO & SAML Authentication`.
 
 Set the following values:
 
-- Attribute to map the UID to.: `urn:oid:2.16.840.1.113730.3.1.241`
+- Attribute to map the UID to.: `http://schemas.goauthentik.io/2021/02/saml/username`
 - Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 - Identifier of the IdP entity (must be a URI): `https://authentik.company`
 - URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
@@ -50,8 +50,8 @@ Set the following values:
 
 Under Attribute mapping, set these values:
 
-- Attribute to map the displayname to.: `urn:oid:2.5.4.3`
-- Attribute to map the email address to.: `urn:oid:0.9.2342.19200300.100.1.3`
+- Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Attribute to map the users groups to.: `member-of`
 
 ## Group Quotas

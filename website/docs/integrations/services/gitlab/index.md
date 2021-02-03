@@ -44,14 +44,15 @@ gitlab_rails['omniauth_providers'] = [
     name: 'saml',
     args: {
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
+      # Shown when navigating to certificates in authentik
       idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
       idp_sso_target_url: 'https://authentik.company/application/saml/<authentik application slug>/sso/binding/post/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       attribute_statements: {
-        email: ['urn:oid:1.3.6.1.4.1.5923.1.1.1.6'],
-        first_name: ['urn:oid:2.5.4.3'],
-        nickname: ['urn:oid:2.16.840.1.113730.3.1.241']
+        email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
+        first_name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+        nickname: ['http://schemas.goauthentik.io/2021/02/saml/username']
       }
     },
     label: 'authentik'
