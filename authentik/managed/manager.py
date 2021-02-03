@@ -49,6 +49,7 @@ class ObjectManager:
         for sub in ObjectManager.__subclasses__():
             sub_inst = sub()
             ops = sub_inst.reconcile()
+            LOGGER.debug("Reconciling managed objects", manager=sub.__name__)
             for operation in ops:
                 operation.run()
 
