@@ -32,7 +32,8 @@ REQUEST_MOCK_VALID = Mock(
     return_value=MockResponse(
         200,
         """{
-            "tag_name": "version/99999999.9999999"
+            "tag_name": "version/99999999.9999999",
+            "body": "https://goauthentik.io/test"
         }""",
     )
 )
@@ -52,6 +53,7 @@ class TestAdminTasks(TestCase):
             Event.objects.filter(
                 action=EventAction.UPDATE_AVAILABLE,
                 context__new_version="99999999.9999999",
+                context__message="Changelog: https://goauthentik.io/test",
             ).exists()
         )
         # test that a consecutive check doesn't create a duplicate event
@@ -61,6 +63,7 @@ class TestAdminTasks(TestCase):
                 Event.objects.filter(
                     action=EventAction.UPDATE_AVAILABLE,
                     context__new_version="99999999.9999999",
+                    context__message="Changelog: https://goauthentik.io/test",
                 )
             ),
             1,

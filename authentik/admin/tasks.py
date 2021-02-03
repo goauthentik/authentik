@@ -1,5 +1,8 @@
 """authentik admin tasks"""
+import re
+
 from django.core.cache import cache
+from django.core.validators import URLValidator
 from packaging.version import parse
 from requests import RequestException, get
 from structlog.stdlib import get_logger
@@ -11,7 +14,9 @@ from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 VERSION_CACHE_KEY = "authentik_latest_version"
-VERSION_CACHE_TIMEOUT = 2 * 60 * 60  # 2 hours
+VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
+# Chop of the first ^ because we want to search the entire string
+URL_FINDER = URLValidator.regex.pattern[1:]
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
@@ -39,7 +44,10 @@ def update_latest_version(self: MonitoredTask):
                 context__new_version=upstream_version,
             ).exists():
                 return
-            Event.new(EventAction.UPDATE_AVAILABLE, new_version=upstream_version).save()
+            event_dict = {"new_version": upstream_version}
+            if m := re.search(URL_FINDER, data.get("body", "")):
+                event_dict["message"] = f"Changelog: {m.group()}"
+            Event.new(EventAction.UPDATE_AVAILABLE, **event_dict).save()
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
