@@ -22,7 +22,7 @@ class OutpostDockerTests(TestCase):
     def _start_container(self, ssl_folder: str) -> Container:
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="docker.beryju.org/proxy/library/docker:dind",
+            image="library/docker:dind",
             detach=True,
             network_mode="host",
             remove=True,

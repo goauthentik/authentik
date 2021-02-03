@@ -37,7 +37,7 @@ class TestProviderSAML(SeleniumTestCase):
         """Setup client saml-sp container which we test SAML against"""
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="docker.beryju.org/proxy/beryju/saml-test-sp",
+            image="beryju/saml-test-sp",
             detach=True,
             network_mode="host",
             auto_remove=True,
