@@ -5,7 +5,6 @@ from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.signals import user_login_failed
 from django.core.exceptions import PermissionDenied
-from django.forms.utils import ErrorList
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
@@ -116,8 +115,7 @@ class PasswordStageView(FormView, StageView):
                 # No user was found -> invalid credentials
                 LOGGER.debug("Invalid credentials")
                 # Manually inject error into form
-                errors = form._errors.setdefault("password", ErrorList())
-                errors.append(_("Invalid password"))
+                form.add_error("password", _("Invalid password"))
                 return self.form_invalid(form)
             # User instance returned from authenticate() has .backend property set
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
