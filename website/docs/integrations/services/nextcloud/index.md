@@ -52,7 +52,7 @@ Under Attribute mapping, set these values:
 
 - Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 - Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-- Attribute to map the users groups to.: `member-of`
+- Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
 
 ## Group Quotas
 
