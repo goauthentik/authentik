@@ -114,7 +114,7 @@ export abstract class Table<T> extends LitElement {
 
     public fetch(): void {
         if (this.isLoading) {
-            return
+            return;
         }
         this.isLoading = true;
         this.data = undefined;

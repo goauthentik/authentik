@@ -27,7 +27,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @property()
     order = "name";
 
-    @property()
+    @property({type: Boolean})
     hideManaged = false;
 
     apiEndpoint(page: number): Promise<PBResponse<PropertyMapping>> {
