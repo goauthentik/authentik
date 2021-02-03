@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import QuerySet
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
@@ -99,7 +98,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
     template_name = "administration/policy/test.html"
     object = None
 
-    def get_object(self, queryset=None) -> QuerySet:
+    def get_object(self, queryset=None) -> Policy:
         return (
             Policy.objects.filter(pk=self.kwargs.get("pk")).select_subclasses().first()
         )
@@ -118,7 +117,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
 
         p_request = PolicyRequest(user)
         p_request.http_request = self.request
-        p_request.context = form.cleaned_data
+        p_request.context = form.cleaned_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         result = proc.execute()
