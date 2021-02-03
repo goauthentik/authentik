@@ -115,7 +115,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         self.assertEqual(
             body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
-            [USER().pk],
+            [str(USER().pk)],
         )
         self.assertEqual(
             body["attr"][
@@ -168,11 +168,34 @@ class TestProviderSAML(SeleniumTestCase):
 
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["attr"]["cn"], [USER().name])
-        self.assertEqual(body["attr"]["displayName"], [USER().username])
-        self.assertEqual(body["attr"]["eduPersonPrincipalName"], [USER().email])
-        self.assertEqual(body["attr"]["mail"], [USER().email])
-        self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            [USER().name],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+            ],
+            [USER().username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            [USER().username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            [str(USER().pk)],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+            ],
+            [USER().email],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            [USER().email],
+        )
 
     @retry()
     def test_idp_initiated_implicit(self):
@@ -214,11 +237,34 @@ class TestProviderSAML(SeleniumTestCase):
 
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
-        self.assertEqual(body["attr"]["cn"], [USER().name])
-        self.assertEqual(body["attr"]["displayName"], [USER().username])
-        self.assertEqual(body["attr"]["eduPersonPrincipalName"], [USER().email])
-        self.assertEqual(body["attr"]["mail"], [USER().email])
-        self.assertEqual(body["attr"]["uid"], [str(USER().pk)])
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            [USER().name],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+            ],
+            [USER().username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            [USER().username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            [str(USER().pk)],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+            ],
+            [USER().email],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            [USER().email],
+        )
 
     @retry()
     def test_sp_initiated_denied(self):
