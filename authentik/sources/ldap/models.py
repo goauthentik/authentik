@@ -130,6 +130,12 @@ class LDAPPropertyMapping(PropertyMapping):
 
         return LDAPPropertyMappingForm
 
+    @property
+    def serializer(self) -> Type[Serializer]:
+        from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
+
+        return LDAPPropertyMappingSerializer
+
     def __str__(self):
         return self.name
 

@@ -33,12 +33,19 @@ class LDAPSourceSerializer(ModelSerializer, MetaNameSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPPropertyMappingSerializer(ModelSerializer):
+class LDAPPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
     """LDAP PropertyMapping Serializer"""
 
     class Meta:
         model = LDAPPropertyMapping
-        fields = ["pk", "name", "expression", "object_field"]
+        fields = [
+            "pk",
+            "name",
+            "expression",
+            "object_field",
+            "verbose_name",
+            "verbose_name_plural",
+        ]
 
 
 class LDAPSourceViewSet(ModelViewSet):

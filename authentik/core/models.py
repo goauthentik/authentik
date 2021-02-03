@@ -342,7 +342,7 @@ class Token(ManagedModel, ExpiringModel):
         ]
 
 
-class PropertyMapping(ManagedModel):
+class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -354,6 +354,11 @@ class PropertyMapping(ManagedModel):
     @property
     def form(self) -> Type[ModelForm]:
         """Return Form class used to edit this object"""
+        raise NotImplementedError
+
+    @property
+    def serializer(self) -> Type[Serializer]:
+        """Get serializer for this model"""
         raise NotImplementedError
 
     def evaluate(

@@ -39,13 +39,21 @@ class OAuth2ProviderViewSet(ModelViewSet):
     serializer_class = OAuth2ProviderSerializer
 
 
-class ScopeMappingSerializer(ModelSerializer):
+class ScopeMappingSerializer(ModelSerializer, MetaNameSerializer):
     """ScopeMapping Serializer"""
 
     class Meta:
 
         model = ScopeMapping
-        fields = ["pk", "name", "scope_name", "description", "expression"]
+        fields = [
+            "pk",
+            "name",
+            "scope_name",
+            "description",
+            "expression",
+            "verbose_name",
+            "verbose_name_plural",
+        ]
 
 
 class ScopeMappingViewSet(ModelViewSet):
