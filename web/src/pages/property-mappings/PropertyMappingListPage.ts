@@ -5,6 +5,7 @@ import { PBResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
+import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 
@@ -72,7 +73,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
                 <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl('create/?type=LDAPPropertyMapping')}">
+                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=LDAPPropertyMapping")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("LDAP Property Mapping")}<br>
                             <small>
                                 ${gettext("Map LDAP Property to User or Group object attribute")}
@@ -82,7 +83,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </ak-modal-button>
                 </li>
                 <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl('create/?type=SAMLPropertyMapping')}">
+                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=SAMLPropertyMapping")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Property Mapping")}<br>
                             <small>
                                 ${gettext("Map User/Group attribute to SAML Attribute, which can be used by the Service Provider.")}
@@ -92,7 +93,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </ak-modal-button>
                 </li>
                 <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl('create/?type=ScopeMapping')}">
+                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=ScopeMapping")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("Scope Mapping")}<br>
                             <small>
                                 ${gettext("Map an OAuth Scope to users properties")}
