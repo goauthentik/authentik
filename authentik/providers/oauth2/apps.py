@@ -16,4 +16,4 @@ class AuthentikProviderOAuth2Config(AppConfig):
     }
 
     def ready(self) -> None:
-        import_module("authentik.providers.proxy.managed")
+        import_module("authentik.providers.oauth2.managed")

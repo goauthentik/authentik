@@ -13,7 +13,7 @@ return {
 }"""
 
 
-class ScopeMappingManager(ObjectManager):
+class ProxyScopeMappingManager(ObjectManager):
     """OAuth2 Provider managed objects"""
 
     def reconcile(self):
