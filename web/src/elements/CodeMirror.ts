@@ -5,6 +5,7 @@ import CodeMirror from "codemirror";
 import "codemirror/addon/display/autorefresh";
 import "codemirror/mode/xml/xml.js";
 import "codemirror/mode/yaml/yaml.js";
+import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/python/python.js";
 
 @customElement("ak-codemirror")
