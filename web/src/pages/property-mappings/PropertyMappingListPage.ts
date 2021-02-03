@@ -27,11 +27,15 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @property()
     order = "name";
 
+    @property()
+    hideManaged = false;
+
     apiEndpoint(page: number): Promise<PBResponse<PropertyMapping>> {
         return PropertyMapping.list({
             ordering: this.order,
             page: page,
             search: this.search || "",
+            managed: this.hideManaged ? false : null,
         });
     }
 
@@ -104,7 +108,22 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 </li>
             </ul>
         </ak-dropdown>
-        ${super.renderToolbar()}
-        `;
+        ${super.renderToolbar()}`;
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <div class="pf-c-check">
+                        <input class="pf-c-check__input" type="checkbox" id="hide-managed" name="hide-managed" ?checked=${this.hideManaged} @change=${() => {
+                            this.hideManaged = !this.hideManaged;
+                            this.fetch();
+                        }} />
+                        <label class="pf-c-check__label" for="hide-managed">${gettext("Hide managed mappings")}</label>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 }
