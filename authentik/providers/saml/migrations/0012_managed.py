@@ -6,10 +6,10 @@ saml_name_map = {
     "http://schemas.xmlsoap.org/claims/CommonName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
     "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname": "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname",
     "member-of": "http://schemas.xmlsoap.org/claims/Group",
-    "urn:oid:0.9.2342.19200300.100.1.1": None,
+    "urn:oid:0.9.2342.19200300.100.1.1": "http://schemas.goauthentik.io/2021/02/saml/uid",
     "urn:oid:0.9.2342.19200300.100.1.3": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
     "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
-    "urn:oid:2.16.840.1.113730.3.1.241": "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname",
+    "urn:oid:2.16.840.1.113730.3.1.241": "http://schemas.goauthentik.io/2021/02/saml/username",
     "urn:oid:2.5.4.3": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
 }
 

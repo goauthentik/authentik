@@ -32,6 +32,20 @@ class SAMLProviderManager(ObjectManager):
             EnsureExists(
                 SAMLPropertyMapping,
                 "saml_name",
+                name="authentik default SAML Mapping: Username",
+                saml_name="http://schemas.goauthentik.io/2021/02/saml/username",
+                expression="return user.username",
+            ),
+            EnsureExists(
+                SAMLPropertyMapping,
+                "saml_name",
+                name="authentik default SAML Mapping: User ID",
+                saml_name="http://schemas.goauthentik.io/2021/02/saml/uid",
+                expression="return user.pk",
+            ),
+            EnsureExists(
+                SAMLPropertyMapping,
+                "saml_name",
                 name="authentik default SAML Mapping: WindowsAccountname (Username)",
                 saml_name=(
                     "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
