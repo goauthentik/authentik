@@ -61,3 +61,18 @@ Create a group for each different level of quota you want users to have. Set a c
 Afterwards, create a custom SAML Property Mapping with the name `SAML NextCloud Quota`.
 Set the *SAML Name* to `nextcloud_quota`.
 Set the *Expression* to `return user.group_attributes.get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
+
+## Admin Group
+
+To give authentik users admin access to your NextCloud instance, you need to create a custom Property Mapping that maps an authentik group to "admin". It has to be mapped to "admin" as this is static in NextCloud and cannot be changed.
+
+Create a SAML Property mapping with the SAML Name "http://schemas.xmlsoap.org/claims/Group" and this expression:
+
+```python
+for group in user.ak_groups.all():
+    yield group.name
+if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
+    yield "admin"
+```
+
+Then, edit the NextCloud SAML Provider, and replace the default Groups mapping with the one you've created above.
