@@ -239,11 +239,6 @@ urlpatterns = [
     ),
     # Property Mappings
     path(
-        "property-mappings/",
-        property_mappings.PropertyMappingListView.as_view(),
-        name="property-mappings",
-    ),
-    path(
         "property-mappings/create/",
         property_mappings.PropertyMappingCreateView.as_view(),
         name="property-mapping-create",
@@ -257,6 +252,11 @@ urlpatterns = [
         "property-mappings/<uuid:pk>/delete/",
         property_mappings.PropertyMappingDeleteView.as_view(),
         name="property-mapping-delete",
+    ),
+    path(
+        "property-mappings/<uuid:pk>/test/",
+        property_mappings.PropertyMappingTestView.as_view(),
+        name="property-mapping-test",
     ),
     # Users
     path("users/", users.UserListView.as_view(), name="users"),

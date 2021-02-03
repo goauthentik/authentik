@@ -1,4 +1,12 @@
 """authentik PropertyMapping administration"""
+from django.contrib.messages import views
+from authentik.admin.forms.policies import PolicyTestForm
+from django.http import HttpResponse
+from json import dumps
+from typing import Any
+from django.db.models import QuerySet
+from django.views.generic import FormView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -18,22 +26,6 @@ from authentik.admin.views.utils import (
     UserPaginateListMixin,
 )
 from authentik.core.models import PropertyMapping
-
-
-class PropertyMappingListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    InheritanceListView,
-):
-    """Show list of all property_mappings"""
-
-    model = PropertyMapping
-    permission_required = "authentik_core.view_propertymapping"
-    template_name = "administration/property_mapping/list.html"
-    ordering = "name"
-    search_fields = ["name", "expression"]
 
 
 class PropertyMappingCreateView(
@@ -81,3 +73,38 @@ class PropertyMappingDeleteView(
     template_name = "generic/delete.html"
     success_url = reverse_lazy("authentik_admin:property-mappings")
     success_message = _("Successfully deleted Property Mapping")
+
+
+class PropertyMappingTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, FormView):
+    """View to test property mappings"""
+
+    model = PropertyMapping
+    form_class = PolicyTestForm
+    permission_required = "authentik_core.view_propertymapping"
+    template_name = "administration/property_mapping/test.html"
+    object = None
+
+    def get_object(self, queryset=None) -> PropertyMapping:
+        return (
+            PropertyMapping.objects.filter(pk=self.kwargs.get("pk")).select_subclasses().first()
+        )
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        kwargs["property_mapping"] = self.get_object()
+        return super().get_context_data(**kwargs)
+
+    def post(self, *args, **kwargs) -> HttpResponse:
+        self.object = self.get_object()
+        return super().post(*args, **kwargs)
+
+    def form_valid(self, form: PolicyTestForm) -> HttpResponse:
+        mapping = self.get_object()
+        user = form.cleaned_data.get("user")
+
+        context = self.get_context_data(form=form)
+        try:
+            result = mapping.evaluate(user, self.request, **form.cleaned_data.get("context", {}))
+            context["result"] = dumps(result, indent=4)
+        except Exception as exc:  # pylint: disable=broad-except
+            context["result"] = str(exc)
+        return self.render_to_response(context)

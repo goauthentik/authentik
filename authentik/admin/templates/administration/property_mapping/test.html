@@ -1,0 +1,28 @@
+{% extends 'generic/form.html' %}
+
+{% load i18n %}
+
+{% block above_form %}
+<h1>{% blocktrans with property_mapping=property_mapping %}Test {{ property_mapping }}{% endblocktrans %}</h1>
+{% endblock %}
+
+{% block beneath_form %}
+{% if result %}
+<div class="pf-c-form__group ">
+    <div class="pf-c-form__group-label">
+        <label class="pf-c-form__label" for="context-1">
+            <span class="pf-c-form__label-text">{% trans 'Result' %}</span>
+        </label>
+    </div>
+    <div class="pf-c-form__group-control">
+        <div class="c-form__horizontal-group">
+            <ak-codemirror mode="javascript"><textarea class="pf-c-form-control">{{ result }}</textarea></ak-codemirror>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block action %}
+{% trans 'Test' %}
+{% endblock %}
