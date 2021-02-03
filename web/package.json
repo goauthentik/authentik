@@ -1,4 +1,7 @@
 {
+    "name": "authentik-web",
+    "version": "0.0.0",
+    "private": true,
     "license": "GNU GPLv3",
     "scripts": {
         "build": "rollup -c ./rollup.config.js",

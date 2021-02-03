@@ -34,7 +34,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     }),
     new SidebarItem("Customisation").children(
         new SidebarItem("Policies", "/administration/policies/"),
-        new SidebarItem("Property Mappings", "/administration/property-mappings"),
+        new SidebarItem("Property Mappings", "/property-mappings"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
