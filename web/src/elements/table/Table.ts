@@ -190,17 +190,18 @@ export abstract class Table<T> extends LitElement {
             @click=${() => { this.fetch(); }}
             class="pf-c-button pf-m-primary">
             ${gettext("Refresh")}
-        </button>`;
+        </button>&nbsp;`;
     }
 
     renderSearch(): TemplateResult {
         return html``;
     }
 
+    firstUpdated(): void {
+        this.fetch();
+    }
+
     renderTable(): TemplateResult {
-        if (!this.data) {
-            this.fetch();
-        }
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
                     ${this.renderSearch()}&nbsp;
