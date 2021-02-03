@@ -8,6 +8,7 @@ from lxml import etree  # nosec
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.managed.manager import ObjectManager
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.request_parser import AuthNRequestParser
@@ -20,6 +21,7 @@ class TestSchema(TestCase):
     """Test Requests and Responses against schema"""
 
     def setUp(self):
+        ObjectManager().run()
         cert = CertificateKeyPair.objects.first()
         self.provider: SAMLProvider = SAMLProvider.objects.create(
             authorization_flow=Flow.objects.get(

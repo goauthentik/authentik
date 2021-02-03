@@ -13,7 +13,7 @@ class PytestTestRunner:  # pragma: no cover
         self.keepdb = keepdb
         settings.TEST = True
         settings.CELERY_TASK_ALWAYS_EAGER = True
-        CONFIG.raw.get("authentik")["avatars"] = "none"
+        CONFIG.y_set("authentik.avatars", "none")
 
     def run_tests(self, test_labels):
         """Run pytest and return the exitcode.

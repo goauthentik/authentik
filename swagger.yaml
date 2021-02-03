@@ -8364,6 +8364,7 @@ definitions:
           - authentik.stages.otp_time
           - authentik.stages.otp_validate
           - authentik.stages.password
+          - authentik.managed
           - authentik.core
   ExpressionPolicy:
     description: Group Membership Policy Serializer
