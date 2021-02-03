@@ -19,17 +19,17 @@ export class TableSearch extends LitElement {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
                     <form class="pf-c-input-group" method="GET" @submit=${(e: Event) => {
-        e.preventDefault();
-        if (!this.onSearch) return;
-        const el = this.shadowRoot?.querySelector<HTMLInputElement>("input[type=search]");
-        if (!el) return;
-        if (el.value === "") return;
-        this.onSearch(el?.value);
-    }}>
+                        e.preventDefault();
+                        if (!this.onSearch) return;
+                        const el = this.shadowRoot?.querySelector<HTMLInputElement>("input[type=search]");
+                        if (!el) return;
+                        if (el.value === "") return;
+                        this.onSearch(el?.value);
+                    }}>
                         <input class="pf-c-form-control" name="search" type="search" placeholder="Search..." value="${ifDefined(this.value)}" @search=${(ev: Event) => {
-    if (!this.onSearch) return;
-    this.onSearch((ev.target as HTMLInputElement).value);
-}}>
+                            if (!this.onSearch) return;
+                            this.onSearch((ev.target as HTMLInputElement).value);
+                        }}>
                         <button class="pf-c-button pf-m-control" type="submit">
                             <i class="fas fa-search" aria-hidden="true"></i>
                         </button>
