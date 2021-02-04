@@ -124,13 +124,6 @@ class MonitoredTask(Task):
                 task_call_args=args,
                 task_call_kwargs=kwargs,
             ).save(self.result_timeout_hours)
-            Event.new(
-                EventAction.SYSTEM_TASK_EXECUTION,
-                message=(
-                    f"Task {self.__name__} finished successfully: "
-                    "\n".join(self._result.messages)
-                ),
-            ).save()
         return super().after_return(status, retval, task_id, args, kwargs, einfo=einfo)
 
     # pylint: disable=too-many-arguments
