@@ -256,12 +256,12 @@ class OAuthFulfillmentStage(StageView):
             ).from_http(self.request)
             return redirect(self.create_response_uri())
         except (ClientIdError, RedirectUriError) as error:
-            error.to_event().from_http(request)
+            error.to_event(application=application).from_http(request)
             self.executor.stage_invalid()
             # pylint: disable=no-member
             return bad_request_message(request, error.description, title=error.error)
         except AuthorizeError as error:
-            error.to_event().from_http(request)
+            error.to_event(application=application).from_http(request)
             self.executor.stage_invalid()
             return redirect(error.create_uri())
 
@@ -379,7 +379,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         try:
             self.params = OAuthAuthorizationParams.from_request(self.request)
         except AuthorizeError as error:
-            error.to_event().from_http(self.request)
+            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
             raise RequestValidationError(redirect(error.create_uri()))
         except OAuth2Error as error:
             error.to_event().from_http(self.request)
@@ -396,7 +396,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.grant_type,
                 self.params.state,
             )
-            error.to_event().from_http(self.request)
+            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
             raise RequestValidationError(redirect(error.create_uri()))
 
     def resolve_provider_application(self):
