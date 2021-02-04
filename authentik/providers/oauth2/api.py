@@ -1,4 +1,5 @@
 """OAuth2Provider API Views"""
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -8,6 +9,9 @@ from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 
 class OAuth2ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """OAuth2Provider Serializer"""
+
+    assigned_application_slug = ReadOnlyField(source="application.slug")
+    assigned_application_name = ReadOnlyField(source="application.name")
 
     class Meta:
 
@@ -27,6 +31,8 @@ class OAuth2ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "sub_mode",
             "property_mappings",
             "issuer_mode",
+            "assigned_application_slug",
+            "assigned_application_name",
             "verbose_name",
             "verbose_name_plural",
         ]

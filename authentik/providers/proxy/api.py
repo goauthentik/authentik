@@ -1,6 +1,6 @@
 """ProxyProvider API Views"""
 from drf_yasg2.utils import swagger_serializer_method
-from rest_framework.fields import CharField, ListField, SerializerMethodField
+from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -37,6 +37,9 @@ class OpenIDConnectConfigurationSerializer(Serializer):
 class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
     """ProxyProvider Serializer"""
 
+    assigned_application_slug = ReadOnlyField(source="application.slug")
+    assigned_application_name = ReadOnlyField(source="application.name")
+
     def create(self, validated_data):
         instance: ProxyProvider = super().create(validated_data)
         instance.set_oauth_defaults()
@@ -61,6 +64,8 @@ class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
+            "assigned_application_slug",
+            "assigned_application_name",
             "verbose_name",
             "verbose_name_plural",
         ]

@@ -1,5 +1,8 @@
 """SAMLProvider API Views"""
-from rest_framework.serializers import ModelSerializer
+from typing import Optional
+from authentik.core.models import Application
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, Serializer, CharField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import MetaNameSerializer
@@ -8,6 +11,9 @@ from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 
 class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
     """SAMLProvider Serializer"""
+
+    assigned_application_slug = ReadOnlyField(source="application.slug")
+    assigned_application_name = ReadOnlyField(source="application.name")
 
     class Meta:
 
@@ -27,6 +33,8 @@ class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
+            "assigned_application_slug",
+            "assigned_application_name",
             "verbose_name",
             "verbose_name_plural",
         ]
