@@ -7,12 +7,14 @@ from authentik.core.models import Group, User
 from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.sync import LDAPSynchronizer
+from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync_all
-from authentik.sources.ldap.tests.utils import _build_mock_connection
+from authentik.sources.ldap.tests.utils import mock_ad_connection
 
 LDAP_PASSWORD = generate_client_secret()
-LDAP_CONNECTION_PATCH = PropertyMock(return_value=_build_mock_connection(LDAP_PASSWORD))
+LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
 
 class LDAPSyncTests(TestCase):
@@ -33,17 +35,18 @@ class LDAPSyncTests(TestCase):
     @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
     def test_sync_users(self):
         """Test user sync"""
-        syncer = LDAPSynchronizer(self.source)
-        syncer.sync_users()
+        user_sync = UserLDAPSynchronizer(self.source)
+        user_sync.sync()
         self.assertTrue(User.objects.filter(username="user0_sn").exists())
         self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
     @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
     def test_sync_groups(self):
         """Test group sync"""
-        syncer = LDAPSynchronizer(self.source)
-        syncer.sync_groups()
-        syncer.sync_membership()
+        group_sync = GroupLDAPSynchronizer(self.source)
+        group_sync.sync()
+        membership_sync = MembershipLDAPSynchronizer(self.source)
+        membership_sync.sync()
         group = Group.objects.filter(name="test-group")
         self.assertTrue(group.exists())
 

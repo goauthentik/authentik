@@ -8,6 +8,7 @@ import ldap3.core.exceptions
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPSource
 
 LOGGER = get_logger()
@@ -74,9 +75,9 @@ class LDAPPasswordChanger:
 
     def change_password(self, user: User, password: str):
         """Change user's password"""
-        user_dn = user.attributes.get("distinguishedName", None)
+        user_dn = user.attributes.get(LDAP_DISTINGUISHED_NAME, None)
         if not user_dn:
-            raise AttributeError("User has no distinguishedName set.")
+            raise AttributeError(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
         self._source.connection.extend.microsoft.modify_password(user_dn, password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
@@ -117,9 +118,9 @@ class LDAPPasswordChanger:
         """
         if user:
             # Check if password contains sAMAccountName or displayNames
-            if "distinguishedName" in user.attributes:
+            if LDAP_DISTINGUISHED_NAME in user.attributes:
                 existing_user_check = self._ad_check_password_existing(
-                    password, user.attributes.get("distinguishedName")
+                    password, user.attributes.get(LDAP_DISTINGUISHED_NAME)
                 )
                 if not existing_user_check:
                     LOGGER.debug("Password failed name check", user=user)

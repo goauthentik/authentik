@@ -10,6 +10,7 @@ from authentik.core.models import User
 from authentik.sources.ldap.models import LDAPSource
 
 LOGGER = get_logger()
+LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 class LDAPBackend(ModelBackend):
@@ -35,7 +36,7 @@ class LDAPBackend(ModelBackend):
         if not users.exists():
             return None
         user: User = users.first()
-        if "distinguishedName" not in user.attributes:
+        if LDAP_DISTINGUISHED_NAME not in user.attributes:
             LOGGER.debug(
                 "User doesn't have DN set, assuming not LDAP imported.", user=user
             )
@@ -63,7 +64,7 @@ class LDAPBackend(ModelBackend):
         try:
             temp_connection = ldap3.Connection(
                 source.connection.server,
-                user=user.attributes.get("distinguishedName"),
+                user=user.attributes.get(LDAP_DISTINGUISHED_NAME),
                 password=password,
                 raise_exceptions=True,
             )

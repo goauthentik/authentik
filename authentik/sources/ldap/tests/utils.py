@@ -3,8 +3,8 @@
 from ldap3 import MOCK_SYNC, OFFLINE_AD_2012_R2, Connection, Server
 
 
-def _build_mock_connection(password: str) -> Connection:
-    """Create mock connection"""
+def mock_ad_connection(password: str) -> Connection:
+    """Create mock AD connection"""
     server = Server("my_fake_server", get_info=OFFLINE_AD_2012_R2)
     _pass = "foo"  # noqa # nosec
     connection = Connection(
@@ -32,6 +32,7 @@ def _build_mock_connection(password: str) -> Connection:
             "objectSid": "unique-test-group",
             "objectCategory": "Group",
             "distinguishedName": "cn=group1,ou=groups,DC=AD2012,DC=LAB",
+            "member": ["cn=user0,ou=users,DC=AD2012,DC=LAB"],
         },
     )
     # Group without SID
@@ -52,7 +53,6 @@ def _build_mock_connection(password: str) -> Connection:
             "revision": 0,
             "objectSid": "user0",
             "objectCategory": "Person",
-            "memberOf": "cn=group1,ou=groups,DC=AD2012,DC=LAB",
             "distinguishedName": "cn=user0,ou=users,DC=AD2012,DC=LAB",
         },
     )

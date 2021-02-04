@@ -15,6 +15,7 @@ from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.request_parser import AuthNRequest
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.saml.exceptions import UnsupportedNameIDFormat
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
@@ -173,7 +174,7 @@ class AssertionProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get(
-                "distinguishedName", persistent
+                LDAP_DISTINGUISHED_NAME, persistent
             )
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_WINDOWS:

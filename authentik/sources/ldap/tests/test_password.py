@@ -7,10 +7,10 @@ from authentik.core.models import User
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
-from authentik.sources.ldap.tests.utils import _build_mock_connection
+from authentik.sources.ldap.tests.utils import mock_ad_connection
 
 LDAP_PASSWORD = generate_client_secret()
-LDAP_CONNECTION_PATCH = PropertyMock(return_value=_build_mock_connection(LDAP_PASSWORD))
+LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
 
 class LDAPPasswordTests(TestCase):

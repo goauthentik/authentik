@@ -22,7 +22,7 @@ class LDAPSourceSerializer(ModelSerializer, MetaNameSerializer):
             "additional_group_dn",
             "user_object_filter",
             "group_object_filter",
-            "user_group_membership_field",
+            "group_membership_field",
             "object_uniqueness_field",
             "sync_users",
             "sync_users_password",

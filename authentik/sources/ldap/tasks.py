@@ -8,7 +8,9 @@ from ldap3.core.exceptions import LDAPException
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.sync import LDAPSynchronizer
+from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 
 
 @CELERY_APP.task()
@@ -29,16 +31,21 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
         return
     self.set_uid(slugify(source.name))
     try:
-        syncer = LDAPSynchronizer(source)
-        user_count = syncer.sync_users()
-        group_count = syncer.sync_groups()
-        syncer.sync_membership()
+        messages = []
+        for sync_class in [
+            UserLDAPSynchronizer,
+            GroupLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+        ]:
+            sync_inst = sync_class(source)
+            count = sync_inst.sync()
+            messages.append(f"Synced {count} objects from {sync_class.__name__}")
         cache_key = source.state_cache_prefix("last_sync")
         cache.set(cache_key, time(), timeout=60 * 60)
         self.set_status(
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,
-                [f"Synced {user_count} users", f"Synced {group_count} groups"],
+                messages,
             )
         )
     except LDAPException as exc:

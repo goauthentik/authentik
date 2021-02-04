@@ -48,7 +48,7 @@ The other settings might need to be adjusted based on the setup of your domain.
 -   Addition Group DN: Additional DN which is _prepended_ to your Base DN for group synchronization.
 -   User object filter: Which objects should be considered users.
 -   Group object filter: Which objects should be considered groups.
--   User group membership field: Which user field saves the group membership
+-   Group membership field: Which user field saves the group membership
 -   Object uniqueness field: A user field which contains a unique Identifier
 -   Sync parent group: If enabled, all synchronized groups will be given this group as a parent.
 
