@@ -50,6 +50,7 @@ class EventViewSet(ReadOnlyModelViewSet):
     serializer_class = EventSerializer
     ordering = ["-created"]
     search_fields = [
+        "event_uuid",
         "user",
         "action",
         "app",
