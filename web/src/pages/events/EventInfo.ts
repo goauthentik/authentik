@@ -5,6 +5,7 @@ import { Event, EventContext } from "../../api/Events";
 import { Flow } from "../../api/Flows";
 import { COMMON_STYLES } from "../../common/styles";
 import "../../elements/Spinner";
+import "../../elements/Expand";
 import { SpinnerSize } from "../../elements/Spinner";
 
 @customElement("ak-event-info")
@@ -86,12 +87,11 @@ export class EventInfo extends LitElement {
         case "login_failed":
             return html`
                 <h3>${gettext(`Attempted to log in as ${this.event.context.username}`)}</h3>
-                `;
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "token_view":
             return html`
                 <h3>${gettext("Token:")}</h3><hr>
-                ${this.getModelInfo(this.event.context.token as EventContext)}
-                `;
+                ${this.getModelInfo(this.event.context.token as EventContext)}`;
         case "property_mapping_exception":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -102,7 +102,8 @@ export class EventInfo extends LitElement {
                         <h3>${gettext("Expression")}</h3>
                         <code>${this.event.context.expression}</code>
                     </div>
-                </div>`;
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "policy_exception":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -120,7 +121,8 @@ export class EventInfo extends LitElement {
                         <h3>${gettext("Exception")}</h3>
                         <code>${this.event.context.message || this.event.context.error}</code>
                     </div>
-                </div>`;
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "policy_execution":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
@@ -141,21 +143,23 @@ export class EventInfo extends LitElement {
                             <li>${gettext("Messages")}:
                                 <ul class="pf-c-list">
                                     ${((this.event.context.result as EventContext).messages as string[]).map(msg => {
-        return html`<li>${msg}</li>`;
-    })}
+                                        return html`<li>${msg}</li>`;
+                                    })}
                                 </ul>
                             </li>
                         </ul>
                     </div>
-                </div>`;
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "configuration_error":
-            return html`<h3>${this.event.context.message}</h3>`;
+            return html`<h3>${this.event.context.message}</h3>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "update_available":
             return html`<h3>${gettext("New version available!")}</h3>
                 <a target="_blank" href="https://github.com/BeryJu/authentik/releases/tag/version%2F${this.event.context.new_version}">${this.event.context.new_version}</a>
                 `;
-            // Action types which typically don't record any extra context.
-            // If context is not empty, we fall to the default response.
+        // Action types which typically don't record any extra context.
+        // If context is not empty, we fall to the default response.
         case "login":
             if ("using_source" in this.event.context) {
                 return html`<div class="pf-l-flex">
