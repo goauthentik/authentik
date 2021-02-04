@@ -272,17 +272,24 @@ class NotificationTransport(models.Model):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
-        body_trunc = (
-            (notification.body[:75] + "..")
-            if len(notification.body) > 75
-            else notification.body
-        )
+        subject = "authentik Notification: "
+        key_value = {}
+        if notification.event:
+            subject += notification.event.action
+            for key, value in notification.event.context.items():
+                if not isinstance(value, str):
+                    continue
+                key_value[key] = value
+        else:
+            subject += notification.body[:75]
         mail = TemplateEmailMessage(
-            subject=f"authentik Notification: {body_trunc}",
+            subject=subject,
             template_name="email/generic.html",
             to=[notification.user.email],
             template_context={
+                "title": subject,
                 "body": notification.body,
+                "key_value": key_value,
             },
         )
         # Email is sent directly here, as the call to send() should have been from a task.

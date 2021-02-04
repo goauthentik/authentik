@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Event } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
+import "./EventInfo";
 
 @customElement("ak-event-info-page")
 export class EventInfoPage extends LitElement {
