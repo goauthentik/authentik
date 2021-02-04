@@ -185,7 +185,10 @@ class LDAPSynchronizer:
             properties["attributes"]["ldap_uniq"] = attributes.get(
                 self._source.object_uniqueness_field
             )
-        properties["attributes"]["distinguishedName"] = attributes.get(
-            "distinguishedName"
-        )
+        distinguished_name = attributes.get("distinguishedName", attributes.get("dn"))
+        if not distinguished_name:
+            raise IntegrityError(
+                "Object does not have a distinguishedName or dn field."
+            )
+        properties["attributes"]["distinguishedName"] = distinguished_name
         return properties

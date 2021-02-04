@@ -53,6 +53,7 @@ def _build_mock_connection(password: str) -> Connection:
             "objectSid": "user0",
             "objectCategory": "Person",
             "memberOf": "cn=group1,ou=groups,DC=AD2012,DC=LAB",
+            "distinguishedName": "cn=user0,ou=users,DC=AD2012,DC=LAB",
         },
     )
     # User without SID
@@ -64,6 +65,7 @@ def _build_mock_connection(password: str) -> Connection:
             "name": "user1_sn",
             "revision": 0,
             "objectCategory": "Person",
+            "distinguishedName": "cn=user1,ou=users,DC=AD2012,DC=LAB",
         },
     )
     # Duplicate users
@@ -76,6 +78,7 @@ def _build_mock_connection(password: str) -> Connection:
             "revision": 0,
             "objectSid": "unique-test2222",
             "objectCategory": "Person",
+            "distinguishedName": "cn=user2,ou=users,DC=AD2012,DC=LAB",
         },
     )
     connection.strategy.add_entry(
@@ -87,6 +90,7 @@ def _build_mock_connection(password: str) -> Connection:
             "revision": 0,
             "objectSid": "unique-test2222",
             "objectCategory": "Person",
+            "distinguishedName": "cn=user3,ou=users,DC=AD2012,DC=LAB",
         },
     )
     connection.bind()
