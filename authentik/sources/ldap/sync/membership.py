@@ -52,10 +52,19 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def get_group(self, group_dict: dict[str, Any]) -> Optional[Group]:
         """Check if we fetched the group already, and if not cache it for later"""
+        group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
         group_uniq = group_dict.get("attributes", {}).get(
-            self._source.object_uniqueness_field, ""
+            self._source.object_uniqueness_field, []
         )
-        group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, "")
+        # group_uniq might be a single string or an array with (hopefully) a single string
+        if isinstance(group_uniq, list):
+            if len(group_uniq) < 1:
+                self._logger.warning(
+                    "Group does not have a uniqueness attribute.",
+                    group=group_dn,
+                )
+                return None
+            group_uniq = group_uniq[0]
         if group_uniq not in self.group_cache:
             groups = Group.objects.filter(
                 **{f"attributes__{LDAP_UNIQUENESS}": group_uniq}
