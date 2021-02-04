@@ -30,6 +30,6 @@ class BaseLDAPSynchronizer:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
 
-    def sync(self):
+    def sync(self) -> int:
         """Sync function, implemented in subclass"""
         raise NotImplementedError()

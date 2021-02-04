@@ -19,7 +19,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         super().__init__(source)
         self.group_cache: dict[str, Group] = {}
 
-    def sync(self):
+    def sync(self) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
         groups = self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
@@ -28,8 +28,10 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             attributes=[
                 self._source.group_membership_field,
                 self._source.object_uniqueness_field,
+                LDAP_DISTINGUISHED_NAME,
             ],
         )
+        membership_count = 0
         for group in groups:
             members = group.get("attributes", {}).get(
                 self._source.group_membership_field, []
@@ -41,13 +43,16 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
+            membership_count += 1
+            membership_count += users.count()
             ak_group.users.set(users)
             ak_group.save()
         self._logger.debug("Successfully updated group membership")
+        return membership_count
 
     def get_group(self, group_dict: dict[str, Any]) -> Optional[Group]:
         """Check if we fetched the group already, and if not cache it for later"""
-        group_uniq = group_dict.get("attributes", {}).get(LDAP_UNIQUENESS, "")
+        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, "")
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, "")
         if group_uniq not in self.group_cache:
             groups = Group.objects.filter(
