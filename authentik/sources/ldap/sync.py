@@ -44,7 +44,7 @@ class LDAPSynchronizer:
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=ldap3.SUBTREE,
-            attributes=ldap3.ALL_ATTRIBUTES,
+            attributes=[ldap3.ALL_ATTRIBUTES, ldap3.ALL_OPERATIONAL_ATTRIBUTES],
         )
         group_count = 0
         for group in groups:
@@ -81,7 +81,7 @@ class LDAPSynchronizer:
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=ldap3.SUBTREE,
-            attributes=ldap3.ALL_ATTRIBUTES,
+            attributes=[ldap3.ALL_ATTRIBUTES, ldap3.ALL_OPERATIONAL_ATTRIBUTES],
         )
         user_count = 0
         for user in users:
