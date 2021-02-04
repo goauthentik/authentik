@@ -76,10 +76,11 @@ export class EventInfo extends LitElement {
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Using flow")}</h3>
                         <span>${until(Flow.list({
-        flow_uuid: this.event.context.flow as string,
-    }).then(resp => {
-        return html`<a href="#/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
-    }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}</span>
+                            flow_uuid: this.event.context.flow as string,
+                        }).then(resp => {
+                            return html`<a href="#/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
+                        }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}
+                        </span>
                     </div>
                 </div>`;
         case "login_failed":
