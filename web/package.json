@@ -15,7 +15,7 @@
         "@sentry/browser": "^6.0.4",
         "@sentry/tracing": "^6.0.4",
         "@types/chart.js": "^2.9.30",
-        "@types/codemirror": "0.0.107",
+        "@types/codemirror": "0.0.108",
         "chart.js": "^2.9.4",
         "codemirror": "^5.59.2",
         "construct-style-sheets-polyfill": "^2.4.6",
