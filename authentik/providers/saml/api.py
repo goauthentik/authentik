@@ -1,8 +1,6 @@
 """SAMLProvider API Views"""
-from typing import Optional
-from authentik.core.models import Application
-from rest_framework.fields import ReadOnlyField, SerializerMethodField
-from rest_framework.serializers import ModelSerializer, Serializer, CharField
+from rest_framework.fields import ReadOnlyField
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import MetaNameSerializer

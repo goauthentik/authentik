@@ -1,5 +1,4 @@
 """Provider API Views"""
-from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
