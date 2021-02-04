@@ -117,7 +117,6 @@ export abstract class Table<T> extends LitElement {
             return;
         }
         this.isLoading = true;
-        this.data = undefined;
         this.apiEndpoint(this.page).then((r) => {
             this.data = r;
             this.page = r.pagination.current;
@@ -225,7 +224,7 @@ export abstract class Table<T> extends LitElement {
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"
                         .pages=${this.data?.pagination}
-                        .pageChangeHandler=${(page: number) => {this.page = page; }}>
+                        .pageChangeHandler=${(page: number) => { this.page = page; this.fetch(); }}>
                     </ak-table-pagination>
                 </div>
             </div>
@@ -236,13 +235,13 @@ export abstract class Table<T> extends LitElement {
                         ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
-                ${this.data ? this.renderRows() : this.renderLoading()}
+                ${(this.isLoading || !this.data) ? this.renderLoading() : this.renderRows()}
             </table>
             <div class="pf-c-pagination pf-m-bottom">
                 <ak-table-pagination
                     class="pf-c-toolbar__item pf-m-pagination"
                     .pages=${this.data?.pagination}
-                    .pageChangeHandler=${(page: number) => { this.page = page; }}>
+                    .pageChangeHandler=${(page: number) => { this.page = page; this.fetch(); }}>
                 </ak-table-pagination>
             </div>`;
     }

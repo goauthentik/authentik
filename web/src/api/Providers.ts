@@ -16,7 +16,7 @@ export class Provider {
     }
 
     static get(id: number): Promise<Provider> {
-        return DefaultClient.fetch<Provider>(["providers", "all", id]);
+        return DefaultClient.fetch<Provider>(["providers", "all", id.toString()]);
     }
 
     static list(filter?: QueryArguments): Promise<PBResponse<Provider>> {

@@ -1,6 +1,7 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 import { PBPagination } from "../../api/Client";
+import { gettext } from "django";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
@@ -32,8 +33,8 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => { this.pageChangeHandler(this.pages?.previous || 0); }}
-                            ?disabled="${(this.pages?.previous || 0) > 0}"
-                            aria-label="{% trans 'Go to previous page' %}"
+                            ?disabled="${(this.pages?.previous || 0) < 1}"
+                            aria-label="${gettext("Go to previous page")}"
                         >
                             <i class="fas fa-angle-left" aria-hidden="true"></i>
                         </button>
@@ -42,8 +43,8 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => { this.pageChangeHandler(this.pages?.next || 0); }}
-                            ?disabled="${(this.pages?.next || 0) > 0}"
-                            aria-label="{% trans 'Go to next page' %}"
+                            ?disabled="${(this.pages?.next || 0) < 0}"
+                            aria-label="${gettext("Go to next page")}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>
                         </button>
