@@ -2,6 +2,7 @@ import { html, TemplateResult } from "lit-html";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
+export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
 export class Route {
     url: RegExp;
