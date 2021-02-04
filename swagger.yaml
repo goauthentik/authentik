@@ -8758,6 +8758,14 @@ definitions:
         enum:
           - global
           - per_provider
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -8819,6 +8827,14 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -8919,6 +8935,14 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string

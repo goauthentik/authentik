@@ -26,7 +26,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Sources", "/administration/sources/").activeWhen(
             `^/sources/(?<slug>${SLUG_REGEX})$`,
         ),
-        new SidebarItem("Providers", "/administration/providers/"),
+        new SidebarItem("Providers", "/providers"),
         new SidebarItem("Outposts", "/administration/outposts/"),
         new SidebarItem("Outpost Service Connections", "/administration/outposts/service_connections/"),
     ).when((): Promise<boolean> => {

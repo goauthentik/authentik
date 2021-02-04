@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import { Route, SLUG_REGEX } from "./elements/router/Route";
+import { Route, SLUG_REGEX, ID_REGEX } from "./elements/router/Route";
 
 import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
@@ -10,6 +10,8 @@ import "./pages/flows/FlowViewPage";
 import "./pages/events/EventListPage";
 import "./pages/events/TransportListPage";
 import "./pages/events/RuleListPage";
+import "./pages/providers/ProviderListPage";
+import "./pages/providers/ProviderViewPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 
 export const ROUTES: Route[] = [
@@ -18,6 +20,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^#.*")).redirect("/library"),
     new Route(new RegExp("^/library$"), html`<ak-library></ak-library>`),
     new Route(new RegExp("^/administration/overview$"), html`<ak-admin-overview></ak-admin-overview>`),
+    new Route(new RegExp("^/providers$"), html`<ak-provider-list></ak-provider-list>`),
+    new Route(new RegExp(`^/providers/(?<id>${ID_REGEX})$`)).then((args) => {
+        return html`<ak-provider-view .args=${args}></ak-provider-view>`;
+    }),
     new Route(new RegExp("^/applications$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-application-view .args=${args}></ak-application-view>`;
