@@ -6,6 +6,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/buttons/Dropdown";
 import { TableColumn } from "../../elements/table/Table";
 
 @customElement("ak-provider-list")
@@ -58,13 +59,13 @@ export class ProviderListPage extends TablePage<Provider> {
             html`
             <ak-modal-button href="${Provider.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    Edit
+                    ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>&nbsp;
             <ak-modal-button href="${Provider.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
-                    Delete
+                    ${gettext("Delete")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
@@ -81,7 +82,7 @@ export class ProviderListPage extends TablePage<Provider> {
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
                 <li>
-                    <ak-modal-button href="${Provider.adminUrl(`/create/?type=OAuth2Provider`)}">
+                    <ak-modal-button href="${Provider.adminUrl("/create/?type=OAuth2Provider")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("OAuth2/OpenID Provider")}<br>
                             <small>
                                 ${gettext("OAuth2 Provider for generic OAuth and OpenID Connect Applications.")}
@@ -91,7 +92,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     </ak-modal-button>
                 </li>
                 <li>
-                    <ak-modal-button href="${Provider.adminUrl(`/create/?type=ProxyProvider`)}">
+                    <ak-modal-button href="${Provider.adminUrl("/create/?type=ProxyProvider")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("Proxy Provider")}<br>
                             <small>
                                 ${gettext("Protect applications that don't support any of the other Protocols by using a Reverse-Proxy.")}
@@ -101,7 +102,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     </ak-modal-button>
                 </li>
                 <li>
-                    <ak-modal-button href="${Provider.adminUrl(`/create/?type=SAMLProvider`)}">
+                    <ak-modal-button href="${Provider.adminUrl("/create/?type=SAMLProvider")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Provider")}<br>
                             <small>
                                 ${gettext("SAML 2.0 Endpoint for applications which support SAML.")}
@@ -111,7 +112,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     </ak-modal-button>
                 </li>
                 <li>
-                    <ak-modal-button href="${Provider.adminUrl(`/create/saml/from-metadata`)}/">
+                    <ak-modal-button href="${Provider.adminUrl("/create/saml/from-metadata/")}">
                         <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Provider from Metadata")}<br>
                             <small>
                                 ${gettext("Create a SAML Provider by importing its Metadata.")}

@@ -1,7 +1,7 @@
 import { html, TemplateResult } from "lit-html";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
-export const ID_REGEX = "\d+";
+export const ID_REGEX = "\\d+";
 
 export class Route {
     url: RegExp;
