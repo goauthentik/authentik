@@ -29,16 +29,17 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         user_count = 0
         for user in users:
             attributes = user.get("attributes", {})
+            user_dn = user.get("entryDN", "")
             if self._source.object_uniqueness_field not in attributes:
                 self._logger.warning(
                     "Cannot find uniqueness Field in attributes",
                     attributes=attributes.keys(),
-                    dn=attributes.get(LDAP_DISTINGUISHED_NAME, ""),
+                    dn=user_dn,
                 )
                 continue
             uniq = attributes[self._source.object_uniqueness_field]
             try:
-                defaults = self._build_object_properties(attributes)
+                defaults = self._build_object_properties(user_dn, **attributes)
                 user, created = User.objects.update_or_create(
                     **{
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
@@ -64,7 +65,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         return user_count
 
     def _build_object_properties(
-        self, attributes: dict[str, Any]
+        self, user_dn: str, **kwargs
     ) -> dict[str, dict[Any, Any]]:
         properties = {"attributes": {}}
         for mapping in self._source.property_mappings.all().select_subclasses():
@@ -72,7 +73,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             mapping: LDAPPropertyMapping
             try:
-                value = mapping.evaluate(user=None, request=None, ldap=attributes)
+                value = mapping.evaluate(
+                    user=None, request=None, ldap=kwargs, dn=user_dn
+                )
                 if value is None:
                     continue
                 object_field = mapping.object_field
@@ -87,11 +90,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     "Mapping failed to evaluate", exc=exc, mapping=mapping
                 )
                 continue
-        if self._source.object_uniqueness_field in attributes:
-            properties["attributes"][LDAP_UNIQUENESS] = attributes.get(
+        if self._source.object_uniqueness_field in kwargs:
+            properties["attributes"][LDAP_UNIQUENESS] = kwargs.get(
                 self._source.object_uniqueness_field
             )
-        properties["attributes"][LDAP_DISTINGUISHED_NAME] = attributes.get(
-            "distinguishedName", attributes.get("dn")
-        )
+        properties["attributes"][LDAP_DISTINGUISHED_NAME] = user_dn
         return properties
