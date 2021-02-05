@@ -11,7 +11,7 @@ from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync_all
-from authentik.sources.ldap.tests.utils import mock_ad_connection
+from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
 LDAP_PASSWORD = generate_client_secret()
 LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
@@ -25,7 +25,7 @@ class LDAPSyncTests(TestCase):
         self.source = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
-            base_dn="DC=AD2012,DC=LAB",
+            base_dn="dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )

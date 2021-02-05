@@ -1,4 +1,6 @@
 """Sync LDAP Users and groups into authentik"""
+from typing import Any
+
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.sources.ldap.models import LDAPSource
@@ -33,3 +35,11 @@ class BaseLDAPSynchronizer:
     def sync(self) -> int:
         """Sync function, implemented in subclass"""
         raise NotImplementedError()
+
+    def _flatten(self, value: Any) -> Any:
+        """Flatten `value` if its a list"""
+        if isinstance(value, list):
+            if len(value) < 1:
+                return None
+            return value[0]
+        return value

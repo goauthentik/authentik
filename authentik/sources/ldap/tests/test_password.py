@@ -7,7 +7,7 @@ from authentik.core.models import User
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
-from authentik.sources.ldap.tests.utils import mock_ad_connection
+from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
 LDAP_PASSWORD = generate_client_secret()
 LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
@@ -20,7 +20,7 @@ class LDAPPasswordTests(TestCase):
         self.source = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
-            base_dn="DC=AD2012,DC=LAB",
+            base_dn="dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
@@ -41,7 +41,7 @@ class LDAPPasswordTests(TestCase):
         pwc = LDAPPasswordChanger(self.source)
         user = User.objects.create(
             username="test",
-            attributes={"distinguishedName": "cn=user,ou=users,DC=AD2012,DC=LAB"},
+            attributes={"distinguishedName": "cn=user,ou=users,dc=goauthentik,dc=io"},
         )
         self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category
         self.assertFalse(pwc.ad_password_complexity("test1", user))  # 2 categories

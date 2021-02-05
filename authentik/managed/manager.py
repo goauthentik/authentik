@@ -12,7 +12,7 @@ class EnsureOp:
     """Ensure operation, executed as part of an ObjectManager run"""
 
     _obj: Type[ManagedModel]
-    _match_fields: list[str]
+    _match_fields: tuple[str, ...]
     _kwargs: dict
 
     def __init__(self, obj: Type[ManagedModel], *match_fields: str, **kwargs) -> None:
@@ -34,11 +34,11 @@ class EnsureExists(EnsureOp):
             "defaults": self._kwargs,
         }
         for field in self._match_fields:
-            update_kwargs[field] = self._kwargs.get(field, None)
+            value = self._kwargs.get(field, None)
+            if value:
+                update_kwargs[field] = value
         self._kwargs.setdefault("managed", True)
-        self._obj.objects.update_or_create(
-            **update_kwargs
-        )
+        self._obj.objects.update_or_create(**update_kwargs)
 
 
 class ObjectManager:

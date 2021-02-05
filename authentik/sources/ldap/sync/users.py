@@ -28,8 +28,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         )
         user_count = 0
         for user in users:
+            self._logger.debug(user)
             attributes = user.get("attributes", {})
-            user_dn = user.get("entryDN", "")
+            user_dn = self._flatten(user.get("entryDN", ""))
             if self._source.object_uniqueness_field not in attributes:
                 self._logger.warning(
                     "Cannot find uniqueness Field in attributes",
@@ -37,9 +38,12 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=user_dn,
                 )
                 continue
-            uniq = attributes[self._source.object_uniqueness_field]
+            uniq = self._flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self._build_object_properties(user_dn, **attributes)
+                self._logger.debug("Creating user with attributes", **defaults)
+                if "username" not in defaults:
+                    raise IntegrityError("Username was not set by propertymappings")
                 user, created = User.objects.update_or_create(
                     **{
                         f"attributes__{LDAP_UNIQUENESS}": uniq,
@@ -58,9 +62,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if created:
                     user.set_unusable_password()
                     user.save()
-                self._logger.debug(
-                    "Synced User", user=attributes.get("name", ""), created=created
-                )
+                self._logger.debug("Synced User", user=user.username, created=created)
                 user_count += 1
         return user_count
 
@@ -80,19 +82,21 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     continue
                 object_field = mapping.object_field
                 if object_field.startswith("attributes."):
+                    # Because returning a list might desired, we can't
+                    # rely on self._flatten here. Instead, just save the result as-is
                     properties["attributes"][
                         object_field.replace("attributes.", "")
                     ] = value
                 else:
-                    properties[object_field] = value
+                    properties[object_field] = self._flatten(value)
             except PropertyMappingExpressionException as exc:
                 self._logger.warning(
                     "Mapping failed to evaluate", exc=exc, mapping=mapping
                 )
                 continue
         if self._source.object_uniqueness_field in kwargs:
-            properties["attributes"][LDAP_UNIQUENESS] = kwargs.get(
-                self._source.object_uniqueness_field
+            properties["attributes"][LDAP_UNIQUENESS] = self._flatten(
+                kwargs.get(self._source.object_uniqueness_field)
             )
         properties["attributes"][LDAP_DISTINGUISHED_NAME] = user_dn
         return properties
