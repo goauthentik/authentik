@@ -28,9 +28,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         )
         user_count = 0
         for user in users:
-            self._logger.debug(user)
             attributes = user.get("attributes", {})
-            user_dn = self._flatten(user.get("entryDN", ""))
+            user_dn = self._flatten(user.get("entryDN", user.get("dn")))
             if self._source.object_uniqueness_field not in attributes:
                 self._logger.warning(
                     "Cannot find uniqueness Field in attributes",
