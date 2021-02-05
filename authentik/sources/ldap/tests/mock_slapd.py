@@ -28,7 +28,7 @@ def mock_slapd_connection(password: str) -> Connection:
         {
             "name": "test-group",
             "uid": "unique-test-group",
-            "objectClass": "group",
+            "objectClass": "groupOfNames",
             "member": ["cn=user0,ou=users,dc=goauthentik,dc=io"],
         },
     )
@@ -37,7 +37,7 @@ def mock_slapd_connection(password: str) -> Connection:
         "cn=group2,ou=groups,dc=goauthentik,dc=io",
         {
             "name": "test-group",
-            "objectClass": "group",
+            "objectClass": "groupOfNames",
         },
     )
     connection.strategy.add_entry(
