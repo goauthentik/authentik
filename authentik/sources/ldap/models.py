@@ -38,14 +38,14 @@ class LDAPSource(Source):
     )
 
     user_object_filter = models.TextField(
-        default="(objectCategory=Person)",
+        default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
     group_membership_field = models.TextField(
         default="member", help_text=_("Field which contains members of a group.")
     )
     group_object_filter = models.TextField(
-        default="(objectCategory=Group)",
+        default="(objectClass=group)",
         help_text=_("Consider Objects matching this filter to be Groups."),
     )
     object_uniqueness_field = models.TextField(
