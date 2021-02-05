@@ -4,6 +4,7 @@ from typing import Any, Optional
 import ldap3
 import ldap3.core.exceptions
 
+from django.db.models import Q
 from authentik.core.models import Group, User
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPSource
@@ -36,13 +37,17 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             members = group.get("attributes", {}).get(
                 self._source.group_membership_field, []
             )
-            users = User.objects.filter(
-                **{f"attributes__{LDAP_DISTINGUISHED_NAME}__in": members}
-            )
-
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
+
+            users = User.objects.filter(
+                Q(**{f"attributes__{LDAP_DISTINGUISHED_NAME}__in": members}) |
+                Q(**{
+                    f"attributes__{LDAP_DISTINGUISHED_NAME}__isnull": True,
+                    "ak_groups__in": [ak_group]
+                })
+            )
             membership_count += 1
             membership_count += users.count()
             ak_group.users.set(users)
