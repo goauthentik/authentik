@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import { Route, SLUG_REGEX, ID_REGEX } from "./elements/router/Route";
+import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
 
 import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
@@ -8,6 +8,7 @@ import "./pages/applications/ApplicationViewPage";
 import "./pages/sources/SourceViewPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/events/EventListPage";
+import "./pages/events/EventInfoPage";
 import "./pages/events/TransportListPage";
 import "./pages/events/RuleListPage";
 import "./pages/providers/ProviderListPage";
@@ -35,6 +36,9 @@ export const ROUTES: Route[] = [
         return html`<ak-flow-view .args=${args}></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), html`<ak-event-list></ak-event-list>`),
+    new Route(new RegExp(`^/events/log/(?<id>${UUID_REGEX})$`)).then((args) => {
+        return html`<ak-event-info-page .args=${args}></ak-event-info-page>`;
+    }),
     new Route(new RegExp("^/events/transports$"), html`<ak-event-transport-list></ak-event-transport-list>`),
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),

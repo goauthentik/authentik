@@ -23,11 +23,12 @@ class OAuth2Error(SentryIgnoredException):
     def __repr__(self) -> str:
         return self.error
 
-    def to_event(self, message: Optional[str] = None) -> Event:
+    def to_event(self, message: Optional[str] = None, **kwargs) -> Event:
         """Create configuration_error Event and save it."""
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
+            **kwargs,
         )
 
 
@@ -49,10 +50,11 @@ class RedirectUriError(OAuth2Error):
         self.provided_uri = provided_uri
         self.allowed_uris = allowed_uris
 
-    def to_event(self) -> Event:
+    def to_event(self, **kwargs) -> Event:
         return super().to_event(
             f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
-            f"Allowed redirect URIs are {','.join(self.allowed_uris)}"
+            f"Allowed redirect URIs are {','.join(self.allowed_uris)}",
+            **kwargs,
         )
 
 
@@ -68,8 +70,10 @@ class ClientIdError(OAuth2Error):
         super().__init__()
         self.client_id = client_id
 
-    def to_event(self) -> Event:
-        return super().to_event(f"Invalid client identifier: {self.client_id}.")
+    def to_event(self, **kwargs) -> Event:
+        return super().to_event(
+            f"Invalid client identifier: {self.client_id}.", **kwargs
+        )
 
 
 class UserAuthError(OAuth2Error):

@@ -13,7 +13,9 @@ export class Client {
         if (query) {
             const queryString = Object.keys(query)
                 .filter((k) => query[k] !== null)
-                .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k]))
+                // we default to a string in query[k] as we've filtered out the null above
+                // this is just for type-hinting
+                .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k] || ""))
                 .join("&");
             builtUrl += `?${queryString}`;
         }

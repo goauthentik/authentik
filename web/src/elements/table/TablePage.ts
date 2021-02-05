@@ -1,3 +1,4 @@
+import { gettext } from "django";
 import { html, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { Table } from "./Table";
@@ -26,9 +27,9 @@ export abstract class TablePage<T> extends Table<T> {
                 <div class="pf-c-content">
                     <h1>
                         <i class="${this.pageIcon()}"></i>
-                        ${this.pageTitle()}
+                        ${gettext(this.pageTitle())}
                     </h1>
-                    ${description ? html`<p>${description}</p>` : html``}
+                    ${description ? html`<p>${gettext(description)}</p>` : html``}
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">

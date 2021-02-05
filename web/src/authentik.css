@@ -169,6 +169,13 @@ select[multiple] {
     .pf-c-table__toggle-icon {
         color: var(--ak-dark-foreground);
     }
+    /* expandable elements */
+    .pf-c-expandable-section__toggle-text {
+        color: var(--ak-dark-foreground);
+    }
+    .pf-c-expandable-section__toggle-icon {
+        color: var(--ak-dark-foreground);
+    }
     /* inputs */
     .pf-c-input-group {
         --pf-c-input-group--BackgroundColor: transparent;
