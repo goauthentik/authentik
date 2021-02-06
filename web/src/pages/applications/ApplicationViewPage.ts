@@ -49,7 +49,7 @@ export class ApplicationViewPage extends LitElement {
                 </div>
             </section>
             <ak-tabs>
-                <section slot="page-1" data-tab-title="Users" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${gettext("Users")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__header">
@@ -66,7 +66,7 @@ export class ApplicationViewPage extends LitElement {
                         </div>
                     </div>
                 </section>
-                <div slot="page-2" data-tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div slot="page-2" data-tab-title="${gettext("Policy Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__header-main">

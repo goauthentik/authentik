@@ -1,17 +1,17 @@
 """SAMLProvider API Views"""
 from drf_yasg2.utils import swagger_auto_schema
-from rest_framework.fields import ReadOnlyField
-from authentik.providers.saml.views import DescriptorDownloadView
-from rest_framework.generics import get_object_or_404
-from rest_framework.serializers import ModelSerializer, Serializer
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.fields import ReadOnlyField
+from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
-from guardian.shortcuts import get_objects_for_user
+from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.viewsets import ModelViewSet
+
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.views import DescriptorDownloadView
 
 
 class SAMLProviderSerializer(ProviderSerializer):
@@ -41,6 +41,12 @@ class SAMLMetadataSerializer(Serializer):
 
     metadata = ReadOnlyField()
 
+    def create(self, request: Request) -> Response:
+        raise NotImplementedError
+
+    def update(self, request: Request) -> Response:
+        raise NotImplementedError
+
 
 class SAMLProviderViewSet(ModelViewSet):
     """SAMLProvider Viewset"""
@@ -55,9 +61,7 @@ class SAMLProviderViewSet(ModelViewSet):
         """Return metadata as XML string"""
         provider = get_object_or_404(SAMLProvider, pk=pk)
         metadata = DescriptorDownloadView.get_metadata(request, provider)
-        return Response({
-            "metadata": metadata
-        })
+        return Response({"metadata": metadata})
 
 
 class SAMLPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):

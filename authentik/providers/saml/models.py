@@ -4,15 +4,12 @@ from urllib.parse import urlparse
 
 from django.db import models
 from django.forms import ModelForm
-from django.http import HttpRequest
-from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.utils.template import render_to_string
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -181,31 +178,6 @@ class SAMLProvider(Provider):
 
     def __str__(self):
         return f"SAML Provider {self.name}"
-
-    def link_download_metadata(self):
-        """Get link to download XML metadata for admin interface"""
-        try:
-            # pylint: disable=no-member
-            return reverse(
-                "authentik_providers_saml:metadata",
-                kwargs={"application_slug": self.application.slug},
-            )
-        except Provider.application.RelatedObjectDoesNotExist:
-            return None
-
-    def html_metadata_view(self, request: HttpRequest) -> Optional[str]:
-        """return template and context modal to view Metadata without downloading it"""
-        from authentik.providers.saml.views import DescriptorDownloadView
-
-        try:
-            # pylint: disable=no-member
-            metadata = DescriptorDownloadView.get_metadata(request, self)
-            return render_to_string(
-                "providers/saml/admin_metadata_modal.html",
-                {"provider": self, "metadata": metadata},
-            )
-        except Provider.application.RelatedObjectDoesNotExist:
-            return None
 
     class Meta:
 

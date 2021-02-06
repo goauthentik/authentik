@@ -4,6 +4,7 @@ export class Provider {
     pk: number;
     name: string;
     authorization_flow: string;
+    object_type: string;
 
     assigned_application_slug?: string;
     assigned_application_name?: string;
