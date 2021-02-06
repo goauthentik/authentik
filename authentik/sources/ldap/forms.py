@@ -45,6 +45,7 @@ class LDAPSourceForm(forms.ModelForm):
             "object_uniqueness_field",
             "sync_parent_group",
         ]
+        labels = {"property_mappings_group": _("Group property mappings")}
         widgets = {
             "name": forms.TextInput(),
             "server_uri": forms.TextInput(),

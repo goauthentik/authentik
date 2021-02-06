@@ -40,7 +40,8 @@ Use these settings:
 -   Bind CN: `<name of your service user>@ad.company`
 -   Bind Password: The password you've given the user above
 -   Base DN: The base DN which you want authentik to sync
--   Property Mappings: Shift-Select all
+-   Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default Active Directory"
+-   Group property mappings: Select "authentik default LDAP Mapping: Name"
 
 The other settings might need to be adjusted based on the setup of your domain.
 
