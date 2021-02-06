@@ -4305,6 +4305,24 @@ paths:
         description: A unique integer value identifying this OAuth2/OpenID Provider.
         required: true
         type: integer
+  /providers/oauth2/{id}/setup_urls/:
+    get:
+      operationId: providers_oauth2_setup_urls
+      description: Return metadata as XML string
+      parameters: []
+      responses:
+        '200':
+          description: OAuth2 Provider Metadata serializer
+          schema:
+            $ref: '#/definitions/OAuth2ProviderSetupURLs'
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this OAuth2/OpenID Provider.
+        required: true
+        type: integer
   /providers/proxy/:
     get:
       operationId: providers_proxy_list
@@ -8808,6 +8826,30 @@ definitions:
         enum:
           - global
           - per_provider
+  OAuth2ProviderSetupURLs:
+    description: OAuth2 Provider Metadata serializer
+    type: object
+    properties:
+      issuer:
+        title: Issuer
+        type: string
+        readOnly: true
+      authorize:
+        title: Authorize
+        type: string
+        readOnly: true
+      token:
+        title: Token
+        type: string
+        readOnly: true
+      user_info:
+        title: User info
+        type: string
+        readOnly: true
+      provider_info:
+        title: Provider info
+        type: string
+        readOnly: true
   ProxyProvider:
     description: ProxyProvider Serializer
     required:

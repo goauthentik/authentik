@@ -24,6 +24,15 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
+export function convertToTitle(text: string): string {
+    return text.replace(
+        /\w\S*/g,
+        function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    );
+}
+
 export function truncate(input?: string, max = 10): string {
     input = input || "";
     const array = input.trim().split(" ");

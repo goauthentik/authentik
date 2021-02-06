@@ -14,7 +14,6 @@ from django.conf import settings
 from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
-from django.shortcuts import reverse
 from django.utils import dateformat, timezone
 from django.utils.translation import gettext_lazy as _
 from jwkest.jwk import Key, RSAKey, SYMKey, import_rsa_key
@@ -25,7 +24,6 @@ from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
-from authentik.lib.utils.template import render_to_string
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import ACR_AUTHENTIK_DEFAULT
@@ -308,41 +306,6 @@ class OAuth2Provider(Provider):
         self.refresh_from_db()
         jws = JWS(payload, alg=self.jwt_alg)
         return jws.sign_compact(keys)
-
-    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
-        """return template and context modal with URLs for authorize, token, openid-config, etc"""
-        try:
-            # pylint: disable=no-member
-            return render_to_string(
-                "providers/oauth2/setup_url_modal.html",
-                {
-                    "provider": self,
-                    "issuer": self.get_issuer(request),
-                    "authorize": request.build_absolute_uri(
-                        reverse(
-                            "authentik_providers_oauth2:authorize",
-                        )
-                    ),
-                    "token": request.build_absolute_uri(
-                        reverse(
-                            "authentik_providers_oauth2:token",
-                        )
-                    ),
-                    "userinfo": request.build_absolute_uri(
-                        reverse(
-                            "authentik_providers_oauth2:userinfo",
-                        )
-                    ),
-                    "provider_info": request.build_absolute_uri(
-                        reverse(
-                            "authentik_providers_oauth2:provider-info",
-                            kwargs={"application_slug": self.application.slug},
-                        )
-                    ),
-                },
-            )
-        except Provider.application.RelatedObjectDoesNotExist:
-            return None
 
     class Meta:
 

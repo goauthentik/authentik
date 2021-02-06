@@ -7,6 +7,7 @@ import "../../elements/buttons/SpinnerButton";
 import { SpinnerSize } from "../../elements/Spinner";
 
 import "./SAMLProviderViewPage";
+import "./OAuth2ProviderViewPage";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
@@ -42,6 +43,8 @@ export class ProviderViewPage extends LitElement {
         switch (this.provider?.object_type) {
             case "saml":
                 return html`<ak-provider-saml-view providerID=${this.provider.pk}></ak-provider-saml-view>`;
+            case "oauth2":
+                return html`<ak-provider-oauth2-view providerID=${this.provider.pk}></ak-provider-oauth2-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.object_type}</p>`;
         }
