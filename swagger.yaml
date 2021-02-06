@@ -9140,9 +9140,9 @@ definitions:
         description: Consider Objects matching this filter to be Groups.
         type: string
         minLength: 1
-      user_group_membership_field:
-        title: User group membership field
-        description: Field which contains Groups of user.
+      group_membership_field:
+        title: Group membership field
+        description: Field which contains members of a group.
         type: string
         minLength: 1
       object_uniqueness_field:
@@ -9169,6 +9169,14 @@ definitions:
       property_mappings:
         type: array
         items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      property_mappings_group:
+        description: Property mappings used for group creation/updating.
+        type: array
+        items:
+          description: Property mappings used for group creation/updating.
           type: string
           format: uuid
         uniqueItems: true

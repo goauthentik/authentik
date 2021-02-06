@@ -1,18 +1,21 @@
 """LDAP Source tests"""
 from unittest.mock import PropertyMock, patch
 
+from django.db.models import Q
 from django.test import TestCase
 
 from authentik.core.models import Group, User
 from authentik.managed.manager import ObjectManager
 from authentik.providers.oauth2.generators import generate_client_secret
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.sync import LDAPSynchronizer
+from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync_all
-from authentik.sources.ldap.tests.utils import _build_mock_connection
+from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
+from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
 
 LDAP_PASSWORD = generate_client_secret()
-LDAP_CONNECTION_PATCH = PropertyMock(return_value=_build_mock_connection(LDAP_PASSWORD))
 
 
 class LDAPSyncTests(TestCase):
@@ -23,31 +26,116 @@ class LDAPSyncTests(TestCase):
         self.source = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
-            base_dn="DC=AD2012,DC=LAB",
+            base_dn="dc=goauthentik,dc=io",
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        self.source.property_mappings.set(LDAPPropertyMapping.objects.all())
-        self.source.save()
 
-    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
-    def test_sync_users(self):
+    def test_sync_users_ad(self):
         """Test user sync"""
-        syncer = LDAPSynchronizer(self.source)
-        syncer.sync_users()
-        self.assertTrue(User.objects.filter(username="user0_sn").exists())
-        self.assertFalse(User.objects.filter(username="user1_sn").exists())
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default Active Directory Mapping")
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync()
+            self.assertTrue(User.objects.filter(username="user0_sn").exists())
+            self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
-    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
-    def test_sync_groups(self):
+    def test_sync_users_openldap(self):
+        """Test user sync"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default OpenLDAP Mapping")
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync()
+            self.assertTrue(User.objects.filter(username="user0_sn").exists())
+            self.assertFalse(User.objects.filter(username="user1_sn").exists())
+
+    def test_sync_groups_ad(self):
         """Test group sync"""
-        syncer = LDAPSynchronizer(self.source)
-        syncer.sync_groups()
-        syncer.sync_membership()
-        group = Group.objects.filter(name="test-group")
-        self.assertTrue(group.exists())
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default Active Directory Mapping")
+            )
+        )
+        self.source.property_mappings_group.set(
+            LDAPPropertyMapping.objects.filter(
+                name="authentik default LDAP Mapping: name"
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync.sync()
+            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync.sync()
+            group = Group.objects.filter(name="test-group")
+            self.assertTrue(group.exists())
 
-    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
-    def test_tasks(self):
+    def test_sync_groups_openldap(self):
+        """Test group sync"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default OpenLDAP Mapping")
+            )
+        )
+        self.source.property_mappings_group.set(
+            LDAPPropertyMapping.objects.filter(
+                name="authentik default OpenLDAP Mapping: cn"
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync.sync()
+            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync.sync()
+            group = Group.objects.filter(name="group1")
+            self.assertTrue(group.exists())
+
+    def test_tasks_ad(self):
         """Test Scheduled tasks"""
-        ldap_sync_all.delay().get()
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default Active Directory Mapping")
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+
+    def test_tasks_openldap(self):
+        """Test Scheduled tasks"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default OpenLDAP Mapping")
+            )
+        )
+        self.source.save()
+        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()

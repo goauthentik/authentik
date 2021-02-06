@@ -38,18 +38,25 @@ class LDAPSource(Source):
     )
 
     user_object_filter = models.TextField(
-        default="(objectCategory=Person)",
+        default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
-    user_group_membership_field = models.TextField(
-        default="memberOf", help_text=_("Field which contains Groups of user.")
+    group_membership_field = models.TextField(
+        default="member", help_text=_("Field which contains members of a group.")
     )
     group_object_filter = models.TextField(
-        default="(objectCategory=Group)",
+        default="(objectClass=group)",
         help_text=_("Consider Objects matching this filter to be Groups."),
     )
     object_uniqueness_field = models.TextField(
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
+    )
+
+    property_mappings_group = models.ManyToManyField(
+        PropertyMapping,
+        default=None,
+        blank=True,
+        help_text=_("Property mappings used for group creation/updating."),
     )
 
     sync_users = models.BooleanField(default=True)
