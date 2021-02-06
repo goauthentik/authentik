@@ -67,7 +67,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     # Create the notification objects
     for transport in trigger.transports.all():
         for user in trigger.group.users.all():
-            LOGGER.debug("created notif")
+            LOGGER.debug("created notification")
             notification = Notification.objects.create(
                 severity=trigger.severity, body=event.summary, event=event, user=user
             )
