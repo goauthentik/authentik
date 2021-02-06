@@ -113,7 +113,6 @@ urlpatterns = [
         name="policy-binding-delete",
     ),
     # Providers
-    path("providers/", providers.ProviderListView.as_view(), name="providers"),
     path(
         "providers/create/",
         providers.ProviderCreateView.as_view(),
