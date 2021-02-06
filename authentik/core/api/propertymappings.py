@@ -42,7 +42,7 @@ class PropertyMappingViewSet(ReadOnlyModelViewSet):
     search_fields = [
         "name",
     ]
-    filterset_fields = ["managed"]
+    filterset_fields = {"managed": ["isnull"]}
     ordering = ["name"]
 
     def get_queryset(self):

@@ -35,7 +35,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             ordering: this.order,
             page: page,
             search: this.search || "",
-            managed: this.hideManaged ? false : null,
+            managed__isnull: this.hideManaged,
         });
     }
 

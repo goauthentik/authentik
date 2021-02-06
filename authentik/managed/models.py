@@ -7,8 +7,9 @@ from django.utils.translation import gettext_lazy as _
 class ManagedModel(models.Model):
     """Model which can be managed by authentik exclusively"""
 
-    managed = models.BooleanField(
-        default=False,
+    managed = models.TextField(
+        default=None,
+        null=True,
         verbose_name=_("Managed by authentik"),
         help_text=_(
             (
@@ -18,11 +19,12 @@ class ManagedModel(models.Model):
                 "to be overwritten in a later update."
             )
         ),
+        unique=True,
     )
 
     def managed_objects(self) -> QuerySet:
         """Get all objects which are managed"""
-        return self.objects.filter(managed=True)
+        return self.objects.exclude(managed__isnull=True)
 
     class Meta:
 
