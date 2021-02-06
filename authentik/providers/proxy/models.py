@@ -6,7 +6,6 @@ from urllib.parse import urljoin
 
 from django.db import models
 from django.forms import ModelForm
-from django.http import HttpRequest
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
@@ -118,10 +117,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def launch_url(self) -> Optional[str]:
         """Use external_host as launch URL"""
         return self.external_host
-
-    def html_setup_urls(self, request: HttpRequest) -> Optional[str]:
-        """Overwrite Setup URLs as they are not needed for proxy"""
-        return None
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
