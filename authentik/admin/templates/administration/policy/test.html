@@ -14,7 +14,7 @@
             <span class="pf-c-form__label-text">{% trans 'Passing' %}</span>
         </label>
     </div>
-    <div class="pf-c-form__group-control">
+    <div class="pf-c-form__group-label">
         <div class="c-form__horizontal-group">
             <span class="pf-c-form__label-text">{{ result.passing|yesno:"Yes,No" }}</span>
         </div>
@@ -26,7 +26,7 @@
             <span class="pf-c-form__label-text">{% trans 'Messages' %}</span>
         </label>
     </div>
-    <div class="pf-c-form__group-control">
+    <div class="pf-c-form__group-label">
         <div class="c-form__horizontal-group">
             <ul>
                 {% for m in result.messages %}
