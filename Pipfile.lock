@@ -53,10 +53,10 @@
         },
         "autobahn": {
             "hashes": [
-                "sha256:410a93e0e29882c8b5d5ab05d220b07609b886ef5f23c0b8d39153254ffd6895",
-                "sha256:52ee4236ff9a1fcbbd9500439dcf3284284b37f8a6b31ecc8a36e00cf9f95049"
+                "sha256:93df8fc9d1821c9dabff9fed52181a9ad6eea5e9989d53102c391607d7c1666e",
+                "sha256:cceed2121b7a93024daa93c91fae33007f8346f0e522796421f36a6183abea99"
             ],
-            "version": "==20.12.3"
+            "version": "==21.1.1"
         },
         "automat": {
             "hashes": [
@@ -74,17 +74,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:1a282c1cd7d5028cbb3a75d747df32162295253f55d263ac85840e264830963b"
+                "sha256:92041aa7589c886020cabd80eb58b89ace2f0094571792fccae24b9a8b3b97d7",
+                "sha256:9f132c34e20110dea019293c89cede49b0a56be615b3e1debf98390ed9f1f7b9"
             ],
             "index": "pypi",
-            "version": "==1.17.2"
+            "version": "==1.17.3"
         },
         "botocore": {
             "hashes": [
-                "sha256:7442fdbbdc841bfac7f94f92ecb807de070e32ed205743eb72d4ea27c5e8e778",
-                "sha256:bf587b044983a91a0124cc133ff167b8528c19fbbc8f0b956d9a1ac256cad7d7"
+                "sha256:1dae84c68b109f596f58cc2e9fa87704ccd40dcbc12144a89205f85efa7f9135",
+                "sha256:a0fdded1c9636899ab273f50bf123f79b91439a8c282b5face8b5f4a48b493cb"
             ],
-            "version": "==1.20.2"
+            "version": "==1.20.3"
         },
         "cachetools": {
             "hashes": [
