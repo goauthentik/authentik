@@ -1,17 +1,12 @@
 """ProxyProvider API Views"""
 from drf_yasg2.utils import swagger_serializer_method
-from rest_framework.fields import (
-    CharField,
-    ListField,
-    ReadOnlyField,
-    SerializerMethodField,
-)
+from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.providers import ProviderSerializer
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -39,11 +34,8 @@ class OpenIDConnectConfigurationSerializer(Serializer):
         raise NotImplementedError
 
 
-class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
+class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
-
-    assigned_application_slug = ReadOnlyField(source="application.slug")
-    assigned_application_name = ReadOnlyField(source="application.name")
 
     def create(self, validated_data):
         instance: ProxyProvider = super().create(validated_data)
@@ -58,9 +50,7 @@ class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
     class Meta:
 
         model = ProxyProvider
-        fields = [
-            "pk",
-            "name",
+        fields = ProviderSerializer.Meta.fields + [
             "internal_host",
             "external_host",
             "internal_host_ssl_validation",
@@ -69,10 +59,6 @@ class ProxyProviderSerializer(MetaNameSerializer, ModelSerializer):
             "basic_auth_enabled",
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
-            "assigned_application_slug",
-            "assigned_application_name",
-            "verbose_name",
-            "verbose_name_plural",
         ]
 
 

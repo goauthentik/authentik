@@ -1,4 +1,5 @@
 """Provider API Views"""
+from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
@@ -9,17 +10,14 @@ from authentik.core.models import Provider
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
+    assigned_application_slug = ReadOnlyField(source="application.slug")
+    assigned_application_name = ReadOnlyField(source="application.name")
+
     object_type = SerializerMethodField()
 
     def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("provider", "")
-
-    def to_representation(self, instance: Provider):
-        # pyright: reportGeneralTypeIssues=false
-        if instance.__class__ == Provider:
-            return super().to_representation(instance)
-        return instance.serializer(instance=instance).data
 
     class Meta:
 
@@ -31,6 +29,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "authorization_flow",
             "property_mappings",
             "object_type",
+            "assigned_application_slug",
+            "assigned_application_name",
             "verbose_name",
             "verbose_name_plural",
         ]

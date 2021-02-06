@@ -4557,6 +4557,24 @@ paths:
         description: A unique integer value identifying this SAML Provider.
         required: true
         type: integer
+  /providers/saml/{id}/metadata/:
+    get:
+      operationId: providers_saml_metadata
+      description: Return metadata as XML string
+      parameters: []
+      responses:
+        '200':
+          description: SAML Provider Metadata serializer
+          schema:
+            $ref: '#/definitions/SAMLMetadata'
+      tags:
+        - providers
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this SAML Provider.
+        required: true
+        type: integer
   /root/config/:
     get:
       operationId: root_config_list
@@ -7364,6 +7382,14 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -8671,6 +8697,7 @@ definitions:
     description: OAuth2Provider Serializer
     required:
       - name
+      - application
       - authorization_flow
     type: object
     properties:
@@ -8682,11 +8709,40 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      application:
+        title: Application
+        type: string
       authorization_flow:
         title: Authorization flow
         description: Flow used when authorizing this provider.
         type: string
         format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       client_type:
         title: Client Type
         description: |-
@@ -8745,12 +8801,6 @@ definitions:
           - user_username
           - user_email
           - user_upn
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
       issuer_mode:
         title: Issuer mode
         description: Configure how the issuer field of the ID Token should be filled.
@@ -8758,6 +8808,42 @@ definitions:
         enum:
           - global
           - per_provider
+  ProxyProvider:
+    description: ProxyProvider Serializer
+    required:
+      - name
+      - application
+      - authorization_flow
+      - internal_host
+      - external_host
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      application:
+        title: Application
+        type: string
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       assigned_application_slug:
         title: Assigned application slug
         type: string
@@ -8774,22 +8860,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  ProxyProvider:
-    description: ProxyProvider Serializer
-    required:
-      - name
-      - internal_host
-      - external_host
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
       internal_host:
         title: Internal host
         type: string
@@ -8827,6 +8897,41 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+  SAMLProvider:
+    description: SAMLProvider Serializer
+    required:
+      - name
+      - application
+      - authorization_flow
+      - acs_url
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      application:
+        title: Application
+        type: string
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       assigned_application_slug:
         title: Assigned application slug
         type: string
@@ -8843,21 +8948,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  SAMLProvider:
-    description: SAMLProvider Serializer
-    required:
-      - name
-      - acs_url
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
       acs_url:
         title: ACS URL
         type: string
@@ -8892,12 +8982,6 @@ definitions:
           hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
       name_id_mapping:
         title: NameID Property Mapping
         description: Configure how the NameID value will be created. When left empty,
@@ -8935,20 +9019,12 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
-      assigned_application_slug:
-        title: Assigned application slug
-        type: string
-        readOnly: true
-      assigned_application_name:
-        title: Assigned application name
-        type: string
-        readOnly: true
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
+  SAMLMetadata:
+    description: SAML Provider Metadata serializer
+    type: object
+    properties:
+      metadata:
+        title: Metadata
         type: string
         readOnly: true
   Config:

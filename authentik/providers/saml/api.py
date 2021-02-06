@@ -1,24 +1,26 @@
 """SAMLProvider API Views"""
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.fields import ReadOnlyField
-from rest_framework.serializers import ModelSerializer
+from authentik.providers.saml.views import DescriptorDownloadView
+from rest_framework.generics import get_object_or_404
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from guardian.shortcuts import get_objects_for_user
+from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 
 
-class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
+class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
-
-    assigned_application_slug = ReadOnlyField(source="application.slug")
-    assigned_application_name = ReadOnlyField(source="application.name")
 
     class Meta:
 
         model = SAMLProvider
-        fields = [
-            "pk",
-            "name",
+        fields = ProviderSerializer.Meta.fields + [
             "acs_url",
             "audience",
             "issuer",
@@ -31,11 +33,13 @@ class SAMLProviderSerializer(ModelSerializer, MetaNameSerializer):
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
-            "assigned_application_slug",
-            "assigned_application_name",
-            "verbose_name",
-            "verbose_name_plural",
         ]
+
+
+class SAMLMetadataSerializer(Serializer):
+    """SAML Provider Metadata serializer"""
+
+    metadata = ReadOnlyField()
 
 
 class SAMLProviderViewSet(ModelViewSet):
@@ -43,6 +47,17 @@ class SAMLProviderViewSet(ModelViewSet):
 
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
+
+    @action(methods=["GET"], detail=True)
+    @swagger_auto_schema(responses={200: SAMLMetadataSerializer(many=False)})
+    # pylint: disable=invalid-name
+    def metadata(self, request: Request, pk: int) -> str:
+        """Return metadata as XML string"""
+        provider = get_object_or_404(SAMLProvider, pk=pk)
+        metadata = DescriptorDownloadView.get_metadata(request, provider)
+        return Response({
+            "metadata": metadata
+        })
 
 
 class SAMLPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
