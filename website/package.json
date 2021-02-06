@@ -1,10 +1,10 @@
 {
-    "name": "docs",
+    "name": "authentik-docs",
     "version": "0.0.0",
     "private": true,
     "scripts": {
         "docusaurus": "docusaurus",
-        "start": "docusaurus start",
+        "watch": "docusaurus start",
         "build": "docusaurus build",
         "swizzle": "docusaurus swizzle",
         "deploy": "docusaurus deploy",

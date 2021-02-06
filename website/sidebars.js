@@ -141,6 +141,7 @@ module.exports = {
                 "releases/0.13",
                 "releases/0.14",
                 "releases/2021.1",
+                "releases/2021.2",
             ],
         },
         {
