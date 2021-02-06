@@ -25,7 +25,7 @@ html {
 
 /* fix multiple selects height */
 select[multiple] {
-    height: initial;
+    height: 15em;
 }
 
 /* Form with user */
