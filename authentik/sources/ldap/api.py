@@ -29,6 +29,7 @@ class LDAPSourceSerializer(ModelSerializer, MetaNameSerializer):
             "sync_groups",
             "sync_parent_group",
             "property_mappings",
+            "property_mappings_group",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 

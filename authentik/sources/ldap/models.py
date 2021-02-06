@@ -52,6 +52,13 @@ class LDAPSource(Source):
         default="objectSid", help_text=_("Field which contains a unique Identifier.")
     )
 
+    property_mappings_group = models.ManyToManyField(
+        PropertyMapping,
+        default=None,
+        blank=True,
+        help_text=_("Property mappings used for group creation/updating."),
+    )
+
     sync_users = models.BooleanField(default=True)
     sync_users_password = models.BooleanField(
         default=True,

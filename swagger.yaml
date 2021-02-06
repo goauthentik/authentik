@@ -9172,6 +9172,14 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+      property_mappings_group:
+        description: Property mappings used for group creation/updating.
+        type: array
+        items:
+          description: Property mappings used for group creation/updating.
+          type: string
+          format: uuid
+        uniqueItems: true
   OAuthSource:
     description: OAuth Source Serializer
     required:

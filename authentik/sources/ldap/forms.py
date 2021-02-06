@@ -14,6 +14,9 @@ class LDAPSourceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["property_mappings"].queryset = LDAPPropertyMapping.objects.all()
+        self.fields[
+            "property_mappings_group"
+        ].queryset = LDAPPropertyMapping.objects.all()
 
     class Meta:
 
@@ -33,6 +36,7 @@ class LDAPSourceForm(forms.ModelForm):
             "sync_users_password",
             "sync_groups",
             "property_mappings",
+            "property_mappings_group",
             "additional_user_dn",
             "additional_group_dn",
             "user_object_filter",

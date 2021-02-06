@@ -1,9 +1,9 @@
 """Sync LDAP Users and groups into authentik"""
 import ldap3
 import ldap3.core.exceptions
+from django.db.utils import IntegrityError
 
 from authentik.core.models import Group
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
 
 
@@ -34,22 +34,28 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     dn=group_dn,
                 )
                 continue
-            uniq = attributes[self._source.object_uniqueness_field]
-            # TODO: Use Property Mappings
-            name = self._flatten(attributes.get("name", ""))
-            _, created = Group.objects.update_or_create(
-                **{
-                    f"attributes__{LDAP_UNIQUENESS}": uniq,
-                    "parent": self._source.sync_parent_group,
-                    "defaults": {
-                        "name": name,
-                        "attributes": {
-                            LDAP_UNIQUENESS: uniq,
-                            LDAP_DISTINGUISHED_NAME: group_dn,
-                        },
-                    },
-                }
-            )
-            self._logger.debug("Synced group", group=name, created=created)
-            group_count += 1
+            uniq = self._flatten(attributes[self._source.object_uniqueness_field])
+            try:
+                defaults = self.build_group_properties(group_dn, **attributes)
+                self._logger.debug("Creating group with attributes", **defaults)
+                if "name" not in defaults:
+                    raise IntegrityError("Name was not set by propertymappings")
+                ak_group, created = Group.objects.update_or_create(
+                    **{
+                        f"attributes__{LDAP_UNIQUENESS}": uniq,
+                        "parent": self._source.sync_parent_group,
+                        "defaults": defaults,
+                    }
+                )
+            except IntegrityError as exc:
+                self._logger.warning("Failed to create group", exc=exc)
+                self._logger.warning(
+                    (
+                        "To merge new group with existing group, set the group's "
+                        f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
+                    )
+                )
+            else:
+                self._logger.debug("Synced group", group=ak_group.name, created=created)
+                group_count += 1
         return group_count

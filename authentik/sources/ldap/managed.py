@@ -11,6 +11,7 @@ class LDAPProviderManager(ObjectManager):
             EnsureExists(
                 LDAPPropertyMapping,
                 "object_field",
+                "expression",
                 name="authentik default LDAP Mapping: name",
                 object_field="name",
                 expression="return ldap.get('name')",
@@ -46,5 +47,13 @@ class LDAPProviderManager(ObjectManager):
                 name="authentik default OpenLDAP Mapping: uid",
                 object_field="username",
                 expression="return ldap.get('uid')",
+            ),
+            EnsureExists(
+                LDAPPropertyMapping,
+                "object_field",
+                "expression",
+                name="authentik default OpenLDAP Mapping: cn",
+                object_field="name",
+                expression="return ldap.get('cn')",
             ),
         ]

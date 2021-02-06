@@ -72,6 +72,11 @@ class LDAPSyncTests(TestCase):
                 | Q(name__startswith="authentik default Active Directory Mapping")
             )
         )
+        self.source.property_mappings_group.set(
+            LDAPPropertyMapping.objects.filter(
+                name="authentik default LDAP Mapping: name"
+            )
+        )
         self.source.save()
         connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
@@ -92,6 +97,11 @@ class LDAPSyncTests(TestCase):
                 | Q(name__startswith="authentik default OpenLDAP Mapping")
             )
         )
+        self.source.property_mappings_group.set(
+            LDAPPropertyMapping.objects.filter(
+                name="authentik default OpenLDAP Mapping: cn"
+            )
+        )
         self.source.save()
         connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
@@ -99,7 +109,7 @@ class LDAPSyncTests(TestCase):
             group_sync.sync()
             membership_sync = MembershipLDAPSynchronizer(self.source)
             membership_sync.sync()
-            group = Group.objects.filter(name="test-group")
+            group = Group.objects.filter(name="group1")
             self.assertTrue(group.exists())
 
     def test_tasks_ad(self):
