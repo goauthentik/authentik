@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps
-from authentik.root.monitoring import MetricsView
+from authentik.root.monitoring import LiveView, MetricsView, ReadyView
 
 LOGGER = get_logger()
 admin.autodiscover()
@@ -57,6 +57,8 @@ for _authentik_app in get_apps():
 urlpatterns += [
     path("administration/django/", admin.site.urls),
     path("metrics/", MetricsView.as_view(), name="metrics"),
+    path("-/health/live/", LiveView.as_view(), name="health-live"),
+    path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
     path("-/jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 ]
 

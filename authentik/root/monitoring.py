@@ -2,6 +2,8 @@
 from base64 import b64encode
 
 from django.conf import settings
+from django.db import connections
+from django.db.utils import OperationalError
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
@@ -23,3 +25,22 @@ class MetricsView(View):
             return response
 
         return ExportToDjangoView(request)
+
+
+class LiveView(View):
+    """View for liveness probe, always returns Http 201"""
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        return HttpResponse(status=201)
+
+
+class ReadyView(View):
+    """View for liveness probe, always returns Http 201"""
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        db_conn = connections["default"]
+        try:
+            _ = db_conn.cursor()
+        except OperationalError:
+            return HttpResponse(status=503)
+        return HttpResponse(status=201)
