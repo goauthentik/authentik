@@ -3597,7 +3597,7 @@ paths:
       operationId: propertymappings_all_list
       description: PropertyMapping Viewset
       parameters:
-        - name: managed
+        - name: managed__isnull
           in: query
           description: ''
           required: false

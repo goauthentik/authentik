@@ -12,12 +12,12 @@ class EnsureOp:
     """Ensure operation, executed as part of an ObjectManager run"""
 
     _obj: Type[ManagedModel]
-    _match_fields: tuple[str, ...]
+    _managed_uid: str
     _kwargs: dict
 
-    def __init__(self, obj: Type[ManagedModel], *match_fields: str, **kwargs) -> None:
+    def __init__(self, obj: Type[ManagedModel], managed_uid: str, **kwargs) -> None:
         self._obj = obj
-        self._match_fields = match_fields
+        self._managed_uid = managed_uid
         self._kwargs = kwargs
 
     def run(self):
@@ -29,16 +29,13 @@ class EnsureExists(EnsureOp):
     """Ensure object exists, with kwargs as given values"""
 
     def run(self):
-        update_kwargs = {
-            "managed": True,
-            "defaults": self._kwargs,
-        }
-        for field in self._match_fields:
-            value = self._kwargs.get(field, None)
-            if value:
-                update_kwargs[field] = value
-        self._kwargs.setdefault("managed", True)
-        self._obj.objects.update_or_create(**update_kwargs)
+        self._kwargs.setdefault("managed", self._managed_uid)
+        self._obj.objects.update_or_create(
+            **{
+                "managed": self._managed_uid,
+                "defaults": self._kwargs,
+            }
+        )
 
 
 class ObjectManager:

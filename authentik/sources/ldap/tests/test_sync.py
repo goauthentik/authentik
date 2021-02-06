@@ -35,8 +35,8 @@ class LDAPSyncTests(TestCase):
         """Test user sync"""
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default Active Directory Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
             )
         )
         self.source.save()
@@ -52,8 +52,8 @@ class LDAPSyncTests(TestCase):
         self.source.object_uniqueness_field = "uid"
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default OpenLDAP Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
             )
         )
         self.source.save()
@@ -68,13 +68,13 @@ class LDAPSyncTests(TestCase):
         """Test group sync"""
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default Active Directory Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
             )
         )
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(
-                name="authentik default LDAP Mapping: name"
+                managed="goauthentik.io/sources/ldap/default-name"
             )
         )
         self.source.save()
@@ -93,13 +93,13 @@ class LDAPSyncTests(TestCase):
         self.source.group_object_filter = "(objectClass=groupOfNames)"
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default OpenLDAP Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
             )
         )
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(
-                name="authentik default OpenLDAP Mapping: cn"
+                managed="goauthentik.io/sources/ldap/openldap-cn"
             )
         )
         self.source.save()
@@ -116,8 +116,8 @@ class LDAPSyncTests(TestCase):
         """Test Scheduled tasks"""
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default Active Directory Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
             )
         )
         self.source.save()
@@ -131,8 +131,8 @@ class LDAPSyncTests(TestCase):
         self.source.group_object_filter = "(objectClass=groupOfNames)"
         self.source.property_mappings.set(
             LDAPPropertyMapping.objects.filter(
-                Q(name__startswith="authentik default LDAP Mapping")
-                | Q(name__startswith="authentik default OpenLDAP Mapping")
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
             )
         )
         self.source.save()

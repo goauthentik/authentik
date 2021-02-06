@@ -34,14 +34,14 @@ class ScopeMappingManager(ObjectManager):
         return [
             EnsureExists(
                 ScopeMapping,
-                "scope_name",
+                "goauthentik.io/providers/oauth2/scope-openid",
                 name="authentik default OAuth Mapping: OpenID 'openid'",
                 scope_name="openid",
                 expression=SCOPE_OPENID_EXPRESSION,
             ),
             EnsureExists(
                 ScopeMapping,
-                "scope_name",
+                "goauthentik.io/providers/oauth2/scope-email",
                 name="authentik default OAuth Mapping: OpenID 'email'",
                 scope_name="email",
                 description="Email address",
@@ -49,7 +49,7 @@ class ScopeMappingManager(ObjectManager):
             ),
             EnsureExists(
                 ScopeMapping,
-                "scope_name",
+                "goauthentik.io/providers/oauth2/scope-profile",
                 name="authentik default OAuth Mapping: OpenID 'profile'",
                 scope_name="profile",
                 description="General Profile Information",
