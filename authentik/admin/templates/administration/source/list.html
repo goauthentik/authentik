@@ -63,7 +63,7 @@
                 {% for source in object_list %}
                 <tr role="row">
                     <th role="columnheader">
-                        <a href="/sources/{{ source.slug }}/">
+                        <a href="/sources/{{ source.slug }}">
                             <div>{{ source.name }}</div>
                             {% if not source.enabled %}
                             <small>{% trans 'Disabled' %}</small>
