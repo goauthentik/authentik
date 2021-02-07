@@ -28,7 +28,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         ),
         new SidebarItem("Providers", "/providers"),
         new SidebarItem("Outposts", "/administration/outposts/"),
-        new SidebarItem("Outpost Service Connections", "/administration/outposts/service_connections/"),
+        new SidebarItem("Outpost Service Connections", "/administration/outpost_service_connections/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),

@@ -333,22 +333,22 @@ urlpatterns = [
     ),
     # Outpost Service Connections
     path(
-        "outposts/service_connections/",
+        "outpost_service_connections/",
         outposts_service_connections.OutpostServiceConnectionListView.as_view(),
         name="outpost-service-connections",
     ),
     path(
-        "outposts/service_connections/create/",
+        "outpost_service_connections/create/",
         outposts_service_connections.OutpostServiceConnectionCreateView.as_view(),
         name="outpost-service-connection-create",
     ),
     path(
-        "outposts/service_connections/<uuid:pk>/update/",
+        "outpost_service_connections/<uuid:pk>/update/",
         outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
         name="outpost-service-connection-update",
     ),
     path(
-        "outposts/service_connections/<uuid:pk>/delete/",
+        "outpost_service_connections/<uuid:pk>/delete/",
         outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
         name="outpost-service-connection-delete",
     ),
