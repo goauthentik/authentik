@@ -1,12 +1,16 @@
 """Create self-signed certificates"""
 import datetime
 import uuid
+from typing import Optional
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.x509.oid import NameOID
+
+from authentik import __version__
+from authentik.crypto.models import CertificateKeyPair
 
 
 class CertificateBuilder:
@@ -17,19 +21,39 @@ class CertificateBuilder:
     __builder = None
     __certificate = None
 
+    common_name: str
+
     def __init__(self):
         self.__public_key = None
         self.__private_key = None
         self.__builder = None
         self.__certificate = None
+        self.common_name = "authentik Self-signed Certificate"
 
-    def build(self):
+    def save(self) -> Optional[CertificateKeyPair]:
+        """Save generated certificate as model"""
+        if not self.__certificate:
+            return None
+        return CertificateKeyPair.objects.create(
+            name=self.common_name,
+            certificate_data=self.certificate,
+            key_data=self.private_key,
+        )
+
+    def build(
+        self,
+        validity_days: int = 365,
+        subject_alt_names: Optional[list[str]] = None,
+    ):
         """Build self-signed certificate"""
         one_day = datetime.timedelta(1, 0, 0)
         self.__private_key = rsa.generate_private_key(
             public_exponent=65537, key_size=2048, backend=default_backend()
         )
         self.__public_key = self.__private_key.public_key()
+        alt_names: list[x509.GeneralName] = [
+            x509.DNSName(x) for x in subject_alt_names or []
+        ]
         self.__builder = (
             x509.CertificateBuilder()
             .subject_name(
@@ -37,7 +61,7 @@ class CertificateBuilder:
                     [
                         x509.NameAttribute(
                             NameOID.COMMON_NAME,
-                            "authentik Self-signed Certificate",
+                            self.common_name,
                         ),
                         x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
                         x509.NameAttribute(
@@ -51,13 +75,16 @@ class CertificateBuilder:
                     [
                         x509.NameAttribute(
                             NameOID.COMMON_NAME,
-                            "authentik Self-signed Certificate",
+                            f"authentik {__version__}",
                         ),
                     ]
                 )
             )
+            .add_extension(x509.SubjectAlternativeName(alt_names), critical=True)
             .not_valid_before(datetime.datetime.today() - one_day)
-            .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=365))
+            .not_valid_after(
+                datetime.datetime.today() + datetime.timedelta(days=validity_days)
+            )
             .serial_number(int(uuid.uuid4()))
             .public_key(self.__public_key)
         )

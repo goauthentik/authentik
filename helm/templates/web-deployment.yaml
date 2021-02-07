@@ -97,18 +97,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /-/health/live/
               port: http
-              httpHeaders:
-                - name: Host
-                  value: authentik-healthcheck-host
           readinessProbe:
             httpGet:
-              path: /
+              path: /-/health/ready/
               port: http
-              httpHeaders:
-                - name: Host
-                  value: authentik-healthcheck-host
           resources:
             requests:
               cpu: 100m

@@ -8,6 +8,14 @@ from django.utils.translation import gettext_lazy as _
 from authentik.crypto.models import CertificateKeyPair
 
 
+class CertificateKeyPairGenerateForm(forms.Form):
+    """CertificateKeyPair generation form"""
+
+    common_name = forms.CharField()
+    subject_alt_name = forms.CharField(required=False, label=_("Subject-alt name"))
+    validity_days = forms.IntegerField(initial=365)
+
+
 class CertificateKeyPairForm(forms.ModelForm):
     """CertificateKeyPair Form"""
 

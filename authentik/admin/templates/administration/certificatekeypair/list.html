@@ -26,6 +26,12 @@
                         </ak-spinner-button>
                         <div slot="modal"></div>
                     </ak-modal-button>
+                    <ak-modal-button href="{% url 'authentik_admin:certificatekeypair-generate' %}">
+                        <ak-spinner-button slot="trigger" class="pf-m-primary">
+                            {% trans 'Generate' %}
+                        </ak-spinner-button>
+                        <div slot="modal"></div>
+                    </ak-modal-button>
                     <button role="ak-refresh" class="pf-c-button pf-m-primary">
                         {% trans 'Refresh' %}
                     </button>

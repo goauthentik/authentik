@@ -20,6 +20,7 @@ class PolicyRequest:
     http_request: Optional[HttpRequest]
     obj: Optional[Model]
     context: dict[str, Any]
+    debug: bool = False
 
     def __init__(self, user: User):
         super().__init__()

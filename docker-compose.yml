@@ -40,7 +40,7 @@ services:
       traefik.http.routers.app-router.rule: PathPrefix(`/`)
       traefik.http.routers.app-router.service: app-service
       traefik.http.routers.app-router.tls: 'true'
-      traefik.http.services.app-service.loadbalancer.healthcheck.hostname: authentik-healthcheck-host
+      traefik.http.services.app-service.loadbalancer.healthcheck.path: /-/health/live/
       traefik.http.services.app-service.loadbalancer.server.port: '8000'
     env_file:
       - .env

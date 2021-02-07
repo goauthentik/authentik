@@ -94,12 +94,6 @@ class ASGILogger:
                 self.log(runtime)
             await send(message)
 
-        if self.headers.get(b"host", b"") == b"authentik-healthcheck-host":
-            # Don't log healthcheck/readiness requests
-            await send({"type": "http.response.start", "status": 204, "headers": []})
-            await send({"type": "http.response.body", "body": ""})
-            return
-
         self.start = time()
         if scope["type"] == "lifespan":
             # https://code.djangoproject.com/ticket/31508
@@ -129,7 +123,7 @@ class ASGILogger:
             method=self.scope.get("method", ""),
             scheme=self.scope.get("scheme", ""),
             status=self.status_code,
-            size=self.content_length / 1000 if self.content_length > 0 else "-",
+            size=self.content_length / 1000 if self.content_length > 0 else 0,
             runtime=runtime,
         )
 

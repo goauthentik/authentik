@@ -24,7 +24,7 @@ from authentik.admin.views import (
     tokens,
     users,
 )
-from authentik.providers.saml.views import MetadataImportView
+from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
     path(
@@ -113,7 +113,6 @@ urlpatterns = [
         name="policy-binding-delete",
     ),
     # Providers
-    path("providers/", providers.ProviderListView.as_view(), name="providers"),
     path(
         "providers/create/",
         providers.ProviderCreateView.as_view(),
@@ -297,6 +296,11 @@ urlpatterns = [
         name="certificatekeypair-create",
     ),
     path(
+        "crypto/certificates/generate/",
+        certificate_key_pair.CertificateKeyPairGenerateView.as_view(),
+        name="certificatekeypair-generate",
+    ),
+    path(
         "crypto/certificates/<uuid:pk>/update/",
         certificate_key_pair.CertificateKeyPairUpdateView.as_view(),
         name="certificatekeypair-update",
@@ -329,22 +333,22 @@ urlpatterns = [
     ),
     # Outpost Service Connections
     path(
-        "outposts/service_connections/",
+        "outpost_service_connections/",
         outposts_service_connections.OutpostServiceConnectionListView.as_view(),
         name="outpost-service-connections",
     ),
     path(
-        "outposts/service_connections/create/",
+        "outpost_service_connections/create/",
         outposts_service_connections.OutpostServiceConnectionCreateView.as_view(),
         name="outpost-service-connection-create",
     ),
     path(
-        "outposts/service_connections/<uuid:pk>/update/",
+        "outpost_service_connections/<uuid:pk>/update/",
         outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
         name="outpost-service-connection-update",
     ),
     path(
-        "outposts/service_connections/<uuid:pk>/delete/",
+        "outpost_service_connections/<uuid:pk>/delete/",
         outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
         name="outpost-service-connection-delete",
     ),

@@ -80,7 +80,7 @@ class PolicyProcess(PROCESS_CLASS):
         )
         try:
             policy_result = self.binding.policy.passes(self.request)
-            if self.binding.policy.execution_logging:
+            if self.binding.policy.execution_logging and not self.request.debug:
                 self.create_event(
                     EventAction.POLICY_EXECUTION,
                     message="Policy Execution",
@@ -94,8 +94,9 @@ class PolicyProcess(PROCESS_CLASS):
                 + "".join(format_tb(src_exc.__traceback__))
                 + str(src_exc)
             )
-            # Create policy exception event
-            self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
+            # Create policy exception event, only when we're not debugging
+            if not self.request.debug:
+                self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
             LOGGER.debug("P_ENG(proc): error", exc=src_exc)
             policy_result = PolicyResult(False, str(src_exc))
         policy_result.source_policy = self.binding.policy

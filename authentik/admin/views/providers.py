@@ -6,34 +6,15 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
-    InheritanceListView,
     InheritanceUpdateView,
-    SearchListMixin,
-    UserPaginateListMixin,
 )
 from authentik.core.models import Provider
-
-
-class ProviderListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    InheritanceListView,
-):
-    """Show list of all providers"""
-
-    model = Provider
-    permission_required = "authentik_core.add_provider"
-    template_name = "administration/provider/list.html"
-    ordering = "pk"
-    search_fields = ["pk", "name"]
 
 
 class ProviderCreateView(
