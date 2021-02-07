@@ -296,6 +296,11 @@ urlpatterns = [
         name="certificatekeypair-create",
     ),
     path(
+        "crypto/certificates/generate/",
+        certificate_key_pair.CertificateKeyPairGenerateView.as_view(),
+        name="certificatekeypair-generate",
+    ),
+    path(
         "crypto/certificates/<uuid:pk>/update/",
         certificate_key_pair.CertificateKeyPairUpdateView.as_view(),
         name="certificatekeypair-update",
