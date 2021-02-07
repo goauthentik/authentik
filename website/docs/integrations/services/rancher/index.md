@@ -15,17 +15,39 @@ Rancher is a platform built to address the needs of the DevOps teams deploying a
 
 The following placeholders will be used:
 
--   `rancher.company` is the FQDN of the Rancher install.
--   `authentik.company` is the FQDN of the authentik install.
+- `rancher.company` is the FQDN of the Rancher install.
+- `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+Under *Property Mappings*, create a *SAML Property Mapping*. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
 
--   ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
--   Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
--   Issuer: `authentik`
+```python
+return f"{user.pk}-{user.username}"
+```
+
+Create an application in authentik. Create a SAML provider with the following parameters:
+
+- ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
+- Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
+- Issuer: `authentik`
+- Property mappings: Select all default mappings and the mapping you've created above.
 
 You can of course use a custom signing certificate, and adjust durations.
 
 ## Rancher
+
+In Rancher, navigate to *Global* -> *Security* -> *Authentication*, and select ADFS.
+
+Fill in the fields
+
+- Display Name Field: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- User Name Field: `http://schemas.goauthentik.io/2021/02/saml/username`
+- UID Field: `rancherUidUsername`
+- Groups Field: `http://schemas.xmlsoap.org/claims/Group`
+
+For the private key and certificate, you can either generate a new pair (in authentik, navigate to *Identity & Cryptography* -> *Certificates* and select Generate), or use an existing pair.
+
+Copy the metadata from authentik, and paste it in the metadata field.
+
+Click on save to test the authentication.
 
 ![](./rancher.png)
