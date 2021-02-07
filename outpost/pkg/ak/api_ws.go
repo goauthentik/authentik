@@ -77,7 +77,15 @@ func (ac *APIController) startWSHandler() {
 			logger.WithField("wait", notConnectedWait).Info("Not connected, trying again...")
 			time.Sleep(notConnectedWait)
 			notConnectedBackoff += notConnectedBackoff
+			// Limit backoff to max 60 seconds
+			if notConnectedBackoff >= 60 {
+				notConnectedBackoff = 60
+			}
+			ac.wsConn.CloseAndReconnect()
 			continue
+		} else {
+			// When we're connected, reset backoff to 1
+			notConnectedBackoff = 1
 		}
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)
@@ -109,7 +117,7 @@ func (ac *APIController) startWSHealth() {
 			},
 		}
 		err := ac.wsConn.WriteJSON(aliveMsg)
-		ac.logger.WithField("loop", "ws-health").Debug("hello'd")
+		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").Println("write:", err)
 			ac.wsConn.CloseAndReconnect()
