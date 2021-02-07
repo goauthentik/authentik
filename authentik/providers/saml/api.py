@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.views import DescriptorDownloadView
+from authentik.providers.saml.views.metadata import DescriptorDownloadView
 
 
 class SAMLProviderSerializer(ProviderSerializer):

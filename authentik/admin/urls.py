@@ -24,7 +24,7 @@ from authentik.admin.views import (
     tokens,
     users,
 )
-from authentik.providers.saml.views import MetadataImportView
+from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
     path(
