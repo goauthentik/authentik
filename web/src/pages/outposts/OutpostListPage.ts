@@ -9,6 +9,7 @@ import { TablePage } from "../../elements/table/TablePage";
 import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
+import "../../elements/buttons/TokenCopyButton";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {

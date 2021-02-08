@@ -1,19 +1,11 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import ModalBoxStyle from "@patternfly/patternfly/components/ModalBox/modal-box.css";
-// @ts-ignore
-import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-// @ts-ignore
-import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
-// @ts-ignore
-import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
-// @ts-ignore
-import fa from "@fortawesome/fontawesome-free/css/solid.css";
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS } from "../../constants";
 import { showMessage } from "../messages/MessageContainer";
+import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
@@ -23,8 +15,11 @@ export class ModalButton extends LitElement {
     @property({type: Boolean})
     open = false;
 
+    @property()
+    modal = "";
+
     static get styles(): CSSResult[] {
-        return [
+        return COMMON_STYLES.concat(
             css`
                 :host {
                     text-align: left;
@@ -32,13 +27,11 @@ export class ModalButton extends LitElement {
                 ::slotted(*) {
                     overflow-y: auto;
                 }
-            `,
-            ModalBoxStyle,
-            BullseyeStyle,
-            BackdropStyle,
-            ButtonStyle,
-            fa,
-        ];
+                .pf-c-page__main-section {
+                    margin-right: 0;
+                }
+            `
+        );
     }
 
     constructor() {
@@ -52,7 +45,7 @@ export class ModalButton extends LitElement {
 
     updateHandlers(): void {
         // Ensure links close the modal
-        this.querySelectorAll<HTMLAnchorElement>("[slot=modal] a").forEach((a) => {
+        this.shadowRoot?.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
             if (a.target == "_blank") {
                 return;
             }
@@ -63,7 +56,7 @@ export class ModalButton extends LitElement {
             });
         });
         // Make name field update slug field
-        this.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
+        this.shadowRoot?.querySelectorAll<HTMLInputElement>("input[name=name]").forEach((input) => {
             const form = input.closest("form");
             if (form === null) {
                 return;
@@ -83,7 +76,7 @@ export class ModalButton extends LitElement {
             });
         });
         // Ensure forms sends in AJAX
-        this.querySelectorAll<HTMLFormElement>("[slot=modal] form").forEach((form) => {
+        this.shadowRoot?.querySelectorAll<HTMLFormElement>("form").forEach((form) => {
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
@@ -95,16 +88,10 @@ export class ModalButton extends LitElement {
                     .then((response) => {
                         return response.text();
                     })
-                    .then((data) => {
-                        if (data.indexOf("csrfmiddlewaretoken") !== -1) {
-                            const modalSlot = this.querySelector("[slot=modal]");
-                            if (!modalSlot) {
-                                console.debug("authentik/modalbutton: modal slot not found?");
-                                return;
-                            }
-                            modalSlot.innerHTML = data;
+                    .then((responseData) => {
+                        if (responseData.indexOf("csrfmiddlewaretoken") !== -1) {
+                            this.modal = responseData;
                             console.debug("authentik/modalbutton: re-showing form");
-                            this.updateHandlers();
                         } else {
                             this.open = false;
                             console.debug("authentik/modalbutton: successful submit");
@@ -136,14 +123,9 @@ export class ModalButton extends LitElement {
             fetch(request, {
                 mode: "same-origin",
             })
-                .then((r) => r.text())
-                .then((t) => {
-                    const modalSlot = this.querySelector("[slot=modal]");
-                    if (!modalSlot) {
-                        return;
-                    }
-                    modalSlot.innerHTML = t;
-                    this.updateHandlers();
+                .then((response) => response.text())
+                .then((responseData) => {
+                    this.modal = responseData;
                     this.open = true;
                     this.querySelectorAll<SpinnerButton>("ak-spinner-button").forEach((sb) => {
                         sb.setDone(PRIMARY_CLASS);
@@ -177,7 +159,7 @@ export class ModalButton extends LitElement {
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    <slot name="modal"> </slot>
+                    ${unsafeHTML(this.modal)}
                 </div>
             </div>
         </div>`;
@@ -186,5 +168,9 @@ export class ModalButton extends LitElement {
     render(): TemplateResult {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : ""}`;
+    }
+
+    updated(): void {
+        this.updateHandlers();
     }
 }
