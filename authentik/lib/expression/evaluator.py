@@ -98,6 +98,10 @@ class BaseEvaluator:
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
             except Exception as exc:
+                # So, this is a bit questionable. Essentially, we are edit the stacktrace
+                # so the user only sees information relevant to them
+                # and none of our surrounding error handling
+                exc.__traceback__ = exc.__traceback__.tb_next
                 self.handle_error(exc, expression_source)
                 raise exc
             return result
