@@ -169,22 +169,22 @@ urlpatterns = [
     ),
     # Stage Prompts
     path(
-        "stages/prompts/",
+        "stages_prompts/",
         stages_prompts.PromptListView.as_view(),
         name="stage-prompts",
     ),
     path(
-        "stages/prompts/create/",
+        "stages_prompts/create/",
         stages_prompts.PromptCreateView.as_view(),
         name="stage-prompt-create",
     ),
     path(
-        "stages/prompts/<uuid:pk>/update/",
+        "stages_prompts/<uuid:pk>/update/",
         stages_prompts.PromptUpdateView.as_view(),
         name="stage-prompt-update",
     ),
     path(
-        "stages/prompts/<uuid:pk>/delete/",
+        "stages_prompts/<uuid:pk>/delete/",
         stages_prompts.PromptDeleteView.as_view(),
         name="stage-prompt-delete",
     ),
