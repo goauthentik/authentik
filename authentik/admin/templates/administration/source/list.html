@@ -2,7 +2,6 @@
 
 {% load i18n %}
 {% load authentik_utils %}
-{% load admin_reflection %}
 
 {% block content %}
 <section class="pf-c-page__main-section pf-m-light">
@@ -93,10 +92,6 @@
                             </ak-spinner-button>
                             <div slot="modal"></div>
                         </ak-modal-button>
-                        {% get_links source as links %}
-                        {% for name, href in links %}
-                            <a class="pf-c-button pf-m-tertiary ak-root-link" href="{{ href }}?back={{ request.get_full_path }}">{% trans name %}</a>
-                        {% endfor %}
                     </td>
                 </tr>
                 {% endfor %}
