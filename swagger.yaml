@@ -8159,6 +8159,7 @@ definitions:
     description: Outpost Serializer
     required:
       - name
+      - providers
       - _config
     type: object
     properties:
@@ -8172,6 +8173,11 @@ definitions:
         type: string
         minLength: 1
       providers:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      providers_obj:
         description: ''
         type: array
         items:

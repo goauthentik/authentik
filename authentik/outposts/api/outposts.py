@@ -16,7 +16,7 @@ class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
     _config = JSONField()
-    providers = ProviderSerializer(many=True, read_only=True)
+    providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
 
     class Meta:
 
@@ -25,6 +25,7 @@ class OutpostSerializer(ModelSerializer):
             "pk",
             "name",
             "providers",
+            "providers_obj",
             "service_connection",
             "token_identifier",
             "_config",

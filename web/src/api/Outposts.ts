@@ -12,7 +12,8 @@ export class Outpost {
 
     pk: string;
     name: string;
-    providers: Provider[];
+    providers: number[];
+    providers_obj: Provider[];
     service_connection?: string;
     _config: QueryArguments;
     token_identifier: string;
