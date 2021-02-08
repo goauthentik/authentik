@@ -65,13 +65,13 @@ export class EventInfo extends LitElement {
         case "model_updated":
         case "model_deleted":
             return html`
-                <h3>${gettext("Affected model:")}</h3><hr>
+                <h3>${gettext("Affected model:")}</h3>
                 ${this.getModelInfo(this.event.context.model as EventContext)}
                 `;
         case "authorize_application":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
-                        <h3>${gettext("Authorized application:")}</h3><hr>
+                        <h3>${gettext("Authorized application:")}</h3>
                         ${this.getModelInfo(this.event.context.authorized_application as EventContext)}
                     </div>
                     <div class="pf-l-flex__item">
@@ -83,14 +83,15 @@ export class EventInfo extends LitElement {
                         }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}
                         </span>
                     </div>
-                </div>`;
+                </div>
+                <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "login_failed":
             return html`
                 <h3>${gettext(`Attempted to log in as ${this.event.context.username}`)}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "token_view":
             return html`
-                <h3>${gettext("Token:")}</h3><hr>
+                <h3>${gettext("Token:")}</h3>
                 ${this.getModelInfo(this.event.context.token as EventContext)}`;
         case "property_mapping_exception":
             return html`<div class="pf-l-flex">
