@@ -1789,6 +1789,11 @@ paths:
       operationId: outposts_outposts_list
       description: Outpost Viewset
       parameters:
+        - name: providers__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1914,11 +1919,11 @@ paths:
   /outposts/outposts/{uuid}/health/:
     get:
       operationId: outposts_outposts_health
-      description: Outpost Viewset
+      description: Get outposts current health
       parameters: []
       responses:
         '200':
-          description: ''
+          description: Outpost health status
           schema:
             description: ''
             type: array
@@ -4457,7 +4462,7 @@ paths:
   /providers/oauth2/{id}/setup_urls/:
     get:
       operationId: providers_oauth2_setup_urls
-      description: Return metadata as XML string
+      description: Get Providers setup URLs
       parameters: []
       responses:
         '200':
@@ -8179,17 +8184,35 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      token_identifier:
+        title: Token identifier
+        type: string
+        readOnly: true
       _config:
         title: config
         type: object
   OutpostHealth:
-    description: ''
+    description: Outpost health status
     type: object
     properties:
       last_seen:
         title: Last seen
         type: string
         format: date-time
+        readOnly: true
+      version:
+        title: Version
+        type: string
+        readOnly: true
+        minLength: 1
+      version_should:
+        title: Version should
+        type: string
+        readOnly: true
+        minLength: 1
+      version_outdated:
+        title: Version outdated
+        type: boolean
         readOnly: true
   OpenIDConnectConfiguration:
     title: Oidc configuration

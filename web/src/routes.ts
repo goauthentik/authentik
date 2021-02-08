@@ -14,6 +14,7 @@ import "./pages/events/RuleListPage";
 import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
 import "./pages/property-mappings/PropertyMappingListPage";
+import "./pages/outposts/OutpostListPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -42,4 +43,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/transports$"), html`<ak-event-transport-list></ak-event-transport-list>`),
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
+    new Route(new RegExp("^/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
 ];

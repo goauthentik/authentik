@@ -51,6 +51,13 @@ class OutpostViewSet(ModelViewSet):
 
     queryset = Outpost.objects.all()
     serializer_class = OutpostSerializer
+    filterset_fields = {
+        "providers": ["isnull"],
+    }
+    search_fields = [
+        "name",
+        "providers__name",
+    ]
 
     @swagger_auto_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True)
