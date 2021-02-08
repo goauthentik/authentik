@@ -312,11 +312,6 @@ urlpatterns = [
     ),
     # Outposts
     path(
-        "outposts/",
-        outposts.OutpostListView.as_view(),
-        name="outposts",
-    ),
-    path(
         "outposts/create/",
         outposts.OutpostCreateView.as_view(),
         name="outpost-create",
