@@ -9,7 +9,6 @@ from django.core.cache import cache
 from django.db import models, transaction
 from django.db.models.base import Model
 from django.forms.models import ModelForm
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from docker.client import DockerClient
 from docker.errors import DockerException
@@ -33,7 +32,6 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.template import render_to_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 
 OUR_VERSION = parse(__version__)
@@ -377,13 +375,6 @@ class Outpost(models.Model):
             else:
                 objects.append(provider)
         return objects
-
-    def html_deployment_view(self, request: HttpRequest) -> Optional[str]:
-        """return template and context modal to view token and other config info"""
-        return render_to_string(
-            "outposts/deployment_modal.html",
-            {"outpost": self, "full_url": request.build_absolute_uri("/")},
-        )
 
     def __str__(self) -> str:
         return f"Outpost {self.name}"

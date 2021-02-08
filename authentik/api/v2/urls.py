@@ -29,11 +29,12 @@ from authentik.flows.api import (
     FlowViewSet,
     StageViewSet,
 )
-from authentik.outposts.api import (
+from authentik.outposts.api.outpost_service_connections import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
-    OutpostViewSet,
+    ServiceConnectionViewSet,
 )
+from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.policies.api import (
     PolicyBindingViewSet,
     PolicyCacheViewSet,
@@ -88,6 +89,7 @@ router.register("core/users", UserViewSet)
 router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)
+router.register("outposts/service_connections/all", ServiceConnectionViewSet)
 router.register("outposts/service_connections/docker", DockerServiceConnectionViewSet)
 router.register(
     "outposts/service_connections/kubernetes", KubernetesServiceConnectionViewSet

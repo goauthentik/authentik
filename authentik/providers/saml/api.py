@@ -54,10 +54,10 @@ class SAMLProviderViewSet(ModelViewSet):
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
 
-    @action(methods=["GET"], detail=True)
     @swagger_auto_schema(responses={200: SAMLMetadataSerializer(many=False)})
+    @action(methods=["GET"], detail=True)
     # pylint: disable=invalid-name
-    def metadata(self, request: Request, pk: int) -> str:
+    def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
         provider = get_object_or_404(SAMLProvider, pk=pk)
         metadata = DescriptorDownloadView.get_metadata(request, provider)

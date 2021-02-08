@@ -1,30 +1,28 @@
 """Outpost API Views"""
-from rest_framework.serializers import JSONField, ModelSerializer
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
-    Outpost,
+    OutpostServiceConnection,
 )
 
 
-class OutpostSerializer(ModelSerializer):
-    """Outpost Serializer"""
-
-    _config = JSONField()
+class ServiceConnectionSerializer(ModelSerializer):
+    """ServiceConnection Serializer"""
 
     class Meta:
 
-        model = Outpost
-        fields = ["pk", "name", "providers", "service_connection", "_config"]
+        model = OutpostServiceConnection
+        fields = ["pk", "name"]
 
 
-class OutpostViewSet(ModelViewSet):
-    """Outpost Viewset"""
+class ServiceConnectionViewSet(ModelViewSet):
+    """ServiceConnection Viewset"""
 
-    queryset = Outpost.objects.all()
-    serializer_class = OutpostSerializer
+    queryset = OutpostServiceConnection.objects.all()
+    serializer_class = ServiceConnectionSerializer
 
 
 class DockerServiceConnectionSerializer(ModelSerializer):
