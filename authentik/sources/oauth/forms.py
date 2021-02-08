@@ -2,7 +2,6 @@
 
 from django import forms
 
-from authentik.admin.forms.source import SOURCE_FORM_FIELDS
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.manager import MANAGER
@@ -27,7 +26,12 @@ class OAuthSourceForm(forms.ModelForm):
     class Meta:
 
         model = OAuthSource
-        fields = SOURCE_FORM_FIELDS + [
+        fields = [
+            "name",
+            "slug",
+            "enabled",
+            "authentication_flow",
+            "enrollment_flow",
             "provider_type",
             "request_token_url",
             "authorization_url",

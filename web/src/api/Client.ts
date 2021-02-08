@@ -7,6 +7,13 @@ export interface QueryArguments {
     [key: string]: number | string | boolean | null;
 }
 
+export interface BaseInheritanceModel {
+
+    verbose_name: string;
+    verbose_name_plural: string;
+
+}
+
 export class Client {
     makeUrl(url: string[], query?: QueryArguments): string {
         let builtUrl = `/api/${VERSION}/${url.join("/")}/`;

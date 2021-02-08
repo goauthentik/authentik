@@ -2,17 +2,17 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.forms.source import SOURCE_SERIALIZER_FIELDS
+from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 
 
-class LDAPSourceSerializer(ModelSerializer, MetaNameSerializer):
+class LDAPSourceSerializer(SourceSerializer):
     """LDAP Source Serializer"""
 
     class Meta:
         model = LDAPSource
-        fields = SOURCE_SERIALIZER_FIELDS + [
+        fields = SourceSerializer.Meta.fields + [
             "server_uri",
             "bind_cn",
             "bind_password",

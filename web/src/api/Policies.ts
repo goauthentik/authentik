@@ -1,12 +1,14 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, BaseInheritanceModel, PBResponse, QueryArguments } from "./Client";
 
-export class Policy {
+export class Policy implements BaseInheritanceModel {
     pk: string;
     name: string;
 
     constructor() {
         throw Error();
     }
+    verbose_name: string;
+    verbose_name_plural: string;
 
     static get(pk: string): Promise<Policy> {
         return DefaultClient.fetch<Policy>(["policies", "all", pk]);

@@ -9157,16 +9157,16 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
         readOnly: true
       verbose_name_plural:
         title: Verbose name plural
-        type: string
-        readOnly: true
-      __type__:
-        title: 'type  '
         type: string
         readOnly: true
   LDAPSource:
@@ -9213,6 +9213,10 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -9344,6 +9348,10 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -9397,6 +9405,11 @@ definitions:
       - sso_url
     type: object
     properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
       name:
         title: Name
         description: Source's display Name.
@@ -9425,6 +9438,18 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       issuer:
         title: Issuer
         description: Also known as Entity ID. Defaults the Metadata URL.

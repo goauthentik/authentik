@@ -1,19 +1,17 @@
 """SAMLSource API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.forms.source import SOURCE_FORM_FIELDS
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.sources import SourceSerializer
 from authentik.sources.saml.models import SAMLSource
 
 
-class SAMLSourceSerializer(ModelSerializer, MetaNameSerializer):
+class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
 
     class Meta:
 
         model = SAMLSource
-        fields = SOURCE_FORM_FIELDS + [
+        fields = SourceSerializer.Meta.fields + [
             "issuer",
             "sso_url",
             "slo_url",

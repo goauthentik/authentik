@@ -2,7 +2,6 @@
 
 from django import forms
 
-from authentik.admin.forms.source import SOURCE_FORM_FIELDS
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.sources.saml.models import SAMLSource
@@ -28,7 +27,12 @@ class SAMLSourceForm(forms.ModelForm):
     class Meta:
 
         model = SAMLSource
-        fields = SOURCE_FORM_FIELDS + [
+        fields = [
+            "name",
+            "slug",
+            "enabled",
+            "authentication_flow",
+            "enrollment_flow",
             "issuer",
             "sso_url",
             "slo_url",
