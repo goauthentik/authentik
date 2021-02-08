@@ -1,14 +1,10 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import BullseyeStyle from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-// @ts-ignore
-import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
-// @ts-ignore
-import BackdropStyle from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import { SpinnerSize } from "../../elements/Spinner";
 import { showMessage } from "../../elements/messages/MessageContainer";
 import { gettext } from "django";
 import { SentryIgnoredError } from "../../common/errors";
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -23,8 +19,11 @@ export class SiteShell extends LitElement {
     @property({type: Boolean})
     loading = false;
 
+    @property({type: String})
+    body = "";
+
     static get styles(): CSSResult[] {
-        return [
+        return COMMON_STYLES.concat(
             css`
                 :host,
                 ::slotted(*) {
@@ -36,11 +35,8 @@ export class SiteShell extends LitElement {
                     left: 0;
                     width: 100%;
                 }
-            `,
-            BackdropStyle,
-            BullseyeStyle,
-            SpinnerStyle,
-        ];
+            `
+        );
     }
 
     constructor() {
@@ -63,23 +59,22 @@ export class SiteShell extends LitElement {
         }
         this.loading = true;
         fetch(this._url)
-            .then((r) => {
-                if (r.ok) {
-                    return r;
+            .then((response) => {
+                if (response.ok) {
+                    return response;
                 }
                 console.debug(`authentik/site-shell: Request failed ${this._url}`);
                 window.location.hash = "#/";
                 showMessage({
                     level_tag: "error",
-                    message: gettext(`Request failed: ${r.statusText}`),
+                    message: gettext(`Request failed: ${response.statusText}`),
                 });
                 this.loading = false;
                 throw new SentryIgnoredError("Request failed");
             })
-            .then((r) => r.text())
+            .then((response) => response.text())
             .then((text) => {
-                bodySlot.innerHTML = text;
-                this.updateHandlers();
+                this.body = text;
             })
             .then(() => {
                 setTimeout(() => {
@@ -90,7 +85,7 @@ export class SiteShell extends LitElement {
 
     updateHandlers(): void {
         // Ensure anchors only change the hash
-        this.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
+        this.shadowRoot?.querySelectorAll<HTMLAnchorElement>("a:not(.ak-root-link)").forEach((a) => {
             if (a.href === "") {
                 return;
             }
@@ -104,13 +99,13 @@ export class SiteShell extends LitElement {
             }
         });
         // Create refresh buttons
-        this.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
+        this.shadowRoot?.querySelectorAll("[role=ak-refresh]").forEach((rt) => {
             rt.addEventListener("click", () => {
                 this.loadContent();
             });
         });
         // Make get forms (search bar) notify us on submit so we can change the hash
-        this.querySelectorAll<HTMLFormElement>("form[method=get]").forEach((form) => {
+        this.shadowRoot?.querySelectorAll<HTMLFormElement>("form[method=get]").forEach((form) => {
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
@@ -119,7 +114,7 @@ export class SiteShell extends LitElement {
             });
         });
         // Make forms with POST Method have a correct action set
-        this.querySelectorAll<HTMLFormElement>("form[method=post]").forEach((form) => {
+        this.shadowRoot?.querySelectorAll<HTMLFormElement>("form[method=post]").forEach((form) => {
             form.addEventListener("submit", (e) => {
                 e.preventDefault();
                 const formData = new FormData(form);
@@ -131,11 +126,7 @@ export class SiteShell extends LitElement {
                         return response.text();
                     })
                     .then((data) => {
-                        const bodySlot = this.querySelector("[slot=body]");
-                        if (!bodySlot) {
-                            return;
-                        }
-                        bodySlot.innerHTML = data;
+                        this.body = data;
                         this.updateHandlers();
                     })
                     .catch((e) => {
@@ -157,6 +148,10 @@ export class SiteShell extends LitElement {
                     </div>
                 </div>`
             : ""}
-            <slot name="body"></slot>`;
+            ${unsafeHTML(this.body)}`;
+    }
+
+    updated(): void {
+        this.updateHandlers();
     }
 }
