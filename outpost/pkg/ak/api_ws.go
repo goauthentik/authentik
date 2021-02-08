@@ -69,23 +69,10 @@ func (ac *APIController) Shutdown() {
 }
 
 func (ac *APIController) startWSHandler() {
-	notConnectedBackoff := 1
 	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
 		if !ac.wsConn.IsConnected() {
-			notConnectedWait := time.Duration(notConnectedBackoff) * time.Second
-			logger.WithField("wait", notConnectedWait).Info("Not connected, trying again...")
-			time.Sleep(notConnectedWait)
-			notConnectedBackoff += notConnectedBackoff
-			// Limit backoff to max 60 seconds
-			if notConnectedBackoff >= 60 {
-				notConnectedBackoff = 60
-			}
-			ac.wsConn.CloseAndReconnect()
 			continue
-		} else {
-			// When we're connected, reset backoff to 1
-			notConnectedBackoff = 1
 		}
 		var wsMsg websocketMessage
 		err := ac.wsConn.ReadJSON(&wsMsg)

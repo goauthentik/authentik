@@ -1,6 +1,6 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { BaseInheritanceModel, DefaultClient, PBResponse, QueryArguments } from "./Client";
 
-export class Provider {
+export class Provider implements BaseInheritanceModel {
     pk: number;
     name: string;
     authorization_flow: string;

@@ -1789,6 +1789,11 @@ paths:
       operationId: outposts_outposts_list
       description: Outpost Viewset
       parameters:
+        - name: providers__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1902,6 +1907,28 @@ paths:
       responses:
         '204':
           description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this outpost.
+        required: true
+        type: string
+        format: uuid
+  /outposts/outposts/{uuid}/health/:
+    get:
+      operationId: outposts_outposts_health
+      description: Get outposts current health
+      parameters: []
+      responses:
+        '200':
+          description: Outpost health status
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/OutpostHealth'
       tags:
         - outposts
     parameters:
@@ -2037,6 +2064,133 @@ paths:
         description: A unique integer value identifying this Proxy Provider.
         required: true
         type: integer
+  /outposts/service_connections/all/:
+    get:
+      operationId: outposts_service_connections_all_list
+      description: ServiceConnection Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ServiceConnection'
+      tags:
+        - outposts
+    post:
+      operationId: outposts_service_connections_all_create
+      description: ServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      tags:
+        - outposts
+    parameters: []
+  /outposts/service_connections/all/{uuid}/:
+    get:
+      operationId: outposts_service_connections_all_read
+      description: ServiceConnection Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      tags:
+        - outposts
+    put:
+      operationId: outposts_service_connections_all_update
+      description: ServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      tags:
+        - outposts
+    patch:
+      operationId: outposts_service_connections_all_partial_update
+      description: ServiceConnection Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ServiceConnection'
+      tags:
+        - outposts
+    delete:
+      operationId: outposts_service_connections_all_delete
+      description: ServiceConnection Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+        type: string
+        format: uuid
   /outposts/service_connections/docker/:
     get:
       operationId: outposts_service_connections_docker_list
@@ -4308,7 +4462,7 @@ paths:
   /providers/oauth2/{id}/setup_urls/:
     get:
       operationId: providers_oauth2_setup_urls
-      description: Return metadata as XML string
+      description: Get Providers setup URLs
       parameters: []
       responses:
         '200':
@@ -8023,6 +8177,12 @@ definitions:
         items:
           type: integer
         uniqueItems: true
+      providers_obj:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Provider'
+        readOnly: true
       service_connection:
         title: Service connection
         description: Select Service-Connection authentik should use to manage this
@@ -8030,9 +8190,36 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      token_identifier:
+        title: Token identifier
+        type: string
+        readOnly: true
       _config:
         title: config
         type: object
+  OutpostHealth:
+    description: Outpost health status
+    type: object
+    properties:
+      last_seen:
+        title: Last seen
+        type: string
+        format: date-time
+        readOnly: true
+      version:
+        title: Version
+        type: string
+        readOnly: true
+        minLength: 1
+      version_should:
+        title: Version should
+        type: string
+        readOnly: true
+        minLength: 1
+      version_outdated:
+        title: Version outdated
+        type: boolean
+        readOnly: true
   OpenIDConnectConfiguration:
     title: Oidc configuration
     description: rest_framework Serializer for OIDC Configuration
@@ -8170,6 +8357,21 @@ definitions:
         description: User/Group Attribute used for the user part of the HTTP-Basic
           Header. If not set, the user's Email address is used.
         type: string
+  ServiceConnection:
+    description: ServiceConnection Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
   DockerServiceConnection:
     description: DockerServiceConnection Serializer
     required:
@@ -9157,16 +9359,16 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
         readOnly: true
       verbose_name_plural:
         title: Verbose name plural
-        type: string
-        readOnly: true
-      __type__:
-        title: 'type  '
         type: string
         readOnly: true
   LDAPSource:
@@ -9213,6 +9415,10 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -9344,6 +9550,10 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       verbose_name:
         title: Verbose name
         type: string
@@ -9397,6 +9607,11 @@ definitions:
       - sso_url
     type: object
     properties:
+      pk:
+        title: Pbm uuid
+        type: string
+        format: uuid
+        readOnly: true
       name:
         title: Name
         description: Source's display Name.
@@ -9425,6 +9640,18 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       issuer:
         title: Issuer
         description: Also known as Entity ID. Defaults the Metadata URL.

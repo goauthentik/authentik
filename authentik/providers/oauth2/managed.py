@@ -23,6 +23,8 @@ return {
     "family_name": "",
     "preferred_username": user.username,
     "nickname": user.username,
+    # groups is not part of the official userinfo schema, but is a quasi-standard
+    "groups": [group.name for group in user.ak_groups.all()],
 }
 """
 

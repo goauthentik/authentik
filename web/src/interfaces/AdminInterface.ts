@@ -27,7 +27,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
             `^/sources/(?<slug>${SLUG_REGEX})$`,
         ),
         new SidebarItem("Providers", "/providers"),
-        new SidebarItem("Outposts", "/administration/outposts/"),
+        new SidebarItem("Outposts", "/outposts"),
         new SidebarItem("Outpost Service Connections", "/administration/outpost_service_connections/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
@@ -41,7 +41,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Flows").children(
         new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
         new SidebarItem("Stages", "/administration/stages/"),
-        new SidebarItem("Prompts", "/administration/stages/prompts/"),
+        new SidebarItem("Prompts", "/administration/stages_prompts/"),
         new SidebarItem("Invitations", "/administration/stages/invitations/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);

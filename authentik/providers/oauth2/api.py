@@ -59,11 +59,11 @@ class OAuth2ProviderViewSet(ModelViewSet):
     queryset = OAuth2Provider.objects.all()
     serializer_class = OAuth2ProviderSerializer
 
-    @action(methods=["GET"], detail=True)
     @swagger_auto_schema(responses={200: OAuth2ProviderSetupURLs(many=False)})
+    @action(methods=["GET"], detail=True)
     # pylint: disable=invalid-name
     def setup_urls(self, request: Request, pk: int) -> str:
-        """Return metadata as XML string"""
+        """Get Providers setup URLs"""
         provider = get_object_or_404(OAuth2Provider, pk=pk)
         data = {
             "issuer": provider.get_issuer(request),
