@@ -103,8 +103,9 @@ class PolicyProcess(PROCESS_CLASS):
         # Invert result if policy.negate is set
         if self.binding.negate:
             policy_result.passing = not policy_result.passing
-        key = cache_key(self.binding, self.request)
-        cache.set(key, policy_result)
+        if not self.request.debug:
+            key = cache_key(self.binding, self.request)
+            cache.set(key, policy_result)
         LOGGER.debug(
             "P_ENG(proc): finished and cached ",
             policy=self.binding.policy,
