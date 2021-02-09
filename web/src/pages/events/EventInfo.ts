@@ -89,7 +89,7 @@ export class EventInfo extends LitElement {
             return html`
                 <h3>${gettext(`Attempted to log in as ${this.event.context.username}`)}</h3>
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
-        case "token_view":
+        case "secret_view":
             return html`
                 <h3>${gettext("Token:")}</h3>
                 ${this.getModelInfo(this.event.context.token as EventContext)}`;

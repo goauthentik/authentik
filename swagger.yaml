@@ -565,9 +565,9 @@ paths:
       parameters: []
       responses:
         '200':
-          description: ''
+          description: Show token's current key
           schema:
-            $ref: '#/definitions/Token'
+            $ref: '#/definitions/TokenView'
       tags:
         - core
     parameters:
@@ -7713,6 +7713,15 @@ definitions:
       description:
         title: Description
         type: string
+  TokenView:
+    description: Show token's current key
+    type: object
+    properties:
+      key:
+        title: Key
+        type: string
+        readOnly: true
+        minLength: 1
   User:
     description: User Serializer
     required:
@@ -7801,7 +7810,7 @@ definitions:
           - user_write
           - suspicious_request
           - password_set
-          - token_view
+          - secret_view
           - invitation_used
           - authorize_application
           - source_linked
@@ -8572,7 +8581,7 @@ definitions:
           - user_write
           - suspicious_request
           - password_set
-          - token_view
+          - secret_view
           - invitation_used
           - authorize_application
           - source_linked

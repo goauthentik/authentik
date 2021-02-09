@@ -42,7 +42,7 @@ class EventAction(models.TextChoices):
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
-    TOKEN_VIEW = "token_view"  # nosec
+    SECRET_VIEW = "secret_view"  # noqa # nosec
 
     INVITE_USED = "invitation_used"
 
