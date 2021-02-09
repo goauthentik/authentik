@@ -9,6 +9,9 @@ export class ActionButton extends SpinnerButton {
     @property()
     url = "";
 
+    @property()
+    method = "POST";
+
     callAction(): void {
         if (this.isRunning === true) {
             return;
@@ -19,7 +22,7 @@ export class ActionButton extends SpinnerButton {
             headers: { "X-CSRFToken": csrftoken },
         });
         fetch(request, {
-            method: "POST",
+            method: this.method,
             mode: "same-origin",
         })
             .then((r) => {

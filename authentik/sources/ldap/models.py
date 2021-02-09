@@ -1,8 +1,6 @@
 """authentik LDAP Models"""
-from datetime import datetime
 from typing import Optional, Type
 
-from django.core.cache import cache
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +9,6 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.utils.template import render_to_string
 
 
 class LDAPSource(Source):

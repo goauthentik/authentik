@@ -64,8 +64,9 @@ class LDAPSourceViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: LDAPSourceSyncStatusSerializer(many=False)})
     @action(methods=["GET"], detail=True)
-    # pylint: disable=invalid-name
+    # pylint: disable=unused-argument
     def sync_status(self, request: Request, slug: str) -> Response:
+        """Get source's sync status"""
         source = self.get_object()
         last_sync = cache.get(source.state_cache_prefix("last_sync"), None)
         return Response(
