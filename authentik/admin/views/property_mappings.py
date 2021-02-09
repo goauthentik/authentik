@@ -8,7 +8,6 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django.views.generic.detail import DetailView
@@ -37,7 +36,6 @@ class PropertyMappingCreateView(
     permission_required = "authentik_core.add_propertymapping"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Property Mapping")
 
 
@@ -54,7 +52,6 @@ class PropertyMappingUpdateView(
     permission_required = "authentik_core.change_propertymapping"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Property Mapping")
 
 
@@ -67,7 +64,6 @@ class PropertyMappingDeleteView(
     permission_required = "authentik_core.delete_propertymapping"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Property Mapping")
 
 

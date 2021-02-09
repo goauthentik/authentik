@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
@@ -30,7 +29,6 @@ class ProviderCreateView(
     permission_required = "authentik_core.add_provider"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:providers")
     success_message = _("Successfully created Provider")
 
 
@@ -47,7 +45,6 @@ class ProviderUpdateView(
     permission_required = "authentik_core.change_provider"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:providers")
     success_message = _("Successfully updated Provider")
 
 
@@ -60,5 +57,4 @@ class ProviderDeleteView(
     permission_required = "authentik_core.delete_provider"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:providers")
     success_message = _("Successfully deleted Provider")

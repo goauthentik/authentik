@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
@@ -29,7 +28,6 @@ class NotificationTransportCreateView(
     permission_required = "authentik_events.add_notificationtransport"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Notification Transport")
 
 
@@ -47,7 +45,6 @@ class NotificationTransportUpdateView(
     permission_required = "authentik_events.change_notificationtransport"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Notification Transport")
 
 
@@ -60,5 +57,4 @@ class NotificationTransportDeleteView(
     permission_required = "authentik_events.delete_notificationtransport"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Notification Transport")

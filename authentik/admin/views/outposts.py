@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
@@ -32,7 +31,6 @@ class OutpostCreateView(
     permission_required = "authentik_outposts.add_outpost"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Outpost")
 
     def get_initial(self) -> Dict[str, Any]:
@@ -57,7 +55,6 @@ class OutpostUpdateView(
     permission_required = "authentik_outposts.change_outpost"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Outpost")
 
 
@@ -68,5 +65,4 @@ class OutpostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessa
     permission_required = "authentik_outposts.delete_outpost"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Outpost")
