@@ -23,11 +23,6 @@ export class OAuth2ProviderViewPage extends Page {
         return "pf-icon pf-icon-integration";
     }
 
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({type: Number})
     set providerID(value: number) {
         OAuth2Provider.get(value).then((app) => this.provider = app);

@@ -1,12 +1,12 @@
-import { gettext } from "django";
-import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 
-import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/policies/BoundPoliciesList";
+import { SpinnerSize } from "../../elements/Spinner";
+
+import "./LDAPSourceViewPage";
+import "./OAuthSourceViewPage";
 import { Source } from "../../api/Sources";
 
 @customElement("ak-source-view")
@@ -16,48 +16,39 @@ export class SourceViewPage extends LitElement {
         this.sourceSlug = value.slug;
     }
 
-    @property()
-    set sourceSlug(value: string) {
-        Source.get(value).then((source) => (this.source = source));
+    @property({ type: String })
+    set sourceSlug(slug: string) {
+        Source.get(slug).then((app) => (this.source = app));
     }
 
-    @property({attribute: false})
+    @property({ attribute: false })
     source?: Source;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
-            css`
-                img.pf-icon {
-                    max-height: 24px;
-                }
-            `
-        );
+        return COMMON_STYLES;
     }
 
     render(): TemplateResult {
         if (!this.source) {
-            return html``;
-        }
-        return html`<section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        <i class="pf-icon pf-icon-middleware"></i>
-                        ${this.source?.name}
-                    </h1>
-                </div>
-            </section>
-            <ak-tabs>
-                <div slot="page-2" data-tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__header-main">
-                                ${gettext("These policies control which users can access this application.")}
-                            </div>
+            return html`<div class="pf-c-empty-state pf-m-full-height">
+                <div class="pf-c-empty-state__content">
+                    <div class="pf-l-bullseye">
+                        <div class="pf-l-bullseye__item">
+                            <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
                         </div>
-                        <ak-bound-policies-list .target=${this.source.pk}>
-                        </ak-bound-policies-list>
                     </div>
                 </div>
-            </ak-tabs>`;
+            </div>`;
+        }
+        switch (this.source?.object_type) {
+            case "ldap":
+                return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
+            case "oauth2":
+                return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
+            // case "proxy":
+            //     return html`<ak-provider-proxy-view providerID=${this.source.pk}></ak-provider-proxy-view>`;
+            default:
+                return html`<p>Invalid source type ${this.source.object_type}</p>`;
+        }
     }
 }

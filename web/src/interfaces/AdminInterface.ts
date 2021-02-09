@@ -23,7 +23,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Applications", "/applications").activeWhen(
             `^/applications/(?<slug>${SLUG_REGEX})$`
         ),
-        new SidebarItem("Sources", "/administration/sources/").activeWhen(
+        new SidebarItem("Sources", "/sources").activeWhen(
             `^/sources/(?<slug>${SLUG_REGEX})$`,
         ),
         new SidebarItem("Providers", "/providers"),

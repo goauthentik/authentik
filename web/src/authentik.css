@@ -127,6 +127,7 @@ select[multiple] {
     .pf-c-card {
         --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
     }
+    .pf-c-card__title,
     .pf-c-card__header-main,
     .pf-c-card__body {
         color: var(--ak-dark-foreground);
