@@ -4977,6 +4977,25 @@ paths:
         required: true
         type: string
         format: uuid
+  /sources/ldap/{pbm_uuid}/sync_status/:
+    get:
+      operationId: sources_ldap_sync_status
+      description: LDAP Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: LDAP Sync status
+          schema:
+            $ref: '#/definitions/LDAPSourceSyncStatus'
+      tags:
+        - sources
+    parameters:
+      - name: pbm_uuid
+        in: path
+        description: A UUID string identifying this LDAP Source.
+        required: true
+        type: string
+        format: uuid
   /sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -9504,6 +9523,15 @@ definitions:
           type: string
           format: uuid
         uniqueItems: true
+  LDAPSourceSyncStatus:
+    description: LDAP Sync status
+    type: object
+    properties:
+      last_sync:
+        title: Last sync
+        type: string
+        format: date-time
+        readOnly: true
   OAuthSource:
     description: OAuth Source Serializer
     required:

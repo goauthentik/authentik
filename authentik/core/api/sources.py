@@ -13,7 +13,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("provider", "")
+        return obj._meta.object_name.lower().replace("source", "")
 
     class Meta:
 

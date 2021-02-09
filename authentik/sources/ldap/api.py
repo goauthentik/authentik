@@ -1,5 +1,12 @@
 """Source API Views"""
-from rest_framework.serializers import ModelSerializer
+from django.core.cache import cache
+from django.db.models.base import Model
+from drf_yasg2.utils import swagger_auto_schema
+from rest_framework.decorators import action
+from rest_framework.fields import DateTimeField
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
@@ -34,6 +41,33 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
+class LDAPSourceSyncStatusSerializer(Serializer):
+    """LDAP Sync status"""
+
+    last_sync = DateTimeField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
+class LDAPSourceViewSet(ModelViewSet):
+    """LDAP Source Viewset"""
+
+    queryset = LDAPSource.objects.all()
+    serializer_class = LDAPSourceSerializer
+
+    @swagger_auto_schema(responses={200: LDAPSourceSyncStatusSerializer(many=False)})
+    @action(methods=["GET"], detail=True)
+    # pylint: disable=invalid-name
+    def sync_status(self, request: Request, pk: int) -> Response:
+        source = self.get_object()
+        last_sync = cache.get(source.state_cache_prefix("last_sync"), None)
+        return Response(LDAPSourceSyncStatusSerializer({"last_sync": last_sync}).data)
+
+
 class LDAPPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
     """LDAP PropertyMapping Serializer"""
 
@@ -47,13 +81,6 @@ class LDAPPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name",
             "verbose_name_plural",
         ]
-
-
-class LDAPSourceViewSet(ModelViewSet):
-    """LDAP Source Viewset"""
-
-    queryset = LDAPSource.objects.all()
-    serializer_class = LDAPSourceSerializer
 
 
 class LDAPPropertyMappingViewSet(ModelViewSet):
