@@ -65,14 +65,6 @@ class OAuthSource(Source):
         )
 
     @property
-    def ui_additional_info(self) -> str:
-        url = reverse_lazy(
-            "authentik_sources_oauth:oauth-client-callback",
-            kwargs={"source_slug": self.slug},
-        )
-        return f"Callback URL: <pre>{url}</pre>"
-
-    @property
     def ui_user_settings(self) -> Optional[str]:
         view_name = "authentik_sources_oauth:oauth-client-user"
         return reverse(view_name, kwargs={"source_slug": self.slug})

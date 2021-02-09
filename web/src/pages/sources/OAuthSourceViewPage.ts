@@ -7,13 +7,13 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { LDAPSource } from "../../api/sources/LDAP";
+import { OAuthSource } from "../../api/sources/OAuth";
 import { Source } from "../../api/Sources";
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends Page {
     pageTitle(): string {
-        return gettext(`LDAP Source ${this.source?.name}`);
+        return gettext(`OAuth Source ${this.source?.name || ""}`);
     }
     pageDescription(): string | undefined {
         return;
@@ -24,16 +24,16 @@ export class OAuthSourceViewPage extends Page {
 
     @property()
     set args(value: { [key: string]: string }) {
-        this.sourceID = value.id;
+        this.sourceSlug = value.slug;
     }
 
     @property({ type: String })
-    set sourceID(value: string) {
-        LDAPSource.get(value).then((s) => this.source = s);
+    set sourceSlug(value: string) {
+        OAuthSource.get(value).then((s) => this.source = s);
     }
 
     @property({ attribute: false })
-    source?: LDAPSource;
+    source?: OAuthSource;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -43,7 +43,7 @@ export class OAuthSourceViewPage extends Page {
         super();
         this.addEventListener("ak-refresh", () => {
             if (!this.source?.pk) return;
-            this.sourceID = this.source?.pk;
+            this.sourceSlug = this.source?.slug;
         });
     }
 
@@ -68,22 +68,42 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Server URI")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("Provider Type")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.server_uri}</div>
+                                                <div class="pf-c-description-list__text">${this.source.provider_type}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Base DN")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("Callback URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ul>
-                                                        <li>${this.source.base_dn}</li>
-                                                    </ul>
-                                                </div>
+                                                <code class="pf-c-description-list__text">${this.source.callback_url}</code>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${gettext("Access Key")}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">${this.source.consumer_key}</div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${gettext("Authorization URL")}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">${this.source.authorization_url}</div>
+                                            </dd>
+                                        </div>
+                                        <div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${gettext("Token URL")}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">${this.source.access_token_url}</div>
                                             </dd>
                                         </div>
                                     </dl>
@@ -97,28 +117,9 @@ export class OAuthSourceViewPage extends Page {
                                     </ak-modal-button>
                                 </div>
                             </div>
-                            <div class="pf-c-card pf-c-card-aggregate">
-                                <div class="pf-c-card__title">
-                                    ${gettext("Sync status")}
-                                </div>
-                                <div class="pf-c-card__body">
-
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>
-                <div slot="page-2" data-tab-title="Policy Bindings" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__header-main">
-                                ${gettext("These policies control which users can authorize using these policies.")}
-                            </div>
-                        </div>
-                        <ak-bound-policies-list .target=${this.source.pk}>
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
             </ak-tabs>`;
     }
 }

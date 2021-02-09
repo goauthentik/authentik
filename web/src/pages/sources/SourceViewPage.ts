@@ -43,7 +43,7 @@ export class SourceViewPage extends LitElement {
         switch (this.source?.object_type) {
             case "ldap":
                 return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
-            case "oauth2":
+            case "oauth":
                 return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
             // case "proxy":
             //     return html`<ak-provider-proxy-view providerID=${this.source.pk}></ak-provider-proxy-view>`;

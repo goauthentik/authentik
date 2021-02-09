@@ -4981,7 +4981,7 @@ paths:
   /sources/ldap/{slug}/sync_status/:
     get:
       operationId: sources_ldap_sync_status
-      description: LDAP Source Viewset
+      description: Get source's sync status
       parameters: []
       responses:
         '200':
@@ -9631,6 +9631,10 @@ definitions:
         title: Consumer secret
         type: string
         minLength: 1
+      callback_url:
+        title: Callback url
+        type: string
+        readOnly: true
   SAMLSource:
     description: SAMLSource Serializer
     required:
