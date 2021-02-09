@@ -61,7 +61,6 @@ urlpatterns = [
         name="token-delete",
     ),
     # Sources
-    path("sources/", sources.SourceListView.as_view(), name="sources"),
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
         "sources/<uuid:pk>/update/",
