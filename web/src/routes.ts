@@ -5,6 +5,7 @@ import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
+import "./pages/sources/SourcesListPage";
 import "./pages/sources/SourceViewPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/events/EventListPage";
@@ -30,6 +31,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-application-view .args=${args}></ak-application-view>`;
     }),
+    new Route(new RegExp("^/sources$"), html`<ak-source-list></ak-source-list>`),
     new Route(new RegExp(`^/sources/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-source-view .args=${args}></ak-source-view>`;
     }),

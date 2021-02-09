@@ -11,6 +11,7 @@ export class Source implements BaseInheritanceModel {
     constructor() {
         throw Error();
     }
+    object_type: string;
     verbose_name: string;
     verbose_name_plural: string;
 
