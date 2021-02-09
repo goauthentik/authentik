@@ -18,7 +18,7 @@ class ProxyProviderForm(forms.ModelForm):
         )
         self.fields["certificate"].queryset = CertificateKeyPair.objects.filter(
             key_data__isnull=False
-        )
+        ).exclude(key_data="")
 
     def save(self, *args, **kwargs):
         actual_save = super().save(*args, **kwargs)

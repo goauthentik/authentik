@@ -49,7 +49,7 @@ class TokenViewSet(ModelViewSet):
         if not tokens.exists():
             raise Http404
         token = tokens.first()
-        Event.new(  # noqa # nosec
-            EventAction.SECRET_VIEW, secret=token
-        ).from_http(request)
+        Event.new(EventAction.SECRET_VIEW, secret=token).from_http(  # noqa # nosec
+            request
+        )
         return Response(TokenViewSerializer({"key": token.key}).data)
