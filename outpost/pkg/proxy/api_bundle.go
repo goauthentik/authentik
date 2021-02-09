@@ -68,7 +68,7 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 
 	if provider.Certificate != nil {
 		pb.log.WithField("provider", provider.ClientID).Debug("Enabling TLS")
-		cert, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsRead(&crypto.CryptoCertificatekeypairsReadParams{
+		cert, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewCertificate(&crypto.CryptoCertificatekeypairsViewCertificateParams{
 			Context: context.Background(),
 			KpUUID:  *provider.Certificate,
 		}, pb.s.ak.Auth)
@@ -76,13 +76,22 @@ func (pb *providerBundle) prepareOpts(provider *models.ProxyOutpostConfig) *opti
 			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch certificate")
 			return providerOpts
 		}
-		x509cert, err := tls.X509KeyPair([]byte(*cert.Payload.CertificateData), []byte(cert.Payload.KeyData))
+		key, err := pb.s.ak.Client.Crypto.CryptoCertificatekeypairsViewPrivateKey(&crypto.CryptoCertificatekeypairsViewPrivateKeyParams{
+			Context: context.Background(),
+			KpUUID:  *provider.Certificate,
+		}, pb.s.ak.Auth)
+		if err != nil {
+			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to fetch private key")
+			return providerOpts
+		}
+
+		x509cert, err := tls.X509KeyPair([]byte(*&cert.Payload.Data), []byte(key.Payload.Data))
 		if err != nil {
 			pb.log.WithField("provider", provider.ClientID).WithError(err).Warning("Failed to parse certificate")
 			return providerOpts
 		}
 		pb.cert = &x509cert
-		pb.log.WithField("provider", provider.ClientID).WithField("certificate-key-pair", *cert.Payload.Name).Debug("Loaded certificates")
+		pb.log.WithField("provider", provider.ClientID).Debug("Loaded certificates")
 	}
 	return providerOpts
 }

@@ -863,6 +863,44 @@ paths:
         required: true
         type: string
         format: uuid
+  /crypto/certificatekeypairs/{kp_uuid}/view_certificate/:
+    get:
+      operationId: crypto_certificatekeypairs_view_certificate
+      description: Return certificate-key pairs certificate and log access
+      parameters: []
+      responses:
+        '200':
+          description: Get CertificateKeyPair's data
+          schema:
+            $ref: '#/definitions/CertificateData'
+      tags:
+        - crypto
+    parameters:
+      - name: kp_uuid
+        in: path
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+        type: string
+        format: uuid
+  /crypto/certificatekeypairs/{kp_uuid}/view_private_key/:
+    get:
+      operationId: crypto_certificatekeypairs_view_private_key
+      description: Return certificate-key pairs private key and log access
+      parameters: []
+      responses:
+        '200':
+          description: Get CertificateKeyPair's data
+          schema:
+            $ref: '#/definitions/CertificateData'
+      tags:
+        - crypto
+    parameters:
+      - name: kp_uuid
+        in: path
+        description: A UUID string identifying this Certificate-Key Pair.
+        required: true
+        type: string
+        format: uuid
   /events/events/:
     get:
       operationId: events_events_list
@@ -7775,6 +7813,10 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      fingerprint:
+        title: Fingerprint
+        type: string
+        readOnly: true
       certificate_data:
         title: Certificate data
         description: PEM-encoded Certificate data
@@ -7785,6 +7827,24 @@ definitions:
         description: Optional Private Key. If this is set, you can use this keypair
           for encryption.
         type: string
+      cert_expiry:
+        title: Cert expiry
+        type: string
+        format: date-time
+        readOnly: true
+      cert_subject:
+        title: Cert subject
+        type: string
+        readOnly: true
+  CertificateData:
+    description: Get CertificateKeyPair's data
+    type: object
+    properties:
+      data:
+        title: Data
+        type: string
+        readOnly: true
+        minLength: 1
   Event:
     description: Event Serializer
     required:

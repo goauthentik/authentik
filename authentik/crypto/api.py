@@ -2,14 +2,28 @@
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
-from rest_framework.serializers import ModelSerializer, ValidationError
+from django.db.models import Model
+from drf_yasg2.utils import swagger_auto_schema
+from rest_framework.decorators import action
+from rest_framework.fields import CharField, DateTimeField, SerializerMethodField
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer, Serializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
 
 
 class CertificateKeyPairSerializer(ModelSerializer):
     """CertificateKeyPair Serializer"""
+
+    cert_expiry = DateTimeField(source="certificate.not_valid_after", read_only=True)
+    cert_subject = SerializerMethodField()
+
+    def get_cert_subject(self, instance: CertificateKeyPair) -> str:
+        """Get certificate subject as full rfc4514"""
+        return instance.certificate.subject.rfc4514_string()
 
     def validate_certificate_data(self, value):
         """Verify that input is a valid PEM x509 Certificate"""
@@ -36,7 +50,31 @@ class CertificateKeyPairSerializer(ModelSerializer):
     class Meta:
 
         model = CertificateKeyPair
-        fields = ["pk", "name", "certificate_data", "key_data"]
+        fields = [
+            "pk",
+            "name",
+            "fingerprint",
+            "certificate_data",
+            "key_data",
+            "cert_expiry",
+            "cert_subject",
+        ]
+        extra_kwargs = {
+            "key_data": {"write_only": True},
+            "certificate_data": {"write_only": True},
+        }
+
+
+class CertificateDataSerializer(Serializer):
+    """Get CertificateKeyPair's data"""
+
+    data = CharField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
 
 
 class CertificateKeyPairViewSet(ModelViewSet):
@@ -44,3 +82,31 @@ class CertificateKeyPairViewSet(ModelViewSet):
 
     queryset = CertificateKeyPair.objects.all()
     serializer_class = CertificateKeyPairSerializer
+
+    @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
+    @action(detail=True)
+    # pylint: disable=invalid-name, unused-argument
+    def view_certificate(self, request: Request, pk: str) -> Response:
+        """Return certificate-key pairs certificate and log access"""
+        certificate: CertificateKeyPair = self.get_object()
+        Event.new(  # noqa # nosec
+            EventAction.SECRET_VIEW,
+            secret=certificate,
+            type="certificate",
+        ).from_http(request)
+        return Response(
+            CertificateDataSerializer({"data": certificate.certificate_data}).data
+        )
+
+    @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
+    @action(detail=True)
+    # pylint: disable=invalid-name, unused-argument
+    def view_private_key(self, request: Request, pk: str) -> Response:
+        """Return certificate-key pairs private key and log access"""
+        certificate: CertificateKeyPair = self.get_object()
+        Event.new(  # noqa # nosec
+            EventAction.SECRET_VIEW,
+            secret=certificate,
+            type="private_key",
+        ).from_http(request)
+        return Response(CertificateDataSerializer({"data": certificate.key_data}).data)
