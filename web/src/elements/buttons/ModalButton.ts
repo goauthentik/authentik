@@ -24,10 +24,10 @@ export class ModalButton extends LitElement {
                 :host {
                     text-align: left;
                 }
-                ::slotted(*) {
+                .pf-c-modal-box.pf-m-lg {
                     overflow-y: auto;
                 }
-                .pf-c-page__main-section {
+                .pf-c-modal-box > .pf-c-button + * {
                     margin-right: 0;
                 }
             `
