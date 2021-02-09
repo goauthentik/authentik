@@ -16,7 +16,7 @@ export class ModalButton extends LitElement {
     open = false;
 
     @property()
-    modal = "";
+    modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
