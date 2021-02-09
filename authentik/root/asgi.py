@@ -90,7 +90,7 @@ class ASGILogger:
             if message["type"] == "http.response.body" and not message.get(
                 "more_body", None
             ):
-                runtime = int((time() - self.start) * 10 ** 6)
+                runtime = int((time() - self.start) * 1000)
                 self.log(runtime)
             await send(message)
 
