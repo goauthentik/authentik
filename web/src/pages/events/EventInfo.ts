@@ -91,8 +91,8 @@ export class EventInfo extends LitElement {
                 <ak-expand>${this.defaultResponse()}</ak-expand>`;
         case "secret_view":
             return html`
-                <h3>${gettext("Token:")}</h3>
-                ${this.getModelInfo(this.event.context.token as EventContext)}`;
+                <h3>${gettext("Secret:")}</h3>
+                ${this.getModelInfo(this.event.context.secret as EventContext)}`;
         case "property_mapping_exception":
             return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">

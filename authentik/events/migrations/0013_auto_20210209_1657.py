@@ -10,9 +10,13 @@ def token_view_to_secret_view(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     db_alias = schema_editor.connection.alias
     Event = apps.get_model("authentik_events", "Event")
 
-    Event.objects.using(db_alias).filter(action="token_view").update(
-        action=EventAction.SECRET_VIEW
-    )
+    events = Event.objects.using(db_alias).filter(action="token_view")
+
+    for event in events:
+        event.context["secret"] = event.context.pop("token")
+        event.action = EventAction.SECRET_VIEW
+
+    Event.objects.using(db_alias).bulk_update(events, ["context", "action"])
 
 
 class Migration(migrations.Migration):
