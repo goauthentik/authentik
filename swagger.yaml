@@ -4917,7 +4917,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/ldap/{pbm_uuid}/:
+  /sources/ldap/{slug}/:
     get:
       operationId: sources_ldap_read
       description: LDAP Source Viewset
@@ -4971,13 +4971,14 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this LDAP Source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
-  /sources/ldap/{pbm_uuid}/sync_status/:
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+  /sources/ldap/{slug}/sync_status/:
     get:
       operationId: sources_ldap_sync_status
       description: LDAP Source Viewset
@@ -4990,12 +4991,13 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this LDAP Source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/oauth/:
     get:
       operationId: sources_oauth_list
@@ -5063,7 +5065,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/oauth/{pbm_uuid}/:
+  /sources/oauth/{slug}/:
     get:
       operationId: sources_oauth_read
       description: Source Viewset
@@ -5117,12 +5119,13 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this Generic OAuth Source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /sources/saml/:
     get:
       operationId: sources_saml_list
@@ -5190,7 +5193,7 @@ paths:
       tags:
         - sources
     parameters: []
-  /sources/saml/{pbm_uuid}/:
+  /sources/saml/{slug}/:
     get:
       operationId: sources_saml_read
       description: SAMLSource Viewset
@@ -5244,12 +5247,13 @@ paths:
       tags:
         - sources
     parameters:
-      - name: pbm_uuid
+      - name: slug
         in: path
-        description: A UUID string identifying this SAML Source.
+        description: Internal source name, used in URLs.
         required: true
         type: string
-        format: uuid
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /stages/all/:
     get:
       operationId: stages_all_list

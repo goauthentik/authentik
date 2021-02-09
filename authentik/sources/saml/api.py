@@ -30,3 +30,4 @@ class SAMLSourceViewSet(ModelViewSet):
 
     queryset = SAMLSource.objects.all()
     serializer_class = SAMLSourceSerializer
+    lookup_field = "slug"

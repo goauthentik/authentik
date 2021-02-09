@@ -91,16 +91,6 @@ class LDAPSource(Source):
         """Key by which the ldap source status is saved"""
         return f"source_ldap_{self.pk}_state_{suffix}"
 
-    @property
-    def ui_additional_info(self) -> str:
-        last_sync = cache.get(self.state_cache_prefix("last_sync"), None)
-        if last_sync:
-            last_sync = datetime.fromtimestamp(last_sync)
-
-        return render_to_string(
-            "ldap/source_list_status.html", {"source": self, "last_sync": last_sync}
-        )
-
     _connection: Optional[Connection] = None
 
     @property

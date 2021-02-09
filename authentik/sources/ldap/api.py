@@ -1,4 +1,6 @@
 """Source API Views"""
+from datetime import datetime
+
 from django.core.cache import cache
 from django.db.models.base import Model
 from drf_yasg2.utils import swagger_auto_schema
@@ -58,14 +60,19 @@ class LDAPSourceViewSet(ModelViewSet):
 
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
+    lookup_field = "slug"
 
     @swagger_auto_schema(responses={200: LDAPSourceSyncStatusSerializer(many=False)})
     @action(methods=["GET"], detail=True)
     # pylint: disable=invalid-name
-    def sync_status(self, request: Request, pk: int) -> Response:
+    def sync_status(self, request: Request, slug: str) -> Response:
         source = self.get_object()
         last_sync = cache.get(source.state_cache_prefix("last_sync"), None)
-        return Response(LDAPSourceSyncStatusSerializer({"last_sync": last_sync}).data)
+        return Response(
+            LDAPSourceSyncStatusSerializer(
+                {"last_sync": datetime.fromtimestamp(last_sync)}
+            ).data
+        )
 
 
 class LDAPPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):

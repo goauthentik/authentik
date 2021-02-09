@@ -26,3 +26,4 @@ class OAuthSourceViewSet(ModelViewSet):
 
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
+    lookup_field = "slug"

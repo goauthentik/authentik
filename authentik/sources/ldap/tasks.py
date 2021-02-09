@@ -4,6 +4,7 @@ from time import time
 from django.core.cache import cache
 from django.utils.text import slugify
 from ldap3.core.exceptions import LDAPException
+from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.root.celery import CELERY_APP
@@ -11,6 +12,8 @@ from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+
+LOGGER = get_logger()
 
 
 @CELERY_APP.task()
@@ -21,7 +24,7 @@ def ldap_sync_all():
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-def ldap_sync(self: MonitoredTask, source_pk: int):
+def ldap_sync(self: MonitoredTask, source_pk: str):
     """Synchronization of an LDAP Source"""
     try:
         source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
@@ -49,4 +52,5 @@ def ldap_sync(self: MonitoredTask, source_pk: int):
             )
         )
     except LDAPException as exc:
+        LOGGER.debug(exc)
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
