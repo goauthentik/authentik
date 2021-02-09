@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 import { Policy } from "./Policies";
 
 export class PolicyBinding {
@@ -18,8 +18,8 @@ export class PolicyBinding {
         return DefaultClient.fetch<PolicyBinding>(["policies", "bindings", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<PolicyBinding>> {
-        return DefaultClient.fetch<PBResponse<PolicyBinding>>(["policies", "bindings"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<PolicyBinding>> {
+        return DefaultClient.fetch<AKResponse<PolicyBinding>>(["policies", "bindings"], filter);
     }
 
     static adminUrl(rest: string): string {

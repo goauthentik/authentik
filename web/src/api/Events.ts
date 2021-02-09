@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 
 export interface EventUser {
     pk: number;
@@ -28,8 +28,8 @@ export class Event {
         return DefaultClient.fetch<Event>(["events", "events", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Event>> {
-        return DefaultClient.fetch<PBResponse<Event>>(["events", "events"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Event>> {
+        return DefaultClient.fetch<AKResponse<Event>>(["events", "events"], filter);
     }
 
     // events/events/top_per_user/?filter_action=authorize_application

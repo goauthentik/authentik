@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/policies/BoundPoliciesList";
@@ -29,7 +29,7 @@ export class RuleListPage extends TablePage<Rule> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<PBResponse<Rule>> {
+    apiEndpoint(page: number): Promise<AKResponse<Rule>> {
         return Rule.list({
             ordering: this.order,
             page: page,

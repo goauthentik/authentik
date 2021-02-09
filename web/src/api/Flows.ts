@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 
 export enum FlowDesignation {
     Authentication = "authentication",
@@ -34,12 +34,12 @@ export class Flow {
         return DefaultClient.fetch<{ diagram: string }>(["flows", "instances", slug, "diagram"]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Flow>> {
-        return DefaultClient.fetch<PBResponse<Flow>>(["flows", "instances"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Flow>> {
+        return DefaultClient.fetch<AKResponse<Flow>>(["flows", "instances"], filter);
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<PBResponse<Flow>>(["flows", "cached"]).then(r => {
+        return DefaultClient.fetch<AKResponse<Flow>>(["flows", "cached"]).then(r => {
             return r.pagination.count;
         });
     }
@@ -76,8 +76,8 @@ export class FlowStageBinding {
         return DefaultClient.fetch<FlowStageBinding>(["flows", "bindings", slug]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<FlowStageBinding>> {
-        return DefaultClient.fetch<PBResponse<FlowStageBinding>>(["flows", "bindings"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<FlowStageBinding>> {
+        return DefaultClient.fetch<AKResponse<FlowStageBinding>>(["flows", "bindings"], filter);
     }
 
     static adminUrl(rest: string): string {

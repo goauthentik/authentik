@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/Applications";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
@@ -26,7 +26,7 @@ export class ApplicationListPage extends TablePage<Application> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<PBResponse<Application>> {
+    apiEndpoint(page: number): Promise<AKResponse<Application>> {
         return Application.list({
             ordering: this.order,
             page: page,

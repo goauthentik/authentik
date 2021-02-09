@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { DefaultClient, PBResponse } from "../../api/Client";
+import { DefaultClient, AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ActionButton";
@@ -27,7 +27,7 @@ export class TransportListPage extends TablePage<Transport> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<PBResponse<Transport>> {
+    apiEndpoint(page: number): Promise<AKResponse<Transport>> {
         return Transport.list({
             ordering: this.order,
             page: page,

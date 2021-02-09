@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { Notification } from "../../api/EventNotification";
 import { COMMON_STYLES } from "../../common/styles";
 
@@ -8,7 +8,7 @@ import { COMMON_STYLES } from "../../common/styles";
 export class NotificationDrawer extends LitElement {
 
     @property({attribute: false})
-    notifications?: PBResponse<Notification>;
+    notifications?: AKResponse<Notification>;
 
     @property({type: Number})
     unread = 0;

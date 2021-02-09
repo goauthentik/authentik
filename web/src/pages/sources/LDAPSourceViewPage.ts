@@ -4,6 +4,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/buttons/ActionButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
@@ -112,7 +113,7 @@ export class LDAPSourceViewPage extends Page {
                                                 return gettext("Not synced in the last hour, check System tasks.");
                                             }
                                             const syncDate = new Date(ls.last_sync * 1000);
-                                            return gettext(`Last sync: ${syncDate.toLocaleString()}`)
+                                            return gettext(`Last sync: ${syncDate.toLocaleString()}`);
                                         }), "loading")}
                                         </p>
                                     </div>

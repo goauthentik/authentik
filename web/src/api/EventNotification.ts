@@ -1,4 +1,4 @@
-import { DefaultClient, QueryArguments, PBResponse } from "./Client";
+import { DefaultClient, QueryArguments, AKResponse } from "./Client";
 import { Event } from "./Events";
 
 export class Notification {
@@ -17,8 +17,8 @@ export class Notification {
         return DefaultClient.fetch<Notification>(["events", "notifications", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Notification>> {
-        return DefaultClient.fetch<PBResponse<Notification>>(["events", "notifications"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Notification>> {
+        return DefaultClient.fetch<AKResponse<Notification>>(["events", "notifications"], filter);
     }
 
     static markSeen(pk: string): Promise<{seen: boolean}> {

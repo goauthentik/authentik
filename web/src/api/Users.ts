@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse } from "./Client";
+import { DefaultClient, AKResponse } from "./Client";
 
 let _globalMePromise: Promise<User>;
 
@@ -22,7 +22,7 @@ export class User {
     }
 
     static count(): Promise<number> {
-        return DefaultClient.fetch<PBResponse<User>>(["core", "users"], {
+        return DefaultClient.fetch<AKResponse<User>>(["core", "users"], {
             "page_size": 1
         }).then(r => {
             return r.pagination.count;

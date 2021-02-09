@@ -94,7 +94,7 @@ export interface PBPagination {
     end_index: number;
 }
 
-export interface PBResponse<T> {
+export interface AKResponse<T> {
     pagination: PBPagination;
 
     results: Array<T>;

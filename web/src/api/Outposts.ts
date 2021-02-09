@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 import { Provider } from "./Providers";
 
 export interface OutpostHealth {
@@ -26,8 +26,8 @@ export class Outpost {
         return DefaultClient.fetch<Outpost>(["outposts", "outposts", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Outpost>> {
-        return DefaultClient.fetch<PBResponse<Outpost>>(["outposts", "outposts"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Outpost>> {
+        return DefaultClient.fetch<AKResponse<Outpost>>(["outposts", "outposts"], filter);
     }
 
     static health(pk: string): Promise<OutpostHealth[]> {

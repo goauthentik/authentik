@@ -1,4 +1,4 @@
-import { DefaultClient, QueryArguments, PBResponse } from "./Client";
+import { DefaultClient, QueryArguments, AKResponse } from "./Client";
 import { Group } from "./Groups";
 
 export class Rule {
@@ -16,8 +16,8 @@ export class Rule {
         return DefaultClient.fetch<Rule>(["events", "rules", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Rule>> {
-        return DefaultClient.fetch<PBResponse<Rule>>(["events", "rules"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Rule>> {
+        return DefaultClient.fetch<AKResponse<Rule>>(["events", "rules"], filter);
     }
 
     static adminUrl(rest: string): string {

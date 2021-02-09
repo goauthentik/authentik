@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { PropertyMapping } from "../../api/PropertyMapping";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
@@ -30,7 +30,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @property({type: Boolean})
     hideManaged = false;
 
-    apiEndpoint(page: number): Promise<PBResponse<PropertyMapping>> {
+    apiEndpoint(page: number): Promise<AKResponse<PropertyMapping>> {
         return PropertyMapping.list({
             ordering: this.order,
             page: page,

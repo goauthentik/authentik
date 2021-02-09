@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 import { PolicyBinding } from "../../api/PolicyBindings";
 
@@ -14,7 +14,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
 
-    apiEndpoint(page: number): Promise<PBResponse<PolicyBinding>> {
+    apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
         return PolicyBinding.list({
             target: this.target || "",
             ordering: "order",

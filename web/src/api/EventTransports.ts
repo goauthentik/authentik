@@ -1,4 +1,4 @@
-import { DefaultClient, QueryArguments, PBResponse } from "./Client";
+import { DefaultClient, QueryArguments, AKResponse } from "./Client";
 
 export class Transport {
     pk: string;
@@ -15,8 +15,8 @@ export class Transport {
         return DefaultClient.fetch<Transport>(["events", "transports", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Transport>> {
-        return DefaultClient.fetch<PBResponse<Transport>>(["events", "transports"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Transport>> {
+        return DefaultClient.fetch<AKResponse<Transport>>(["events", "transports"], filter);
     }
 
     static adminUrl(rest: string): string {

@@ -1,9 +1,12 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { DefaultClient, PBResponse } from "../../api/Client";
+import { customElement, html, property, TemplateResult } from "lit-element";
+import { AKResponse } from "../../api/Client";
 import { Source } from "../../api/Sources";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
+
+import "../../elements/buttons/ModalButton";
+import "../../elements/buttons/SpinnerButton";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -23,7 +26,7 @@ export class SourceListPage extends TablePage<Source> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<PBResponse<Source>> {
+    apiEndpoint(page: number): Promise<AKResponse<Source>> {
         return Source.list({
             ordering: this.order,
             page: page,

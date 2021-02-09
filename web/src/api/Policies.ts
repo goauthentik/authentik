@@ -1,4 +1,4 @@
-import { DefaultClient, BaseInheritanceModel, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, BaseInheritanceModel, AKResponse, QueryArguments } from "./Client";
 
 export class Policy implements BaseInheritanceModel {
     pk: string;
@@ -15,12 +15,12 @@ export class Policy implements BaseInheritanceModel {
         return DefaultClient.fetch<Policy>(["policies", "all", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Policy>> {
-        return DefaultClient.fetch<PBResponse<Policy>>(["policies", "all"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Policy>> {
+        return DefaultClient.fetch<AKResponse<Policy>>(["policies", "all"], filter);
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<PBResponse<Policy>>(["policies", "cached"]).then(r => {
+        return DefaultClient.fetch<AKResponse<Policy>>(["policies", "cached"]).then(r => {
             return r.pagination.count;
         });
     }

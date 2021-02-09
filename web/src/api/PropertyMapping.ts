@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 
 export class PropertyMapping {
     pk: string;
@@ -16,8 +16,8 @@ export class PropertyMapping {
         return DefaultClient.fetch<PropertyMapping>(["propertymappings", "all", pk]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<PropertyMapping>> {
-        return DefaultClient.fetch<PBResponse<PropertyMapping>>(["propertymappings", "all"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<PropertyMapping>> {
+        return DefaultClient.fetch<AKResponse<PropertyMapping>>(["propertymappings", "all"], filter);
     }
 
     static adminUrl(rest: string): string {

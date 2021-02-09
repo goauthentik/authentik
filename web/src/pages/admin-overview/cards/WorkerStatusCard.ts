@@ -1,13 +1,13 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { DefaultClient, PBResponse } from "../../../api/Client";
+import { DefaultClient, AKResponse } from "../../../api/Client";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return DefaultClient.fetch<PBResponse<number>>(["admin", "workers"]).then((r) => {
+        return DefaultClient.fetch<AKResponse<number>>(["admin", "workers"]).then((r) => {
             return r.pagination.count;
         });
     }

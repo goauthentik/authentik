@@ -1,4 +1,4 @@
-import { DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 import { Provider } from "./Providers";
 
 export class Application {
@@ -22,8 +22,8 @@ export class Application {
         return DefaultClient.fetch<Application>(["core", "applications", slug]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Application>> {
-        return DefaultClient.fetch<PBResponse<Application>>(["core", "applications"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Application>> {
+        return DefaultClient.fetch<AKResponse<Application>>(["core", "applications"], filter);
     }
 
     static adminUrl(rest: string): string {

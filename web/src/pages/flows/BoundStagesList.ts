@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 
 import "../../elements/Tabs";
@@ -17,7 +17,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     @property()
     target?: string;
 
-    apiEndpoint(page: number): Promise<PBResponse<FlowStageBinding>> {
+    apiEndpoint(page: number): Promise<AKResponse<FlowStageBinding>> {
         return FlowStageBinding.list({
             target: this.target || "",
             ordering: "order",

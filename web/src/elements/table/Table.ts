@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "./TablePagination";
@@ -69,7 +69,7 @@ export class TableColumn {
 }
 
 export abstract class Table<T> extends LitElement {
-    abstract apiEndpoint(page: number): Promise<PBResponse<T>>;
+    abstract apiEndpoint(page: number): Promise<AKResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
 
@@ -84,7 +84,7 @@ export abstract class Table<T> extends LitElement {
     }
 
     @property({attribute: false})
-    data?: PBResponse<T>;
+    data?: AKResponse<T>;
 
     @property({type: Number})
     page = 1;

@@ -1,4 +1,4 @@
-import { BaseInheritanceModel, DefaultClient, PBResponse, QueryArguments } from "./Client";
+import { BaseInheritanceModel, DefaultClient, AKResponse, QueryArguments } from "./Client";
 
 export class Provider implements BaseInheritanceModel {
     pk: number;
@@ -20,8 +20,8 @@ export class Provider implements BaseInheritanceModel {
         return DefaultClient.fetch<Provider>(["providers", "all", id.toString()]);
     }
 
-    static list(filter?: QueryArguments): Promise<PBResponse<Provider>> {
-        return DefaultClient.fetch<PBResponse<Provider>>(["providers", "all"], filter);
+    static list(filter?: QueryArguments): Promise<AKResponse<Provider>> {
+        return DefaultClient.fetch<AKResponse<Provider>>(["providers", "all"], filter);
     }
 
     static adminUrl(rest: string): string {

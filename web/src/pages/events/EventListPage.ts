@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { Event } from "../../api/Events";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
@@ -27,7 +27,7 @@ export class EventListPage extends TablePage<Event> {
     @property()
     order = "-created";
 
-    apiEndpoint(page: number): Promise<PBResponse<Event>> {
+    apiEndpoint(page: number): Promise<AKResponse<Event>> {
         return Event.list({
             ordering: this.order,
             page: page,

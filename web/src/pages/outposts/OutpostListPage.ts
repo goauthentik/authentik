@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
-import { PBResponse } from "../../api/Client";
+import { AKResponse } from "../../api/Client";
 import { Outpost } from "../../api/Outposts";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
@@ -25,7 +25,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     searchEnabled(): boolean {
         return true;
     }
-    apiEndpoint(page: number): Promise<PBResponse<Outpost>> {
+    apiEndpoint(page: number): Promise<AKResponse<Outpost>> {
         return Outpost.list({
             ordering: this.order,
             page: page,

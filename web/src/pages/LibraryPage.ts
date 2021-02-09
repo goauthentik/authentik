@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { Application } from "../api/Applications";
-import { PBResponse } from "../api/Client";
+import { AKResponse } from "../api/Client";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 
@@ -52,7 +52,7 @@ export class LibraryApplication extends LitElement {
 @customElement("ak-library")
 export class LibraryPage extends LitElement {
     @property({attribute: false})
-    apps?: PBResponse<Application>;
+    apps?: AKResponse<Application>;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
