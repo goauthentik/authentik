@@ -6,10 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    ModelSerializer,
-    SerializerMethodField,
-)
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer

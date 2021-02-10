@@ -4344,7 +4344,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: ''
+          description: Types of an object that can be created
           schema:
             description: ''
             type: array
@@ -4936,7 +4936,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: ''
+          description: Types of an object that can be created
           schema:
             description: ''
             type: array
@@ -9083,7 +9083,7 @@ definitions:
         type: string
         readOnly: true
   TypeCreate:
-    description: ''
+    description: Types of an object that can be created
     type: object
     properties:
       name:

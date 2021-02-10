@@ -43,12 +43,12 @@ class TokenViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: TokenViewSerializer(many=False)})
     @action(detail=True)
+    # pylint: disable=unused-argument
     def view_key(self, request: Request, identifier: str) -> Response:
         """Return token key and log access"""
-        tokens = Token.filter_not_expired(identifier=identifier)
-        if not tokens.exists():
+        token: Token = self.get_object()
+        if token.is_expired:
             raise Http404
-        token = tokens.first()
         Event.new(EventAction.SECRET_VIEW, secret=token).from_http(  # noqa # nosec
             request
         )

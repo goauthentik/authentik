@@ -31,3 +31,9 @@ class TypeCreateSerializer(Serializer):
     name = CharField(read_only=True)
     description = CharField(read_only=True)
     link = CharField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError

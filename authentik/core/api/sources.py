@@ -1,17 +1,16 @@
 """Source API Views"""
-from authentik.lib.templatetags.authentik_utils import verbose_name
-from authentik.lib.utils.reflection import all_subclasses
+from django.shortcuts import reverse
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from django.shortcuts import reverse
-from django.utils.translation import gettext_lazy as _
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source
+from authentik.lib.templatetags.authentik_utils import verbose_name
+from authentik.lib.utils.reflection import all_subclasses
 
 
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
