@@ -42,13 +42,13 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`
             <ak-modal-button href="${FlowStageBinding.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    Edit
+                    ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
             <ak-modal-button href="${FlowStageBinding.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
-                    Delete
+                    ${gettext("Delete")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
