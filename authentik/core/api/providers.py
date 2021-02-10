@@ -62,7 +62,6 @@ class ProviderViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False)
-    # pylint: disable=unused-argument
     def types(self, request: Request) -> Response:
         """Get all creatable provider types"""
         data = []
