@@ -1,4 +1,5 @@
 import { BaseInheritanceModel, DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { TypeCreate } from "./Providers";
 
 export class Source implements BaseInheritanceModel {
     pk: string;
@@ -21,6 +22,10 @@ export class Source implements BaseInheritanceModel {
 
     static list(filter?: QueryArguments): Promise<AKResponse<Source>> {
         return DefaultClient.fetch<AKResponse<Source>>(["sources", "all"], filter);
+    }
+
+    static getTypes(): Promise<TypeCreate[]> {
+        return DefaultClient.fetch<TypeCreate[]>(["sources", "all", "types"]);
     }
 
     static adminUrl(rest: string): string {

@@ -92,7 +92,7 @@ export class ProviderListPage extends TablePage<Provider> {
                                 <div slot="modal"></div>
                             </ak-modal-button>
                         </li>`;
-                    })
+                    });
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
