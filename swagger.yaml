@@ -4312,6 +4312,47 @@ paths:
       tags:
         - providers
     parameters: []
+  /providers/all/types/:
+    get:
+      operationId: providers_all_types
+      description: Get all creatable provider types
+      parameters:
+        - name: application__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - providers
+    parameters: []
   /providers/all/{id}/:
     get:
       operationId: providers_all_read
@@ -9005,6 +9046,25 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+  TypeCreate:
+    description: ''
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        readOnly: true
+        minLength: 1
+      link:
+        title: Link
+        type: string
+        readOnly: true
+        minLength: 1
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:

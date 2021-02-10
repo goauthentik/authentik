@@ -1,5 +1,11 @@
 import { BaseInheritanceModel, DefaultClient, AKResponse, QueryArguments } from "./Client";
 
+export interface TypeCreate {
+    name: string;
+    description: string;
+    link: string;
+}
+
 export class Provider implements BaseInheritanceModel {
     pk: number;
     name: string;
@@ -22,6 +28,10 @@ export class Provider implements BaseInheritanceModel {
 
     static list(filter?: QueryArguments): Promise<AKResponse<Provider>> {
         return DefaultClient.fetch<AKResponse<Provider>>(["providers", "all"], filter);
+    }
+
+    static getTypes(): Promise<TypeCreate[]> {
+        return DefaultClient.fetch<TypeCreate[]>(["providers", "all", "types"]);
     }
 
     static adminUrl(rest: string): string {

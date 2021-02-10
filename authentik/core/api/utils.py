@@ -1,5 +1,6 @@
 """API Utilities"""
 from django.db.models import Model
+from rest_framework.fields import CharField
 from rest_framework.serializers import Serializer, SerializerMethodField
 
 
@@ -22,3 +23,11 @@ class MetaNameSerializer(Serializer):
     def get_verbose_name_plural(self, obj: Model) -> str:
         """Return object's plural verbose_name"""
         return obj._meta.verbose_name_plural
+
+
+class TypeCreateSerializer(Serializer):
+    """Types of an object that can be created"""
+
+    name = CharField(read_only=True)
+    description = CharField(read_only=True)
+    link = CharField(read_only=True)

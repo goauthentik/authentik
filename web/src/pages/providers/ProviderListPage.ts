@@ -8,6 +8,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { TableColumn } from "../../elements/table/Table";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -81,46 +82,18 @@ export class ProviderListPage extends TablePage<Provider> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                <li>
-                    <ak-modal-button href="${Provider.adminUrl("/create/?type=OAuth2Provider")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("OAuth2/OpenID Provider")}<br>
-                            <small>
-                                ${gettext("OAuth2 Provider for generic OAuth and OpenID Connect Applications.")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
-                <li>
-                    <ak-modal-button href="${Provider.adminUrl("/create/?type=ProxyProvider")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("Proxy Provider")}<br>
-                            <small>
-                                ${gettext("Protect applications that don't support any of the other Protocols by using a Reverse-Proxy.")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
-                <li>
-                    <ak-modal-button href="${Provider.adminUrl("/create/?type=SAMLProvider")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Provider")}<br>
-                            <small>
-                                ${gettext("SAML 2.0 Endpoint for applications which support SAML.")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
-                <li>
-                    <ak-modal-button href="${Provider.adminUrl("/create/saml/from-metadata/")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Provider from Metadata")}<br>
-                            <small>
-                                ${gettext("Create a SAML Provider by importing its Metadata.")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
+                ${until(Provider.getTypes().then((types) => {
+                    return types.map((type) => {
+                        return html`<li>
+                            <ak-modal-button href="${type.link}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                                    <small>${type.description}</small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>`;
+                    })
+                }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
         ${super.renderToolbar()}`;
