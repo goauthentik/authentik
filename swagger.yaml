@@ -4909,6 +4909,42 @@ paths:
       tags:
         - sources
     parameters: []
+  /sources/all/types/:
+    get:
+      operationId: sources_all_types
+      description: Get all creatable source types
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - sources
+    parameters: []
   /sources/all/{slug}/:
     get:
       operationId: sources_all_read
