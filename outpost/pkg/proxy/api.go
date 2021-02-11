@@ -31,7 +31,7 @@ func (s *Server) bundleProviders(providers []*models.ProxyOutpostConfig) []*prov
 		bundles[idx] = &providerBundle{
 			s:    s,
 			Host: externalHost.Host,
-			log:  log.WithField("component", "proxy-bundle").WithField("provider", provider.Name),
+			log:  log.WithField("logger", "authentik.outpost.proxy-bundle").WithField("provider", provider.Name),
 		}
 		bundles[idx].Build(provider)
 	}

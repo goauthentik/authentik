@@ -49,12 +49,14 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 	// create the API client, with the transport
 	apiClient := client.New(transport, strfmt.Default)
 
+	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
+
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, err := apiClient.Outposts.OutpostsOutpostsList(outposts.NewOutpostsOutpostsListParams(), auth)
 
 	if err != nil {
-		panic(err)
+		log.WithError(err).Panic("Failed to fetch configuration")
 	}
 	outpost := outposts.Payload.Results[0]
 	doGlobalSetup(outpost.Config.(map[string]interface{}))
@@ -64,7 +66,7 @@ func NewAPIController(pbURL url.URL, token string) *APIController {
 		Auth:   auth,
 		token:  token,
 
-		logger: log.WithField("component", "ak-api-controller"),
+		logger: log,
 
 		reloadOffset: time.Duration(rand.Intn(10)) * time.Second,
 

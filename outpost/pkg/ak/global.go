@@ -13,7 +13,12 @@ import (
 )
 
 func doGlobalSetup(config map[string]interface{}) {
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.JSONFormatter{
+		FieldMap: log.FieldMap{
+			log.FieldKeyMsg:  "event",
+			log.FieldKeyTime: "timestamp",
+		},
+	})
 	switch config[ConfigLogLevel].(string) {
 	case "debug":
 		log.SetLevel(log.DebugLevel)

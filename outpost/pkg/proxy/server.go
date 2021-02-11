@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -30,7 +31,7 @@ func NewServer(ac *ak.APIController) *Server {
 	}
 	return &Server{
 		Handlers:    make(map[string]*providerBundle),
-		logger:      log.WithField("component", "proxy-http-server"),
+		logger:      log.WithField("logger", "authentik.outpost.proxy-http-server"),
 		defaultCert: defaultCert,
 		ak:          ac,
 	}
@@ -50,12 +51,15 @@ func (s *Server) handler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		s.logger.WithField("host", r.Host).Debug("Host header does not match any we know of")
-		s.logger.Printf("%v+\n", s.Handlers)
-		w.WriteHeader(400)
+		// Get a list of all host keys we know
+		hostKeys := make([]string, 0, len(s.Handlers))
+		for k := range s.Handlers {
+			hostKeys = append(hostKeys, k)
+		}
+		s.logger.WithField("host", r.Host).WithField("known-hosts", strings.Join(hostKeys, ", ")).Debug("Host header does not match any we know of")
+		w.WriteHeader(404)
 		return
 	}
-	s.logger.WithField("host", r.Host).Debug("passing request from host head")
 	handler.ServeHTTP(w, r)
 }
 

@@ -95,7 +95,7 @@ type loggingHandler struct {
 func LoggingHandler(h http.Handler) http.Handler {
 	return loggingHandler{
 		handler: h,
-		logger:  log.WithField("component", "proxy-http-server"),
+		logger:  log.WithField("logger", "authentik.outpost.proxy-http-server"),
 	}
 }
 
@@ -104,19 +104,17 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	url := *req.URL
 	responseLogger := &responseLogger{w: w}
 	h.handler.ServeHTTP(responseLogger, req)
-	duration := float64(time.Since(t)) / float64(time.Second)
+	duration := float64(time.Since(t)) / float64(time.Millisecond)
 	h.logger.WithFields(log.Fields{
-		"Client":          req.RemoteAddr,
-		"Host":            req.Host,
-		"Protocol":        req.Proto,
-		"RequestDuration": fmt.Sprintf("%0.3f", duration),
-		"RequestMethod":   req.Method,
-		"ResponseSize":    responseLogger.Size(),
-		"StatusCode":      responseLogger.Status(),
-		"Timestamp":       t,
-		"Upstream":        responseLogger.upstream,
-		"UserAgent":       req.UserAgent(),
-		"Username":        responseLogger.authInfo,
+		"host":              req.RemoteAddr,
+		"vhost":             req.Host,
+		"request_protocol":  req.Proto,
+		"runtime":           fmt.Sprintf("%0.3f", duration),
+		"method":            req.Method,
+		"size":              responseLogger.Size(),
+		"status":            responseLogger.Status(),
+		"upstream":          responseLogger.upstream,
+		"request_useragent": req.UserAgent(),
+		"request_username":  responseLogger.authInfo,
 	}).Info(url.RequestURI())
-	// logger.PrintReq(responseLogger.authInfo, responseLogger.upstream, req, url, t, , )
 }
