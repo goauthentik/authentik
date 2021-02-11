@@ -2,6 +2,7 @@
 from guardian.shortcuts import get_anonymous_user
 from structlog import get_logger
 
+from authentik.core.models import User
 from authentik.events.models import (
     Event,
     Notification,
@@ -53,7 +54,8 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         return
 
     LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
-    policy_engine = PolicyEngine(trigger, get_anonymous_user())
+    user = User.objects.filter(pk=event.user.get("pk")) or get_anonymous_user()
+    policy_engine = PolicyEngine(trigger, user)
     policy_engine.mode = PolicyEngineMode.MODE_OR
     policy_engine.empty_result = False
     policy_engine.use_cache = False
