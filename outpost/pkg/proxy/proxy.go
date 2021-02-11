@@ -21,6 +21,7 @@ import (
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/sessions"
 	"github.com/oauth2-proxy/oauth2-proxy/pkg/upstream"
 	"github.com/oauth2-proxy/oauth2-proxy/providers"
+	"goauthentik.io/outpost/pkg/models"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -92,8 +93,8 @@ type OAuthProxy struct {
 }
 
 // NewOAuthProxy creates a new instance of OAuthProxy from the options provided
-func NewOAuthProxy(opts *options.Options) (*OAuthProxy, error) {
-	logger := log.WithField("component", "proxy").WithField("client-id", opts.ClientID)
+func NewOAuthProxy(opts *options.Options, provider *models.ProxyOutpostConfig) (*OAuthProxy, error) {
+	logger := log.WithField("logger", "authentik.outpost.proxy").WithField("provider", provider.Name)
 	sessionStore, err := sessions.NewSessionStore(&opts.Session, &opts.Cookie)
 	if err != nil {
 		return nil, fmt.Errorf("error initialising session store: %v", err)
@@ -434,6 +435,7 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 		authVal := b64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 		req.Header["Authorization"] = []string{fmt.Sprintf("Basic %s", authVal)}
 	}
+	rw.Header().Set("GAP-Auth", session.PreferredUsername)
 	// Check if user has additional headers set that we should sent
 	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]string); ok {
 		if additionalHeaders == nil {
