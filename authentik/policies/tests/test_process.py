@@ -1,8 +1,9 @@
 """policy process tests"""
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
+from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application, Group, User
 from authentik.events.models import Event, EventAction
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
@@ -24,6 +25,51 @@ class TestPolicyProcess(TestCase):
         clear_policy_cache()
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="policyuser")
+
+    def test_group_passing(self):
+        """Test binding to group"""
+        group = Group.objects.create(name="test-group")
+        group.users.add(self.user)
+        group.save()
+        binding = PolicyBinding(group=group)
+
+        request = PolicyRequest(self.user)
+        response = PolicyProcess(binding, request, None).execute()
+        self.assertEqual(response.passing, True)
+
+    def test_group_negative(self):
+        """Test binding to group"""
+        group = Group.objects.create(name="test-group")
+        group.save()
+        binding = PolicyBinding(group=group)
+
+        request = PolicyRequest(self.user)
+        response = PolicyProcess(binding, request, None).execute()
+        self.assertEqual(response.passing, False)
+
+    def test_user_passing(self):
+        """Test binding to user"""
+        binding = PolicyBinding(user=self.user)
+
+        request = PolicyRequest(self.user)
+        response = PolicyProcess(binding, request, None).execute()
+        self.assertEqual(response.passing, True)
+
+    def test_user_negative(self):
+        """Test binding to user"""
+        binding = PolicyBinding(user=get_anonymous_user())
+
+        request = PolicyRequest(self.user)
+        response = PolicyProcess(binding, request, None).execute()
+        self.assertEqual(response.passing, False)
+
+    def test_empty(self):
+        """Test binding to user"""
+        binding = PolicyBinding()
+
+        request = PolicyRequest(self.user)
+        response = PolicyProcess(binding, request, None).execute()
+        self.assertEqual(response.passing, False)
 
     def test_invalid(self):
         """Test Process with invalid arguments"""

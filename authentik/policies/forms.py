@@ -14,10 +14,10 @@ class PolicyBindingForm(forms.ModelForm):
         to_field_name="pbm_uuid",
     )
     policy = GroupedModelChoiceField(
-        queryset=Policy.objects.all().select_subclasses(),
+        queryset=Policy.objects.all().select_subclasses(), required=False
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)
         if "target" in self.initial:
             self.fields["target"].widget = forms.HiddenInput()
@@ -25,7 +25,7 @@ class PolicyBindingForm(forms.ModelForm):
     class Meta:
 
         model = PolicyBinding
-        fields = ["enabled", "policy", "target", "order", "timeout"]
+        fields = ["enabled", "policy", "group", "user", "target", "order", "timeout"]
 
 
 class PolicyForm(forms.ModelForm):

@@ -3272,7 +3272,7 @@ paths:
     parameters:
       - name: policy_uuid
         in: path
-        description: A UUID string identifying this Group Membership Policy.
+        description: A UUID string identifying this Group Membership Policy (deprecated).
         required: true
         type: string
         format: uuid
@@ -8633,7 +8633,6 @@ definitions:
   PolicyBinding:
     description: PolicyBinding Serializer
     required:
-      - policy
       - target
       - order
     type: object
@@ -8647,8 +8646,18 @@ definitions:
         title: Policy
         type: string
         format: uuid
+        x-nullable: true
       policy_obj:
         $ref: '#/definitions/Policy'
+      group:
+        title: Group
+        type: string
+        format: uuid
+        x-nullable: true
+      user:
+        title: User
+        type: integer
+        x-nullable: true
       target:
         title: Target
         type: string

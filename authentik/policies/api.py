@@ -50,11 +50,11 @@ class PolicySerializer(ModelSerializer):
 
     _resolve_inheritance: bool
 
+    object_type = SerializerMethodField()
+
     def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
-
-    object_type = SerializerMethodField()
 
     def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
@@ -64,7 +64,9 @@ class PolicySerializer(ModelSerializer):
         # pyright: reportGeneralTypeIssues=false
         if instance.__class__ == Policy or not self._resolve_inheritance:
             return super().to_representation(instance)
-        return instance.serializer(instance=instance, resolve_inheritance=False).data
+        return dict(
+            instance.serializer(instance=instance, resolve_inheritance=False).data
+        )
 
     class Meta:
 
@@ -102,7 +104,17 @@ class PolicyBindingSerializer(ModelSerializer):
     class Meta:
 
         model = PolicyBinding
-        fields = ["pk", "policy", "policy_obj", "target", "enabled", "order", "timeout"]
+        fields = [
+            "pk",
+            "policy",
+            "policy_obj",
+            "group",
+            "user",
+            "target",
+            "enabled",
+            "order",
+            "timeout",
+        ]
 
 
 class PolicyBindingViewSet(ModelViewSet):

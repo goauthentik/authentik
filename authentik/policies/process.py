@@ -23,7 +23,7 @@ PROCESS_CLASS = FORK_CTX.Process
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     """Generate Cache key for policy"""
-    prefix = f"policy_{binding.policy_binding_uuid.hex}_{binding.policy.pk.hex}"
+    prefix = f"policy_{binding.policy_binding_uuid.hex}_"
     if request.http_request and hasattr(request.http_request, "session"):
         prefix += f"_{request.http_request.session.session_key}"
     if request.user:
@@ -79,13 +79,14 @@ class PolicyProcess(PROCESS_CLASS):
             process="PolicyProcess",
         )
         try:
-            policy_result = self.binding.policy.passes(self.request)
-            if self.binding.policy.execution_logging and not self.request.debug:
-                self.create_event(
-                    EventAction.POLICY_EXECUTION,
-                    message="Policy Execution",
-                    result=policy_result,
-                )
+            policy_result = self.binding.passes(self.request)
+            if self.binding.policy and not self.request.debug:
+                if self.binding.policy.execution_logging:
+                    self.create_event(
+                        EventAction.POLICY_EXECUTION,
+                        message="Policy Execution",
+                        result=policy_result,
+                    )
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc

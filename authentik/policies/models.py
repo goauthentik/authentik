@@ -43,7 +43,32 @@ class PolicyBinding(SerializerModel):
 
     enabled = models.BooleanField(default=True)
 
-    policy = InheritanceForeignKey("Policy", on_delete=models.CASCADE, related_name="+")
+    policy = InheritanceForeignKey(
+        "Policy",
+        on_delete=models.CASCADE,
+        related_name="+",
+        default=None,
+        null=True,
+        blank=True,
+    )
+    group = models.ForeignKey(
+        # This is quite an ugly hack to prevent pylint from trying
+        # to resolve authentik_core.models.Group
+        # as python import path
+        "authentik_core." + "Group",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+    )
+    user = models.ForeignKey(
+        "authentik_core." + "User",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+    )
+
     target = InheritanceForeignKey(
         PolicyBindingModel, on_delete=models.CASCADE, related_name="+"
     )
@@ -56,6 +81,17 @@ class PolicyBinding(SerializerModel):
     )
 
     order = models.IntegerField()
+
+    def passes(self, request: PolicyRequest) -> PolicyResult:
+        """Check if request passes this PolicyBinding, check policy, group or user"""
+        if self.policy:
+            self.policy: Policy
+            return self.policy.passes(request)
+        if self.group:
+            return PolicyResult(self.group.users.filter(pk=request.user.pk).exists())
+        if self.user:
+            return PolicyResult(request.user == self.user)
+        return PolicyResult(False)
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -105,7 +141,7 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         return f"{self.__class__.__name__} {self.name}"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:  # pragma: no cover
-        """Check if user instance passes this policy"""
+        """Check if request passes this policy"""
         raise PolicyException()
 
     class Meta:

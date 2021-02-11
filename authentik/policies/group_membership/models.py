@@ -12,7 +12,8 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 
 
 class GroupMembershipPolicy(Policy):
-    """Check that the user is member of the selected group."""
+    """Check that the user is member of the selected group. **DEPRECATED**
+    Assign the group directly in a binding instead of using this policy."""
 
     group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -35,5 +36,5 @@ class GroupMembershipPolicy(Policy):
 
     class Meta:
 
-        verbose_name = _("Group Membership Policy")
+        verbose_name = _("Group Membership Policy (deprecated)")
         verbose_name_plural = _("Group Membership Policies")
