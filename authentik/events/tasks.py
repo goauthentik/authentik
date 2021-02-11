@@ -54,7 +54,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
         return
 
     LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
-    user = User.objects.filter(pk=event.user.get("pk")) or get_anonymous_user()
+    user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
     policy_engine = PolicyEngine(trigger, user)
     policy_engine.mode = PolicyEngineMode.MODE_OR
     policy_engine.empty_result = False
