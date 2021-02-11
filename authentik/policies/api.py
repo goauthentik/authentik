@@ -12,7 +12,6 @@ from rest_framework.serializers import (
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
-from authentik.policies.forms import GENERAL_FIELDS
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
 
@@ -49,22 +48,28 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
 class PolicySerializer(ModelSerializer):
     """Policy Serializer"""
 
-    __type__ = SerializerMethodField(method_name="get_type")
+    _resolve_inheritance: bool
 
-    def get_type(self, obj):
+    def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._resolve_inheritance = resolve_inheritance
+
+    object_type = SerializerMethodField()
+
+    def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("policy", "")
+        return obj._meta.object_name.lower().replace("provider", "")
 
     def to_representation(self, instance: Policy):
         # pyright: reportGeneralTypeIssues=false
-        if instance.__class__ == Policy:
+        if instance.__class__ == Policy or not self._resolve_inheritance:
             return super().to_representation(instance)
-        return instance.serializer(instance=instance).data
+        return instance.serializer(instance=instance, resolve_inheritance=False).data
 
     class Meta:
 
         model = Policy
-        fields = ["pk"] + GENERAL_FIELDS + ["__type__"]
+        fields = ["pk", "name", "execution_logging", "object_type"]
         depth = 3
 
 

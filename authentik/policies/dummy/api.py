@@ -1,17 +1,16 @@
 """Dummy Policy API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.policies.api import PolicySerializer
 from authentik.policies.dummy.models import DummyPolicy
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
 
 
-class DummyPolicySerializer(ModelSerializer):
+class DummyPolicySerializer(PolicySerializer):
     """Dummy Policy Serializer"""
 
     class Meta:
         model = DummyPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ["result", "wait_min", "wait_max"]
+        fields = PolicySerializer.Meta.fields + ["result", "wait_min", "wait_max"]
 
 
 class DummyPolicyViewSet(ModelViewSet):

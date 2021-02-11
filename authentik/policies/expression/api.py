@@ -1,17 +1,16 @@
 """Expression Policy API"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.policies.api import PolicySerializer
 from authentik.policies.expression.models import ExpressionPolicy
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
 
 
-class ExpressionPolicySerializer(ModelSerializer):
+class ExpressionPolicySerializer(PolicySerializer):
     """Group Membership Policy Serializer"""
 
     class Meta:
         model = ExpressionPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ["expression"]
+        fields = PolicySerializer.Meta.fields + ["expression"]
 
 
 class ExpressionPolicyViewSet(ModelViewSet):

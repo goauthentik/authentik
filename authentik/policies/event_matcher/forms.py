@@ -4,16 +4,16 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from authentik.policies.event_matcher.models import EventMatcherPolicy
-from authentik.policies.forms import GENERAL_FIELDS
+from authentik.policies.forms import PolicyForm
 
 
-class EventMatcherPolicyForm(forms.ModelForm):
+class EventMatcherPolicyForm(PolicyForm):
     """EventMatcherPolicy Form"""
 
     class Meta:
 
         model = EventMatcherPolicy
-        fields = GENERAL_FIELDS + [
+        fields = PolicyForm.Meta.fields + [
             "action",
             "client_ip",
             "app",

@@ -5,9 +5,6 @@ from django import forms
 from authentik.lib.widgets import GroupedModelChoiceField
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
-GENERAL_FIELDS = ["name", "execution_logging"]
-GENERAL_SERIALIZER_FIELDS = ["pk", "name"]
-
 
 class PolicyBindingForm(forms.ModelForm):
     """Form to edit Policy to PolicyBindingModel Binding"""
@@ -29,3 +26,12 @@ class PolicyBindingForm(forms.ModelForm):
 
         model = PolicyBinding
         fields = ["enabled", "policy", "target", "order", "timeout"]
+
+
+class PolicyForm(forms.ModelForm):
+    """Base Policy form"""
+
+    class Meta:
+
+        model = Policy
+        fields = ["name", "execution_logging"]

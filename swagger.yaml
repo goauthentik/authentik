@@ -8626,8 +8626,8 @@ definitions:
         description: When this option is enabled, all executions of this policy will
           be logged. By default, only execution errors are logged.
         type: boolean
-      __type__:
-        title: 'type  '
+      object_type:
+        title: Object type
         type: string
         readOnly: true
   PolicyBinding:
@@ -8680,6 +8680,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       result:
         title: Result
         type: boolean
@@ -8706,6 +8715,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       action:
         title: Action
         description: Match created events with this action type. When left empty,
@@ -8801,6 +8819,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       expression:
         title: Expression
         type: string
@@ -8818,6 +8845,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       group:
         title: Group
         type: string
@@ -8836,6 +8872,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       password_field:
         title: Password field
         description: Field key to check, field keys defined in Prompt stages are available.
@@ -8861,6 +8906,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       password_field:
         title: Password field
         description: Field key to check, field keys defined in Prompt stages are available.
@@ -8909,6 +8963,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       days:
         title: Days
         type: integer
@@ -8930,6 +8993,15 @@ definitions:
         title: Name
         type: string
         x-nullable: true
+      execution_logging:
+        title: Execution logging
+        description: When this option is enabled, all executions of this policy will
+          be logged. By default, only execution errors are logged.
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
       check_ip:
         title: Check ip
         type: boolean

@@ -1,17 +1,20 @@
 """Source API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
+from authentik.policies.api import PolicySerializer
 from authentik.policies.reputation.models import ReputationPolicy
 
 
-class ReputationPolicySerializer(ModelSerializer):
+class ReputationPolicySerializer(PolicySerializer):
     """Reputation Policy Serializer"""
 
     class Meta:
         model = ReputationPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ["check_ip", "check_username", "threshold"]
+        fields = PolicySerializer.Meta.fields + [
+            "check_ip",
+            "check_username",
+            "threshold",
+        ]
 
 
 class ReputationPolicyViewSet(ModelViewSet):

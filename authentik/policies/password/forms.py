@@ -3,17 +3,17 @@
 from django import forms
 from django.utils.translation import gettext as _
 
-from authentik.policies.forms import GENERAL_FIELDS
+from authentik.policies.forms import PolicyForm
 from authentik.policies.password.models import PasswordPolicy
 
 
-class PasswordPolicyForm(forms.ModelForm):
+class PasswordPolicyForm(PolicyForm):
     """PasswordPolicy Form"""
 
     class Meta:
 
         model = PasswordPolicy
-        fields = GENERAL_FIELDS + [
+        fields = PolicyForm.Meta.fields + [
             "password_field",
             "amount_uppercase",
             "amount_lowercase",

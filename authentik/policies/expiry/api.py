@@ -1,17 +1,16 @@
 """Password Expiry Policy API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.policies.api import PolicySerializer
 from authentik.policies.expiry.models import PasswordExpiryPolicy
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
 
 
-class PasswordExpiryPolicySerializer(ModelSerializer):
+class PasswordExpiryPolicySerializer(PolicySerializer):
     """Password Expiry Policy Serializer"""
 
     class Meta:
         model = PasswordExpiryPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + ["days", "deny_only"]
+        fields = PolicySerializer.Meta.fields + ["days", "deny_only"]
 
 
 class PasswordExpiryPolicyViewSet(ModelViewSet):

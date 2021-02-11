@@ -2,17 +2,17 @@
 
 from django import forms
 
-from authentik.policies.forms import GENERAL_FIELDS
+from authentik.policies.forms import PolicyForm
 from authentik.policies.group_membership.models import GroupMembershipPolicy
 
 
-class GroupMembershipPolicyForm(forms.ModelForm):
+class GroupMembershipPolicyForm(PolicyForm):
     """GroupMembershipPolicy Form"""
 
     class Meta:
 
         model = GroupMembershipPolicy
-        fields = GENERAL_FIELDS + [
+        fields = PolicyForm.Meta.fields + [
             "group",
         ]
         widgets = {

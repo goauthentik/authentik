@@ -25,7 +25,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
     class Meta:
 
         model = Source
-        fields = SOURCE_SERIALIZER_FIELDS = [
+        fields = [
             "pk",
             "name",
             "slug",

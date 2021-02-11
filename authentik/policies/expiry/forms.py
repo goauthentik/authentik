@@ -4,16 +4,16 @@ from django import forms
 from django.utils.translation import gettext as _
 
 from authentik.policies.expiry.models import PasswordExpiryPolicy
-from authentik.policies.forms import GENERAL_FIELDS
+from authentik.policies.forms import PolicyForm
 
 
-class PasswordExpiryPolicyForm(forms.ModelForm):
+class PasswordExpiryPolicyForm(PolicyForm):
     """Edit PasswordExpiryPolicy instances"""
 
     class Meta:
 
         model = PasswordExpiryPolicy
-        fields = GENERAL_FIELDS + ["days", "deny_only"]
+        fields = PolicyForm.Meta.fields + ["days", "deny_only"]
         widgets = {
             "name": forms.TextInput(),
             "order": forms.NumberInput(),

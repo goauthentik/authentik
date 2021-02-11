@@ -1,17 +1,16 @@
 """Group Membership Policy API"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.policies.forms import GENERAL_SERIALIZER_FIELDS
+from authentik.policies.api import PolicySerializer
 from authentik.policies.group_membership.models import GroupMembershipPolicy
 
 
-class GroupMembershipPolicySerializer(ModelSerializer):
+class GroupMembershipPolicySerializer(PolicySerializer):
     """Group Membership Policy Serializer"""
 
     class Meta:
         model = GroupMembershipPolicy
-        fields = GENERAL_SERIALIZER_FIELDS + [
+        fields = PolicySerializer.Meta.fields + [
             "group",
         ]
 
