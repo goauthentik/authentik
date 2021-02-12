@@ -44,6 +44,7 @@ channels-redis = "*"
 kubernetes = "*"
 docker = "*"
 xmlsec = "*"
+geoip2 = "*"
 
 [requires]
 python_version = "3.9"

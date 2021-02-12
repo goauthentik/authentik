@@ -43,7 +43,7 @@ class ReevaluateMarker(StageMarker):
         engine = PolicyEngine(self.binding, self.user)
         engine.use_cache = False
         if http_request:
-            engine.request.http_request = http_request
+            engine.request.set_http_request(http_request)
         engine.request.context = plan.context
         engine.build()
         result = engine.result

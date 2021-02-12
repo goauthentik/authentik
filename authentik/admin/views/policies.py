@@ -116,7 +116,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
 
         p_request = PolicyRequest(user)
         p_request.debug = True
-        p_request.http_request = self.request
+        p_request.set_http_request(self.request)
         p_request.context = form.cleaned_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)

@@ -11,6 +11,7 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
+from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -73,7 +74,7 @@ class PolicyEngine:
         self.request = PolicyRequest(user)
         self.request.obj = pbm
         if request:
-            self.request.http_request = request
+            self.request.set_http_request(request)
         self.__cached_policies = []
         self.__processes = []
         self.use_cache = True

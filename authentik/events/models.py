@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _
+from geoip2.errors import GeoIP2Error
 from requests import RequestException, post
 from structlog.stdlib import get_logger
 
@@ -18,6 +19,7 @@ from authentik.core.middleware import (
     SESSION_IMPERSONATE_USER,
 )
 from authentik.core.models import Group, User
+from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip
@@ -133,22 +135,38 @@ class Event(models.Model):
                 )
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = get_client_ip(request) or "255.255.255.255"
+        # Apply GeoIP Data, when enabled
+        self.with_geoip()
         # If there's no app set, we get it from the requests too
         if not self.app:
             self.app = Event._get_app_from_request(request)
         self.save()
         return self
 
+    def with_geoip(self):
+        """Apply GeoIP Data, when enabled"""
+        try:
+            response = GEOIP_READER.city(self.client_ip)
+            self.context["geo"] = {
+                "continent": response.continent.code,
+                "country": response.country.iso_code,
+                "lat": response.location.latitude,
+                "long": response.location.longitude,
+            }
+            if response.city.name:
+                self.context["geo"]["city"] = response.city.name
+        except GeoIP2Error:
+            pass
+
     def save(self, *args, **kwargs):
-        if not self._state.adding:
-            raise ValidationError("you may not edit an existing Event")
-        LOGGER.debug(
-            "Created Event",
-            action=self.action,
-            context=self.context,
-            client_ip=self.client_ip,
-            user=self.user,
-        )
+        if self._state.adding:
+            LOGGER.debug(
+                "Created Event",
+                action=self.action,
+                context=self.context,
+                client_ip=self.client_ip,
+                user=self.user,
+            )
         return super().save(*args, **kwargs)
 
     @property

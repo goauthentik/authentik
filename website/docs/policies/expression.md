@@ -28,6 +28,7 @@ return False
     -   `request.http_request`: The Django HTTP Request. ([ref](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
     -   `request.obj`: A Django Model instance. This is only set if the policy is ran against an object.
     -   `request.context`: A dictionary with dynamic data. This depends on the origin of the execution.
+-   `geoip`: `geoip2.models.City` object, which is added when GeoIP is enabled.
 -   `ak_is_sso_flow`: Boolean which is true if request was initiated by authenticating through an external provider.
 -   `ak_client_ip`: Client's IP Address or 255.255.255.255 if no IP Address could be extracted. Can be [compared](../expressions/index.md#comparing-ip-addresses), for example
 

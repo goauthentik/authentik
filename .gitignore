@@ -201,3 +201,4 @@ local.env.yml
 selenium_screenshots/
 backups/
 media/
+*mmdb

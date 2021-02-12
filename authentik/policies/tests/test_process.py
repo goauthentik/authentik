@@ -132,7 +132,7 @@ class TestPolicyProcess(TestCase):
         http_request.user = self.user
 
         request = PolicyRequest(self.user)
-        request.http_request = http_request
+        request.set_http_request(http_request)
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
