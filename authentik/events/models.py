@@ -144,6 +144,8 @@ class Event(models.Model):
 
     def with_geoip(self):
         """Apply GeoIP Data, when enabled"""
+        if not GEOIP_READER:
+            return
         try:
             response = GEOIP_READER.city(self.client_ip)
             self.context["geo"] = {
