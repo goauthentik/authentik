@@ -32,7 +32,7 @@ def get_events_per_1h(**filter_kwargs) -> List[Dict[str, int]]:
         .annotate(count=Count("pk"))
         .order_by("age_hours")
     )
-    data = Counter({d["age_hours"]: d["count"] for d in result})
+    data = Counter({int(d["age_hours"]): d["count"] for d in result})
     results = []
     _now = now()
     for hour in range(0, -24, -1):

@@ -11,7 +11,6 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
-from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult

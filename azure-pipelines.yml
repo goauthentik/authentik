@@ -93,7 +93,7 @@ stages:
               versionSpec: '3.9'
           - task: CmdLine@2
             inputs:
-              script: npm install -g pyright@1.1.79
+              script: npm install -g pyright@1.1.109
           - task: CmdLine@2
             inputs:
               script: |

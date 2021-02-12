@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 from json import loads
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 from dacite import from_dict
 from dacite.exceptions import DaciteError
@@ -90,7 +90,7 @@ class FlowImporter:
     def _validate_single(self, entry: FlowBundleEntry) -> BaseSerializer:
         """Validate a single entry"""
         model_app_label, model_name = entry.model.split(".")
-        model: SerializerModel = apps.get_model(model_app_label, model_name)
+        model: Type[SerializerModel] = apps.get_model(model_app_label, model_name)
         if not isinstance(model(), ALLOWED_MODELS):
             raise EntryInvalidError(f"Model {model} not allowed")
 

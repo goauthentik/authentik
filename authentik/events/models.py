@@ -5,7 +5,6 @@ from typing import Optional, Union
 from uuid import uuid4
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext as _

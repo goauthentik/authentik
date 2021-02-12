@@ -23,7 +23,7 @@ def config_loggers(*args, **kwags):
 
 # pylint: disable=unused-argument
 @after_task_publish.connect
-def after_task_publish(sender=None, headers=None, body=None, **kwargs):
+def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
     info = headers if "task" in headers else body
     LOGGER.debug(
@@ -33,14 +33,14 @@ def after_task_publish(sender=None, headers=None, body=None, **kwargs):
 
 # pylint: disable=unused-argument
 @task_prerun.connect
-def task_prerun(task_id, task, *args, **kwargs):
+def task_prerun_hook(task_id, task, *args, **kwargs):
     """Log task_id on worker"""
     LOGGER.debug("Task started", task_id=task_id, task_name=task.__name__)
 
 
 # pylint: disable=unused-argument
 @task_postrun.connect
-def task_postrun(task_id, task, *args, retval=None, state=None, **kwargs):
+def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     LOGGER.debug("Task finished", task_id=task_id, task_name=task.__name__, state=state)
 

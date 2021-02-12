@@ -2,6 +2,8 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from kubernetes.client import V1ObjectMeta
+from kubernetes.client.models.v1_deployment import V1Deployment
+from kubernetes.client.models.v1_pod import V1Pod
 from kubernetes.client.rest import ApiException
 from structlog.stdlib import get_logger
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 # pylint: disable=invalid-name
-T = TypeVar("T")
+T = TypeVar("T", V1Pod, V1Deployment)
 
 
 class ReconcileTrigger(SentryIgnoredException):
