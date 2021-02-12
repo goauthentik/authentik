@@ -99,10 +99,12 @@ spec:
             httpGet:
               path: /-/health/live/
               port: http
+              initialDelaySeconds: 15
           readinessProbe:
             httpGet:
               path: /-/health/ready/
               port: http
+              initialDelaySeconds: 15
           resources:
             requests:
               cpu: 100m
