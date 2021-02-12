@@ -52,13 +52,13 @@ export class OutpostListPage extends TablePage<Outpost> {
             })}</ul>`,
             html`<ak-outpost-health outpostId=${item.pk}></ak-outpost-health>`,
             html`
-            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/update`)}">
+            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>&nbsp;
-            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/delete`)}">
+            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
