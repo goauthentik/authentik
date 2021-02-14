@@ -72,6 +72,7 @@ from authentik.stages.user_delete.api import UserDeleteStageViewSet
 from authentik.stages.user_login.api import UserLoginStageViewSet
 from authentik.stages.user_logout.api import UserLogoutStageViewSet
 from authentik.stages.user_write.api import UserWriteStageViewSet
+from authentik.stages.webauthn.api import WebAuthnStageViewSet
 
 router = routers.DefaultRouter()
 
@@ -150,6 +151,7 @@ router.register("stages/user_delete", UserDeleteStageViewSet)
 router.register("stages/user_login", UserLoginStageViewSet)
 router.register("stages/user_logout", UserLogoutStageViewSet)
 router.register("stages/user_write", UserWriteStageViewSet)
+router.register("stages/webauthn", WebAuthnStageViewSet)
 
 router.register("stages/dummy", DummyStageViewSet)
 router.register("policies/dummy", DummyPolicyViewSet)

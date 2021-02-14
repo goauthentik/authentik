@@ -1,4 +1,5 @@
-from typing import Optional, Type
+"""WebAuthn stage"""
+from typing import Type
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -6,17 +7,19 @@ from django.forms import ModelForm
 from django.utils.timezone import now
 from django.views import View
 from rest_framework.serializers import BaseSerializer
+from django.utils.translation import gettext_lazy as _
 
 from authentik.flows.models import Stage
 
 
 class WebAuthnStage(Stage):
+    """WebAuthn stage"""
 
-    # @property
-    # def serializer(self) -> BaseSerializer:
-    #     from authentik.stages.otp_time.api import OTPTimeStageSerializer
+    @property
+    def serializer(self) -> BaseSerializer:
+        from authentik.stages.webauthn.api import WebAuthnStageSerializer
 
-    #     return OTPTimeStageSerializer
+        return WebAuthnStageSerializer
 
     @property
     def type(self) -> Type[View]:
@@ -30,8 +33,17 @@ class WebAuthnStage(Stage):
 
         return WebAuthnStageForm
 
+    def __str__(self) -> str:
+        return f"WebAuthn Stage {self.name}"
+
+    class Meta:
+
+        verbose_name = _("WebAuthn Setup Stage")
+        verbose_name_plural = _("WebAuthn Setup Stages")
+
 
 class WebAuthnDevice(models.Model):
+    """WebAuthn Device for a single user"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 

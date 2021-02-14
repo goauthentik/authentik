@@ -7598,6 +7598,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /stages/webauthn/:
+    get:
+      operationId: stages_webauthn_list
+      description: WebAuthnStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/WebAuthnStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_webauthn_create
+      description: WebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/webauthn/{stage_uuid}/:
+    get:
+      operationId: stages_webauthn_read
+      description: WebAuthnStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_webauthn_update
+      description: WebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_webauthn_partial_update
+      description: WebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_webauthn_delete
+      description: WebAuthnStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this WebAuthn Setup Stage.
+        required: true
+        type: string
+        format: uuid
 definitions:
   AdministrationMetrics:
     description: Login Metrics per 1h
@@ -8811,6 +8938,7 @@ definitions:
           - authentik.stages.otp_time
           - authentik.stages.otp_validate
           - authentik.stages.password
+          - authentik.stages.webauthn
           - authentik.managed
           - authentik.core
   ExpressionPolicy:
@@ -10478,6 +10606,21 @@ definitions:
         minLength: 1
   UserWriteStage:
     description: UserWriteStage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+  WebAuthnStage:
+    description: WebAuthnStage Serializer
     required:
       - name
     type: object
