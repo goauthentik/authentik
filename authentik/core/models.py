@@ -1,8 +1,10 @@
 """authentik core models"""
 from datetime import timedelta
+from hashlib import sha256
 from typing import Any, Dict, Optional, Type
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
@@ -118,6 +120,11 @@ class User(GuardianUserMixin, AbstractUser):
             password_changed.send(sender=self, user=self, password=password)
         self.password_change_date = now()
         return super().set_password(password)
+
+    @property
+    def uid(self) -> str:
+        """Generate a globall unique UID, based on the user ID and the hashed secret key"""
+        return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
 
     class Meta:
 
