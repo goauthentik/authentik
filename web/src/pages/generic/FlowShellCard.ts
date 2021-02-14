@@ -1,5 +1,6 @@
 import { LitElement, html, customElement, property, TemplateResult } from "lit-element";
 import { SentryIgnoredError } from "../../common/errors";
+import { getCookie } from "../../utils";
 
 enum ResponseType {
     redirect = "redirect",
@@ -26,6 +27,27 @@ export class FlowShellCard extends LitElement {
 
     constructor() {
         super();
+        this.addEventListener("ak-flow-submit", () => {
+            const csrftoken = getCookie("authentik_csrf");
+            const request = new Request(this.flowBodyUrl, {
+                headers: {
+                    "X-CSRFToken": csrftoken,
+                },
+            });
+            fetch(request, {
+                method: "POST",
+                mode: "same-origin"
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    this.updateCard(data);
+                })
+                .catch((e) => {
+                    this.errorMessage(e);
+                });
+        });
     }
 
     firstUpdated(): void {

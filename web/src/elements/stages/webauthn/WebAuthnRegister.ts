@@ -65,11 +65,12 @@ export class WebAuthnRegister extends LitElement {
 
     finishStage(): void {
         // Mark this stage as done
-        const confirmationForm = document.querySelector<HTMLFormElement>("form#stage-confirmation");
-        if (!confirmationForm) {
-            return;
-        }
-        confirmationForm.submit();
+        this.dispatchEvent(
+            new CustomEvent("ak-flow-submit", {
+                bubbles: true,
+                composed: true,
+            })
+        );
     }
 
     firstUpdated(): void {
