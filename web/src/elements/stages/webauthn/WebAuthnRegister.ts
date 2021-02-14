@@ -10,7 +10,7 @@ export class WebAuthnRegister extends LitElement {
     registerRunning = false;
 
     @property()
-    registerMessage: string = "";
+    registerMessage = "";
 
     createRenderRoot(): Element | ShadowRoot {
         return this;

@@ -113,3 +113,79 @@ export async function getCredentialCreateOptionsFromServer() {
         }
     );
 }
+
+
+/**
+ * Get PublicKeyCredentialRequestOptions for this user from the server
+ * formData of the registration form
+ * @param {FormData} formData
+ */
+export async function getCredentialRequestOptionsFromServer() {
+    return await fetchJSON(
+        "/-/user/webauthn/begin-assertion/",
+        {
+            method: "POST",
+        }
+    );
+}
+
+export function transformCredentialRequestOptions(credentialRequestOptionsFromServer: PublicKeyCredentialRequestOptions) {
+    let { challenge, allowCredentials } = credentialRequestOptionsFromServer;
+
+    challenge = Uint8Array.from(
+        atob(challenge.toString().replace(/\_/g, "/").replace(/\-/g, "+")), c => c.charCodeAt(0));
+
+    allowCredentials = allowCredentials!.map(credentialDescriptor => {
+        const id = Uint8Array.from(atob(credentialDescriptor.id.toString().replace(/\_/g, "/").replace(/\-/g, "+")), c => c.charCodeAt(0));
+        return Object.assign({}, credentialDescriptor, { id });
+    });
+
+    const transformedCredentialRequestOptions = Object.assign(
+        {},
+        credentialRequestOptionsFromServer,
+        { challenge, allowCredentials });
+
+    return transformedCredentialRequestOptions;
+}
+
+/**
+ * Encodes the binary data in the assertion into strings for posting to the server.
+ * @param {PublicKeyCredential} newAssertion
+ */
+export function transformAssertionForServer(newAssertion: PublicKeyCredential) {
+    const response = <AuthenticatorAssertionResponse> newAssertion.response;
+    const authData = new Uint8Array(response.authenticatorData);
+    const clientDataJSON = new Uint8Array(response.clientDataJSON);
+    const rawId = new Uint8Array(newAssertion.rawId);
+    const sig = new Uint8Array(response.signature);
+    const assertionClientExtensions = newAssertion.getClientExtensionResults();
+
+    return {
+        id: newAssertion.id,
+        rawId: b64enc(rawId),
+        type: newAssertion.type,
+        authData: b64RawEnc(authData),
+        clientData: b64RawEnc(clientDataJSON),
+        signature: hexEncode(sig),
+        assertionClientExtensions: JSON.stringify(assertionClientExtensions)
+    };
+}
+
+/**
+ * Post the assertion to the server for validation and logging the user in.
+ * @param {Object} assertionDataForServer
+ */
+export async function postAssertionToServer(assertionDataForServer: {
+    [key: string]: string;
+}) {
+    const formData = new FormData();
+    Object.entries(assertionDataForServer).forEach(([key, value]) => {
+        formData.set(key, value);
+    });
+
+    return await fetchJSON(
+        "/-/user/webauthn/verify-assertion/", {
+            method: "POST",
+            body: formData
+    });
+}

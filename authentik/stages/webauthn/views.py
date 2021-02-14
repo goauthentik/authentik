@@ -21,6 +21,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.webauthn.models import WebAuthnDevice
+from authentik.stages.webauthn.stage import SESSION_KEY_WEBAUTHN_AUTHENTICATED
 from authentik.stages.webauthn.utils import generate_challenge
 
 LOGGER = get_logger()
@@ -211,7 +212,7 @@ class VerifyAssertion(FlowUserRequiredView):
             return JsonResponse({"fail": "Assertion failed. Error: {}".format(exc)})
 
         device.set_sign_count(sign_count)
-
+        request.session[SESSION_KEY_WEBAUTHN_AUTHENTICATED] = True
         return JsonResponse(
             {"success": "Successfully authenticated as {}".format(self.user.username)}
         )
