@@ -2,7 +2,7 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
-from authentik.stages.webauthn.views.api import (
+from authentik.stages.webauthn.views import (
     BeginActivateView,
     BeginAssertion,
     VerifyAssertion,

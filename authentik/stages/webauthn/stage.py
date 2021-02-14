@@ -1,10 +1,8 @@
 """WebAuthn stage"""
-from typing import Any, Dict
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.generic import FormView
-from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from structlog.stdlib import get_logger
 
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -25,8 +23,10 @@ class WebAuthnStageView(FormView, StageView):
         devices = WebAuthnDevice.objects.filter(user=user)
         # If the current user is logged in already, or the pending user
         # has no devices, show setup
-        if not devices.exists() or self.request.user == user:
+        if self.request.user == user:
             return render(request, "stages/webauthn/setup.html")
+        if not devices.exists():
+            return self.executor.stage_ok()
         return render(request, "stages/webauthn/auth.html")
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

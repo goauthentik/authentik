@@ -1,3 +1,4 @@
+"""webauthn views"""
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseBadRequest
 from django.views import View
@@ -8,6 +9,11 @@ from webauthn import (
     WebAuthnMakeCredentialOptions,
     WebAuthnRegistrationResponse,
     WebAuthnUser,
+)
+from webauthn.webauthn import (
+    AuthenticationRejectedException,
+    RegistrationRejectedException,
+    WebAuthnUserDataMissing,
 )
 
 from authentik.core.models import User
@@ -24,6 +30,7 @@ ORIGIN = "http://localhost:8000"
 
 
 class FlowUserRequiredView(View):
+    """Base class for views which can only be called in the context of a flow."""
 
     user: User
 
@@ -38,7 +45,10 @@ class FlowUserRequiredView(View):
 
 
 class BeginActivateView(FlowUserRequiredView):
+    """Initial device registration view"""
+
     def post(self, request: HttpRequest) -> HttpResponse:
+        """Initial device registration view"""
         # clear session variables prior to starting a new registration
         request.session.pop("challenge", None)
 
@@ -64,36 +74,11 @@ class BeginActivateView(FlowUserRequiredView):
         return JsonResponse(make_credential_options.registration_dict)
 
 
-class BeginAssertion(FlowUserRequiredView):
-    def post(self, request: HttpRequest) -> HttpResponse:
-        request.session.pop("challenge", None)
-
-        challenge = generate_challenge(32)
-
-        # We strip the padding from the challenge stored in the session
-        # for the reasons outlined in the comment in webauthn_begin_activate.
-        request.session["challenge"] = challenge.rstrip("=")
-
-        device = WebAuthnDevice.objects.first()
-
-        webauthn_user = WebAuthnUser(
-            self.user.uid,
-            self.user.username,
-            self.user.name,
-            avatar(self.user),
-            device.credential_id,
-            device.pubkey,
-            device.sign_count,
-            device.rp_id,
-        )
-
-        webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
-
-        return JsonResponse(webauthn_assertion_options.assertion_dict)
-
-
 class VerifyCredentialInfo(FlowUserRequiredView):
+    """Finish device registration"""
+
     def post(self, request: HttpRequest) -> HttpResponse:
+        """Finish device registration"""
         challenge = request.session["challenge"]
 
         registration_response = request.POST
@@ -114,7 +99,7 @@ class VerifyCredentialInfo(FlowUserRequiredView):
 
         try:
             webauthn_credential = webauthn_registration_response.verify()
-        except Exception as exc:
+        except RegistrationRejectedException as exc:
             LOGGER.warning("registration failed", exc=exc)
             return JsonResponse({"fail": "Registration failed. Error: {}".format(exc)})
 
@@ -154,10 +139,47 @@ class VerifyCredentialInfo(FlowUserRequiredView):
         return JsonResponse({"success": "User successfully registered."})
 
 
-class VerifyAssertion(FlowUserRequiredView):
+class BeginAssertion(FlowUserRequiredView):
+    """Send the client a challenge that we'll check later"""
+
     def post(self, request: HttpRequest) -> HttpResponse:
+        """Send the client a challenge that we'll check later"""
+        request.session.pop("challenge", None)
+
+        challenge = generate_challenge(32)
+
+        # We strip the padding from the challenge stored in the session
+        # for the reasons outlined in the comment in webauthn_begin_activate.
+        request.session["challenge"] = challenge.rstrip("=")
+
+        devices = WebAuthnDevice.objects.filter(user=self.user)
+        if not devices.exists():
+            return HttpResponseBadRequest()
+        device: WebAuthnDevice = devices.first()
+
+        webauthn_user = WebAuthnUser(
+            self.user.uid,
+            self.user.username,
+            self.user.name,
+            avatar(self.user),
+            device.credential_id,
+            device.public_key,
+            device.sign_count,
+            device.rp_id,
+        )
+
+        webauthn_assertion_options = WebAuthnAssertionOptions(webauthn_user, challenge)
+
+        return JsonResponse(webauthn_assertion_options.assertion_dict)
+
+
+class VerifyAssertion(FlowUserRequiredView):
+    """Verify assertion result that we've sent to the client"""
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Verify assertion result that we've sent to the client"""
         challenge = request.session.get("challenge")
-        assertion_response = request.form
+        assertion_response = request.POST
         credential_id = assertion_response.get("id")
 
         device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
@@ -170,9 +192,9 @@ class VerifyAssertion(FlowUserRequiredView):
             self.user.name,
             avatar(self.user),
             device.credential_id,
-            device.pub_key,
+            device.public_key,
             device.sign_count,
-            device.user.rp_id,
+            device.rp_id,
         )
 
         webauthn_assertion_response = WebAuthnAssertionResponse(
@@ -181,8 +203,12 @@ class VerifyAssertion(FlowUserRequiredView):
 
         try:
             sign_count = webauthn_assertion_response.verify()
-        except Exception as e:
-            return JsonResponse({"fail": "Assertion failed. Error: {}".format(e)})
+        except (
+            AuthenticationRejectedException,
+            WebAuthnUserDataMissing,
+            RegistrationRejectedException,
+        ) as exc:
+            return JsonResponse({"fail": "Assertion failed. Error: {}".format(exc)})
 
         device.set_sign_count(sign_count)
 
