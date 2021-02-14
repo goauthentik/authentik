@@ -86,7 +86,7 @@
                             </ak-spinner-button>
                             <div slot="modal"></div>
                         </ak-modal-button>
-                        <a class="pf-c-button pf-m-secondary ak-root-link" href="{% url 'authentik_admin:flow-execute' pk=flow.pk %}?next=/#{{ request.get_full_path }}">
+                        <a class="pf-c-button pf-m-secondary ak-root-link" href="{% url 'authentik_admin:flow-execute' pk=flow.pk %}?next=/%23{{ request.get_full_path }}">
                             {% trans 'Execute' %}
                         </a>
                         <a class="pf-c-button pf-m-secondary ak-root-link" href="{% url 'authentik_admin:flow-export' pk=flow.pk %}">
