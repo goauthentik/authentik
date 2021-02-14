@@ -6,17 +6,11 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import DetailView, FormView, ListView, UpdateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from django.views.generic import DetailView, FormView, UpdateView
+from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow

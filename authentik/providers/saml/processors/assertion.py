@@ -3,7 +3,6 @@ from hashlib import sha256
 from types import GeneratorType
 
 import xmlsec
-from django.conf import settings
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -147,9 +146,7 @@ class AssertionProcessor:
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
         # persistent is used as a fallback, so always generate it
-        persistent = sha256(
-            f"{self.http_request.user.id}-{settings.SECRET_KEY}".encode("ascii")
-        ).hexdigest()
+        persistent = self.http_request.user.uid
         name_id.text = persistent
         # If name_id_mapping is set, we override the value, regardless of what the SP asks for
         if self.provider.name_id_mapping:
