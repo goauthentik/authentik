@@ -9,6 +9,9 @@ export class WebAuthnRegister extends LitElement {
     @property({type: Boolean})
     registerRunning = false;
 
+    @property()
+    registerMessage: string = "";
+
     createRenderRoot(): Element | ShadowRoot {
         return this;
     }
@@ -58,7 +61,10 @@ export class WebAuthnRegister extends LitElement {
             return;
         }
         this.registerRunning = true;
-        this.register().finally(() => {
+        this.register().catch((e) => {
+            console.error(e);
+            this.registerMessage = e.toString();
+        }).finally(() => {
             this.registerRunning = false;
         });
     }
@@ -78,29 +84,30 @@ export class WebAuthnRegister extends LitElement {
     }
 
     render(): TemplateResult {
-        return this.registerRunning ?
-            html`<div class="pf-c-empty-state pf-m-full-height">
-                <div class="pf-c-empty-state__content">
-                    <div class="pf-l-bullseye">
-                        <div class="pf-l-bullseye__item">
-                            <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
+        return html`<div class="">
+            ${this.registerRunning ?
+                html`<div class="pf-c-empty-state__content">
+                        <div class="pf-l-bullseye">
+                            <div class="pf-l-bullseye__item">
+                                <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>`:
-            html`
-            <div class="pf-c-form__group pf-m-action">
-                <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
-                    this.registerWrapper();
-                }}>
-                    ${gettext("Register device")}
-                </button>&nbsp;
-                <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
-                    this.finishStage();
-                }}>
-                    ${gettext("Skip")}
-                </button>
-            </div>`;
+                    </div>`:
+                html`
+                <div class="pf-c-form__group pf-m-action">
+                    <p class="pf-m-block">${this.registerMessage}</p>
+                    <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
+                        this.registerWrapper();
+                    }}>
+                        ${gettext("Register device")}
+                    </button>&nbsp;
+                    <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
+                        this.finishStage();
+                    }}>
+                        ${gettext("Skip")}
+                    </button>
+                </div>`}
+        </div>`;
     }
 
 }

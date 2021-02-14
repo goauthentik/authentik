@@ -32,27 +32,25 @@ async function fetchJSON(url: string, options: RequestInit): Promise<any> {
 /**
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
- * @param {Object} credentialCreateOptionsFromServer
  */
-export function transformCredentialCreateOptions(credentialCreateOptionsFromServer: PublicKeyCredentialCreationOptions) {
-    let challenge = credentialCreateOptionsFromServer.challenge;
-    const user = credentialCreateOptionsFromServer.user;
+export function transformCredentialCreateOptions(credentialCreateOptions: PublicKeyCredentialCreationOptions) {
+    let challenge = credentialCreateOptions.challenge;
+    const user = credentialCreateOptions.user;
     user.id = Uint8Array.from(
-        atob(credentialCreateOptionsFromServer.user.id.toString()
-            .replace(/\\_/g, "/")
-            .replace(/\\-/g, "+")
+        atob(credentialCreateOptions.user.id.toString()
+            .replace(/\_/g, "/")
+            .replace(/\-/g, "+")
         ),
         c => c.charCodeAt(0));
-
     challenge = Uint8Array.from(
-        atob(credentialCreateOptionsFromServer.challenge.toString()
-            .replace(/\\_/g, "/")
-            .replace(/\\-/g, "+")
+        atob(credentialCreateOptions.challenge.toString()
+            .replace(/\_/g, "/")
+            .replace(/\-/g, "+")
         ),
         c => c.charCodeAt(0));
 
     const transformedCredentialCreateOptions = Object.assign(
-        {}, credentialCreateOptionsFromServer,
+        {}, credentialCreateOptions,
         { challenge, user });
 
     return transformedCredentialCreateOptions;
