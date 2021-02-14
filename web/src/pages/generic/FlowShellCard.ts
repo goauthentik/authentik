@@ -24,6 +24,10 @@ export class FlowShellCard extends LitElement {
         return this;
     }
 
+    constructor() {
+        super();
+    }
+
     firstUpdated(): void {
         fetch(this.flowBodyUrl)
             .then((r) => {

@@ -49,7 +49,7 @@ export class Client {
             .then((r) => <T>r);
     }
 
-    update<T>(url: string[], body: T, query?: QueryArguments): Promise<T> {
+    private writeRequest<T>(url: string[], body: T, method: string, query?: QueryArguments): Promise<T> {
         const finalUrl = this.makeUrl(url, query);
         const csrftoken = getCookie("authentik_csrf");
         const request = new Request(finalUrl, {
@@ -57,10 +57,10 @@ export class Client {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrftoken,
-                },
+            },
         });
         return fetch(request, {
-            method: "PATCH",
+            method: method,
             mode: "same-origin",
             body: JSON.stringify(body),
         })
@@ -77,6 +77,10 @@ export class Client {
             })
             .then((r) => r.json())
             .then((r) => <T>r);
+    }
+
+    update<T>(url: string[], body: T, query?: QueryArguments): Promise<T> {
+        return this.writeRequest(url, body, "PATCH", query);
     }
 }
 

@@ -123,6 +123,7 @@ INSTALLED_APPS = [
     "authentik.stages.otp_time.apps.AuthentikStageOTPTimeConfig",
     "authentik.stages.otp_validate.apps.AuthentikStageOTPValidateConfig",
     "authentik.stages.password.apps.AuthentikStagePasswordConfig",
+    "authentik.stages.webauthn.apps.AuthentikStageWebAuthnConfig",
     "rest_framework",
     "django_filters",
     "drf_yasg2",

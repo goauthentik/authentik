@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                     ("authentik.stages.otp_time", "authentik Stages.OTP.Time"),
                     ("authentik.stages.otp_validate", "authentik Stages.OTP.Validate"),
                     ("authentik.stages.password", "authentik Stages.Password"),
-                    ("authentik.stages.webauthn", "authentik Stages.WebAuthN"),
+                    ("authentik.stages.webauthn", "authentik Stages.WebAuthn"),
                     ("authentik.managed", "authentik Managed"),
                     ("authentik.core", "authentik Core"),
                 ],
