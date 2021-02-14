@@ -89,10 +89,14 @@ export class SiteShell extends LitElement {
             if (a.href === "") {
                 return;
             }
+            if (a.href.startsWith("#")) {
+                return;
+            }
             try {
                 const url = new URL(a.href);
                 const qs = url.search || "";
-                a.href = `#${url.pathname}${qs}`;
+                const hash = (url.hash || "#").substring(2, Infinity);
+                a.href = `#${url.pathname}${qs}${hash}`;
             } catch (e) {
                 console.debug(`authentik/site-shell: error ${e}`);
                 a.href = `#${a.href}`;
