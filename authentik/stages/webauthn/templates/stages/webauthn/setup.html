@@ -7,11 +7,10 @@
 </header>
 <div class="pf-c-login__main-body">
     {% block card %}
-    <form method="POST" class="pf-c-form" id="stage-confirmation">
-        {% csrf_token %}
+    <div class="pf-c-form">
         <ak-stage-webauthn-register>
         </ak-stage-webauthn-register>
-    </form>
+    </div>
     {% endblock %}
 </div>
 

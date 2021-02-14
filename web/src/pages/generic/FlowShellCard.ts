@@ -76,6 +76,7 @@ export class FlowShellCard extends LitElement {
     async updateCard(data: Response): Promise<void> {
         switch (data.type) {
         case ResponseType.redirect:
+            console.debug(`authentik/flows: redirecting to ${data.to}`);
             window.location.assign(data.to || "");
             break;
         case ResponseType.template:
