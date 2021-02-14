@@ -11,8 +11,11 @@ export const FILL_LIGHT_MODE = "#f0f0f0";
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends LitElement {
 
+    _flowSlug?: string;
+
     @property()
     set flowSlug(value: string) {
+        this._flowSlug = value;
         Flow.diagram(value).then((data) => {
             this.diagram = FlowChart.parse(data.diagram);
         });
@@ -33,6 +36,10 @@ export class FlowDiagram extends LitElement {
 
     constructor() {
         super();
+        this.addEventListener("ak-refresh", () => {
+            if (!this._flowSlug) return
+            this.flowSlug = this._flowSlug;
+        });
         window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", (ev) => {
             if (ev.matches) {
                 this.fontColour = FONT_COLOUR_LIGHT_MODE;
