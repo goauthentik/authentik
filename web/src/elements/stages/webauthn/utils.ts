@@ -21,7 +21,13 @@ export function hexEncode(buf: Uint8Array): string {
         .join("");
 }
 
-async function fetchJSON(url: string, options: RequestInit): Promise<any> {
+export interface GenericResponse {
+    fail?: string;
+    success?: string;
+    [key: string]: string | number | GenericResponse | undefined;
+}
+
+async function fetchJSON(url: string, options: RequestInit): Promise<GenericResponse> {
     const response = await fetch(url, options);
     const body = await response.json();
     if (body.fail)
@@ -33,21 +39,10 @@ async function fetchJSON(url: string, options: RequestInit): Promise<any> {
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
  */
-export function transformCredentialCreateOptions(credentialCreateOptions: PublicKeyCredentialCreationOptions) {
-    let challenge = credentialCreateOptions.challenge;
+export function transformCredentialCreateOptions(credentialCreateOptions: PublicKeyCredentialCreationOptions): PublicKeyCredentialCreationOptions {
     const user = credentialCreateOptions.user;
-    user.id = Uint8Array.from(
-        atob(credentialCreateOptions.user.id.toString()
-            .replace(/\_/g, "/")
-            .replace(/\-/g, "+")
-        ),
-        c => c.charCodeAt(0));
-    challenge = Uint8Array.from(
-        atob(credentialCreateOptions.challenge.toString()
-            .replace(/\_/g, "/")
-            .replace(/\-/g, "+")
-        ),
-        c => c.charCodeAt(0));
+    user.id = u8arr(credentialCreateOptions.user.id.toString());
+    const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
     const transformedCredentialCreateOptions = Object.assign(
         {}, credentialCreateOptions,
@@ -56,12 +51,21 @@ export function transformCredentialCreateOptions(credentialCreateOptions: Public
     return transformedCredentialCreateOptions;
 }
 
+export interface Assertion {
+    id: string;
+    rawId: string;
+    type: string;
+    attObj: string;
+    clientData: string;
+    registrationClientExtensions: string;
+}
+
 /**
  * Transforms the binary data in the credential into base64 strings
  * for posting to the server.
  * @param {PublicKeyCredential} newAssertion
  */
-export function transformNewAssertionForServer(newAssertion: PublicKeyCredential) {
+export function transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
     const attObj = new Uint8Array(
         (<AuthenticatorAttestationResponse>newAssertion.response).attestationObject);
     const clientDataJSON = new Uint8Array(
@@ -70,7 +74,6 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         newAssertion.rawId);
 
     const registrationClientExtensions = newAssertion.getClientExtensionResults();
-
     return {
         id: newAssertion.id,
         rawId: b64enc(rawId),
@@ -85,9 +88,7 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
  * Post the assertion to the server for validation and logging the user in.
  * @param {Object} assertionDataForServer
  */
-export async function postNewAssertionToServer (assertionDataForServer: {
-    [key: string]: string;
-}) {
+export async function postNewAssertionToServer(assertionDataForServer: Assertion): Promise<GenericResponse> {
     const formData = new FormData();
     Object.entries(assertionDataForServer).forEach(([key, value]) => {
         formData.set(key, value);
@@ -105,7 +106,7 @@ export async function postNewAssertionToServer (assertionDataForServer: {
  * formData of the registration form
  * @param {FormData} formData
  */
-export async function getCredentialCreateOptionsFromServer() {
+export async function getCredentialCreateOptionsFromServer(): Promise<GenericResponse> {
     return await fetchJSON(
         "/-/user/webauthn/begin-activate/",
         {
@@ -120,7 +121,7 @@ export async function getCredentialCreateOptionsFromServer() {
  * formData of the registration form
  * @param {FormData} formData
  */
-export async function getCredentialRequestOptionsFromServer() {
+export async function getCredentialRequestOptionsFromServer(): Promise<GenericResponse> {
     return await fetchJSON(
         "/-/user/webauthn/begin-assertion/",
         {
@@ -129,30 +130,41 @@ export async function getCredentialRequestOptionsFromServer() {
     );
 }
 
-export function transformCredentialRequestOptions(credentialRequestOptionsFromServer: PublicKeyCredentialRequestOptions) {
-    let { challenge, allowCredentials } = credentialRequestOptionsFromServer;
+function u8arr(input: string): Uint8Array {
+    return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), c => c.charCodeAt(0));
+}
 
-    challenge = Uint8Array.from(
-        atob(challenge.toString().replace(/\_/g, "/").replace(/\-/g, "+")), c => c.charCodeAt(0));
+export function transformCredentialRequestOptions(credentialRequestOptions: PublicKeyCredentialRequestOptions): PublicKeyCredentialRequestOptions {
+    const challenge = u8arr(credentialRequestOptions.challenge.toString());
 
-    allowCredentials = allowCredentials!.map(credentialDescriptor => {
-        const id = Uint8Array.from(atob(credentialDescriptor.id.toString().replace(/\_/g, "/").replace(/\-/g, "+")), c => c.charCodeAt(0));
+    const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(credentialDescriptor => {
+        const id = u8arr(credentialDescriptor.id.toString());
         return Object.assign({}, credentialDescriptor, { id });
     });
 
     const transformedCredentialRequestOptions = Object.assign(
         {},
-        credentialRequestOptionsFromServer,
+        credentialRequestOptions,
         { challenge, allowCredentials });
 
     return transformedCredentialRequestOptions;
+}
+
+export interface AuthAssertion {
+    id: string;
+    rawId: string;
+    type: string;
+    clientData: string;
+    authData: string;
+    signature: string;
+    assertionClientExtensions: string;
 }
 
 /**
  * Encodes the binary data in the assertion into strings for posting to the server.
  * @param {PublicKeyCredential} newAssertion
  */
-export function transformAssertionForServer(newAssertion: PublicKeyCredential) {
+export function transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion{
     const response = <AuthenticatorAssertionResponse> newAssertion.response;
     const authData = new Uint8Array(response.authenticatorData);
     const clientDataJSON = new Uint8Array(response.clientDataJSON);
@@ -175,9 +187,7 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential) {
  * Post the assertion to the server for validation and logging the user in.
  * @param {Object} assertionDataForServer
  */
-export async function postAssertionToServer(assertionDataForServer: {
-    [key: string]: string;
-}) {
+export async function postAssertionToServer(assertionDataForServer: Assertion): Promise<GenericResponse> {
     const formData = new FormData();
     Object.entries(assertionDataForServer).forEach(([key, value]) => {
         formData.set(key, value);
