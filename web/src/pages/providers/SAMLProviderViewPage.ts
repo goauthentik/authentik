@@ -128,7 +128,7 @@ export class SAMLProviderViewPage extends Page {
                                     )}
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${SAMLProvider.appUrl(`${this.provider.name}/metadata/`)}">
+                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${SAMLProvider.appUrl(`${this.provider.assigned_application_slug}/metadata/`)}">
                                         ${gettext("Download")}
                                     </a>
                                 </div>
