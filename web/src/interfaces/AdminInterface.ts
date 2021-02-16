@@ -39,7 +39,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Flows").children(
-        new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
+        new SidebarItem("Flows", "/flows").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
         new SidebarItem("Stages", "/administration/stages/"),
         new SidebarItem("Prompts", "/administration/stages_prompts/"),
         new SidebarItem("Invitations", "/administration/stages/invitations/"),

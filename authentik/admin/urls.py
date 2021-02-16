@@ -204,7 +204,6 @@ urlpatterns = [
         name="stage-invitation-delete",
     ),
     # Flows
-    path("flows/", flows.FlowListView.as_view(), name="flows"),
     path(
         "flows/create/",
         flows.FlowCreateView.as_view(),

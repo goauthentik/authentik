@@ -4,7 +4,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "./elements/utils/LoadingState";
+import "../../elements/utils/LoadingState";
 
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
