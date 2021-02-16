@@ -18,6 +18,8 @@ from authentik.lib.views import CreateAssignPermView
 class DeleteMessageView(SuccessMessageMixin, DeleteView):
     """DeleteView which shows `self.success_message` on successful deletion"""
 
+    success_url = "/"
+
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super().delete(request, *args, **kwargs)

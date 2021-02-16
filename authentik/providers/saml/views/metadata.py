@@ -54,7 +54,7 @@ class MetadataImportView(LoginRequiredMixin, FormView):
 
     form_class = SAMLProviderImportForm
     template_name = "providers/saml/import.html"
-    success_url = ""
+    success_url = "/"
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
