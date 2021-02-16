@@ -4,6 +4,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "./elements/utils/LoadingState";
 
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
@@ -26,7 +27,7 @@ export class ProviderViewPage extends LitElement {
 
     render(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-loading-state></ak-loading-state>`;;
+            return html`<ak-loading-state></ak-loading-state>`;
         }
         switch (this.provider?.object_type) {
             case "saml":

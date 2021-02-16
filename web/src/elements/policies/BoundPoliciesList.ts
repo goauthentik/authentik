@@ -40,7 +40,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         } else if (item.user) {
             return gettext(`User ${item.user.name}`);
         } else {
-            return gettext(``);
+            return gettext("");
         }
     }
 

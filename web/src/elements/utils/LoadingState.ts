@@ -1,4 +1,3 @@
-import { commands } from "codemirror";
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 import { SpinnerSize } from "../Spinner";

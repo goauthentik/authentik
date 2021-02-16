@@ -4,6 +4,7 @@ from typing import Optional
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
@@ -114,6 +115,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         return None
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 @method_decorator(csrf_exempt, name="dispatch")
 class SAMLSSOBindingPOSTView(SAMLSSOView):
     """SAML Handler for SSO/POST bindings"""

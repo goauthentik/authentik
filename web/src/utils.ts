@@ -1,5 +1,5 @@
 import { html, TemplateResult } from "lit-html";
-import { SpinnerSize } from "./elements/Spinner";
+import "./elements/utils/LoadingState";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
