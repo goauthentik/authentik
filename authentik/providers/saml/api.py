@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.models import Provider
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.views.metadata import DescriptorDownloadView
 
@@ -60,8 +61,11 @@ class SAMLProviderViewSet(ModelViewSet):
     def metadata(self, request: Request, pk: int) -> Response:
         """Return metadata as XML string"""
         provider = get_object_or_404(SAMLProvider, pk=pk)
-        metadata = DescriptorDownloadView.get_metadata(request, provider)
-        return Response({"metadata": metadata})
+        try:
+            metadata = DescriptorDownloadView.get_metadata(request, provider)
+            return Response({"metadata": metadata})
+        except Provider.application.RelatedObjectDoesNotExist:
+            return Response({"metadata": ""})
 
 
 class SAMLPropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
