@@ -9,7 +9,7 @@ from authentik.lib.widgets import GroupedModelChoiceField
 class ApplicationForm(forms.ModelForm):
     """Application Form"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)
         self.fields["provider"].queryset = (
             Provider.objects.all().order_by("pk").select_subclasses()

@@ -64,7 +64,7 @@ class SAMLProviderViewSet(ModelViewSet):
         try:
             metadata = DescriptorDownloadView.get_metadata(request, provider)
             return Response({"metadata": metadata})
-        except Provider.application.RelatedObjectDoesNotExist:
+        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             return Response({"metadata": ""})
 
 
