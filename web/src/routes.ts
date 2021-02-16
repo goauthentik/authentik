@@ -17,6 +17,7 @@ import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/outposts/OutpostListPage";
+import "./pages/crypto/CertificateKeyPairListPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -36,7 +37,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/sources/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-source-view .args=${args}></ak-source-view>`;
     }),
-    new Route(new RegExp(`^/flows$`), html`<ak-flow-list></ak-flow-list>`),
+    new Route(new RegExp("^/flows$"), html`<ak-flow-list></ak-flow-list>`),
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
     }),
@@ -48,4 +49,5 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
     new Route(new RegExp("^/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
+    new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificatekeypair-list></ak-crypto-certificatekeypair-list>`),
 ];

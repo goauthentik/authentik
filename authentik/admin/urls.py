@@ -284,11 +284,6 @@ urlpatterns = [
     ),
     # Certificate-Key Pairs
     path(
-        "crypto/certificates/",
-        certificate_key_pair.CertificateKeyPairListView.as_view(),
-        name="certificate_key_pair",
-    ),
-    path(
         "crypto/certificates/create/",
         certificate_key_pair.CertificateKeyPairCreateView.as_view(),
         name="certificatekeypair-create",

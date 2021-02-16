@@ -49,7 +49,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Identity & Cryptography").children(
         new SidebarItem("User", "/administration/users/"),
         new SidebarItem("Groups", "/administration/groups/"),
-        new SidebarItem("Certificates", "/administration/crypto/certificates"),
+        new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/administration/tokens/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);

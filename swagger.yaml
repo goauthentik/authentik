@@ -7913,6 +7913,10 @@ definitions:
         title: Cert subject
         type: string
         readOnly: true
+      private_key_available:
+        title: Private key available
+        type: boolean
+        readOnly: true
   CertificateData:
     description: Get CertificateKeyPair's data
     type: object

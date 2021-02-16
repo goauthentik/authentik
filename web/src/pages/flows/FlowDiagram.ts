@@ -37,7 +37,7 @@ export class FlowDiagram extends LitElement {
     constructor() {
         super();
         this.addEventListener("ak-refresh", () => {
-            if (!this._flowSlug) return
+            if (!this._flowSlug) return;
             this.flowSlug = this._flowSlug;
         });
         window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", (ev) => {
