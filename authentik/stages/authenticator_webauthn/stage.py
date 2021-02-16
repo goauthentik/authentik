@@ -30,11 +30,11 @@ class AuthenticateWebAuthnStageView(FormView, StageView):
         if self.request.user == user:
             # Because the user is already authenticated, skip the later check
             self.request.session[SESSION_KEY_WEBAUTHN_AUTHENTICATED] = True
-            return render(request, "stages/webauthn/setup.html")
+            return render(request, "stages/authenticator_webauthn/setup.html")
         if not devices.exists():
             return self.executor.stage_ok()
         self.request.session[SESSION_KEY_WEBAUTHN_AUTHENTICATED] = False
-        return render(request, "stages/webauthn/auth.html")
+        return render(request, "stages/authenticator_webauthn/auth.html")
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Since the client can't directly indicate when a stage is done,

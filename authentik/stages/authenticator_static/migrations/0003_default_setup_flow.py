@@ -11,7 +11,9 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     Flow = apps.get_model("authentik_flows", "Flow")
     FlowStageBinding = apps.get_model("authentik_flows", "FlowStageBinding")
 
-    OTPStaticStage = apps.get_model("authentik_stages_authenticator_static", "OTPStaticStage")
+    OTPStaticStage = apps.get_model(
+        "authentik_stages_authenticator_static", "OTPStaticStage"
+    )
 
     db_alias = schema_editor.connection.alias
 

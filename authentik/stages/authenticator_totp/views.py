@@ -14,7 +14,7 @@ from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 class UserSettingsView(LoginRequiredMixin, TemplateView):
     """View for user settings to control OTP"""
 
-    template_name = "stages/otp_time/user_settings.html"
+    template_name = "stages/authenticator_totp/user_settings.html"
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
