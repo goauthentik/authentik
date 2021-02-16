@@ -3,6 +3,7 @@ from hashlib import sha256
 from types import GeneratorType
 
 import xmlsec
+from django.conf import settings
 from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
