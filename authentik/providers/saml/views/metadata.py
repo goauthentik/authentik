@@ -55,7 +55,6 @@ class MetadataImportView(LoginRequiredMixin, FormView):
 
     form_class = SAMLProviderImportForm
     template_name = "providers/saml/import.html"
-    success_url = reverse_lazy("authentik_admin:providers")
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
