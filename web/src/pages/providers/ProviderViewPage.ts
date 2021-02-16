@@ -12,10 +12,6 @@ import "./ProxyProviderViewPage";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
 
     @property({type: Number})
     set providerID(value: number) {

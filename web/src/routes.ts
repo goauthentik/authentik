@@ -25,7 +25,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/administration/overview$"), html`<ak-admin-overview></ak-admin-overview>`),
     new Route(new RegExp("^/providers$"), html`<ak-provider-list></ak-provider-list>`),
     new Route(new RegExp(`^/providers/(?<id>${ID_REGEX})$`)).then((args) => {
-        return html`<ak-provider-view .args=${args}></ak-provider-view>`;
+        return html`<ak-provider-view .providerID=${parseInt(args.id, 10)}></ak-provider-view>`;
     }),
     new Route(new RegExp("^/applications$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/applications/(?<slug>${SLUG_REGEX})$`)).then((args) => {
