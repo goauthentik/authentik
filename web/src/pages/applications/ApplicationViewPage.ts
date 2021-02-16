@@ -9,6 +9,7 @@ import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
+import "../../elements/utils/LoadingState";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
@@ -37,7 +38,7 @@ export class ApplicationViewPage extends LitElement {
 
     render(): TemplateResult {
         if (!this.application) {
-            return html``;
+            return html`<ak-loading-state></ak-loading-state>`;;
         }
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
@@ -49,7 +50,7 @@ export class ApplicationViewPage extends LitElement {
                 </div>
             </section>
             <ak-tabs>
-                <section slot="page-1" data-tab-title="${gettext("Users")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__header">
@@ -62,6 +63,31 @@ export class ApplicationViewPage extends LitElement {
                                     <ak-admin-logins-chart
                                         url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug, "metrics"])}">
                                     </ak-admin-logins-chart>`: ""}
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">
+                            <div class="pf-c-card__header">
+                                <div class="pf-c-card__header-main">
+                                    <i class="fas fa-external-link-alt"></i> ${gettext("Related")}
+                                </div>
+                            </div>
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list pf-m-horizontal">
+                                    ${this.application.provider ?
+                                    html`<div class="pf-c-description-list__group">
+                                            <dt class="pf-c-description-list__term">
+                                                <span class="pf-c-description-list__text">${gettext("Provider")}</span>
+                                            </dt>
+                                            <dd class="pf-c-description-list__description">
+                                                <div class="pf-c-description-list__text">
+                                                    <a href="#/providers/${this.application.provider.pk}">
+                                                        ${this.application.provider.name}
+                                                    </a>
+                                                </div>
+                                            </dd>
+                                        </div>`:
+                                    html``}
+                                </dl>
                             </div>
                         </div>
                     </div>

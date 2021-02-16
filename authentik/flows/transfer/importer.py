@@ -82,6 +82,8 @@ class FlowImporter:
         main_query = Q(pk=attrs["pk"])
         sub_query = Q()
         for identifier, value in attrs.items():
+            if isinstance(value, dict):
+                continue
             if identifier == "pk":
                 continue
             sub_query &= Q(**{identifier: value})

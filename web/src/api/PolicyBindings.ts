@@ -1,10 +1,14 @@
 import { DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { Group } from "./Groups";
 import { Policy } from "./Policies";
+import { User } from "./Users";
 
 export class PolicyBinding {
     pk: string;
     policy: string;
-    policy_obj: Policy;
+    policy_obj?: Policy;
+    group?: Group;
+    user?: User;
     target: string;
     enabled: boolean;
     order: number;

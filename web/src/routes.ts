@@ -36,7 +36,7 @@ export const ROUTES: Route[] = [
         return html`<ak-source-view .args=${args}></ak-source-view>`;
     }),
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
-        return html`<ak-flow-view .args=${args}></ak-flow-view>`;
+        return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
     }),
     new Route(new RegExp("^/events/log$"), html`<ak-event-list></ak-event-list>`),
     new Route(new RegExp(`^/events/log/(?<id>${UUID_REGEX})$`)).then((args) => {
