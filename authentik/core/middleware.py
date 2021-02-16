@@ -9,6 +9,7 @@ from django.http import HttpRequest, HttpResponse
 SESSION_IMPERSONATE_USER = "authentik_impersonate_user"
 SESSION_IMPERSONATE_ORIGINAL_USER = "authentik_impersonate_original_user"
 LOCAL = local()
+RESPONSE_HEADER_ID = "X-authentik-id"
 
 
 class ImpersonateMiddleware:
@@ -43,7 +44,7 @@ class RequestIDMiddleware:
             setattr(request, "request_id", request_id)
             LOCAL.authentik = {"request_id": request_id}
         response = self.get_response(request)
-        response["X-authentik-id"] = request.request_id
+        response[RESPONSE_HEADER_ID] = request.request_id
         del LOCAL.authentik["request_id"]
         return response
 
