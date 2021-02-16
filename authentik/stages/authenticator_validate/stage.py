@@ -35,7 +35,7 @@ class AuthenticatorValidateStageView(FormView, StageView):
 
         if not has_devices:
             if stage.not_configured_action == NotConfiguredAction.SKIP:
-                LOGGER.debug("OTP not configured, skipping stage")
+                LOGGER.debug("Authenticator not configured, skipping stage")
                 return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 

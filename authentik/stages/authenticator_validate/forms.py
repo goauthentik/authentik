@@ -4,7 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from django_otp import match_token
 
 from authentik.core.models import User
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_validate.models import (
+    AuthenticatorValidateStage,
+    DeviceClasses,
+)
 
 
 class ValidationForm(forms.Form):
@@ -42,8 +45,9 @@ class AuthenticatorValidateStageForm(forms.ModelForm):
     class Meta:
 
         model = AuthenticatorValidateStage
-        fields = ["name"]
+        fields = ["name", "device_classes"]
 
         widgets = {
             "name": forms.TextInput(),
+            "device_classes": forms.SelectMultiple(choices=DeviceClasses.choices),
         }
