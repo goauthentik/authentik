@@ -6331,7 +6331,7 @@ paths:
   /stages/otp_static/:
     get:
       operationId: stages_otp_static_list
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -6375,73 +6375,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OTPStaticStage'
+                  $ref: '#/definitions/AuthenticatorStaticStage'
       tags:
         - stages
     post:
       operationId: stages_otp_static_create
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       tags:
         - stages
     parameters: []
   /stages/otp_static/{stage_uuid}/:
     get:
       operationId: stages_otp_static_read
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       tags:
         - stages
     put:
       operationId: stages_otp_static_update
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       tags:
         - stages
     patch:
       operationId: stages_otp_static_partial_update
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPStaticStage'
+            $ref: '#/definitions/AuthenticatorStaticStage'
       tags:
         - stages
     delete:
       operationId: stages_otp_static_delete
-      description: OTPStaticStage Viewset
+      description: AuthenticatorStaticStage Viewset
       parameters: []
       responses:
         '204':
@@ -6451,14 +6451,14 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this OTP Static Setup Stage.
+        description: A UUID string identifying this Static Authenticator Stage.
         required: true
         type: string
         format: uuid
   /stages/otp_time/:
     get:
       operationId: stages_otp_time_list
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -6502,73 +6502,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OTPTimeStage'
+                  $ref: '#/definitions/AuthenticatorTOTPStage'
       tags:
         - stages
     post:
       operationId: stages_otp_time_create
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       tags:
         - stages
     parameters: []
   /stages/otp_time/{stage_uuid}/:
     get:
       operationId: stages_otp_time_read
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       tags:
         - stages
     put:
       operationId: stages_otp_time_update
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       tags:
         - stages
     patch:
       operationId: stages_otp_time_partial_update
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPTimeStage'
+            $ref: '#/definitions/AuthenticatorTOTPStage'
       tags:
         - stages
     delete:
       operationId: stages_otp_time_delete
-      description: OTPTimeStage Viewset
+      description: AuthenticatorTOTPStage Viewset
       parameters: []
       responses:
         '204':
@@ -6578,14 +6578,14 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this OTP Time (TOTP) Setup Stage.
+        description: A UUID string identifying this TOTP Authenticator Setup Stage.
         required: true
         type: string
         format: uuid
   /stages/otp_validate/:
     get:
       operationId: stages_otp_validate_list
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -6629,73 +6629,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/OTPValidateStage'
+                  $ref: '#/definitions/AuthenticatorValidateStage'
       tags:
         - stages
     post:
       operationId: stages_otp_validate_create
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       tags:
         - stages
     parameters: []
   /stages/otp_validate/{stage_uuid}/:
     get:
       operationId: stages_otp_validate_read
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       tags:
         - stages
     put:
       operationId: stages_otp_validate_update
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       tags:
         - stages
     patch:
       operationId: stages_otp_validate_partial_update
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/OTPValidateStage'
+            $ref: '#/definitions/AuthenticatorValidateStage'
       tags:
         - stages
     delete:
       operationId: stages_otp_validate_delete
-      description: OTPValidateStage Viewset
+      description: AuthenticatorValidateStage Viewset
       parameters: []
       responses:
         '204':
@@ -6705,7 +6705,7 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this OTP Validation Stage.
+        description: A UUID string identifying this Authenticator Validation Stage.
         required: true
         type: string
         format: uuid
@@ -7601,7 +7601,7 @@ paths:
   /stages/webauthn/:
     get:
       operationId: stages_webauthn_list
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters:
         - name: ordering
           in: query
@@ -7645,73 +7645,73 @@ paths:
               results:
                 type: array
                 items:
-                  $ref: '#/definitions/WebAuthnStage'
+                  $ref: '#/definitions/AuthenticateWebAuthnStage'
       tags:
         - stages
     post:
       operationId: stages_webauthn_create
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       tags:
         - stages
     parameters: []
   /stages/webauthn/{stage_uuid}/:
     get:
       operationId: stages_webauthn_read
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters: []
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       tags:
         - stages
     put:
       operationId: stages_webauthn_update
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       tags:
         - stages
     patch:
       operationId: stages_webauthn_partial_update
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters:
         - name: data
           in: body
           required: true
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/WebAuthnStage'
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
       tags:
         - stages
     delete:
       operationId: stages_webauthn_delete
-      description: WebAuthnStage Viewset
+      description: AuthenticateWebAuthnStage Viewset
       parameters: []
       responses:
         '204':
@@ -7721,7 +7721,7 @@ paths:
     parameters:
       - name: stage_uuid
         in: path
-        description: A UUID string identifying this WebAuthn Setup Stage.
+        description: A UUID string identifying this WebAuthn Authenticator Setup Stage.
         required: true
         type: string
         format: uuid
@@ -8934,11 +8934,11 @@ definitions:
           - authentik.stages.user_login
           - authentik.stages.user_logout
           - authentik.stages.user_write
-          - authentik.stages.otp_static
-          - authentik.stages.otp_time
-          - authentik.stages.otp_validate
+          - authentik.stages.authenticator_static
+          - authentik.stages.authenticator_totp
+          - authentik.stages.authenticator_validate
+          - authentik.stages.authenticator_webauthn
           - authentik.stages.password
-          - authentik.stages.webauthn
           - authentik.managed
           - authentik.core
   ExpressionPolicy:
@@ -10366,8 +10366,8 @@ definitions:
         title: Fixed data
         description: Optional fixed data to enforce on user enrollment.
         type: object
-  OTPStaticStage:
-    description: OTPStaticStage Serializer
+  AuthenticatorStaticStage:
+    description: AuthenticatorStaticStage Serializer
     required:
       - name
     type: object
@@ -10393,8 +10393,8 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
-  OTPTimeStage:
-    description: OTPTimeStage Serializer
+  AuthenticatorTOTPStage:
+    description: AuthenticatorTOTPStage Serializer
     required:
       - name
       - digits
@@ -10422,8 +10422,8 @@ definitions:
         enum:
           - 6
           - 8
-  OTPValidateStage:
-    description: OTPValidateStage Serializer
+  AuthenticatorValidateStage:
+    description: AuthenticatorValidateStage Serializer
     required:
       - name
     type: object
@@ -10619,8 +10619,8 @@ definitions:
         title: Name
         type: string
         minLength: 1
-  WebAuthnStage:
-    description: WebAuthnStage Serializer
+  AuthenticateWebAuthnStage:
+    description: AuthenticateWebAuthnStage Serializer
     required:
       - name
     type: object

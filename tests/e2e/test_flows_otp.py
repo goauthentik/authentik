@@ -13,9 +13,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.flows.models import Flow, FlowStageBinding
-from authentik.stages.otp_static.models import OTPStaticStage
-from authentik.stages.otp_time.models import OTPTimeStage
-from authentik.stages.otp_validate.models import OTPValidateStage
+from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
+from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
@@ -35,7 +35,7 @@ class TestFlowsOTP(SeleniumTestCase):
         # Move the user_login stage to order 3
         FlowStageBinding.objects.filter(target=flow, order=2).update(order=3)
         FlowStageBinding.objects.create(
-            target=flow, order=2, stage=OTPValidateStage.objects.create()
+            target=flow, order=2, stage=AuthenticatorValidateStage.objects.create()
         )
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
@@ -69,7 +69,7 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.get(
             self.url(
                 "authentik_flows:configure",
-                stage_uuid=OTPTimeStage.objects.first().stage_uuid,
+                stage_uuid=AuthenticatorTOTPStage.objects.first().stage_uuid,
             )
         )
 
@@ -112,7 +112,7 @@ class TestFlowsOTP(SeleniumTestCase):
         self.driver.get(
             self.url(
                 "authentik_flows:configure",
-                stage_uuid=OTPStaticStage.objects.first().stage_uuid,
+                stage_uuid=AuthenticatorStaticStage.objects.first().stage_uuid,
             )
         )
 
