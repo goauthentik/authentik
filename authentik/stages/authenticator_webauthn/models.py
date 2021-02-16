@@ -7,6 +7,7 @@ from django.forms import ModelForm
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import Stage
@@ -48,12 +49,9 @@ class AuthenticateWebAuthnStage(Stage):
         verbose_name_plural = _("WebAuthn Authenticator Setup Stages")
 
 
-class WebAuthnDevice(models.Model):
+class WebAuthnDevice(Device):
     """WebAuthn Device for a single user"""
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-
-    name = models.TextField(max_length=200)
     credential_id = models.CharField(max_length=300, unique=True)
     public_key = models.TextField()
     sign_count = models.IntegerField(default=0)
