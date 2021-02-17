@@ -20,11 +20,11 @@ from tests.e2e.utils import USER, SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
-class TestFlowsOTP(SeleniumTestCase):
+class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
-    def test_otp_validate(self):
+    def test_totp_validate(self):
         """test flow with otp stages"""
         sleep(1)
         # Setup TOTP Device
@@ -32,10 +32,8 @@ class TestFlowsOTP(SeleniumTestCase):
         device = TOTPDevice.objects.create(user=user, confirmed=True, digits=6)
 
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
-        # Move the user_login stage to order 3
-        FlowStageBinding.objects.filter(target=flow, order=2).update(order=3)
         FlowStageBinding.objects.create(
-            target=flow, order=2, stage=AuthenticatorValidateStage.objects.create()
+            target=flow, order=30, stage=AuthenticatorValidateStage.objects.create()
         )
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
@@ -53,7 +51,7 @@ class TestFlowsOTP(SeleniumTestCase):
         self.assert_user(USER())
 
     @retry()
-    def test_otp_totp_setup(self):
+    def test_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
@@ -96,7 +94,7 @@ class TestFlowsOTP(SeleniumTestCase):
         self.assertTrue(TOTPDevice.objects.filter(user=USER(), confirmed=True).exists())
 
     @retry()
-    def test_otp_static_setup(self):
+    def test_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
