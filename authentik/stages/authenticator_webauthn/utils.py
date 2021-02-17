@@ -1,10 +1,8 @@
+"""webauthn utils"""
 import base64
 import os
 
 CHALLENGE_DEFAULT_BYTE_LEN = 32
-UKEY_DEFAULT_BYTE_LEN = 20
-USERNAME_MAX_LENGTH = 32
-DISPLAY_NAME_MAX_LENGTH = 65
 
 
 def generate_challenge(challenge_len=CHALLENGE_DEFAULT_BYTE_LEN):
@@ -23,17 +21,3 @@ def generate_challenge(challenge_len=CHALLENGE_DEFAULT_BYTE_LEN):
     if not isinstance(challenge_base64, str):
         challenge_base64 = challenge_base64.decode("utf-8")
     return challenge_base64
-
-
-def generate_ukey():
-    """Its value's id member is required, and contains an identifier
-    for the account, specified by the Relying Party. This is not meant
-    to be displayed to the user, but is used by the Relying Party to
-    control the number of credentials - an authenticator will never
-    contain more than one credential for a given Relying Party under
-    the same id.
-    A unique identifier for the entity. For a relying party entity,
-    sets the RP ID. For a user account entity, this will be an
-    arbitrary string specified by the relying party.
-    """
-    return generate_challenge(UKEY_DEFAULT_BYTE_LEN)

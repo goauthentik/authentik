@@ -1,3 +1,4 @@
+"""Webauthn stage forms"""
 from django import forms
 
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage

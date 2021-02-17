@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from authentik.stages.authenticator_webauthn.views import (
     BeginActivateView,
     BeginAssertion,
+    UserSettingsView,
     VerifyAssertion,
     VerifyCredentialInfo,
 )
@@ -30,5 +31,8 @@ urlpatterns = [
         "verify-assertion/",
         csrf_exempt(VerifyAssertion.as_view()),
         name="assertion-verify",
+    ),
+    path(
+        "<uuid:stage_uuid>/settings/", UserSettingsView.as_view(), name="user-settings"
     ),
 ]

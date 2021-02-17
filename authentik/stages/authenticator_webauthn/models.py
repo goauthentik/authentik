@@ -1,18 +1,19 @@
 """WebAuthn stage"""
-from typing import Type
+from typing import Optional, Type
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.forms import ModelForm
+from django.shortcuts import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
-from authentik.flows.models import Stage
+from authentik.flows.models import ConfigurableStage, Stage
 
 
-class AuthenticateWebAuthnStage(Stage):
+class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     """WebAuthn stage"""
 
     @property
@@ -38,6 +39,13 @@ class AuthenticateWebAuthnStage(Stage):
         )
 
         return AuthenticateWebAuthnStageForm
+
+    @property
+    def ui_user_settings(self) -> Optional[str]:
+        return reverse(
+            "authentik_stages_authenticator_webauthn:user-settings",
+            kwargs={"stage_uuid": self.stage_uuid},
+        )
 
     def __str__(self) -> str:
         return f"WebAuthn Authenticator Setup Stage {self.name}"

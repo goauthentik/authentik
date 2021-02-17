@@ -1,19 +1,19 @@
 """AuthenticatorValidateStage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 
 
-class AuthenticatorValidateStageSerializer(ModelSerializer):
+class AuthenticatorValidateStageSerializer(StageSerializer):
     """AuthenticatorValidateStage Serializer"""
 
     class Meta:
 
         model = AuthenticatorValidateStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
+            "not_configured_action",
+            "device_classes",
         ]
 
 

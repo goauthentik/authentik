@@ -12,13 +12,15 @@ from authentik.flows.models import NotConfiguredAction, Stage
 
 
 class DeviceClasses(models.TextChoices):
+    """Device classes this stage can validate"""
 
     STATIC = "static"
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")
 
 
-def default_device_classes() -> list[DeviceClasses]:
+def default_device_classes() -> list:
+    """By default, accept all device classes"""
     return [
         DeviceClasses.STATIC,
         DeviceClasses.TOTP,

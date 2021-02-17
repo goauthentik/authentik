@@ -1,20 +1,17 @@
 """Logout Stage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.user_logout.models import UserLogoutStage
 
 
-class UserLogoutStageSerializer(ModelSerializer):
+class UserLogoutStageSerializer(StageSerializer):
     """UserLogoutStage Serializer"""
 
     class Meta:
 
         model = UserLogoutStage
-        fields = [
-            "pk",
-            "name",
-        ]
+        fields = StageSerializer.Meta.fields
 
 
 class UserLogoutStageViewSet(ModelViewSet):

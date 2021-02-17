@@ -5420,6 +5420,42 @@ paths:
       tags:
         - stages
     parameters: []
+  /stages/all/types/:
+    get:
+      operationId: stages_all_types
+      description: Get all creatable stage types
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - stages
+    parameters: []
   /stages/all/{stage_uuid}/:
     get:
       operationId: stages_all_read
@@ -8318,12 +8354,16 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      __type__:
-        title: 'type  '
+      object_type:
+        title: Object type
         type: string
         readOnly: true
       verbose_name:
         title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
   FlowStageBinding:
@@ -10459,6 +10499,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10487,6 +10539,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10515,6 +10579,30 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      not_configured_action:
+        title: Not configured action
+        type: string
+        enum:
+          - skip
+      device_classes:
+        description: ''
+        type: array
+        items:
+          title: Device classes
+          type: string
+          minLength: 1
   AuthenticateWebAuthnStage:
     description: AuthenticateWebAuthnStage Serializer
     required:
@@ -10530,6 +10618,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   CaptchaStage:
     description: CaptchaStage Serializer
     required:
@@ -10547,6 +10647,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       public_key:
         title: Public key
         description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
@@ -10572,6 +10684,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       mode:
         title: Mode
         type: string
@@ -10599,6 +10723,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   EmailStage:
     description: EmailStage Serializer
     required:
@@ -10614,6 +10750,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       use_global_settings:
         title: Use global settings
         description: When enabled, global Email connection settings will be used and
@@ -10684,6 +10832,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       user_fields:
         description: ''
         type: array
@@ -10738,6 +10898,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       continue_flow_without_invitation:
         title: Continue flow without invitation
         description: If this flag is set, this Stage will jump to the next Stage when
@@ -10778,6 +10950,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       backends:
         description: ''
         type: array
@@ -10866,6 +11050,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       fields:
         type: array
         items:
@@ -10893,6 +11089,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   UserLoginStage:
     description: UserLoginStage Serializer
     required:
@@ -10908,6 +11116,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       session_duration:
         title: Session duration
         description: 'Determines how long a session lasts. Default of 0 means that
@@ -10929,6 +11149,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   UserWriteStage:
     description: UserWriteStage Serializer
     required:
@@ -10944,3 +11176,15 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true

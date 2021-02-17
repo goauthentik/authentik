@@ -2,18 +2,17 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
 
 
-class InvitationStageSerializer(ModelSerializer):
+class InvitationStageSerializer(StageSerializer):
     """InvitationStage Serializer"""
 
     class Meta:
 
         model = InvitationStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
             "continue_flow_without_invitation",
         ]
 

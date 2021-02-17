@@ -1,19 +1,17 @@
 """PasswordStage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.password.models import PasswordStage
 
 
-class PasswordStageSerializer(ModelSerializer):
+class PasswordStageSerializer(StageSerializer):
     """PasswordStage Serializer"""
 
     class Meta:
 
         model = PasswordStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
             "backends",
             "configure_flow",
             "failed_attempts_before_cancel",

@@ -1,19 +1,17 @@
 """Identification Stage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.identification.models import IdentificationStage
 
 
-class IdentificationStageSerializer(ModelSerializer):
+class IdentificationStageSerializer(StageSerializer):
     """IdentificationStage Serializer"""
 
     class Meta:
 
         model = IdentificationStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
             "user_fields",
             "case_insensitive_matching",
             "show_matched_user",

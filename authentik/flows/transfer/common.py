@@ -1,8 +1,9 @@
 """transfer common classes"""
 from dataclasses import asdict, dataclass, field, is_dataclass
-from json.encoder import JSONEncoder
 from typing import Any, Dict, List
 from uuid import UUID
+
+from django.core.serializers.json import DjangoJSONEncoder
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
@@ -11,7 +12,17 @@ from authentik.lib.sentry import SentryIgnoredException
 def get_attrs(obj: SerializerModel) -> Dict[str, Any]:
     """Get object's attributes via their serializer, and covert it to a normal dict"""
     data = dict(obj.serializer(obj).data)
-    to_remove = ("policies", "stages", "pk", "background", "group", "user")
+    to_remove = (
+        "policies",
+        "stages",
+        "pk",
+        "background",
+        "group",
+        "user",
+        "verbose_name",
+        "verbose_name_plural",
+        "object_type",
+    )
     for to_remove_name in to_remove:
         if to_remove_name in data:
             data.pop(to_remove_name)
@@ -53,7 +64,7 @@ class FlowBundle:
     entries: List[FlowBundleEntry] = field(default_factory=list)
 
 
-class DataclassEncoder(JSONEncoder):
+class DataclassEncoder(DjangoJSONEncoder):
     """Convert FlowBundleEntry to json"""
 
     def default(self, o):

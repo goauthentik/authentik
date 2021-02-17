@@ -98,4 +98,5 @@ class FlowExporter:
 
     def export_to_string(self) -> str:
         """Call export and convert it to json"""
-        return dumps(self.export(), cls=DataclassEncoder)
+        bundle = self.export()
+        return dumps(bundle, cls=DataclassEncoder)

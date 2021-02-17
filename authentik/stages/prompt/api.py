@@ -3,10 +3,11 @@ from rest_framework.serializers import CharField, ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.prompt.models import Prompt, PromptStage
 
 
-class PromptStageSerializer(ModelSerializer):
+class PromptStageSerializer(StageSerializer):
     """PromptStage Serializer"""
 
     name = CharField(validators=[UniqueValidator(queryset=PromptStage.objects.all())])
@@ -14,9 +15,7 @@ class PromptStageSerializer(ModelSerializer):
     class Meta:
 
         model = PromptStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
             "fields",
             "validation_policies",
         ]
