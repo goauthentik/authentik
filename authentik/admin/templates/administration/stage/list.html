@@ -68,7 +68,7 @@
                     <td role="cell">
                         <ul>
                             {% for flow in stage.flow_set.all %}
-                            <li>{{ flow.slug }}<</li>
+                            <li>{{ flow.slug }}</li>
                             {% empty %}
                             <li>-</li>
                             {% endfor %}
