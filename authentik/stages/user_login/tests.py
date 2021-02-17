@@ -47,9 +47,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -72,9 +70,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -95,9 +91,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)

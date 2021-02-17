@@ -58,9 +58,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, AccessDeniedResponse)
@@ -81,9 +79,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -115,7 +111,7 @@ class TestUserLoginStage(TestCase):
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
             response = self.client.get(
                 base_url + f"?{INVITATION_TOKEN_KEY}={invite.pk.hex}"

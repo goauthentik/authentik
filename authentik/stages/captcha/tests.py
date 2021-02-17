@@ -44,7 +44,7 @@ class TestCaptchaStage(TestCase):
         session.save()
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             {"g-recaptcha-response": "PASSED"},
         )

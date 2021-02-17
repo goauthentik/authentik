@@ -62,9 +62,7 @@ class TestFlowExecutor(TestCase):
         cancel_mock = MagicMock()
         with patch("authentik.flows.views.FlowExecutorView.cancel", cancel_mock):
             response = self.client.get(
-                reverse(
-                    "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
-                ),
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             )
             self.assertEqual(response.status_code, 302)
             self.assertEqual(cancel_mock.call_count, 2)
@@ -87,7 +85,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, AccessDeniedResponse)
@@ -107,7 +105,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:shell"))
@@ -126,7 +124,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         dest = "/unique-string"
-        url = reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug})
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:shell"))
@@ -146,7 +144,7 @@ class TestFlowExecutor(TestCase):
         )
 
         exec_url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
         )
         # First Request, start planning, renders form
         response = self.client.get(exec_url)
@@ -196,7 +194,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -250,7 +248,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -317,7 +315,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -401,7 +399,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -455,7 +453,7 @@ class TestFlowExecutor(TestCase):
 
         user = User.objects.create(username="test-user")
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = user
         planner = FlowPlanner(flow)

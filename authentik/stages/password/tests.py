@@ -59,7 +59,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Still have to send the password so the form is valid
             {"password": self.password},
@@ -83,7 +83,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.get(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
         )
         self.assertEqual(response.status_code, 200)
@@ -101,7 +101,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password},
@@ -125,7 +125,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},
@@ -145,7 +145,7 @@ class TestPasswordStage(TestCase):
         for _ in range(self.stage.failed_attempts_before_cancel):
             response = self.client.post(
                 reverse(
-                    "authentik_flows:flow-executor",
+                    "authentik_api:flow-executor",
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 # Form data
@@ -155,7 +155,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},
@@ -185,7 +185,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},

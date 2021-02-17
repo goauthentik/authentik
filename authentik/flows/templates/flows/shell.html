@@ -22,11 +22,10 @@
     background-position: center;
 }
 </style>
+<script src="{% static 'dist/flow.js' %}?v={{ ak_version }}" type="module"></script>
 {% endblock %}
 
 {% block main_container %}
-<ak-flow-shell-card
-    class="pf-c-login__main"
-    flowBodyUrl="{{ exec_url }}">
-</ak-flow-shell-card>
+<ak-flow-executor class="pf-c-login__main" flowBodyUrl="{{ exec_url }}">
+</ak-flow-executor>
 {% endblock %}

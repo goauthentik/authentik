@@ -1,5 +1,9 @@
 {% extends "base/skeleton.html" %}
 
+{% block head %}
+<script src="{% static 'dist/main.js' %}?v={{ ak_version }}" type="module"></script>
+{% endblock %}
+
 {% block body %}
 <ak-interface-admin></ak-interface-admin>
 {% endblock %}

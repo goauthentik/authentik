@@ -1,25 +1,30 @@
+import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult } from "lit-element";
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { SentryIgnoredError } from "../../common/errors";
 import { getCookie } from "../../utils";
+import "../../elements/stages/identification/IdentificationStage";
 
-enum ResponseType {
+enum ChallengeTypes {
+    native = "native",
+    response = "response",
+    shell = "shell",
     redirect = "redirect",
-    template = "template",
 }
 
-interface Response {
-    type: ResponseType;
-    to?: string;
-    body?: string;
+interface Challenge {
+    type: ChallengeTypes;
+    args: { [key: string]: string };
+    component: string;
 }
 
-@customElement("ak-flow-shell-card")
-export class FlowShellCard extends LitElement {
+@customElement("ak-flow-executor")
+export class FlowExecutor extends LitElement {
     @property()
     flowBodyUrl = "";
 
-    @property()
-    flowBody?: string;
+    @property({attribute: false})
+    flowBody?: TemplateResult;
 
     createRenderRoot(): Element | ShadowRoot {
         return this;
@@ -28,26 +33,31 @@ export class FlowShellCard extends LitElement {
     constructor() {
         super();
         this.addEventListener("ak-flow-submit", () => {
-            const csrftoken = getCookie("authentik_csrf");
-            const request = new Request(this.flowBodyUrl, {
-                headers: {
-                    "X-CSRFToken": csrftoken,
-                },
-            });
-            fetch(request, {
-                method: "POST",
-                mode: "same-origin"
-            })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    this.updateCard(data);
-                })
-                .catch((e) => {
-                    this.errorMessage(e);
-                });
+            this.submit();
         });
+    }
+
+    submit(formData?: FormData): void {
+        const csrftoken = getCookie("authentik_csrf");
+        const request = new Request(this.flowBodyUrl, {
+            headers: {
+                "X-CSRFToken": csrftoken,
+            },
+        });
+        fetch(request, {
+            method: "POST",
+            mode: "same-origin",
+            body: formData,
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                this.updateCard(data);
+            })
+            .catch((e) => {
+                this.errorMessage(e);
+            });
     }
 
     firstUpdated(): void {
@@ -73,18 +83,28 @@ export class FlowShellCard extends LitElement {
             });
     }
 
-    async updateCard(data: Response): Promise<void> {
+    async updateCard(data: Challenge): Promise<void> {
         switch (data.type) {
-        case ResponseType.redirect:
-            console.debug(`authentik/flows: redirecting to ${data.to}`);
-            window.location.assign(data.to || "");
+        case ChallengeTypes.redirect:
+            console.debug(`authentik/flows: redirecting to ${data.args.to}`);
+            window.location.assign(data.args.to || "");
             break;
-        case ResponseType.template:
-            this.flowBody = data.body;
+        case ChallengeTypes.shell:
+            this.flowBody = html`${unsafeHTML(data.args.body)}`;
             await this.requestUpdate();
             this.checkAutofocus();
             this.loadFormCode();
             this.setFormSubmitHandlers();
+            break;
+        case ChallengeTypes.native:
+            switch (data.component) {
+                case "ak-stage-identification":
+                    this.flowBody = html`<ak-stage-identification .host=${this} .args=${data.args}></ak-stage-identification>`;
+                    break;
+                default:
+                    break;
+            }
+            // this.flowBody = html`${unsafeHTML(`<${data.component} .args="${data.args}"></${data.component}>`)}`;
             break;
         default:
             console.debug(`authentik/flows: unexpected data type ${data.type}`);
@@ -139,26 +159,14 @@ export class FlowShellCard extends LitElement {
                 e.preventDefault();
                 const formData = new FormData(form);
                 this.flowBody = undefined;
-                fetch(this.flowBodyUrl, {
-                    method: "post",
-                    body: formData,
-                })
-                    .then((response) => {
-                        return response.json();
-                    })
-                    .then((data) => {
-                        this.updateCard(data);
-                    })
-                    .catch((e) => {
-                        this.errorMessage(e);
-                    });
+                this.submit(formData);
             });
             form.classList.add("ak-flow-wrapped");
         });
     }
 
     errorMessage(error: string): void {
-        this.flowBody = `
+        this.flowBody = html`
             <style>
                 .ak-exception {
                     font-family: monospace;
@@ -167,13 +175,11 @@ export class FlowShellCard extends LitElement {
             </style>
             <header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    Whoops!
+                    ${gettext("Whoops!")}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <h3>
-                    Something went wrong! Please try again later.
-                </h3>
+                <h3>${gettext("Something went wrong! Please try again later.")}</h3>
                 <pre class="ak-exception">${error}</pre>
             </div>`;
     }
@@ -190,7 +196,7 @@ export class FlowShellCard extends LitElement {
 
     render(): TemplateResult {
         if (this.flowBody) {
-            return html(<TemplateStringsArray>(<unknown>[this.flowBody]));
+            return this.flowBody;
         }
         return this.loading();
     }

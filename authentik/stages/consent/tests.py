@@ -45,7 +45,7 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)
@@ -76,7 +76,7 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)
@@ -113,7 +113,7 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)

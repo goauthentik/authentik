@@ -34,16 +34,14 @@ class TestDummyStage(TestCase):
     def test_valid_render(self):
         """Test that View renders correctly"""
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
         """Test with valid email, check that URL redirects back to itself"""
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         response = self.client.post(url, {})
         self.assertEqual(response.status_code, 200)

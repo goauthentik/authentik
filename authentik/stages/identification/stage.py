@@ -7,63 +7,32 @@ from django.http import HttpResponse
 from django.shortcuts import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
+from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Source, User
+from authentik.core.types import UILoginButton
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.stage import (
+    PLAN_CONTEXT_PENDING_USER_IDENTIFIER,
+    ChallengeStageView,
+    StageView,
+)
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.forms import IdentificationForm
-from authentik.stages.identification.models import IdentificationStage
+from authentik.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
 
 
-class IdentificationStageView(FormView, StageView):
+class IdentificationChallengeResponse(ChallengeResponse):
+
+    uid_field = CharField()
+
+
+class IdentificationStageView(ChallengeStageView):
     """Form to identify the user"""
-
-    form_class = IdentificationForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["stage"] = self.executor.current_stage
-        return kwargs
-
-    def get_template_names(self) -> List[str]:
-        current_stage: IdentificationStage = self.executor.current_stage
-        return [current_stage.template]
-
-    def get_context_data(self, **kwargs):
-        current_stage: IdentificationStage = self.executor.current_stage
-        # If the user has been redirected to us whilst trying to access an
-        # application, SESSION_KEY_APPLICATION_PRE is set in the session
-        if SESSION_KEY_APPLICATION_PRE in self.request.session:
-            kwargs["application_pre"] = self.request.session[
-                SESSION_KEY_APPLICATION_PRE
-            ]
-        # Check for related enrollment and recovery flow, add URL to view
-        if current_stage.enrollment_flow:
-            kwargs["enroll_url"] = reverse(
-                "authentik_flows:flow-executor-shell",
-                kwargs={"flow_slug": current_stage.enrollment_flow.slug},
-            )
-        if current_stage.recovery_flow:
-            kwargs["recovery_url"] = reverse(
-                "authentik_flows:flow-executor-shell",
-                kwargs={"flow_slug": current_stage.recovery_flow.slug},
-            )
-        kwargs["primary_action"] = _("Log in")
-
-        # Check all enabled source, add them if they have a UI Login button.
-        kwargs["sources"] = []
-        sources: List[Source] = (
-            Source.objects.filter(enabled=True).order_by("name").select_subclasses()
-        )
-        for source in sources:
-            ui_login_button = source.ui_login_button
-            if ui_login_button:
-                kwargs["sources"].append(ui_login_button)
-        return super().get_context_data(**kwargs)
 
     def get_user(self, uid_value: str) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
@@ -82,14 +51,54 @@ class IdentificationStageView(FormView, StageView):
             return users.first()
         return None
 
-    def form_valid(self, form: IdentificationForm) -> HttpResponse:
-        """Form data is valid"""
-        user_identifier = form.cleaned_data.get("uid_field")
+    def get_challenge(self) -> Challenge:
+        current_stage: IdentificationStage = self.executor.current_stage
+        args = {"input_type": "text"}
+        if current_stage.user_fields == [UserFields.E_MAIL]:
+            args["input_type"] = "email"
+        # If the user has been redirected to us whilst trying to access an
+        # application, SESSION_KEY_APPLICATION_PRE is set in the session
+        if SESSION_KEY_APPLICATION_PRE in self.request.session:
+            args["application_pre"] = self.request.session[SESSION_KEY_APPLICATION_PRE]
+        # Check for related enrollment and recovery flow, add URL to view
+        if current_stage.enrollment_flow:
+            args["enroll_url"] = reverse(
+                "authentik_flows:flow-executor-shell",
+                args={"flow_slug": current_stage.enrollment_flow.slug},
+            )
+        if current_stage.recovery_flow:
+            args["recovery_url"] = reverse(
+                "authentik_flows:flow-executor-shell",
+                args={"flow_slug": current_stage.recovery_flow.slug},
+            )
+        args["primary_action"] = _("Log in")
+
+        # Check all enabled source, add them if they have a UI Login button.
+        args["sources"] = []
+        sources: List[Source] = (
+            Source.objects.filter(enabled=True).order_by("name").select_subclasses()
+        )
+        for source in sources:
+            ui_login_button = source.ui_login_button
+            if ui_login_button:
+                args["sources"].append(ui_login_button)
+        return Challenge(
+            data={
+                "type": ChallengeTypes.native,
+                "component": "ak-stage-identification",
+                "args": args,
+            }
+        )
+
+    def challenge_valid(
+        self, challenge: IdentificationChallengeResponse
+    ) -> HttpResponse:
+        user_identifier = challenge.data.get("uid_field")
         pre_user = self.get_user(user_identifier)
         if not pre_user:
             LOGGER.debug("invalid_login")
             messages.error(self.request, _("Failed to authenticate."))
-            return self.form_invalid(form)
+            return self.challenge_invalid(challenge)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
 
         current_stage: IdentificationStage = self.executor.current_stage

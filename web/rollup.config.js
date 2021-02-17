@@ -48,4 +48,33 @@ export default [
         },
         external: ["django"]
     },
+    {
+        input: "./src/flow.ts",
+        output: [
+            {
+                format: "es",
+                dir: "dist",
+                sourcemap: true,
+            },
+        ],
+        plugins: [
+            cssimport(),
+            typescript(),
+            externalGlobals({
+                django: "django"
+            }),
+            resolve({ browser: true }),
+            commonjs(),
+            sourcemaps(),
+            terser(),
+            copy({
+                targets: [...resources],
+                copyOnce: false,
+            }),
+        ],
+        watch: {
+            clearScreen: false,
+        },
+        external: ["django"]
+    },
 ];

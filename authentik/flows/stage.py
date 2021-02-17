@@ -3,9 +3,15 @@ from collections import namedtuple
 from typing import Any, Dict
 
 from django.http import HttpRequest
+from django.http.response import HttpResponse, JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    HttpChallengeResponse,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
 
@@ -43,3 +49,28 @@ class StageView(TemplateView):
             )
         kwargs["primary_action"] = _("Continue")
         return super().get_context_data(**kwargs)
+
+
+class ChallengeStageView(StageView):
+
+    response_class = ChallengeResponse
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        challenge = self.get_challenge()
+        challenge.is_valid()
+        return HttpChallengeResponse(challenge)
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        challenge = self.response_class(data=request.POST)
+        if not challenge.is_valid():
+            return self.challenge_invalid(challenge)
+        return self.challenge_valid(challenge)
+
+    def get_challenge(self) -> Challenge:
+        raise NotImplementedError
+
+    def challenge_valid(self, challenge: ChallengeResponse) -> HttpResponse:
+        raise NotImplementedError
+
+    def challenge_invalid(self, challenge: ChallengeResponse) -> HttpResponse:
+        return JsonResponse(challenge.errors)

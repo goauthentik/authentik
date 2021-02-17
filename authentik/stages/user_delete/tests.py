@@ -46,9 +46,7 @@ class TestUserDeleteStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, AccessDeniedResponse)
@@ -64,9 +62,7 @@ class TestUserDeleteStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -82,7 +78,7 @@ class TestUserDeleteStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             {},
         )

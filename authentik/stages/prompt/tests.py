@@ -104,9 +104,7 @@ class TestPromptStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
@@ -158,7 +156,7 @@ class TestPromptStage(TestCase):
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
                 reverse(
-                    "authentik_flows:flow-executor",
+                    "authentik_api:flow-executor",
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 form.cleaned_data,

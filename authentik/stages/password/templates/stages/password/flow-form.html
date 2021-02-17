@@ -5,6 +5,6 @@
 
 {% block beneath_form %}
 {% if recovery_flow %}
-<a href="{% url 'authentik_flows:flow-executor' flow_slug=recovery_flow.slug %}">{% trans 'Forgot password?' %}</a>
+<a href="{% url 'authentik_api:flow-executor' flow_slug=recovery_flow.slug %}">{% trans 'Forgot password?' %}</a>
 {% endif %}
 {% endblock %}
