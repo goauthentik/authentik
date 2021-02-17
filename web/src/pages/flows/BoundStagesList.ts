@@ -8,7 +8,7 @@ import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
-import { FlowStageBinding } from "../../api/Flows";
+import { FlowStageBinding, Stage } from "../../api/Flows";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -90,6 +90,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+        <ak-modal-button href="${Stage.adminUrl(`create/`)}">
+            <ak-spinner-button slot="trigger" class="pf-m-primary">
+                ${gettext("Create Stage")}
+            </ak-spinner-button>
+            <div slot="modal"></div>
+        </ak-modal-button>
         <ak-modal-button href="${FlowStageBinding.adminUrl(`create/?target=${this.target}`)}">
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Bind Stage")}

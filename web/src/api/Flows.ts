@@ -57,6 +57,9 @@ export class Stage {
     constructor() {
         throw Error();
     }
+    static adminUrl(rest: string): string {
+        return `/administration/stages/${rest}`;
+    }
 }
 
 export class FlowStageBinding {
