@@ -17,16 +17,16 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     db_alias = schema_editor.connection.alias
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
-        slug="default-otp-time-configure",
+        slug="default-authenticator-totp-setup",
         designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={
-            "name": "default-otp-time-configure",
+            "name": "default-authenticator-totp-setup",
             "title": "Setup Two-Factor authentication",
         },
     )
 
     stage, _ = OTPTimeStage.objects.using(db_alias).update_or_create(
-        name="default-otp-time-configure", defaults={"digits": TOTPDigits.SIX}
+        name="default-authenticator-totp-setup", defaults={"digits": TOTPDigits.SIX}
     )
 
     FlowStageBinding.objects.using(db_alias).update_or_create(

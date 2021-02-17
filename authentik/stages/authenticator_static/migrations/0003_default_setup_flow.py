@@ -18,16 +18,16 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     db_alias = schema_editor.connection.alias
 
     flow, _ = Flow.objects.using(db_alias).update_or_create(
-        slug="default-otp-static-configure",
+        slug="default-authenticator-static-setup",
         designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={
-            "name": "default-otp-static-configure",
+            "name": "default-authenticator-static-setup",
             "title": "Setup Static OTP Tokens",
         },
     )
 
     stage, _ = OTPStaticStage.objects.using(db_alias).update_or_create(
-        name="default-otp-static-configure", defaults={"token_count": 6}
+        name="default-authenticator-static-setup", defaults={"token_count": 6}
     )
 
     FlowStageBinding.objects.using(db_alias).update_or_create(
