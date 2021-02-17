@@ -11,7 +11,7 @@ from authentik.lib.sentry import SentryIgnoredException
 def get_attrs(obj: SerializerModel) -> Dict[str, Any]:
     """Get object's attributes via their serializer, and covert it to a normal dict"""
     data = dict(obj.serializer(obj).data)
-    to_remove = ("policies", "stages", "pk", "background")
+    to_remove = ("policies", "stages", "pk", "background", "group", "user")
     for to_remove_name in to_remove:
         if to_remove_name in data:
             data.pop(to_remove_name)

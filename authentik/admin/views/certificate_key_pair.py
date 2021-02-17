@@ -5,18 +5,12 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, UpdateView
+from django.views.generic import UpdateView
 from django.views.generic.edit import FormView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.forms import (
     CertificateKeyPairForm,
@@ -24,23 +18,6 @@ from authentik.crypto.forms import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.views import CreateAssignPermView
-
-
-class CertificateKeyPairListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    ListView,
-):
-    """Show list of all keypairs"""
-
-    model = CertificateKeyPair
-    permission_required = "authentik_crypto.view_certificatekeypair"
-    ordering = "name"
-    template_name = "administration/certificatekeypair/list.html"
-
-    search_fields = ["name"]
 
 
 class CertificateKeyPairCreateView(
@@ -57,7 +34,7 @@ class CertificateKeyPairCreateView(
     permission_required = "authentik_crypto.add_certificatekeypair"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:certificate_key_pair")
+    success_url = "/"
     success_message = _("Successfully created Certificate-Key Pair")
 
 
@@ -75,7 +52,7 @@ class CertificateKeyPairGenerateView(
     permission_required = "authentik_crypto.add_certificatekeypair"
 
     template_name = "administration/certificatekeypair/generate.html"
-    success_url = reverse_lazy("authentik_admin:certificate_key_pair")
+    success_url = "/"
     success_message = _("Successfully generated Certificate-Key Pair")
 
     def form_valid(self, form: CertificateKeyPairGenerateForm) -> HttpResponse:
@@ -103,7 +80,7 @@ class CertificateKeyPairUpdateView(
     permission_required = "authentik_crypto.change_certificatekeypair"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:certificate_key_pair")
+    success_url = "/"
     success_message = _("Successfully updated Certificate-Key Pair")
 
 
@@ -116,5 +93,5 @@ class CertificateKeyPairDeleteView(
     permission_required = "authentik_crypto.delete_certificatekeypair"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:certificate_key_pair")
+    success_url = "/"
     success_message = _("Successfully deleted Certificate-Key Pair")

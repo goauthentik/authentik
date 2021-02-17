@@ -20,10 +20,15 @@ class CertificateKeyPairSerializer(ModelSerializer):
 
     cert_expiry = DateTimeField(source="certificate.not_valid_after", read_only=True)
     cert_subject = SerializerMethodField()
+    private_key_available = SerializerMethodField()
 
     def get_cert_subject(self, instance: CertificateKeyPair) -> str:
         """Get certificate subject as full rfc4514"""
         return instance.certificate.subject.rfc4514_string()
+
+    def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
+        """Show if this keypair has a private key configured or not"""
+        return instance.key_data != "" and instance.key_data is not None
 
     def validate_certificate_data(self, value):
         """Verify that input is a valid PEM x509 Certificate"""
@@ -58,6 +63,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "key_data",
             "cert_expiry",
             "cert_subject",
+            "private_key_available",
         ]
         extra_kwargs = {
             "key_data": {"write_only": True},

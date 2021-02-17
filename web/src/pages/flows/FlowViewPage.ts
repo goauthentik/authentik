@@ -14,11 +14,6 @@ import "./FlowDiagram";
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
     @property()
-    set args(value: { [key: string]: string }) {
-        this.flowSlug = value.slug;
-    }
-
-    @property()
     set flowSlug(value: string) {
         Flow.get(value).then((flow) => (this.flow = flow));
     }

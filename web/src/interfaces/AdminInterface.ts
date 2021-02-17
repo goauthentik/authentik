@@ -39,7 +39,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Flows").children(
-        new SidebarItem("Flows", "/administration/flows/").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
+        new SidebarItem("Flows", "/flows").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
         new SidebarItem("Stages", "/administration/stages/"),
         new SidebarItem("Prompts", "/administration/stages_prompts/"),
         new SidebarItem("Invitations", "/administration/stages/invitations/"),
@@ -49,7 +49,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Identity & Cryptography").children(
         new SidebarItem("User", "/administration/users/"),
         new SidebarItem("Groups", "/administration/groups/"),
-        new SidebarItem("Certificates", "/administration/crypto/certificates"),
+        new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/administration/tokens/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);

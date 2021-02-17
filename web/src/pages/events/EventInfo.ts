@@ -35,12 +35,40 @@ export class EventInfo extends LitElement {
         if (context === null) {
             return html`<span>-</span>`;
         }
-        return html`<ul class="pf-c-list">
-            <li>${gettext("UID")}: ${context.pk as string}</li>
-            <li>${gettext("Name")}: ${context.name as string}</li>
-            <li>${gettext("App")}: ${context.app as string}</li>
-            <li>${gettext("Model Name")}: ${context.model_name as string}</li>
-        </ul>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${gettext("UID")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.pk as string}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.name as string}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${gettext("App")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.app as string}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${gettext("Model Name")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${context.model_name as string}</div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     defaultResponse(): TemplateResult {

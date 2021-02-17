@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
-from django.urls.base import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic.edit import FormView
@@ -55,7 +54,7 @@ class MetadataImportView(LoginRequiredMixin, FormView):
 
     form_class = SAMLProviderImportForm
     template_name = "providers/saml/import.html"
-    success_url = reverse_lazy("authentik_admin:providers")
+    success_url = "/"
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:

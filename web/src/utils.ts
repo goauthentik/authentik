@@ -1,5 +1,5 @@
 import { html, TemplateResult } from "lit-html";
-import { SpinnerSize } from "./elements/Spinner";
+import "./elements/utils/LoadingState";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -47,15 +47,7 @@ export function htmlFromString(...strings: string[]): TemplateResult {
 
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
-        return html`<div class="pf-c-empty-state pf-m-full-height">
-            <div class="pf-c-empty-state__content">
-                <div class="pf-l-bullseye">
-                    <div class="pf-l-bullseye__item">
-                        <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
-                    </div>
-                </div>
-            </div>
-        </div>`;
+        return html`<ak-loading-state></ak-loading-state>`;
     }
     return actual;
 }

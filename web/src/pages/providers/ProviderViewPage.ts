@@ -4,7 +4,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import { SpinnerSize } from "../../elements/Spinner";
+import "../../elements/utils/LoadingState";
 
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
@@ -12,10 +12,6 @@ import "./ProxyProviderViewPage";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
 
     @property({type: Number})
     set providerID(value: number) {
@@ -31,15 +27,7 @@ export class ProviderViewPage extends LitElement {
 
     render(): TemplateResult {
         if (!this.provider) {
-            return html`<div class="pf-c-empty-state pf-m-full-height">
-                <div class="pf-c-empty-state__content">
-                    <div class="pf-l-bullseye">
-                        <div class="pf-l-bullseye__item">
-                            <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+            return html`<ak-loading-state></ak-loading-state>`;
         }
         switch (this.provider?.object_type) {
             case "saml":

@@ -4,11 +4,15 @@ export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
 export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
+export interface RouteArgs {
+    [key: string]: string;
+}
+
 export class Route {
     url: RegExp;
 
     private element?: TemplateResult;
-    private callback?: (args: { [key: string]: string }) => TemplateResult;
+    private callback?: (args: RouteArgs) => TemplateResult;
 
     constructor(url: RegExp, element?: TemplateResult) {
         this.url = url;
@@ -24,12 +28,12 @@ export class Route {
         return this;
     }
 
-    then(render: (args: { [key: string]: string }) => TemplateResult): Route {
+    then(render: (args: RouteArgs) => TemplateResult): Route {
         this.callback = render;
         return this;
     }
 
-    render(args: { [key: string]: string }): TemplateResult {
+    render(args: RouteArgs): TemplateResult {
         if (this.callback) {
             return this.callback(args);
         }

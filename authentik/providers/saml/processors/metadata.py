@@ -65,15 +65,15 @@ class MetadataProcessor:
     def get_bindings(self) -> Iterator[Element]:
         """Get all Bindings supported"""
         binding_url_map = {
-            SAML_BINDING_POST: self.http_request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_saml:sso-post",
-                    kwargs={"application_slug": self.provider.application.slug},
-                )
-            ),
             SAML_BINDING_REDIRECT: self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:sso-redirect",
+                    kwargs={"application_slug": self.provider.application.slug},
+                )
+            ),
+            SAML_BINDING_POST: self.http_request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:sso-post",
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),

@@ -43,6 +43,9 @@ export class Flow {
             return r.pagination.count;
         });
     }
+    static adminUrl(rest: string): string {
+        return `/administration/flows/${rest}`;
+    }
 }
 
 export class Stage {

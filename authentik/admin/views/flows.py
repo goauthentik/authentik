@@ -6,17 +6,11 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import DetailView, FormView, ListView, UpdateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from django.views.generic import DetailView, FormView, UpdateView
+from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow
@@ -27,22 +21,6 @@ from authentik.flows.transfer.importer import FlowImporter
 from authentik.flows.views import SESSION_KEY_PLAN, FlowPlanner
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import CreateAssignPermView, bad_request_message
-
-
-class FlowListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    ListView,
-):
-    """Show list of all flows"""
-
-    model = Flow
-    permission_required = "authentik_flows.view_flow"
-    ordering = "name"
-    template_name = "administration/flow/list.html"
-    search_fields = ["name", "slug", "designation", "title"]
 
 
 class FlowCreateView(
@@ -59,7 +37,7 @@ class FlowCreateView(
     permission_required = "authentik_flows.add_flow"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:flows")
+    success_url = "/"
     success_message = _("Successfully created Flow")
 
 
@@ -77,7 +55,7 @@ class FlowUpdateView(
     permission_required = "authentik_flows.change_flow"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:flows")
+    success_url = "/"
     success_message = _("Successfully updated Flow")
 
 
@@ -88,7 +66,7 @@ class FlowDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageV
     permission_required = "authentik_flows.delete_flow"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:flows")
+    success_url = "/"
     success_message = _("Successfully deleted Flow")
 
 
@@ -128,7 +106,7 @@ class FlowImportView(LoginRequiredMixin, FormView):
 
     form_class = FlowImportForm
     template_name = "administration/flow/import.html"
-    success_url = reverse_lazy("authentik_admin:flows")
+    success_url = "/"
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:

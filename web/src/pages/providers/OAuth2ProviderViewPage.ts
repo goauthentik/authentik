@@ -10,11 +10,12 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import { convertToTitle } from "../../utils";
+import "./RelatedApplicationButton";
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends Page {
     pageTitle(): string {
-        return gettext(`OAuth Provider ${this.provider?.name}`);
+        return gettext(`OAuth Provider ${this.provider?.name || ""}`);
     }
     pageDescription(): string | undefined {
         return;
@@ -72,12 +73,7 @@ export class OAuth2ProviderViewPage extends Page {
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    ${this.provider.assigned_application_slug ?
-                                                        html`<a href="#/applications/${this.provider.assigned_application_slug}">
-                                                            ${this.provider.assigned_application_name}
-                                                        </a>`:
-                                                        html`-`
-                                                    }
+                                                    <ak-provider-related-application .provider=${this.provider}></ak-provider-related-application>
                                                 </div>
                                             </dd>
                                         </div>

@@ -9,11 +9,12 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
+import "./RelatedApplicationButton";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends Page {
     pageTitle(): string {
-        return gettext(`Proxy Provider ${this.provider?.name}`);
+        return gettext(`Proxy Provider ${this.provider?.name || ""}`);
     }
     pageDescription(): string | undefined {
         return;
@@ -72,9 +73,7 @@ export class ProxyProviderViewPage extends Page {
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    <a href="#/applications/${this.provider.assigned_application_slug}">
-                                                        ${this.provider.assigned_application_name}
-                                                    </a>
+                                                    <ak-provider-related-application .provider=${this.provider}></ak-provider-related-application>
                                                 </div>
                                             </dd>
                                         </div>

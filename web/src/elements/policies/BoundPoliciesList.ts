@@ -24,7 +24,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Policy"),
+            new TableColumn("Policy / User / Group"),
             new TableColumn("Enabled", "enabled"),
             new TableColumn("Order", "order"),
             new TableColumn("Timeout", "timeout"),
@@ -32,9 +32,21 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
+    getPolicyUserGroupRow(item: PolicyBinding): string {
+        if (item.policy_obj) {
+            return gettext(`Policy ${item.policy_obj.name}`);
+        } else if (item.group) {
+            return gettext(`Group ${item.group.name}`);
+        } else if (item.user) {
+            return gettext(`User ${item.user.name}`);
+        } else {
+            return gettext("");
+        }
+    }
+
     row(item: PolicyBinding): TemplateResult[] {
         return [
-            html`${item.policy_obj.name}`,
+            html`${this.getPolicyUserGroupRow(item)}`,
             html`${item.enabled ? "Yes" : "No"}`,
             html`${item.order}`,
             html`${item.timeout}`,

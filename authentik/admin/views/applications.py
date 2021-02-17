@@ -1,4 +1,6 @@
 """authentik Application administration"""
+from typing import Any
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
@@ -7,6 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
+from guardian.shortcuts import get_objects_for_user
 
 from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.core.forms.applications import ApplicationForm
@@ -29,6 +32,22 @@ class ApplicationCreateView(
 
     template_name = "generic/create.html"
     success_message = _("Successfully created Application")
+
+    def get_initial(self) -> dict[str, Any]:
+        if "provider" in self.request.GET:
+            try:
+                initial_provider_pk = int(self.request.GET["provider"])
+            except ValueError:
+                return super().get_initial()
+            providers = (
+                get_objects_for_user(self.request.user, "authentik_core.view_provider")
+                .filter(pk=initial_provider_pk)
+                .select_subclasses()
+            )
+            if not providers.exists():
+                return {}
+            return {"provider": providers.first()}
+        return super().get_initial()
 
 
 class ApplicationUpdateView(
