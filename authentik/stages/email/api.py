@@ -1,23 +1,21 @@
 """EmailStage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.email.models import EmailStage, get_template_choices
 
 
-class EmailStageSerializer(ModelSerializer):
+class EmailStageSerializer(StageSerializer):
     """EmailStage Serializer"""
 
-    def __init__(self, *args, **kwrags):
-        super().__init__(*args, **kwrags)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.fields["template"].choices = get_template_choices()
 
     class Meta:
 
         model = EmailStage
-        fields = [
-            "pk",
-            "name",
+        fields = StageSerializer.Meta.fields + [
             "use_global_settings",
             "host",
             "port",

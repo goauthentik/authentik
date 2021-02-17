@@ -1,20 +1,17 @@
 """User Write Stage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.user_write.models import UserWriteStage
 
 
-class UserWriteStageSerializer(ModelSerializer):
+class UserWriteStageSerializer(StageSerializer):
     """UserWriteStage Serializer"""
 
     class Meta:
 
         model = UserWriteStage
-        fields = [
-            "pk",
-            "name",
-        ]
+        fields = StageSerializer.Meta.fields
 
 
 class UserWriteStageViewSet(ModelViewSet):

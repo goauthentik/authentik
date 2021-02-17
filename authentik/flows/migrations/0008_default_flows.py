@@ -50,21 +50,21 @@ def create_default_authentication_flow(
         target=flow,
         stage=identification_stage,
         defaults={
-            "order": 0,
+            "order": 10,
         },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
         target=flow,
         stage=password_stage,
         defaults={
-            "order": 1,
+            "order": 20,
         },
     )
     FlowStageBinding.objects.using(db_alias).update_or_create(
         target=flow,
         stage=login_stage,
         defaults={
-            "order": 2,
+            "order": 100,
         },
     )
 

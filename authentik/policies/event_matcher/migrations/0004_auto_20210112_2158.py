@@ -67,8 +67,14 @@ class Migration(migrations.Migration):
                     ("authentik.stages.user_logout", "authentik Stages.User Logout"),
                     ("authentik.stages.user_write", "authentik Stages.User Write"),
                     ("authentik.stages.otp_static", "authentik Stages.OTP.Static"),
-                    ("authentik.stages.otp_time", "authentik Stages.OTP.Time"),
-                    ("authentik.stages.otp_validate", "authentik Stages.OTP.Validate"),
+                    (
+                        "authentik.stages.authenticator_totp",
+                        "authentik Stages.OTP.Time",
+                    ),
+                    (
+                        "authentik.stages.authenticator_validate",
+                        "authentik Stages.OTP.Validate",
+                    ),
                     ("authentik.stages.password", "authentik Stages.Password"),
                     ("authentik.core", "authentik Core"),
                 ],

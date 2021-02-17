@@ -8,7 +8,8 @@ import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
-import { FlowStageBinding } from "../../api/Flows";
+import { FlowStageBinding, Stage } from "../../api/Flows";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -45,7 +46,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${FlowStageBinding.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
@@ -90,6 +91,26 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+        <ak-dropdown class="pf-c-dropdown">
+            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                <span class="pf-c-dropdown__toggle-text">${gettext("Create Stage")}</span>
+                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+            </button>
+            <ul class="pf-c-dropdown__menu" hidden>
+                ${until(Stage.getTypes().then((types) => {
+                    return types.map((type) => {
+                        return html`<li>
+                            <ak-modal-button href="${type.link}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                                    <small>${type.description}</small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>`;
+                    });
+                }), html`<ak-spinner></ak-spinner>`)}
+            </ul>
+        </ak-dropdown>
         <ak-modal-button href="${FlowStageBinding.adminUrl(`create/?target=${this.target}`)}">
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Bind Stage")}

@@ -1,17 +1,17 @@
 """DummyStage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.dummy.models import DummyStage
 
 
-class DummyStageSerializer(ModelSerializer):
+class DummyStageSerializer(StageSerializer):
     """DummyStage Serializer"""
 
     class Meta:
 
         model = DummyStage
-        fields = ["pk", "name"]
+        fields = StageSerializer.Meta.fields
 
 
 class DummyStageViewSet(ModelViewSet):

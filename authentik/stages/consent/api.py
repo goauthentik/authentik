@@ -1,17 +1,17 @@
 """ConsentStage API Views"""
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.flows.api import StageSerializer
 from authentik.stages.consent.models import ConsentStage
 
 
-class ConsentStageSerializer(ModelSerializer):
+class ConsentStageSerializer(StageSerializer):
     """ConsentStage Serializer"""
 
     class Meta:
 
         model = ConsentStage
-        fields = ["pk", "name", "mode", "consent_expire_in"]
+        fields = StageSerializer.Meta.fields + ["mode", "consent_expire_in"]
 
 
 class ConsentStageViewSet(ModelViewSet):

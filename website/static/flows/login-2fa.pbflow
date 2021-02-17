@@ -41,7 +41,7 @@
                 "pk": "37f709c3-8817-45e8-9a93-80a925d293c2",
                 "name": "default-authentication-flow-totp"
             },
-            "model": "authentik_stages_otp_validate.otpvalidatestage",
+            "model": "authentik_stages_authenticator_validate.AuthenticatorValidateStage",
             "attrs": {}
         },
         {

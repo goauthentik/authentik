@@ -1,4 +1,5 @@
 import { DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { TypeCreate } from "./Providers";
 
 export enum FlowDesignation {
     Authentication = "authentication",
@@ -56,6 +57,14 @@ export class Stage {
 
     constructor() {
         throw Error();
+    }
+
+    static getTypes(): Promise<TypeCreate[]> {
+        return DefaultClient.fetch<TypeCreate[]>(["stages", "all", "types"]);
+    }
+
+    static adminUrl(rest: string): string {
+        return `/administration/stages/${rest}`;
     }
 }
 

@@ -56,7 +56,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${CertificateKeyPair.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
@@ -102,7 +102,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 ${gettext("Create")}
             </ak-spinner-button>
             <div slot="modal"></div>
-        </ak-modal-button>&nbsp;
+        </ak-modal-button>
         <ak-modal-button href=${CertificateKeyPair.adminUrl("generate/")}>
             <ak-spinner-button slot="trigger" class="pf-m-secondary">
                 ${gettext("Generate")}

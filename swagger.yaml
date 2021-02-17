@@ -5420,6 +5420,42 @@ paths:
       tags:
         - stages
     parameters: []
+  /stages/all/types/:
+    get:
+      operationId: stages_all_types
+      description: Get all creatable stage types
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - stages
+    parameters: []
   /stages/all/{stage_uuid}/:
     get:
       operationId: stages_all_read
@@ -5436,6 +5472,514 @@ paths:
       - name: stage_uuid
         in: path
         description: A UUID string identifying this stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/authenticator/static/:
+    get:
+      operationId: stages_authenticator_static_list
+      description: AuthenticatorStaticStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/AuthenticatorStaticStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_authenticator_static_create
+      description: AuthenticatorStaticStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/authenticator/static/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_static_read
+      description: AuthenticatorStaticStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_authenticator_static_update
+      description: AuthenticatorStaticStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_authenticator_static_partial_update
+      description: AuthenticatorStaticStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorStaticStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_authenticator_static_delete
+      description: AuthenticatorStaticStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this Static Authenticator Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/authenticator/totp/:
+    get:
+      operationId: stages_authenticator_totp_list
+      description: AuthenticatorTOTPStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/AuthenticatorTOTPStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_authenticator_totp_create
+      description: AuthenticatorTOTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/authenticator/totp/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_totp_read
+      description: AuthenticatorTOTPStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_authenticator_totp_update
+      description: AuthenticatorTOTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_authenticator_totp_partial_update
+      description: AuthenticatorTOTPStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorTOTPStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_authenticator_totp_delete
+      description: AuthenticatorTOTPStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this TOTP Authenticator Setup Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/authenticator/validate/:
+    get:
+      operationId: stages_authenticator_validate_list
+      description: AuthenticatorValidateStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/AuthenticatorValidateStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_authenticator_validate_create
+      description: AuthenticatorValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/authenticator/validate/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_validate_read
+      description: AuthenticatorValidateStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_authenticator_validate_update
+      description: AuthenticatorValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_authenticator_validate_partial_update
+      description: AuthenticatorValidateStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticatorValidateStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_authenticator_validate_delete
+      description: AuthenticatorValidateStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this Authenticator Validation Stage.
+        required: true
+        type: string
+        format: uuid
+  /stages/authenticator/webauthn/:
+    get:
+      operationId: stages_authenticator_webauthn_list
+      description: AuthenticateWebAuthnStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/AuthenticateWebAuthnStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_authenticator_webauthn_create
+      description: AuthenticateWebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/authenticator/webauthn/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_webauthn_read
+      description: AuthenticateWebAuthnStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_authenticator_webauthn_update
+      description: AuthenticateWebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_authenticator_webauthn_partial_update
+      description: AuthenticateWebAuthnStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AuthenticateWebAuthnStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_authenticator_webauthn_delete
+      description: AuthenticateWebAuthnStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this WebAuthn Authenticator Setup Stage.
         required: true
         type: string
         format: uuid
@@ -6325,387 +6869,6 @@ paths:
       - name: stage_uuid
         in: path
         description: A UUID string identifying this Invitation Stage.
-        required: true
-        type: string
-        format: uuid
-  /stages/otp_static/:
-    get:
-      operationId: stages_otp_static_list
-      description: OTPStaticStage Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OTPStaticStage'
-      tags:
-        - stages
-    post:
-      operationId: stages_otp_static_create
-      description: OTPStaticStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      tags:
-        - stages
-    parameters: []
-  /stages/otp_static/{stage_uuid}/:
-    get:
-      operationId: stages_otp_static_read
-      description: OTPStaticStage Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      tags:
-        - stages
-    put:
-      operationId: stages_otp_static_update
-      description: OTPStaticStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      tags:
-        - stages
-    patch:
-      operationId: stages_otp_static_partial_update
-      description: OTPStaticStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPStaticStage'
-      tags:
-        - stages
-    delete:
-      operationId: stages_otp_static_delete
-      description: OTPStaticStage Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - stages
-    parameters:
-      - name: stage_uuid
-        in: path
-        description: A UUID string identifying this OTP Static Setup Stage.
-        required: true
-        type: string
-        format: uuid
-  /stages/otp_time/:
-    get:
-      operationId: stages_otp_time_list
-      description: OTPTimeStage Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OTPTimeStage'
-      tags:
-        - stages
-    post:
-      operationId: stages_otp_time_create
-      description: OTPTimeStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      tags:
-        - stages
-    parameters: []
-  /stages/otp_time/{stage_uuid}/:
-    get:
-      operationId: stages_otp_time_read
-      description: OTPTimeStage Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      tags:
-        - stages
-    put:
-      operationId: stages_otp_time_update
-      description: OTPTimeStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      tags:
-        - stages
-    patch:
-      operationId: stages_otp_time_partial_update
-      description: OTPTimeStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPTimeStage'
-      tags:
-        - stages
-    delete:
-      operationId: stages_otp_time_delete
-      description: OTPTimeStage Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - stages
-    parameters:
-      - name: stage_uuid
-        in: path
-        description: A UUID string identifying this OTP Time (TOTP) Setup Stage.
-        required: true
-        type: string
-        format: uuid
-  /stages/otp_validate/:
-    get:
-      operationId: stages_otp_validate_list
-      description: OTPValidateStage Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/OTPValidateStage'
-      tags:
-        - stages
-    post:
-      operationId: stages_otp_validate_create
-      description: OTPValidateStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      tags:
-        - stages
-    parameters: []
-  /stages/otp_validate/{stage_uuid}/:
-    get:
-      operationId: stages_otp_validate_read
-      description: OTPValidateStage Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      tags:
-        - stages
-    put:
-      operationId: stages_otp_validate_update
-      description: OTPValidateStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      tags:
-        - stages
-    patch:
-      operationId: stages_otp_validate_partial_update
-      description: OTPValidateStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/OTPValidateStage'
-      tags:
-        - stages
-    delete:
-      operationId: stages_otp_validate_delete
-      description: OTPValidateStage Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - stages
-    parameters:
-      - name: stage_uuid
-        in: path
-        description: A UUID string identifying this OTP Validation Stage.
         required: true
         type: string
         format: uuid
@@ -8191,12 +8354,16 @@ definitions:
         title: Name
         type: string
         minLength: 1
-      __type__:
-        title: 'type  '
+      object_type:
+        title: Object type
         type: string
         readOnly: true
       verbose_name:
         title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
   FlowStageBinding:
@@ -9117,9 +9284,10 @@ definitions:
           - authentik.stages.user_login
           - authentik.stages.user_logout
           - authentik.stages.user_write
-          - authentik.stages.otp_static
-          - authentik.stages.otp_time
-          - authentik.stages.otp_validate
+          - authentik.stages.authenticator_static
+          - authentik.stages.authenticator_totp
+          - authentik.stages.authenticator_validate
+          - authentik.stages.authenticator_webauthn
           - authentik.stages.password
           - authentik.managed
           - authentik.core
@@ -10316,6 +10484,152 @@ definitions:
           \ log out manually. (Format: hours=1;minutes=2;seconds=3)."
         type: string
         minLength: 1
+  AuthenticatorStaticStage:
+    description: AuthenticatorStaticStage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
+        type: string
+        format: uuid
+        x-nullable: true
+      token_count:
+        title: Token count
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+  AuthenticatorTOTPStage:
+    description: AuthenticatorTOTPStage Serializer
+    required:
+      - name
+      - digits
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
+        type: string
+        format: uuid
+        x-nullable: true
+      digits:
+        title: Digits
+        type: integer
+        enum:
+          - 6
+          - 8
+  AuthenticatorValidateStage:
+    description: AuthenticatorValidateStage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      not_configured_action:
+        title: Not configured action
+        type: string
+        enum:
+          - skip
+      device_classes:
+        description: ''
+        type: array
+        items:
+          title: Device classes
+          type: string
+          minLength: 1
+  AuthenticateWebAuthnStage:
+    description: AuthenticateWebAuthnStage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   CaptchaStage:
     description: CaptchaStage Serializer
     required:
@@ -10333,6 +10647,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       public_key:
         title: Public key
         description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
@@ -10358,6 +10684,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       mode:
         title: Mode
         type: string
@@ -10385,6 +10723,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   EmailStage:
     description: EmailStage Serializer
     required:
@@ -10400,6 +10750,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       use_global_settings:
         title: Use global settings
         description: When enabled, global Email connection settings will be used and
@@ -10470,6 +10832,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       user_fields:
         description: ''
         type: array
@@ -10524,6 +10898,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       continue_flow_without_invitation:
         title: Continue flow without invitation
         description: If this flag is set, this Stage will jump to the next Stage when
@@ -10548,77 +10934,6 @@ definitions:
         title: Fixed data
         description: Optional fixed data to enforce on user enrollment.
         type: object
-  OTPStaticStage:
-    description: OTPStaticStage Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      configure_flow:
-        title: Configure flow
-        description: Flow used by an authenticated user to configure this Stage. If
-          empty, user will not be able to configure this stage.
-        type: string
-        format: uuid
-        x-nullable: true
-      token_count:
-        title: Token count
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-  OTPTimeStage:
-    description: OTPTimeStage Serializer
-    required:
-      - name
-      - digits
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      configure_flow:
-        title: Configure flow
-        description: Flow used by an authenticated user to configure this Stage. If
-          empty, user will not be able to configure this stage.
-        type: string
-        format: uuid
-        x-nullable: true
-      digits:
-        title: Digits
-        type: integer
-        enum:
-          - 6
-          - 8
-  OTPValidateStage:
-    description: OTPValidateStage Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
   PasswordStage:
     description: PasswordStage Serializer
     required:
@@ -10635,6 +10950,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       backends:
         description: ''
         type: array
@@ -10723,6 +11050,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       fields:
         type: array
         items:
@@ -10750,6 +11089,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   UserLoginStage:
     description: UserLoginStage Serializer
     required:
@@ -10765,6 +11116,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       session_duration:
         title: Session duration
         description: 'Determines how long a session lasts. Default of 0 means that
@@ -10786,6 +11149,18 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
   UserWriteStage:
     description: UserWriteStage Serializer
     required:
@@ -10801,3 +11176,15 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true

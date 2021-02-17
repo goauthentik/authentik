@@ -45,6 +45,7 @@ kubernetes = "*"
 docker = "*"
 xmlsec = "*"
 geoip2 = "*"
+webauthn = "*"
 
 [requires]
 python_version = "3.9"

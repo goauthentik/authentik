@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load humanize %}
+
+<div class="pf-c-card">
+    <div class="pf-c-card__header pf-c-title pf-m-md">
+        {% trans "WebAuthn Devices" %}
+    </div>
+    <div class="pf-c-card__body">
+        <ul class="pf-c-data-list" role="list">
+            {% for device in devices %}
+            <li class="pf-c-data-list__item" aria-labelledby="data-list-basic-item-1">
+                <div class="pf-c-data-list__item-row">
+                    <div class="pf-c-data-list__item-content">
+                        <div class="pf-c-data-list__cell">{{ device.name|default:"-" }}</div>
+                        <div class="pf-c-data-list__cell">
+                            {% blocktrans with created_on=device.created_on|naturaltime %}
+                                Created {{ created_on }}
+                            {% endblocktrans %}
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="pf-c-card__footer">
+        {% if stage.configure_flow %}
+        <a href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next=/%23{% url 'authentik_core:user-settings' %}"
+            class="ak-root-link pf-c-button pf-m-primary">{% trans "Configure WebAuthn" %}
+        </a>
+        {% endif %}
+    </div>
+</div>

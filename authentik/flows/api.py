@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, reverse
 from drf_yasg2.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
@@ -18,8 +18,11 @@ from rest_framework.serializers import (
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
+from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.planner import cache_key
+from authentik.lib.templatetags.authentik_utils import verbose_name
+from authentik.lib.utils.reflection import all_subclasses
 
 
 class FlowSerializer(ModelSerializer):
@@ -154,24 +157,19 @@ class FlowViewSet(ModelViewSet):
         return Response({"diagram": diagram})
 
 
-class StageSerializer(ModelSerializer):
+class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
-    __type__ = SerializerMethodField(method_name="get_type")
-    verbose_name = SerializerMethodField(method_name="get_verbose_name")
+    object_type = SerializerMethodField()
 
-    def get_type(self, obj: Stage) -> str:
+    def get_object_type(self, obj):
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("stage", "")
-
-    def get_verbose_name(self, obj: Stage) -> str:
-        """Get verbose name for UI"""
-        return obj._meta.verbose_name
 
     class Meta:
 
         model = Stage
-        fields = ["pk", "name", "__type__", "verbose_name"]
+        fields = ["pk", "name", "object_type", "verbose_name", "verbose_name_plural"]
 
 
 class StageViewSet(ReadOnlyModelViewSet):
@@ -182,6 +180,23 @@ class StageViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Stage.objects.select_subclasses()
+
+    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @action(detail=False)
+    def types(self, request: Request) -> Response:
+        """Get all creatable stage types"""
+        data = []
+        for subclass in all_subclasses(self.queryset.model, False):
+            data.append(
+                {
+                    "name": verbose_name(subclass),
+                    "description": subclass.__doc__,
+                    "link": reverse("authentik_admin:stage-create")
+                    + f"?type={subclass.__name__}",
+                }
+            )
+        data = sorted(data, key=lambda x: x["name"])
+        return Response(TypeCreateSerializer(data, many=True).data)
 
 
 class FlowStageBindingSerializer(ModelSerializer):

@@ -57,15 +57,18 @@ from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProvide
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api import OAuthSourceViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
+from authentik.stages.authenticator_static.api import AuthenticatorStaticStageViewSet
+from authentik.stages.authenticator_totp.api import AuthenticatorTOTPStageViewSet
+from authentik.stages.authenticator_validate.api import (
+    AuthenticatorValidateStageViewSet,
+)
+from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageViewSet
 from authentik.stages.captcha.api import CaptchaStageViewSet
 from authentik.stages.consent.api import ConsentStageViewSet
 from authentik.stages.dummy.api import DummyStageViewSet
 from authentik.stages.email.api import EmailStageViewSet
 from authentik.stages.identification.api import IdentificationStageViewSet
 from authentik.stages.invitation.api import InvitationStageViewSet, InvitationViewSet
-from authentik.stages.otp_static.api import OTPStaticStageViewSet
-from authentik.stages.otp_time.api import OTPTimeStageViewSet
-from authentik.stages.otp_validate.api import OTPValidateStageViewSet
 from authentik.stages.password.api import PasswordStageViewSet
 from authentik.stages.prompt.api import PromptStageViewSet, PromptViewSet
 from authentik.stages.user_delete.api import UserDeleteStageViewSet
@@ -134,15 +137,16 @@ router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
 
 router.register("stages/all", StageViewSet)
+router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)
+router.register("stages/authenticator/totp", AuthenticatorTOTPStageViewSet)
+router.register("stages/authenticator/validate", AuthenticatorValidateStageViewSet)
+router.register("stages/authenticator/webauthn", AuthenticateWebAuthnStageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)
 router.register("stages/consent", ConsentStageViewSet)
 router.register("stages/email", EmailStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
 router.register("stages/invitation", InvitationStageViewSet)
 router.register("stages/invitation/invitations", InvitationViewSet)
-router.register("stages/otp_static", OTPStaticStageViewSet)
-router.register("stages/otp_time", OTPTimeStageViewSet)
-router.register("stages/otp_validate", OTPValidateStageViewSet)
 router.register("stages/password", PasswordStageViewSet)
 router.register("stages/prompt/prompts", PromptViewSet)
 router.register("stages/prompt/stages", PromptStageViewSet)
