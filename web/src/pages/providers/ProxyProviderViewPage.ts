@@ -102,10 +102,10 @@ export class ProxyProviderViewPage extends Page {
                                                     ${this.provider.basic_auth_enabled ?
                                                         html`<span class="pf-c-button__icon pf-m-start">
                                                             <i class="fas fa-check-circle" aria-hidden="true"></i>
-                                                            </span>&nbsp;${gettext("Yes")}`:
+                                                            </span>${gettext("Yes")}`:
                                                         html`<span class="pf-c-button__icon pf-m-start">
                                                             <i class="fas fa-times-circle" aria-hidden="true"></i>
-                                                            </span>&nbsp;${gettext("No")}`
+                                                            </span>${gettext("No")}`
                                                     }
                                                 </div>
                                             </dd>

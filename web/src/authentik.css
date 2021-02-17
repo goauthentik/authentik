@@ -250,4 +250,10 @@ select[multiple] {
     .pf-c-notification-drawer__header {
         background-color: var(--ak-dark-background-lighter);
     }
+    /* data list */
+    .pf-c-data-list__item {
+        --pf-c-data-list__item--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
+    }
 }

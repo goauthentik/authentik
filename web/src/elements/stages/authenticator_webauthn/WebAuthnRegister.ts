@@ -100,7 +100,7 @@ export class WebAuthnRegister extends LitElement {
                         this.registerWrapper();
                     }}>
                         ${gettext("Register device")}
-                    </button>&nbsp;
+                    </button>
                     <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
                         this.finishStage();
                     }}>

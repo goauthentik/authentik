@@ -57,13 +57,13 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${PropertyMapping.adminUrl(`${item.pk}/test/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Test")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${PropertyMapping.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}

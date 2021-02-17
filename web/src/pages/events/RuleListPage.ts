@@ -57,7 +57,7 @@ export class RuleListPage extends TablePage<Rule> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${Rule.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}

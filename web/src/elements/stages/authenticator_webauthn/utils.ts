@@ -95,7 +95,7 @@ export async function postNewAssertionToServer(assertionDataForServer: Assertion
     });
 
     return await fetchJSON(
-        "/-/user/webauthn/verify-credential-info/", {
+        "/-/user/authenticator/webauthn/verify-credential-info/", {
         method: "POST",
         body: formData
     });
@@ -108,7 +108,7 @@ export async function postNewAssertionToServer(assertionDataForServer: Assertion
  */
 export async function getCredentialCreateOptionsFromServer(): Promise<GenericResponse> {
     return await fetchJSON(
-        "/-/user/webauthn/begin-activate/",
+        "/-/user/authenticator/webauthn/begin-activate/",
         {
             method: "POST",
         }
@@ -123,7 +123,7 @@ export async function getCredentialCreateOptionsFromServer(): Promise<GenericRes
  */
 export async function getCredentialRequestOptionsFromServer(): Promise<GenericResponse> {
     return await fetchJSON(
-        "/-/user/webauthn/begin-assertion/",
+        "/-/user/authenticator/webauthn/begin-assertion/",
         {
             method: "POST",
         }
@@ -194,7 +194,7 @@ export async function postAssertionToServer(assertionDataForServer: Assertion): 
     });
 
     return await fetchJSON(
-        "/-/user/webauthn/verify-assertion/", {
+        "/-/user/authenticator/webauthn/verify-assertion/", {
             method: "POST",
             body: formData
     });

@@ -60,16 +60,16 @@ export class FlowListPage extends TablePage<Flow> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${Flow.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <a class="pf-c-button pf-m-secondary ak-root-link" href="${Flow.adminUrl(`${item.pk}/execute/?next=/%23${window.location.href}`)}">
                 ${gettext("Execute")}
-            </a>&nbsp;
+            </a>
             <a class="pf-c-button pf-m-secondary ak-root-link" href="${Flow.adminUrl(`${item.pk}/export/`)}">
                 ${gettext("Export")}
             </a>
@@ -84,7 +84,7 @@ export class FlowListPage extends TablePage<Flow> {
                 ${gettext("Create")}
             </ak-spinner-button>
             <div slot="modal"></div>
-        </ak-modal-button>&nbsp;
+        </ak-modal-button>
         <ak-modal-button href=${Flow.adminUrl("import/")}>
             <ak-spinner-button slot="trigger" class="pf-m-secondary">
                 ${gettext("Import")}

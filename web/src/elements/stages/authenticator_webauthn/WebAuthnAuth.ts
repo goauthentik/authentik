@@ -18,7 +18,7 @@ export class WebAuthnAuth extends LitElement {
         try {
             credentialRequestOptionsFromServer = await getCredentialRequestOptionsFromServer();
         } catch (err) {
-            throw new Error(`Error when getting request options from server: ${err}`);
+            throw new Error(gettext(`Error when getting request options from server: ${err}`));
         }
 
         // convert certain members of the PublicKeyCredentialRequestOptions into
@@ -33,8 +33,11 @@ export class WebAuthnAuth extends LitElement {
             assertion = await navigator.credentials.get({
                 publicKey: transformedCredentialRequestOptions,
             });
+            if (!assertion) {
+                throw new Error(gettext("Assertions is empty"));
+            }
         } catch (err) {
-            throw new Error(`Error when creating credential: ${err}`);
+            throw new Error(gettext(`Error when creating credential: ${err}`));
         }
 
         // we now have an authentication assertion! encode the byte arrays contained
@@ -45,7 +48,7 @@ export class WebAuthnAuth extends LitElement {
         try {
             await postAssertionToServer(transformedAssertionForServer);
         } catch (err) {
-            throw new Error(`Error when validating assertion on server: ${err}`);
+            throw new Error(gettext(`Error when validating assertion on server: ${err}`));
         }
 
         this.finishStage();
@@ -71,7 +74,7 @@ export class WebAuthnAuth extends LitElement {
         }
         this.authenticateRunning = true;
         this.authenticate().catch((e) => {
-            console.error(e);
+            console.error(gettext(e));
             this.authenticateMessage = e.toString();
         }).finally(() => {
             this.authenticateRunning = false;

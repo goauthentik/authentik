@@ -194,11 +194,11 @@ export abstract class Table<T> extends LitElement {
     }
 
     renderToolbar(): TemplateResult {
-        return html`&nbsp;<button
+        return html`<button
             @click=${() => { this.fetch(); }}
             class="pf-c-button pf-m-primary">
             ${gettext("Refresh")}
-        </button>&nbsp;`;
+        </button>`;
     }
 
     renderToolbarAfter(): TemplateResult {
@@ -216,10 +216,10 @@ export abstract class Table<T> extends LitElement {
     renderTable(): TemplateResult {
         return html`<div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">
-                    ${this.renderSearch()}&nbsp;
+                    ${this.renderSearch()}
                     <div class="pf-c-toolbar__bulk-select">
                         ${this.renderToolbar()}
-                    </div>&nbsp;
+                    </div>
                     ${this.renderToolbarAfter()}
                     <ak-table-pagination
                         class="pf-c-toolbar__item pf-m-pagination"

@@ -50,13 +50,13 @@ export class TransportListPage extends TablePage<Transport> {
             html`
             <ak-action-button url="${DefaultClient.makeUrl(["events", "transports", item.pk,  "test"])}">
                 ${gettext("Test")}
-            </ak-action-button>&nbsp;
+            </ak-action-button>
             <ak-modal-button href="${Transport.adminUrl(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>&nbsp;
+            </ak-modal-button>
             <ak-modal-button href="${Transport.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
