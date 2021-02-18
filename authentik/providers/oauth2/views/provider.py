@@ -1,5 +1,5 @@
 """authentik OAuth2 OpenID well-known views"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
@@ -29,7 +29,7 @@ PLAN_CONTEXT_SCOPES = "scopes"
 class ProviderInfoView(View):
     """OpenID-compliant Provider Info"""
 
-    def get_info(self, provider: OAuth2Provider) -> Dict[str, Any]:
+    def get_info(self, provider: OAuth2Provider) -> dict[str, Any]:
         """Get dictionary for OpenID Connect information"""
         scopes = list(
             ScopeMapping.objects.filter(provider=provider).values_list(

@@ -1,5 +1,5 @@
 """Discord OAuth Views"""
-from typing import Any, Dict
+from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.types.manager import MANAGER, RequestKind
@@ -25,8 +25,8 @@ class DiscordOAuth2Callback(OAuthCallback):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
         return {
             "username": info.get("username"),
             "email": info.get("email", None),

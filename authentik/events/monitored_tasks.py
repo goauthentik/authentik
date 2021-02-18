@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from traceback import format_tb
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from celery import Task
 from django.core.cache import cache
@@ -50,7 +50,7 @@ class TaskInfo:
     task_call_module: str
     task_call_func: str
     task_call_args: List[Any] = field(default_factory=list)
-    task_call_kwargs: Dict[str, Any] = field(default_factory=dict)
+    task_call_kwargs: dict[str, Any] = field(default_factory=dict)
 
     task_description: Optional[str] = field(default=None)
 
@@ -60,7 +60,7 @@ class TaskInfo:
         return self.task_name.split("_")
 
     @staticmethod
-    def all() -> Dict[str, "TaskInfo"]:
+    def all() -> dict[str, "TaskInfo"]:
         """Get all TaskInfo objects"""
         return cache.get_many(cache.keys("task_*"))
 
@@ -109,7 +109,7 @@ class MonitoredTask(Task):
 
     # pylint: disable=too-many-arguments
     def after_return(
-        self, status, retval, task_id, args: List[Any], kwargs: Dict[str, Any], einfo
+        self, status, retval, task_id, args: List[Any], kwargs: dict[str, Any], einfo
     ):
         if not self._result.uid:
             self._result.uid = self._uid

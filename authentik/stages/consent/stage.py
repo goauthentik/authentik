@@ -1,5 +1,5 @@
 """authentik consent stage"""
-from typing import Any, Dict, List
+from typing import Any, List
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
@@ -19,7 +19,7 @@ class ConsentStageView(FormView, StageView):
 
     form_class = ConsentForm
 
-    def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         kwargs["current_stage"] = self.executor.current_stage
         kwargs["context"] = self.executor.plan.context

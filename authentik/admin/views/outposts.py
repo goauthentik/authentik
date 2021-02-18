@@ -1,6 +1,6 @@
 """authentik Outpost administration"""
 from dataclasses import asdict
-from typing import Any, Dict
+from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
@@ -33,7 +33,7 @@ class OutpostCreateView(
     template_name = "generic/create.html"
     success_message = _("Successfully created Outpost")
 
-    def get_initial(self) -> Dict[str, Any]:
+    def get_initial(self) -> dict[str, Any]:
         return {
             "_config": asdict(
                 OutpostConfig(authentik_host=self.request.build_absolute_uri("/"))

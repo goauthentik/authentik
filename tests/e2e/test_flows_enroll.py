@@ -1,6 +1,6 @@
 """Test Enroll flow"""
 from sys import platform
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from django.test import override_settings
@@ -22,7 +22,7 @@ from tests.e2e.utils import USER, SeleniumTestCase, retry
 class TestFlowsEnroll(SeleniumTestCase):
     """Test Enroll flow"""
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "mailhog/mailhog:v1.0.1",
             "detach": True,

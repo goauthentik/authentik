@@ -1,6 +1,5 @@
 """SAML AuthnRequest Processor"""
 from base64 import b64encode
-from typing import Dict
 from urllib.parse import quote_plus
 
 import xmlsec
@@ -125,7 +124,7 @@ class RequestProcessor:
 
         return etree.tostring(auth_n_request).decode()
 
-    def build_auth_n_detached(self) -> Dict[str, str]:
+    def build_auth_n_detached(self) -> dict[str, str]:
         """Get Dict AuthN Request for Redirect bindings, with detached
         Signature. See https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf"""
         auth_n_request = self.get_auth_n()

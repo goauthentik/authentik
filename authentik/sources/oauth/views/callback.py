@@ -1,5 +1,5 @@
 """OAuth Callback Views"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django.conf import settings
 from django.contrib import messages
@@ -115,14 +115,14 @@ class OAuthCallback(OAuthClientMixin, View):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
         """Create a dict of User data"""
         raise NotImplementedError()
 
     # pylint: disable=unused-argument
     def get_user_id(
-        self, source: UserOAuthSourceConnection, info: Dict[str, Any]
+        self, source: UserOAuthSourceConnection, info: dict[str, Any]
     ) -> Optional[str]:
         """Return unique identifier from the profile info."""
         if "id" in info:
@@ -167,7 +167,7 @@ class OAuthCallback(OAuthClientMixin, View):
         source: OAuthSource,
         user: User,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
+        info: dict[str, Any],
     ) -> HttpResponse:
         "Login user and redirect."
         messages.success(
@@ -184,7 +184,7 @@ class OAuthCallback(OAuthClientMixin, View):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
+        info: dict[str, Any],
     ) -> HttpResponse:
         """Handler when the user was already authenticated and linked an external source
         to their account."""
@@ -211,7 +211,7 @@ class OAuthCallback(OAuthClientMixin, View):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
+        info: dict[str, Any],
     ) -> HttpResponse:
         """User was not authenticated and previous request was not authenticated."""
         messages.success(

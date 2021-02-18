@@ -2,7 +2,7 @@
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from hashlib import sha256
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.views import View
@@ -171,7 +171,7 @@ class TokenView(View):
         except UserAuthError as error:
             return TokenResponse(error.create_dict(), status=403)
 
-    def create_code_response_dic(self) -> Dict[str, Any]:
+    def create_code_response_dic(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-4.1"""
 
         refresh_token = self.params.authorization_code.provider.create_refresh_token(
@@ -207,7 +207,7 @@ class TokenView(View):
 
         return response_dict
 
-    def create_refresh_response_dic(self) -> Dict[str, Any]:
+    def create_refresh_response_dic(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-6"""
 
         unauthorized_scopes = set(self.params.scope) - set(

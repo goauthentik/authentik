@@ -1,5 +1,5 @@
 """Kubernetes Ingress Reconciler"""
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from kubernetes.client import (
@@ -78,7 +78,7 @@ class IngressReconciler(KubernetesObjectReconciler[NetworkingV1beta1Ingress]):
         if have_hosts_tls != expected_hosts_tls:
             raise NeedsUpdate()
 
-    def get_ingress_annotations(self) -> Dict[str, str]:
+    def get_ingress_annotations(self) -> dict[str, str]:
         """Get ingress annotations"""
         annotations = {
             # Ensure that with multiple proxy replicas deployed, the same CSRF request

@@ -1,5 +1,4 @@
 """Proxy Provider Docker Contoller"""
-from typing import Dict
 from urllib.parse import urlparse
 
 from authentik.outposts.controllers.base import DeploymentPort
@@ -18,7 +17,7 @@ class ProxyDockerController(DockerController):
             DeploymentPort(4443, "https", "tcp"),
         ]
 
-    def _get_labels(self) -> Dict[str, str]:
+    def _get_labels(self) -> dict[str, str]:
         hosts = []
         for proxy_provider in ProxyProvider.objects.filter(outpost__in=[self.outpost]):
             proxy_provider: ProxyProvider

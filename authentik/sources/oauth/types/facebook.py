@@ -1,5 +1,5 @@
 """Facebook OAuth Views"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from facebook import GraphAPI
 
@@ -23,7 +23,7 @@ class FacebookOAuthRedirect(OAuthRedirect):
 class FacebookOAuth2Client(OAuth2Client):
     """Facebook OAuth2 Client"""
 
-    def get_profile_info(self, token: Dict[str, str]) -> Optional[Dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         api = GraphAPI(access_token=token["access_token"])
         return api.get_object("me", fields="id,name,email")
 
@@ -38,8 +38,8 @@ class FacebookOAuth2Callback(OAuthCallback):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
         return {
             "username": info.get("name"),
             "email": info.get("email"),

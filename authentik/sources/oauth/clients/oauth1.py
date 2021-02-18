@@ -1,5 +1,5 @@
 """OAuth 1 Clients"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from urllib.parse import parse_qsl
 
 from requests.exceptions import RequestException
@@ -20,7 +20,7 @@ class OAuthClient(BaseOAuthClient):
         "Accept": "application/json",
     }
 
-    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         "Fetch access token from callback request."
         raw_token = self.request.session.get(self.session_key, None)
         verifier = self.request.GET.get("oauth_verifier", None)
@@ -60,7 +60,7 @@ class OAuthClient(BaseOAuthClient):
         else:
             return response.text
 
-    def get_redirect_args(self) -> Dict[str, Any]:
+    def get_redirect_args(self) -> dict[str, Any]:
         "Get request parameters for redirect url."
         callback = self.request.build_absolute_uri(self.callback)
         raw_token = self.get_request_token()
@@ -71,7 +71,7 @@ class OAuthClient(BaseOAuthClient):
             "oauth_callback": callback,
         }
 
-    def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
+    def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
         "Parse token and secret from raw token response."
         return dict(parse_qsl(raw_token))
 
@@ -80,7 +80,7 @@ class OAuthClient(BaseOAuthClient):
         resource_owner_key = None
         resource_owner_secret = None
         if "token" in kwargs:
-            user_token: Dict[str, Any] = kwargs.pop("token")
+            user_token: dict[str, Any] = kwargs.pop("token")
             resource_owner_key = user_token["oauth_token"]
             resource_owner_secret = user_token["oauth_token_secret"]
 

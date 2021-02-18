@@ -1,5 +1,5 @@
 """authentik OAuth2 Session Views"""
-from typing import Any, Dict
+from typing import Any
 
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
@@ -12,7 +12,7 @@ class EndSessionView(TemplateView):
 
     template_name = "providers/oauth2/end_session.html"
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         context["application"] = get_object_or_404(

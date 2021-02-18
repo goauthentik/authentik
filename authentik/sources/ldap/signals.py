@@ -1,5 +1,5 @@
 """authentik ldap source signals"""
-from typing import Any, Dict
+from typing import Any
 
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
@@ -26,7 +26,7 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
 
 @receiver(password_validate)
 # pylint: disable=unused-argument
-def ldap_password_validate(sender, password: str, plan_context: Dict[str, Any], **__):
+def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], **__):
     """if there's an LDAP Source with enabled password sync, check the password"""
     sources = LDAPSource.objects.filter(sync_users_password=True)
     if not sources.exists():

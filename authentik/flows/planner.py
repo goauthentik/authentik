@@ -1,6 +1,6 @@
 """Flows Planner"""
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -39,7 +39,7 @@ class FlowPlan:
     flow_pk: str
 
     stages: List[Stage] = field(default_factory=list)
-    context: Dict[str, Any] = field(default_factory=dict)
+    context: dict[str, Any] = field(default_factory=dict)
     markers: List[StageMarker] = field(default_factory=list)
 
     def append(self, stage: Stage, marker: Optional[StageMarker] = None):
@@ -96,7 +96,7 @@ class FlowPlanner:
         self._logger = get_logger().bind(flow=flow)
 
     def plan(
-        self, request: HttpRequest, default_context: Optional[Dict[str, Any]] = None
+        self, request: HttpRequest, default_context: Optional[dict[str, Any]] = None
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
@@ -149,7 +149,7 @@ class FlowPlanner:
         self,
         user: User,
         request: HttpRequest,
-        default_context: Optional[Dict[str, Any]],
+        default_context: Optional[dict[str, Any]],
     ) -> FlowPlan:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""

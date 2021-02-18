@@ -1,5 +1,5 @@
 """authentik Tasks List"""
-from typing import Any, Dict
+from typing import Any
 
 from django.views.generic.base import TemplateView
 
@@ -12,7 +12,7 @@ class TaskListView(AdminRequiredMixin, TemplateView):
 
     template_name = "administration/task/list.html"
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         kwargs["object_list"] = sorted(
             TaskInfo.all().values(), key=lambda x: x.task_name

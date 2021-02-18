@@ -2,7 +2,7 @@
 from os.path import abspath
 from sys import platform
 from time import sleep
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from django.test import override_settings
@@ -72,7 +72,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         with open(CONFIG_PATH, "w+") as _file:
             safe_dump(config, _file)
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "quay.io/dexidp/dex:v2.24.0",
             "detach": True,
@@ -249,7 +249,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.source_slug = "oauth1-test"
         super().setUp()
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "beryju/oauth1-test-server",
             "detach": True,

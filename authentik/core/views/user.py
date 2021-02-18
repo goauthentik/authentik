@@ -1,5 +1,5 @@
 """authentik core user views"""
-from typing import Any, Dict
+from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
@@ -45,7 +45,7 @@ class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         unenrollment_flow = Flow.with_policy(
             self.request, designation=FlowDesignation.UNRENOLLMENT

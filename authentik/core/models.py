@@ -1,7 +1,7 @@
 """authentik core models"""
 from datetime import timedelta
 from hashlib import sha256
-from typing import Any, Dict, Optional, Type
+from typing import Any, Optional, Type
 from uuid import uuid4
 
 from django.conf import settings
@@ -96,7 +96,7 @@ class User(GuardianUserMixin, AbstractUser):
 
     objects = UserManager()
 
-    def group_attributes(self) -> Dict[str, Any]:
+    def group_attributes(self) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}

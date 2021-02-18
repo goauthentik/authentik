@@ -1,6 +1,6 @@
 """Kubernetes deployment controller"""
 from io import StringIO
-from typing import Dict, List, Type
+from typing import List, Type
 
 from kubernetes.client import OpenApiException
 from kubernetes.client.api_client import ApiClient
@@ -18,7 +18,7 @@ from authentik.outposts.models import KubernetesServiceConnection, Outpost
 class KubernetesController(BaseController):
     """Manage deployment of outpost in kubernetes"""
 
-    reconcilers: Dict[str, Type[KubernetesObjectReconciler]]
+    reconcilers: dict[str, Type[KubernetesObjectReconciler]]
     reconcile_order: List[str]
 
     client: ApiClient

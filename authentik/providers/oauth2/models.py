@@ -5,7 +5,7 @@ import json
 import time
 from dataclasses import asdict, dataclass, field
 from hashlib import sha256
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, List, Optional, Type
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -299,7 +299,7 @@ class OAuth2Provider(Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: Dict[str, Any]) -> str:
+    def encode(self, payload: dict[str, Any]) -> str:
         """Represent the ID Token as a JSON Web Token (JWT)."""
         keys = self.get_jwt_keys()
         # If the provider does not have an RSA Key assigned, it was switched to Symmetric
@@ -394,9 +394,9 @@ class IDToken:
     nonce: Optional[str] = None
     at_hash: Optional[str] = None
 
-    claims: Dict[str, Any] = field(default_factory=dict)
+    claims: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
         dic = asdict(self)
         dic.pop("claims")

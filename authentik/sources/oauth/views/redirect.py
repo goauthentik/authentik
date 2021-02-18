@@ -1,5 +1,5 @@
 """OAuth Redirect Views"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import Http404
 from django.urls import reverse
@@ -19,7 +19,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
     params = None
 
     # pylint: disable=unused-argument
-    def get_additional_parameters(self, source: OAuthSource) -> Dict[str, Any]:
+    def get_additional_parameters(self, source: OAuthSource) -> dict[str, Any]:
         "Return additional redirect parameters for this source."
         return self.params or {}
 

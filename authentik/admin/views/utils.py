@@ -1,5 +1,5 @@
 """authentik admin util views"""
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 from urllib.parse import urlparse
 
 from django.contrib import messages
@@ -69,7 +69,7 @@ class InheritanceCreateView(CreateAssignPermView):
             raise Http404 from exc
         return model().form
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):
@@ -80,7 +80,7 @@ class InheritanceCreateView(CreateAssignPermView):
 class InheritanceUpdateView(UpdateView):
     """UpdateView for objects using InheritanceManager"""
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):

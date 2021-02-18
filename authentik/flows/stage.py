@@ -1,6 +1,6 @@
 """authentik stage Base view"""
 from collections import namedtuple
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -26,7 +26,7 @@ class StageView(TemplateView):
     def __init__(self, executor: FlowExecutorView):
         self.executor = executor
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs["title"] = self.executor.flow.title
         # Either show the matched User object or show what the user entered,
         # based on what the earlier stage (mostly IdentificationStage) set.

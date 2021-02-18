@@ -2,7 +2,7 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from channels.exceptions import DenyConnection
 from dacite import from_dict
@@ -34,7 +34,7 @@ class WebsocketMessage:
     """Complete Websocket Message that is being sent"""
 
     instruction: int
-    args: Dict[str, Any] = field(default_factory=dict)
+    args: dict[str, Any] = field(default_factory=dict)
 
 
 class OutpostConsumer(AuthJsonConsumer):

@@ -1,5 +1,5 @@
 """OAuth Clients"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
@@ -33,11 +33,11 @@ class BaseOAuthClient:
         self.callback = callback
         self.session.headers.update({"User-Agent": f"authentik {__version__}"})
 
-    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         "Fetch access token from callback request."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
-    def get_profile_info(self, token: Dict[str, str]) -> Optional[Dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
         try:
             response = self.do_request("get", self.source.profile_url, token=token)
@@ -48,7 +48,7 @@ class BaseOAuthClient:
         else:
             return response.json()
 
-    def get_redirect_args(self) -> Dict[str, str]:
+    def get_redirect_args(self) -> dict[str, str]:
         "Get request parameters for redirect url."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
@@ -61,7 +61,7 @@ class BaseOAuthClient:
         LOGGER.info("redirect args", **args)
         return f"{self.source.authorization_url}?{params}"
 
-    def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
+    def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
         "Parse token and secret from raw token response."
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 

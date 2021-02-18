@@ -1,7 +1,7 @@
 """event utilities"""
 import re
 from dataclasses import asdict, is_dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser
@@ -20,7 +20,7 @@ from authentik.policies.types import PolicyRequest
 ALLOWED_SPECIAL_KEYS = re.compile("passing", flags=re.I)
 
 
-def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
+def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
     """Cleanse a dictionary, recursively"""
     final_dict = {}
     for key, value in source.items():
@@ -38,7 +38,7 @@ def cleanse_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
     return final_dict
 
 
-def model_to_dict(model: Model) -> Dict[str, Any]:
+def model_to_dict(model: Model) -> dict[str, Any]:
     """Convert model to dict"""
     name = str(model)
     if hasattr(model, "name"):
@@ -51,7 +51,7 @@ def model_to_dict(model: Model) -> Dict[str, Any]:
     }
 
 
-def get_user(user: User, original_user: Optional[User] = None) -> Dict[str, Any]:
+def get_user(user: User, original_user: Optional[User] = None) -> dict[str, Any]:
     """Convert user object to dictionary, optionally including the original user"""
     if isinstance(user, AnonymousUser):
         user = get_anonymous_user()
@@ -67,7 +67,7 @@ def get_user(user: User, original_user: Optional[User] = None) -> Dict[str, Any]
     return user_data
 
 
-def sanitize_dict(source: Dict[Any, Any]) -> Dict[Any, Any]:
+def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
     """clean source of all Models that would interfere with the JSONField.
     Models are replaced with a dictionary of {
         app: str,
