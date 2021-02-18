@@ -1,5 +1,5 @@
 """authentik OAuth2 OpenID Userinfo views"""
-from typing import Any, List
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext_lazy as _
@@ -22,7 +22,7 @@ class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
     See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
 
-    def get_scope_descriptions(self, scopes: List[str]) -> dict[str, str]:
+    def get_scope_descriptions(self, scopes: list[str]) -> dict[str, str]:
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = {}
         for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by(

@@ -1,5 +1,5 @@
 """authentik admin util views"""
-from typing import Any, List, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 from django.contrib import messages
@@ -40,7 +40,7 @@ class SearchListMixin(MultipleObjectMixin):
     """Accept search query using `search` querystring parameter. Requires self.search_fields,
     a list of all fields to search. Can contain special lookups like __icontains"""
 
-    search_fields: List[str]
+    search_fields: list[str]
 
     def get_queryset(self) -> QuerySet:
         queryset = super().get_queryset()

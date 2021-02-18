@@ -1,6 +1,6 @@
 """Source type manager"""
 from enum import Enum
-from typing import Callable, List
+from typing import Callable
 
 from django.utils.text import slugify
 from structlog.stdlib import get_logger
@@ -23,7 +23,7 @@ class SourceTypeManager:
     """Manager to hold all Source types."""
 
     __source_types: dict[RequestKind, dict[str, Callable]] = {}
-    __names: List[str] = []
+    __names: list[str] = []
 
     def source(self, kind: RequestKind, name: str):
         """Class decorator to register classes inline."""

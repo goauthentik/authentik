@@ -1,6 +1,6 @@
 """transfer common classes"""
 from dataclasses import asdict, dataclass, field, is_dataclass
-from typing import Any, List
+from typing import Any
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -61,7 +61,7 @@ class FlowBundle:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: List[FlowBundleEntry] = field(default_factory=list)
+    entries: list[FlowBundleEntry] = field(default_factory=list)
 
 
 class DataclassEncoder(DjangoJSONEncoder):

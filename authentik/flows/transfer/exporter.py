@@ -1,6 +1,6 @@
 """Flow exporter"""
 from json import dumps
-from typing import Iterator, List
+from typing import Iterator
 from uuid import UUID
 
 from django.db.models import Q
@@ -22,7 +22,7 @@ class FlowExporter:
     with_policies: bool
     with_stage_prompts: bool
 
-    pbm_uuids: List[UUID]
+    pbm_uuids: list[UUID]
 
     def __init__(self, flow: Flow):
         self.flow = flow

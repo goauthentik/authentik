@@ -1,5 +1,5 @@
 """authentik password stage"""
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
@@ -24,7 +24,7 @@ SESSION_INVALID_TRIES = "user_invalid_tries"
 
 
 def authenticate(
-    request: HttpRequest, backends: List[str], **credentials: dict[str, Any]
+    request: HttpRequest, backends: list[str], **credentials: dict[str, Any]
 ) -> Optional[User]:
     """If the given credentials are valid, return a User object.
 

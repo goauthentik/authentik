@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, List, Optional, Type, Union
+from typing import Iterable, Optional, Type, Union
 from uuid import uuid4
 
 from dacite import from_dict
@@ -315,7 +315,7 @@ class Outpost(models.Model):
         return f"outpost_{self.uuid.hex}_state"
 
     @property
-    def state(self) -> List["OutpostState"]:
+    def state(self) -> list["OutpostState"]:
         """Get outpost's health status"""
         return OutpostState.for_outpost(self)
 
@@ -399,7 +399,7 @@ class OutpostState:
         return parse(self.version) < OUR_VERSION
 
     @staticmethod
-    def for_outpost(outpost: Outpost) -> List["OutpostState"]:
+    def for_outpost(outpost: Outpost) -> list["OutpostState"]:
         """Get all states for an outpost"""
         keys = cache.keys(f"{outpost.state_cache_prefix}_*")
         states = []

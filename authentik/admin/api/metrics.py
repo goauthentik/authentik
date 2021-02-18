@@ -2,7 +2,6 @@
 import time
 from collections import Counter
 from datetime import timedelta
-from typing import List
 
 from django.db.models import Count, ExpressionWrapper, F, Model
 from django.db.models.fields import DurationField
@@ -19,7 +18,7 @@ from rest_framework.viewsets import ViewSet
 from authentik.events.models import Event, EventAction
 
 
-def get_events_per_1h(**filter_kwargs) -> List[dict[str, int]]:
+def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
     """Get event count by hour in the last day, fill with zeros"""
     date_from = now() - timedelta(days=1)
     result = (

@@ -2,7 +2,7 @@
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
 from hashlib import sha256
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.views import View
@@ -33,7 +33,7 @@ class TokenParams:
     redirect_uri: str
     grant_type: str
     state: str
-    scope: List[str]
+    scope: list[str]
 
     authorization_code: Optional[AuthorizationCode] = None
     refresh_token: Optional[RefreshToken] = None

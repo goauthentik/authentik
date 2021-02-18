@@ -1,6 +1,6 @@
 """Flows Planner"""
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -38,9 +38,9 @@ class FlowPlan:
 
     flow_pk: str
 
-    stages: List[Stage] = field(default_factory=list)
+    stages: list[Stage] = field(default_factory=list)
     context: dict[str, Any] = field(default_factory=dict)
-    markers: List[StageMarker] = field(default_factory=list)
+    markers: list[StageMarker] = field(default_factory=list)
 
     def append(self, stage: Stage, marker: Optional[StageMarker] = None):
         """Append `stage` to all stages, optionall with stage marker"""
