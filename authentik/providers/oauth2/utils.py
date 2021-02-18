@@ -2,7 +2,7 @@
 import re
 from base64 import b64decode
 from binascii import Error
-from typing import Optional, Tuple
+from typing import Optional
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.utils.cache import patch_vary_headers
@@ -68,7 +68,7 @@ def extract_access_token(request: HttpRequest) -> Optional[str]:
     return None
 
 
-def extract_client_auth(request: HttpRequest) -> Tuple[str, str]:
+def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
     """
     Get client credentials using HTTP Basic Authentication method.
     Or try getting parameters via POST.

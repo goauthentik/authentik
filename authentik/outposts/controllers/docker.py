@@ -1,6 +1,5 @@
 """Docker controller"""
 from time import sleep
-from typing import Tuple
 
 from django.conf import settings
 from docker import DockerClient
@@ -55,7 +54,7 @@ class DockerController(BaseController):
                 return True
         return False
 
-    def _get_container(self) -> Tuple[Container, bool]:
+    def _get_container(self) -> tuple[Container, bool]:
         container_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
             return self.client.containers.get(container_name), False

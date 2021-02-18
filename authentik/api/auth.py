@@ -1,7 +1,7 @@
 """API Authentication"""
 from base64 import b64decode
 from binascii import Error
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.request import Request
@@ -44,7 +44,7 @@ def token_from_header(raw_header: bytes) -> Optional[Token]:
 class AuthentikTokenAuthentication(BaseAuthentication):
     """Token-based authentication using HTTP Basic authentication"""
 
-    def authenticate(self, request: Request) -> Union[Tuple[User, Any], None]:
+    def authenticate(self, request: Request) -> Union[tuple[User, Any], None]:
         """Token-based authentication using HTTP Basic authentication"""
         auth = get_authorization_header(request)
 
