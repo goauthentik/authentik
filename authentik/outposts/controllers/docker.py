@@ -1,6 +1,5 @@
 """Docker controller"""
 from time import sleep
-from typing import Dict, Tuple
 
 from django.conf import settings
 from docker import DockerClient
@@ -33,10 +32,10 @@ class DockerController(BaseController):
         except ServiceConnectionInvalid as exc:
             raise ControllerException from exc
 
-    def _get_labels(self) -> Dict[str, str]:
+    def _get_labels(self) -> dict[str, str]:
         return {}
 
-    def _get_env(self) -> Dict[str, str]:
+    def _get_env(self) -> dict[str, str]:
         return {
             "AUTHENTIK_HOST": self.outpost.config.authentik_host,
             "AUTHENTIK_INSECURE": str(self.outpost.config.authentik_host_insecure),
@@ -55,7 +54,7 @@ class DockerController(BaseController):
                 return True
         return False
 
-    def _get_container(self) -> Tuple[Container, bool]:
+    def _get_container(self) -> tuple[Container, bool]:
         container_name = f"authentik-proxy-{self.outpost.uuid.hex}"
         try:
             return self.client.containers.get(container_name), False

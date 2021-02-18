@@ -1,7 +1,7 @@
 """test OAuth Provider flow"""
 from sys import platform
 from time import sleep
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from docker.types import Healthcheck
@@ -30,7 +30,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.client_secret = generate_client_secret()
         super().setUp()
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Setup client grafana container which we test OAuth against"""
         return {
             "image": "grafana/grafana:7.1.0",

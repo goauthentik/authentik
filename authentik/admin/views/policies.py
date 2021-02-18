@@ -1,5 +1,5 @@
 """authentik Policy administration"""
-from typing import Any, Dict
+from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
@@ -102,7 +102,7 @@ class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, Fo
             Policy.objects.filter(pk=self.kwargs.get("pk")).select_subclasses().first()
         )
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs["policy"] = self.get_object()
         return super().get_context_data(**kwargs)
 

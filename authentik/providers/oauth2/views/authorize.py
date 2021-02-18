@@ -1,7 +1,7 @@
 """authentik OAuth2 Authorization views"""
 from dataclasses import dataclass, field
 from datetime import timedelta
-from typing import List, Optional, Set
+from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 from uuid import uuid4
 
@@ -69,10 +69,10 @@ class OAuthAuthorizationParams:
     client_id: str
     redirect_uri: str
     response_type: str
-    scope: List[str]
+    scope: list[str]
     state: str
     nonce: Optional[str]
-    prompt: Set[str]
+    prompt: set[str]
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)

@@ -1,5 +1,5 @@
 """authentik multi-stage authentication engine"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest
 
@@ -13,7 +13,7 @@ class DummyStageView(StageView):
         """Just redirect to next stage"""
         return self.executor.stage_ok()
 
-    def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         kwargs["title"] = self.executor.current_stage.name
         return kwargs

@@ -2,7 +2,7 @@
 from dataclasses import asdict
 from sys import platform
 from time import sleep
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
@@ -35,7 +35,7 @@ class TestProviderProxy(SeleniumTestCase):
         super().tearDown()
         self.proxy_container.kill()
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "traefik/whoami:latest",
             "detach": True,

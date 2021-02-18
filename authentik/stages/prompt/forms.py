@@ -1,7 +1,7 @@
 """Prompt forms"""
 from email.policy import Policy
 from types import MethodType
-from typing import Any, Callable, Iterator, List
+from typing import Any, Callable, Iterator
 
 from django import forms
 from django.db.models.query import QuerySet
@@ -52,10 +52,10 @@ class PromptAdminForm(forms.ModelForm):
 class ListPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    __list: List[Policy]
+    __list: list[Policy]
 
     def __init__(
-        self, policies: List[Policy], user: User, request: HttpRequest = None
+        self, policies: list[Policy], user: User, request: HttpRequest = None
     ) -> None:
         super().__init__(PolicyBindingModel(), user, request)
         self.__list = policies

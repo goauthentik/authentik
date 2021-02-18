@@ -2,7 +2,7 @@
 from enum import Enum
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from typing import Iterator, List, Optional
+from typing import Iterator, Optional
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -54,8 +54,8 @@ class PolicyEngine:
     empty_result: bool
 
     __pbm: PolicyBindingModel
-    __cached_policies: List[PolicyResult]
-    __processes: List[PolicyProcessInfo]
+    __cached_policies: list[PolicyResult]
+    __processes: list[PolicyProcessInfo]
 
     __expected_result_count: int
 
@@ -137,7 +137,7 @@ class PolicyEngine:
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        process_results: List[PolicyResult] = [
+        process_results: list[PolicyResult] = [
             x.result for x in self.__processes if x.result
         ]
         all_results = list(process_results + self.__cached_policies)

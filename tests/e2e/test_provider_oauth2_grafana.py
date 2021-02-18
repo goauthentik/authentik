@@ -1,7 +1,7 @@
 """test OAuth2 OpenID Provider flow"""
 from sys import platform
 from time import sleep
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from docker.types import Healthcheck
@@ -40,7 +40,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.client_secret = generate_client_secret()
         super().setUp()
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "grafana/grafana:7.1.0",
             "detach": True,

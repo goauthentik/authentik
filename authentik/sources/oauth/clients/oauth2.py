@@ -1,6 +1,6 @@
 """OAuth 2 Clients"""
 from json import loads
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from urllib.parse import parse_qsl
 
 from django.utils.crypto import constant_time_compare, get_random_string
@@ -38,7 +38,7 @@ class OAuth2Client(BaseOAuthClient):
         "Generate state optional parameter."
         return get_random_string(32)
 
-    def get_access_token(self, **request_kwargs) -> Optional[Dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
         "Fetch access token from callback request."
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
         if not self.check_application_state():
@@ -69,11 +69,11 @@ class OAuth2Client(BaseOAuthClient):
         else:
             return response.json()
 
-    def get_redirect_args(self) -> Dict[str, str]:
+    def get_redirect_args(self) -> dict[str, str]:
         "Get request parameters for redirect url."
         callback = self.request.build_absolute_uri(self.callback)
         client_id: str = self.source.consumer_key
-        args: Dict[str, str] = {
+        args: dict[str, str] = {
             "client_id": client_id,
             "redirect_uri": callback,
             "response_type": "code",
@@ -84,7 +84,7 @@ class OAuth2Client(BaseOAuthClient):
             self.request.session[self.session_key] = state
         return args
 
-    def parse_raw_token(self, raw_token: str) -> Dict[str, Any]:
+    def parse_raw_token(self, raw_token: str) -> dict[str, Any]:
         "Parse token and secret from raw token response."
         # Load as json first then parse as query string
         try:

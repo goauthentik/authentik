@@ -1,5 +1,5 @@
 """authentik consent stage"""
-from typing import Any, Dict, List
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
@@ -19,13 +19,13 @@ class ConsentStageView(FormView, StageView):
 
     form_class = ConsentForm
 
-    def get_context_data(self, **kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         kwargs["current_stage"] = self.executor.current_stage
         kwargs["context"] = self.executor.plan.context
         return kwargs
 
-    def get_template_names(self) -> List[str]:
+    def get_template_names(self) -> list[str]:
         # PLAN_CONTEXT_CONSENT_TEMPLATE has to be set by a template that calls this stage
         if PLAN_CONTEXT_CONSENT_TEMPLATE in self.executor.plan.context:
             template_name = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TEMPLATE]

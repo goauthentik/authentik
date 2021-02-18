@@ -1,5 +1,5 @@
 """OpenID Connect OAuth Views"""
-from typing import Any, Dict
+from typing import Any
 
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.types.manager import MANAGER, RequestKind
@@ -21,15 +21,15 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 
-    def get_user_id(self, source: OAuthSource, info: Dict[str, str]) -> str:
+    def get_user_id(self, source: OAuthSource, info: dict[str, str]) -> str:
         return info.get("sub", "")
 
     def get_user_enroll_context(
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
         return {
             "username": info.get("nickname"),
             "email": info.get("email"),

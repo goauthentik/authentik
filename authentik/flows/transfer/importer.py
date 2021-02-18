@@ -2,7 +2,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 from json import loads
-from typing import Any, Dict, Type
+from typing import Any, Type
 
 from dacite import from_dict
 from dacite.exceptions import DaciteError
@@ -42,7 +42,7 @@ class FlowImporter:
 
     __import: FlowBundle
 
-    __pk_map: Dict[Any, Model]
+    __pk_map: dict[Any, Model]
 
     logger: BoundLogger
 
@@ -55,7 +55,7 @@ class FlowImporter:
         except DaciteError as exc:
             raise EntryInvalidError from exc
 
-    def __update_pks_for_attrs(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
+    def __update_pks_for_attrs(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Replace any value if it is a known primary key of an other object"""
 
         def updater(value) -> Any:
@@ -75,7 +75,7 @@ class FlowImporter:
                 attrs[key] = updater(value)
         return attrs
 
-    def __query_from_identifier(self, attrs: Dict[str, Any]) -> Q:
+    def __query_from_identifier(self, attrs: dict[str, Any]) -> Q:
         """Generate an or'd query from all identifiers in an entry"""
         # Since identifiers can also be pk-references to other objects (see FlowStageBinding)
         # we have to ensure those references are also replaced

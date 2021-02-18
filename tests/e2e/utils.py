@@ -6,7 +6,7 @@ from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
 from os import environ, makedirs
 from time import sleep, time
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -56,7 +56,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
 
-    def _start_container(self, specs: Dict[str, Any]) -> Container:
+    def _start_container(self, specs: dict[str, Any]) -> Container:
         client: DockerClient = from_env()
         client.images.pull(specs["image"])
         container = client.containers.run(**specs)
@@ -70,7 +70,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.logger.info("Container failed healthcheck")
             sleep(1)
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
         be healthy, and deleted again on tearDown"""
         return None

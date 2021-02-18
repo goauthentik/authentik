@@ -1,6 +1,6 @@
 """authentik saml source processor"""
 from base64 import b64decode
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -154,7 +154,7 @@ class ResponseProcessor:
             raise ValueError("NameID Element not found!")
         return name_id
 
-    def _get_name_id_filter(self) -> Dict[str, str]:
+    def _get_name_id_filter(self) -> dict[str, str]:
         """Returns the subject's NameID as a Filter for the `User`"""
         name_id_el = self._get_name_id()
         name_id = name_id_el.text

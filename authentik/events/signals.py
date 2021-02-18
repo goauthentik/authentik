@@ -1,6 +1,6 @@
 """authentik events signal listener"""
 from threading import Thread
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django.contrib.auth.signals import (
     user_logged_in,
@@ -27,7 +27,7 @@ class EventNewThread(Thread):
 
     action: str
     request: HttpRequest
-    kwargs: Dict[str, Any]
+    kwargs: dict[str, Any]
     user: Optional[User] = None
 
     def __init__(
@@ -69,7 +69,7 @@ def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
 @receiver(user_write)
 # pylint: disable=unused-argument
 def on_user_write(
-    sender, request: HttpRequest, user: User, data: Dict[str, Any], **kwargs
+    sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs
 ):
     """Log User write"""
     thread = EventNewThread(EventAction.USER_WRITE, request, **data)
@@ -81,7 +81,7 @@ def on_user_write(
 @receiver(user_login_failed)
 # pylint: disable=unused-argument
 def on_user_login_failed(
-    sender, credentials: Dict[str, str], request: HttpRequest, **_
+    sender, credentials: dict[str, str], request: HttpRequest, **_
 ):
     """Failed Login"""
     thread = EventNewThread(EventAction.LOGIN_FAILED, request, **credentials)

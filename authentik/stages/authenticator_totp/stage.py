@@ -1,5 +1,5 @@
 """TOTP Setup stage"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.encoding import force_str
@@ -24,7 +24,7 @@ class AuthenticatorTOTPStageView(FormView, StageView):
 
     form_class = SetupForm
 
-    def get_form_kwargs(self, **kwargs) -> Dict[str, Any]:
+    def get_form_kwargs(self, **kwargs) -> dict[str, Any]:
         kwargs = super().get_form_kwargs(**kwargs)
         device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         kwargs["device"] = device

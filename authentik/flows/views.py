@@ -1,6 +1,6 @@
 """authentik multi-stage authentication engine"""
 from traceback import format_tb
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -225,8 +225,8 @@ class FlowErrorResponse(TemplateResponse):
         self.error = error
 
     def resolve_context(
-        self, context: Optional[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
+        self, context: Optional[dict[str, Any]]
+    ) -> Optional[dict[str, Any]]:
         if not context:
             context = {}
         context["error"] = self.error
@@ -244,7 +244,7 @@ class FlowExecutorShellView(TemplateView):
 
     template_name = "flows/shell.html"
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         flow: Flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["background_url"] = flow.background.url
         kwargs["exec_url"] = reverse("authentik_api:flow-executor", kwargs=self.kwargs)

@@ -1,5 +1,5 @@
 """policy http response"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django.http.request import HttpRequest
 from django.template.response import TemplateResponse
@@ -24,8 +24,8 @@ class AccessDeniedResponse(TemplateResponse):
         self.title = _("Access denied")
 
     def resolve_context(
-        self, context: Optional[Dict[str, Any]]
-    ) -> Optional[Dict[str, Any]]:
+        self, context: Optional[dict[str, Any]]
+    ) -> Optional[dict[str, Any]]:
         if not context:
             context = {}
         context["title"] = self.title

@@ -1,5 +1,5 @@
 """Reddit OAuth Views"""
-from typing import Any, Dict
+from typing import Any
 
 from requests.auth import HTTPBasicAuth
 
@@ -40,8 +40,8 @@ class RedditOAuth2Callback(OAuthCallback):
         self,
         source: OAuthSource,
         access: UserOAuthSourceConnection,
-        info: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        info: dict[str, Any],
+    ) -> dict[str, Any]:
         return {
             "username": info.get("name"),
             "email": None,

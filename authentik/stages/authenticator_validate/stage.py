@@ -1,5 +1,5 @@
 """OTP Validation"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import FormView
@@ -31,6 +31,11 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     """OTP Validation"""
 
     form_class = ValidationForm
+
+    def get_form_kwargs(self, **kwargs) -> dict[str, Any]:
+        kwargs = super().get_form_kwargs(**kwargs)
+        kwargs["user"] = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        return kwargs
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices

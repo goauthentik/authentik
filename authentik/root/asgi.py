@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 """
 import typing
 from time import time
-from typing import Any, ByteString, Dict
+from typing import Any, ByteString
 
 import django
 from asgiref.compatibility import guarantee_single_callable
@@ -64,7 +64,7 @@ class ASGILogger:
     app: ASGIApp
 
     scope: Scope
-    headers: Dict[ByteString, Any]
+    headers: dict[ByteString, Any]
 
     status_code: int
     start: float

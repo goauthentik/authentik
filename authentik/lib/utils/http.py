@@ -1,10 +1,10 @@
 """http helpers"""
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django.http import HttpRequest
 
 
-def _get_client_ip_from_meta(meta: Dict[str, Any]) -> Optional[str]:
+def _get_client_ip_from_meta(meta: dict[str, Any]) -> Optional[str]:
     """Attempt to get the client's IP by checking common HTTP Headers.
     Returns none if no IP Could be found"""
     headers = (

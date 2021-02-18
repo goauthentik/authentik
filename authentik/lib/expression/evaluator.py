@@ -1,7 +1,7 @@
 """authentik expression policy evaluator"""
 import re
 from textwrap import indent
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 from django.core.exceptions import ValidationError
 from requests import Session
@@ -18,9 +18,9 @@ class BaseEvaluator:
     """Validate and evaluate python-based expressions"""
 
     # Globals that can be used by function
-    _globals: Dict[str, Any]
+    _globals: dict[str, Any]
     # Context passed as locals to exec()
-    _context: Dict[str, Any]
+    _context: dict[str, Any]
 
     # Filename used for exec
     _filename: str

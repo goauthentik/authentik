@@ -1,5 +1,5 @@
 """authentik admin util views"""
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 from django.contrib import messages
@@ -40,7 +40,7 @@ class SearchListMixin(MultipleObjectMixin):
     """Accept search query using `search` querystring parameter. Requires self.search_fields,
     a list of all fields to search. Can contain special lookups like __icontains"""
 
-    search_fields: List[str]
+    search_fields: list[str]
 
     def get_queryset(self) -> QuerySet:
         queryset = super().get_queryset()
@@ -69,7 +69,7 @@ class InheritanceCreateView(CreateAssignPermView):
             raise Http404 from exc
         return model().form
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):
@@ -80,7 +80,7 @@ class InheritanceCreateView(CreateAssignPermView):
 class InheritanceUpdateView(UpdateView):
     """UpdateView for objects using InheritanceManager"""
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs = super().get_context_data(**kwargs)
         form_cls = self.get_form_class()
         if hasattr(form_cls, "template_name"):

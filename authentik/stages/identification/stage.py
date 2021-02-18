@@ -1,5 +1,5 @@
 """Identification stage logic"""
-from typing import List, Optional
+from typing import Optional
 
 from django.contrib import messages
 from django.db.models import Q
@@ -75,7 +75,7 @@ class IdentificationStageView(ChallengeStageView):
 
         # Check all enabled source, add them if they have a UI Login button.
         args["sources"] = []
-        sources: List[Source] = (
+        sources: list[Source] = (
             Source.objects.filter(enabled=True).order_by("name").select_subclasses()
         )
         for source in sources:

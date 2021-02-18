@@ -1,5 +1,5 @@
 """Kubernetes Deployment Reconciler"""
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from kubernetes.client import (
     AppsV1Api,
@@ -53,7 +53,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         ):
             raise NeedsUpdate()
 
-    def get_pod_meta(self) -> Dict[str, str]:
+    def get_pod_meta(self) -> dict[str, str]:
         """Get common object metadata"""
         return {
             "app.kubernetes.io/name": "authentik-outpost",

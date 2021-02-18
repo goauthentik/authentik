@@ -1,5 +1,5 @@
 """Static OTP Setup stage"""
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import FormView
@@ -21,7 +21,7 @@ class AuthenticatorStaticStageView(FormView, StageView):
 
     form_class = SetupForm
 
-    def get_form_kwargs(self, **kwargs) -> Dict[str, Any]:
+    def get_form_kwargs(self, **kwargs) -> dict[str, Any]:
         kwargs = super().get_form_kwargs(**kwargs)
         tokens = self.request.session[SESSION_STATIC_TOKENS]
         kwargs["tokens"] = tokens

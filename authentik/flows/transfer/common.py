@@ -1,6 +1,6 @@
 """transfer common classes"""
 from dataclasses import asdict, dataclass, field, is_dataclass
-from typing import Any, Dict, List
+from typing import Any
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -9,7 +9,7 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 
 
-def get_attrs(obj: SerializerModel) -> Dict[str, Any]:
+def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     """Get object's attributes via their serializer, and covert it to a normal dict"""
     data = dict(obj.serializer(obj).data)
     to_remove = (
@@ -33,9 +33,9 @@ def get_attrs(obj: SerializerModel) -> Dict[str, Any]:
 class FlowBundleEntry:
     """Single entry of a bundle"""
 
-    identifiers: Dict[str, Any]
+    identifiers: dict[str, Any]
     model: str
-    attrs: Dict[str, Any]
+    attrs: dict[str, Any]
 
     @staticmethod
     def from_model(
@@ -61,7 +61,7 @@ class FlowBundle:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: List[FlowBundleEntry] = field(default_factory=list)
+    entries: list[FlowBundleEntry] = field(default_factory=list)
 
 
 class DataclassEncoder(DjangoJSONEncoder):

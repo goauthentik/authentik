@@ -1,7 +1,7 @@
 """test SAML Source"""
 from sys import platform
 from time import sleep
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 from unittest.case import skipUnless
 
 from docker.types import Healthcheck
@@ -73,7 +73,7 @@ Sm75WXsflOxuTn08LbgGc4s=
 class TestSourceSAML(SeleniumTestCase):
     """test SAML Source flow"""
 
-    def get_container_specs(self) -> Optional[Dict[str, Any]]:
+    def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
             "image": "kristophjunge/test-saml-idp:1.15",
             "detach": True,
