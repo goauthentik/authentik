@@ -2,7 +2,7 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.flows.api import StageSerializer
+from authentik.flows.api.stages import StageSerializer
 from authentik.stages.invitation.models import Invitation, InvitationStage
 
 

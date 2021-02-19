@@ -23,7 +23,9 @@ from authentik.events.api.event import EventViewSet
 from authentik.events.api.notification import NotificationViewSet
 from authentik.events.api.notification_rule import NotificationRuleViewSet
 from authentik.events.api.notification_transport import NotificationTransportViewSet
-from authentik.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
+from authentik.flows.api.bindings import FlowStageBindingViewSet
+from authentik.flows.api.flows import FlowViewSet
+from authentik.flows.api.stages import StageViewSet
 from authentik.outposts.api.outpost_service_connections import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
