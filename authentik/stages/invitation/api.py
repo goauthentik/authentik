@@ -34,7 +34,9 @@ class InvitationSerializer(ModelSerializer):
             "pk",
             "expires",
             "fixed_data",
+            "created_by",
         ]
+        depth = 2
 
 
 class InvitationViewSet(ModelViewSet):
@@ -42,6 +44,9 @@ class InvitationViewSet(ModelViewSet):
 
     queryset = Invitation.objects.all()
     serializer_class = InvitationSerializer
+    order = ["-expires"]
+    search_fields = ["created_by__username", "expires"]
+    filterset_fields = ["created_by__username", "expires"]
 
     def perform_create(self, serializer: InvitationSerializer):
         serializer.instance.created_by = self.request.user

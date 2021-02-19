@@ -154,11 +154,6 @@ urlpatterns = [
     ),
     # Stage Prompts
     path(
-        "stages_prompts/",
-        stages_prompts.PromptListView.as_view(),
-        name="stage-prompts",
-    ),
-    path(
         "stages_prompts/create/",
         stages_prompts.PromptCreateView.as_view(),
         name="stage-prompt-create",
@@ -174,11 +169,6 @@ urlpatterns = [
         name="stage-prompt-delete",
     ),
     # Stage Invitations
-    path(
-        "stages/invitations/",
-        stages_invitations.InvitationListView.as_view(),
-        name="stage-invitations",
-    ),
     path(
         "stages/invitations/create/",
         stages_invitations.InvitationCreateView.as_view(),

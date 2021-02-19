@@ -6830,78 +6830,21 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/invitation/:
-    get:
-      operationId: stages_invitation_list
-      description: InvitationStage Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/InvitationStage'
-      tags:
-        - stages
-    post:
-      operationId: stages_invitation_create
-      description: InvitationStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/InvitationStage'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/InvitationStage'
-      tags:
-        - stages
-    parameters: []
   /stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
       description: Invitation Viewset
       parameters:
+        - name: created_by__username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: expires
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -7024,9 +6967,76 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/invitation/{stage_uuid}/:
+  /stages/invitation/stages/:
     get:
-      operationId: stages_invitation_read
+      operationId: stages_invitation_stages_list
+      description: InvitationStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_invitation_stages_create
+      description: InvitationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/invitation/stages/{stage_uuid}/:
+    get:
+      operationId: stages_invitation_stages_read
       description: InvitationStage Viewset
       parameters: []
       responses:
@@ -7037,7 +7047,7 @@ paths:
       tags:
         - stages
     put:
-      operationId: stages_invitation_update
+      operationId: stages_invitation_stages_update
       description: InvitationStage Viewset
       parameters:
         - name: data
@@ -7053,7 +7063,7 @@ paths:
       tags:
         - stages
     patch:
-      operationId: stages_invitation_partial_update
+      operationId: stages_invitation_stages_partial_update
       description: InvitationStage Viewset
       parameters:
         - name: data
@@ -7069,7 +7079,7 @@ paths:
       tags:
         - stages
     delete:
-      operationId: stages_invitation_delete
+      operationId: stages_invitation_stages_delete
       description: InvitationStage Viewset
       parameters: []
       responses:
@@ -7216,6 +7226,26 @@ paths:
       operationId: stages_prompt_prompts_list
       description: Prompt Viewset
       parameters:
+        - name: field_key
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: label
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: placeholder
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -11335,6 +11365,263 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+  Invitation:
+    description: Invitation Serializer
+    type: object
+    properties:
+      pk:
+        title: Invite uuid
+        type: string
+        format: uuid
+        readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+        x-nullable: true
+      fixed_data:
+        title: Fixed data
+        description: Optional fixed data to enforce on user enrollment.
+        type: object
+      created_by:
+        description: Custom User model to allow easier adding o f user-based settings
+        required:
+          - password
+          - username
+          - name
+        type: object
+        properties:
+          id:
+            title: ID
+            type: integer
+            readOnly: true
+          password:
+            title: Password
+            type: string
+            maxLength: 128
+            minLength: 1
+          last_login:
+            title: Last login
+            type: string
+            format: date-time
+            x-nullable: true
+          username:
+            title: Username
+            description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+              only.
+            type: string
+            pattern: ^[\w.@+-]+$
+            maxLength: 150
+            minLength: 1
+          first_name:
+            title: First name
+            type: string
+            maxLength: 150
+          last_name:
+            title: Last name
+            type: string
+            maxLength: 150
+          email:
+            title: Email address
+            type: string
+            format: email
+            maxLength: 254
+          is_active:
+            title: Active
+            description: Designates whether this user should be treated as active.
+              Unselect this instead of deleting accounts.
+            type: boolean
+          date_joined:
+            title: Date joined
+            type: string
+            format: date-time
+          uuid:
+            title: Uuid
+            type: string
+            format: uuid
+            readOnly: true
+          name:
+            title: Name
+            description: User's display name.
+            type: string
+            minLength: 1
+          password_change_date:
+            title: Password change date
+            type: string
+            format: date-time
+            readOnly: true
+          attributes:
+            title: Attributes
+            type: object
+          groups:
+            description: ''
+            type: array
+            items:
+              description: Groups are a generic way of categorizing users to apply
+                permissions, or some other label, to those users. A user can belong
+                to any number of groups. A user in a group automatically has all the
+                permissions granted to that group. For example, if the group 'Site
+                editors' has the permission can_edit_home_page, any user in that group
+                will have that permission. Beyond permissions, groups are a convenient
+                way to categorize users to apply some label, or extended functionality,
+                to them. For example, you could create a group 'Special users', and
+                you could write code that would do special things to those users --
+                such as giving them access to a members-only portion of your site,
+                or sending them members-only email messages.
+              required:
+                - name
+              type: object
+              properties:
+                id:
+                  title: ID
+                  type: integer
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 150
+                  minLength: 1
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  uniqueItems: true
+            readOnly: true
+          user_permissions:
+            description: ''
+            type: array
+            items:
+              description: "The permissions system provides a way to assign permissions\
+                \ to specific users and groups of users. The permission system is\
+                \ used by the Django admin site, but may also be useful in your own\
+                \ code. The Django admin site uses permissions as follows: - The \"\
+                add\" permission limits the user's ability to view the \"add\" form\
+                \ and add an object. - The \"change\" permission limits a user's ability\
+                \ to view the change list, view the \"change\" form and change an\
+                \ object. - The \"delete\" permission limits the ability to delete\
+                \ an object. - The \"view\" permission limits the ability to view\
+                \ an object. Permissions are set globally per type of object, not\
+                \ per specific object instance. It is possible to say \"Mary may change\
+                \ news stories,\" but it's not currently possible to say \"Mary may\
+                \ change news stories, but only the ones she created herself\" or\
+                \ \"Mary may only change news stories that have a certain status or\
+                \ publication date.\" The permissions listed above are automatically\
+                \ created for each model."
+              required:
+                - name
+                - codename
+                - content_type
+              type: object
+              properties:
+                id:
+                  title: ID
+                  type: integer
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 255
+                  minLength: 1
+                codename:
+                  title: Codename
+                  type: string
+                  maxLength: 100
+                  minLength: 1
+                content_type:
+                  title: Content type
+                  type: integer
+            readOnly: true
+          sources:
+            description: ''
+            type: array
+            items:
+              description: Base Authentication source, i.e. an OAuth Provider, SAML
+                Remote or LDAP Server
+              required:
+                - name
+                - slug
+              type: object
+              properties:
+                pbm_uuid:
+                  title: Pbm uuid
+                  type: string
+                  format: uuid
+                  readOnly: true
+                name:
+                  title: Name
+                  description: Source's display Name.
+                  type: string
+                  minLength: 1
+                slug:
+                  title: Slug
+                  description: Internal source name, used in URLs.
+                  type: string
+                  format: slug
+                  pattern: ^[-a-zA-Z0-9_]+$
+                  maxLength: 50
+                  minLength: 1
+                enabled:
+                  title: Enabled
+                  type: boolean
+                authentication_flow:
+                  title: Authentication flow
+                  description: Flow to use when authenticating existing users.
+                  type: string
+                  format: uuid
+                  x-nullable: true
+                enrollment_flow:
+                  title: Enrollment flow
+                  description: Flow to use when enrolling new users.
+                  type: string
+                  format: uuid
+                  x-nullable: true
+                policies:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  readOnly: true
+                  uniqueItems: true
+                property_mappings:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+            readOnly: true
+          ak_groups:
+            description: ''
+            type: array
+            items:
+              description: Custom Group model which supports a basic hierarchy
+              required:
+                - name
+                - parent
+              type: object
+              properties:
+                group_uuid:
+                  title: Group uuid
+                  type: string
+                  format: uuid
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 80
+                  minLength: 1
+                is_superuser:
+                  title: Is superuser
+                  description: Users added to this group will be superusers.
+                  type: boolean
+                attributes:
+                  title: Attributes
+                  type: object
+                parent:
+                  title: Parent
+                  type: string
+                  format: uuid
+            readOnly: true
+        readOnly: true
   InvitationStage:
     description: InvitationStage Serializer
     required:
@@ -11373,24 +11660,6 @@ definitions:
           no Invitation is given. By default this Stage will cancel the Flow when
           no invitation is given.
         type: boolean
-  Invitation:
-    description: Invitation Serializer
-    type: object
-    properties:
-      pk:
-        title: Invite uuid
-        type: string
-        format: uuid
-        readOnly: true
-      expires:
-        title: Expires
-        type: string
-        format: date-time
-        x-nullable: true
-      fixed_data:
-        title: Fixed data
-        description: Optional fixed data to enforce on user enrollment.
-        type: object
   PasswordStage:
     description: PasswordStage Serializer
     required:
@@ -11496,6 +11765,11 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+      promptstage_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Stage'
   PromptStage:
     description: PromptStage Serializer
     required:

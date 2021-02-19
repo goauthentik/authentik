@@ -41,8 +41,8 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     new SidebarItem("Flows").children(
         new SidebarItem("Flows", "/flow/flows").activeWhen(`^/flow/flows/(?<slug>${SLUG_REGEX})$`),
         new SidebarItem("Stages", "/flow/stages"),
-        new SidebarItem("Prompts", "/administration/stages_prompts/"),
-        new SidebarItem("Invitations", "/administration/stages/invitations/"),
+        new SidebarItem("Prompts", "/flow/stages/prompts"),
+        new SidebarItem("Invitations", "/flow/stages/invitations"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),

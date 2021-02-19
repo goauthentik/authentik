@@ -31,6 +31,8 @@ class PromptStageViewSet(ModelViewSet):
 class PromptSerializer(ModelSerializer):
     """Prompt Serializer"""
 
+    promptstage_set = StageSerializer(many=True, required=False)
+
     class Meta:
 
         model = Prompt
@@ -42,11 +44,13 @@ class PromptSerializer(ModelSerializer):
             "required",
             "placeholder",
             "order",
+            "promptstage_set",
         ]
 
 
 class PromptViewSet(ModelViewSet):
     """Prompt Viewset"""
 
-    queryset = Prompt.objects.all()
+    queryset = Prompt.objects.all().prefetch_related("promptstage_set")
     serializer_class = PromptSerializer
+    filterset_fields = ["field_key", "label", "type", "placeholder"]
