@@ -6,22 +6,13 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
-import { TableColumn } from "../../elements/table/Table";
+import { Table, TableColumn } from "../../elements/table/Table";
 import { Token } from "../../api/Tokens";
 
-@customElement("ak-token-list")
-export class TokenListPage extends TablePage<Token> {
+@customElement("ak-token-user-list")
+export class UserTokenList extends Table<Token> {
     searchEnabled(): boolean {
         return true;
-    }
-    pageTitle(): string {
-        return gettext("Tokens");
-    }
-    pageDescription(): string {
-        return gettext("Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.");
-    }
-    pageIcon(): string {
-        return gettext("pf-icon pf-icon-security");
     }
 
     @property()
@@ -52,7 +43,13 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.expiring ? "Yes" : "No"}`,
             html`${item.expiring ? new Date(item.expires * 1000).toLocaleString() : "-"}`,
             html`
-            <ak-modal-button href="${Token.adminUrl(`${item.identifier}/delete/`)}">
+            <ak-modal-button href="${Token.userUrl(`${item.identifier}/update/`)}">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                    ${gettext("Edit")}
+                </ak-spinner-button>
+                <div slot="modal"></div>
+            </ak-modal-button>
+            <ak-modal-button href="${Token.userUrl(`${item.identifier}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>

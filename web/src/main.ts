@@ -29,6 +29,7 @@ import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/admin-overview/TopApplicationsTable";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
+import "./pages/tokens/UserTokenList";
 import "./pages/LibraryPage";
 
 import "./elements/stages/authenticator_webauthn/WebAuthnRegister";

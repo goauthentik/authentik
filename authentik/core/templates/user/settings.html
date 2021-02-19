@@ -24,9 +24,7 @@
                 </div>
             </section>
             <section slot="page-2" data-tab-title="{% trans 'Tokens' %}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <ak-site-shell url="{% url 'authentik_core:user-tokens' %}">
-                    <div slot="body"></div>
-                </ak-site-shell>
+                <ak-token-user-list></ak-token-user-list>
             </section>
             {% user_stages as user_stages_loc %}
             {% for stage, stage_link in user_stages_loc.items %}

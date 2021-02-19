@@ -34,6 +34,10 @@ export class Token {
         return `/administration/tokens/${rest}`;
     }
 
+    static userUrl(rest: string): string {
+        return `/-/user/tokens/${rest}`;
+    }
+
     static getKey(identifier: string): Promise<string> {
         return DefaultClient.fetch<{ key: string }>(["core", "tokens", identifier, "view_key"]).then(
             (r) => r.key

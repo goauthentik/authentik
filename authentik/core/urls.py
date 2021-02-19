@@ -8,7 +8,6 @@ urlpatterns = [
     # User views
     path("-/user/", user.UserSettingsView.as_view(), name="user-settings"),
     path("-/user/details/", user.UserDetailsView.as_view(), name="user-details"),
-    path("-/user/tokens/", user.TokenListView.as_view(), name="user-tokens"),
     path(
         "-/user/tokens/create/",
         user.TokenCreateView.as_view(),

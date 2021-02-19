@@ -6,20 +6,15 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, UpdateView
+from django.views.generic import UpdateView
 from django.views.generic.base import TemplateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.token import UserTokenForm
 from authentik.core.forms.users import UserDetailForm
 from authentik.core.models import Token, TokenIntents
@@ -52,30 +47,6 @@ class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         )
         kwargs["unenrollment_enabled"] = bool(unenrollment_flow)
         return kwargs
-
-
-class TokenListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    ListView,
-):
-    """Show list of all tokens"""
-
-    model = Token
-    ordering = "expires"
-    permission_required = "authentik_core.view_token"
-
-    template_name = "user/token_list.html"
-    search_fields = [
-        "identifier",
-        "intent",
-        "description",
-    ]
-
-    def get_queryset(self) -> QuerySet:
-        return super().get_queryset().filter(intent=TokenIntents.INTENT_API)
 
 
 class TokenCreateView(
