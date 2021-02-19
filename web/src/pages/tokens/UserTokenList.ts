@@ -1,7 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
-import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
