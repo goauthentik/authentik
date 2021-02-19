@@ -47,6 +47,7 @@ export class MessageContainer extends LitElement {
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
             console.debug(`authentik/messages: connected to ${wsUrl}`);
+            this.retryDelay = 200;
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug(`authentik/messages: closed ws connection: ${e}`);
