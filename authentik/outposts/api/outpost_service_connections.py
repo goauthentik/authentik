@@ -61,6 +61,8 @@ class ServiceConnectionViewSet(ModelViewSet):
 
     queryset = OutpostServiceConnection.objects.select_subclasses()
     serializer_class = ServiceConnectionSerializer
+    search_fields = ["name"]
+    filterset_fields = ["name"]
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False)

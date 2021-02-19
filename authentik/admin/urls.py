@@ -53,7 +53,6 @@ urlpatterns = [
         name="application-delete",
     ),
     # Tokens
-    path("tokens/", tokens.TokenListView.as_view(), name="tokens"),
     path(
         "tokens/<uuid:pk>/delete/",
         tokens.TokenDeleteView.as_view(),

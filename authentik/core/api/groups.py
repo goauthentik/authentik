@@ -19,3 +19,5 @@ class GroupViewSet(ModelViewSet):
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    search_fields = ["name", "is_superuser"]
+    filterset_fields = ["name", "is_superuser"]

@@ -309,6 +309,16 @@ paths:
       operationId: core_groups_list
       description: Group Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_superuser
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -436,6 +446,26 @@ paths:
       operationId: core_tokens_list
       description: Token Viewset
       parameters:
+        - name: identifier
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: intent
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: user__username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: description
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -582,6 +612,21 @@ paths:
       operationId: core_users_list
       description: User Viewset
       parameters:
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_active
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -649,6 +694,21 @@ paths:
       operationId: core_users_me
       description: Get information about current user
       parameters:
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_active
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -2107,6 +2167,11 @@ paths:
       operationId: outposts_service_connections_all_list
       description: ServiceConnection Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -2174,6 +2239,11 @@ paths:
       operationId: outposts_service_connections_all_types
       description: Get all creatable service connection types
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -5506,6 +5576,11 @@ paths:
       operationId: stages_all_list
       description: Stage Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -5557,6 +5632,11 @@ paths:
       operationId: stages_all_types
       description: Get all creatable stage types
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -8091,48 +8171,8 @@ definitions:
       attributes:
         title: Attributes
         type: object
-  Token:
-    description: Token Serializer
-    required:
-      - identifier
-      - user
-    type: object
-    properties:
-      pk:
-        title: Token uuid
-        type: string
-        format: uuid
-        readOnly: true
-      identifier:
-        title: Identifier
-        type: string
-        format: slug
-        pattern: ^[-a-zA-Z0-9_]+$
-        maxLength: 255
-        minLength: 1
-      intent:
-        title: Intent
-        type: string
-        enum:
-          - verification
-          - api
-          - recovery
-      user:
-        title: User
-        type: integer
-      description:
-        title: Description
-        type: string
-  TokenView:
-    description: Show token's current key
-    type: object
-    properties:
-      key:
-        title: Key
-        type: string
-        readOnly: true
-        minLength: 1
   User:
+    title: User
     description: User Serializer
     required:
       - username
@@ -8179,6 +8219,56 @@ definitions:
         title: Avatar
         type: string
         readOnly: true
+      attributes:
+        title: Attributes
+        type: object
+  Token:
+    description: Token Serializer
+    required:
+      - identifier
+      - user
+    type: object
+    properties:
+      pk:
+        title: Token uuid
+        type: string
+        format: uuid
+        readOnly: true
+      identifier:
+        title: Identifier
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+        maxLength: 255
+        minLength: 1
+      intent:
+        title: Intent
+        type: string
+        enum:
+          - verification
+          - api
+          - recovery
+      user:
+        $ref: '#/definitions/User'
+      description:
+        title: Description
+        type: string
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+      expiring:
+        title: Expiring
+        type: boolean
+  TokenView:
+    description: Show token's current key
+    type: object
+    properties:
+      key:
+        title: Key
+        type: string
+        readOnly: true
+        minLength: 1
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:

@@ -107,6 +107,7 @@ class PolicyViewSet(ReadOnlyModelViewSet):
         "bindings": ["isnull"],
         "promptstage": ["isnull"],
     }
+    search_fields = ["name"]
 
     def get_queryset(self):
         return Policy.objects.select_subclasses().prefetch_related(

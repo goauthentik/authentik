@@ -7,19 +7,14 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from django.views.generic import DetailView, UpdateView
-from guardian.mixins import (
-    PermissionRequiredMixin,
-)
+from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.users import UserForm
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-)
+from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
 from authentik.core.models import Token, User
 from authentik.lib.views import CreateAssignPermView
 

@@ -22,6 +22,7 @@ import "./pages/sources/SourcesListPage";
 import "./pages/sources/SourceViewPage";
 import "./pages/groups/GroupListPage";
 import "./pages/users/UserListPage";
+import "./pages/tokens/TokenListPage";
 import "./pages/system-tasks/SystemTaskListPage";
 
 export const ROUTES: Route[] = [
@@ -47,6 +48,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/groups$"), html`<ak-group-list></ak-group-list>`),
     new Route(new RegExp("^/users$"), html`<ak-user-list></ak-user-list>`),
     new Route(new RegExp("^/flows$"), html`<ak-flow-list></ak-flow-list>`),
+    new Route(new RegExp("^/tokens$"), html`<ak-token-list></ak-token-list>`),
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
     }),

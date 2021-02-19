@@ -3,7 +3,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
-import { tokenByIdentifier } from "../../api/Tokens";
+import { Token } from "../../api/Tokens";
 import { ColorStyles, ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
 
 @customElement("ak-token-copy-button")
@@ -35,7 +35,7 @@ export class TokenCopyButton extends LitElement {
             }, 1500);
             return;
         }
-        tokenByIdentifier(this.identifier).then((token) => {
+        Token.getKey(this.identifier).then((token) => {
             navigator.clipboard.writeText(token).then(() => {
                 this.buttonClass = SUCCESS_CLASS;
                 setTimeout(() => {

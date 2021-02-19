@@ -50,7 +50,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("User", "/users"),
         new SidebarItem("Groups", "/groups"),
         new SidebarItem("Certificates", "/crypto/certificates"),
-        new SidebarItem("Tokens", "/administration/tokens/"),
+        new SidebarItem("Tokens", "/tokens"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),

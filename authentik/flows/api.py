@@ -186,6 +186,8 @@ class StageViewSet(ReadOnlyModelViewSet):
 
     queryset = Stage.objects.all()
     serializer_class = StageSerializer
+    search_fields = ["name"]
+    filterset_fields = ["name"]
 
     def get_queryset(self):
         return Stage.objects.select_subclasses()

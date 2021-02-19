@@ -37,6 +37,7 @@ class UserSerializer(ModelSerializer):
             "is_superuser",
             "email",
             "avatar",
+            "attributes",
         ]
 
 
@@ -45,6 +46,8 @@ class UserViewSet(ModelViewSet):
 
     queryset = User.objects.none()
     serializer_class = UserSerializer
+    search_fields = ["username", "name", "is_active"]
+    filterset_fields = ["username", "name", "is_active"]
 
     def get_queryset(self):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
