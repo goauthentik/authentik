@@ -31,7 +31,7 @@ export class PolicyListPage extends TablePage<Policy> {
     apiEndpoint(page: number): Promise<AKResponse<Policy>> {
         return Policy.list({
             ordering: this.order,
-            page: page,
+        page: page,
             search: this.search || "",
         });
     }
@@ -54,7 +54,7 @@ export class PolicyListPage extends TablePage<Policy> {
                             ${gettext(`Assigned to ${item.bound_to} objects.`)}
                         </small>`:
                     html`<i class="pf-icon pf-icon-warning-triangle"></i>
-                    <small>${gettext("Warning: Policy is not assigned.")}/small>`}
+                    <small>${gettext("Warning: Policy is not assigned.")}</small>`}
             </div>`,
             html`${item.verbose_name}`,
             html`

@@ -13,6 +13,7 @@ import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
 import "./pages/LibraryPage";
 import "./pages/outposts/OutpostListPage";
+import "./pages/outposts/OutpostServiceConnectionListPage";
 import "./pages/policies/PolicyListPage";
 import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";
@@ -53,5 +54,6 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
     new Route(new RegExp("^/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
+    new Route(new RegExp("^/outpost-service-connections$"), html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`),
     new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificatekeypair-list></ak-crypto-certificatekeypair-list>`),
 ];

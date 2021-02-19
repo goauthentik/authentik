@@ -309,11 +309,6 @@ urlpatterns = [
     ),
     # Outpost Service Connections
     path(
-        "outpost_service_connections/",
-        outposts_service_connections.OutpostServiceConnectionListView.as_view(),
-        name="outpost-service-connections",
-    ),
-    path(
         "outpost_service_connections/create/",
         outposts_service_connections.OutpostServiceConnectionCreateView.as_view(),
         name="outpost-service-connection-create",

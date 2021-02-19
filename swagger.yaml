@@ -2169,6 +2169,42 @@ paths:
       tags:
         - outposts
     parameters: []
+  /outposts/service_connections/all/types/:
+    get:
+      operationId: outposts_service_connections_all_types
+      description: Get all creatable service connection types
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - outposts
+    parameters: []
   /outposts/service_connections/all/{uuid}/:
     get:
       operationId: outposts_service_connections_all_read
@@ -2220,6 +2256,25 @@ paths:
       responses:
         '204':
           description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+        type: string
+        format: uuid
+  /outposts/service_connections/all/{uuid}/state/:
+    get:
+      operationId: outposts_service_connections_all_state
+      description: Get the service connection's state
+      parameters: []
+      responses:
+        '200':
+          description: Serializer for Service connection state
+          schema:
+            $ref: '#/definitions/ServiceConnectionState'
       tags:
         - outposts
     parameters:
@@ -8797,6 +8852,55 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      local:
+        title: Local
+        description: If enabled, use the local connection. Required Docker socket/Kubernetes
+          Integration
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+  TypeCreate:
+    description: Types of an object that can be created
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        readOnly: true
+        minLength: 1
+      link:
+        title: Link
+        type: string
+        readOnly: true
+        minLength: 1
+  ServiceConnectionState:
+    description: Serializer for Service connection state
+    type: object
+    properties:
+      healthy:
+        title: Healthy
+        type: boolean
+        readOnly: true
+      version:
+        title: Version
+        type: string
+        readOnly: true
+        minLength: 1
   DockerServiceConnection:
     description: DockerServiceConnection Serializer
     required:
@@ -8818,6 +8922,18 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       url:
         title: Url
         description: Can be in the format of 'unix://<path>' when connecting to a
@@ -8859,6 +8975,18 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       kubeconfig:
         title: Kubeconfig
         description: Paste your kubeconfig here. authentik will automatically use
@@ -8898,25 +9026,6 @@ definitions:
         title: Bound to
         type: integer
         readOnly: true
-  TypeCreate:
-    description: Types of an object that can be created
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        readOnly: true
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        readOnly: true
-        minLength: 1
-      link:
-        title: Link
-        type: string
-        readOnly: true
-        minLength: 1
   PolicyBinding:
     description: PolicyBinding Serializer
     required:
