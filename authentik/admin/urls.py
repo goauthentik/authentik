@@ -146,11 +146,6 @@ urlpatterns = [
     ),
     # Stage bindings
     path(
-        "stages/bindings/",
-        stages_bindings.StageBindingListView.as_view(),
-        name="stage-bindings",
-    ),
-    path(
         "stages/bindings/create/",
         stages_bindings.StageBindingCreateView.as_view(),
         name="stage-binding-create",

@@ -7,30 +7,17 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Max
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.views.generic import ListView, UpdateView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from django.views.generic import UpdateView
+from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
     BackSuccessUrlMixin,
     DeleteMessageView,
-    UserPaginateListMixin,
 )
 from authentik.flows.forms import FlowStageBindingForm
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.lib.views import CreateAssignPermView
-
-
-class StageBindingListView(
-    LoginRequiredMixin, PermissionListMixin, UserPaginateListMixin, ListView
-):
-    """Show list of all flows"""
-
-    model = FlowStageBinding
-    permission_required = "authentik_flows.view_flowstagebinding"
-    ordering = ["target", "order"]
-    template_name = "administration/stage_binding/list.html"
 
 
 class StageBindingCreateView(
@@ -47,7 +34,7 @@ class StageBindingCreateView(
     form_class = FlowStageBindingForm
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:stage-bindings")
+    success_url = "/"
     success_message = _("Successfully created StageBinding")
 
     def get_initial(self) -> dict[str, Any]:
@@ -79,7 +66,7 @@ class StageBindingUpdateView(
     form_class = FlowStageBindingForm
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:stage-bindings")
+    success_url = "/"
     success_message = _("Successfully updated StageBinding")
 
 
@@ -92,5 +79,5 @@ class StageBindingDeleteView(
     permission_required = "authentik_flows.delete_flowstagebinding"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:stage-bindings")
+    success_url = "/"
     success_message = _("Successfully deleted FlowStageBinding")
