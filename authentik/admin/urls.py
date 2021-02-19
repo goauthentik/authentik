@@ -244,7 +244,6 @@ urlpatterns = [
         name="property-mapping-test",
     ),
     # Users
-    path("users/", users.UserListView.as_view(), name="users"),
     path("users/create/", users.UserCreateView.as_view(), name="user-create"),
     path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
     path("users/<int:pk>/delete/", users.UserDeleteView.as_view(), name="user-delete"),

@@ -1,4 +1,4 @@
-import { DefaultClient, AKResponse } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments } from "./Client";
 
 let _globalMePromise: Promise<User>;
 
@@ -9,9 +9,23 @@ export class User {
     is_superuser: boolean;
     email: boolean;
     avatar: string;
+    is_active: boolean;
+    last_login: number;
 
     constructor() {
         throw Error();
+    }
+
+    static get(pk: string): Promise<User> {
+        return DefaultClient.fetch<User>(["core", "users", pk]);
+    }
+
+    static list(filter?: QueryArguments): Promise<AKResponse<User>> {
+        return DefaultClient.fetch<AKResponse<User>>(["core", "users"], filter);
+    }
+
+    static adminUrl(rest: string): string {
+        return `/administration/users/${rest}`;
     }
 
     static me(): Promise<User> {

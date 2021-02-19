@@ -70,18 +70,18 @@ export class SpinnerButton extends LitElement {
             @click=${() => this.callAction()}
         >
             ${this.isRunning
-        ? html` <span class="pf-c-button__progress">
-                      <span
-                          class="pf-c-spinner pf-m-md"
-                          role="progressbar"
-                          aria-valuetext="Loading..."
-                      >
-                          <span class="pf-c-spinner__clipper"></span>
-                          <span class="pf-c-spinner__lead-ball"></span>
-                          <span class="pf-c-spinner__tail-ball"></span>
-                      </span>
-                  </span>`
-        : ""}
+                ? html` <span class="pf-c-button__progress">
+                            <span
+                                class="pf-c-spinner pf-m-md"
+                                role="progressbar"
+                                aria-valuetext="Loading..."
+                            >
+                                <span class="pf-c-spinner__clipper"></span>
+                                <span class="pf-c-spinner__lead-ball"></span>
+                                <span class="pf-c-spinner__tail-ball"></span>
+                            </span>
+                        </span>`
+                : ""}
             <slot></slot>
         </button>`;
     }

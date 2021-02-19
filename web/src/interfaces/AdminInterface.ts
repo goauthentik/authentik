@@ -47,7 +47,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Identity & Cryptography").children(
-        new SidebarItem("User", "/administration/users/"),
+        new SidebarItem("User", "/users"),
         new SidebarItem("Groups", "/groups"),
         new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/administration/tokens/"),

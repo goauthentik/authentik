@@ -8156,6 +8156,16 @@ definitions:
         description: User's display name.
         type: string
         minLength: 1
+      is_active:
+        title: Active
+        description: Designates whether this user should be treated as active. Unselect
+          this instead of deleting accounts.
+        type: boolean
+      last_login:
+        title: Last login
+        type: string
+        format: date-time
+        x-nullable: true
       is_superuser:
         title: Is superuser
         type: boolean
