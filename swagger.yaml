@@ -8853,6 +8853,10 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
   TypeCreate:
     description: Types of an object that can be created
     type: object
@@ -9254,6 +9258,10 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       result:
         title: Result
         type: boolean
@@ -9296,6 +9304,10 @@ definitions:
       verbose_name_plural:
         title: Verbose name plural
         type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       action:
         title: Action
@@ -9410,6 +9422,10 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       expression:
         title: Expression
         type: string
@@ -9443,6 +9459,10 @@ definitions:
       verbose_name_plural:
         title: Verbose name plural
         type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       group:
         title: Group
@@ -9478,6 +9498,10 @@ definitions:
       verbose_name_plural:
         title: Verbose name plural
         type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       password_field:
         title: Password field
@@ -9520,6 +9544,10 @@ definitions:
       verbose_name_plural:
         title: Verbose name plural
         type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       password_field:
         title: Password field
@@ -9586,6 +9614,10 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       days:
         title: Days
         type: integer
@@ -9623,6 +9655,10 @@ definitions:
       verbose_name_plural:
         title: Verbose name plural
         type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       check_ip:
         title: Check ip

@@ -59,14 +59,21 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
     _resolve_inheritance: bool
 
     object_type = SerializerMethodField()
+    bound_to = SerializerMethodField()
 
     def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
 
-    def get_object_type(self, obj):
+    def get_object_type(self, obj: Policy) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""
         return obj._meta.object_name.lower().replace("policy", "")
+
+    def get_bound_to(self, obj: Policy) -> int:
+        """Return objects policy is bound to"""
+        if not obj.bindings.exists() and not obj.promptstage_set.exists():
+            return 0
+        return obj.bindings.count()
 
     def to_representation(self, instance: Policy):
         # pyright: reportGeneralTypeIssues=false
@@ -86,6 +93,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
             "object_type",
             "verbose_name",
             "verbose_name_plural",
+            "bound_to",
         ]
         depth = 3
 
@@ -101,7 +109,9 @@ class PolicyViewSet(ReadOnlyModelViewSet):
     }
 
     def get_queryset(self):
-        return Policy.objects.select_subclasses()
+        return Policy.objects.select_subclasses().prefetch_related(
+            "bindings", "promptstage_set"
+        )
 
     @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False)
