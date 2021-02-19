@@ -20,7 +20,6 @@ from authentik.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
-    tasks,
     tokens,
     users,
 )
@@ -322,12 +321,6 @@ urlpatterns = [
         "outpost_service_connections/<uuid:pk>/delete/",
         outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
         name="outpost-service-connection-delete",
-    ),
-    # Tasks
-    path(
-        "tasks/",
-        tasks.TaskListView.as_view(),
-        name="tasks",
     ),
     # Event Notification Transpots
     path(
