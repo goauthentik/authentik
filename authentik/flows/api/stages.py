@@ -18,7 +18,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
     object_type = SerializerMethodField()
-    flow_set = FlowSerializer(many=True)
+    flow_set = FlowSerializer(many=True, required=False)
 
     def get_object_type(self, obj: Stage) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""

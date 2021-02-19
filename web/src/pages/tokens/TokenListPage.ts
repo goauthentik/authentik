@@ -5,6 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/TokenCopyButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Token } from "../../api/Tokens";
 
@@ -49,16 +50,16 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.identifier}`,
             html`${item.user.username}`,
             html`${item.expiring ? "Yes" : "No"}`,
-            html`${item.expiring ? new Date(item.expires * 1000).toLocaleString() : '-'}`,
+            html`${item.expiring ? new Date(item.expires * 1000).toLocaleString() : "-"}`,
             html`
             <ak-modal-button href="${Token.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
-                    ${gettext('Delete')}
+                    ${gettext("Delete")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
             <ak-token-copy-button identifier="${item.identifier}">
-                ${gettext('Copy Key')}
+                ${gettext("Copy Key")}
             </ak-token-copy-button>
             `,
         ];

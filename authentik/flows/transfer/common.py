@@ -22,6 +22,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
         "verbose_name",
         "verbose_name_plural",
         "object_type",
+        "flow_set",
     )
     for to_remove_name in to_remove:
         if to_remove_name in data:

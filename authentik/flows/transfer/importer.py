@@ -65,14 +65,17 @@ class FlowImporter:
             return value
 
         for key, value in attrs.items():
-            if isinstance(value, dict):
-                for idx, _inner_key in enumerate(value):
-                    value[_inner_key] = updater(value[_inner_key])
-            elif isinstance(value, list):
-                for idx, _inner_value in enumerate(value):
-                    attrs[key][idx] = updater(_inner_value)
-            else:
-                attrs[key] = updater(value)
+            try:
+                if isinstance(value, dict):
+                    for idx, _inner_key in enumerate(value):
+                        value[_inner_key] = updater(value[_inner_key])
+                elif isinstance(value, list):
+                    for idx, _inner_value in enumerate(value):
+                        attrs[key][idx] = updater(_inner_value)
+                else:
+                    attrs[key] = updater(value)
+            except TypeError:
+                continue
         return attrs
 
     def __query_from_identifier(self, attrs: dict[str, Any]) -> Q:

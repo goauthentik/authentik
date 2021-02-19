@@ -8570,82 +8570,6 @@ definitions:
       webhook_url:
         title: Webhook url
         type: string
-  Stage:
-    title: Stage obj
-    description: Stage Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      object_type:
-        title: Object type
-        type: string
-        readOnly: true
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
-  FlowStageBinding:
-    description: FlowStageBinding Serializer
-    required:
-      - target
-      - stage
-      - order
-    type: object
-    properties:
-      pk:
-        title: Fsb uuid
-        type: string
-        format: uuid
-        readOnly: true
-      policybindingmodel_ptr_id:
-        title: Policybindingmodel ptr id
-        type: string
-        readOnly: true
-      target:
-        title: Target
-        type: string
-        format: uuid
-      stage:
-        title: Stage
-        type: string
-        format: uuid
-      stage_obj:
-        $ref: '#/definitions/Stage'
-      evaluate_on_plan:
-        title: Evaluate on plan
-        description: Evaluate policies during the Flow planning process. Disable this
-          for input-based policies.
-        type: boolean
-      re_evaluate_policies:
-        title: Re evaluate policies
-        description: Evaluate policies when the Stage is present to the user.
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      policies:
-        type: array
-        items:
-          type: string
-          format: uuid
-        readOnly: true
-        uniqueItems: true
   Flow:
     description: Flow Serializer
     required:
@@ -8718,6 +8642,87 @@ definitions:
         title: Cache count
         type: string
         readOnly: true
+  Stage:
+    title: Stage obj
+    description: Stage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
+  FlowStageBinding:
+    description: FlowStageBinding Serializer
+    required:
+      - target
+      - stage
+      - order
+    type: object
+    properties:
+      pk:
+        title: Fsb uuid
+        type: string
+        format: uuid
+        readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
+        readOnly: true
+      target:
+        title: Target
+        type: string
+        format: uuid
+      stage:
+        title: Stage
+        type: string
+        format: uuid
+      stage_obj:
+        $ref: '#/definitions/Stage'
+      evaluate_on_plan:
+        title: Evaluate on plan
+        description: Evaluate policies during the Flow planning process. Disable this
+          for input-based policies.
+        type: boolean
+      re_evaluate_policies:
+        title: Re evaluate policies
+        description: Evaluate policies when the Stage is present to the user.
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      policies:
+        type: array
+        items:
+          type: string
+          format: uuid
+        readOnly: true
+        uniqueItems: true
   Cache:
     description: Generic cache stats for an object
     type: object
@@ -10913,6 +10918,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10953,6 +10963,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10993,6 +11008,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       not_configured_action:
         title: Not configured action
         type: string
@@ -11032,6 +11052,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   CaptchaStage:
     description: CaptchaStage Serializer
     required:
@@ -11061,6 +11086,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       public_key:
         title: Public key
         description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
@@ -11098,6 +11128,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       mode:
         title: Mode
         type: string
@@ -11137,6 +11172,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   EmailStage:
     description: EmailStage Serializer
     required:
@@ -11164,6 +11204,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       use_global_settings:
         title: Use global settings
         description: When enabled, global Email connection settings will be used and
@@ -11246,6 +11291,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       user_fields:
         description: ''
         type: array
@@ -11312,6 +11362,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       continue_flow_without_invitation:
         title: Continue flow without invitation
         description: If this flag is set, this Stage will jump to the next Stage when
@@ -11364,6 +11419,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       backends:
         description: ''
         type: array
@@ -11464,6 +11524,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       fields:
         type: array
         items:
@@ -11503,6 +11568,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   UserLoginStage:
     description: UserLoginStage Serializer
     required:
@@ -11530,6 +11600,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       session_duration:
         title: Session duration
         description: 'Determines how long a session lasts. Default of 0 means that
@@ -11563,6 +11638,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   UserWriteStage:
     description: UserWriteStage Serializer
     required:
@@ -11590,3 +11670,8 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
