@@ -91,11 +91,6 @@ urlpatterns = [
     ),
     # Policy bindings
     path(
-        "policies/bindings/",
-        policies_bindings.PolicyBindingListView.as_view(),
-        name="policies-bindings",
-    ),
-    path(
         "policies/bindings/create/",
         policies_bindings.PolicyBindingCreateView.as_view(),
         name="policy-binding-create",

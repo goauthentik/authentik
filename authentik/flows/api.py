@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, reverse
 from drf_yasg2.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -16,7 +15,7 @@ from rest_framework.serializers import (
     Serializer,
     SerializerMethodField,
 )
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.utils import (
     CacheSerializer,
