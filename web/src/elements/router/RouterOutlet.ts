@@ -65,7 +65,7 @@ export class RouterOutlet extends LitElement {
             console.debug(`authentik/router: route "${activeUrl}" not defined, defaulting to shell`);
             const route = new Route(
                 RegExp(""),
-                html`<ak-site-shell url=${activeUrl}>
+                html`<ak-site-shell class="pf-c-page__main" url=${activeUrl}>
                     <div slot="body"></div>
                 </ak-site-shell>`
             );

@@ -85,10 +85,6 @@ select[multiple] {
     z-index: auto !important;
 }
 
-.pf-c-page__main {
-    display: block;
-}
-
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
