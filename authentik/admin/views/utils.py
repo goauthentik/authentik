@@ -1,6 +1,5 @@
 """authentik admin util views"""
-from typing import Any, Optional
-from urllib.parse import urlparse
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -8,7 +7,7 @@ from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db.models import QuerySet
 from django.http import Http404
 from django.http.request import HttpRequest
-from django.views.generic import DeleteView, ListView, UpdateView
+from django.views.generic import DeleteView, UpdateView
 from django.views.generic.list import MultipleObjectMixin
 
 from authentik.lib.utils.reflection import all_subclasses
@@ -23,17 +22,6 @@ class DeleteMessageView(SuccessMessageMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super().delete(request, *args, **kwargs)
-
-
-class InheritanceListView(ListView):
-    """ListView for objects using InheritanceManager"""
-
-    def get_context_data(self, **kwargs):
-        kwargs["types"] = {x.__name__: x for x in all_subclasses(self.model)}
-        return super().get_context_data(**kwargs)
-
-    def get_queryset(self):
-        return super().get_queryset().select_subclasses()
 
 
 class SearchListMixin(MultipleObjectMixin):
@@ -96,23 +84,6 @@ class InheritanceUpdateView(UpdateView):
             .select_subclasses()
             .first()
         )
-
-
-class BackSuccessUrlMixin:
-    """Checks if a relative URL has been given as ?back param, and redirect to it. Otherwise
-    default to self.success_url."""
-
-    request: HttpRequest
-
-    success_url: Optional[str]
-
-    def get_success_url(self) -> str:
-        """get_success_url from FormMixin"""
-        back_param = self.request.GET.get("back")
-        if back_param:
-            if not bool(urlparse(back_param).netloc):
-                return back_param
-        return str(self.success_url)
 
 
 class UserPaginateListMixin:

@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.events.forms import NotificationRuleForm
 from authentik.events.models import NotificationRule
 from authentik.lib.views import CreateAssignPermView
@@ -16,7 +16,6 @@ from authentik.lib.views import CreateAssignPermView
 
 class NotificationRuleCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -33,7 +32,6 @@ class NotificationRuleCreateView(
 
 class NotificationRuleUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

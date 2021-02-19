@@ -8,7 +8,6 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceUpdateView,
@@ -18,7 +17,6 @@ from authentik.core.models import Source
 
 class SourceCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -34,7 +32,6 @@ class SourceCreateView(
 
 class SourceUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

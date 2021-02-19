@@ -11,7 +11,7 @@ from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.applications import ApplicationForm
 from authentik.core.models import Application
 from authentik.lib.views import CreateAssignPermView
@@ -19,7 +19,6 @@ from authentik.lib.views import CreateAssignPermView
 
 class ApplicationCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -52,7 +51,6 @@ class ApplicationCreateView(
 
 class ApplicationUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

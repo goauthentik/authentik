@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.lib.views import CreateAssignPermView
 from authentik.outposts.forms import OutpostForm
 from authentik.outposts.models import Outpost, OutpostConfig
@@ -19,7 +19,6 @@ from authentik.outposts.models import Outpost, OutpostConfig
 
 class OutpostCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -43,7 +42,6 @@ class OutpostCreateView(
 
 class OutpostUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

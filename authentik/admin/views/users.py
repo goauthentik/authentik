@@ -14,14 +14,13 @@ from django.views.generic import DetailView, UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.users import UserForm
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.models import Token, User
 from authentik.lib.views import CreateAssignPermView
 
 
 class UserCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -39,7 +38,6 @@ class UserCreateView(
 
 class UserUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,
@@ -70,9 +68,7 @@ class UserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageV
     success_message = _("Successfully deleted User")
 
 
-class UserDisableView(
-    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DeleteMessageView
-):
+class UserDisableView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Disable user"""
 
     object: User
@@ -94,9 +90,7 @@ class UserDisableView(
         return HttpResponseRedirect(success_url)
 
 
-class UserEnableView(
-    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DetailView
-):
+class UserEnableView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """Enable user"""
 
     object: User
@@ -111,10 +105,9 @@ class UserEnableView(
 
     def get(self, request: HttpRequest, *args, **kwargs):
         self.object: User = self.get_object()
-        success_url = self.get_success_url()
         self.object.is_active = True
         self.object.save()
-        return HttpResponseRedirect(success_url)
+        return HttpResponseRedirect(self.success_url)
 
 
 class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):

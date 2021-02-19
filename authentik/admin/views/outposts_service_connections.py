@@ -8,7 +8,6 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceUpdateView,
@@ -18,7 +17,6 @@ from authentik.outposts.models import OutpostServiceConnection
 
 class OutpostServiceConnectionCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -35,7 +33,6 @@ class OutpostServiceConnectionCreateView(
 
 class OutpostServiceConnectionUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

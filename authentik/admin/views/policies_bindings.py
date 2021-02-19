@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.lib.views import CreateAssignPermView
 from authentik.policies.forms import PolicyBindingForm
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -19,7 +19,6 @@ from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 class PolicyBindingCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -53,7 +52,6 @@ class PolicyBindingCreateView(
 
 class PolicyBindingUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

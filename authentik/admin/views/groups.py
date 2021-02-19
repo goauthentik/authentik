@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.groups import GroupForm
 from authentik.core.models import Group
 from authentik.lib.views import CreateAssignPermView
@@ -16,7 +16,6 @@ from authentik.lib.views import CreateAssignPermView
 
 class GroupCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -34,7 +33,6 @@ class GroupCreateView(
 
 class GroupUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

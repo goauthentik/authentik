@@ -8,7 +8,6 @@ from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceUpdateView,
@@ -18,7 +17,6 @@ from authentik.flows.models import Stage
 
 class StageCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -35,7 +33,6 @@ class StageCreateView(
 
 class StageUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

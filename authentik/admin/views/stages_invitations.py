@@ -11,7 +11,6 @@ from django.views.generic import ListView
 from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
 
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     SearchListMixin,
     UserPaginateListMixin,
@@ -39,7 +38,6 @@ class InvitationListView(
 
 class InvitationCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,

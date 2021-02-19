@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.flows.forms import FlowStageBindingForm
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.lib.views import CreateAssignPermView
@@ -19,7 +19,6 @@ from authentik.lib.views import CreateAssignPermView
 
 class StageBindingCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -51,7 +50,6 @@ class StageBindingCreateView(
 
 class StageBindingUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,
