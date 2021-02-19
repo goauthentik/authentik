@@ -125,7 +125,6 @@ urlpatterns = [
         name="provider-delete",
     ),
     # Stages
-    path("stages/", stages.StageListView.as_view(), name="stages"),
     path("stages/create/", stages.StageCreateView.as_view(), name="stage-create"),
     path(
         "stages/<uuid:pk>/update/",

@@ -20,37 +20,37 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Resources").children(
-        new SidebarItem("Applications", "/applications").activeWhen(
-            `^/applications/(?<slug>${SLUG_REGEX})$`
+        new SidebarItem("Applications", "/core/applications").activeWhen(
+            `^/core/applications/(?<slug>${SLUG_REGEX})$`
         ),
-        new SidebarItem("Sources", "/sources").activeWhen(
-            `^/sources/(?<slug>${SLUG_REGEX})$`,
+        new SidebarItem("Sources", "/core/sources").activeWhen(
+            `^/core/sources/(?<slug>${SLUG_REGEX})$`,
         ),
-        new SidebarItem("Providers", "/providers"),
-        new SidebarItem("Outposts", "/outposts"),
-        new SidebarItem("Outpost Service Connections", "/outpost-service-connections"),
+        new SidebarItem("Providers", "/core/providers"),
+        new SidebarItem("Outposts", "/outpost/outposts"),
+        new SidebarItem("Outpost Service Connections", "/outpost/service-connections"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Customisation").children(
-        new SidebarItem("Policies", "/policies"),
-        new SidebarItem("Property Mappings", "/property-mappings"),
+        new SidebarItem("Policies", "/policy/policies"),
+        new SidebarItem("Property Mappings", "/core/property-mappings"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Flows").children(
-        new SidebarItem("Flows", "/flows").activeWhen(`^/flows/(?<slug>${SLUG_REGEX})$`),
-        new SidebarItem("Stages", "/administration/stages/"),
+        new SidebarItem("Flows", "/flow/flows").activeWhen(`^/flow/flows/(?<slug>${SLUG_REGEX})$`),
+        new SidebarItem("Stages", "/flow/stages"),
         new SidebarItem("Prompts", "/administration/stages_prompts/"),
         new SidebarItem("Invitations", "/administration/stages/invitations/"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Identity & Cryptography").children(
-        new SidebarItem("User", "/users"),
-        new SidebarItem("Groups", "/groups"),
+        new SidebarItem("User", "/identity/users"),
+        new SidebarItem("Groups", "/identity/groups"),
         new SidebarItem("Certificates", "/crypto/certificates"),
-        new SidebarItem("Tokens", "/tokens"),
+        new SidebarItem("Tokens", "/core/tokens"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);
     }),

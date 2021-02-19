@@ -14,7 +14,7 @@ export class RelatedApplicationButton extends LitElement {
 
     render(): TemplateResult {
         if (this.provider?.assigned_application_slug) {
-            return html`<a href="#/applications/${this.provider.assigned_application_slug}">
+            return html`<a href="#/core/applications/${this.provider.assigned_application_slug}">
                 ${this.provider.assigned_application_name}
             </a>`;
         }

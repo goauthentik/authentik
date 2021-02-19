@@ -8,8 +8,8 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.models import Stage
-from authentik.flows.planner import cache_key
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -18,6 +18,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
     object_type = SerializerMethodField()
+    flow_set = FlowSerializer(many=True)
 
     def get_object_type(self, obj: Stage) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""
@@ -26,13 +27,20 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     class Meta:
 
         model = Stage
-        fields = ["pk", "name", "object_type", "verbose_name", "verbose_name_plural"]
+        fields = [
+            "pk",
+            "name",
+            "object_type",
+            "verbose_name",
+            "verbose_name_plural",
+            "flow_set",
+        ]
 
 
 class StageViewSet(ReadOnlyModelViewSet):
     """Stage Viewset"""
 
-    queryset = Stage.objects.all()
+    queryset = Stage.objects.all().select_related("flow_set")
     serializer_class = StageSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]

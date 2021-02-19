@@ -47,7 +47,7 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): TemplateResult[] {
         return [
-            html`<a href="#/flows/${item.slug}">
+            html`<a href="#/flow/flows/${item.slug}">
                 <code>${item.slug}</code>
             </a>`,
             html`${item.name}`,

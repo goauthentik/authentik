@@ -1,4 +1,4 @@
-import { DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { DefaultClient, AKResponse, QueryArguments, BaseInheritanceModel } from "./Client";
 import { TypeCreate } from "./Providers";
 
 export enum FlowDesignation {
@@ -49,14 +49,24 @@ export class Flow {
     }
 }
 
-export class Stage {
+export class Stage implements BaseInheritanceModel {
     pk: string;
     name: string;
-    __type__: string;
+    object_type: string;
     verbose_name: string;
+    verbose_name_plural: string;
+    flow_set: Flow[];
 
     constructor() {
         throw Error();
+    }
+
+    static get(slug: string): Promise<Stage> {
+        return DefaultClient.fetch<Stage>(["stages", "all", slug]);
+    }
+
+    static list(filter?: QueryArguments): Promise<AKResponse<Stage>> {
+        return DefaultClient.fetch<AKResponse<Stage>>(["stages", "all"], filter);
     }
 
     static getTypes(): Promise<TypeCreate[]> {

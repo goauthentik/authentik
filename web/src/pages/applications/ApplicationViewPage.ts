@@ -80,7 +80,7 @@ export class ApplicationViewPage extends LitElement {
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    <a href="#/providers/${this.application.provider.pk}">
+                                                    <a href="#/core/providers/${this.application.provider.pk}">
                                                         ${this.application.provider.name}
                                                     </a>
                                                 </div>
