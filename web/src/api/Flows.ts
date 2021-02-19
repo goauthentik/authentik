@@ -40,8 +40,8 @@ export class Flow {
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<AKResponse<Flow>>(["flows", "cached"]).then(r => {
-            return r.pagination.count;
+        return DefaultClient.fetch<{ count: number }>(["flows", "all", "cached"]).then(r => {
+            return r.count;
         });
     }
     static adminUrl(rest: string): string {

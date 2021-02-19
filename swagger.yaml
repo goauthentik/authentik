@@ -1600,59 +1600,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /flows/cached/:
-    get:
-      operationId: flows_cached_list
-      description: Info about cached flows
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  description: ''
-                  type: object
-                  properties: {}
-      tags:
-        - flows
-    parameters: []
   /flows/instances/:
     get:
       operationId: flows_instances_list
@@ -1737,6 +1684,59 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    parameters: []
+  /flows/instances/cached/:
+    get:
+      operationId: flows_instances_cached
+      description: Info about cached flows
+      parameters:
+        - name: flow_uuid
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: slug
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: designation
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Generic cache stats for an object
+          schema:
+            $ref: '#/definitions/Cache'
       tags:
         - flows
     parameters: []
@@ -2544,6 +2544,95 @@ paths:
       tags:
         - policies
     parameters: []
+  /policies/all/cached/:
+    get:
+      operationId: policies_all_cached
+      description: Info about cached policies
+      parameters:
+        - name: bindings__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: promptstage__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Generic cache stats for an object
+          schema:
+            $ref: '#/definitions/Cache'
+      tags:
+        - policies
+    parameters: []
+  /policies/all/types/:
+    get:
+      operationId: policies_all_types
+      description: Get all creatable policy types
+      parameters:
+        - name: bindings__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: promptstage__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - policies
+    parameters: []
   /policies/all/{policy_uuid}/:
     get:
       operationId: policies_all_read
@@ -2715,59 +2804,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /policies/cached/:
-    get:
-      operationId: policies_cached_list
-      description: Info about cached policies
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  description: ''
-                  type: object
-                  properties: {}
-      tags:
-        - policies
-    parameters: []
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -8486,6 +8522,14 @@ definitions:
         title: Cache count
         type: string
         readOnly: true
+  Cache:
+    description: Generic cache stats for an object
+    type: object
+    properties:
+      count:
+        title: Count
+        type: integer
+        readOnly: true
   FlowDiagram:
     description: response of the flow's /diagram/ action
     type: object
@@ -8801,6 +8845,33 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+  TypeCreate:
+    description: Types of an object that can be created
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        readOnly: true
+        minLength: 1
+      link:
+        title: Link
+        type: string
+        readOnly: true
+        minLength: 1
   PolicyBinding:
     description: PolicyBinding Serializer
     required:
@@ -9175,6 +9246,14 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       result:
         title: Result
         type: boolean
@@ -9208,6 +9287,14 @@ definitions:
         type: boolean
       object_type:
         title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
       action:
@@ -9315,6 +9402,14 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       expression:
         title: Expression
         type: string
@@ -9339,6 +9434,14 @@ definitions:
         type: boolean
       object_type:
         title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
       group:
@@ -9366,6 +9469,14 @@ definitions:
         type: boolean
       object_type:
         title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
       password_field:
@@ -9400,6 +9511,14 @@ definitions:
         type: boolean
       object_type:
         title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
       password_field:
@@ -9459,6 +9578,14 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       days:
         title: Days
         type: integer
@@ -9487,6 +9614,14 @@ definitions:
         type: boolean
       object_type:
         title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
         type: string
         readOnly: true
       check_ip:
@@ -9641,25 +9776,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  TypeCreate:
-    description: Types of an object that can be created
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        readOnly: true
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        readOnly: true
-        minLength: 1
-      link:
-        title: Link
-        type: string
-        readOnly: true
-        minLength: 1
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:

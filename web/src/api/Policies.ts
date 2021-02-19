@@ -20,8 +20,8 @@ export class Policy implements BaseInheritanceModel {
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<AKResponse<Policy>>(["policies", "cached"]).then(r => {
-            return r.pagination.count;
+        return DefaultClient.fetch<{ count: number }>(["policies", "all", "cached"]).then(r => {
+            return r.count;
         });
     }
 }
