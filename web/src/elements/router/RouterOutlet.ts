@@ -28,6 +28,11 @@ export class RouterOutlet extends LitElement {
                 :host {
                     height: 100vh;
                 }
+                *:first-child {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
             `,
         ].concat(...COMMON_STYLES);
     }
