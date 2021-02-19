@@ -23,23 +23,14 @@ from authentik.events.api.event import EventViewSet
 from authentik.events.api.notification import NotificationViewSet
 from authentik.events.api.notification_rule import NotificationRuleViewSet
 from authentik.events.api.notification_transport import NotificationTransportViewSet
-from authentik.flows.api import (
-    FlowCacheViewSet,
-    FlowStageBindingViewSet,
-    FlowViewSet,
-    StageViewSet,
-)
+from authentik.flows.api import FlowStageBindingViewSet, FlowViewSet, StageViewSet
 from authentik.outposts.api.outpost_service_connections import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
     ServiceConnectionViewSet,
 )
 from authentik.outposts.api.outposts import OutpostViewSet
-from authentik.policies.api import (
-    PolicyBindingViewSet,
-    PolicyCacheViewSet,
-    PolicyViewSet,
-)
+from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet
 from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
@@ -100,7 +91,6 @@ router.register(
 router.register("outposts/proxy", ProxyOutpostConfigViewSet)
 
 router.register("flows/instances", FlowViewSet)
-router.register("flows/cached", FlowCacheViewSet, basename="flows_cache")
 router.register("flows/bindings", FlowStageBindingViewSet)
 
 router.register("crypto/certificatekeypairs", CertificateKeyPairViewSet)
@@ -116,7 +106,6 @@ router.register("sources/saml", SAMLSourceViewSet)
 router.register("sources/oauth", OAuthSourceViewSet)
 
 router.register("policies/all", PolicyViewSet)
-router.register("policies/cached", PolicyCacheViewSet, basename="policies_cache")
 router.register("policies/bindings", PolicyBindingViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("policies/event_matcher", EventMatcherPolicyViewSet)

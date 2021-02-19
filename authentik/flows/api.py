@@ -18,7 +18,11 @@ from rest_framework.serializers import (
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    CacheSerializer,
+    MetaNameSerializer,
+    TypeCreateSerializer,
+)
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.flows.planner import cache_key
 from authentik.lib.templatetags.authentik_utils import verbose_name
@@ -83,6 +87,12 @@ class FlowViewSet(ModelViewSet):
     lookup_field = "slug"
     search_fields = ["name", "slug", "designation", "title"]
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
+
+    @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
+    @action(detail=False)
+    def cached(self, request: Request) -> Response:
+        """Info about cached flows"""
+        return Response(data={"count": len(cache.keys("flow_*"))})
 
     @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, methods=["get"])
@@ -226,14 +236,3 @@ class FlowStageBindingViewSet(ModelViewSet):
     queryset = FlowStageBinding.objects.all()
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
-
-
-class FlowCacheViewSet(ListModelMixin, GenericViewSet):
-    """Info about cached flows"""
-
-    queryset = Flow.objects.none()
-    serializer_class = Serializer
-
-    def list(self, request: Request) -> Response:
-        """Info about cached flows"""
-        return Response(data={"pagination": {"count": len(cache.keys("flow_*"))}})
