@@ -3,12 +3,8 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import QuerySet
 from django.http import Http404
-from django.http.request import HttpRequest
 from django.views.generic import DeleteView, UpdateView
-from django.views.generic.list import MultipleObjectMixin
 
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.views import CreateAssignPermView
@@ -22,26 +18,6 @@ class DeleteMessageView(SuccessMessageMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super().delete(request, *args, **kwargs)
-
-
-class SearchListMixin(MultipleObjectMixin):
-    """Accept search query using `search` querystring parameter. Requires self.search_fields,
-    a list of all fields to search. Can contain special lookups like __icontains"""
-
-    search_fields: list[str]
-
-    def get_queryset(self) -> QuerySet:
-        queryset = super().get_queryset()
-        if "search" in self.request.GET:
-            raw_query = self.request.GET["search"]
-            if raw_query == "":
-                # Empty query, don't search at all
-                return queryset
-            search = SearchQuery(raw_query, search_type="websearch")
-            return queryset.annotate(search=SearchVector(*self.search_fields)).filter(
-                search=search
-            )
-        return queryset
 
 
 class InheritanceCreateView(CreateAssignPermView):
@@ -84,14 +60,3 @@ class InheritanceUpdateView(UpdateView):
             .select_subclasses()
             .first()
         )
-
-
-class UserPaginateListMixin:
-    """Get paginate_by value from user's attributes, defaulting to 15"""
-
-    request: HttpRequest
-
-    # pylint: disable=unused-argument
-    def get_paginate_by(self, queryset: QuerySet) -> int:
-        """get_paginate_by Function of ListView"""
-        return self.request.user.attributes.get("paginate_by", 15)
