@@ -8,6 +8,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
@@ -82,36 +83,18 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=LDAPPropertyMapping")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("LDAP Property Mapping")}<br>
-                            <small>
-                                ${gettext("Map LDAP Property to User or Group object attribute")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
-                <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=SAMLPropertyMapping")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("SAML Property Mapping")}<br>
-                            <small>
-                                ${gettext("Map User/Group attribute to SAML Attribute, which can be used by the Service Provider.")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
-                <li>
-                    <ak-modal-button href="${PropertyMapping.adminUrl("create/?type=ScopeMapping")}">
-                        <button slot="trigger" class="pf-c-dropdown__menu-item">${gettext("Scope Mapping")}<br>
-                            <small>
-                                ${gettext("Map an OAuth Scope to users properties")}
-                            </small>
-                        </button>
-                        <div slot="modal"></div>
-                    </ak-modal-button>
-                </li>
+                ${until(PropertyMapping.getTypes().then((types) => {
+                    return types.map((type) => {
+                        return html`<li>
+                            <ak-modal-button href="${type.link}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                                    <small>${type.description}</small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>`;
+                    });
+                }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
         ${super.renderToolbar()}`;
