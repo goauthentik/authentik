@@ -19,6 +19,7 @@ import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
 import "./pages/sources/SourcesListPage";
 import "./pages/sources/SourceViewPage";
+import "./pages/groups/GroupListPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -39,6 +40,7 @@ export const ROUTES: Route[] = [
         return html`<ak-source-view .args=${args}></ak-source-view>`;
     }),
     new Route(new RegExp("^/policies$"), html`<ak-policy-list></ak-policy-list>`),
+    new Route(new RegExp("^/groups$"), html`<ak-group-list></ak-group-list>`),
     new Route(new RegExp("^/flows$"), html`<ak-flow-list></ak-flow-list>`),
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;

@@ -269,7 +269,6 @@ urlpatterns = [
         name="user-password-reset",
     ),
     # Groups
-    path("groups/", groups.GroupListView.as_view(), name="groups"),
     path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
     path(
         "groups/<uuid:pk>/update/",
