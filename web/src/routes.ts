@@ -1,23 +1,24 @@
 import { html } from "lit-html";
 import { Route, SLUG_REGEX, ID_REGEX, UUID_REGEX } from "./elements/router/Route";
 
-import "./pages/LibraryPage";
 import "./pages/admin-overview/AdminOverviewPage";
 import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
-import "./pages/sources/SourcesListPage";
-import "./pages/sources/SourceViewPage";
+import "./pages/crypto/CertificateKeyPairListPage";
+import "./pages/events/EventInfoPage";
+import "./pages/events/EventListPage";
+import "./pages/events/RuleListPage";
+import "./pages/events/TransportListPage";
 import "./pages/flows/FlowListPage";
 import "./pages/flows/FlowViewPage";
-import "./pages/events/EventListPage";
-import "./pages/events/EventInfoPage";
-import "./pages/events/TransportListPage";
-import "./pages/events/RuleListPage";
+import "./pages/LibraryPage";
+import "./pages/outposts/OutpostListPage";
+import "./pages/policies/PolicyListPage";
+import "./pages/property-mappings/PropertyMappingListPage";
 import "./pages/providers/ProviderListPage";
 import "./pages/providers/ProviderViewPage";
-import "./pages/property-mappings/PropertyMappingListPage";
-import "./pages/outposts/OutpostListPage";
-import "./pages/crypto/CertificateKeyPairListPage";
+import "./pages/sources/SourcesListPage";
+import "./pages/sources/SourceViewPage";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -37,6 +38,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/sources/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-source-view .args=${args}></ak-source-view>`;
     }),
+    new Route(new RegExp("^/policies$"), html`<ak-policy-list></ak-policy-list>`),
     new Route(new RegExp("^/flows$"), html`<ak-flow-list></ak-flow-list>`),
     new Route(new RegExp(`^/flows/(?<slug>${SLUG_REGEX})$`)).then((args) => {
         return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;

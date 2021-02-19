@@ -33,7 +33,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Customisation").children(
-        new SidebarItem("Policies", "/administration/policies/"),
+        new SidebarItem("Policies", "/policies"),
         new SidebarItem("Property Mappings", "/property-mappings"),
     ).when((): Promise<boolean> => {
         return User.me().then(u => u.is_superuser);

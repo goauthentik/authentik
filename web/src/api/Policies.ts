@@ -1,15 +1,18 @@
 import { DefaultClient, BaseInheritanceModel, AKResponse, QueryArguments } from "./Client";
+import { TypeCreate } from "./Providers";
 
 export class Policy implements BaseInheritanceModel {
     pk: string;
     name: string;
+    execution_logging: boolean;
+    object_type: string;
+    verbose_name: string;
+    verbose_name_plural: string;
+    bound_to: number;
 
     constructor() {
         throw Error();
     }
-    object_type: string;
-    verbose_name: string;
-    verbose_name_plural: string;
 
     static get(pk: string): Promise<Policy> {
         return DefaultClient.fetch<Policy>(["policies", "all", pk]);
@@ -23,5 +26,13 @@ export class Policy implements BaseInheritanceModel {
         return DefaultClient.fetch<{ count: number }>(["policies", "all", "cached"]).then(r => {
             return r.count;
         });
+    }
+
+    static getTypes(): Promise<TypeCreate[]> {
+        return DefaultClient.fetch<TypeCreate[]>(["policies", "all", "types"]);
+    }
+
+    static adminUrl(rest: string): string {
+        return `/administration/policies/${rest}`;
     }
 }

@@ -73,7 +73,6 @@ urlpatterns = [
         name="source-delete",
     ),
     # Policies
-    path("policies/", policies.PolicyListView.as_view(), name="policies"),
     path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
     path(
         "policies/<uuid:pk>/update/",
