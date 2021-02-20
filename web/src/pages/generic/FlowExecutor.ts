@@ -104,7 +104,6 @@ export class FlowExecutor extends LitElement {
                 default:
                     break;
             }
-            // this.flowBody = html`${unsafeHTML(`<${data.component} .args="${data.args}"></${data.component}>`)}`;
             break;
         default:
             console.debug(`authentik/flows: unexpected data type ${data.type}`);

@@ -26,7 +26,7 @@ export class PolicyCacheStatusCard extends AdminStatusCard<number> {
     }
 
     renderHeaderLink(): TemplateResult {
-        return html`<ak-modal-button href="/administration/overview/cache/policy/">
+        return html`<ak-modal-button href="#/policy/policies">
             <a slot="trigger">
                 <i class="fa fa-trash"> </i>
             </a>
