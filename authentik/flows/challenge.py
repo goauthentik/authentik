@@ -19,6 +19,7 @@ class ChallengeTypes(Enum):
     native = "native"
     shell = "shell"
     redirect = "redirect"
+    error = "error"
 
 
 class Challenge(Serializer):

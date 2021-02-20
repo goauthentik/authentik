@@ -1,7 +1,6 @@
 """Identification stage logic"""
 from typing import Optional, Union
 
-from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
 from django.urls import reverse

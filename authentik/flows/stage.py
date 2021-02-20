@@ -1,6 +1,6 @@
 """authentik stage Base view"""
 from collections import namedtuple
-from typing import Any, Type
+from typing import Any
 
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 
 from authentik.flows.challenge import (
     Challenge,
-    ChallengeResponse,
+    ChallengeResponse, ChallengeTypes,
     HttpChallengeResponse,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -85,4 +85,13 @@ class ChallengeStageView(StageView):
 
     def challenge_invalid(self, challenge: ChallengeResponse) -> HttpResponse:
         """Callback when the challenge has the incorrect format"""
-        return JsonResponse(challenge.errors)
+        challenge_response = Challenge(data={
+            "type": ChallengeTypes.error,
+            "args": {
+                "errors": challenge.errors
+            }
+        })
+        challenge_response.is_valid()
+        return HttpChallengeResponse(
+            challenge_response
+        )
