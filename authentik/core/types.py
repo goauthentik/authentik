@@ -13,8 +13,5 @@ class UILoginButton:
     # URL Which Button points to
     url: str
 
-    # Icon name, ran through django's static
-    icon_path: Optional[str] = None
-
     # Icon URL, used as-is
     icon_url: Optional[str] = None

@@ -169,7 +169,6 @@ class SAMLSource(Source):
             url=reverse_lazy(
                 "authentik_sources_saml:login", kwargs={"source_slug": self.slug}
             ),
-            icon_path="",
         )
 
     @property

@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
+from django.templatetags.static import static
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
@@ -60,7 +61,7 @@ class OAuthSource(Source):
                 "authentik_sources_oauth:oauth-client-login",
                 kwargs={"source_slug": self.slug},
             ),
-            icon_path=f"authentik/sources/{self.provider_type}.svg",
+            icon_url=static(f"authentik/sources/{self.provider_type}.svg"),
             name=self.name,
         )
 
