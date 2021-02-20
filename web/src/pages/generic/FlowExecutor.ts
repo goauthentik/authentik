@@ -3,9 +3,11 @@ import { LitElement, html, customElement, property, TemplateResult } from "lit-e
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { getCookie } from "../../utils";
 import "../../elements/stages/identification/IdentificationStage";
+import "../../elements/stages/password/PasswordStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
+import { PasswordChallenge } from "../../elements/stages/password/PasswordStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -104,6 +106,8 @@ export class FlowExecutor extends LitElement {
             switch (this.challenge.component) {
                 case "ak-stage-identification":
                     return html`<ak-stage-identification .host=${this} .challenge=${this.challenge as IdentificationChallenge}></ak-stage-identification>`;
+                case "ak-stage-password":
+                    return html`<ak-stage-password .host=${this} .challenge=${this.challenge as PasswordChallenge}></ak-stage-password>`;
                 default:
                     break;
             }

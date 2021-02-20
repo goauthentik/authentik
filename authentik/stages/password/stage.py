@@ -6,16 +6,20 @@ from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.signals import user_login_failed
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.views.generic import FormView
+from rest_framework.exceptions import ErrorDetail
+from rest_framework.fields import CharField
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import StageView
+from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
-from authentik.stages.password.forms import PasswordForm
+from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
@@ -51,32 +55,48 @@ def authenticate(
     )
 
 
-class PasswordStageView(FormView, StageView):
+class PasswordChallenge(Challenge):
+    """Password challenge UI fields"""
+
+    pending_user = CharField()
+    pending_user_avatar = CharField()
+    recovery_url = CharField(required=False)
+
+
+class PasswordChallengeResponse(ChallengeResponse):
+    """Password challenge response"""
+
+    password = CharField()
+
+class PasswordStageView(ChallengeStageView):
     """Authentication stage which authenticates against django's AuthBackend"""
 
-    form_class = PasswordForm
-    template_name = "stages/password/flow-form.html"
+    response_class = PasswordChallengeResponse
 
-    def get_form(self, form_class=None) -> PasswordForm:
-        form = super().get_form(form_class=form_class)
-
+    def get_challenge(self) -> Challenge:
+        challenge = PasswordChallenge(
+            data={
+                "type": ChallengeTypes.native,
+                "component": "ak-stage-password",
+            }
+        )
         # If there's a pending user, update the `username` field
         # this field is only used by password managers.
         # If there's no user set, an error is raised later.
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-            form.fields["username"].initial = pending_user.username
+            challenge.initial_data["pending_user"] = pending_user.username
+            challenge.initial_data["pending_user_avatar"] = avatar(pending_user)
 
-        return form
-
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
-            kwargs["recovery_flow"] = recovery_flow.first()
-        return kwargs
+            challenge.initial_data["recovery_url"] = reverse(
+                "authentik_flows:flow-executor-shell",
+                kwargs={"flow_slug": recovery_flow.first().slug},
+            )
+        return challenge
 
-    def form_invalid(self, form: PasswordForm) -> HttpResponse:
+    def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         if SESSION_INVALID_TRIES not in self.request.session:
             self.request.session[SESSION_INVALID_TRIES] = 0
         self.request.session[SESSION_INVALID_TRIES] += 1
@@ -88,9 +108,9 @@ class PasswordStageView(FormView, StageView):
             LOGGER.debug("User has exceeded maximum tries")
             del self.request.session[SESSION_INVALID_TRIES]
             return self.executor.stage_invalid()
-        return super().form_invalid(form)
+        return super().challenge_invalid(response)
 
-    def form_valid(self, form: PasswordForm) -> HttpResponse:
+    def challenge_valid(self, response: PasswordChallengeResponse) -> HttpResponse:
         """Authenticate against django's authentication backend"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             return self.executor.stage_invalid()
@@ -98,7 +118,7 @@ class PasswordStageView(FormView, StageView):
         # an Identifier by most authentication backends
         pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         auth_kwargs = {
-            "password": form.cleaned_data.get("password", None),
+            "password": response.validated_data.get("password", None),
             "username": pending_user.username,
         }
         try:
@@ -115,8 +135,9 @@ class PasswordStageView(FormView, StageView):
                 # No user was found -> invalid credentials
                 LOGGER.debug("Invalid credentials")
                 # Manually inject error into form
-                form.add_error("password", _("Invalid password"))
-                return self.form_invalid(form)
+                response._errors.setdefault("password", [])
+                response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))
+                return self.challenge_invalid(response)
             # User instance returned from authenticate() has .backend property set
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
             self.executor.plan.context[

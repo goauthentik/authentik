@@ -118,12 +118,12 @@ class IdentificationStageView(ChallengeStageView):
         return challenge
 
     def challenge_valid(
-        self, challenge: IdentificationChallengeResponse
+        self, response: IdentificationChallengeResponse
     ) -> HttpResponse:
-        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = challenge.pre_user
+        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
         if not current_stage.show_matched_user:
             self.executor.plan.context[
                 PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-            ] = challenge.validated_data.get("uid_field")
+            ] = response.validated_data.get("uid_field")
         return self.executor.stage_ok()

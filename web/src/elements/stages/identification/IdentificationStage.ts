@@ -64,12 +64,6 @@ export class IdentificationStage extends BaseStage {
         return COMMON_STYLES;
     }
 
-    submit(e: Event): void {
-        e.preventDefault();
-        const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
-        this.host?.submit(form);
-    }
-
     renderSource(source: UILoginButton): TemplateResult {
         let icon = html`<i class="pf-icon pf-icon-arrow" title="${source.name}"></i>`;
         if (source.icon_url) {

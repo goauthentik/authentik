@@ -20,24 +20,6 @@ def get_authentication_backends():
     ]
 
 
-class PasswordForm(forms.Form):
-    """Password authentication form"""
-
-    username = forms.CharField(
-        widget=forms.HiddenInput(attrs={"autocomplete": "username"}), required=False
-    )
-    password = forms.CharField(
-        label=_("Please enter your password."),
-        widget=forms.PasswordInput(
-            attrs={
-                "placeholder": _("Password"),
-                "autofocus": "autofocus",
-                "autocomplete": "current-password",
-            }
-        ),
-    )
-
-
 class PasswordStageForm(forms.ModelForm):
     """Form to create/edit Password Stages"""
 

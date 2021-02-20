@@ -11297,7 +11297,6 @@ definitions:
     required:
       - name
       - user_fields
-      - template
     type: object
     properties:
       pk:
@@ -11345,12 +11344,6 @@ definitions:
           is enabled, the user's username and avatar will be shown. Otherwise, the
           text that the user entered will be shown
         type: boolean
-      template:
-        title: Template
-        type: string
-        enum:
-          - stages/identification/login.html
-          - stages/identification/recovery.html
       enrollment_flow:
         title: Enrollment flow
         description: Optional enrollment flow, which is linked at the bottom of the
