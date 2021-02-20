@@ -12,8 +12,8 @@ from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
 from django.db.utils import IntegrityError
-from django.shortcuts import reverse
 from django.test.testcases import TransactionTestCase
+from django.urls import reverse
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver

@@ -3,8 +3,8 @@ from importlib import import_module
 from typing import Callable
 
 from django.forms import ModelForm
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 
 from authentik.admin.urls import urlpatterns

@@ -1,8 +1,8 @@
 """invitation tests"""
 from unittest.mock import MagicMock, patch
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 from guardian.shortcuts import get_anonymous_user
 

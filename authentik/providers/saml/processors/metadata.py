@@ -3,7 +3,7 @@ from typing import Iterator, Optional
 
 import xmlsec  # nosec
 from django.http import HttpRequest
-from django.shortcuts import reverse
+from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.providers.saml.models import SAMLProvider

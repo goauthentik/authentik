@@ -4,8 +4,8 @@ from random import SystemRandom
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User

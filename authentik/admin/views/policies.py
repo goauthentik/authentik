@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django.views.generic.detail import DetailView
@@ -34,7 +35,7 @@ class PolicyCreateView(
     permission_required = "authentik_policies.add_policy"
 
     template_name = "generic/create.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Policy")
 
 
@@ -50,7 +51,7 @@ class PolicyUpdateView(
     permission_required = "authentik_policies.change_policy"
 
     template_name = "generic/update.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Policy")
 
 
@@ -61,7 +62,7 @@ class PolicyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessag
     permission_required = "authentik_policies.delete_policy"
 
     template_name = "generic/delete.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Policy")
 
 

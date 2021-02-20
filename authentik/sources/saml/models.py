@@ -4,8 +4,7 @@ from typing import Type
 from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
-from django.shortcuts import reverse
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 

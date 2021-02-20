@@ -1,10 +1,10 @@
 """Identification stage logic"""
-from typing import Optional
+from typing import Optional, Union
 
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from rest_framework.fields import CharField
@@ -55,7 +55,7 @@ class IdentificationStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
-        args = {"input_type": "text"}
+        args: dict[str, Union[str, list[UILoginButton]]] = {"input_type": "text"}
         if current_stage.user_fields == [UserFields.E_MAIL]:
             args["input_type"] = "email"
         # If the user has been redirected to us whilst trying to access an
@@ -76,14 +76,15 @@ class IdentificationStageView(ChallengeStageView):
         args["primary_action"] = _("Log in")
 
         # Check all enabled source, add them if they have a UI Login button.
-        args["sources"] = []
+        ui_sources = []
         sources: list[Source] = (
             Source.objects.filter(enabled=True).order_by("name").select_subclasses()
         )
         for source in sources:
             ui_login_button = source.ui_login_button
             if ui_login_button:
-                args["sources"].append(ui_login_button)
+                ui_sources.append(ui_login_button)
+        args["sources"] = ui_sources
         return Challenge(
             data={
                 "type": ChallengeTypes.native,

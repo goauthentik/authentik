@@ -2,9 +2,9 @@
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
@@ -359,7 +359,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
         )
 
     def test_reevaluate_remove_consecutive(self):

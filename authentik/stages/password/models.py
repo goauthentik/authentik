@@ -4,7 +4,7 @@ from typing import Optional, Type
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.forms import ModelForm
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer

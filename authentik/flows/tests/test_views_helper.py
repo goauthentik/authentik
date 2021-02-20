@@ -1,6 +1,6 @@
 """flow views tests"""
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan

@@ -1,6 +1,6 @@
 """Event Middleware tests"""
 
-from django.shortcuts import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, User

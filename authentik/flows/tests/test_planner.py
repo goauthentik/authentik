@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
 from django.http import HttpRequest
-from django.shortcuts import reverse
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User

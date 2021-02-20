@@ -2,7 +2,7 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.generic import TemplateView
 

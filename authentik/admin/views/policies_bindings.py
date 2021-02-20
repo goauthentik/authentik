@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Max
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
@@ -30,7 +31,7 @@ class PolicyBindingCreateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/create.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created PolicyBinding")
 
     def get_initial(self) -> dict[str, Any]:
@@ -63,7 +64,7 @@ class PolicyBindingUpdateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/update.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated PolicyBinding")
 
 
@@ -76,5 +77,5 @@ class PolicyBindingDeleteView(
     permission_required = "authentik_policies.delete_policybinding"
 
     template_name = "generic/delete.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted PolicyBinding")

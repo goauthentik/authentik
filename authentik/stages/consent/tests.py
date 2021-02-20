@@ -1,8 +1,8 @@
 """consent tests"""
 from time import sleep
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application, User

@@ -2,8 +2,8 @@
 import string
 from random import SystemRandom
 
-from django.shortcuts import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from authentik.core.models import User
 
