@@ -1,12 +1,9 @@
 """authentik flows identification forms"""
 from django import forms
-from django.core.validators import validate_email
-from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
 from authentik.admin.fields import ArrayFieldSelectMultiple
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.lib.utils.ui import human_list
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
@@ -32,7 +29,6 @@ class IdentificationStageForm(forms.ModelForm):
             "user_fields",
             "case_insensitive_matching",
             "show_matched_user",
-            "template",
             "enrollment_flow",
             "recovery_flow",
         ]

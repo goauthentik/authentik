@@ -6,11 +6,7 @@ from django.utils.encoding import force_str
 from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.sources.oauth.models import OAuthSource
-from authentik.stages.identification.models import (
-    IdentificationStage,
-    Templates,
-    UserFields,
-)
+from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
 class TestIdentificationStage(TestCase):
@@ -29,7 +25,6 @@ class TestIdentificationStage(TestCase):
         self.stage = IdentificationStage.objects.create(
             name="identification",
             user_fields=[UserFields.E_MAIL],
-            template=Templates.DEFAULT_LOGIN,
         )
         FlowStageBinding.objects.create(
             target=self.flow,

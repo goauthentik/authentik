@@ -5,7 +5,7 @@ from django.db import migrations
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 from authentik.flows.models import FlowDesignation
-from authentik.stages.identification.models import Templates, UserFields
+from authentik.stages.identification.models import UserFields
 
 
 def create_default_authentication_flow(
@@ -26,7 +26,7 @@ def create_default_authentication_flow(
         name="default-authentication-identification",
         defaults={
             "user_fields": [UserFields.E_MAIL, UserFields.USERNAME],
-            "template": Templates.DEFAULT_LOGIN,
+            "template": "",
         },
     )
 

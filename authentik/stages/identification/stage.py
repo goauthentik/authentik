@@ -1,5 +1,4 @@
 """Identification stage logic"""
-from authentik.core.types import UILoginButtonSerializer
 from dataclasses import asdict
 from typing import Optional
 
@@ -13,6 +12,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.models import Source, User
+from authentik.core.types import UILoginButtonSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import (

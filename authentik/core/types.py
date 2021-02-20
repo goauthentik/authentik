@@ -1,10 +1,10 @@
 """authentik core dataclasses"""
 from dataclasses import dataclass
 from typing import Optional
-from rest_framework.fields import CharField
 
-from rest_framework.serializers import Serializer
 from django.db.models.base import Model
+from rest_framework.fields import CharField
+from rest_framework.serializers import Serializer
 
 
 @dataclass
