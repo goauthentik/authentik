@@ -7,10 +7,16 @@ export interface IdentificationStageArgs {
 
     input_type: string;
     primary_action: string;
-    sources: string[];
+    sources: UILoginButton[];
 
     application_pre?: string;
 
+}
+
+export interface UILoginButton {
+    name: string;
+    url: string;
+    icon_url?: string;
 }
 
 @customElement("ak-stage-identification")
@@ -23,6 +29,24 @@ export class IdentificationStage extends BaseStage {
         return COMMON_STYLES;
     }
 
+    submit(e: Event): void {
+        e.preventDefault();
+        const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
+        this.host?.submit(form);
+    }
+
+    renderSource(source: UILoginButton): TemplateResult {
+        let icon = html`<i class="pf-icon pf-icon-arrow" title="${source.name}"></i>`;
+        if (source.icon_url) {
+            icon = html`<img src="${source.icon_url}" alt="${source.name}">`;
+        }
+        return html`<li class="pf-c-login__main-footer-links-item">
+                <a href="${source.url}" class="pf-c-login__main-footer-links-item-link">
+                    ${icon}
+                </a>
+            </li>`;
+    }
+
     render(): TemplateResult {
         if (!this.args) {
             return html`<ak-loading-state></ak-loading-state>`;
@@ -33,7 +57,7 @@ export class IdentificationStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+                <form class="pf-c-form" @submit=${(e) => {this.submit(e)}}>
                     ${this.args.application_pre ?
                         html`<p>
                             ${gettext(`Login to continue to ${this.args.application_pre}.`)}
@@ -41,19 +65,15 @@ export class IdentificationStage extends BaseStage {
                         html``}
 
                     <div class="pf-c-form__group">
-                        <label class="pf-c-form__label" for="uid_field-0">
+                        <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">${gettext("Email or Username")}</span>
                             <span class="pf-c-form__label-required" aria-hidden="true">*</span>
                         </label>
-                        <input type="text" name="uid_field" placeholder="Email or Username" autofocus autocomplete="username" class="pf-c-form-control" required="" id="id_uid_field">
+                        <input type="text" name="uid_field" placeholder="Email or Username" autofocus autocomplete="username" class="pf-c-form-control" required="">
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button class="pf-c-button pf-m-primary pf-m-block" @click=${(e: Event) => {
-                            e.preventDefault();
-                            const form = new FormData(this.shadowRoot.querySelector("form"));
-                            this.host?.submit(form);
-                        }}>
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${this.args.primary_action}
                         </button>
                     </div>
@@ -61,26 +81,12 @@ export class IdentificationStage extends BaseStage {
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
-                    ${this.args.sources.map(() => {
-                        // TODO: source testing
-                        // TODO: Placeholder and label for input above
-                        return html``;
-                        // {% for source in sources %}
-                        // <li class="pf-c-login__main-footer-links-item">
-                        //     <a href="{{ source.url }}" class="pf-c-login__main-footer-links-item-link">
-                        //         {% if source.icon_path %}
-                        //         <img src="{% static source.icon_path %}" style="width:24px;" alt="{{ source.name }}">
-                        //         {% elif source.icon_url %}
-                        //         <img src="icon_url" alt="{{ source.name }}">
-                        //         {% else %}
-                        //         <i class="pf-icon pf-icon-arrow" title="{{ source.name }}"></i>
-                        //         {% endif %}
-                        //     </a>
-                        // </li>
-                        // {% endfor %}
+                    ${this.args.sources.map((source) => {
+                        return this.renderSource(source);
                     })}
                 </ul>
-                {% if enroll_url or recovery_url %}
+
+                <!--{% if enroll_url or recovery_url %}
                 <div class="pf-c-login__main-footer-band">
                     {% if enroll_url %}
                     <p class="pf-c-login__main-footer-band-item">
@@ -94,7 +100,7 @@ export class IdentificationStage extends BaseStage {
                     </p>
                     {% endif %}
                 </div>
-                {% endif %}
+                {% endif %}-->
             </footer>`;
     }
 

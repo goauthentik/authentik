@@ -19,7 +19,6 @@ export class Expand extends LitElement {
     }
 
     render(): TemplateResult {
-        console.log(this.expanded);
         return html`<div class="pf-c-expandable-section ${this.expanded ? "pf-m-expanded" : ""}">
             <button type="button" class="pf-c-expandable-section__toggle" aria-expanded="${this.expanded}" @click=${() => {
                 this.expanded = !this.expanded;

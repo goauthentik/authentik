@@ -1,5 +1,6 @@
 """transfer common classes"""
 from dataclasses import asdict, dataclass, field, is_dataclass
+from enum import Enum
 from typing import Any
 from uuid import UUID
 
@@ -74,6 +75,8 @@ class DataclassEncoder(DjangoJSONEncoder):
             return asdict(o)
         if isinstance(o, UUID):
             return str(o)
+        if isinstance(o, Enum):
+            return o.value
         return super().default(o)  # pragma: no cover
 
 

@@ -61,7 +61,7 @@ class ChallengeStageView(StageView):
         return HttpChallengeResponse(challenge)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        challenge = self.response_class(data=request.POST)
+        challenge: ChallengeResponse = self.response_class(data=request.POST)
         if not challenge.is_valid():
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)

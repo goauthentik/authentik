@@ -34,6 +34,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
 class IdentificationStageView(ChallengeStageView):
     """Form to identify the user"""
 
+    response_class = IdentificationChallengeResponse
+
     def get_user(self, uid_value: str) -> Optional[User]:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
@@ -96,7 +98,7 @@ class IdentificationStageView(ChallengeStageView):
         user_identifier = challenge.data.get("uid_field")
         pre_user = self.get_user(user_identifier)
         if not pre_user:
-            LOGGER.debug("invalid_login")
+            LOGGER.debug("invalid_login", identifier=user_identifier)
             messages.error(self.request, _("Failed to authenticate."))
             return self.challenge_invalid(challenge)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user

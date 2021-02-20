@@ -1,3 +1,5 @@
+from authentik.flows.transfer.common import DataclassEncoder
+from dataclasses import asdict, is_dataclass
 from enum import Enum
 from json.encoder import JSONEncoder
 
@@ -25,13 +27,6 @@ class ChallengeResponse(Serializer):
     pass
 
 
-class ChallengeEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        return super().default(obj)
-
-
 class HttpChallengeResponse(JsonResponse):
     def __init__(self, challenge: Challenge, **kwargs) -> None:
-        super().__init__(challenge.data, encoder=ChallengeEncoder, **kwargs)
+        super().__init__(challenge.data, encoder=DataclassEncoder, **kwargs)
