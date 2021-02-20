@@ -165,7 +165,7 @@ class SAMLSource(Source):
     def ui_login_button(self) -> UILoginButton:
         return UILoginButton(
             name=self.name,
-            url=reverse_lazy(
+            url=reverse(
                 "authentik_sources_saml:login", kwargs={"source_slug": self.slug}
             ),
         )

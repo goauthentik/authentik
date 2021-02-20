@@ -57,7 +57,7 @@ class TestIdentificationStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_invalid_with_username(self):
@@ -109,18 +109,17 @@ class TestIdentificationStage(TestCase):
             {
                 "type": "native",
                 "component": "ak-stage-identification",
-                "args": {
-                    "input_type": "email",
-                    "enroll_url": "/flows/unique-enrollment-string/",
-                    "primary_action": "Log in",
-                    "sources": [
-                        {
-                            "icon_url": "/static/authentik/sources/.svg",
-                            "name": "test",
-                            "url": "/source/oauth/login/test/",
-                        }
-                    ],
-                },
+                "input_type": "email",
+                "enroll_url": "/flows/unique-enrollment-string/",
+                "primary_action": "Log in",
+                "title": self.flow.title,
+                "sources": [
+                    {
+                        "icon_url": "/static/authentik/sources/.svg",
+                        "name": "test",
+                        "url": "/source/oauth/login/test/",
+                    }
+                ],
             },
         )
 
@@ -149,17 +148,16 @@ class TestIdentificationStage(TestCase):
             {
                 "type": "native",
                 "component": "ak-stage-identification",
-                "args": {
-                    "input_type": "email",
-                    "recovery_url": "/flows/unique-recovery-string/",
-                    "primary_action": "Log in",
-                    "sources": [
-                        {
-                            "icon_url": "/static/authentik/sources/.svg",
-                            "name": "test",
-                            "url": "/source/oauth/login/test/",
-                        }
-                    ],
-                },
+                "input_type": "email",
+                "recovery_url": "/flows/unique-recovery-string/",
+                "primary_action": "Log in",
+                "title": self.flow.title,
+                "sources": [
+                    {
+                        "icon_url": "/static/authentik/sources/.svg",
+                        "name": "test",
+                        "url": "/source/oauth/login/test/",
+                    }
+                ],
             },
         )

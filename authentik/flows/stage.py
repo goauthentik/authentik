@@ -4,19 +4,21 @@ from typing import Any
 
 from django.http import HttpRequest
 from django.http.request import QueryDict
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
+from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import (
     Challenge,
-    ChallengeResponse, ChallengeTypes,
+    ChallengeResponse,
     HttpChallengeResponse,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
+LOGGER = get_logger()
 
 FakeUser = namedtuple("User", ["username", "email"])
 
@@ -63,8 +65,9 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         challenge = self.get_challenge()
-        challenge.title = self.executor.flow.title
-        challenge.is_valid()
+        challenge.initial_data["title"] = self.executor.flow.title
+        if not challenge.is_valid():
+            LOGGER.warning(challenge.errors)
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument
@@ -79,19 +82,25 @@ class ChallengeStageView(StageView):
         """Return the challenge that the client should solve"""
         raise NotImplementedError
 
-    def challenge_valid(self, challenge: ChallengeResponse) -> HttpResponse:
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Callback when the challenge has the correct format"""
         raise NotImplementedError
 
-    def challenge_invalid(self, challenge: ChallengeResponse) -> HttpResponse:
+    def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         """Callback when the challenge has the incorrect format"""
-        challenge_response = Challenge(data={
-            "type": ChallengeTypes.error,
-            "args": {
-                "errors": challenge.errors
-            }
-        })
-        challenge_response.is_valid()
-        return HttpChallengeResponse(
-            challenge_response
-        )
+        challenge_response = self.get_challenge()
+        challenge_response.initial_data["title"] = self.executor.flow.title
+        full_errors = {}
+        for field, errors in response.errors.items():
+            for error in errors:
+                full_errors.setdefault(field, [])
+                full_errors[field].append(
+                    {
+                        "string": str(error),
+                        "code": error.code,
+                    }
+                )
+        challenge_response.initial_data["response_errors"] = full_errors
+        if not challenge_response.is_valid():
+            LOGGER.warning(challenge_response.errors)
+        return HttpChallengeResponse(challenge_response)

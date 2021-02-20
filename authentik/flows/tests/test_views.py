@@ -282,7 +282,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_reevaluate_keep(self):
@@ -359,7 +359,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_reevaluate_remove_consecutive(self):
@@ -435,7 +435,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_stageview_user_identifier(self):

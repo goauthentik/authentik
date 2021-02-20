@@ -1,6 +1,36 @@
 import { DefaultClient, AKResponse, QueryArguments, BaseInheritanceModel } from "./Client";
 import { TypeCreate } from "./Providers";
 
+export enum ChallengeTypes {
+    native = "native",
+    response = "response",
+    shell = "shell",
+    redirect = "redirect",
+}
+
+export interface Error {
+    code: string;
+    string: string;
+}
+
+export interface ErrorDict {
+    [key: string]: Error[];
+}
+
+export interface Challenge {
+    type: ChallengeTypes;
+    component?: string;
+    title?: string;
+    response_errors?: ErrorDict;
+}
+
+export interface ShellChallenge extends Challenge {
+    body: string;
+}
+export interface RedirectChallenge extends Challenge {
+    to: string;
+}
+
 export enum FlowDesignation {
     Authentication = "authentication",
     Authorization = "authorization",
@@ -44,6 +74,11 @@ export class Flow {
             return r.count;
         });
     }
+
+    static executor(slug: string): Promise<Challenge> {
+        return DefaultClient.fetch(["flows", "executor", slug]);
+    }
+
     static adminUrl(rest: string): string {
         return `/administration/flows/${rest}`;
     }

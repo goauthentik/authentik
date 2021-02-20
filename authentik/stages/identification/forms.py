@@ -40,35 +40,3 @@ class IdentificationStageForm(forms.ModelForm):
             "name": forms.TextInput(),
             "user_fields": ArrayFieldSelectMultiple(choices=UserFields.choices),
         }
-
-
-class IdentificationForm(forms.Form):
-    """Allow users to login"""
-
-    stage: IdentificationStage
-
-    title = _("Log in to your account")
-    uid_field = forms.CharField(label=_(""))
-
-    def __init__(self, *args, **kwargs):
-        self.stage = kwargs.pop("stage")
-        super().__init__(*args, **kwargs)
-        if self.stage.user_fields == [UserFields.E_MAIL]:
-            self.fields["uid_field"] = forms.EmailField()
-        label = human_list([x.title() for x in self.stage.user_fields])
-        self.fields["uid_field"].label = label
-        self.fields["uid_field"].widget.attrs.update(
-            {
-                "placeholder": _(label),
-                "autofocus": "autofocus",
-                # Autocomplete according to
-                # https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
-                "autocomplete": "username",
-            }
-        )
-
-    def clean_uid_field(self):
-        """Validate uid_field after EmailValidator if 'email' is the only selected uid_fields"""
-        if self.stage.user_fields == [UserFields.E_MAIL]:
-            validate_email(self.cleaned_data.get("uid_field"))
-        return self.cleaned_data.get("uid_field")

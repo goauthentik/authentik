@@ -1,16 +1,18 @@
 """Identification stage logic"""
-from typing import Optional, Union
+from dataclasses import asdict
+from typing import Optional
 
 from django.db.models import Q
+from django.db.models.base import Model
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
-from rest_framework.serializers import ValidationError
+from rest_framework.serializers import Serializer, ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.models import Source, User
-from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import (
@@ -21,6 +23,32 @@ from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
+
+
+class UILoginButtonSerializer(Serializer):
+    """Serializer for Login buttons of sources"""
+
+    name = CharField()
+    url = CharField()
+    icon_url = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
+
+
+class IdentificationChallenge(Challenge):
+    """Identification challenges with all UI elements"""
+
+    input_type = CharField()
+    application_pre = ApplicationSerializer(required=False)
+
+    enroll_url = CharField(required=False)
+    recovery_url = CharField(required=False)
+    primary_action = CharField()
+    sources = UILoginButtonSerializer(many=True, required=False)
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
@@ -63,25 +91,33 @@ class IdentificationStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
-        args: dict[str, Union[str, list[UILoginButton]]] = {"input_type": "text"}
+        challenge = IdentificationChallenge(
+            data={
+                "type": ChallengeTypes.native,
+                "component": "ak-stage-identification",
+                "primary_action": _("Log in"),
+                "input_type": "text",
+            }
+        )
         if current_stage.user_fields == [UserFields.E_MAIL]:
-            args["input_type"] = "email"
+            challenge.initial_data["input_type"] = "email"
         # If the user has been redirected to us whilst trying to access an
         # application, SESSION_KEY_APPLICATION_PRE is set in the session
         if SESSION_KEY_APPLICATION_PRE in self.request.session:
-            args["application_pre"] = self.request.session[SESSION_KEY_APPLICATION_PRE]
+            challenge.initial_data["application_pre"] = self.request.session[
+                SESSION_KEY_APPLICATION_PRE
+            ]
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
-            args["enroll_url"] = reverse(
+            challenge.initial_data["enroll_url"] = reverse(
                 "authentik_flows:flow-executor-shell",
                 kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
-            args["recovery_url"] = reverse(
+            challenge.initial_data["recovery_url"] = reverse(
                 "authentik_flows:flow-executor-shell",
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
-        args["primary_action"] = _("Log in")
 
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
@@ -91,15 +127,9 @@ class IdentificationStageView(ChallengeStageView):
         for source in sources:
             ui_login_button = source.ui_login_button
             if ui_login_button:
-                ui_sources.append(ui_login_button)
-        args["sources"] = ui_sources
-        return Challenge(
-            data={
-                "type": ChallengeTypes.native,
-                "component": "ak-stage-identification",
-                "args": args,
-            }
-        )
+                ui_sources.append(asdict(ui_login_button))
+        challenge.initial_data["sources"] = ui_sources
+        return challenge
 
     def challenge_valid(
         self, challenge: IdentificationChallengeResponse

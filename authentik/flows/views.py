@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -13,7 +13,12 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict
-from authentik.flows.challenge import Challenge, ChallengeTypes, HttpChallengeResponse
+from authentik.flows.challenge import (
+    ChallengeTypes,
+    HttpChallengeResponse,
+    RedirectChallenge,
+    ShellChallenge,
+)
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
 from authentik.flows.planner import (
@@ -241,7 +246,7 @@ class FlowExecutorShellView(TemplateView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         flow: Flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["background_url"] = flow.background.url
-        kwargs["exec_url"] = reverse("authentik_api:flow-executor", kwargs=self.kwargs)
+        kwargs["flow_slug"] = flow.slug
         self.request.session[SESSION_KEY_GET] = self.request.GET
         return kwargs
 
@@ -286,37 +291,30 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
         redirect_url = source["Location"]
         if request.path != redirect_url:
             return HttpChallengeResponse(
-                Challenge(
-                    {"type": ChallengeTypes.redirect, "args": {"to": redirect_url}}
+                RedirectChallenge(
+                    {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
                 )
             )
-            # return JsonResponse({"type": "redirect", "to": redirect_url})
         return source
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
-            Challenge(
+            ShellChallenge(
                 {
                     "type": ChallengeTypes.shell,
-                    "args": {"body": source.render().content.decode("utf-8")},
+                    "body": source.render().content.decode("utf-8"),
                 }
             )
         )
-        # return JsonResponse(
-        #     {"type": "template", "body": }
-        # )
     # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
     if source.__class__ == HttpResponse:
         return HttpChallengeResponse(
-            Challenge(
+            ShellChallenge(
                 {
                     "type": ChallengeTypes.shell,
-                    "args": {"body": source.content.decode("utf-8")},
+                    "body": source.content.decode("utf-8"),
                 }
             )
         )
-        # return JsonResponse(
-        #     {"type": "template", "body": }
-        # )
     return source
 
 

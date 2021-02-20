@@ -85,7 +85,7 @@ class TestUserDeleteStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
         self.assertFalse(User.objects.filter(username=self.username).exists())

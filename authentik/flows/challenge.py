@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from django.db.models.base import Model
 from django.http import JsonResponse
-from rest_framework.fields import ChoiceField, JSONField
+from rest_framework.fields import ChoiceField, DictField
 from rest_framework.serializers import CharField, Serializer
 
 from authentik.flows.transfer.common import DataclassEncoder
@@ -19,7 +19,19 @@ class ChallengeTypes(Enum):
     native = "native"
     shell = "shell"
     redirect = "redirect"
-    error = "error"
+
+
+class ErrorDetailSerializer(Serializer):
+    """Serializer for rest_framework's error messages"""
+
+    string = CharField()
+    code = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
 
 
 class Challenge(Serializer):
@@ -28,14 +40,29 @@ class Challenge(Serializer):
 
     type = ChoiceField(choices=list(ChallengeTypes))
     component = CharField(required=False)
-    args = JSONField()
     title = CharField(required=False)
+
+    response_errors = DictField(
+        child=ErrorDetailSerializer(many=True), allow_empty=False, required=False
+    )
 
     def create(self, validated_data: dict) -> Model:
         return Model()
 
     def update(self, instance: Model, validated_data: dict) -> Model:
         return Model()
+
+
+class RedirectChallenge(Challenge):
+    """Challenge type to redirect the client"""
+
+    to = CharField()
+
+
+class ShellChallenge(Challenge):
+    """Legacy challenge type to render HTML as-is"""
+
+    body = CharField()
 
 
 class ChallengeResponse(Serializer):
@@ -57,6 +84,6 @@ class ChallengeResponse(Serializer):
 class HttpChallengeResponse(JsonResponse):
     """Subclass of JsonResponse that uses the `DataclassEncoder`"""
 
-    def __init__(self, challenge: Challenge, **kwargs) -> None:
+    def __init__(self, challenge, **kwargs) -> None:
         # pyright: reportGeneralTypeIssues=false
         super().__init__(challenge.data, encoder=DataclassEncoder, **kwargs)

@@ -1,13 +1,14 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { Challenge, Error } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 
-export interface IdentificationStageArgs {
+export interface IdentificationChallenge extends Challenge {
 
     input_type: string;
     primary_action: string;
-    sources: UILoginButton[];
+    sources?: UILoginButton[];
 
     application_pre?: string;
 
@@ -22,11 +23,42 @@ export interface UILoginButton {
     icon_url?: string;
 }
 
+@customElement("ak-form-element")
+export class FormElement extends LitElement {
+
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
+    }
+
+    @property()
+    label?: string;
+
+    @property({type: Boolean})
+    required = false;
+
+    @property({attribute: false})
+    errors?: Error[];
+
+    render(): TemplateResult {
+        return html`<div class="pf-c-form__group">
+                <label class="pf-c-form__label">
+                    <span class="pf-c-form__label-text">${this.label}</span>
+                    ${this.required ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>` : html``}
+                </label>
+                <slot></slot>
+                ${(this.errors || []).map((error) => {
+                    return html`<p class="pf-c-form__helper-text pf-m-error">${error.string}</p>`;
+                })}
+            </div>`;
+    }
+
+}
+
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage {
 
     @property({attribute: false})
-    args?: IdentificationStageArgs;
+    challenge?: IdentificationChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -51,58 +83,58 @@ export class IdentificationStage extends BaseStage {
     }
 
     renderFooter(): TemplateResult {
-        if (!(this.args?.enroll_url && this.args.recovery_url)) {
+        if (!(this.challenge?.enroll_url && this.challenge.recovery_url)) {
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">
-                ${this.args.enroll_url ? html`
+                ${this.challenge.enroll_url ? html`
                 <p class="pf-c-login__main-footer-band-item">
                     ${gettext("Need an account?")}
-                    <a id="enroll" href="${this.args.enroll_url}">${gettext("Sign up.")}</a>
+                    <a id="enroll" href="${this.challenge.enroll_url}">${gettext("Sign up.")}</a>
                 </p>` : html``}
-                ${this.args.recovery_url ? html`
+                ${this.challenge.recovery_url ? html`
                 <p class="pf-c-login__main-footer-band-item">
                     ${gettext("Need an account?")}
-                    <a id="recovery" href="${this.args.recovery_url}">${gettext("Forgot username or password?")}</a>
+                    <a id="recovery" href="${this.challenge.recovery_url}">${gettext("Forgot username or password?")}</a>
                 </p>` : html``}
             </div>`;
     }
 
     render(): TemplateResult {
-        if (!this.args) {
+        if (!this.challenge) {
             return html`<ak-loading-state></ak-loading-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
-                    ${gettext("Log in to your account")}
+                    ${this.challenge.title}
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e) => {this.submit(e);}}>
-                    ${this.args.application_pre ?
+                <form class="pf-c-form" @submit=${(e: Event) => {this.submit(e);}}>
+                    ${this.challenge.application_pre ?
                         html`<p>
-                            ${gettext(`Login to continue to ${this.args.application_pre}.`)}
+                            ${gettext(`Login to continue to ${this.challenge.application_pre}.`)}
                         </p>`:
                         html``}
 
-                    <div class="pf-c-form__group">
-                        <label class="pf-c-form__label">
-                            <span class="pf-c-form__label-text">${gettext("Email or Username")}</span>
-                            <span class="pf-c-form__label-required" aria-hidden="true">*</span>
-                        </label>
+                    <ak-form-element
+                        label="${gettext("Email or Username")}"
+                        ?required="${true}"
+                        class="pf-c-form__group"
+                        .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
                         <input type="text" name="uid_field" placeholder="Email or Username" autofocus autocomplete="username" class="pf-c-form-control" required="">
-                    </div>
+                    </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${this.args.primary_action}
+                            ${this.challenge.primary_action}
                         </button>
                     </div>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links">
-                    ${this.args.sources.map((source) => {
+                    ${(this.challenge.sources || []).map((source) => {
                         return this.renderSource(source);
                     })}
                 </ul>
