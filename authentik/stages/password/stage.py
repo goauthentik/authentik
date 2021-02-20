@@ -18,8 +18,8 @@ from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTyp
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.reflection import path_to_class
 from authentik.lib.templatetags.authentik_utils import avatar
+from authentik.lib.utils.reflection import path_to_class
 from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()
@@ -67,6 +67,7 @@ class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
 
     password = CharField()
+
 
 class PasswordStageView(ChallengeStageView):
     """Authentication stage which authenticates against django's AuthBackend"""
@@ -136,7 +137,9 @@ class PasswordStageView(ChallengeStageView):
                 LOGGER.debug("Invalid credentials")
                 # Manually inject error into form
                 response._errors.setdefault("password", [])
-                response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))
+                response._errors["password"].append(
+                    ErrorDetail(_("Invalid password"), "invalid")
+                )
                 return self.challenge_invalid(response)
             # User instance returned from authenticate() has .backend property set
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
