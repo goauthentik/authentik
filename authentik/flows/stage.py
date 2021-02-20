@@ -3,6 +3,7 @@ from collections import namedtuple
 from typing import Any, Type
 
 from django.http import HttpRequest
+from django.http.request import QueryDict
 from django.http.response import HttpResponse, JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
@@ -56,9 +57,9 @@ class ChallengeStageView(StageView):
 
     response_class = ChallengeResponse
 
-    def get_response_class(self) -> Type[ChallengeResponse]:
+    def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         """Return the response class type"""
-        return self.response_class
+        return self.response_class(None, data=data, stage=self)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         challenge = self.get_challenge()
@@ -69,7 +70,7 @@ class ChallengeStageView(StageView):
     # pylint: disable=unused-argument
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
-        challenge: ChallengeResponse = self.get_response_class()(data=request.POST)
+        challenge: ChallengeResponse = self.get_response_instance(data=request.POST)
         if not challenge.is_valid():
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)

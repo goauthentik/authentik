@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Source, User
@@ -27,8 +28,16 @@ class IdentificationChallengeResponse(ChallengeResponse):
     """Identification challenge"""
 
     uid_field = CharField()
+    pre_user: Optional[User] = None
 
-    # TODO: Validate here instead of challenge_valid()
+    def validate_uid_field(self, value: str) -> str:
+        """Validate that user exists"""
+        pre_user = self.stage.get_user(value)
+        if not pre_user:
+            LOGGER.debug("invalid_login", identifier=value)
+            raise ValidationError("Failed to authenticate.")
+        self.pre_user = pre_user
+        return value
 
 
 class IdentificationStageView(ChallengeStageView):
@@ -96,18 +105,10 @@ class IdentificationStageView(ChallengeStageView):
     def challenge_valid(
         self, challenge: IdentificationChallengeResponse
     ) -> HttpResponse:
-        user_identifier = challenge.data.get("uid_field")
-        pre_user = self.get_user(user_identifier)
-        if not pre_user:
-            LOGGER.debug("invalid_login", identifier=user_identifier)
-            messages.error(self.request, _("Failed to authenticate."))
-            return self.challenge_invalid(challenge)
-        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = pre_user
-
+        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = challenge.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
         if not current_stage.show_matched_user:
             self.executor.plan.context[
                 PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-            ] = user_identifier
-
+            ] = challenge.validated_data.get("uid_field")
         return self.executor.stage_ok()

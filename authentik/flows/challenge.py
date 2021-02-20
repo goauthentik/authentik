@@ -1,5 +1,6 @@
 """Challenge helpers"""
 from enum import Enum
+from typing import TYPE_CHECKING, Optional
 
 from django.db.models.base import Model
 from django.http import JsonResponse
@@ -7,6 +8,9 @@ from rest_framework.fields import ChoiceField, JSONField
 from rest_framework.serializers import CharField, Serializer
 
 from authentik.flows.transfer.common import DataclassEncoder
+
+if TYPE_CHECKING:
+    from authentik.flows.stage import StageView
 
 
 class ChallengeTypes(Enum):
@@ -35,6 +39,12 @@ class Challenge(Serializer):
 
 class ChallengeResponse(Serializer):
     """Base class for all challenge responses"""
+
+    stage: Optional["StageView"]
+
+    def __init__(self, instance, data, **kwargs):
+        self.stage = kwargs.pop("stage", None)
+        super().__init__(instance=instance, data=data, **kwargs)
 
     def create(self, validated_data: dict) -> Model:
         return Model()
