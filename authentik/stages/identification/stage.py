@@ -1,14 +1,14 @@
 """Identification stage logic"""
+from authentik.core.types import UILoginButtonSerializer
 from dataclasses import asdict
 from typing import Optional
 
 from django.db.models import Q
-from django.db.models.base import Model
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
-from rest_framework.serializers import Serializer, ValidationError
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import ApplicationSerializer
@@ -23,20 +23,6 @@ from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
-
-
-class UILoginButtonSerializer(Serializer):
-    """Serializer for Login buttons of sources"""
-
-    name = CharField()
-    url = CharField()
-    icon_url = CharField()
-
-    def create(self, validated_data: dict) -> Model:
-        return Model()
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        return Model()
 
 
 class IdentificationChallenge(Challenge):
