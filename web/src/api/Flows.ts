@@ -40,7 +40,7 @@ export class Flow {
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<{ count: number }>(["flows", "all", "cached"]).then(r => {
+        return DefaultClient.fetch<{ count: number }>(["flows", "instances", "cached"]).then(r => {
             return r.count;
         });
     }
