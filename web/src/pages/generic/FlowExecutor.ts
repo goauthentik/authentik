@@ -15,7 +15,8 @@ enum ChallengeTypes {
 interface Challenge {
     type: ChallengeTypes;
     args: { [key: string]: string };
-    component: string;
+    component?: string;
+    title?: string;
 }
 
 @customElement("ak-flow-executor")

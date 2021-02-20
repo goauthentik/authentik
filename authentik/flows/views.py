@@ -3,13 +3,7 @@ from traceback import format_tb
 from typing import Any, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import (
-    Http404,
-    HttpRequest,
-    HttpResponse,
-    HttpResponseRedirect,
-    JsonResponse,
-)
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator

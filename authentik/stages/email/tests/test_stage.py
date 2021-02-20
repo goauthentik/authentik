@@ -126,7 +126,7 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {"type": "redirect", "to": reverse("authentik_core:shell")},
+                {"args": {"to": reverse("authentik_core:shell")}, "type": "redirect"},
             )
 
             session = self.client.session

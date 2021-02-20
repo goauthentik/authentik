@@ -1,6 +1,7 @@
 """Challenge helpers"""
 from enum import Enum
 
+from django.db.models.base import Model
 from django.http import JsonResponse
 from rest_framework.fields import ChoiceField, JSONField
 from rest_framework.serializers import CharField, Serializer
@@ -23,10 +24,23 @@ class Challenge(Serializer):
     type = ChoiceField(choices=list(ChallengeTypes))
     component = CharField(required=False)
     args = JSONField()
+    title = CharField(required=False)
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
 
 
 class ChallengeResponse(Serializer):
     """Base class for all challenge responses"""
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
 
 
 class HttpChallengeResponse(JsonResponse):

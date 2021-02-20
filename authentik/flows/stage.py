@@ -1,6 +1,6 @@
 """authentik stage Base view"""
 from collections import namedtuple
-from typing import Any
+from typing import Any, Type
 
 from django.http import HttpRequest
 from django.http.response import HttpResponse, JsonResponse
@@ -52,25 +52,36 @@ class StageView(TemplateView):
 
 
 class ChallengeStageView(StageView):
+    """Stage view which response with a challenge"""
 
     response_class = ChallengeResponse
 
+    def get_response_class(self) -> Type[ChallengeResponse]:
+        """Return the response class type"""
+        return self.response_class
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         challenge = self.get_challenge()
+        challenge.title = self.executor.flow.title
         challenge.is_valid()
         return HttpChallengeResponse(challenge)
 
+    # pylint: disable=unused-argument
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        challenge: ChallengeResponse = self.response_class(data=request.POST)
+        """Handle challenge response"""
+        challenge: ChallengeResponse = self.get_response_class()(data=request.POST)
         if not challenge.is_valid():
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
     def get_challenge(self) -> Challenge:
+        """Return the challenge that the client should solve"""
         raise NotImplementedError
 
     def challenge_valid(self, challenge: ChallengeResponse) -> HttpResponse:
+        """Callback when the challenge has the correct format"""
         raise NotImplementedError
 
     def challenge_invalid(self, challenge: ChallengeResponse) -> HttpResponse:
+        """Callback when the challenge has the incorrect format"""
         return JsonResponse(challenge.errors)

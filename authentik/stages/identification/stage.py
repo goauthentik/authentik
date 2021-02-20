@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.views.generic import FormView
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
@@ -17,18 +16,19 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import (
     PLAN_CONTEXT_PENDING_USER_IDENTIFIER,
     ChallengeStageView,
-    StageView,
 )
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
-from authentik.stages.identification.forms import IdentificationForm
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 LOGGER = get_logger()
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
+    """Identification challenge"""
 
     uid_field = CharField()
+
+    # TODO: Validate here instead of challenge_valid()
 
 
 class IdentificationStageView(ChallengeStageView):
@@ -66,12 +66,12 @@ class IdentificationStageView(ChallengeStageView):
         if current_stage.enrollment_flow:
             args["enroll_url"] = reverse(
                 "authentik_flows:flow-executor-shell",
-                args={"flow_slug": current_stage.enrollment_flow.slug},
+                kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
             args["recovery_url"] = reverse(
                 "authentik_flows:flow-executor-shell",
-                args={"flow_slug": current_stage.recovery_flow.slug},
+                kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
         args["primary_action"] = _("Log in")
 
