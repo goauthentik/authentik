@@ -88,9 +88,9 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
         self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "[role=enroll]"))
+            ec.presence_of_element_located((By.CSS_SELECTOR, "#enroll"))
         )
-        self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
+        self.driver.find_element(By.CSS_SELECTOR, "#enroll").click()
 
         self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
@@ -169,7 +169,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         FlowStageBinding.objects.create(target=flow, stage=user_login, order=4)
 
         self.driver.get(self.live_server_url)
-        self.driver.find_element(By.CSS_SELECTOR, "[role=enroll]").click()
+        self.driver.find_element(By.CSS_SELECTOR, "#enroll").click()
         self.driver.find_element(By.ID, "id_username").send_keys("foo")
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(USER().username)

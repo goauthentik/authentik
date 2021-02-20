@@ -14,7 +14,8 @@ enum ChallengeTypes {
 
 interface Challenge {
     type: ChallengeTypes;
-    args: { [key: string]: string };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    args: any;
     component?: string;
     title?: string;
 }

@@ -11,6 +11,9 @@ export interface IdentificationStageArgs {
 
     application_pre?: string;
 
+    enroll_url?: string;
+    recovery_url?: string;
+
 }
 
 export interface UILoginButton {
@@ -47,6 +50,24 @@ export class IdentificationStage extends BaseStage {
             </li>`;
     }
 
+    renderFooter(): TemplateResult {
+        if (!(this.args?.enroll_url && this.args.recovery_url)) {
+            return html``;
+        }
+        return html`<div class="pf-c-login__main-footer-band">
+                ${this.args.enroll_url ? html`
+                <p class="pf-c-login__main-footer-band-item">
+                    ${gettext("Need an account?")}
+                    <a id="enroll" href="${this.args.enroll_url}">${gettext("Sign up.")}</a>
+                </p>` : html``}
+                ${this.args.recovery_url ? html`
+                <p class="pf-c-login__main-footer-band-item">
+                    ${gettext("Need an account?")}
+                    <a id="recovery" href="${this.args.recovery_url}">${gettext("Forgot username or password?")}</a>
+                </p>` : html``}
+            </div>`;
+    }
+
     render(): TemplateResult {
         if (!this.args) {
             return html`<ak-loading-state></ak-loading-state>`;
@@ -57,7 +78,7 @@ export class IdentificationStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e) => {this.submit(e)}}>
+                <form class="pf-c-form" @submit=${(e) => {this.submit(e);}}>
                     ${this.args.application_pre ?
                         html`<p>
                             ${gettext(`Login to continue to ${this.args.application_pre}.`)}
@@ -85,22 +106,7 @@ export class IdentificationStage extends BaseStage {
                         return this.renderSource(source);
                     })}
                 </ul>
-
-                <!--{% if enroll_url or recovery_url %}
-                <div class="pf-c-login__main-footer-band">
-                    {% if enroll_url %}
-                    <p class="pf-c-login__main-footer-band-item">
-                        {% trans 'Need an account?' %}
-                        <a role="enroll" href="{{ enroll_url }}">{% trans 'Sign up.' %}</a>
-                    </p>
-                    {% endif %}
-                    {% if recovery_url %}
-                    <p class="pf-c-login__main-footer-band-item">
-                        <a role="recovery" href="{{ recovery_url }}">{% trans 'Forgot username or password?' %}</a>
-                    </p>
-                    {% endif %}
-                </div>
-                {% endif %}-->
+                ${this.renderFooter()}
             </footer>`;
     }
 
