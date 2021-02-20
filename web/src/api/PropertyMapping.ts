@@ -1,4 +1,5 @@
 import { DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { TypeCreate } from "./Providers";
 
 export class PropertyMapping {
     pk: string;
@@ -18,6 +19,10 @@ export class PropertyMapping {
 
     static list(filter?: QueryArguments): Promise<AKResponse<PropertyMapping>> {
         return DefaultClient.fetch<AKResponse<PropertyMapping>>(["propertymappings", "all"], filter);
+    }
+
+    static getTypes(): Promise<TypeCreate[]> {
+        return DefaultClient.fetch<TypeCreate[]>(["propertymappings", "all", "types"]);
     }
 
     static adminUrl(rest: string): string {

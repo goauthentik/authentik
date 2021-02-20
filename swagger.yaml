@@ -309,6 +309,16 @@ paths:
       operationId: core_groups_list
       description: Group Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_superuser
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -436,6 +446,26 @@ paths:
       operationId: core_tokens_list
       description: Token Viewset
       parameters:
+        - name: identifier
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: intent
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: user__username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: description
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -582,6 +612,21 @@ paths:
       operationId: core_users_list
       description: User Viewset
       parameters:
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_active
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -649,6 +694,21 @@ paths:
       operationId: core_users_me
       description: Get information about current user
       parameters:
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_active
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1600,59 +1660,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /flows/cached/:
-    get:
-      operationId: flows_cached_list
-      description: Info about cached flows
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  description: ''
-                  type: object
-                  properties: {}
-      tags:
-        - flows
-    parameters: []
   /flows/instances/:
     get:
       operationId: flows_instances_list
@@ -1737,6 +1744,59 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Flow'
+      tags:
+        - flows
+    parameters: []
+  /flows/instances/cached/:
+    get:
+      operationId: flows_instances_cached
+      description: Info about cached flows
+      parameters:
+        - name: flow_uuid
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: slug
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: designation
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Generic cache stats for an object
+          schema:
+            $ref: '#/definitions/Cache'
       tags:
         - flows
     parameters: []
@@ -2107,6 +2167,11 @@ paths:
       operationId: outposts_service_connections_all_list
       description: ServiceConnection Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -2169,6 +2234,47 @@ paths:
       tags:
         - outposts
     parameters: []
+  /outposts/service_connections/all/types/:
+    get:
+      operationId: outposts_service_connections_all_types
+      description: Get all creatable service connection types
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - outposts
+    parameters: []
   /outposts/service_connections/all/{uuid}/:
     get:
       operationId: outposts_service_connections_all_read
@@ -2220,6 +2326,25 @@ paths:
       responses:
         '204':
           description: ''
+      tags:
+        - outposts
+    parameters:
+      - name: uuid
+        in: path
+        description: A UUID string identifying this Outpost Service-Connection.
+        required: true
+        type: string
+        format: uuid
+  /outposts/service_connections/all/{uuid}/state/:
+    get:
+      operationId: outposts_service_connections_all_state
+      description: Get the service connection's state
+      parameters: []
+      responses:
+        '200':
+          description: Serializer for Service connection state
+          schema:
+            $ref: '#/definitions/ServiceConnectionState'
       tags:
         - outposts
     parameters:
@@ -2544,6 +2669,95 @@ paths:
       tags:
         - policies
     parameters: []
+  /policies/all/cached/:
+    get:
+      operationId: policies_all_cached
+      description: Info about cached policies
+      parameters:
+        - name: bindings__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: promptstage__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Generic cache stats for an object
+          schema:
+            $ref: '#/definitions/Cache'
+      tags:
+        - policies
+    parameters: []
+  /policies/all/types/:
+    get:
+      operationId: policies_all_types
+      description: Get all creatable policy types
+      parameters:
+        - name: bindings__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: promptstage__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
+      tags:
+        - policies
+    parameters: []
   /policies/all/{policy_uuid}/:
     get:
       operationId: policies_all_read
@@ -2715,59 +2929,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /policies/cached/:
-    get:
-      operationId: policies_cached_list
-      description: Info about cached policies
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  description: ''
-                  type: object
-                  properties: {}
-      tags:
-        - policies
-    parameters: []
   /policies/dummy/:
     get:
       operationId: policies_dummy_list
@@ -3837,6 +3998,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/PropertyMapping'
+      tags:
+        - propertymappings
+    parameters: []
+  /propertymappings/all/types/:
+    get:
+      operationId: propertymappings_all_types
+      description: Get all creatable property-mapping types
+      parameters:
+        - name: managed__isnull
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Types of an object that can be created
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/TypeCreate'
       tags:
         - propertymappings
     parameters: []
@@ -5374,6 +5576,11 @@ paths:
       operationId: stages_all_list
       description: Stage Viewset
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -5425,6 +5632,11 @@ paths:
       operationId: stages_all_types
       description: Get all creatable stage types
       parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -6618,78 +6830,21 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/invitation/:
-    get:
-      operationId: stages_invitation_list
-      description: InvitationStage Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - count
-              - results
-            type: object
-            properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/InvitationStage'
-      tags:
-        - stages
-    post:
-      operationId: stages_invitation_create
-      description: InvitationStage Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/InvitationStage'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/InvitationStage'
-      tags:
-        - stages
-    parameters: []
   /stages/invitation/invitations/:
     get:
       operationId: stages_invitation_invitations_list
       description: Invitation Viewset
       parameters:
+        - name: created_by__username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: expires
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -6812,9 +6967,76 @@ paths:
         required: true
         type: string
         format: uuid
-  /stages/invitation/{stage_uuid}/:
+  /stages/invitation/stages/:
     get:
-      operationId: stages_invitation_read
+      operationId: stages_invitation_stages_list
+      description: InvitationStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_invitation_stages_create
+      description: InvitationStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/InvitationStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/invitation/stages/{stage_uuid}/:
+    get:
+      operationId: stages_invitation_stages_read
       description: InvitationStage Viewset
       parameters: []
       responses:
@@ -6825,7 +7047,7 @@ paths:
       tags:
         - stages
     put:
-      operationId: stages_invitation_update
+      operationId: stages_invitation_stages_update
       description: InvitationStage Viewset
       parameters:
         - name: data
@@ -6841,7 +7063,7 @@ paths:
       tags:
         - stages
     patch:
-      operationId: stages_invitation_partial_update
+      operationId: stages_invitation_stages_partial_update
       description: InvitationStage Viewset
       parameters:
         - name: data
@@ -6857,7 +7079,7 @@ paths:
       tags:
         - stages
     delete:
-      operationId: stages_invitation_delete
+      operationId: stages_invitation_stages_delete
       description: InvitationStage Viewset
       parameters: []
       responses:
@@ -7004,6 +7226,26 @@ paths:
       operationId: stages_prompt_prompts_list
       description: Prompt Viewset
       parameters:
+        - name: field_key
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: label
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: type
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: placeholder
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -7959,6 +8201,57 @@ definitions:
       attributes:
         title: Attributes
         type: object
+  User:
+    title: User
+    description: User Serializer
+    required:
+      - username
+      - name
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      name:
+        title: Name
+        description: User's display name.
+        type: string
+        minLength: 1
+      is_active:
+        title: Active
+        description: Designates whether this user should be treated as active. Unselect
+          this instead of deleting accounts.
+        type: boolean
+      last_login:
+        title: Last login
+        type: string
+        format: date-time
+        x-nullable: true
+      is_superuser:
+        title: Is superuser
+        type: boolean
+        readOnly: true
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      avatar:
+        title: Avatar
+        type: string
+        readOnly: true
+      attributes:
+        title: Attributes
+        type: object
   Token:
     description: Token Serializer
     required:
@@ -7986,11 +8279,17 @@ definitions:
           - api
           - recovery
       user:
-        title: User
-        type: integer
+        $ref: '#/definitions/User'
       description:
         title: Description
         type: string
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+      expiring:
+        title: Expiring
+        type: boolean
   TokenView:
     description: Show token's current key
     type: object
@@ -8000,43 +8299,6 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
-  User:
-    description: User Serializer
-    required:
-      - username
-      - name
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      username:
-        title: Username
-        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-          only.
-        type: string
-        pattern: ^[\w.@+-]+$
-        maxLength: 150
-        minLength: 1
-      name:
-        title: Name
-        description: User's display name.
-        type: string
-        minLength: 1
-      is_superuser:
-        title: Is superuser
-        type: boolean
-        readOnly: true
-      email:
-        title: Email address
-        type: string
-        format: email
-        maxLength: 254
-      avatar:
-        title: Avatar
-        type: string
-        readOnly: true
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:
@@ -8338,82 +8600,6 @@ definitions:
       webhook_url:
         title: Webhook url
         type: string
-  Stage:
-    title: Stage obj
-    description: Stage Serializer
-    required:
-      - name
-    type: object
-    properties:
-      pk:
-        title: Stage uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      object_type:
-        title: Object type
-        type: string
-        readOnly: true
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
-  FlowStageBinding:
-    description: FlowStageBinding Serializer
-    required:
-      - target
-      - stage
-      - order
-    type: object
-    properties:
-      pk:
-        title: Fsb uuid
-        type: string
-        format: uuid
-        readOnly: true
-      policybindingmodel_ptr_id:
-        title: Policybindingmodel ptr id
-        type: string
-        readOnly: true
-      target:
-        title: Target
-        type: string
-        format: uuid
-      stage:
-        title: Stage
-        type: string
-        format: uuid
-      stage_obj:
-        $ref: '#/definitions/Stage'
-      evaluate_on_plan:
-        title: Evaluate on plan
-        description: Evaluate policies during the Flow planning process. Disable this
-          for input-based policies.
-        type: boolean
-      re_evaluate_policies:
-        title: Re evaluate policies
-        description: Evaluate policies when the Stage is present to the user.
-        type: boolean
-      order:
-        title: Order
-        type: integer
-        maximum: 2147483647
-        minimum: -2147483648
-      policies:
-        type: array
-        items:
-          type: string
-          format: uuid
-        readOnly: true
-        uniqueItems: true
   Flow:
     description: Flow Serializer
     required:
@@ -8485,6 +8671,95 @@ definitions:
       cache_count:
         title: Cache count
         type: string
+        readOnly: true
+  Stage:
+    title: Stage obj
+    description: Stage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
+  FlowStageBinding:
+    description: FlowStageBinding Serializer
+    required:
+      - target
+      - stage
+      - order
+    type: object
+    properties:
+      pk:
+        title: Fsb uuid
+        type: string
+        format: uuid
+        readOnly: true
+      policybindingmodel_ptr_id:
+        title: Policybindingmodel ptr id
+        type: string
+        readOnly: true
+      target:
+        title: Target
+        type: string
+        format: uuid
+      stage:
+        title: Stage
+        type: string
+        format: uuid
+      stage_obj:
+        $ref: '#/definitions/Stage'
+      evaluate_on_plan:
+        title: Evaluate on plan
+        description: Evaluate policies during the Flow planning process. Disable this
+          for input-based policies.
+        type: boolean
+      re_evaluate_policies:
+        title: Re evaluate policies
+        description: Evaluate policies when the Stage is present to the user.
+        type: boolean
+      order:
+        title: Order
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      policies:
+        type: array
+        items:
+          type: string
+          format: uuid
+        readOnly: true
+        uniqueItems: true
+  Cache:
+    description: Generic cache stats for an object
+    type: object
+    properties:
+      count:
+        title: Count
+        type: integer
         readOnly: true
   FlowDiagram:
     description: response of the flow's /diagram/ action
@@ -8712,6 +8987,55 @@ definitions:
         title: Name
         type: string
         minLength: 1
+      local:
+        title: Local
+        description: If enabled, use the local connection. Required Docker socket/Kubernetes
+          Integration
+        type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+  TypeCreate:
+    description: Types of an object that can be created
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        readOnly: true
+        minLength: 1
+      link:
+        title: Link
+        type: string
+        readOnly: true
+        minLength: 1
+  ServiceConnectionState:
+    description: Serializer for Service connection state
+    type: object
+    properties:
+      healthy:
+        title: Healthy
+        type: boolean
+        readOnly: true
+      version:
+        title: Version
+        type: string
+        readOnly: true
+        minLength: 1
   DockerServiceConnection:
     description: DockerServiceConnection Serializer
     required:
@@ -8733,6 +9057,18 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       url:
         title: Url
         description: Can be in the format of 'unix://<path>' when connecting to a
@@ -8774,6 +9110,18 @@ definitions:
         description: If enabled, use the local connection. Required Docker socket/Kubernetes
           Integration
         type: boolean
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
       kubeconfig:
         title: Kubeconfig
         description: Paste your kubeconfig here. authentik will automatically use
@@ -8800,6 +9148,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
   PolicyBinding:
     description: PolicyBinding Serializer
@@ -9175,6 +9535,18 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       result:
         title: Result
         type: boolean
@@ -9209,6 +9581,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       action:
         title: Action
@@ -9315,6 +9699,18 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       expression:
         title: Expression
         type: string
@@ -9340,6 +9736,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       group:
         title: Group
@@ -9367,6 +9775,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       password_field:
         title: Password field
@@ -9401,6 +9821,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       password_field:
         title: Password field
@@ -9459,6 +9891,18 @@ definitions:
         title: Object type
         type: string
         readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
+        readOnly: true
       days:
         title: Days
         type: integer
@@ -9488,6 +9932,18 @@ definitions:
       object_type:
         title: Object type
         type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      bound_to:
+        title: Bound to
+        type: integer
         readOnly: true
       check_ip:
         title: Check ip
@@ -9641,25 +10097,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  TypeCreate:
-    description: Types of an object that can be created
-    type: object
-    properties:
-      name:
-        title: Name
-        type: string
-        readOnly: true
-        minLength: 1
-      description:
-        title: Description
-        type: string
-        readOnly: true
-        minLength: 1
-      link:
-        title: Link
-        type: string
-        readOnly: true
-        minLength: 1
   OAuth2Provider:
     description: OAuth2Provider Serializer
     required:
@@ -10511,6 +10948,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10551,6 +10993,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       configure_flow:
         title: Configure flow
         description: Flow used by an authenticated user to configure this Stage. If
@@ -10591,6 +11038,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       not_configured_action:
         title: Not configured action
         type: string
@@ -10630,6 +11082,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   CaptchaStage:
     description: CaptchaStage Serializer
     required:
@@ -10659,6 +11116,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       public_key:
         title: Public key
         description: Public key, acquired from https://www.google.com/recaptcha/intro/v3.html
@@ -10696,6 +11158,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       mode:
         title: Mode
         type: string
@@ -10735,6 +11202,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   EmailStage:
     description: EmailStage Serializer
     required:
@@ -10762,6 +11234,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       use_global_settings:
         title: Use global settings
         description: When enabled, global Email connection settings will be used and
@@ -10844,6 +11321,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       user_fields:
         description: ''
         type: array
@@ -10883,6 +11365,263 @@ definitions:
         type: string
         format: uuid
         x-nullable: true
+  Invitation:
+    description: Invitation Serializer
+    type: object
+    properties:
+      pk:
+        title: Invite uuid
+        type: string
+        format: uuid
+        readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+        x-nullable: true
+      fixed_data:
+        title: Fixed data
+        description: Optional fixed data to enforce on user enrollment.
+        type: object
+      created_by:
+        description: Custom User model to allow easier adding o f user-based settings
+        required:
+          - password
+          - username
+          - name
+        type: object
+        properties:
+          id:
+            title: ID
+            type: integer
+            readOnly: true
+          password:
+            title: Password
+            type: string
+            maxLength: 128
+            minLength: 1
+          last_login:
+            title: Last login
+            type: string
+            format: date-time
+            x-nullable: true
+          username:
+            title: Username
+            description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+              only.
+            type: string
+            pattern: ^[\w.@+-]+$
+            maxLength: 150
+            minLength: 1
+          first_name:
+            title: First name
+            type: string
+            maxLength: 150
+          last_name:
+            title: Last name
+            type: string
+            maxLength: 150
+          email:
+            title: Email address
+            type: string
+            format: email
+            maxLength: 254
+          is_active:
+            title: Active
+            description: Designates whether this user should be treated as active.
+              Unselect this instead of deleting accounts.
+            type: boolean
+          date_joined:
+            title: Date joined
+            type: string
+            format: date-time
+          uuid:
+            title: Uuid
+            type: string
+            format: uuid
+            readOnly: true
+          name:
+            title: Name
+            description: User's display name.
+            type: string
+            minLength: 1
+          password_change_date:
+            title: Password change date
+            type: string
+            format: date-time
+            readOnly: true
+          attributes:
+            title: Attributes
+            type: object
+          groups:
+            description: ''
+            type: array
+            items:
+              description: Groups are a generic way of categorizing users to apply
+                permissions, or some other label, to those users. A user can belong
+                to any number of groups. A user in a group automatically has all the
+                permissions granted to that group. For example, if the group 'Site
+                editors' has the permission can_edit_home_page, any user in that group
+                will have that permission. Beyond permissions, groups are a convenient
+                way to categorize users to apply some label, or extended functionality,
+                to them. For example, you could create a group 'Special users', and
+                you could write code that would do special things to those users --
+                such as giving them access to a members-only portion of your site,
+                or sending them members-only email messages.
+              required:
+                - name
+              type: object
+              properties:
+                id:
+                  title: ID
+                  type: integer
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 150
+                  minLength: 1
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  uniqueItems: true
+            readOnly: true
+          user_permissions:
+            description: ''
+            type: array
+            items:
+              description: "The permissions system provides a way to assign permissions\
+                \ to specific users and groups of users. The permission system is\
+                \ used by the Django admin site, but may also be useful in your own\
+                \ code. The Django admin site uses permissions as follows: - The \"\
+                add\" permission limits the user's ability to view the \"add\" form\
+                \ and add an object. - The \"change\" permission limits a user's ability\
+                \ to view the change list, view the \"change\" form and change an\
+                \ object. - The \"delete\" permission limits the ability to delete\
+                \ an object. - The \"view\" permission limits the ability to view\
+                \ an object. Permissions are set globally per type of object, not\
+                \ per specific object instance. It is possible to say \"Mary may change\
+                \ news stories,\" but it's not currently possible to say \"Mary may\
+                \ change news stories, but only the ones she created herself\" or\
+                \ \"Mary may only change news stories that have a certain status or\
+                \ publication date.\" The permissions listed above are automatically\
+                \ created for each model."
+              required:
+                - name
+                - codename
+                - content_type
+              type: object
+              properties:
+                id:
+                  title: ID
+                  type: integer
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 255
+                  minLength: 1
+                codename:
+                  title: Codename
+                  type: string
+                  maxLength: 100
+                  minLength: 1
+                content_type:
+                  title: Content type
+                  type: integer
+            readOnly: true
+          sources:
+            description: ''
+            type: array
+            items:
+              description: Base Authentication source, i.e. an OAuth Provider, SAML
+                Remote or LDAP Server
+              required:
+                - name
+                - slug
+              type: object
+              properties:
+                pbm_uuid:
+                  title: Pbm uuid
+                  type: string
+                  format: uuid
+                  readOnly: true
+                name:
+                  title: Name
+                  description: Source's display Name.
+                  type: string
+                  minLength: 1
+                slug:
+                  title: Slug
+                  description: Internal source name, used in URLs.
+                  type: string
+                  format: slug
+                  pattern: ^[-a-zA-Z0-9_]+$
+                  maxLength: 50
+                  minLength: 1
+                enabled:
+                  title: Enabled
+                  type: boolean
+                authentication_flow:
+                  title: Authentication flow
+                  description: Flow to use when authenticating existing users.
+                  type: string
+                  format: uuid
+                  x-nullable: true
+                enrollment_flow:
+                  title: Enrollment flow
+                  description: Flow to use when enrolling new users.
+                  type: string
+                  format: uuid
+                  x-nullable: true
+                policies:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  readOnly: true
+                  uniqueItems: true
+                property_mappings:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+            readOnly: true
+          ak_groups:
+            description: ''
+            type: array
+            items:
+              description: Custom Group model which supports a basic hierarchy
+              required:
+                - name
+                - parent
+              type: object
+              properties:
+                group_uuid:
+                  title: Group uuid
+                  type: string
+                  format: uuid
+                  readOnly: true
+                name:
+                  title: Name
+                  type: string
+                  maxLength: 80
+                  minLength: 1
+                is_superuser:
+                  title: Is superuser
+                  description: Users added to this group will be superusers.
+                  type: boolean
+                attributes:
+                  title: Attributes
+                  type: object
+                parent:
+                  title: Parent
+                  type: string
+                  format: uuid
+            readOnly: true
+        readOnly: true
   InvitationStage:
     description: InvitationStage Serializer
     required:
@@ -10910,30 +11649,17 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       continue_flow_without_invitation:
         title: Continue flow without invitation
         description: If this flag is set, this Stage will jump to the next Stage when
           no Invitation is given. By default this Stage will cancel the Flow when
           no invitation is given.
         type: boolean
-  Invitation:
-    description: Invitation Serializer
-    type: object
-    properties:
-      pk:
-        title: Invite uuid
-        type: string
-        format: uuid
-        readOnly: true
-      expires:
-        title: Expires
-        type: string
-        format: date-time
-        x-nullable: true
-      fixed_data:
-        title: Fixed data
-        description: Optional fixed data to enforce on user enrollment.
-        type: object
   PasswordStage:
     description: PasswordStage Serializer
     required:
@@ -10962,6 +11688,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       backends:
         description: ''
         type: array
@@ -11034,6 +11765,11 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+      promptstage_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Stage'
   PromptStage:
     description: PromptStage Serializer
     required:
@@ -11062,6 +11798,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       fields:
         type: array
         items:
@@ -11101,6 +11842,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   UserLoginStage:
     description: UserLoginStage Serializer
     required:
@@ -11128,6 +11874,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
       session_duration:
         title: Session duration
         description: 'Determines how long a session lasts. Default of 0 means that
@@ -11161,6 +11912,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   UserWriteStage:
     description: UserWriteStage Serializer
     required:
@@ -11188,3 +11944,8 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'

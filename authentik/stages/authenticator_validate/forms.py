@@ -19,7 +19,7 @@ class ValidationForm(forms.Form):
         label=_("Please enter the token from your device."),
         widget=forms.TextInput(
             attrs={
-                "autocomplete": "off",
+                "autocomplete": "one-time-code",
                 "placeholder": "123456",
                 "autofocus": "autofocus",
             }

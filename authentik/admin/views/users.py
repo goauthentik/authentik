@@ -7,50 +7,20 @@ from django.contrib.auth.mixins import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect, reverse
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
-from django.views.generic import DetailView, ListView, UpdateView
-from guardian.mixins import (
-    PermissionListMixin,
-    PermissionRequiredMixin,
-    get_anonymous_user,
-)
+from django.views.generic import DetailView, UpdateView
+from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.users import UserForm
-from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
-    DeleteMessageView,
-    SearchListMixin,
-    UserPaginateListMixin,
-)
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.models import Token, User
 from authentik.lib.views import CreateAssignPermView
 
 
-class UserListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    ListView,
-):
-    """Show list of all users"""
-
-    model = User
-    permission_required = "authentik_core.view_user"
-    ordering = "username"
-    template_name = "administration/user/list.html"
-    search_fields = ["username", "name", "attributes"]
-
-    def get_queryset(self):
-        return super().get_queryset().exclude(pk=get_anonymous_user().pk)
-
-
 class UserCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -62,13 +32,12 @@ class UserCreateView(
     permission_required = "authentik_core.add_user"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:users")
+    success_url = "/"
     success_message = _("Successfully created User")
 
 
 class UserUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,
@@ -82,7 +51,7 @@ class UserUpdateView(
     # By default the object's name is user which is used by other checks
     context_object_name = "object"
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:users")
+    success_url = "/"
     success_message = _("Successfully updated User")
 
 
@@ -95,13 +64,11 @@ class UserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageV
     # By default the object's name is user which is used by other checks
     context_object_name = "object"
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:users")
+    success_url = "/"
     success_message = _("Successfully deleted User")
 
 
-class UserDisableView(
-    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DeleteMessageView
-):
+class UserDisableView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Disable user"""
 
     object: User
@@ -112,7 +79,7 @@ class UserDisableView(
     # By default the object's name is user which is used by other checks
     context_object_name = "object"
     template_name = "administration/user/disable.html"
-    success_url = reverse_lazy("authentik_admin:users")
+    success_url = "/"
     success_message = _("Successfully disabled User")
 
     def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -123,9 +90,7 @@ class UserDisableView(
         return HttpResponseRedirect(success_url)
 
 
-class UserEnableView(
-    LoginRequiredMixin, PermissionRequiredMixin, BackSuccessUrlMixin, DetailView
-):
+class UserEnableView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     """Enable user"""
 
     object: User
@@ -135,15 +100,14 @@ class UserEnableView(
 
     # By default the object's name is user which is used by other checks
     context_object_name = "object"
-    success_url = reverse_lazy("authentik_admin:users")
+    success_url = "/"
     success_message = _("Successfully enabled User")
 
     def get(self, request: HttpRequest, *args, **kwargs):
         self.object: User = self.get_object()
-        success_url = self.get_success_url()
         self.object.is_active = True
         self.object.save()
-        return HttpResponseRedirect(success_url)
+        return HttpResponseRedirect(self.success_url)
 
 
 class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -165,4 +129,4 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
         messages.success(
             request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})
         )
-        return redirect("authentik_admin:users")
+        return redirect("/")

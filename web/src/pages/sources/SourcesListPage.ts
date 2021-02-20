@@ -46,7 +46,7 @@ export class SourceListPage extends TablePage<Source> {
 
     row(item: Source): TemplateResult[] {
         return [
-            html`<a href="#/sources/${item.slug}">
+            html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
                 ${item.enabled ? html`` : html`<small>${gettext("Disabled")}</small>`}
             </a>`,

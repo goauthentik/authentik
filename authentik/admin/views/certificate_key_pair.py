@@ -10,7 +10,7 @@ from django.views.generic import UpdateView
 from django.views.generic.edit import FormView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.forms import (
     CertificateKeyPairForm,
@@ -22,7 +22,6 @@ from authentik.lib.views import CreateAssignPermView
 
 class CertificateKeyPairCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -40,7 +39,6 @@ class CertificateKeyPairCreateView(
 
 class CertificateKeyPairGenerateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     FormView,
@@ -68,7 +66,6 @@ class CertificateKeyPairGenerateView(
 
 class CertificateKeyPairUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

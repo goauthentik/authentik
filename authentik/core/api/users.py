@@ -28,7 +28,17 @@ class UserSerializer(ModelSerializer):
     class Meta:
 
         model = User
-        fields = ["pk", "username", "name", "is_superuser", "email", "avatar"]
+        fields = [
+            "pk",
+            "username",
+            "name",
+            "is_active",
+            "last_login",
+            "is_superuser",
+            "email",
+            "avatar",
+            "attributes",
+        ]
 
 
 class UserViewSet(ModelViewSet):
@@ -36,6 +46,8 @@ class UserViewSet(ModelViewSet):
 
     queryset = User.objects.none()
     serializer_class = UserSerializer
+    search_fields = ["username", "name", "is_active"]
+    filterset_fields = ["username", "name", "is_active"]
 
     def get_queryset(self):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)

@@ -118,7 +118,7 @@ class Flow(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.flows.api import FlowSerializer
+        from authentik.flows.api.flows import FlowSerializer
 
         return FlowSerializer
 
@@ -189,12 +189,12 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> BaseSerializer:
-        from authentik.flows.api import FlowStageBindingSerializer
+        from authentik.flows.api.bindings import FlowStageBindingSerializer
 
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"{self.target} #{self.order} -> {self.stage}"
+        return f"{self.target} #{self.order}"
 
     class Meta:
 

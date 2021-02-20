@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import BackSuccessUrlMixin, DeleteMessageView
+from authentik.admin.views.utils import DeleteMessageView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow
@@ -25,7 +25,6 @@ from authentik.lib.views import CreateAssignPermView, bad_request_message
 
 class FlowCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     CreateAssignPermView,
@@ -43,7 +42,6 @@ class FlowCreateView(
 
 class FlowUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     UpdateView,

@@ -14,6 +14,10 @@ export class LibraryApplication extends LitElement {
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
             css`
+                :host,
+                main {
+                    height: 100%;
+                }
                 a {
                     height: 100%;
                 }

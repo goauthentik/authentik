@@ -20,7 +20,6 @@ from authentik.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
-    tasks,
     tokens,
     users,
 )
@@ -54,7 +53,6 @@ urlpatterns = [
         name="application-delete",
     ),
     # Tokens
-    path("tokens/", tokens.TokenListView.as_view(), name="tokens"),
     path(
         "tokens/<uuid:pk>/delete/",
         tokens.TokenDeleteView.as_view(),
@@ -73,7 +71,6 @@ urlpatterns = [
         name="source-delete",
     ),
     # Policies
-    path("policies/", policies.PolicyListView.as_view(), name="policies"),
     path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
     path(
         "policies/<uuid:pk>/update/",
@@ -91,11 +88,6 @@ urlpatterns = [
         name="policy-test",
     ),
     # Policy bindings
-    path(
-        "policies/bindings/",
-        policies_bindings.PolicyBindingListView.as_view(),
-        name="policies-bindings",
-    ),
     path(
         "policies/bindings/create/",
         policies_bindings.PolicyBindingCreateView.as_view(),
@@ -133,7 +125,6 @@ urlpatterns = [
         name="provider-delete",
     ),
     # Stages
-    path("stages/", stages.StageListView.as_view(), name="stages"),
     path("stages/create/", stages.StageCreateView.as_view(), name="stage-create"),
     path(
         "stages/<uuid:pk>/update/",
@@ -146,11 +137,6 @@ urlpatterns = [
         name="stage-delete",
     ),
     # Stage bindings
-    path(
-        "stages/bindings/",
-        stages_bindings.StageBindingListView.as_view(),
-        name="stage-bindings",
-    ),
     path(
         "stages/bindings/create/",
         stages_bindings.StageBindingCreateView.as_view(),
@@ -168,11 +154,6 @@ urlpatterns = [
     ),
     # Stage Prompts
     path(
-        "stages_prompts/",
-        stages_prompts.PromptListView.as_view(),
-        name="stage-prompts",
-    ),
-    path(
         "stages_prompts/create/",
         stages_prompts.PromptCreateView.as_view(),
         name="stage-prompt-create",
@@ -188,11 +169,6 @@ urlpatterns = [
         name="stage-prompt-delete",
     ),
     # Stage Invitations
-    path(
-        "stages/invitations/",
-        stages_invitations.InvitationListView.as_view(),
-        name="stage-invitations",
-    ),
     path(
         "stages/invitations/create/",
         stages_invitations.InvitationCreateView.as_view(),
@@ -256,7 +232,6 @@ urlpatterns = [
         name="property-mapping-test",
     ),
     # Users
-    path("users/", users.UserListView.as_view(), name="users"),
     path("users/create/", users.UserCreateView.as_view(), name="user-create"),
     path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
     path("users/<int:pk>/delete/", users.UserDeleteView.as_view(), name="user-delete"),
@@ -270,7 +245,6 @@ urlpatterns = [
         name="user-password-reset",
     ),
     # Groups
-    path("groups/", groups.GroupListView.as_view(), name="groups"),
     path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
     path(
         "groups/<uuid:pk>/update/",
@@ -321,11 +295,6 @@ urlpatterns = [
     ),
     # Outpost Service Connections
     path(
-        "outpost_service_connections/",
-        outposts_service_connections.OutpostServiceConnectionListView.as_view(),
-        name="outpost-service-connections",
-    ),
-    path(
         "outpost_service_connections/create/",
         outposts_service_connections.OutpostServiceConnectionCreateView.as_view(),
         name="outpost-service-connection-create",
@@ -339,12 +308,6 @@ urlpatterns = [
         "outpost_service_connections/<uuid:pk>/delete/",
         outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
         name="outpost-service-connection-delete",
-    ),
-    # Tasks
-    path(
-        "tasks/",
-        tasks.TaskListView.as_view(),
-        name="tasks",
     ),
     # Event Notification Transpots
     path(

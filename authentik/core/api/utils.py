@@ -1,6 +1,6 @@
 """API Utilities"""
 from django.db.models import Model
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import Serializer, SerializerMethodField
 
 
@@ -31,6 +31,18 @@ class TypeCreateSerializer(Serializer):
     name = CharField(read_only=True)
     description = CharField(read_only=True)
     link = CharField(read_only=True)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
+class CacheSerializer(Serializer):
+    """Generic cache stats for an object"""
+
+    count = IntegerField(read_only=True)
 
     def create(self, validated_data: dict) -> Model:
         raise NotImplementedError

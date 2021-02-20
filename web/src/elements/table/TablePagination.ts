@@ -43,7 +43,7 @@ export class TablePagination extends LitElement {
                         <button
                             class="pf-c-button pf-m-plain"
                             @click=${() => { this.pageChangeHandler(this.pages?.next || 0); }}
-                            ?disabled="${(this.pages?.next || 0) < 0}"
+                            ?disabled="${(this.pages?.next || 0) <= 0}"
                             aria-label="${gettext("Go to next page")}"
                         >
                             <i class="fas fa-angle-right" aria-hidden="true"></i>

@@ -107,7 +107,7 @@ export class EventInfo extends LitElement {
                         <span>${until(Flow.list({
                             flow_uuid: this.event.context.flow as string,
                         }).then(resp => {
-                            return html`<a href="#/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
+                            return html`<a href="#/flow/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
                         }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}
                         </span>
                     </div>

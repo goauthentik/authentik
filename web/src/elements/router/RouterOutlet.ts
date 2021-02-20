@@ -10,6 +10,7 @@ import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
 
 import "../../pages/generic/SiteShell";
+import "./Router404";
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
@@ -27,6 +28,11 @@ export class RouterOutlet extends LitElement {
             css`
                 :host {
                     height: 100vh;
+                }
+                *:first-child {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
                 }
             `,
         ].concat(...COMMON_STYLES);
@@ -62,12 +68,12 @@ export class RouterOutlet extends LitElement {
             }
         });
         if (!matchedRoute) {
-            console.debug(`authentik/router: route "${activeUrl}" not defined, defaulting to shell`);
+            console.debug(`authentik/router: route "${activeUrl}" not defined`);
             const route = new Route(
                 RegExp(""),
-                html`<ak-site-shell url=${activeUrl}>
-                    <div slot="body"></div>
-                </ak-site-shell>`
+                html`<div class="pf-c-page__main">
+                    <ak-router-404 url=${activeUrl}></ak-router-404>
+                </div>`
             );
             matchedRoute = new RouteMatch(route);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
@@ -77,7 +83,6 @@ export class RouterOutlet extends LitElement {
     }
 
     render(): TemplateResult | undefined {
-        // TODO: Render 404 when current Route is empty
         return this.current?.render();
     }
 }

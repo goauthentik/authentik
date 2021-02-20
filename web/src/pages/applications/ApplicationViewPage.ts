@@ -38,7 +38,14 @@ export class ApplicationViewPage extends LitElement {
 
     render(): TemplateResult {
         if (!this.application) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<section class="pf-c-page__main-section pf-m-light">
+                <div class="pf-c-content">
+                    <h1>
+                        ${gettext("Loading...")}
+                    </h1>
+                </div>
+            </section>
+            <ak-loading-state></ak-loading-state>`;
         }
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
@@ -80,7 +87,7 @@ export class ApplicationViewPage extends LitElement {
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    <a href="#/providers/${this.application.provider.pk}">
+                                                    <a href="#/core/providers/${this.application.provider.pk}">
                                                         ${this.application.provider.name}
                                                     </a>
                                                 </div>

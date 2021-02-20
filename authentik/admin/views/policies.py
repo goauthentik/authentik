@@ -7,45 +7,23 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import FormView
 from django.views.generic.detail import DetailView
-from guardian.mixins import PermissionListMixin, PermissionRequiredMixin
+from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.policies import PolicyTestForm
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
-    InheritanceListView,
     InheritanceUpdateView,
-    SearchListMixin,
-    UserPaginateListMixin,
 )
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess, PolicyRequest
 
 
-class PolicyListView(
-    LoginRequiredMixin,
-    PermissionListMixin,
-    UserPaginateListMixin,
-    SearchListMixin,
-    InheritanceListView,
-):
-    """Show list of all policies"""
-
-    model = Policy
-    permission_required = "authentik_policies.view_policy"
-    ordering = "name"
-    template_name = "administration/policy/list.html"
-    search_fields = ["name"]
-
-
 class PolicyCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -56,13 +34,12 @@ class PolicyCreateView(
     permission_required = "authentik_policies.add_policy"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_admin:policies")
+    success_url = "/"
     success_message = _("Successfully created Policy")
 
 
 class PolicyUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,
@@ -73,7 +50,7 @@ class PolicyUpdateView(
     permission_required = "authentik_policies.change_policy"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_admin:policies")
+    success_url = "/"
     success_message = _("Successfully updated Policy")
 
 
@@ -84,7 +61,7 @@ class PolicyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessag
     permission_required = "authentik_policies.delete_policy"
 
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_admin:policies")
+    success_url = "/"
     success_message = _("Successfully deleted Policy")
 
 

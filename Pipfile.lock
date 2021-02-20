@@ -116,18 +116,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:1709ff5feb363fee7fcaa2330e659fcbc2b4c03a14f75a884ed682ee66011fc4",
-                "sha256:80a761eff3b1cb0798d7e1a41b7c8e6d85c9647a8f7b6105335201a69404caa2"
+                "sha256:7d44cbd931c653cc68e8ccbf39f3ad8b304cb50d4e964d8c8d0936de33ff8c8b",
+                "sha256:b6131751e3cf2f8d4c027518373b6b82264c3897de65d3519e2d782927e8bf1e"
             ],
             "index": "pypi",
-            "version": "==1.17.10"
+            "version": "==1.17.11"
         },
         "botocore": {
             "hashes": [
-                "sha256:8c84eac6daf38890714e005623083106d68e9b2088e62132fdbf7d2b1228ecbd",
-                "sha256:a601ee5a4ae66832f328ca362b5404d22b75f1c181f6cc0934f3cfca749eb27d"
+                "sha256:8efd206b78269eb115279ca2d23f50eead1307dbe0bf9bcc2bba3ab2ff7bfd87",
+                "sha256:dd7c528c6c936d941b2c267339f0b01cce377b640856240b588d0e0d82fd29e3"
             ],
-            "version": "==1.20.10"
+            "version": "==1.20.11"
         },
         "cachetools": {
             "hashes": [
@@ -409,11 +409,11 @@
         },
         "docker": {
             "hashes": [
-                "sha256:20d71afc593486f2297bb7fb7406b03876f31894337e914a5062050c65085cab",
-                "sha256:67f33d4cf95182db631a17eef7d666d2c91f624c1d3fbc4df6009cb2f2a4c604"
+                "sha256:d4625e70e3d5a12d7cbf1fd68cef2e081ac86b83889e00e5466d975f90e50dad",
+                "sha256:de5753b7f6486dd541a98393e423e387579b8974a5068748b83f852cc76a89d6"
             ],
             "index": "pypi",
-            "version": "==4.4.2"
+            "version": "==4.4.3"
         },
         "drf-yasg2": {
             "hashes": [
@@ -1093,11 +1093,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:9044b616ec6663cd50794fb3362efd87586e476e7b51ef2439a711d6569aede7",
-                "sha256:efc65e5ffd38324797a7e1dfc8a4e74b62ea6f56a59df5bb03217b84d58dff6a"
+                "sha256:4ae8d1ced6c67f1c8ea51d82a16721c166c489b76876c9f2c202b8a50334b237",
+                "sha256:e75c8c58932bda8cd293ea8e4b242527129e1caaec91433d21b8b2f20fee030b"
             ],
             "index": "pypi",
-            "version": "==0.20.2"
+            "version": "==0.20.3"
         },
         "service-identity": {
             "hashes": [
@@ -1123,11 +1123,11 @@
         },
         "structlog": {
             "hashes": [
-                "sha256:33dd6bd5f49355e52c1c61bb6a4f20d0b48ce0328cc4a45fe872d38b97a05ccd",
-                "sha256:af79dfa547d104af8d60f86eac12fb54825f54a46bc998e4504ef66177103174"
+                "sha256:62f06fc0ee32fb8580f0715eea66cb87271eb7efb0eaf9af6b639cba8981de47",
+                "sha256:d9d2d890532e8db83c6977a2a676fb1889922ff0c26ad4dc0ecac26f9fafbc57"
             ],
             "index": "pypi",
-            "version": "==20.2.0"
+            "version": "==21.1.0"
         },
         "swagger-spec-validator": {
             "hashes": [

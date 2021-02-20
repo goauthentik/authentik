@@ -1,15 +1,10 @@
 """authentik admin util views"""
-from typing import Any, Optional
-from urllib.parse import urlparse
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.db.models import QuerySet
 from django.http import Http404
-from django.http.request import HttpRequest
-from django.views.generic import DeleteView, ListView, UpdateView
-from django.views.generic.list import MultipleObjectMixin
+from django.views.generic import DeleteView, UpdateView
 
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.views import CreateAssignPermView
@@ -23,37 +18,6 @@ class DeleteMessageView(SuccessMessageMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super().delete(request, *args, **kwargs)
-
-
-class InheritanceListView(ListView):
-    """ListView for objects using InheritanceManager"""
-
-    def get_context_data(self, **kwargs):
-        kwargs["types"] = {x.__name__: x for x in all_subclasses(self.model)}
-        return super().get_context_data(**kwargs)
-
-    def get_queryset(self):
-        return super().get_queryset().select_subclasses()
-
-
-class SearchListMixin(MultipleObjectMixin):
-    """Accept search query using `search` querystring parameter. Requires self.search_fields,
-    a list of all fields to search. Can contain special lookups like __icontains"""
-
-    search_fields: list[str]
-
-    def get_queryset(self) -> QuerySet:
-        queryset = super().get_queryset()
-        if "search" in self.request.GET:
-            raw_query = self.request.GET["search"]
-            if raw_query == "":
-                # Empty query, don't search at all
-                return queryset
-            search = SearchQuery(raw_query, search_type="websearch")
-            return queryset.annotate(search=SearchVector(*self.search_fields)).filter(
-                search=search
-            )
-        return queryset
 
 
 class InheritanceCreateView(CreateAssignPermView):
@@ -96,31 +60,3 @@ class InheritanceUpdateView(UpdateView):
             .select_subclasses()
             .first()
         )
-
-
-class BackSuccessUrlMixin:
-    """Checks if a relative URL has been given as ?back param, and redirect to it. Otherwise
-    default to self.success_url."""
-
-    request: HttpRequest
-
-    success_url: Optional[str]
-
-    def get_success_url(self) -> str:
-        """get_success_url from FormMixin"""
-        back_param = self.request.GET.get("back")
-        if back_param:
-            if not bool(urlparse(back_param).netloc):
-                return back_param
-        return str(self.success_url)
-
-
-class UserPaginateListMixin:
-    """Get paginate_by value from user's attributes, defaulting to 15"""
-
-    request: HttpRequest
-
-    # pylint: disable=unused-argument
-    def get_paginate_by(self, queryset: QuerySet) -> int:
-        """get_paginate_by Function of ListView"""
-        return self.request.user.attributes.get("paginate_by", 15)

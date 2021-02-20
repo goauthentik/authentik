@@ -47,13 +47,13 @@ export class ProviderListPage extends TablePage<Provider> {
 
     row(item: Provider): TemplateResult[] {
         return [
-            html`<a href="#/providers/${item.pk}">
+            html`<a href="#/core/providers/${item.pk}">
                 ${item.name}
             </a>`,
             item.assigned_application_name ?
                 html`<i class="pf-icon pf-icon-ok"></i>
                     ${gettext("Assigned to application ")}
-                    <a href="#/applications/${item.assigned_application_slug}">${item.assigned_application_name}</a>` :
+                    <a href="#/core/applications/${item.assigned_application_slug}">${item.assigned_application_name}</a>` :
                 html`<i class="pf-icon pf-icon-warning-triangle"></i>
                 ${gettext("Warning: Provider not assigned to any application.")}`,
             html`${item.verbose_name}`,

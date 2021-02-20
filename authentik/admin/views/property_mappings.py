@@ -15,7 +15,6 @@ from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.policies import PolicyTestForm
 from authentik.admin.views.utils import (
-    BackSuccessUrlMixin,
     DeleteMessageView,
     InheritanceCreateView,
     InheritanceUpdateView,
@@ -25,7 +24,6 @@ from authentik.core.models import PropertyMapping
 
 class PropertyMappingCreateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     DjangoPermissionRequiredMixin,
     InheritanceCreateView,
@@ -41,7 +39,6 @@ class PropertyMappingCreateView(
 
 class PropertyMappingUpdateView(
     SuccessMessageMixin,
-    BackSuccessUrlMixin,
     LoginRequiredMixin,
     PermissionRequiredMixin,
     InheritanceUpdateView,

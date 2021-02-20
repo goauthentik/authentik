@@ -3,7 +3,7 @@ from django.shortcuts import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.api import StageSerializer, StageViewSet
+from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding

@@ -48,7 +48,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`${item.name}`,
             html`<ul>${item.providers_obj.map((p) => {
-                return html`<li><a href="#/providers/${p.pk}">${p.name}</a></li>`;
+                return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
             })}</ul>`,
             html`<ak-outpost-health outpostId=${item.pk}></ak-outpost-health>`,
             html`

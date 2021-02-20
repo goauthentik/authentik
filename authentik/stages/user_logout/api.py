@@ -1,7 +1,7 @@
 """Logout Stage API Views"""
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.flows.api import StageSerializer
+from authentik.flows.api.stages import StageSerializer
 from authentik.stages.user_logout.models import UserLogoutStage
 
 

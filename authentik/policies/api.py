@@ -1,17 +1,25 @@
 """policy API Views"""
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.mixins import ListModelMixin
+from django.shortcuts import reverse
+from drf_yasg2.utils import swagger_auto_schema
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
     ModelSerializer,
     PrimaryKeyRelatedField,
-    Serializer,
     SerializerMethodField,
 )
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from authentik.core.api.utils import (
+    CacheSerializer,
+    MetaNameSerializer,
+    TypeCreateSerializer,
+)
+from authentik.lib.templatetags.authentik_utils import verbose_name
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
 
@@ -45,20 +53,27 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
         return correct_model.pk
 
 
-class PolicySerializer(ModelSerializer):
+class PolicySerializer(ModelSerializer, MetaNameSerializer):
     """Policy Serializer"""
 
     _resolve_inheritance: bool
 
     object_type = SerializerMethodField()
+    bound_to = SerializerMethodField()
 
     def __init__(self, *args, resolve_inheritance: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         self._resolve_inheritance = resolve_inheritance
 
-    def get_object_type(self, obj):
+    def get_object_type(self, obj: Policy) -> str:
         """Get object type so that we know which API Endpoint to use to get the full object"""
-        return obj._meta.object_name.lower().replace("provider", "")
+        return obj._meta.object_name.lower().replace("policy", "")
+
+    def get_bound_to(self, obj: Policy) -> int:
+        """Return objects policy is bound to"""
+        if not obj.bindings.exists() and not obj.promptstage_set.exists():
+            return 0
+        return obj.bindings.count()
 
     def to_representation(self, instance: Policy):
         # pyright: reportGeneralTypeIssues=false
@@ -71,7 +86,15 @@ class PolicySerializer(ModelSerializer):
     class Meta:
 
         model = Policy
-        fields = ["pk", "name", "execution_logging", "object_type"]
+        fields = [
+            "pk",
+            "name",
+            "execution_logging",
+            "object_type",
+            "verbose_name",
+            "verbose_name_plural",
+            "bound_to",
+        ]
         depth = 3
 
 
@@ -84,9 +107,34 @@ class PolicyViewSet(ReadOnlyModelViewSet):
         "bindings": ["isnull"],
         "promptstage": ["isnull"],
     }
+    search_fields = ["name"]
 
     def get_queryset(self):
-        return Policy.objects.select_subclasses()
+        return Policy.objects.select_subclasses().prefetch_related(
+            "bindings", "promptstage_set"
+        )
+
+    @swagger_auto_schema(responses={200: TypeCreateSerializer(many=True)})
+    @action(detail=False)
+    def types(self, request: Request) -> Response:
+        """Get all creatable policy types"""
+        data = []
+        for subclass in all_subclasses(self.queryset.model):
+            data.append(
+                {
+                    "name": verbose_name(subclass),
+                    "description": subclass.__doc__,
+                    "link": reverse("authentik_admin:policy-create")
+                    + f"?type={subclass.__name__}",
+                }
+            )
+        return Response(TypeCreateSerializer(data, many=True).data)
+
+    @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
+    @action(detail=False)
+    def cached(self, request: Request) -> Response:
+        """Info about cached policies"""
+        return Response(data={"count": len(cache.keys("policy_*"))})
 
 
 class PolicyBindingSerializer(ModelSerializer):
@@ -124,14 +172,3 @@ class PolicyBindingViewSet(ModelViewSet):
     serializer_class = PolicyBindingSerializer
     filterset_fields = ["policy", "target", "enabled", "order", "timeout"]
     search_fields = ["policy__name"]
-
-
-class PolicyCacheViewSet(ListModelMixin, GenericViewSet):
-    """Info about cached policies"""
-
-    queryset = Policy.objects.none()
-    serializer_class = Serializer
-
-    def list(self, request: Request) -> Response:
-        """Info about cached policies"""
-        return Response(data={"pagination": {"count": len(cache.keys("policy_*"))}})

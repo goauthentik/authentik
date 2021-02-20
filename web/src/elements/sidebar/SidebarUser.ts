@@ -37,11 +37,11 @@ export class SidebarUser extends LitElement {
     render(): TemplateResult {
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
-                ${until(User.me().then(u => {
-        return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />`;}), html``)}
+                ${until(User.me().then((u) => {
+                    return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />`;
+                }), html``)}
             </a>
             <ak-notification-trigger class="pf-c-nav__link user-notifications">
-                <i class="fas fa-bell pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </ak-notification-trigger>
             <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
