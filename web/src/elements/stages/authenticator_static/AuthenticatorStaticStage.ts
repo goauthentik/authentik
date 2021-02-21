@@ -1,22 +1,34 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
-import "webcomponent-qr-code";
 
-export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
-    config_url: string;
+export interface AuthenticatorStaticChallenge extends WithUserInfoChallenge {
+    codes: number[];
 }
 
-@customElement("ak-stage-authenticator-totp")
-export class AuthenticatorTOTPStage extends BaseStage {
+@customElement("ak-stage-authenticator-static")
+export class AuthenticatorStaticStage extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: AuthenticatorTOTPChallenge;
+    challenge?: AuthenticatorStaticChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(css`
+            /* Static OTP Tokens */
+            .ak-otp-tokens {
+                list-style: circle;
+                columns: 2;
+                -webkit-columns: 2;
+                -moz-columns: 2;
+                margin-left: var(--pf-global--spacer--xs);
+            }
+            .ak-otp-tokens li {
+                font-size: var(--pf-global--FontSize--2xl);
+                font-family: monospace;
+            }
+        `);
     }
 
     render(): TemplateResult {
@@ -41,23 +53,15 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             </div>
                         </div>
                     </div>
-                    <ak-form-element>
-                        <qr-code data="${this.challenge.config_url}"></qr-code>
-                    </ak-form-element>
                     <ak-form-element
-                        label="${gettext("Code")}"
+                        label="${gettext("Tokens")}"
                         ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["code"]}>
-                        <input type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${gettext("Please enter your TOTP Code")}"
-                            autofocus=""
-                            autocomplete="one-time-code"
-                            class="pf-c-form-control"
-                            required="">
+                        class="pf-c-form__group">
+                        <ul class="ak-otp-tokens">
+                            ${this.challenge.codes.map((token) => {
+                                return html`<li>${token}</li>`;
+                            })}
+                        </ul>
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">

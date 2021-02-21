@@ -1,14 +1,16 @@
 """Static OTP Setup stage"""
-from typing import Any
-
 from django.http import HttpRequest, HttpResponse
-from django.views.generic import FormView
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
+from rest_framework.fields import CharField, IntegerField, ListField
 from structlog.stdlib import get_logger
 
+from authentik.flows.challenge import (
+    ChallengeResponse,
+    ChallengeTypes,
+    WithUserInfoChallenge,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import StageView
-from authentik.stages.authenticator_static.forms import SetupForm
+from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 
 LOGGER = get_logger()
@@ -16,16 +18,24 @@ SESSION_STATIC_DEVICE = "static_device"
 SESSION_STATIC_TOKENS = "static_device_tokens"
 
 
-class AuthenticatorStaticStageView(FormView, StageView):
+class AuthenticatorStaticChallenge(WithUserInfoChallenge):
+    """Static authenticator challenge"""
+
+    codes = ListField(child=CharField())
+
+
+class AuthenticatorStaticStageView(ChallengeStageView):
     """Static OTP Setup stage"""
 
-    form_class = SetupForm
-
-    def get_form_kwargs(self, **kwargs) -> dict[str, Any]:
-        kwargs = super().get_form_kwargs(**kwargs)
-        tokens = self.request.session[SESSION_STATIC_TOKENS]
-        kwargs["tokens"] = tokens
-        return kwargs
+    def get_challenge(self, *args, **kwargs) -> AuthenticatorStaticChallenge:
+        tokens: list[StaticToken] = self.request.session[SESSION_STATIC_TOKENS]
+        return AuthenticatorStaticChallenge(
+            data={
+                "type": ChallengeTypes.native,
+                "component": "ak-stage-authenticator-static",
+                "codes": [token.token for token in tokens],
+            }
+        )
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
@@ -51,7 +61,7 @@ class AuthenticatorStaticStageView(FormView, StageView):
             self.request.session[SESSION_STATIC_TOKENS] = tokens
         return super().get(request, *args, **kwargs)
 
-    def form_valid(self, form: SetupForm) -> HttpResponse:
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Verify OTP Token"""
         device: StaticDevice = self.request.session[SESSION_STATIC_DEVICE]
         device.save()
