@@ -34,7 +34,7 @@ export class FlowExecutor extends LitElement {
     challenge?: Challenge;
 
     @property({type: Boolean})
-    loading: boolean = false;
+    loading = false;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(css`

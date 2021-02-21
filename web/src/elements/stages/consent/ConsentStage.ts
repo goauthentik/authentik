@@ -44,7 +44,7 @@ export class ConsentStage extends BaseStage {
                                 ${this.challenge.pending_user}
                             </div>
                             <div class="right">
-                                <a href="/-/cancel/">${gettext("Not you?")}</a>
+                                <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
                             </div>
                         </div>
                     </div>
