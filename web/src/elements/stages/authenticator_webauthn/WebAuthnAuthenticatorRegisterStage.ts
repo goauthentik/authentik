@@ -64,7 +64,6 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         } catch (err) {
             throw new Error(gettext(`Server validation of credential failed: ${err}`));
         }
-        this.finishStage();
     }
 
     async registerWrapper(): Promise<void> {
@@ -80,45 +79,40 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         });
     }
 
-    finishStage(): void {
-        // Mark this stage as done
-        this.dispatchEvent(
-            new CustomEvent("ak-flow-submit", {
-                bubbles: true,
-                composed: true,
-            })
-        );
-    }
-
     firstUpdated(): void {
         this.registerWrapper();
     }
 
     render(): TemplateResult {
-        return html`<div class="">
-            ${this.registerRunning ?
-                html`<div class="pf-c-empty-state__content">
-                        <div class="pf-l-bullseye">
-                            <div class="pf-l-bullseye__item">
-                                <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
+        return html`<header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">
+                    ${this.challenge?.title}
+                </h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                ${this.registerRunning ?
+                    html`<div class="pf-c-empty-state__content">
+                            <div class="pf-l-bullseye">
+                                <div class="pf-l-bullseye__item">
+                                    <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
+                                </div>
                             </div>
-                        </div>
-                    </div>`:
-                html`
-                <div class="pf-c-form__group pf-m-action">
-                    <p class="pf-m-block">${this.registerMessage}</p>
-                    <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
-                        this.registerWrapper();
-                    }}>
-                        ${gettext("Register device")}
-                    </button>
-                    <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
-                        this.finishStage();
-                    }}>
-                        ${gettext("Skip")}
-                    </button>
-                </div>`}
-        </div>`;
+                        </div>`:
+                    html`
+                    <div class="pf-c-form__group pf-m-action">
+                        <p class="pf-m-block">${this.registerMessage}</p>
+                        <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
+                            this.registerWrapper();
+                        }}>
+                            ${gettext("Register device")}
+                        </button>
+                    </div>`}
+            </div>
+        </div>
+        <footer class="pf-c-login__main-footer">
+            <ul class="pf-c-login__main-footer-links">
+            </ul>
+        </footer>`;
     }
 
 }
