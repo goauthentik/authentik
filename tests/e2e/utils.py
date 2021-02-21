@@ -25,6 +25,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog.stdlib import get_logger
 
@@ -43,14 +44,16 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     container: Optional[Container] = None
+    wait_timeout: int
 
     def setUp(self):
         super().setUp()
+        self.wait_timeout = 60
         makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(30)
-        self.wait = WebDriverWait(self.driver, 60)
+        self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.apply_default_data()
         self.logger = get_logger()
         if specs := self.get_container_specs():
@@ -111,6 +114,18 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def shell_url(self, view, **kwargs) -> str:
         """same as self.url() but show URL in shell"""
         return f"{self.live_server_url}/#{reverse(view, kwargs=kwargs)}"
+
+    def get_shadow_root(
+        self, selector: str, container: Optional[WebElement] = None
+    ) -> WebElement:
+        """Get shadow root element's inner shadowRoot"""
+        if not container:
+            container = self.driver
+        shadow_root = container.find_element(By.CSS_SELECTOR, selector)
+        element = self.driver.execute_script(
+            "return arguments[0].shadowRoot", shadow_root
+        )
+        return element
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""

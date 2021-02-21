@@ -6,11 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import TemplateView
 from structlog.stdlib import get_logger
-from webauthn import (
-    WebAuthnAssertionOptions,
-    WebAuthnAssertionResponse,
-    WebAuthnUser,
-)
+from webauthn import WebAuthnAssertionOptions, WebAuthnAssertionResponse, WebAuthnUser
 from webauthn.webauthn import (
     AuthenticationRejectedException,
     RegistrationRejectedException,

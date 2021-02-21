@@ -7,6 +7,7 @@ from django.test import override_settings
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -36,6 +37,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         }
 
     @retry()
+    # pylint: disable=too-many-locals
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # First stage fields
@@ -87,17 +89,44 @@ class TestFlowsEnroll(SeleniumTestCase):
         FlowStageBinding.objects.create(target=flow, stage=user_login, order=3)
 
         self.driver.get(self.live_server_url)
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#enroll")))
-        self.driver.find_element(By.CSS_SELECTOR, "#enroll").click()
 
-        self.wait.until(ec.presence_of_element_located((By.ID, "id_username")))
-        self.driver.find_element(By.ID, "id_username").send_keys("foo")
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password_repeat").send_keys(USER().username)
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
-        self.driver.find_element(By.ID, "id_name").send_keys("some name")
-        self.driver.find_element(By.ID, "id_email").send_keys("foo@bar.baz")
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#enroll")))
+        identification_stage.find_element(By.CSS_SELECTOR, "#enroll").click()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        wait = WebDriverWait(prompt_stage, self.wait_timeout)
+
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=username]"))
+        )
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(
+            "foo"
+        )
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            USER().username
+        )
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=password_repeat]"
+        ).send_keys(USER().username)
+        prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=name]").send_keys(
+            "some name"
+        )
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=email]").send_keys(
+            "foo@bar.baz"
+        )
+        prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
         self.driver.get(self.shell_url("authentik_core:user-settings"))
