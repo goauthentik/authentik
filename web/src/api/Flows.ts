@@ -23,6 +23,10 @@ export interface Challenge {
     title?: string;
     response_errors?: ErrorDict;
 }
+export interface WithUserInfoChallenge extends Challenge {
+    pending_user: string;
+    pending_user_avatar: string;
+}
 
 export interface ShellChallenge extends Challenge {
     body: string;

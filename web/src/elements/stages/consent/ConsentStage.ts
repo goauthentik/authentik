@@ -4,15 +4,23 @@ import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 
-export interface PasswordChallenge extends WithUserInfoChallenge {
-    recovery_url?: string;
+export interface Permission {
+    name: string;
+    id: string;
 }
 
-@customElement("ak-stage-password")
-export class PasswordStage extends BaseStage {
+export interface ConsentChallenge extends WithUserInfoChallenge {
 
-    @property({attribute: false})
-    challenge?: PasswordChallenge;
+    header_text: string;
+    permissions?: Permission[];
+
+}
+
+@customElement("ak-stage-consent")
+export class ConsentStage extends BaseStage {
+
+    @property({ attribute: false })
+    challenge?: ConsentChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -28,7 +36,7 @@ export class PasswordStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submit(e);}}>
+                <form class="pf-c-form" @submit=${(e: Event) => { this.submit(e); }}>
                     <div class="pf-c-form__group">
                         <div class="form-control-static">
                             <div class="left">
@@ -41,13 +49,17 @@ export class PasswordStage extends BaseStage {
                         </div>
                     </div>
 
-                    <ak-form-element
-                        label="${gettext("Password")}"
-                        ?required="${true}"
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["password"]}>
-                        <input type="password" name="password" placeholder="${gettext("Please enter your password")}" autofocus autocomplete="current-password" class="pf-c-form-control" required="">
-                    </ak-form-element>
+                    <div class="pf-c-form__group">
+                        <p>
+                            ${this.challenge.header_text}
+                        </p>
+                        <p>${gettext("Application requires following permissions")}</p>
+                        <ul class="pf-c-list" id="permmissions">
+                            ${(this.challenge.permissions || []).map((permission) => {
+                                return html`<li id="permission-${permission.id}">${permission.name}</li>`;
+                            })}
+                        </ul>
+                    </div>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -102,7 +103,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "type": "native",
+                "type": ChallengeTypes.native,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "enroll_url": "/flows/unique-enrollment-string/",
@@ -141,7 +142,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "type": "native",
+                "type": ChallengeTypes.native,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "recovery_url": "/flows/unique-recovery-string/",

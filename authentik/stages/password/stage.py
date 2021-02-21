@@ -10,11 +10,15 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.fields import CharField
-from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    WithUserInfoChallenge,
+)
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -55,11 +59,9 @@ def authenticate(
     )
 
 
-class PasswordChallenge(Challenge):
+class PasswordChallenge(WithUserInfoChallenge):
     """Password challenge UI fields"""
 
-    pending_user = CharField()
-    pending_user_avatar = CharField()
     recovery_url = CharField(required=False)
 
 

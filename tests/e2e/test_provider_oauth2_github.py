@@ -152,7 +152,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
-            self.driver.find_element(By.ID, "scope-user:email").text,
+            self.driver.find_element(By.ID, "permission-user:email").text,
         )
         self.driver.find_element(
             By.CSS_SELECTOR,

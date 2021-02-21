@@ -4,10 +4,12 @@ import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { getCookie } from "../../utils";
 import "../../elements/stages/identification/IdentificationStage";
 import "../../elements/stages/password/PasswordStage";
+import "../../elements/stages/consent/ConsentStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
 import { PasswordChallenge } from "../../elements/stages/password/PasswordStage";
+import { ConsentChallenge } from "../../elements/stages/consent/ConsentStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -108,6 +110,8 @@ export class FlowExecutor extends LitElement {
                     return html`<ak-stage-identification .host=${this} .challenge=${this.challenge as IdentificationChallenge}></ak-stage-identification>`;
                 case "ak-stage-password":
                     return html`<ak-stage-password .host=${this} .challenge=${this.challenge as PasswordChallenge}></ak-stage-password>`;
+                case "ak-stage-consent":
+                    return html`<ak-stage-consent .host=${this} .challenge=${this.challenge as ConsentChallenge}></ak-stage-consent>`;
                 default:
                     break;
             }

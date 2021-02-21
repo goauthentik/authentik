@@ -65,6 +65,26 @@ class ShellChallenge(Challenge):
     body = CharField()
 
 
+class WithUserInfoChallenge(Challenge):
+    """Challenge base which shows some user info"""
+
+    pending_user = CharField()
+    pending_user_avatar = CharField()
+
+
+class PermissionSerializer(Serializer):
+    """Permission used for consent"""
+
+    name = CharField()
+    id = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
+
+
 class ChallengeResponse(Serializer):
     """Base class for all challenge responses"""
 
