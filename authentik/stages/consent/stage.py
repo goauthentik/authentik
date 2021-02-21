@@ -3,7 +3,6 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
 
-from authentik.core.models import User
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -55,10 +54,9 @@ class ConsentStageView(ChallengeStageView):
         # If there's a pending user, update the `username` field
         # this field is only used by password managers.
         # If there's no user set, an error is raised later.
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-            challenge.initial_data["pending_user"] = pending_user.username
-            challenge.initial_data["pending_user_avatar"] = avatar(pending_user)
+        if user := self.get_pending_user():
+            challenge.initial_data["pending_user"] = user.username
+            challenge.initial_data["pending_user_avatar"] = avatar(user)
         return challenge
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

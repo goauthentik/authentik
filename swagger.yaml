@@ -9657,22 +9657,22 @@ definitions:
           - authentik.sources.ldap
           - authentik.sources.oauth
           - authentik.sources.saml
-          - authentik.stages.captcha
-          - authentik.stages.consent
-          - authentik.stages.dummy
-          - authentik.stages.email
-          - authentik.stages.prompt
-          - authentik.stages.identification
-          - authentik.stages.invitation
-          - authentik.stages.user_delete
-          - authentik.stages.user_login
-          - authentik.stages.user_logout
-          - authentik.stages.user_write
           - authentik.stages.authenticator_static
           - authentik.stages.authenticator_totp
           - authentik.stages.authenticator_validate
           - authentik.stages.authenticator_webauthn
+          - authentik.stages.captcha
+          - authentik.stages.consent
+          - authentik.stages.dummy
+          - authentik.stages.email
+          - authentik.stages.identification
+          - authentik.stages.invitation
           - authentik.stages.password
+          - authentik.stages.prompt
+          - authentik.stages.user_delete
+          - authentik.stages.user_login
+          - authentik.stages.user_logout
+          - authentik.stages.user_write
           - authentik.managed
           - authentik.core
   ExpressionPolicy:
@@ -11742,8 +11742,8 @@ definitions:
           - password
           - number
           - checkbox
-          - data
-          - data-time
+          - date
+          - date-time
           - separator
           - hidden
           - static

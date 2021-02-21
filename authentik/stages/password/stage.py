@@ -86,10 +86,9 @@ class PasswordStageView(ChallengeStageView):
         # If there's a pending user, update the `username` field
         # this field is only used by password managers.
         # If there's no user set, an error is raised later.
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            pending_user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-            challenge.initial_data["pending_user"] = pending_user.username
-            challenge.initial_data["pending_user_avatar"] = avatar(pending_user)
+        if user := self.get_pending_user():
+            challenge.initial_data["pending_user"] = user.username
+            challenge.initial_data["pending_user_avatar"] = avatar(user)
 
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
