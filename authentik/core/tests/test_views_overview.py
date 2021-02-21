@@ -28,9 +28,3 @@ class TestOverviewViews(TestCase):
         self.assertEqual(
             self.client.get(reverse("authentik_core:shell")).status_code, 200
         )
-
-    def test_overview(self):
-        """Test overview"""
-        self.assertEqual(
-            self.client.get(reverse("authentik_core:overview")).status_code, 200
-        )

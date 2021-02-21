@@ -2,17 +2,23 @@
 from typing import Type
 from uuid import uuid4
 
-from django import forms
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    DateField,
+    DateTimeField,
+    EmailField,
+    IntegerField,
+)
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
-from authentik.stages.prompt.widgets import HorizontalRuleWidget, StaticTextWidget
 
 
 class FieldTypes(models.TextChoices):
@@ -43,8 +49,8 @@ class FieldTypes(models.TextChoices):
     )
     NUMBER = "number"
     CHECKBOX = "checkbox"
-    DATE = "data"
-    DATE_TIME = "data-time"
+    DATE = "date"
+    DATE_TIME = "date-time"
 
     SEPARATOR = "separator", _("Separator: Static Separator Line")
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
@@ -73,49 +79,34 @@ class Prompt(SerializerModel):
         return PromptSerializer
 
     @property
-    def field(self):
-        """Return instantiated form input field"""
-        attrs = {"placeholder": _(self.placeholder)}
-        field_class = forms.CharField
-        widget = forms.TextInput(attrs=attrs)
+    def field(self) -> CharField:
+        """Get field type for Challenge and response"""
+        field_class = CharField
         kwargs = {
-            "label": _(self.label),
             "required": self.required,
         }
         if self.type == FieldTypes.EMAIL:
-            field_class = forms.EmailField
-        if self.type == FieldTypes.USERNAME:
-            attrs["autocomplete"] = "username"
-        if self.type == FieldTypes.PASSWORD:
-            widget = forms.PasswordInput(attrs=attrs)
-            attrs["autocomplete"] = "new-password"
+            field_class = EmailField
         if self.type == FieldTypes.NUMBER:
-            field_class = forms.IntegerField
-            widget = forms.NumberInput(attrs=attrs)
+            field_class = IntegerField
+        # TODO: Hidden?
         if self.type == FieldTypes.HIDDEN:
-            widget = forms.HiddenInput(attrs=attrs)
             kwargs["required"] = False
             kwargs["initial"] = self.placeholder
         if self.type == FieldTypes.CHECKBOX:
-            field_class = forms.BooleanField
+            field_class = BooleanField
             kwargs["required"] = False
         if self.type == FieldTypes.DATE:
-            attrs["type"] = "date"
-            widget = forms.DateInput(attrs=attrs)
+            field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
-            attrs["type"] = "datetime-local"
-            widget = forms.DateTimeInput(attrs=attrs)
+            field_class = DateTimeField
         if self.type == FieldTypes.STATIC:
-            widget = StaticTextWidget(attrs=attrs)
             kwargs["initial"] = self.placeholder
             kwargs["required"] = False
             kwargs["label"] = ""
         if self.type == FieldTypes.SEPARATOR:
-            widget = HorizontalRuleWidget(attrs=attrs)
             kwargs["required"] = False
             kwargs["label"] = ""
-
-        kwargs["widget"] = widget
         return field_class(**kwargs)
 
     def save(self, *args, **kwargs):
