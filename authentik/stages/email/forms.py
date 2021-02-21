@@ -5,12 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from authentik.stages.email.models import EmailStage, get_template_choices
 
 
-class EmailStageSendForm(forms.Form):
-    """Form used when sending the email to prevent multiple emails being sent"""
-
-    invalid = forms.CharField(widget=forms.HiddenInput, required=True)
-
-
 class EmailStageForm(forms.ModelForm):
     """Form to create/edit Email Stage"""
 

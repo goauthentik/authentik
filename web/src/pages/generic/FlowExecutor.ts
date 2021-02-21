@@ -5,11 +5,13 @@ import { getCookie } from "../../utils";
 import "../../elements/stages/identification/IdentificationStage";
 import "../../elements/stages/password/PasswordStage";
 import "../../elements/stages/consent/ConsentStage";
+import "../../elements/stages/email/EmailStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
 import { PasswordChallenge } from "../../elements/stages/password/PasswordStage";
 import { ConsentChallenge } from "../../elements/stages/consent/ConsentStage";
+import { EmailChallenge } from "../../elements/stages/email/EmailStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -112,6 +114,8 @@ export class FlowExecutor extends LitElement {
                     return html`<ak-stage-password .host=${this} .challenge=${this.challenge as PasswordChallenge}></ak-stage-password>`;
                 case "ak-stage-consent":
                     return html`<ak-stage-consent .host=${this} .challenge=${this.challenge as ConsentChallenge}></ak-stage-consent>`;
+                case "ak-stage-email":
+                    return html`<ak-stage-email .host=${this} .challenge=${this.challenge as EmailChallenge}></ak-stage-email>`;
                 default:
                     break;
             }
