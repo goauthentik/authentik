@@ -31,9 +31,4 @@ import "./pages/applications/ApplicationViewPage";
 import "./pages/tokens/UserTokenList";
 import "./pages/LibraryPage";
 
-import "./elements/stages/authenticator_webauthn/WebAuthnRegister";
-import "./elements/stages/authenticator_webauthn/WebAuthnAuth";
-import "./elements/stages/authenticator_validate/AuthenticatorValidateStage";
-import "./elements/stages/identification/IdentificationStage";
-
 import "./interfaces/AdminInterface";

@@ -85,38 +85,6 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
 }
 
 /**
- * Post the assertion to the server for validation and logging the user in.
- * @param {Object} assertionDataForServer
- */
-export async function postNewAssertionToServer(assertionDataForServer: Assertion): Promise<GenericResponse> {
-    const formData = new FormData();
-    Object.entries(assertionDataForServer).forEach(([key, value]) => {
-        formData.set(key, value);
-    });
-
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/verify-credential-info/", {
-        method: "POST",
-        body: formData
-    });
-}
-
-/**
- * Get PublicKeyCredentialRequestOptions for this user from the server
- * formData of the registration form
- * @param {FormData} formData
- */
-export async function getCredentialCreateOptionsFromServer(): Promise<GenericResponse> {
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/begin-activate/",
-        {
-            method: "POST",
-        }
-    );
-}
-
-
-/**
  * Get PublicKeyCredentialRequestOptions for this user from the server
  * formData of the registration form
  * @param {FormData} formData

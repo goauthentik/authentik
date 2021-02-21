@@ -27,10 +27,10 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     @property
     def type(self) -> Type[View]:
         from authentik.stages.authenticator_webauthn.stage import (
-            AuthenticateWebAuthnStageView,
+            AuthenticatorWebAuthnStageView,
         )
 
-        return AuthenticateWebAuthnStageView
+        return AuthenticatorWebAuthnStageView
 
     @property
     def form(self) -> Type[ModelForm]:

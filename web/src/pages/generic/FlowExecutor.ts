@@ -10,6 +10,7 @@ import "../../elements/stages/autosubmit/AutosubmitStage";
 import "../../elements/stages/prompt/PromptStage";
 import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
+import "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
@@ -20,6 +21,7 @@ import { AutosubmitChallenge } from "../../elements/stages/autosubmit/Autosubmit
 import { PromptChallenge } from "../../elements/stages/prompt/PromptStage";
 import { AuthenticatorTOTPChallenge } from "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import { AuthenticatorStaticChallenge } from "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
+import { WebAuthnAuthenticatorRegisterChallenge } from "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -40,14 +42,14 @@ export class FlowExecutor extends LitElement {
         });
     }
 
-    submit(formData?: FormData): void {
+    submit(formData?: string | FormData): Promise<void> {
         const csrftoken = getCookie("authentik_csrf");
         const request = new Request(DefaultClient.makeUrl(["flows", "executor", this.flowSlug]), {
             headers: {
                 "X-CSRFToken": csrftoken,
             },
         });
-        fetch(request, {
+        return fetch(request, {
             method: "POST",
             mode: "same-origin",
             body: formData,
@@ -132,6 +134,8 @@ export class FlowExecutor extends LitElement {
                     return html`<ak-stage-authenticator-totp .host=${this} .challenge=${this.challenge as AuthenticatorTOTPChallenge}></ak-stage-authenticator-totp>`;
                 case "ak-stage-authenticator-static":
                     return html`<ak-stage-authenticator-static .host=${this} .challenge=${this.challenge as AuthenticatorStaticChallenge}></ak-stage-authenticator-static>`;
+                case "ak-stage-authenticator-webauthn-register":
+                    return html`<ak-stage-authenticator-webauthn-register .host=${this} .challenge=${this.challenge as WebAuthnAuthenticatorRegisterChallenge}></ak-stage-authenticator-webauthn-register>`;
                 default:
                     break;
             }

@@ -1,7 +1,7 @@
 """Static OTP Setup stage"""
 from django.http import HttpRequest, HttpResponse
 from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
-from rest_framework.fields import CharField, IntegerField, ListField
+from rest_framework.fields import CharField, ListField
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import (

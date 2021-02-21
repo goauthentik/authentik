@@ -1,10 +1,23 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
+import { WithUserInfoChallenge } from "../../../api/Flows";
 import { SpinnerSize } from "../../Spinner";
-import { getCredentialCreateOptionsFromServer, postNewAssertionToServer, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
+import { BaseStage } from "../base";
+import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
 
-@customElement("ak-stage-webauthn-register")
-export class WebAuthnRegister extends LitElement {
+export interface WebAuthnAuthenticatorRegisterChallenge extends WithUserInfoChallenge {
+    registration: PublicKeyCredentialCreationOptions;
+}
+
+export interface WebAuthnAuthenticatorRegisterChallengeResponse {
+    response: Assertion;
+}
+
+@customElement("ak-stage-authenticator-webauthn-register")
+export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
+
+    @property({ attribute: false })
+    challenge?: WebAuthnAuthenticatorRegisterChallenge;
 
     @property({type: Boolean})
     registerRunning = false;
@@ -17,17 +30,12 @@ export class WebAuthnRegister extends LitElement {
     }
 
     async register(): Promise<void> {
-        // post the data to the server to generate the PublicKeyCredentialCreateOptions
-        let credentialCreateOptionsFromServer;
-        try {
-            credentialCreateOptionsFromServer = await getCredentialCreateOptionsFromServer();
-        } catch (err) {
-            throw new Error(gettext(`Failed to generate credential request options: ${err}`));
+        if (!this.challenge) {
+            return;
         }
-
         // convert certain members of the PublicKeyCredentialCreateOptions into
         // byte arrays as expected by the spec.
-        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(credentialCreateOptionsFromServer);
+        const publicKeyCredentialCreateOptions = transformCredentialCreateOptions(this.challenge?.registration);
 
         // request the authenticator(s) to create a new credential keypair.
         let credential;
@@ -49,7 +57,10 @@ export class WebAuthnRegister extends LitElement {
         // post the transformed credential data to the server for validation
         // and storing the public key
         try {
-            await postNewAssertionToServer(newAssertionForServer);
+            const response = <WebAuthnAuthenticatorRegisterChallengeResponse>{
+                response: newAssertionForServer
+            };
+            await this.host?.submit(JSON.stringify(response));
         } catch (err) {
             throw new Error(gettext(`Server validation of credential failed: ${err}`));
         }

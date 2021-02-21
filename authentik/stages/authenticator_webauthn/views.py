@@ -9,8 +9,6 @@ from structlog.stdlib import get_logger
 from webauthn import (
     WebAuthnAssertionOptions,
     WebAuthnAssertionResponse,
-    WebAuthnMakeCredentialOptions,
-    WebAuthnRegistrationResponse,
     WebAuthnUser,
 )
 from webauthn.webauthn import (
@@ -51,101 +49,6 @@ class FlowUserRequiredView(View):
         if not self.user:
             return HttpResponseBadRequest()
         return super().dispatch(request, *args, **kwargs)
-
-
-class BeginActivateView(FlowUserRequiredView):
-    """Initial device registration view"""
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Initial device registration view"""
-        # clear session variables prior to starting a new registration
-        request.session.pop("challenge", None)
-
-        challenge = generate_challenge(32)
-
-        # We strip the saved challenge of padding, so that we can do a byte
-        # comparison on the URL-safe-without-padding challenge we get back
-        # from the browser.
-        # We will still pass the padded version down to the browser so that the JS
-        # can decode the challenge into binary without too much trouble.
-        request.session["challenge"] = challenge.rstrip("=")
-
-        make_credential_options = WebAuthnMakeCredentialOptions(
-            challenge,
-            RP_NAME,
-            RP_ID,
-            self.user.uid,
-            self.user.username,
-            self.user.name,
-            avatar(self.user),
-        )
-
-        return JsonResponse(make_credential_options.registration_dict)
-
-
-class VerifyCredentialInfo(FlowUserRequiredView):
-    """Finish device registration"""
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Finish device registration"""
-        challenge = request.session["challenge"]
-
-        registration_response = request.POST
-        trusted_attestation_cert_required = True
-        self_attestation_permitted = True
-        none_attestation_permitted = True
-
-        webauthn_registration_response = WebAuthnRegistrationResponse(
-            RP_ID,
-            ORIGIN,
-            registration_response,
-            challenge,
-            trusted_attestation_cert_required=trusted_attestation_cert_required,
-            self_attestation_permitted=self_attestation_permitted,
-            none_attestation_permitted=none_attestation_permitted,
-            uv_required=False,
-        )  # User Verification
-
-        try:
-            webauthn_credential = webauthn_registration_response.verify()
-        except RegistrationRejectedException as exc:
-            LOGGER.warning("registration failed", exc=exc)
-            return JsonResponse({"fail": "Registration failed. Error: {}".format(exc)})
-
-        # Step 17.
-        #
-        # Check that the credentialId is not yet registered to any other user.
-        # If registration is requested for a credential that is already registered
-        # to a different user, the Relying Party SHOULD fail this registration
-        # ceremony, or it MAY decide to accept the registration, e.g. while deleting
-        # the older registration.
-        credential_id_exists = WebAuthnDevice.objects.filter(
-            credential_id=webauthn_credential.credential_id
-        ).first()
-        if credential_id_exists:
-            return JsonResponse({"fail": "Credential ID already exists."}, status=401)
-
-        webauthn_credential.credential_id = str(
-            webauthn_credential.credential_id, "utf-8"
-        )
-        webauthn_credential.public_key = str(webauthn_credential.public_key, "utf-8")
-        existing_device = WebAuthnDevice.objects.filter(
-            credential_id=webauthn_credential.credential_id
-        ).first()
-        if not existing_device:
-            user = WebAuthnDevice.objects.create(
-                user=self.user,
-                public_key=webauthn_credential.public_key,
-                credential_id=webauthn_credential.credential_id,
-                sign_count=webauthn_credential.sign_count,
-                rp_id=RP_ID,
-            )
-        else:
-            return JsonResponse({"fail": "User already exists."}, status=401)
-
-        LOGGER.debug("Successfully registered.", user=user)
-
-        return JsonResponse({"success": "User successfully registered."})
 
 
 class BeginAssertion(FlowUserRequiredView):
