@@ -27,6 +27,7 @@ import "./pages/stages/PromptListPage";
 import "./pages/system-tasks/SystemTaskListPage";
 import "./pages/tokens/TokenListPage";
 import "./pages/users/UserListPage";
+import "./pages/generic/SiteShell";
 
 export const ROUTES: Route[] = [
     // Prevent infinite Shell loops
@@ -68,4 +69,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/outpost/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
     new Route(new RegExp("^/outpost/service-connections$"), html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`),
     new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificatekeypair-list></ak-crypto-certificatekeypair-list>`),
+    new Route(new RegExp("^/-/user/$"), html`<ak-site-shell url="/-/user/">
+            <div slot="body"></div>
+        </ak-site-shell>`),
 ];
