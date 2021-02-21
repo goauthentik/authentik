@@ -1,7 +1,7 @@
 """authentik URL Configuration"""
 from django.urls import path
 
-from authentik.core.views import impersonate, library, shell, user
+from authentik.core.views import impersonate, shell, user
 
 urlpatterns = [
     path("", shell.ShellView.as_view(), name="shell"),
@@ -23,8 +23,6 @@ urlpatterns = [
         user.TokenDeleteView.as_view(),
         name="user-tokens-delete",
     ),
-    # Libray
-    path("library", library.LibraryView.as_view(), name="overview"),
     # Impersonation
     path(
         "-/impersonation/<int:user_id>/",

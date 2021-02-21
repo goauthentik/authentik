@@ -65,7 +65,8 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         challenge = self.get_challenge(*args, **kwargs)
-        challenge.initial_data["title"] = self.executor.flow.title
+        if "title" not in challenge.initial_data:
+            challenge.initial_data["title"] = self.executor.flow.title
         if not challenge.is_valid():
             LOGGER.warning(challenge.errors)
         return HttpChallengeResponse(challenge)

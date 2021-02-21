@@ -103,7 +103,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "enroll_url": "/flows/unique-enrollment-string/",
@@ -142,7 +142,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
                 "recovery_url": "/flows/unique-recovery-string/",

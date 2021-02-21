@@ -21,7 +21,7 @@ export class AutosubmitStage extends BaseStage {
     }
 
     updated(): void {
-        this.shadowRoot?.querySelectorAll("form").forEach((form) => {form.submit()});
+        this.shadowRoot?.querySelectorAll("form").forEach((form) => {form.submit();});
     }
 
     render(): TemplateResult {
