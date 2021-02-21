@@ -26,7 +26,6 @@ def create_default_authentication_flow(
         name="default-authentication-identification",
         defaults={
             "user_fields": [UserFields.E_MAIL, UserFields.USERNAME],
-            "template": "",
         },
     )
 

@@ -153,7 +153,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ObjectManager().run()
 
 
-def retry(max_retires=1, exceptions=None):
+def retry(max_retires=3, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
