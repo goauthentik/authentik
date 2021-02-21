@@ -22,7 +22,6 @@ from authentik.flows.challenge import (
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.lib.utils.reflection import path_to_class
 from authentik.stages.password.models import PasswordStage
 
@@ -83,13 +82,6 @@ class PasswordStageView(ChallengeStageView):
                 "component": "ak-stage-password",
             }
         )
-        # If there's a pending user, update the `username` field
-        # this field is only used by password managers.
-        # If there's no user set, an error is raised later.
-        if user := self.get_pending_user():
-            challenge.initial_data["pending_user"] = user.username
-            challenge.initial_data["pending_user_avatar"] = avatar(user)
-
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
             challenge.initial_data["recovery_url"] = reverse(

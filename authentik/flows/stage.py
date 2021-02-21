@@ -13,9 +13,11 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     HttpChallengeResponse,
+    WithUserInfoChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
+from authentik.lib.templatetags.authentik_utils import avatar
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()
@@ -78,9 +80,7 @@ class ChallengeStageView(StageView):
         return self.response_class(None, data=data, stage=self)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        challenge = self.get_challenge(*args, **kwargs)
-        if "title" not in challenge.initial_data:
-            challenge.initial_data["title"] = self.executor.flow.title
+        challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
             LOGGER.warning(challenge.errors)
         return HttpChallengeResponse(challenge)
@@ -93,6 +93,19 @@ class ChallengeStageView(StageView):
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
+    def _get_challenge(self, *args, **kwargs) -> Challenge:
+        challenge = self.get_challenge(*args, **kwargs)
+        if "title" not in challenge.initial_data:
+            challenge.initial_data["title"] = self.executor.flow.title
+        if isinstance(challenge, WithUserInfoChallenge):
+            # If there's a pending user, update the `username` field
+            # this field is only used by password managers.
+            # If there's no user set, an error is raised later.
+            if user := self.get_pending_user():
+                challenge.initial_data["pending_user"] = user.username
+                challenge.initial_data["pending_user_avatar"] = avatar(user)
+        return challenge
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
         """Return the challenge that the client should solve"""
         raise NotImplementedError
@@ -103,8 +116,7 @@ class ChallengeStageView(StageView):
 
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         """Callback when the challenge has the incorrect format"""
-        challenge_response = self.get_challenge()
-        challenge_response.initial_data["title"] = self.executor.flow.title
+        challenge_response = self._get_challenge()
         full_errors = {}
         for field, errors in response.errors.items():
             for error in errors:
