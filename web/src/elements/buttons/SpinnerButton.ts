@@ -6,6 +6,7 @@ import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 // @ts-ignore
 import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
 import { ColorStyles, PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
+import { SpinnerSize } from "../Spinner";
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
@@ -71,15 +72,7 @@ export class SpinnerButton extends LitElement {
         >
             ${this.isRunning
                 ? html` <span class="pf-c-button__progress">
-                            <span
-                                class="pf-c-spinner pf-m-md"
-                                role="progressbar"
-                                aria-valuetext="Loading..."
-                            >
-                                <span class="pf-c-spinner__clipper"></span>
-                                <span class="pf-c-spinner__lead-ball"></span>
-                                <span class="pf-c-spinner__tail-ball"></span>
-                            </span>
+                            <ak-spinner size=${SpinnerSize.Medium}></ak-spinner>
                         </span>`
                 : ""}
             <slot></slot>
