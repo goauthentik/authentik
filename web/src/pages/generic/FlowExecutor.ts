@@ -8,6 +8,7 @@ import "../../elements/stages/consent/ConsentStage";
 import "../../elements/stages/email/EmailStage";
 import "../../elements/stages/autosubmit/AutosubmitStage";
 import "../../elements/stages/prompt/PromptStage";
+import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
@@ -16,6 +17,7 @@ import { ConsentChallenge } from "../../elements/stages/consent/ConsentStage";
 import { EmailChallenge } from "../../elements/stages/email/EmailStage";
 import { AutosubmitChallenge } from "../../elements/stages/autosubmit/AutosubmitStage";
 import { PromptChallenge } from "../../elements/stages/prompt/PromptStage";
+import { AuthenticatorTOTPChallenge } from "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -124,6 +126,8 @@ export class FlowExecutor extends LitElement {
                     return html`<ak-stage-autosubmit .host=${this} .challenge=${this.challenge as AutosubmitChallenge}></ak-stage-autosubmit>`;
                 case "ak-stage-prompt":
                     return html`<ak-stage-prompt .host=${this} .challenge=${this.challenge as PromptChallenge}></ak-stage-prompt>`;
+                case "ak-stage-authenticator-totp":
+                    return html`<ak-stage-authenticator-totp .host=${this} .challenge=${this.challenge as AuthenticatorTOTPChallenge}></ak-stage-authenticator-totp>`;
                 default:
                     break;
             }

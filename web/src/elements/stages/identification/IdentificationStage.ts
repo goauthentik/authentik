@@ -116,7 +116,13 @@ export class IdentificationStage extends BaseStage {
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
-                        <input type="text" name="uid_field" placeholder="Email or Username" autofocus autocomplete="username" class="pf-c-form-control" required="">
+                        <input type="text"
+                            name="uid_field"
+                            placeholder="Email or Username"
+                            autofocus=""
+                            autocomplete="username"
+                            class="pf-c-form-control"
+                            required="">
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">

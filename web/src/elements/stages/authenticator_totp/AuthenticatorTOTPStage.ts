@@ -3,16 +3,17 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import 'webcomponent-qr-code'
 
-export interface PasswordChallenge extends WithUserInfoChallenge {
-    recovery_url?: string;
+export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
+    config_url: string;
 }
 
-@customElement("ak-stage-password")
-export class PasswordStage extends BaseStage {
+@customElement("ak-stage-authenticator-totp")
+export class AuthenticatorTOTPStage extends BaseStage {
 
-    @property({attribute: false})
-    challenge?: PasswordChallenge;
+    @property({ attribute: false })
+    challenge?: AuthenticatorTOTPChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -28,7 +29,7 @@ export class PasswordStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submit(e);}}>
+                <form class="pf-c-form" @submit=${(e: Event) => { this.submit(e); }}>
                     <div class="pf-c-form__group">
                         <div class="form-control-static">
                             <div class="left">
@@ -40,17 +41,21 @@ export class PasswordStage extends BaseStage {
                             </div>
                         </div>
                     </div>
-
+                    <ak-form-element>
+                        <qr-code data="${this.challenge.config_url}"></qr-code>
+                    </ak-form-element>
                     <ak-form-element
-                        label="${gettext("Password")}"
+                        label="${gettext("Code")}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["password"]}>
-                        <input type="password"
-                            name="password"
-                            placeholder="${gettext("Please enter your password")}"
+                        .errors=${(this.challenge?.response_errors || {})["code"]}>
+                        <input type="text"
+                            name="code"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            placeholder="${gettext("Please enter your TOTP Code")}"
                             autofocus=""
-                            autocomplete="current-password"
+                            autocomplete="one-time-code"
                             class="pf-c-form-control"
                             required="">
                     </ak-form-element>
