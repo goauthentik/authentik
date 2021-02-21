@@ -43,6 +43,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                         </div>
                     </div>
                     <ak-form-element>
+                        <!-- @ts-ignore -->
                         <qr-code data="${this.challenge.config_url}"></qr-code>
                     </ak-form-element>
                     <ak-form-element
@@ -50,6 +51,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.response_errors || {})["code"]}>
+                        <!-- @ts-ignore -->
                         <input type="text"
                             name="code"
                             inputmode="numeric"
