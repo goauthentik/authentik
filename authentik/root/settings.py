@@ -470,8 +470,6 @@ for _app in INSTALLED_APPS:
             pass
 
 if DEBUG:
-    INSTALLED_APPS.append("debug_toolbar")
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
     CELERY_TASK_ALWAYS_EAGER = True
 
 INSTALLED_APPS.append("authentik.core.apps.AuthentikCoreConfig")

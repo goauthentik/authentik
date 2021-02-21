@@ -4,6 +4,7 @@ import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "webcomponent-qr-code";
+import "../form";
 
 export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
     config_url: string;

@@ -1,8 +1,9 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Challenge, Error } from "../../../api/Flows";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { Challenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "../form";
 
 export interface IdentificationChallenge extends Challenge {
 
@@ -21,37 +22,6 @@ export interface UILoginButton {
     name: string;
     url: string;
     icon_url?: string;
-}
-
-@customElement("ak-form-element")
-export class FormElement extends LitElement {
-
-    static get styles(): CSSResult[] {
-        return COMMON_STYLES;
-    }
-
-    @property()
-    label?: string;
-
-    @property({type: Boolean})
-    required = false;
-
-    @property({attribute: false})
-    errors?: Error[];
-
-    render(): TemplateResult {
-        return html`<div class="pf-c-form__group">
-                <label class="pf-c-form__label">
-                    <span class="pf-c-form__label-text">${this.label}</span>
-                    ${this.required ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>` : html``}
-                </label>
-                <slot></slot>
-                ${(this.errors || []).map((error) => {
-                    return html`<p class="pf-c-form__helper-text pf-m-error">${error.string}</p>`;
-                })}
-            </div>`;
-    }
-
 }
 
 @customElement("ak-stage-identification")
@@ -77,7 +47,7 @@ export class IdentificationStage extends BaseStage {
     }
 
     renderFooter(): TemplateResult {
-        if (!(this.challenge?.enroll_url && this.challenge.recovery_url)) {
+        if (!this.challenge?.enroll_url && !this.challenge?.recovery_url) {
             return html``;
         }
         return html`<div class="pf-c-login__main-footer-band">

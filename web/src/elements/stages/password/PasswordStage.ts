@@ -3,6 +3,7 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "../form";
 
 export interface PasswordChallenge extends WithUserInfoChallenge {
     recovery_url?: string;

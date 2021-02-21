@@ -3,6 +3,7 @@ import { css, CSSResult, customElement, html, property, TemplateResult } from "l
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "../form";
 
 export interface AuthenticatorStaticChallenge extends WithUserInfoChallenge {
     codes: number[];
