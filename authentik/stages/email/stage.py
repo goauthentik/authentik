@@ -98,6 +98,9 @@ class EmailStageView(ChallengeStageView):
         )
         return challenge
 
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        return super().challenge_invalid(response)
+
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             messages.error(self.request, _("No pending user."))

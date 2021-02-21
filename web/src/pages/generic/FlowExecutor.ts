@@ -6,12 +6,14 @@ import "../../elements/stages/identification/IdentificationStage";
 import "../../elements/stages/password/PasswordStage";
 import "../../elements/stages/consent/ConsentStage";
 import "../../elements/stages/email/EmailStage";
+import "../../elements/stages/autosubmit/AutosubmitStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
 import { PasswordChallenge } from "../../elements/stages/password/PasswordStage";
 import { ConsentChallenge } from "../../elements/stages/consent/ConsentStage";
 import { EmailChallenge } from "../../elements/stages/email/EmailStage";
+import { AutosubmitChallenge } from "../../elements/stages/autosubmit/AutosubmitStage";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement {
@@ -116,6 +118,8 @@ export class FlowExecutor extends LitElement {
                     return html`<ak-stage-consent .host=${this} .challenge=${this.challenge as ConsentChallenge}></ak-stage-consent>`;
                 case "ak-stage-email":
                     return html`<ak-stage-email .host=${this} .challenge=${this.challenge as EmailChallenge}></ak-stage-email>`;
+                case "ak-stage-autosubmit":
+                    return html`<ak-stage-autosubmit .host=${this} .challenge=${this.challenge as AutosubmitChallenge}></ak-stage-autosubmit>`;
                 default:
                     break;
             }

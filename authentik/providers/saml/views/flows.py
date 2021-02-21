@@ -1,15 +1,19 @@
 """authentik SAML IDP Views"""
 from django.core.validators import URLValidator
+from django.db.models.fields import CharField
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http.response import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
+from rest_framework.fields import DictField
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
-from authentik.flows.stage import StageView
+from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -27,10 +31,17 @@ REQUEST_KEY_RELAY_STATE = "RelayState"
 SESSION_KEY_AUTH_N_REQUEST = "authn_request"
 
 
+class AutosubmitChallenge(Challenge):
+    """Autosubmit challenge used to send and navigate a POST request"""
+
+    url = CharField()
+    attrs = DictField(CharField())
+
+
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
-class SAMLFlowFinalView(StageView):
+class SAMLFlowFinalView(ChallengeStageView):
     """View used by FlowExecutor after all stages have passed. Logs the authorization,
-    and redirects to the SP (if REDIRECT is configured) or shows and auto-submit for
+    and redirects to the SP (if REDIRECT is configured) or shows an auto-submit element
     (if POST is configured)."""
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -62,14 +73,14 @@ class SAMLFlowFinalView(StageView):
             }
             if auth_n_request.relay_state:
                 form_attrs[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
-            return render(
-                self.request,
-                "generic/autosubmit_form.html",
+            return self.get_challenge(
                 {
-                    "url": provider.acs_url,
+                    "type": ChallengeTypes.native,
+                    "component": "ak-stage-autosubmit",
                     "title": _("Redirecting to %(app)s..." % {"app": application.name}),
+                    "url": provider.acs_url,
                     "attrs": form_attrs,
-                },
+                }
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
             url_args = {
@@ -80,3 +91,10 @@ class SAMLFlowFinalView(StageView):
             querystring = urlencode(url_args)
             return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        return Challenge(data=kwargs)
+
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        # We'll never get here since the challenge redirects to the SP
+        return HttpResponseBadRequest()

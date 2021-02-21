@@ -64,7 +64,7 @@ class ChallengeStageView(StageView):
         return self.response_class(None, data=data, stage=self)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        challenge = self.get_challenge()
+        challenge = self.get_challenge(*args, **kwargs)
         challenge.initial_data["title"] = self.executor.flow.title
         if not challenge.is_valid():
             LOGGER.warning(challenge.errors)
@@ -78,7 +78,7 @@ class ChallengeStageView(StageView):
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
 
-    def get_challenge(self) -> Challenge:
+    def get_challenge(self, *args, **kwargs) -> Challenge:
         """Return the challenge that the client should solve"""
         raise NotImplementedError
 
