@@ -57,10 +57,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         // post the transformed credential data to the server for validation
         // and storing the public key
         try {
-            const response = <WebAuthnAuthenticatorRegisterChallengeResponse>{
-                response: newAssertionForServer
-            };
-            await this.host?.submit(JSON.stringify(response));
+            const formData = new FormData();
+            formData.set("response", JSON.stringify(newAssertionForServer))
+            await this.host?.submit(formData);
         } catch (err) {
             throw new Error(gettext(`Server validation of credential failed: ${err}`));
         }
@@ -100,6 +99,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                         </div>`:
                     html`
                     <div class="pf-c-form__group pf-m-action">
+                        ${this.challenge?.response_errors ?
+                            html`<p class="pf-m-block">${this.challenge.response_errors["response"][0].string}</p>`:
+                            html``}
                         <p class="pf-m-block">${this.registerMessage}</p>
                         <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {
                             this.registerWrapper();

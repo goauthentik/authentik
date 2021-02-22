@@ -7,6 +7,7 @@ from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn.webauthn import (
     RegistrationRejectedException,
+    WebAuthnCredential,
     WebAuthnMakeCredentialOptions,
     WebAuthnRegistrationResponse,
 )
@@ -87,7 +88,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         )
         webauthn_credential.public_key = str(webauthn_credential.public_key, "utf-8")
 
-        return webauthn_registration_response
+        return webauthn_credential
 
 
 class AuthenticatorWebAuthnStageView(ChallengeStageView):
@@ -145,7 +146,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
-        webauthn_credential = response.validated_data["response"]
+        webauthn_credential: WebAuthnCredential = response.validated_data["response"]
         existing_device = WebAuthnDevice.objects.filter(
             credential_id=webauthn_credential.credential_id
         ).first()

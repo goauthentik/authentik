@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import ConfigurableStage, Stage
@@ -56,7 +57,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         verbose_name_plural = _("WebAuthn Authenticator Setup Stages")
 
 
-class WebAuthnDevice(models.Model):
+class WebAuthnDevice(Device):
     """WebAuthn Device for a single user"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

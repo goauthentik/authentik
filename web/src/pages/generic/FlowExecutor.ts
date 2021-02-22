@@ -63,7 +63,7 @@ export class FlowExecutor extends LitElement {
         });
     }
 
-    submit(formData?: string | FormData): Promise<void> {
+    submit(formData?: FormData): Promise<void> {
         const csrftoken = getCookie("authentik_csrf");
         const request = new Request(DefaultClient.makeUrl(["flows", "executor", this.flowSlug]), {
             headers: {
