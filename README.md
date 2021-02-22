@@ -32,3 +32,9 @@ See [Development Documentation](https://goauthentik.io/docs/development/local-de
 ## Security
 
 See [SECURITY.md](SECURITY.md)
+
+## Donations
+
+A big thank you to those who have donated finainially to this project, some of these include
+
+[Josh Powell](https://github.com/Powelljl/)
