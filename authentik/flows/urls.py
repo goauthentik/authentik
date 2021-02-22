@@ -1,12 +1,12 @@
 """flow urls"""
 from django.urls import path
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.flows.models import FlowDesignation
 from authentik.flows.views import (
     CancelView,
     ConfigureFlowInitView,
     FlowExecutorShellView,
-    FlowExecutorView,
     ToDefaultFlow,
 )
 
@@ -42,8 +42,9 @@ urlpatterns = [
         ConfigureFlowInitView.as_view(),
         name="configure",
     ),
-    path("b/<slug:flow_slug>/", FlowExecutorView.as_view(), name="flow-executor"),
     path(
-        "<slug:flow_slug>/", FlowExecutorShellView.as_view(), name="flow-executor-shell"
+        "<slug:flow_slug>/",
+        ensure_csrf_cookie(FlowExecutorShellView.as_view()),
+        name="flow-executor-shell",
     ),
 ]
