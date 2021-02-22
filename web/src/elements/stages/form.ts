@@ -19,6 +19,12 @@ export class FormElement extends LitElement {
     @property({ attribute: false })
     errors?: Error[];
 
+    updated(): void {
+        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach(input => {
+            input.focus();
+        });
+    }
+
     render(): TemplateResult {
         return html`<div class="pf-c-form__group">
                 <label class="pf-c-form__label">
