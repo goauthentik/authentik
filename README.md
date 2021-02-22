@@ -2,6 +2,7 @@
 
 ---
 
+[![](https://img.shields.io/discord/809154715984199690?label=Discord&style=flat-square)](https://discord.gg/KPnmtNWy)
 [![CI Build status](https://img.shields.io/azure-devops/build/beryjuorg/authentik/1?style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
 [![Tests](https://img.shields.io/azure-devops/tests/beryjuorg/authentik/1?compact_message&style=flat-square)](https://dev.azure.com/beryjuorg/authentik/_build?definitionId=1)
 [![Code Coverage](https://img.shields.io/codecov/c/gh/beryju/authentik?style=flat-square)](https://codecov.io/gh/BeryJu/authentik)
