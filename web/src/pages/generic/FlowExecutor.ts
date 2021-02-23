@@ -11,6 +11,7 @@ import "../../elements/stages/prompt/PromptStage";
 import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
 import "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
@@ -21,6 +22,7 @@ import { AutosubmitChallenge } from "../../elements/stages/autosubmit/Autosubmit
 import { PromptChallenge } from "../../elements/stages/prompt/PromptStage";
 import { AuthenticatorTOTPChallenge } from "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import { AuthenticatorStaticChallenge } from "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
+import { AuthenticatorValidateStageChallenge } from "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";
 import { WebAuthnAuthenticatorRegisterChallenge } from "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { COMMON_STYLES } from "../../common/styles";
 import { SpinnerSize } from "../../elements/Spinner";
@@ -161,6 +163,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         return html`<ak-stage-authenticator-static .host=${this} .challenge=${this.challenge as AuthenticatorStaticChallenge}></ak-stage-authenticator-static>`;
                     case "ak-stage-authenticator-webauthn":
                         return html`<ak-stage-authenticator-webauthn .host=${this} .challenge=${this.challenge as WebAuthnAuthenticatorRegisterChallenge}></ak-stage-authenticator-webauthn>`;
+                    case "ak-stage-authenticator-validate":
+                        return html`<ak-stage-authenticator-validate .host=${this} .challenge=${this.challenge as AuthenticatorValidateStageChallenge}></ak-stage-authenticator-validate>`;
                     default:
                         break;
                 }

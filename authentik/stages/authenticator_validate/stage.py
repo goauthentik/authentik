@@ -19,9 +19,13 @@ from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge,
 )
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 
 LOGGER = get_logger()
+
+PER_DEVICE_CLASSES = [
+    DeviceClasses.WEBAUTHN
+]
 
 
 class AuthenticatorChallenge(WithUserInfoChallenge):
@@ -48,7 +52,36 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     response_class = AuthenticatorChallengeResponse
 
-    challenges: list[DeviceChallenge]
+    def get_device_challenges(self) -> list[dict]:
+        challenges = []
+        user_devices = devices_for_user(self.get_pending_user())
+
+        # static and totp are only shown once
+        # since their challenges are device-independant
+        seen_classes = []
+
+        stage: AuthenticatorValidateStage = self.executor.current_stage
+
+        for device in user_devices:
+            device_class = device.__class__.__name__.lower().replace("device", "")
+            if device_class not in stage.device_classes:
+                continue
+            # Ensure only classes in PER_DEVICE_CLASSES are returned per device
+            # otherwise only return a single challenge
+            if device_class in seen_classes and device_class not in PER_DEVICE_CLASSES:
+                continue
+            if device_class not in seen_classes:
+                seen_classes.append(device_class)
+            challenges.append(
+                DeviceChallenge(
+                    data={
+                        "device_class": device_class,
+                        "device_uid": device.pk,
+                        "challenge": get_challenge_for_device(self.request, device),
+                    }
+                ).initial_data
+            )
+        return challenges
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices
@@ -58,26 +91,11 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             LOGGER.debug("No pending user, continuing")
             return self.executor.stage_ok()
         stage: AuthenticatorValidateStage = self.executor.current_stage
-
-        self.challenges = []
-        user_devices = devices_for_user(self.get_pending_user())
-
-        for device in user_devices:
-            device_class = device.__class__.__name__.lower().replace("device", "")
-            if device_class not in stage.device_classes:
-                continue
-            self.challenges.append(
-                DeviceChallenge(
-                    data={
-                        "device_class": device_class,
-                        "device_uid": device.pk,
-                        "challenge": get_challenge_for_device(request, device),
-                    }
-                )
-            )
+        challenges = self.get_device_challenges()
+        self.request.session["device_challenges"] = challenges
 
         # No allowed devices
-        if len(self.challenges) < 1:
+        if len(challenges) < 1:
             if stage.not_configured_action == NotConfiguredAction.SKIP:
                 LOGGER.debug("Authenticator not configured, skipping stage")
                 return self.executor.stage_ok()
@@ -87,11 +105,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def get_challenge(self) -> AuthenticatorChallenge:
+        challenges = self.request.session["device_challenges"]
         return AuthenticatorChallenge(
             data={
                 "type": ChallengeTypes.native,
                 "component": "ak-stage-authenticator-validate",
-                "device_challenges": self.challenges,
+                "device_challenges": challenges,
             }
         )
 

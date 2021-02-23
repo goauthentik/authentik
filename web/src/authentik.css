@@ -230,7 +230,9 @@ select[multiple] {
     .pf-c-login__main {
         background-color: var(--ak-dark-background);
     }
-    .pf-c-login__main-body {
+    .pf-c-login__main-body,
+    .pf-c-login__main-header,
+    .pf-c-login__main-header-desc {
         color: var(--ak-dark-foreground);
     }
     .pf-c-login__main-footer-links-item-link > img {
