@@ -42,7 +42,7 @@ export class AuthenticatorStaticStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submit(e); }}>
+                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <div class="pf-c-form__group">
                         <div class="form-control-static">
                             <div class="left">

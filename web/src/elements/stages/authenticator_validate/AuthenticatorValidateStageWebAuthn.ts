@@ -3,13 +3,16 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { SpinnerSize } from "../../Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
-import { AuthenticatorValidateStageChallenge, DeviceClasses } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseStage {
 
     @property({attribute: false})
     challenge?: AuthenticatorValidateStageChallenge;
+
+    @property({attribute: false})
+    deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
     authenticateRunning = false;
@@ -20,7 +23,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
     async authenticate(): Promise<void> {
         // convert certain members of the PublicKeyCredentialRequestOptions into
         // byte arrays as expected by the spec.
-        const credentialRequestOptions = <PublicKeyCredentialRequestOptions>this.challenge?.class_challenges[DeviceClasses.WEBAUTHN];
+        const credentialRequestOptions = <PublicKeyCredentialRequestOptions>this.deviceChallenge?.challenge;
         const transformedCredentialRequestOptions = transformCredentialRequestOptions(credentialRequestOptions);
 
         // request the authenticator to create an assertion signature using the
@@ -44,7 +47,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
         // post the assertion to the server for verification.
         try {
             const formData = new FormData();
-            formData.set(`response[${DeviceClasses.WEBAUTHN}]`, JSON.stringify(transformedAssertionForServer));
+            formData.set("response", JSON.stringify(<DeviceChallenge>{
+                device_class: this.deviceChallenge?.device_class,
+                device_uid: this.deviceChallenge?.device_uid,
+                challenge: transformedAssertionForServer,
+            }));
             await this.host?.submit(formData);
         } catch (err) {
             throw new Error(gettext(`Error when validating assertion on server: ${err}`));

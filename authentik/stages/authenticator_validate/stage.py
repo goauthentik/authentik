@@ -1,9 +1,11 @@
 """Authenticator Validation"""
 from django.http import HttpRequest, HttpResponse
-from django_otp import devices_for_user, user_has_device
-from rest_framework.fields import CharField, DictField, IntegerField, JSONField, ListField
+from django.http.request import QueryDict
+from django_otp import devices_for_user
+from rest_framework.fields import ListField
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.flows.challenge import (
     ChallengeResponse,
     ChallengeTypes,
@@ -12,6 +14,11 @@ from authentik.flows.challenge import (
 from authentik.flows.models import NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.stages.authenticator_validate.challenge import (
+    DeviceChallenge,
+    get_challenge_for_device,
+    validate_challenge,
+)
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 
 LOGGER = get_logger()
@@ -20,17 +27,20 @@ LOGGER = get_logger()
 class AuthenticatorChallenge(WithUserInfoChallenge):
     """Authenticator challenge"""
 
-    users_device_classes = ListField(child=CharField())
-    class_challenges = DictField(JSONField())
+    device_challenges = ListField(child=DeviceChallenge())
 
 
 class AuthenticatorChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based authenticators"""
 
-    device_challenges = DictField(JSONField())
+    response = DeviceChallenge()
 
-    def validate_device_challenges(self, value: dict[str, dict]):
-        return value
+    request: HttpRequest
+    user: User
+
+    def validate_response(self, value: DeviceChallenge):
+        """Validate response"""
+        return validate_challenge(value, self.request, self.user)
 
 
 class AuthenticatorValidateStageView(ChallengeStageView):
@@ -38,7 +48,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
     response_class = AuthenticatorChallengeResponse
 
-    allowed_device_classes: set[str]
+    challenges: list[DeviceChallenge]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Check if a user is set, and check if the user has any devices
@@ -47,22 +57,27 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         if not user:
             LOGGER.debug("No pending user, continuing")
             return self.executor.stage_ok()
-        has_devices = user_has_device(user)
         stage: AuthenticatorValidateStage = self.executor.current_stage
 
+        self.challenges = []
         user_devices = devices_for_user(self.get_pending_user())
-        user_device_classes = set(
-            [
-                device.__class__.__name__.lower().replace("device", "")
-                for device in user_devices
-            ]
-        )
-        stage_device_classes = set(self.executor.current_stage.device_classes)
-        self.allowed_device_classes = user_device_classes.intersection(stage_device_classes)
 
-        # User has no devices, or the devices they have don't overlap with the allowed
-        # classes
-        if not has_devices or len(self.allowed_device_classes) < 1:
+        for device in user_devices:
+            device_class = device.__class__.__name__.lower().replace("device", "")
+            if device_class not in stage.device_classes:
+                continue
+            self.challenges.append(
+                DeviceChallenge(
+                    data={
+                        "device_class": device_class,
+                        "device_uid": device.pk,
+                        "challenge": get_challenge_for_device(request, device),
+                    }
+                )
+            )
+
+        # No allowed devices
+        if len(self.challenges) < 1:
             if stage.not_configured_action == NotConfiguredAction.SKIP:
                 LOGGER.debug("Authenticator not configured, skipping stage")
                 return self.executor.stage_ok()
@@ -76,9 +91,15 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.native,
                 "component": "ak-stage-authenticator-validate",
-                "users_device_classes": self.allowed_device_classes,
+                "device_challenges": self.challenges,
             }
         )
+
+    def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
+        response: AuthenticatorChallengeResponse = super().get_response_instance(data)
+        response.request = self.request
+        response.user = self.get_pending_user()
+        return response
 
     def challenge_valid(
         self, challenge: AuthenticatorChallengeResponse

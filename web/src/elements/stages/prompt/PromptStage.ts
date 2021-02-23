@@ -119,7 +119,7 @@ export class PromptStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submit(e);}}>
+                <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     ${this.challenge.fields.map((prompt) => {
                         return html`<ak-form-element
                             label="${prompt.label}"

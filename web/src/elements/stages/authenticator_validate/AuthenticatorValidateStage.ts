@@ -9,13 +9,18 @@ export enum DeviceClasses {
     WEBAUTHN = "webauthn",
 }
 
+export interface DeviceChallenge {
+    device_class: DeviceClasses;
+    device_uid: string;
+    challenge: unknown;
+}
+
 export interface AuthenticatorValidateStageChallenge extends WithUserInfoChallenge {
-    users_device_classes: DeviceClasses[];
-    class_challenges: { [key in DeviceClasses]: unknown };
+    device_challenges: DeviceChallenge[];
 }
 
 export interface AuthenticatorValidateStageChallengeResponse {
-    device_challenges: { [key in DeviceClasses]: unknown}  ;
+    response: DeviceChallenge;
 }
 
 @customElement("ak-stage-authenticator-validate")
@@ -24,13 +29,24 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
     @property({ attribute: false })
     challenge?: AuthenticatorValidateStageChallenge;
 
-    renderDeviceClass(deviceClass: DeviceClasses): TemplateResult {
-        switch (deviceClass) {
+    @property({attribute: false})
+    selectedDeviceChallenge?: DeviceChallenge;
+
+    renderDeviceChallenge(): TemplateResult {
+        if (!this.selectedDeviceChallenge) {
+            return html``;
+        }
+        switch (this.selectedDeviceChallenge?.device_class) {
         case DeviceClasses.STATIC:
         case DeviceClasses.TOTP:
+            // TODO: Create input for code
             return html``;
         case DeviceClasses.WEBAUTHN:
-            return html`<ak-stage-authenticator-validate-webauthn .host=${this} .challenge=${this.challenge}></ak-stage-authenticator-validate-webauthn>`;
+            return html`<ak-stage-authenticator-validate-webauthn
+                .host=${this}
+                .challenge=${this.challenge}
+                .deviceChallenge=${this.selectedDeviceChallenge}>
+            </ak-stage-authenticator-validate-webauthn>`;
         }
     }
 
@@ -40,9 +56,13 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
 
     render(): TemplateResult {
         // User only has a single device class, so we don't show a picker
-        if (this.challenge?.users_device_classes.length === 1) {
-            return this.renderDeviceClass(this.challenge.users_device_classes[0]);
+        if (this.challenge?.device_challenges.length === 1) {
+            this.selectedDeviceChallenge = this.challenge.device_challenges[0];
         }
+        if (this.selectedDeviceChallenge) {
+            return this.renderDeviceChallenge();
+        }
+        // TODO: Create picker between challenges
         return html`ak-stage-authenticator-validate`;
     }
 

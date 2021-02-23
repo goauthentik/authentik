@@ -1,10 +1,7 @@
 """WebAuthn urls"""
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
 
-from authentik.stages.authenticator_webauthn.views import (
-    UserSettingsView,
-)
+from authentik.stages.authenticator_webauthn.views import UserSettingsView
 
 urlpatterns = [
     path(

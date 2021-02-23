@@ -11048,6 +11048,7 @@ definitions:
         type: string
         enum:
           - skip
+          - deny
       device_classes:
         description: ''
         type: array

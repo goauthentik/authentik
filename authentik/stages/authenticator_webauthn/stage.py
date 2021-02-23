@@ -20,9 +20,7 @@ from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import generate_challenge
 
-RP_ID = "localhost"
 RP_NAME = "authentik"
-ORIGIN = "http://localhost:8000"
 
 LOGGER = get_logger()
 
@@ -54,8 +52,8 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         none_attestation_permitted = True
 
         webauthn_registration_response = WebAuthnRegistrationResponse(
-            RP_ID,
-            ORIGIN,
+            self.request.get_host(),
+            self.request.build_absolute_uri("/"),
             response,
             challenge,
             trusted_attestation_cert_required=trusted_attestation_cert_required,
@@ -112,7 +110,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         make_credential_options = WebAuthnMakeCredentialOptions(
             challenge,
             RP_NAME,
-            RP_ID,
+            self.request.get_host(),
             user.uid,
             user.username,
             user.name,
@@ -156,7 +154,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 public_key=webauthn_credential.public_key,
                 credential_id=webauthn_credential.credential_id,
                 sign_count=webauthn_credential.sign_count,
-                rp_id=RP_ID,
+                rp_id=self.request.get_host(),
             )
         else:
             return self.executor.stage_invalid(

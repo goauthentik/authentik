@@ -74,7 +74,7 @@ export class IdentificationStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submit(e);}}>
+                <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
                     ${this.challenge.application_pre ?
                         html`<p>
                             ${gettext(`Login to continue to ${this.challenge.application_pre}.`)}
