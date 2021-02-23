@@ -4,10 +4,11 @@ title: docker-compose installation
 
 This installation method is for test-setups and small-scale productive setups.
 
-## Prerequisites
+## Requirements
 
--   docker
--   docker-compose
+- A Linux host with at least 2 CPU cores and 4 GB of RAM.
+- docker
+- docker-compose
 
 ## Preparation
 
@@ -58,10 +59,6 @@ docker-compose run --rm server migrate
 ```
 
 The compose file statically references the latest version available at the time of downloading, which can be overridden with the `SERVER_TAG` environment variable.
-
-If you plan to use this setup for production, it is also advised to change the PostgreSQL password by setting `PG_PASS` to a password of your choice.
-
-Now you can pull the Docker images needed by running `docker-compose pull`. After this has finished, run `docker-compose up -d` to start authentik.
 
 authentik will then be reachable HTTPS on port 443. You can optionally configure the packaged traefik to use Let's Encrypt certificates for TLS Encryption.
 
