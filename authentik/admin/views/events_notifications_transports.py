@@ -25,7 +25,7 @@ class NotificationTransportCreateView(
     model = NotificationTransport
     form_class = NotificationTransportForm
     permission_required = "authentik_events.add_notificationtransport"
-
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Notification Transport")
 
@@ -41,7 +41,7 @@ class NotificationTransportUpdateView(
     model = NotificationTransport
     form_class = NotificationTransportForm
     permission_required = "authentik_events.change_notificationtransport"
-
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Notification Transport")
 
@@ -53,6 +53,6 @@ class NotificationTransportDeleteView(
 
     model = NotificationTransport
     permission_required = "authentik_events.delete_notificationtransport"
-
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Notification Transport")
