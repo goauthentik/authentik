@@ -18,7 +18,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import generate_challenge
+from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin, get_rp_id
 
 RP_NAME = "authentik"
 
@@ -52,8 +52,8 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         none_attestation_permitted = True
 
         webauthn_registration_response = WebAuthnRegistrationResponse(
-            self.request.get_host(),
-            self.request.build_absolute_uri("/"),
+            get_rp_id(self.request),
+            get_origin(self.request),
             response,
             challenge,
             trusted_attestation_cert_required=trusted_attestation_cert_required,
@@ -110,7 +110,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         make_credential_options = WebAuthnMakeCredentialOptions(
             challenge,
             RP_NAME,
-            self.request.get_host(),
+            get_rp_id(self.request),
             user.uid,
             user.username,
             user.name,
@@ -154,7 +154,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 public_key=webauthn_credential.public_key,
                 credential_id=webauthn_credential.credential_id,
                 sign_count=webauthn_credential.sign_count,
-                rp_id=self.request.get_host(),
+                rp_id=get_rp_id(self.request),
             )
         else:
             return self.executor.stage_invalid(
