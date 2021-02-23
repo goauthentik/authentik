@@ -5,11 +5,11 @@ go 1.14
 require (
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.9.0
-	github.com/go-openapi/errors v0.20.0
+	github.com/go-openapi/errors v0.20.0 // indirect
 	github.com/go-openapi/runtime v0.19.26
 	github.com/go-openapi/strfmt v0.20.0
-	github.com/go-openapi/swag v0.19.14
-	github.com/go-openapi/validate v0.20.2
+	github.com/go-openapi/swag v0.19.14 // indirect
+	github.com/go-openapi/validate v0.20.2 // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
 	github.com/go-swagger/go-swagger v0.26.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
@@ -24,7 +24,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20200921180117-858c6e7e6b7e // indirect
 	github.com/recws-org/recws v1.2.1
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.8.0
 	github.com/spf13/afero v1.5.1 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
