@@ -1,7 +1,7 @@
 version: 2
 updates:
 - package-ecosystem: gomod
-  directory: "/proxy"
+  directory: "/outpost"
   schedule:
     interval: daily
     time: "04:00"
@@ -41,7 +41,7 @@ updates:
   assignees:
   - BeryJu
 - package-ecosystem: docker
-  directory: "/proxy"
+  directory: "/outpost"
   schedule:
     interval: daily
     time: "04:00"
