@@ -14,6 +14,7 @@ from authentik.flows.models import NotConfiguredAction, Stage
 class DeviceClasses(models.TextChoices):
     """Device classes this stage can validate"""
 
+    # device class must match Device's class name so StaticDevice -> static
     STATIC = "static"
     TOTP = "totp", _("TOTP")
     WEBAUTHN = "webauthn", _("WebAuthn")

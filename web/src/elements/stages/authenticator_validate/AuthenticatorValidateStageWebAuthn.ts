@@ -1,10 +1,15 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { customElement, html, property, TemplateResult } from "lit-element";
 import { SpinnerSize } from "../../Spinner";
-import { getCredentialRequestOptionsFromServer, postAssertionToServer, transformAssertionForServer, transformCredentialRequestOptions } from "./utils";
+import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
+import { BaseStage } from "../base";
+import { AuthenticatorValidateStageChallenge, DeviceClasses } from "./AuthenticatorValidateStage";
 
-@customElement("ak-stage-webauthn-auth")
-export class WebAuthnAuth extends LitElement {
+@customElement("ak-stage-authenticator-validate-webauthn")
+export class AuthenticatorValidateStageWebAuthn extends BaseStage {
+
+    @property({attribute: false})
+    challenge?: AuthenticatorValidateStageChallenge;
 
     @property({ type: Boolean })
     authenticateRunning = false;
@@ -13,18 +18,10 @@ export class WebAuthnAuth extends LitElement {
     authenticateMessage = "";
 
     async authenticate(): Promise<void> {
-        // post the login data to the server to retrieve the PublicKeyCredentialRequestOptions
-        let credentialRequestOptionsFromServer;
-        try {
-            credentialRequestOptionsFromServer = await getCredentialRequestOptionsFromServer();
-        } catch (err) {
-            throw new Error(gettext(`Error when getting request options from server: ${err}`));
-        }
-
         // convert certain members of the PublicKeyCredentialRequestOptions into
         // byte arrays as expected by the spec.
-        const transformedCredentialRequestOptions = transformCredentialRequestOptions(
-            credentialRequestOptionsFromServer);
+        const credentialRequestOptions = <PublicKeyCredentialRequestOptions>this.challenge?.class_challenges[DeviceClasses.WEBAUTHN];
+        const transformedCredentialRequestOptions = transformCredentialRequestOptions(credentialRequestOptions);
 
         // request the authenticator to create an assertion signature using the
         // credential private key
@@ -42,26 +39,16 @@ export class WebAuthnAuth extends LitElement {
 
         // we now have an authentication assertion! encode the byte arrays contained
         // in the assertion data as strings for posting to the server
-        const transformedAssertionForServer = transformAssertionForServer(assertion);
+        const transformedAssertionForServer = transformAssertionForServer(<PublicKeyCredential>assertion);
 
         // post the assertion to the server for verification.
         try {
-            await postAssertionToServer(transformedAssertionForServer);
+            const formData = new FormData();
+            formData.set(`response[${DeviceClasses.WEBAUTHN}]`, JSON.stringify(transformedAssertionForServer));
+            await this.host?.submit(formData);
         } catch (err) {
             throw new Error(gettext(`Error when validating assertion on server: ${err}`));
         }
-
-        this.finishStage();
-    }
-
-    finishStage(): void {
-        // Mark this stage as done
-        this.dispatchEvent(
-            new CustomEvent("ak-flow-submit", {
-                bubbles: true,
-                composed: true,
-            })
-        );
     }
 
     firstUpdated(): void {

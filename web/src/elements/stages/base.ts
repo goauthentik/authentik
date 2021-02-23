@@ -1,13 +1,17 @@
 import { LitElement } from "lit-element";
-import { FlowExecutor } from "../../pages/generic/FlowExecutor";
+
+export interface StageHost {
+    submit(formData?: FormData): Promise<void>;
+}
 
 export class BaseStage extends LitElement {
 
-    host?: FlowExecutor;
+    host?: StageHost;
 
-    submit(e: Event): void {
+    submitForm(e: Event): void {
         e.preventDefault();
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
         this.host?.submit(form);
     }
+
 }

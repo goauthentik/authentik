@@ -24,9 +24,10 @@ import { AuthenticatorStaticChallenge } from "../../elements/stages/authenticato
 import { WebAuthnAuthenticatorRegisterChallenge } from "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { COMMON_STYLES } from "../../common/styles";
 import { SpinnerSize } from "../../elements/Spinner";
+import { StageHost } from "../../elements/stages/base";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends LitElement {
+export class FlowExecutor extends LitElement implements StageHost {
     @property()
     flowSlug = "";
 
@@ -158,8 +159,8 @@ export class FlowExecutor extends LitElement {
                         return html`<ak-stage-authenticator-totp .host=${this} .challenge=${this.challenge as AuthenticatorTOTPChallenge}></ak-stage-authenticator-totp>`;
                     case "ak-stage-authenticator-static":
                         return html`<ak-stage-authenticator-static .host=${this} .challenge=${this.challenge as AuthenticatorStaticChallenge}></ak-stage-authenticator-static>`;
-                    case "ak-stage-authenticator-webauthn-register":
-                        return html`<ak-stage-authenticator-webauthn-register .host=${this} .challenge=${this.challenge as WebAuthnAuthenticatorRegisterChallenge}></ak-stage-authenticator-webauthn-register>`;
+                    case "ak-stage-authenticator-webauthn":
+                        return html`<ak-stage-authenticator-webauthn .host=${this} .challenge=${this.challenge as WebAuthnAuthenticatorRegisterChallenge}></ak-stage-authenticator-webauthn>`;
                     default:
                         break;
                 }

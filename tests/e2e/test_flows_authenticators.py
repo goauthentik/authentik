@@ -37,16 +37,45 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         )
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).click()
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(USER().username)
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(Keys.ENTER)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            USER().username
+        )
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            Keys.ENTER
+        )
 
         # Get expected token
         totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
-        self.driver.find_element(By.ID, "id_code").send_keys(totp.token())
-        self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+
+        self.driver.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            totp.token()
+        )
+        self.driver.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            Keys.ENTER
+        )
         self.wait_for_url(self.shell_url("authentik_core:overview"))
         self.assert_user(USER())
 

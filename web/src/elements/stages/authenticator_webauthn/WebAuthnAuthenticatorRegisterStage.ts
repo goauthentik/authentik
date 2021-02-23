@@ -13,7 +13,7 @@ export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
 }
 
-@customElement("ak-stage-authenticator-webauthn-register")
+@customElement("ak-stage-authenticator-webauthn")
 export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
 
     @property({ attribute: false })
@@ -58,7 +58,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
         // and storing the public key
         try {
             const formData = new FormData();
-            formData.set("response", JSON.stringify(newAssertionForServer))
+            formData.set("response", JSON.stringify(newAssertionForServer));
             await this.host?.submit(formData);
         } catch (err) {
             throw new Error(gettext(`Server validation of credential failed: ${err}`));
