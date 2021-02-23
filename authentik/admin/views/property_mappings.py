@@ -34,7 +34,7 @@ class PropertyMappingCreateView(
 
     model = PropertyMapping
     permission_required = "authentik_core.add_propertymapping"
-
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Property Mapping")
 
@@ -50,7 +50,7 @@ class PropertyMappingUpdateView(
 
     model = PropertyMapping
     permission_required = "authentik_core.change_propertymapping"
-
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Property Mapping")
 
@@ -62,7 +62,7 @@ class PropertyMappingDeleteView(
 
     model = PropertyMapping
     permission_required = "authentik_core.delete_propertymapping"
-
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Property Mapping")
 

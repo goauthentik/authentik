@@ -27,6 +27,7 @@ class ApplicationCreateView(
     form_class = ApplicationForm
     permission_required = "authentik_core.add_application"
 
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Application")
 
@@ -44,6 +45,7 @@ class ApplicationUpdateView(
     form_class = ApplicationForm
     permission_required = "authentik_core.change_application"
 
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Application")
 
@@ -56,5 +58,6 @@ class ApplicationDeleteView(
     model = Application
     permission_required = "authentik_core.delete_application"
 
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Application")

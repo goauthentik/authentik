@@ -28,6 +28,7 @@ class SourceCreateView(
     model = Source
     permission_required = "authentik_core.add_source"
 
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Source")
 
@@ -44,6 +45,7 @@ class SourceUpdateView(
     model = Source
     permission_required = "authentik_core.change_source"
 
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Source")
 
@@ -54,5 +56,6 @@ class SourceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessag
     model = Source
     permission_required = "authentik_core.delete_source"
 
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Source")
