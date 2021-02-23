@@ -28,7 +28,7 @@ class OutpostCreateView(
     model = Outpost
     form_class = OutpostForm
     permission_required = "authentik_outposts.add_outpost"
-
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Outpost")
 
@@ -51,7 +51,7 @@ class OutpostUpdateView(
     model = Outpost
     form_class = OutpostForm
     permission_required = "authentik_outposts.change_outpost"
-
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Outpost")
 
@@ -61,6 +61,6 @@ class OutpostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessa
 
     model = Outpost
     permission_required = "authentik_outposts.delete_outpost"
-
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Outpost")

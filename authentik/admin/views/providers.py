@@ -25,7 +25,7 @@ class ProviderCreateView(
 
     model = Provider
     permission_required = "authentik_core.add_provider"
-
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Provider")
 
@@ -40,7 +40,7 @@ class ProviderUpdateView(
 
     model = Provider
     permission_required = "authentik_core.change_provider"
-
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Provider")
 
@@ -52,6 +52,6 @@ class ProviderDeleteView(
 
     model = Provider
     permission_required = "authentik_core.delete_provider"
-
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Provider")

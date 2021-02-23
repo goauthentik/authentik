@@ -26,6 +26,7 @@ class NotificationRuleCreateView(
     form_class = NotificationRuleForm
     permission_required = "authentik_events.add_NotificationRule"
 
+    success_url = "/"
     template_name = "generic/create.html"
     success_message = _("Successfully created Notification Rule")
 
@@ -42,6 +43,7 @@ class NotificationRuleUpdateView(
     form_class = NotificationRuleForm
     permission_required = "authentik_events.change_NotificationRule"
 
+    success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Notification Rule")
 
@@ -54,5 +56,6 @@ class NotificationRuleDeleteView(
     model = NotificationRule
     permission_required = "authentik_events.delete_NotificationRule"
 
+    success_url = "/"
     template_name = "generic/delete.html"
     success_message = _("Successfully deleted Notification Rule")

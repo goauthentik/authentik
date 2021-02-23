@@ -4,7 +4,7 @@ name: authentik
 home: https://goauthentik.io
 sources:
   - https://github.com/BeryJu/authentik
-version: "2021.2.3-stable"
+version: "2021.2.4-stable"
 icon: https://raw.githubusercontent.com/BeryJu/authentik/master/web/icons/icon.svg
 dependencies:
   - name: postgresql
