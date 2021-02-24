@@ -34,15 +34,13 @@ class AuthenticatorChallenge(WithUserInfoChallenge):
     device_challenges = ListField(child=DeviceChallenge())
 
 
-class AuthenticatorChallengeResponse(ChallengeResponse):
+class AuthenticatorChallengeResponse(ChallengeResponse, DeviceChallenge):
     """Challenge used for Code-based authenticators"""
-
-    response = DeviceChallenge()
 
     request: HttpRequest
     user: User
 
-    def validate_response(self, value: DeviceChallenge):
+    def validate_challenge(self, value: dict):
         """Validate response"""
         return validate_challenge(value, self.request, self.user)
 

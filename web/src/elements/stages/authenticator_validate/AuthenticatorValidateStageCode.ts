@@ -33,6 +33,8 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="device_class" value=${this.deviceChallenge?.device_class}>
+                    <input type="hidden" name="device_uid" value=${this.deviceChallenge?.device_uid}>
 
                     <ak-form-element
                         label="${gettext("Code")}"
@@ -41,7 +43,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                         .errors=${(this.challenge?.response_errors || {})["code"]}>
                         <!-- @ts-ignore -->
                         <input type="text"
-                            name="code"
+                            name="challenge"
                             inputmode="numeric"
                             pattern="[0-9]*"
                             placeholder="${gettext("Please enter your TOTP Code")}"
