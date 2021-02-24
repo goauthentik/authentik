@@ -28,4 +28,4 @@ export const ColorStyles = css`
         background-color: var(--pf-global--danger-color--100);
     }
 `;
-export const VERSION = "2021.2.4-stable";
+export const VERSION = "2021.2.5-stable";

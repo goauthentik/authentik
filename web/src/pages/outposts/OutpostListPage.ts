@@ -57,7 +57,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
-            </ak-modal-button>
+            </ak-modal-button>&nbsp;
             <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
