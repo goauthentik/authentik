@@ -17,7 +17,7 @@ from webauthn.webauthn import (
 
 from authentik.core.models import User
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import generate_challenge
+from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin
 
 
 class DeviceChallenge(Serializer):
@@ -80,7 +80,7 @@ def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
 def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> dict:
     """Validate WebAuthn Challenge"""
     challenge = request.session.get("challenge")
-    assertion_response = data["challenge"]
+    assertion_response = data
     credential_id = assertion_response.get("id")
 
     device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
@@ -102,7 +102,7 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
         webauthn_user,
         assertion_response,
         challenge,
-        request.build_absolute_uri("/"),
+        get_origin(request),
         uv_required=False,
     )  # User Verification
 
