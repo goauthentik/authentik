@@ -23,7 +23,8 @@ export interface AuthenticatorValidateStageChallenge extends WithUserInfoChallen
 }
 
 export interface AuthenticatorValidateStageChallengeResponse {
-    response: DeviceChallenge;
+    code: string;
+    webauthn: string;
 }
 
 @customElement("ak-stage-authenticator-validate")
@@ -145,13 +146,15 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
                     ${gettext("Select an identification method.")}
                     </p>`}
             </header>
-            <div class="pf-c-login__main-body">
-                ${this.selectedDeviceChallenge ? this.renderDeviceChallenge() : this.renderDevicePicker()}
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                </ul>
-            </footer>`;
+            ${this.selectedDeviceChallenge ?
+                this.renderDeviceChallenge() :
+                html`<div class="pf-c-login__main-body">
+                    ${this.renderDevicePicker()}
+                </div>
+                <footer class="pf-c-login__main-footer">
+                    <ul class="pf-c-login__main-footer-links">
+                    </ul>
+                </footer>`}`;
     }
 
 }

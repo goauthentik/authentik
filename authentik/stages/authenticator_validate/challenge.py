@@ -17,7 +17,6 @@ from webauthn.webauthn import (
 
 from authentik.core.models import User
 from authentik.lib.templatetags.authentik_utils import avatar
-from authentik.stages.authenticator_validate.models import DeviceClasses
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import generate_challenge
 
@@ -70,35 +69,19 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
     return webauthn_assertion_options.assertion_dict
 
 
-def validate_challenge(
-    challenge: DeviceChallenge, request: HttpRequest, user: User
-) -> DeviceChallenge:
-    """main entry point for challenge validation"""
-    if challenge.validated_data["device_class"] in (
-        DeviceClasses.TOTP,
-        DeviceClasses.STATIC,
-    ):
-        return validate_challenge_code(challenge, request, user)
-    return validate_challenge_webauthn(challenge, request, user)
-
-
-def validate_challenge_code(
-    challenge: DeviceChallenge, request: HttpRequest, user: User
-) -> DeviceChallenge:
+def validate_challenge_code(code: str, request: HttpRequest, user: User) -> str:
     """Validate code-based challenges. We test against every device, on purpose, as
     the user mustn't choose between totp and static devices."""
-    device = match_token(user, challenge.validated_data["challenge"].get("code", None))
+    device = match_token(user, code)
     if not device:
         raise ValidationError(_("Invalid Token"))
-    return challenge
+    return code
 
 
-def validate_challenge_webauthn(
-    challenge: DeviceChallenge, request: HttpRequest, user: User
-) -> DeviceChallenge:
+def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) -> dict:
     """Validate WebAuthn Challenge"""
     challenge = request.session.get("challenge")
-    assertion_response = challenge.validated_data["challenge"]
+    assertion_response = data["challenge"]
     credential_id = assertion_response.get("id")
 
     device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
@@ -134,4 +117,4 @@ def validate_challenge_webauthn(
         raise ValidationError("Assertion failed") from exc
 
     device.set_sign_count(sign_count)
-    return challenge
+    return data

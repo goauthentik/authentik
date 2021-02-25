@@ -18,7 +18,11 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
-from authentik.stages.authenticator_webauthn.utils import generate_challenge, get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import (
+    generate_challenge,
+    get_origin,
+    get_rp_id,
+)
 
 RP_NAME = "authentik"
 

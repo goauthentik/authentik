@@ -1,9 +1,10 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { COMMON_STYLES } from "../../../common/styles";
 import { SpinnerSize } from "../../Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
-import { AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
+import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseStage {
@@ -19,6 +20,10 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
 
     @property()
     authenticateMessage = "";
+
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
+    }
 
     async authenticate(): Promise<void> {
         // convert certain members of the PublicKeyCredentialRequestOptions into
@@ -47,11 +52,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
         // post the assertion to the server for verification.
         try {
             const formData = new FormData();
-            formData.set("response", JSON.stringify(<DeviceChallenge>{
-                device_class: this.deviceChallenge?.device_class,
-                device_uid: this.deviceChallenge?.device_uid,
-                challenge: transformedAssertionForServer,
-            }));
+            formData.set("webauthn", JSON.stringify(transformedAssertionForServer));
             await this.host?.submit(formData);
         } catch (err) {
             throw new Error(gettext(`Error when validating assertion on server: ${err}`));
@@ -76,7 +77,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
     }
 
     render(): TemplateResult {
-        return html`<div class="">
+        return html`<div class="pf-c-login__main-body">
             ${this.authenticateRunning ?
                 html`<div class="pf-c-empty-state__content">
                         <div class="pf-l-bullseye">
@@ -94,7 +95,19 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
                         ${gettext("Retry authentication")}
                     </button>
                 </div>`}
-        </div>`;
+        </div>
+        <footer class="pf-c-login__main-footer">
+            <ul class="pf-c-login__main-footer-links">
+                <li class="pf-c-login__main-footer-links-item">
+                    <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
+                        if (!this.host) return;
+                        (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
+                    }}>
+                        ${gettext("Return to device picker")}
+                    </button>
+                </li>
+            </ul>
+        </footer>`;
     }
 
 }

@@ -1,11 +1,10 @@
 """Authenticator Validation"""
 from django.http import HttpRequest, HttpResponse
-from django.http.request import QueryDict
 from django_otp import devices_for_user
-from rest_framework.fields import ListField
+from rest_framework.fields import CharField, JSONField, ListField
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
 from authentik.flows.challenge import (
     ChallengeResponse,
     ChallengeTypes,
@@ -17,15 +16,17 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
     get_challenge_for_device,
-    validate_challenge,
+    validate_challenge_code,
+    validate_challenge_webauthn,
 )
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_validate.models import (
+    AuthenticatorValidateStage,
+    DeviceClasses,
+)
 
 LOGGER = get_logger()
 
-PER_DEVICE_CLASSES = [
-    DeviceClasses.WEBAUTHN
-]
+PER_DEVICE_CLASSES = [DeviceClasses.WEBAUTHN]
 
 
 class AuthenticatorChallenge(WithUserInfoChallenge):
@@ -34,15 +35,46 @@ class AuthenticatorChallenge(WithUserInfoChallenge):
     device_challenges = ListField(child=DeviceChallenge())
 
 
-class AuthenticatorChallengeResponse(ChallengeResponse, DeviceChallenge):
-    """Challenge used for Code-based authenticators"""
+class AuthenticatorChallengeResponse(ChallengeResponse):
+    """Challenge used for Code-based and WebAuthn authenticators"""
 
-    request: HttpRequest
-    user: User
+    code = CharField(required=False)
+    webauthn = JSONField(required=False)
 
-    def validate_challenge(self, value: dict):
-        """Validate response"""
-        return validate_challenge(value, self.request, self.user)
+    def validate_code(self, code: str) -> str:
+        """Validate code-based response, raise error if code isn't allowed"""
+        device_challenges: list[dict] = self.stage.request.session.get(
+            "device_challenges"
+        )
+        if not any(
+            x["device_class"] in (DeviceClasses.TOTP, DeviceClasses.STATIC)
+            for x in device_challenges
+        ):
+            raise ValidationError("Got code but no compatible device class allowed")
+        return validate_challenge_code(
+            code, self.stage.request, self.stage.get_pending_user()
+        )
+
+    def validate_webauthn(self, webauthn: dict) -> dict:
+        """Validate webauthn response, raise error if webauthn wasn't allowed
+        or response is invalid"""
+        device_challenges: list[dict] = self.stage.request.session.get(
+            "device_challenges"
+        )
+        if not any(
+            x["device_class"] in (DeviceClasses.WEBAUTHN) for x in device_challenges
+        ):
+            raise ValidationError("Got webauthn but no compatible device class allowed")
+        return validate_challenge_webauthn(
+            webauthn, self.stage.request, self.stage.get_pending_user()
+        )
+
+    def validate(self, data: dict):
+        # Checking if the given data is from a valid device class is done above
+        # Here we only check if the any data was sent at all
+        if "code" not in data and "webauthn" not in data:
+            raise ValidationError("Empty response")
+        return data
 
 
 class AuthenticatorValidateStageView(ChallengeStageView):
@@ -51,6 +83,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
     response_class = AuthenticatorChallengeResponse
 
     def get_device_challenges(self) -> list[dict]:
+        """Get a list of all device challenges applicable for the current stage"""
         challenges = []
         user_devices = devices_for_user(self.get_pending_user())
 
@@ -112,14 +145,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             }
         )
 
-    def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
-        response: AuthenticatorChallengeResponse = super().get_response_instance(data)
-        response.request = self.request
-        response.user = self.get_pending_user()
-        return response
-
+    # pylint: disable=unused-argument
     def challenge_valid(
         self, challenge: AuthenticatorChallengeResponse
     ) -> HttpResponse:
-        print(challenge)
-        return HttpResponse()
+        # All validation is done by the serializer
+        return self.executor.stage_ok()
