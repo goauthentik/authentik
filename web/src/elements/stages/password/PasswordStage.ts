@@ -56,6 +56,10 @@ export class PasswordStage extends BaseStage {
                             required="">
                     </ak-form-element>
 
+                    ${this.challenge.recovery_url ?
+                        html`<a href="${this.challenge.recovery_url}">
+                        ${gettext("Forgot password?")}</a>` : ""}
+
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${gettext("Continue")}

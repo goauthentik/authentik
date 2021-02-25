@@ -84,10 +84,11 @@ class PasswordStageView(ChallengeStageView):
         )
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
-            challenge.initial_data["recovery_url"] = reverse(
+            recover_url = reverse(
                 "authentik_flows:flow-executor-shell",
                 kwargs={"flow_slug": recovery_flow.first().slug},
             )
+            challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
         return challenge
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
