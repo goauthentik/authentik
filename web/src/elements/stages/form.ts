@@ -1,4 +1,4 @@
-import { customElement, LitElement, CSSResult, property } from "lit-element";
+import { customElement, LitElement, CSSResult, property, css } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { Error } from "../../api/Flows";
 import { COMMON_STYLES } from "../../common/styles";
@@ -7,7 +7,16 @@ import { COMMON_STYLES } from "../../common/styles";
 export class FormElement extends LitElement {
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(
+            css`
+                slot {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-around;
+                }
+            `
+        );
     }
 
     @property()

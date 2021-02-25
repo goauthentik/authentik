@@ -5,6 +5,7 @@ import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "webcomponent-qr-code";
 import "../form";
+import { showMessage } from "../../messages/MessageContainer";
 
 export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
     config_url: string;
@@ -45,6 +46,19 @@ export class AuthenticatorTOTPStage extends BaseStage {
                     <ak-form-element>
                         <!-- @ts-ignore -->
                         <qr-code data="${this.challenge.config_url}"></qr-code>
+                        <button class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
+                            e.preventDefault();
+                            if (!this.challenge?.config_url) return;
+                            navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
+                                showMessage({
+                                    level_tag: "success",
+                                    message: gettext("Successfully copied TOTP Config.")
+                                });
+                            });
+                        }}>
+                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
+                            ${gettext("Copy")}
+                        </button>
                     </ak-form-element>
                     <ak-form-element
                         label="${gettext("Code")}"
