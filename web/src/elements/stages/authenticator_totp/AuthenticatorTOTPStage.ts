@@ -47,7 +47,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                     <ak-form-element>
                         <!-- @ts-ignore -->
                         <qr-code data="${this.challenge.config_url}"></qr-code>
-                        <button class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
+                        <button type="button" class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
                             e.preventDefault();
                             if (!this.challenge?.config_url) return;
                             navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
