@@ -12,6 +12,7 @@ class UserLogoutStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        """Remove the user from the current session"""
         LOGGER.debug(
             "Logged out",
             user=request.user,

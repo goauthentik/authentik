@@ -17,6 +17,7 @@ class UserLoginStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        """Attach the currently pending user to the current session"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             message = _("No Pending user to login.")
             messages.error(request, message)

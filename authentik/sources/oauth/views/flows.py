@@ -14,7 +14,9 @@ class PostUserEnrollmentStage(StageView):
     """Dynamically injected stage which saves the OAuth Connection after
     the user has been enrolled."""
 
+    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Stage used after the user has been enrolled"""
         access: UserOAuthSourceConnection = self.executor.plan.context[
             PLAN_CONTEXT_SOURCES_OAUTH_ACCESS
         ]

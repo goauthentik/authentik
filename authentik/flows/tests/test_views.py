@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -404,7 +405,14 @@ class TestFlowExecutor(TestCase):
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
-            self.assertIn("dummy1", force_str(response.content))
+            self.assertJSONEqual(
+                force_str(response.content),
+                {
+                    "type": ChallengeTypes.native.value,
+                    "component": "",
+                    "title": binding.stage.name,
+                },
+            )
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
@@ -427,7 +435,14 @@ class TestFlowExecutor(TestCase):
         # but it won't save it, hence we cant' check the plan
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("dummy4", force_str(response.content))
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.native.value,
+                "component": "",
+                "title": binding4.stage.name,
+            },
+        )
 
         # fourth request, this confirms the last stage (dummy4)
         # We do this request without the patch, so the policy results in false
@@ -466,4 +481,4 @@ class TestFlowExecutor(TestCase):
         executor.flow = flow
 
         stage_view = StageView(executor)
-        self.assertEqual(ident, stage_view.get_context_data()["user"].username)
+        self.assertEqual(ident, stage_view.get_pending_user().username)

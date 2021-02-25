@@ -1,14 +1,12 @@
 """authentik stage Base view"""
-from typing import Any, Optional
-
+from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import TemplateView
+from django.views.generic.base import View
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -17,53 +15,29 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
-from authentik.lib.templatetags.authentik_utils import avatar
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()
 
 
-class StageView(TemplateView):
+class StageView(View):
     """Abstract Stage, inherits TemplateView but can be combined with FormView"""
-
-    template_name = "login/form_with_user.html"
 
     executor: FlowExecutorView
 
     request: HttpRequest = None
 
-    def __init__(self, executor: FlowExecutorView):
+    def __init__(self, executor: FlowExecutorView, **kwargs):
         self.executor = executor
+        super().__init__(**kwargs)
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["title"] = self.executor.flow.title
-        # Either show the matched User object or show what the user entered,
-        # based on what the earlier stage (mostly IdentificationStage) set.
-        # _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
-        # other things besides the form display
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            kwargs["user"] = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context:
-            kwargs["user"] = User(
-                username=self.executor.plan.context.get(
-                    PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-                ),
-                email="",
-            )
-        kwargs["primary_action"] = _("Continue")
-        return super().get_context_data(**kwargs)
-
-
-class ChallengeStageView(StageView):
-    """Stage view which response with a challenge"""
-
-    response_class = ChallengeResponse
-
-    def get_pending_user(self) -> Optional[User]:
+    def get_pending_user(self) -> User:
         """Either show the matched User object or show what the user entered,
         based on what the earlier stage (mostly IdentificationStage) set.
         _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
-        other things besides the form display"""
+        other things besides the form display.
+
+        If no user is pending, returns request.user"""
         if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context:
             return User(
                 username=self.executor.plan.context.get(
@@ -73,13 +47,20 @@ class ChallengeStageView(StageView):
             )
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        return None
+        return self.request.user
+
+
+class ChallengeStageView(StageView):
+    """Stage view which response with a challenge"""
+
+    response_class = ChallengeResponse
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         """Return the response class type"""
         return self.response_class(None, data=data, stage=self)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
             LOGGER.warning(challenge.errors)
@@ -103,7 +84,9 @@ class ChallengeStageView(StageView):
             # If there's no user set, an error is raised later.
             if user := self.get_pending_user():
                 challenge.initial_data["pending_user"] = user.username
-                challenge.initial_data["pending_user_avatar"] = avatar(user)
+            challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
+            if not isinstance(user, AnonymousUser):
+                challenge.initial_data["pending_user_avatar"] = user.avatar
         return challenge
 
     def get_challenge(self, *args, **kwargs) -> Challenge:

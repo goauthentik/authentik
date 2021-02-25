@@ -16,7 +16,6 @@ from webauthn.webauthn import (
 )
 
 from authentik.core.models import User
-from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import generate_challenge
 
@@ -57,7 +56,7 @@ def get_webauthn_challenge(request: HttpRequest, device: WebAuthnDevice) -> dict
         device.user.uid,
         device.user.username,
         device.user.name,
-        avatar(device.user),
+        device.user.avatar,
         device.credential_id,
         device.public_key,
         device.sign_count,
@@ -92,7 +91,7 @@ def validate_challenge_webauthn(data: dict, request: HttpRequest, user: User) ->
         user.uid,
         user.username,
         user.name,
-        avatar(user),
+        user.avatar,
         device.credential_id,
         device.public_key,
         device.sign_count,

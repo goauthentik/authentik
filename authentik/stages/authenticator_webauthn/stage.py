@@ -16,7 +16,6 @@ from authentik.core.models import User
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import (
     generate_challenge,
@@ -118,7 +117,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user.uid,
             user.username,
             user.name,
-            avatar(user or User()),
+            user.avatar,
         )
 
         return AuthenticatorWebAuthnChallenge(

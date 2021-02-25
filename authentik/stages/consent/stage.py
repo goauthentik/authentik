@@ -12,7 +12,6 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.templatetags.authentik_utils import avatar
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
@@ -56,7 +55,7 @@ class ConsentStageView(ChallengeStageView):
         # If there's no user set, an error is raised later.
         if user := self.get_pending_user():
             challenge.initial_data["pending_user"] = user.username
-            challenge.initial_data["pending_user_avatar"] = avatar(user)
+            challenge.initial_data["pending_user_avatar"] = user.avatar
         return challenge
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

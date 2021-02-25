@@ -88,7 +88,9 @@ class PasswordStageView(ChallengeStageView):
                 "authentik_flows:flow-executor-shell",
                 kwargs={"flow_slug": recovery_flow.first().slug},
             )
-            challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
+            challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(
+                recover_url
+            )
         return challenge
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:

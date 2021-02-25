@@ -233,7 +233,9 @@ class OAuthFulfillmentStage(StageView):
     params: OAuthAuthorizationParams
     provider: OAuth2Provider
 
+    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """final Stage of an OAuth2 Flow"""
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(
             PLAN_CONTEXT_PARAMS
         )

@@ -1,19 +1,31 @@
 """authentik multi-stage authentication engine"""
-from typing import Any
+from django.http.response import HttpResponse
 
-from django.http import HttpRequest
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.stage import ChallengeStageView
 
-from authentik.flows.stage import StageView
+
+class DummyChallenge(Challenge):
+    """Dummy challenge"""
 
 
-class DummyStageView(StageView):
+class DummyChallengeResponse(ChallengeResponse):
+    """Dummy challenge response"""
+
+
+class DummyStageView(ChallengeStageView):
     """Dummy stage for testing with multiple stages"""
 
-    def post(self, request: HttpRequest):
-        """Just redirect to next stage"""
+    response_class = DummyChallengeResponse
+
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         return self.executor.stage_ok()
 
-    def get_context_data(self, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        kwargs = super().get_context_data(**kwargs)
-        kwargs["title"] = self.executor.current_stage.name
-        return kwargs
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        return DummyChallenge(
+            data={
+                "type": ChallengeTypes.native,
+                "component": "",
+                "title": self.executor.current_stage.name,
+            }
+        )
