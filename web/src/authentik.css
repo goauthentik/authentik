@@ -85,6 +85,11 @@ select[multiple] {
     z-index: auto !important;
 }
 
+/* Fix spacing between messages */
+ak-message {
+    display: block;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
