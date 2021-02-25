@@ -43,6 +43,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
                     <ak-form-element>
                         <!-- @ts-ignore -->
                         <qr-code data="${this.challenge.config_url}"></qr-code>
