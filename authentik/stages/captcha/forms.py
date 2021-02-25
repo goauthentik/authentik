@@ -1,14 +1,7 @@
 """authentik captcha stage forms"""
-from captcha.fields import ReCaptchaField
 from django import forms
 
 from authentik.stages.captcha.models import CaptchaStage
-
-
-class CaptchaForm(forms.Form):
-    """authentik captcha stage form"""
-
-    captcha = ReCaptchaField()
 
 
 class CaptchaStageForm(forms.ModelForm):

@@ -2,16 +2,17 @@ import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { getCookie } from "../../utils";
-import "../../elements/stages/identification/IdentificationStage";
-import "../../elements/stages/password/PasswordStage";
+import "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
+import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
+import "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";
+import "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import "../../elements/stages/autosubmit/AutosubmitStage";
+import "../../elements/stages/captcha/CaptchaStage";
 import "../../elements/stages/consent/ConsentStage";
 import "../../elements/stages/email/EmailStage";
-import "../../elements/stages/autosubmit/AutosubmitStage";
+import "../../elements/stages/identification/IdentificationStage";
+import "../../elements/stages/password/PasswordStage";
 import "../../elements/stages/prompt/PromptStage";
-import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
-import "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
-import "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";
 import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
 import { DefaultClient } from "../../api/Client";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
@@ -24,6 +25,7 @@ import { AuthenticatorTOTPChallenge } from "../../elements/stages/authenticator_
 import { AuthenticatorStaticChallenge } from "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
 import { AuthenticatorValidateStageChallenge } from "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";
 import { WebAuthnAuthenticatorRegisterChallenge } from "../../elements/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
+import { CaptchaChallenge } from "../../elements/stages/captcha/CaptchaStage";
 import { COMMON_STYLES } from "../../common/styles";
 import { SpinnerSize } from "../../elements/Spinner";
 import { StageHost } from "../../elements/stages/base";
@@ -149,6 +151,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         return html`<ak-stage-identification .host=${this} .challenge=${this.challenge as IdentificationChallenge}></ak-stage-identification>`;
                     case "ak-stage-password":
                         return html`<ak-stage-password .host=${this} .challenge=${this.challenge as PasswordChallenge}></ak-stage-password>`;
+                    case "ak-stage-captcha":
+                        return html`<ak-stage-captcha .host=${this} .challenge=${this.challenge as CaptchaChallenge}></ak-stage-captcha>`;
                     case "ak-stage-consent":
                         return html`<ak-stage-consent .host=${this} .challenge=${this.challenge as ConsentChallenge}></ak-stage-consent>`;
                     case "ak-stage-email":

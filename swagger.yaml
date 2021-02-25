@@ -8249,6 +8249,7 @@ definitions:
         title: Avatar
         type: string
         readOnly: true
+        minLength: 1
       attributes:
         title: Attributes
         type: object

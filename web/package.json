@@ -16,6 +16,7 @@
         "@sentry/tracing": "^6.2.0",
         "@types/chart.js": "^2.9.30",
         "@types/codemirror": "0.0.108",
+        "@types/grecaptcha": "^3.0.1",
         "base64-js": "^1.5.1",
         "chart.js": "^2.9.4",
         "codemirror": "^5.59.3",

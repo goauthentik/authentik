@@ -46,7 +46,7 @@ class TestCaptchaStage(TestCase):
             reverse(
                 "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
-            {"g-recaptcha-response": "PASSED"},
+            {"token": "PASSED"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
