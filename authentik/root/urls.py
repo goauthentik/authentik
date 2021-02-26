@@ -58,6 +58,7 @@ urlpatterns += [
     path("administration/django/", admin.site.urls),
     path("metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
+    path("ws/client/", LiveView.as_view(), name="ws-client-fallback"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
     path("-/jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 ]
