@@ -10,8 +10,7 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
-from authentik.core.api.applications import ApplicationSerializer
-from authentik.core.models import Source, User
+from authentik.core.models import Application, Source, User
 from authentik.core.types import UILoginButtonSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -29,7 +28,7 @@ class IdentificationChallenge(Challenge):
     """Identification challenges with all UI elements"""
 
     input_type = CharField()
-    application_pre = ApplicationSerializer(required=False)
+    application_pre = CharField(required=False)
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
@@ -90,9 +89,9 @@ class IdentificationStageView(ChallengeStageView):
         # If the user has been redirected to us whilst trying to access an
         # application, SESSION_KEY_APPLICATION_PRE is set in the session
         if SESSION_KEY_APPLICATION_PRE in self.request.session:
-            challenge.initial_data["application_pre"] = self.request.session[
-                SESSION_KEY_APPLICATION_PRE
-            ]
+            challenge.initial_data["application_pre"] = self.request.session.get(
+                SESSION_KEY_APPLICATION_PRE, Application()
+            ).name
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
             challenge.initial_data["enroll_url"] = reverse(
