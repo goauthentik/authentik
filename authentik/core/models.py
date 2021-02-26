@@ -36,7 +36,7 @@ USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
-DEFAULT_AVATAR = static("authentik/user_default.png")
+DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 
 def default_token_duration():
