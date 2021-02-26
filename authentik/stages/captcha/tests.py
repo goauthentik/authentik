@@ -1,5 +1,4 @@
 """captcha tests"""
-from django.conf import settings
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
@@ -11,6 +10,9 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.captcha.models import CaptchaStage
 
+# https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do
+RECAPTCHA_PUBLIC_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+RECAPTCHA_PRIVATE_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
 class TestCaptchaStage(TestCase):
     """Captcha tests"""
@@ -29,8 +31,8 @@ class TestCaptchaStage(TestCase):
         )
         self.stage = CaptchaStage.objects.create(
             name="captcha",
-            public_key=settings.RECAPTCHA_PUBLIC_KEY,
-            private_key=settings.RECAPTCHA_PRIVATE_KEY,
+            public_key=RECAPTCHA_PUBLIC_KEY,
+            private_key=RECAPTCHA_PRIVATE_KEY,
         )
         FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
