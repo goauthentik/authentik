@@ -8,7 +8,6 @@ from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog.stdlib import get_logger
 
@@ -138,13 +137,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-
+        self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
@@ -188,13 +181,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-
+        self.login()
         self.assertEqual(
             app.name,
             self.driver.find_element(By.ID, "application-name").text,
@@ -253,13 +240,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.container = self.setup_client()
         self.driver.get("http://localhost:9009")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-
+        self.login()
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
         )

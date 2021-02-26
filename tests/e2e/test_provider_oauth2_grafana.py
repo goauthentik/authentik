@@ -6,7 +6,6 @@ from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog.stdlib import get_logger
 
@@ -143,11 +142,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
@@ -204,11 +199,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")
         self.assertEqual(
@@ -273,11 +264,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         self.assertEqual(
             app.name,
@@ -350,11 +337,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))

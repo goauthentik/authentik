@@ -11,6 +11,8 @@ from typing import Any, Callable, Optional
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection, transaction
+from django.db.migrations.loader import MigrationLoader
+from django.db.migrations.operations.special import RunPython
 from django.db.utils import IntegrityError
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
@@ -24,6 +26,7 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
@@ -127,6 +130,32 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         )
         return element
 
+    def login(self):
+        """Do entire login flow and check user afterwards"""
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).click()
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(USER().username)
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(Keys.ENTER)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            USER().username
+        )
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            Keys.ENTER
+        )
+
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
         self.driver.get(self.url("authentik_api:user-me") + "?format=json")
@@ -168,7 +197,30 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ObjectManager().run()
 
 
-def retry(max_retires=3, exceptions=None):
+def apply_migration(app_name: str, migration_name: str):
+    """Re-apply migrations that create objects using RunPython before test cases"""
+
+    def wrapper_outter(func: Callable):
+        """Retry test multiple times"""
+
+        LOADER = MigrationLoader(connection)
+
+        @wraps(func)
+        def wrapper(self: TransactionTestCase, *args, **kwargs):
+            migration = LOADER.get_migration(app_name, migration_name)
+            with connection.schema_editor() as schema_editor:
+                for operation in migration.operations:
+                    if not isinstance(operation, RunPython):
+                        continue
+                    operation.code(apps, schema_editor)
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
+    return wrapper_outter
+
+
+def retry(max_retires=1, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
