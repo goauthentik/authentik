@@ -149,6 +149,7 @@ module.exports = {
             items: [
                 "troubleshooting/access",
                 "troubleshooting/emails",
+                "troubleshooting/login",
             ],
         },
         {
