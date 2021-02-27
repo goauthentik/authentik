@@ -1,5 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { Challenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
@@ -28,10 +29,10 @@ export class PromptStage extends BaseStage {
         return COMMON_STYLES;
     }
 
-    renderPromptInner(prompt: Prompt): TemplateResult {
+    renderPromptInner(prompt: Prompt): string {
         switch (prompt.type) {
             case "text":
-                return html`<input
+                return `<input
                     type="text"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
@@ -40,7 +41,7 @@ export class PromptStage extends BaseStage {
                     ?required=${prompt.required}
                     value="">`;
             case "username":
-                return html`<input
+                return `<input
                     type="text"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
@@ -49,7 +50,7 @@ export class PromptStage extends BaseStage {
                     ?required=${prompt.required}
                     value="">`;
             case "email":
-                return html`<input
+                return `<input
                     type="email"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
@@ -57,7 +58,7 @@ export class PromptStage extends BaseStage {
                     ?required=${prompt.required}
                     value="">`;
             case "password":
-                return html`<input
+                return `<input
                     type="password"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
@@ -65,48 +66,48 @@ export class PromptStage extends BaseStage {
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "number":
-                return html`<input
+                return `<input
                     type="number"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "checkbox":
-                return html`<input
+                return `<input
                     type="checkbox"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date":
-                return html`<input
+                return `<input
                     type="date"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "date-time":
-                return html`<input
+                return `<input
                     type="datetime"
                     name="${prompt.field_key}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "separator":
-                return html`<hr>`;
+                return "<hr>";
             case "hidden":
-                return html`<input
+                return `<input
                     type="hidden"
                     name="${prompt.field_key}"
                     value="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case "static":
-                return html`<p
+                return `<p
                     class="pf-c-form-control">${prompt.placeholder}
                 </p>`;
         }
-        return html``;
+        return "";
     }
 
     render(): TemplateResult {
@@ -126,7 +127,7 @@ export class PromptStage extends BaseStage {
                             ?required="${prompt.required}"
                             class="pf-c-form__group"
                             .errors=${(this.challenge?.response_errors || {})[prompt.field_key]}>
-                            ${this.renderPromptInner(prompt)}
+                            ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}
                     <div class="pf-c-form__group pf-m-action">
