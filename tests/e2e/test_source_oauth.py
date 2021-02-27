@@ -148,19 +148,15 @@ class TestSourceOAuth2(SeleniumTestCase):
         # At this point we've been redirected back
         # and we're asked for the username
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root(
-            "ak-stage-prompt", flow_executor
-        )
+        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
 
-        prompt_stage.find_element(
-            By.CSS_SELECTOR, "input[name=username]"
-        ).click()
-        prompt_stage.find_element(
-            By.CSS_SELECTOR, "input[name=username]"
-        ).send_keys("foo")
-        prompt_stage.find_element(
-            By.CSS_SELECTOR, "input[name=username]"
-        ).send_keys(Keys.ENTER)
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").click()
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(
+            "foo"
+        )
+        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(
+            Keys.ENTER
+        )
 
         # Wait until we've logged in
         self.wait_for_url(self.shell_url("/library"))

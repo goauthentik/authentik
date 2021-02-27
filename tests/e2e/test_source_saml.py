@@ -8,12 +8,13 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 LOGGER = get_logger()
 
@@ -93,6 +94,11 @@ class TestSourceSAML(SeleniumTestCase):
         }
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
         # Bootstrap all needed objects
@@ -117,12 +123,18 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
 
@@ -142,6 +154,11 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_idp_post(self):
         """test SAML Source With post binding"""
         # Bootstrap all needed objects
@@ -166,12 +183,18 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
         sleep(1)
@@ -193,6 +216,11 @@ class TestSourceSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""
         # Bootstrap all needed objects
@@ -217,12 +245,18 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
 
