@@ -203,6 +203,7 @@ def object_manager(func: Callable):
     return wrapper
 
 
+def retry(max_retires=3, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
