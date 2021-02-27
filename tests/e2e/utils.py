@@ -220,7 +220,7 @@ def apply_migration(app_name: str, migration_name: str):
     return wrapper_outter
 
 
-def retry(max_retires=1, exceptions=None):
+def retry(max_retires=3, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
