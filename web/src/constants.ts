@@ -1,5 +1,3 @@
-import { css } from "lit-element";
-
 export const PRIMARY_CLASS = "pf-m-primary";
 export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
