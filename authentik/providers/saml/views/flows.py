@@ -1,12 +1,10 @@
 """authentik SAML IDP Views"""
 from django.core.validators import URLValidator
-from django.db.models.fields import CharField
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
-from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import DictField
+from rest_framework.fields import CharField, DictField
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
@@ -35,7 +33,7 @@ class AutosubmitChallenge(Challenge):
     """Autosubmit challenge used to send and navigate a POST request"""
 
     url = CharField()
-    attrs = DictField(CharField())
+    attrs = DictField(child=CharField())
 
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
@@ -73,14 +71,15 @@ class SAMLFlowFinalView(ChallengeStageView):
             }
             if auth_n_request.relay_state:
                 form_attrs[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
-            return self.get_challenge(
-                {
+            return super().get(
+                self.request,
+                **{
                     "type": ChallengeTypes.native,
                     "component": "ak-stage-autosubmit",
-                    "title": _("Redirecting to %(app)s..." % {"app": application.name}),
+                    "title": "Redirecting to %(app)s..." % {"app": application.name},
                     "url": provider.acs_url,
                     "attrs": form_attrs,
-                }
+                },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
             url_args = {
@@ -93,7 +92,7 @@ class SAMLFlowFinalView(ChallengeStageView):
         return bad_request_message(request, "Invalid sp_binding specified")
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        return Challenge(data=kwargs)
+        return AutosubmitChallenge(data=kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # We'll never get here since the challenge redirects to the SP
