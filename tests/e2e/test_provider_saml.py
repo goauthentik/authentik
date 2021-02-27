@@ -21,7 +21,13 @@ from authentik.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
 )
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    object_manager,
+    retry,
+)
 
 LOGGER = get_logger()
 
@@ -65,6 +71,11 @@ class TestProviderSAML(SeleniumTestCase):
             sleep(1)
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -124,6 +135,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_explicit(self):
         """test SAML Provider flow SP-initiated flow (explicit consent)"""
         # Bootstrap all needed objects
@@ -200,6 +216,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -265,6 +286,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_denied(self):
         """test SAML Provider flow SP-initiated flow (Policy denies access)"""
         # Bootstrap all needed objects
