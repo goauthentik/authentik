@@ -30,6 +30,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
+from authentik.managed.manager import ObjectManager
 
 
 # pylint: disable=invalid-name
@@ -149,6 +150,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
             Keys.ENTER
         )
+        sleep(1)
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
@@ -189,7 +191,18 @@ def apply_migration(app_name: str, migration_name: str):
     return wrapper_outter
 
 
-def retry(max_retires=3, exceptions=None):
+def object_manager(func: Callable):
+    """Run objectmanager before a test function"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        """Run objectmanager before a test function"""
+        ObjectManager().run()
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:

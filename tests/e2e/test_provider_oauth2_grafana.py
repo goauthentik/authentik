@@ -24,7 +24,13 @@ from authentik.providers.oauth2.generators import (
     generate_client_secret,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
-from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    object_manager,
+    retry,
+)
 
 LOGGER = get_logger()
 APPLICATION_SLUG = "grafana"
@@ -78,6 +84,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_redirect_uri_error(self):
         """test OpenID Provider flow (invalid redirect URI, check error message)"""
         sleep(1)
@@ -118,6 +125,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_authorization_consent_implied(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         sleep(1)
@@ -178,6 +187,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_authorization_logout(self):
         """test OpenID Provider flow with logout"""
         sleep(1)
@@ -246,6 +257,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_authorization_consent_explicit(self):
         """test OpenID Provider flow (default authorization flow with explicit consent)"""
         sleep(1)
@@ -278,15 +291,22 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
         self.login()
 
-        self.assertEqual(
-            app.name,
-            self.driver.find_element(By.ID, "application-name").text,
-        )
         self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "[type=submit]"))
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
         )
         sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
+            app.name,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+        )
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            ("[type=submit]"),
+        ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")
@@ -318,6 +338,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_denied(self):
         """test OpenID Provider flow (default authorization with access deny)"""
         sleep(1)

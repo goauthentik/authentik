@@ -39,7 +39,6 @@ class TestFlowsEnroll(SeleniumTestCase):
     @retry()
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
-    # pylint: disable=too-many-locals
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # First stage fields
@@ -228,7 +227,11 @@ class TestFlowsEnroll(SeleniumTestCase):
         # Second prompt stage
         flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        wait = WebDriverWait(prompt_stage, self.wait_timeout)
 
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=name]"))
+        )
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=name]").send_keys(
             "some name"
         )

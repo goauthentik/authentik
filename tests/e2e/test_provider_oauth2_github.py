@@ -64,6 +64,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects
@@ -117,6 +118,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_explicit(self):
         """test OAuth Provider flow (default authorization flow with explicit consent)"""
         # Bootstrap all needed objects
@@ -142,7 +144,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.login()
 
         sleep(3)
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
+        )
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
@@ -153,7 +157,9 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
-            consent_stage.find_element(By.CSS_SELECTOR, "[data-permission-code='user:email']").text,
+            consent_stage.find_element(
+                By.CSS_SELECTOR, "[data-permission-code='user:email']"
+            ).text,
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -189,6 +195,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
     @apply_migration("authentik_core", "0003_default_user")
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_denied(self):
         """test OAuth Provider flow (default authorization flow, denied)"""
         # Bootstrap all needed objects
