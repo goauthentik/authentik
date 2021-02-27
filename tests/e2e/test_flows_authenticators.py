@@ -17,7 +17,7 @@ from authentik.flows.models import Flow, FlowStageBinding
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -25,6 +25,8 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
     def test_totp_validate(self):
         """test flow with otp stages"""
         sleep(1)
@@ -61,6 +63,9 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assert_user(USER())
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
     def test_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
@@ -108,6 +113,9 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assertTrue(TOTPDevice.objects.filter(user=USER(), confirmed=True).exists())
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")
     def test_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")

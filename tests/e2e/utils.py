@@ -1,6 +1,6 @@
 """authentik e2e testing utilities"""
 import json
-from functools import wraps
+from functools import lru_cache, wraps
 from glob import glob
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isfunction
@@ -57,7 +57,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.driver.maximize_window()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.apply_default_data()
         self.logger = get_logger()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
@@ -166,35 +165,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.assertEqual(user["name"].value, expected_user.name)
         self.assertEqual(user["email"].value, expected_user.email)
 
-    def apply_default_data(self):
-        """apply objects created by migrations after tables have been truncated"""
-        # Not all default objects are managed, like users for example
-        # Hence we still have to load all migrations and apply them, then run the ObjectManager
-        # Find all migration files
-        # load all functions
-        migration_files = glob("**/migrations/*.py", recursive=True)
-        matches = []
-        for migration in migration_files:
-            with open(migration, "r+") as migration_file:
-                # Check if they have a `RunPython`
-                if "RunPython" in migration_file.read():
-                    matches.append(migration)
 
-        with connection.schema_editor() as schema_editor:
-            for match in matches:
-                # Load module from file path
-                spec = spec_from_file_location("", match)
-                migration_module = module_from_spec(spec)
-                # pyright: reportGeneralTypeIssues=false
-                spec.loader.exec_module(migration_module)
-                # Call all functions from module
-                for _, func in getmembers(migration_module, isfunction):
-                    with transaction.atomic():
-                        try:
-                            func(apps, schema_editor)
-                        except IntegrityError:
-                            pass
-        ObjectManager().run()
+@lru_cache
+def get_loader():
+    """Thin wrapper to lazily get a Migration Loader, only when it's needed
+    and only once"""
+    return MigrationLoader(connection)
 
 
 def apply_migration(app_name: str, migration_name: str):
@@ -203,11 +179,9 @@ def apply_migration(app_name: str, migration_name: str):
     def wrapper_outter(func: Callable):
         """Retry test multiple times"""
 
-        loader = MigrationLoader(connection)
-
         @wraps(func)
         def wrapper(self: TransactionTestCase, *args, **kwargs):
-            migration = loader.get_migration(app_name, migration_name)
+            migration = get_loader().get_migration(app_name, migration_name)
             with connection.schema_editor() as schema_editor:
                 for operation in migration.operations:
                     if not isinstance(operation, RunPython):

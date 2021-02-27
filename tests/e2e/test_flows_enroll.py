@@ -16,7 +16,7 @@ from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 from authentik.stages.user_write.models import UserWriteStage
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -37,6 +37,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         }
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
     # pylint: disable=too-many-locals
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
@@ -101,6 +103,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.assertEqual(user.email, "foo@bar.baz")
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend")
     def test_enroll_email(self):
         """Test enroll with Email verification"""
