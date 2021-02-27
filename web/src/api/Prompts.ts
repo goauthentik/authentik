@@ -25,6 +25,6 @@ export class Prompt {
     }
 
     static adminUrl(rest: string): string {
-        return `/administration/stages/prompts/${rest}`;
+        return `/administration/stages_prompts/${rest}`;
     }
 }
