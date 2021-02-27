@@ -11,6 +11,7 @@ from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
@@ -20,7 +21,7 @@ from authentik.providers.oauth2.generators import (
     generate_client_secret,
 )
 from authentik.sources.oauth.models import OAuthSource
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 CONFIG_PATH = "/tmp/dex.yml"  # nosec
 LOGGER = get_logger()
@@ -107,17 +108,28 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
 
@@ -133,12 +145,22 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        self.wait.until(ec.presence_of_element_located((By.NAME, "username")))
         # At this point we've been redirected back
         # and we're asked for the username
-        self.driver.find_element(By.NAME, "username").click()
-        self.driver.find_element(By.NAME, "username").send_keys("foo")
-        self.driver.find_element(By.NAME, "username").send_keys(Keys.ENTER)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        prompt_stage = self.get_shadow_root(
+            "ak-stage-prompt", flow_executor
+        )
+
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=username]"
+        ).click()
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=username]"
+        ).send_keys("foo")
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=username]"
+        ).send_keys(Keys.ENTER)
 
         # Wait until we've logged in
         self.wait_for_url(self.shell_url("/library"))
@@ -157,6 +179,11 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     @override_settings(SESSION_COOKIE_SAMESITE="strict")
     def test_oauth_samesite_strict(self):
         """test OAuth Source With SameSite set to strict
@@ -164,12 +191,18 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.create_objects()
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
 
@@ -185,31 +218,33 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
-        self.wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-alert__title"))
-        )
-        self.assertEqual(
-            self.driver.find_element(By.CSS_SELECTOR, ".pf-c-alert__title").text,
-            "Authentication Failed.",
-        )
-
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_oauth_enroll_auth(self):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
         # We're logged in at the end of this, log out and re-login
         self.driver.get(self.url("authentik_flows:default-invalidation"))
+        sleep(1)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
 
-        self.wait.until(
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        sleep(1)
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
-        sleep(1)
+
         # Now we should be at the IDP, wait for the login field
         self.wait.until(ec.presence_of_element_located((By.ID, "login")))
         self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
@@ -288,17 +323,28 @@ class TestSourceOAuth1(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0009_source_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
         self.create_objects()
         self.driver.get(self.live_server_url)
 
-        self.wait.until(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
             ec.presence_of_element_located(
                 (By.CLASS_NAME, "pf-c-login__main-footer-links-item-link")
             )
         )
-        self.driver.find_element(
+        identification_stage.find_element(
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
 
