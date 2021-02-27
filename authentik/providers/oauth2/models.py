@@ -4,6 +4,7 @@ import binascii
 import json
 import time
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Type
 from urllib.parse import urlparse
@@ -480,10 +481,14 @@ class RefreshToken(ExpiringModel, BaseGrantModel):
             now + timedelta_from_string(self.provider.token_validity).seconds
         )
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        auth_event = Event.objects.filter(
+        auth_events = Event.objects.filter(
             action=EventAction.LOGIN, user=get_user(user)
-        ).latest("created")
-        auth_time = int(dateformat.format(auth_event.created, "U"))
+        ).order_by("-created")
+        # Fallback in case we can't find any login events
+        auth_time = datetime.now()
+        if auth_events.exists():
+            auth_time = auth_events.first().created
+        auth_time = int(dateformat.format(auth_time, "U"))
 
         token = IDToken(
             iss=self.provider.get_issuer(request),
