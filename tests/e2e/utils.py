@@ -1,19 +1,15 @@
 """authentik e2e testing utilities"""
 import json
 from functools import lru_cache, wraps
-from glob import glob
-from importlib.util import module_from_spec, spec_from_file_location
-from inspect import getmembers, isfunction
 from os import environ, makedirs
 from time import sleep, time
 from typing import Any, Callable, Optional
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.db import connection, transaction
+from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.db.migrations.operations.special import RunPython
-from django.db.utils import IntegrityError
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
 from docker import DockerClient, from_env
@@ -34,7 +30,6 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
-from authentik.managed.manager import ObjectManager
 
 
 # pylint: disable=invalid-name

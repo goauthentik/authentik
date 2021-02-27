@@ -108,7 +108,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
         AuthentikOutpostConfig.init_local_connection()
-        SeleniumTestCase().apply_default_data()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
             authorization_flow=Flow.objects.get(

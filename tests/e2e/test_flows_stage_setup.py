@@ -1,6 +1,5 @@
 """test stage setup flows (password change)"""
 from sys import platform
-from time import sleep
 from unittest.case import skipUnless
 
 from selenium.webdriver.common.by import By
