@@ -161,7 +161,7 @@ class PromptStageView(ChallengeStageView):
     response_class = PromptResponseChallenge
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        fields = list(self.executor.current_stage.fields.all())
+        fields = list(self.executor.current_stage.fields.all().order_by("order"))
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.native,
@@ -185,5 +185,4 @@ class PromptStageView(ChallengeStageView):
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
             self.executor.plan.context[PLAN_CONTEXT_PROMPT] = {}
         self.executor.plan.context[PLAN_CONTEXT_PROMPT].update(response.validated_data)
-        print(self.executor.plan.context[PLAN_CONTEXT_PROMPT])
         return self.executor.stage_ok()
