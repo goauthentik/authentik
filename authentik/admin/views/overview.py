@@ -18,7 +18,7 @@ class PolicyCacheClearView(AdminRequiredMixin, SuccessMessageMixin, FormView):
     """View to clear Policy cache"""
 
     form_class = PolicyCacheClearForm
-
+    success_url = "/"
     template_name = "generic/form_non_model.html"
     success_message = _("Successfully cleared Policy cache")
 
@@ -36,7 +36,7 @@ class FlowCacheClearView(AdminRequiredMixin, SuccessMessageMixin, FormView):
     """View to clear Flow cache"""
 
     form_class = FlowCacheClearForm
-
+    success_url = "/"
     template_name = "generic/form_non_model.html"
     success_message = _("Successfully cleared Flow cache")
 
