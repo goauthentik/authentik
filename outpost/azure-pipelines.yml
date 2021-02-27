@@ -1,6 +1,7 @@
 trigger:
   - master
   - next
+  - version-*
 
 variables:
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
