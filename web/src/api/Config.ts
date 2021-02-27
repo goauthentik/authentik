@@ -3,7 +3,6 @@ import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
-import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 
 export class Config {
     branding_logo: string;
@@ -25,7 +24,6 @@ export class Config {
                     release: `authentik@${VERSION}`,
                     integrations: [
                         new Integrations.BrowserTracing(),
-                        new CaptureConsoleIntegration(),
                     ],
                     tracesSampleRate: 0.6,
                     environment: config.error_reporting_environment,
