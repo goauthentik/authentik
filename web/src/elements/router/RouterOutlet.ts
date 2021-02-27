@@ -3,7 +3,6 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 // @ts-ignore
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
-import { ColorStyles } from "../../constants";
 import { COMMON_STYLES } from "../../common/styles";
 import { Route } from "./Route";
 import { ROUTES } from "../../routes";
@@ -23,7 +22,6 @@ export class RouterOutlet extends LitElement {
         return [
             CodeMirrorStyle,
             CodeMirrorTheme,
-            ColorStyles,
             css`
                 :host {
                     height: 100vh;
