@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
+import { CaptureConsole as CaptureConsoleIntegration } from "@sentry/integrations";
 
 export class Config {
     branding_logo: string;
@@ -22,7 +23,10 @@ export class Config {
                 Sentry.init({
                     dsn: "https://a579bb09306d4f8b8d8847c052d3a1d3@sentry.beryju.org/8",
                     release: `authentik@${VERSION}`,
-                    integrations: [new Integrations.BrowserTracing()],
+                    integrations: [
+                        new Integrations.BrowserTracing(),
+                        new CaptureConsoleIntegration(),
+                    ],
                     tracesSampleRate: 0.6,
                     environment: config.error_reporting_environment,
                     beforeSend(event: Sentry.Event, hint: Sentry.EventHint) {
