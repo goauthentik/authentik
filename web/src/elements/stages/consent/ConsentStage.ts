@@ -50,13 +50,13 @@ export class ConsentStage extends BaseStage {
                     </div>
 
                     <div class="pf-c-form__group">
-                        <p>
+                        <p id="header-text">
                             ${this.challenge.header_text}
                         </p>
                         <p>${gettext("Application requires following permissions")}</p>
                         <ul class="pf-c-list" id="permmissions">
                             ${(this.challenge.permissions || []).map((permission) => {
-                                return html`<li id="permission-${permission.id}">${permission.name}</li>`;
+                                return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
                             })}
                         </ul>
                     </div>
