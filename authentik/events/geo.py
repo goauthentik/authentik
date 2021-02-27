@@ -10,7 +10,7 @@ from authentik.lib.config import CONFIG
 def get_geoip_reader() -> Optional[Reader]:
     """Get GeoIP Reader, if configured, otherwise none"""
     path = CONFIG.y("authentik.geoip")
-    if path == "":
+    if path == "" or not path:
         return None
     return Reader(path)
 
