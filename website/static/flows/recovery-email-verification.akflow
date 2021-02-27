@@ -115,7 +115,7 @@
             },
             "model": "authentik_stages_user_login.userloginstage",
             "attrs": {
-                "session_duration": "seconds=-1"
+                "session_duration": "seconds=0"
             }
         },
         {
