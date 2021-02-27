@@ -38,7 +38,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
         self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
         self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.wait_for_url(self.shell_url("/library"))
 
         self.driver.get(
             self.url(
@@ -51,7 +51,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
         self.driver.find_element(By.ID, "id_password_repeat").send_keys(new_password)
         self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
 
-        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.wait_for_url(self.shell_url("/library"))
         # Because USER() is cached, we need to get the user manually here
         user = User.objects.get(username=USER().username)
         self.assertTrue(user.check_password(new_password))

@@ -9,7 +9,6 @@ from channels.testing import ChannelsLiveServerTestCase
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 from authentik import __version__
 from authentik.core.models import Application
@@ -22,7 +21,7 @@ from authentik.outposts.models import (
     OutpostType,
 )
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -94,13 +93,7 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
 
         self.driver.get("http://localhost:4180")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-
+        self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
