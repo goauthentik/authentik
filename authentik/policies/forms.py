@@ -2,6 +2,7 @@
 
 from django import forms
 
+from authentik.core.models import Group
 from authentik.lib.widgets import GroupedModelChoiceField
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 
@@ -15,6 +16,9 @@ class PolicyBindingForm(forms.ModelForm):
     )
     policy = GroupedModelChoiceField(
         queryset=Policy.objects.all().select_subclasses(), required=False
+    )
+    group = forms.ModelChoiceField(
+        queryset=Group.objects.all().order_by("name"), required=False
     )
 
     def __init__(self, *args, **kwargs):  # pragma: no cover
