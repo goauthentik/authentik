@@ -77,7 +77,8 @@ class LDAPPasswordChanger:
         """Change user's password"""
         user_dn = user.attributes.get(LDAP_DISTINGUISHED_NAME, None)
         if not user_dn:
-            raise AttributeError(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
+            LOGGER.info(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
+            return
         self._source.connection.extend.microsoft.modify_password(user_dn, password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
