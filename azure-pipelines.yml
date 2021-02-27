@@ -1,6 +1,7 @@
 trigger:
   - master
   - next
+  - version-*
 
 resources:
   - repo: self

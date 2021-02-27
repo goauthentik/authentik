@@ -157,7 +157,13 @@ class FlowImporter:
         entries = deepcopy(self.__import.entries)
         for entry in entries:
             model_app_label, model_name = entry.model.split(".")
-            model: SerializerModel = apps.get_model(model_app_label, model_name)
+            try:
+                model: SerializerModel = apps.get_model(model_app_label, model_name)
+            except LookupError:
+                self.logger.error(
+                    "app or model does not exist", app=model_app_label, model=model_name
+                )
+                return False
             # Validate each single entry
             try:
                 serializer = self._validate_single(entry)

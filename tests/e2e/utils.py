@@ -203,11 +203,11 @@ def apply_migration(app_name: str, migration_name: str):
     def wrapper_outter(func: Callable):
         """Retry test multiple times"""
 
-        LOADER = MigrationLoader(connection)
+        loader = MigrationLoader(connection)
 
         @wraps(func)
         def wrapper(self: TransactionTestCase, *args, **kwargs):
-            migration = LOADER.get_migration(app_name, migration_name)
+            migration = loader.get_migration(app_name, migration_name)
             with connection.schema_editor() as schema_editor:
                 for operation in migration.operations:
                     if not isinstance(operation, RunPython):

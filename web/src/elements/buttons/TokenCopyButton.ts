@@ -4,7 +4,8 @@ import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import { Token } from "../../api/Tokens";
-import { ColorStyles, ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
+import { ColorStyles } from "../../common/styles";
 
 @customElement("ak-token-copy-button")
 export class TokenCopyButton extends LitElement {

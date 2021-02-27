@@ -1,5 +1,6 @@
 """Source API Views"""
 from datetime import datetime
+from time import time
 
 from django.core.cache import cache
 from django.db.models.base import Model
@@ -68,7 +69,7 @@ class LDAPSourceViewSet(ModelViewSet):
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source = self.get_object()
-        last_sync = cache.get(source.state_cache_prefix("last_sync"), None)
+        last_sync = cache.get(source.state_cache_prefix("last_sync"), time())
         return Response(
             LDAPSourceSyncStatusSerializer(
                 {"last_sync": datetime.fromtimestamp(last_sync)}
