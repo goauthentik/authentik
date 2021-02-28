@@ -5,8 +5,7 @@ import { User } from "./Users";
 
 export class PolicyBinding {
     pk: string;
-    policy: string;
-    policy_obj?: Policy;
+    policy?: Policy;
     group?: Group;
     user?: User;
     target: string;

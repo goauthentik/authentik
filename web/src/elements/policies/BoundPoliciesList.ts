@@ -33,8 +33,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     getPolicyUserGroupRow(item: PolicyBinding): string {
-        if (item.policy_obj) {
-            return gettext(`Policy ${item.policy_obj.name}`);
+        if (item.policy) {
+            return gettext(`Policy ${item.policy.name}`);
         } else if (item.group) {
             return gettext(`Group ${item.group.name}`);
         } else if (item.user) {
