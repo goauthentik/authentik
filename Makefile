@@ -1,20 +1,15 @@
 all: lint-fix lint coverage gen
 
-test-full:
-	coverage run manage.py test --failfast -v 3 .
-	coverage html
-	coverage report
-
 test-integration:
 	k3d cluster create || exit 0
 	k3d kubeconfig write -o ~/.kube/config --overwrite
-	coverage run manage.py test --failfast -v 3 tests/integration
+	coverage run manage.py test -v 3 tests/integration
 
 test-e2e:
-	coverage run manage.py test --failfast -v 3 tests/e2e
+	coverage run manage.py test -v 3 tests/e2e
 
 coverage:
-	coverage run manage.py test --failfast -v 3 authentik
+	coverage run manage.py test -v 3 authentik
 	coverage html
 	coverage report
 

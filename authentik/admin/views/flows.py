@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, UpdateView
 from guardian.mixins import PermissionRequiredMixin
@@ -36,7 +37,7 @@ class FlowCreateView(
     permission_required = "authentik_flows.add_flow"
 
     template_name = "generic/create.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Flow")
 
 
@@ -53,7 +54,7 @@ class FlowUpdateView(
     permission_required = "authentik_flows.change_flow"
 
     template_name = "generic/update.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Flow")
 
 
@@ -64,7 +65,7 @@ class FlowDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageV
     permission_required = "authentik_flows.delete_flow"
 
     template_name = "generic/delete.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Flow")
 
 
@@ -104,7 +105,7 @@ class FlowImportView(LoginRequiredMixin, FormView):
 
     form_class = FlowImportForm
     template_name = "administration/flow/import.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:

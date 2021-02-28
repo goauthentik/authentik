@@ -1,19 +1,17 @@
 """authentik e2e testing utilities"""
 import json
-from functools import wraps
-from glob import glob
-from importlib.util import module_from_spec, spec_from_file_location
-from inspect import getmembers, isfunction
+from functools import lru_cache, wraps
 from os import environ, makedirs
 from time import sleep, time
 from typing import Any, Callable, Optional
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.db import connection, transaction
-from django.db.utils import IntegrityError
-from django.shortcuts import reverse
+from django.db import connection
+from django.db.migrations.loader import MigrationLoader
+from django.db.migrations.operations.special import RunPython
 from django.test.testcases import TransactionTestCase
+from django.urls import reverse
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium import webdriver
@@ -24,7 +22,9 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from structlog.stdlib import get_logger
 
@@ -43,15 +43,16 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     container: Optional[Container] = None
+    wait_timeout: int
 
     def setUp(self):
         super().setUp()
+        self.wait_timeout = 60
         makedirs("selenium_screenshots/", exist_ok=True)
         self.driver = self._get_driver()
         self.driver.maximize_window()
         self.driver.implicitly_wait(30)
-        self.wait = WebDriverWait(self.driver, 60)
-        self.apply_default_data()
+        self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.logger = get_logger()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
@@ -108,9 +109,48 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)
 
-    def shell_url(self, view, **kwargs) -> str:
+    def shell_url(self, view) -> str:
         """same as self.url() but show URL in shell"""
-        return f"{self.live_server_url}/#{reverse(view, kwargs=kwargs)}"
+        return f"{self.live_server_url}/#{view}"
+
+    def get_shadow_root(
+        self, selector: str, container: Optional[WebElement] = None
+    ) -> WebElement:
+        """Get shadow root element's inner shadowRoot"""
+        if not container:
+            container = self.driver
+        shadow_root = container.find_element(By.CSS_SELECTOR, selector)
+        element = self.driver.execute_script(
+            "return arguments[0].shadowRoot", shadow_root
+        )
+        return element
+
+    def login(self):
+        """Do entire login flow and check user afterwards"""
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root(
+            "ak-stage-identification", flow_executor
+        )
+
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).click()
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(USER().username)
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uid_field]"
+        ).send_keys(Keys.ENTER)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            USER().username
+        )
+        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+            Keys.ENTER
+        )
+        sleep(1)
 
     def assert_user(self, expected_user: User):
         """Check users/me API and assert it matches expected_user"""
@@ -122,35 +162,45 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.assertEqual(user["name"].value, expected_user.name)
         self.assertEqual(user["email"].value, expected_user.email)
 
-    def apply_default_data(self):
-        """apply objects created by migrations after tables have been truncated"""
-        # Not all default objects are managed, like users for example
-        # Hence we still have to load all migrations and apply them, then run the ObjectManager
-        # Find all migration files
-        # load all functions
-        migration_files = glob("**/migrations/*.py", recursive=True)
-        matches = []
-        for migration in migration_files:
-            with open(migration, "r+") as migration_file:
-                # Check if they have a `RunPython`
-                if "RunPython" in migration_file.read():
-                    matches.append(migration)
 
-        with connection.schema_editor() as schema_editor:
-            for match in matches:
-                # Load module from file path
-                spec = spec_from_file_location("", match)
-                migration_module = module_from_spec(spec)
-                # pyright: reportGeneralTypeIssues=false
-                spec.loader.exec_module(migration_module)
-                # Call all functions from module
-                for _, func in getmembers(migration_module, isfunction):
-                    with transaction.atomic():
-                        try:
-                            func(apps, schema_editor)
-                        except IntegrityError:
-                            pass
+@lru_cache
+def get_loader():
+    """Thin wrapper to lazily get a Migration Loader, only when it's needed
+    and only once"""
+    return MigrationLoader(connection)
+
+
+def apply_migration(app_name: str, migration_name: str):
+    """Re-apply migrations that create objects using RunPython before test cases"""
+
+    def wrapper_outter(func: Callable):
+        """Retry test multiple times"""
+
+        @wraps(func)
+        def wrapper(self: TransactionTestCase, *args, **kwargs):
+            migration = get_loader().get_migration(app_name, migration_name)
+            with connection.schema_editor() as schema_editor:
+                for operation in migration.operations:
+                    if not isinstance(operation, RunPython):
+                        continue
+                    operation.code(apps, schema_editor)
+            return func(self, *args, **kwargs)
+
+        return wrapper
+
+    return wrapper_outter
+
+
+def object_manager(func: Callable):
+    """Run objectmanager before a test function"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        """Run objectmanager before a test function"""
         ObjectManager().run()
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 def retry(max_retires=3, exceptions=None):

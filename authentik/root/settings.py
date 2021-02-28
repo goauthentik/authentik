@@ -108,22 +108,22 @@ INSTALLED_APPS = [
     "authentik.sources.ldap.apps.AuthentikSourceLDAPConfig",
     "authentik.sources.oauth.apps.AuthentikSourceOAuthConfig",
     "authentik.sources.saml.apps.AuthentikSourceSAMLConfig",
-    "authentik.stages.captcha.apps.AuthentikStageCaptchaConfig",
-    "authentik.stages.consent.apps.AuthentikStageConsentConfig",
-    "authentik.stages.dummy.apps.AuthentikStageDummyConfig",
-    "authentik.stages.email.apps.AuthentikStageEmailConfig",
-    "authentik.stages.prompt.apps.AuthentikStagPromptConfig",
-    "authentik.stages.identification.apps.AuthentikStageIdentificationConfig",
-    "authentik.stages.invitation.apps.AuthentikStageUserInvitationConfig",
-    "authentik.stages.user_delete.apps.AuthentikStageUserDeleteConfig",
-    "authentik.stages.user_login.apps.AuthentikStageUserLoginConfig",
-    "authentik.stages.user_logout.apps.AuthentikStageUserLogoutConfig",
-    "authentik.stages.user_write.apps.AuthentikStageUserWriteConfig",
     "authentik.stages.authenticator_static.apps.AuthentikStageAuthenticatorStaticConfig",
     "authentik.stages.authenticator_totp.apps.AuthentikStageAuthenticatorTOTPConfig",
     "authentik.stages.authenticator_validate.apps.AuthentikStageAuthenticatorValidateConfig",
     "authentik.stages.authenticator_webauthn.apps.AuthentikStageAuthenticatorWebAuthnConfig",
+    "authentik.stages.captcha.apps.AuthentikStageCaptchaConfig",
+    "authentik.stages.consent.apps.AuthentikStageConsentConfig",
+    "authentik.stages.dummy.apps.AuthentikStageDummyConfig",
+    "authentik.stages.email.apps.AuthentikStageEmailConfig",
+    "authentik.stages.identification.apps.AuthentikStageIdentificationConfig",
+    "authentik.stages.invitation.apps.AuthentikStageUserInvitationConfig",
     "authentik.stages.password.apps.AuthentikStagePasswordConfig",
+    "authentik.stages.prompt.apps.AuthentikStagePromptConfig",
+    "authentik.stages.user_delete.apps.AuthentikStageUserDeleteConfig",
+    "authentik.stages.user_login.apps.AuthentikStageUserLoginConfig",
+    "authentik.stages.user_logout.apps.AuthentikStageUserLogoutConfig",
+    "authentik.stages.user_write.apps.AuthentikStageUserWriteConfig",
     "rest_framework",
     "django_filters",
     "drf_yasg2",
@@ -470,8 +470,6 @@ for _app in INSTALLED_APPS:
             pass
 
 if DEBUG:
-    INSTALLED_APPS.append("debug_toolbar")
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
     CELERY_TASK_ALWAYS_EAGER = True
 
 INSTALLED_APPS.append("authentik.core.apps.AuthentikCoreConfig")

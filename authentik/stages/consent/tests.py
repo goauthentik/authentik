@@ -1,8 +1,8 @@
 """consent tests"""
 from time import sleep
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Application, User
@@ -45,13 +45,13 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
         self.assertFalse(UserConsent.objects.filter(user=self.user).exists())
 
@@ -76,13 +76,13 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
         self.assertTrue(
             UserConsent.objects.filter(
@@ -113,13 +113,13 @@ class TestConsentStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {},
         )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
         self.assertTrue(
             UserConsent.objects.filter(

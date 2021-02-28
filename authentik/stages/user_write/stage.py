@@ -22,6 +22,8 @@ class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        """Save data in the current flow to the currently pending user. If no user is pending,
+        a new user is created."""
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
             message = _("No Pending data.")
             messages.error(request, message)

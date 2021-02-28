@@ -18,8 +18,6 @@ class ChannelsStorage(FallbackStorage):
     def _store(self, messages: list[Message], response, *args, **kwargs):
         prefix = f"user_{self.request.session.session_key}_messages_"
         keys = cache.keys(f"{prefix}*")
-        if len(keys) < 1:
-            return super()._store(messages, response, *args, **kwargs)
         for key in keys:
             uid = key.replace(prefix, "")
             for message in messages:
@@ -32,4 +30,3 @@ class ChannelsStorage(FallbackStorage):
                         "message": message.message,
                     },
                 )
-        return None

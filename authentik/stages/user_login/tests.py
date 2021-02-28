@@ -1,8 +1,8 @@
 """login tests"""
 from unittest.mock import patch
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
@@ -47,15 +47,13 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     @patch(
@@ -72,9 +70,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
@@ -95,9 +91,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)

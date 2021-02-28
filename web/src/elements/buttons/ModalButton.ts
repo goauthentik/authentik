@@ -108,7 +108,7 @@ export class ModalButton extends LitElement {
                             level_tag: "error",
                             message: "Unexpected error"
                         });
-                        console.log(e);
+                        console.error(e);
                     });
             });
         });
@@ -136,7 +136,7 @@ export class ModalButton extends LitElement {
                         level_tag: "error",
                         message: "Unexpected error"
                     });
-                    console.log(e);
+                    console.error(e);
                 });
         }
     }

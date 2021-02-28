@@ -59,6 +59,7 @@ class OutpostViewSet(ModelViewSet):
         "name",
         "providers__name",
     ]
+    ordering = ["name"]
 
     @swagger_auto_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True)

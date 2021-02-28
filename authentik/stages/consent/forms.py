@@ -4,10 +4,6 @@ from django import forms
 from authentik.stages.consent.models import ConsentStage
 
 
-class ConsentForm(forms.Form):
-    """authentik consent stage form"""
-
-
 class ConsentStageForm(forms.ModelForm):
     """Form to edit ConsentStage Instance"""
 

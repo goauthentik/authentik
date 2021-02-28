@@ -2,8 +2,8 @@
 from base64 import b64encode
 
 from django.conf import settings
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 
 
 class TestRoot(TestCase):

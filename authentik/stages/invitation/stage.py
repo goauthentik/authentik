@@ -15,6 +15,7 @@ class InvitationStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
+        """Apply data to the current flow based on a URL"""
         stage: InvitationStage = self.executor.current_stage
         if INVITATION_TOKEN_KEY not in request.GET:
             # No Invitation was given, raise error or continue

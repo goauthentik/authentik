@@ -1,8 +1,8 @@
 """invitation tests"""
 from unittest.mock import MagicMock, patch
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 from guardian.shortcuts import get_anonymous_user
 
@@ -58,9 +58,7 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, AccessDeniedResponse)
@@ -81,15 +79,13 @@ class TestUserLoginStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
         self.stage.continue_flow_without_invitation = False
@@ -115,7 +111,7 @@ class TestUserLoginStage(TestCase):
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             base_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             )
             response = self.client.get(
                 base_url + f"?{INVITATION_TOKEN_KEY}={invite.pk.hex}"
@@ -128,5 +124,5 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )

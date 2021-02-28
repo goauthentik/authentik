@@ -21,20 +21,6 @@ export function hexEncode(buf: Uint8Array): string {
         .join("");
 }
 
-export interface GenericResponse {
-    fail?: string;
-    success?: string;
-    [key: string]: string | number | GenericResponse | undefined;
-}
-
-async function fetchJSON(url: string, options: RequestInit): Promise<GenericResponse> {
-    const response = await fetch(url, options);
-    const body = await response.json();
-    if (body.fail)
-        throw body.fail;
-    return body;
-}
-
 /**
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
@@ -82,52 +68,6 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         clientData: b64enc(clientDataJSON),
         registrationClientExtensions: JSON.stringify(registrationClientExtensions)
     };
-}
-
-/**
- * Post the assertion to the server for validation and logging the user in.
- * @param {Object} assertionDataForServer
- */
-export async function postNewAssertionToServer(assertionDataForServer: Assertion): Promise<GenericResponse> {
-    const formData = new FormData();
-    Object.entries(assertionDataForServer).forEach(([key, value]) => {
-        formData.set(key, value);
-    });
-
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/verify-credential-info/", {
-        method: "POST",
-        body: formData
-    });
-}
-
-/**
- * Get PublicKeyCredentialRequestOptions for this user from the server
- * formData of the registration form
- * @param {FormData} formData
- */
-export async function getCredentialCreateOptionsFromServer(): Promise<GenericResponse> {
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/begin-activate/",
-        {
-            method: "POST",
-        }
-    );
-}
-
-
-/**
- * Get PublicKeyCredentialRequestOptions for this user from the server
- * formData of the registration form
- * @param {FormData} formData
- */
-export async function getCredentialRequestOptionsFromServer(): Promise<GenericResponse> {
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/begin-assertion/",
-        {
-            method: "POST",
-        }
-    );
 }
 
 function u8arr(input: string): Uint8Array {
@@ -181,21 +121,4 @@ export function transformAssertionForServer(newAssertion: PublicKeyCredential): 
         signature: hexEncode(sig),
         assertionClientExtensions: JSON.stringify(assertionClientExtensions)
     };
-}
-
-/**
- * Post the assertion to the server for validation and logging the user in.
- * @param {Object} assertionDataForServer
- */
-export async function postAssertionToServer(assertionDataForServer: Assertion): Promise<GenericResponse> {
-    const formData = new FormData();
-    Object.entries(assertionDataForServer).forEach(([key, value]) => {
-        formData.set(key, value);
-    });
-
-    return await fetchJSON(
-        "/-/user/authenticator/webauthn/verify-assertion/", {
-            method: "POST",
-            body: formData
-    });
 }

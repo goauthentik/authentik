@@ -6,7 +6,6 @@ from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.core.models import Application
@@ -18,7 +17,7 @@ from authentik.providers.oauth2.generators import (
     generate_client_secret,
 )
 from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -62,6 +61,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         }
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_implied(self):
         """test OAuth Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects
@@ -84,11 +87,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
         self.driver.get("http://localhost:3000/profile")
@@ -116,6 +115,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_authorization_consent_explicit(self):
         """test OAuth Provider flow (default authorization flow with explicit consent)"""
         # Bootstrap all needed objects
@@ -138,23 +141,27 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
-        sleep(1)
+        sleep(3)
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
+        )
 
-        self.assertEqual(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
             app.name,
-            self.driver.find_element(By.ID, "application-name").text,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
         )
         self.assertEqual(
             "GitHub Compatibility: Access you Email addresses",
-            self.driver.find_element(By.ID, "scope-user:email").text,
+            consent_stage.find_element(
+                By.CSS_SELECTOR, "[data-permission-code='user:email']"
+            ).text,
         )
-        self.driver.find_element(
+        consent_stage.find_element(
             By.CSS_SELECTOR,
             ("[type=submit]"),
         ).click()
@@ -185,6 +192,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
     def test_denied(self):
         """test OAuth Provider flow (default authorization flow, denied)"""
         # Bootstrap all needed objects
@@ -212,11 +223,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
 
         self.driver.get("http://localhost:3000")
         self.driver.find_element(By.CLASS_NAME, "btn-service--github").click()
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))

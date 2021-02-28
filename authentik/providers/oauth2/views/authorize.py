@@ -9,6 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
@@ -48,14 +49,14 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
-    PLAN_CONTEXT_CONSENT_TEMPLATE,
+    PLAN_CONTEXT_CONSENT_HEADER,
+    PLAN_CONTEXT_CONSENT_PERMISSIONS,
     ConsentStageView,
 )
 
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
-PLAN_CONTEXT_SCOPE_DESCRIPTIONS = "scope_descriptions"
 SESSION_NEEDS_LOGIN = "authentik_oauth2_needs_login"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSNET, PROMPT_LOGIN}
@@ -232,7 +233,9 @@ class OAuthFulfillmentStage(StageView):
     params: OAuthAuthorizationParams
     provider: OAuth2Provider
 
+    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """final Stage of an OAuth2 Flow"""
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(
             PLAN_CONTEXT_PARAMS
         )
@@ -432,6 +435,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         # planner.use_cache = False
         planner.allow_empty_flows = True
+        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
         plan: FlowPlan = planner.plan(
             self.request,
             {
@@ -439,11 +443,12 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 PLAN_CONTEXT_APPLICATION: self.application,
                 # OAuth2 related params
                 PLAN_CONTEXT_PARAMS: self.params,
-                PLAN_CONTEXT_SCOPE_DESCRIPTIONS: UserInfoView().get_scope_descriptions(
-                    self.params.scope
-                ),
                 # Consent related params
-                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/oauth2/consent.html",
+                PLAN_CONTEXT_CONSENT_HEADER: _(
+                    "You're about to sign into %(application)s."
+                )
+                % {"application": self.application.name},
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
             },
         )
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we

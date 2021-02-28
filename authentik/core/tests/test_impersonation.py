@@ -1,6 +1,6 @@
 """impersonation tests"""
-from django.shortcuts import reverse
 from django.test.testcases import TestCase
+from django.urls import reverse
 
 from authentik.core.models import User
 

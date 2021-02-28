@@ -1,6 +1,40 @@
 import { DefaultClient, AKResponse, QueryArguments, BaseInheritanceModel } from "./Client";
 import { TypeCreate } from "./Providers";
 
+export enum ChallengeTypes {
+    native = "native",
+    response = "response",
+    shell = "shell",
+    redirect = "redirect",
+}
+
+export interface Error {
+    code: string;
+    string: string;
+}
+
+export interface ErrorDict {
+    [key: string]: Error[];
+}
+
+export interface Challenge {
+    type: ChallengeTypes;
+    component?: string;
+    title?: string;
+    response_errors?: ErrorDict;
+}
+export interface WithUserInfoChallenge extends Challenge {
+    pending_user: string;
+    pending_user_avatar: string;
+}
+
+export interface ShellChallenge extends Challenge {
+    body: string;
+}
+export interface RedirectChallenge extends Challenge {
+    to: string;
+}
+
 export enum FlowDesignation {
     Authentication = "authentication",
     Authorization = "authorization",
@@ -40,10 +74,15 @@ export class Flow {
     }
 
     static cached(): Promise<number> {
-        return DefaultClient.fetch<{ count: number }>(["flows", "all", "cached"]).then(r => {
+        return DefaultClient.fetch<{ count: number }>(["flows", "instances", "cached"]).then(r => {
             return r.count;
         });
     }
+
+    static executor(slug: string): Promise<Challenge> {
+        return DefaultClient.fetch(["flows", "executor", slug]);
+    }
+
     static adminUrl(rest: string): string {
         return `/administration/flows/${rest}`;
     }

@@ -69,9 +69,9 @@ export class RouterOutlet extends LitElement {
             console.debug(`authentik/router: route "${activeUrl}" not defined`);
             const route = new Route(
                 RegExp(""),
-                html`<div class="pf-c-page__main">
-                    <ak-router-404 url=${activeUrl}></ak-router-404>
-                </div>`
+                html`<ak-site-shell class="pf-c-page__main" url=${activeUrl}>
+                    <div slot="body"></div>
+                </ak-site-shell>`
             );
             matchedRoute = new RouteMatch(route);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};

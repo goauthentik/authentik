@@ -11,12 +11,13 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import USER, SeleniumTestCase, apply_migration, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -24,6 +25,8 @@ class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
     def test_totp_validate(self):
         """test flow with otp stages"""
         sleep(1)
@@ -37,31 +40,40 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         )
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         # Get expected token
         totp = TOTP(device.bin_key, device.step, device.t0, device.digits, device.drift)
-        self.driver.find_element(By.ID, "id_code").send_keys(totp.token())
-        self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("authentik_core:overview"))
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        validation_stage = self.get_shadow_root(
+            "ak-stage-authenticator-validate", flow_executor
+        )
+        code_stage = self.get_shadow_root(
+            "ak-stage-authenticator-validate-code", validation_stage
+        )
+
+        code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            totp.token()
+        )
+        code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            Keys.ENTER
+        )
+        self.wait_for_url(self.shell_url("/library"))
         self.assert_user(USER())
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_stages_authenticator_totp", "0006_default_setup_flow")
     def test_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.login()
+
+        self.wait_for_url(self.shell_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(
@@ -71,11 +83,16 @@ class TestFlowsAuthenticator(SeleniumTestCase):
             )
         )
 
-        # Remember the current URL as we should end up back here
-        destination_url = self.driver.current_url
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        totp_stage = self.get_shadow_root("ak-stage-authenticator-totp", flow_executor)
+        wait = WebDriverWait(totp_stage, self.wait_timeout)
 
-        self.wait.until(ec.presence_of_element_located((By.ID, "qr")))
-        otp_uri = self.driver.find_element(By.ID, "qr").get_attribute("data-otpuri")
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=otp_uri]"))
+        )
+        otp_uri = totp_stage.find_element(
+            By.CSS_SELECTOR, "input[name=otp_uri]"
+        ).get_attribute("value")
 
         # Parse the OTP URI, extract the secret and get the next token
         otp_args = urlparse(otp_uri)
@@ -85,26 +102,28 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
         totp = TOTP(secret_key)
 
-        self.driver.find_element(By.ID, "id_code").send_keys(totp.token())
-        self.driver.find_element(By.ID, "id_code").send_keys(Keys.ENTER)
-
-        self.wait_for_url(destination_url)
-        sleep(1)
+        totp_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            totp.token()
+        )
+        totp_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
+            Keys.ENTER
+        )
+        sleep(3)
 
         self.assertTrue(TOTPDevice.objects.filter(user=USER(), confirmed=True).exists())
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_stages_authenticator_static", "0005_default_setup_flow")
     def test_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
         self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.wait_for_url(self.shell_url("authentik_core:overview"))
+        self.login()
+
+        self.wait_for_url(self.shell_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(
@@ -117,11 +136,15 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         # Remember the current URL as we should end up back here
         destination_url = self.driver.current_url
 
-        token = self.driver.find_element(
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        authenticator_stage = self.get_shadow_root(
+            "ak-stage-authenticator-static", flow_executor
+        )
+        token = authenticator_stage.find_element(
             By.CSS_SELECTOR, ".ak-otp-tokens li:nth-child(1)"
         ).text
 
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+        authenticator_stage.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         self.wait_for_url(destination_url)
         sleep(1)

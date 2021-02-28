@@ -9,7 +9,6 @@ from channels.testing import ChannelsLiveServerTestCase
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 from authentik import __version__
 from authentik.core.models import Application
@@ -22,7 +21,7 @@ from authentik.outposts.models import (
     OutpostType,
 )
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase, apply_migration, object_manager, retry
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
@@ -59,6 +58,11 @@ class TestProviderProxy(SeleniumTestCase):
         return container
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_proxy_simple(self):
         """Test simple outpost setup with single provider"""
         proxy: ProxyProvider = ProxyProvider.objects.create(
@@ -94,13 +98,7 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
 
         self.driver.get("http://localhost:4180")
-
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-
+        self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
@@ -112,10 +110,14 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
         AuthentikOutpostConfig.init_local_connection()
-        SeleniumTestCase().apply_default_data()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
             authorization_flow=Flow.objects.get(

@@ -18,13 +18,6 @@ class UserFields(models.TextChoices):
     USERNAME = "username"
 
 
-class Templates(models.TextChoices):
-    """Templates to be used for the stage"""
-
-    DEFAULT_LOGIN = "stages/identification/login.html"
-    DEFAULT_RECOVERY = "stages/identification/recovery.html"
-
-
 class IdentificationStage(Stage):
     """Allows the user to identify themselves for authentication."""
 
@@ -37,7 +30,6 @@ class IdentificationStage(Stage):
             )
         ),
     )
-    template = models.TextField(choices=Templates.choices)
 
     case_insensitive_matching = models.BooleanField(
         default=True,

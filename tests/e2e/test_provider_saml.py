@@ -8,7 +8,6 @@ from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from structlog.stdlib import get_logger
 
@@ -22,7 +21,13 @@ from authentik.providers.saml.models import (
     SAMLPropertyMapping,
     SAMLProvider,
 )
-from tests.e2e.utils import USER, SeleniumTestCase, retry
+from tests.e2e.utils import (
+    USER,
+    SeleniumTestCase,
+    apply_migration,
+    object_manager,
+    retry,
+)
 
 LOGGER = get_logger()
 
@@ -66,6 +71,11 @@ class TestProviderSAML(SeleniumTestCase):
             sleep(1)
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_implicit(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -90,11 +100,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         self.container = self.setup_client(provider)
         self.driver.get("http://localhost:9009")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
         self.wait_for_url("http://localhost:9009/")
 
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
@@ -129,6 +135,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_explicit(self):
         """test SAML Provider flow SP-initiated flow (explicit consent)"""
         # Bootstrap all needed objects
@@ -153,17 +164,24 @@ class TestProviderSAML(SeleniumTestCase):
         )
         self.container = self.setup_client(provider)
         self.driver.get("http://localhost:9009")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
-        self.assertEqual(
-            app.name,
-            self.driver.find_element(By.ID, "application-name").text,
+        self.login()
+
+        self.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor"))
         )
-        sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, "[type=submit]").click()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
+            app.name,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+        )
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            ("[type=submit]"),
+        ).click()
+
         self.wait_for_url("http://localhost:9009/")
 
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
@@ -198,6 +216,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_idp_initiated_implicit(self):
         """test SAML Provider flow IdP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects
@@ -227,11 +250,7 @@ class TestProviderSAML(SeleniumTestCase):
                 application_slug=provider.application.slug,
             )
         )
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
         sleep(1)
         self.wait_for_url("http://localhost:9009/")
 
@@ -267,6 +286,11 @@ class TestProviderSAML(SeleniumTestCase):
         )
 
     @retry()
+    @apply_migration("authentik_core", "0003_default_user")
+    @apply_migration("authentik_flows", "0008_default_flows")
+    @apply_migration("authentik_flows", "0010_provider_flows")
+    @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @object_manager
     def test_sp_initiated_denied(self):
         """test SAML Provider flow SP-initiated flow (Policy denies access)"""
         # Bootstrap all needed objects
@@ -295,11 +319,7 @@ class TestProviderSAML(SeleniumTestCase):
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
         self.container = self.setup_client(provider)
         self.driver.get("http://localhost:9009/")
-        self.driver.find_element(By.ID, "id_uid_field").click()
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_uid_field").send_keys(Keys.ENTER)
-        self.driver.find_element(By.ID, "id_password").send_keys(USER().username)
-        self.driver.find_element(By.ID, "id_password").send_keys(Keys.ENTER)
+        self.login()
 
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))

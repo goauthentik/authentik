@@ -1,6 +1,6 @@
 """OAuth Source tests"""
-from django.shortcuts import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from authentik.sources.oauth.models import OAuthSource
 

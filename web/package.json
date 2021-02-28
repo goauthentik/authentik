@@ -13,10 +13,10 @@
         "@fortawesome/fontawesome-free": "^5.15.2",
         "@patternfly/patternfly": "^4.87.3",
         "@sentry/browser": "^6.2.0",
-        "@sentry/integrations": "^6.2.0",
         "@sentry/tracing": "^6.2.0",
         "@types/chart.js": "^2.9.31",
         "@types/codemirror": "0.0.108",
+        "@types/grecaptcha": "^3.0.1",
         "base64-js": "^1.5.1",
         "chart.js": "^2.9.4",
         "codemirror": "^5.59.4",
@@ -28,7 +28,8 @@
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.2",
         "rollup-plugin-external-globals": "^0.6.1",
-        "tslib": "^2.1.0"
+        "tslib": "^2.1.0",
+        "webcomponent-qr-code": "^1.0.5"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^8.2.0",

@@ -1,7 +1,8 @@
 """authentik core models"""
 from datetime import timedelta
-from hashlib import sha256
+from hashlib import md5, sha256
 from typing import Any, Optional, Type
+from urllib.parse import urlencode
 from uuid import uuid4
 
 from django.conf import settings
@@ -11,7 +12,9 @@ from django.db import models
 from django.db.models import Q, QuerySet
 from django.forms import ModelForm
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.utils.functional import cached_property
+from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
@@ -23,6 +26,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton
 from authentik.flows.models import Flow
+from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.managed.models import ManagedModel
 from authentik.policies.models import PolicyBindingModel
@@ -30,6 +34,9 @@ from authentik.policies.models import PolicyBindingModel
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
+
+GRAVATAR_URL = "https://secure.gravatar.com"
+DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 
 def default_token_duration():
@@ -125,6 +132,25 @@ class User(GuardianUserMixin, AbstractUser):
     def uid(self) -> str:
         """Generate a globall unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
+
+    @property
+    def avatar(self) -> str:
+        """Get avatar, depending on authentik.avatar setting"""
+        mode = CONFIG.raw.get("authentik").get("avatars")
+        if mode == "none":
+            return DEFAULT_AVATAR
+        if mode == "gravatar":
+            parameters = [
+                ("s", "158"),
+                ("r", "g"),
+            ]
+            # gravatar uses md5 for their URLs, so md5 can't be avoided
+            mail_hash = md5(self.email.encode("utf-8")).hexdigest()  # nosec
+            gravatar_url = (
+                f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
+            )
+            return escape(gravatar_url)
+        raise ValueError(f"Invalid avatar mode {mode}")
 
     class Meta:
 

@@ -23,6 +23,7 @@ class NotConfiguredAction(models.TextChoices):
     """Decides how the FlowExecutor should proceed when a stage isn't configured"""
 
     SKIP = "skip"
+    DENY = "deny"
     # CONFIGURE = "configure"
 
 

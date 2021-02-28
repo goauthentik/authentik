@@ -22,7 +22,7 @@ def create_default_setup_flow(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
         designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={
             "name": "default-authenticator-webuahtn-setup",
-            "title": "Setup Static OTP Tokens",
+            "title": "Setup WebAuthn",
         },
     )
 

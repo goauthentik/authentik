@@ -28,10 +28,8 @@
         {% for source in sources %}
         <li class="pf-c-login__main-footer-links-item">
             <a href="{{ source.url }}" class="pf-c-login__main-footer-links-item-link">
-                {% if source.icon_path %}
-                <img src="{% static source.icon_path %}" alt="{{ source.name }}">
-                {% elif source.icon_url %}
-                <img src="icon_url" alt="{{ source.name }}">
+                {% if source.icon_url %}
+                <img src="{{ source.icon_url }}" alt="{{ source.name }}">
                 {% else %}
                 <i class="pf-icon pf-icon-arrow" title="{{ source.name }}"></i>
                 {% endif %}

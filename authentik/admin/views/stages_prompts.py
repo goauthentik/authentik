@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
@@ -27,7 +28,7 @@ class PromptCreateView(
     permission_required = "authentik_stages_prompt.add_prompt"
 
     template_name = "generic/create.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully created Prompt")
 
 
@@ -44,7 +45,7 @@ class PromptUpdateView(
     permission_required = "authentik_stages_prompt.change_prompt"
 
     template_name = "generic/update.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Prompt")
 
 
@@ -55,5 +56,5 @@ class PromptDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessag
     permission_required = "authentik_stages_prompt.delete_prompt"
 
     template_name = "generic/delete.html"
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully deleted Prompt")

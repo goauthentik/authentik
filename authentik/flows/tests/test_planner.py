@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
 from django.http import HttpRequest
-from django.shortcuts import reverse
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
@@ -43,7 +43,7 @@ class TestFlowPlanner(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = get_anonymous_user()
 
@@ -63,7 +63,7 @@ class TestFlowPlanner(TestCase):
             designation=FlowDesignation.AUTHENTICATION,
         )
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = get_anonymous_user()
 
@@ -83,7 +83,7 @@ class TestFlowPlanner(TestCase):
             target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
         )
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = get_anonymous_user()
 
@@ -112,7 +112,7 @@ class TestFlowPlanner(TestCase):
 
         user = User.objects.create(username="test-user")
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = user
         planner = FlowPlanner(flow)
@@ -136,7 +136,7 @@ class TestFlowPlanner(TestCase):
         )
 
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = get_anonymous_user()
 
@@ -167,7 +167,7 @@ class TestFlowPlanner(TestCase):
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
 
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = get_anonymous_user()
 

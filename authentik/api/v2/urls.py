@@ -26,6 +26,7 @@ from authentik.events.api.notification_transport import NotificationTransportVie
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
+from authentik.flows.views import FlowExecutorView
 from authentik.outposts.api.outpost_service_connections import (
     DockerServiceConnectionViewSet,
     KubernetesServiceConnectionViewSet,
@@ -175,4 +176,9 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", SchemaView.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path(
+        "flows/executor/<slug:flow_slug>/",
+        FlowExecutorView.as_view(),
+        name="flow-executor",
+    ),
 ] + router.urls

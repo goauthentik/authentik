@@ -8249,6 +8249,7 @@ definitions:
         title: Avatar
         type: string
         readOnly: true
+        minLength: 1
       attributes:
         title: Attributes
         type: object
@@ -9657,22 +9658,22 @@ definitions:
           - authentik.sources.ldap
           - authentik.sources.oauth
           - authentik.sources.saml
-          - authentik.stages.captcha
-          - authentik.stages.consent
-          - authentik.stages.dummy
-          - authentik.stages.email
-          - authentik.stages.prompt
-          - authentik.stages.identification
-          - authentik.stages.invitation
-          - authentik.stages.user_delete
-          - authentik.stages.user_login
-          - authentik.stages.user_logout
-          - authentik.stages.user_write
           - authentik.stages.authenticator_static
           - authentik.stages.authenticator_totp
           - authentik.stages.authenticator_validate
           - authentik.stages.authenticator_webauthn
+          - authentik.stages.captcha
+          - authentik.stages.consent
+          - authentik.stages.dummy
+          - authentik.stages.email
+          - authentik.stages.identification
+          - authentik.stages.invitation
           - authentik.stages.password
+          - authentik.stages.prompt
+          - authentik.stages.user_delete
+          - authentik.stages.user_login
+          - authentik.stages.user_logout
+          - authentik.stages.user_write
           - authentik.managed
           - authentik.core
   ExpressionPolicy:
@@ -11048,6 +11049,7 @@ definitions:
         type: string
         enum:
           - skip
+          - deny
       device_classes:
         description: ''
         type: array
@@ -11297,7 +11299,6 @@ definitions:
     required:
       - name
       - user_fields
-      - template
     type: object
     properties:
       pk:
@@ -11345,12 +11346,6 @@ definitions:
           is enabled, the user's username and avatar will be shown. Otherwise, the
           text that the user entered will be shown
         type: boolean
-      template:
-        title: Template
-        type: string
-        enum:
-          - stages/identification/login.html
-          - stages/identification/recovery.html
       enrollment_flow:
         title: Enrollment flow
         description: Optional enrollment flow, which is linked at the bottom of the
@@ -11749,8 +11744,8 @@ definitions:
           - password
           - number
           - checkbox
-          - data
-          - data-time
+          - date
+          - date-time
           - separator
           - hidden
           - static

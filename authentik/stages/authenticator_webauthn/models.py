@@ -4,10 +4,11 @@ from typing import Optional, Type
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.forms import ModelForm
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import ConfigurableStage, Stage
@@ -27,10 +28,10 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     @property
     def type(self) -> Type[View]:
         from authentik.stages.authenticator_webauthn.stage import (
-            AuthenticateWebAuthnStageView,
+            AuthenticatorWebAuthnStageView,
         )
 
-        return AuthenticateWebAuthnStageView
+        return AuthenticatorWebAuthnStageView
 
     @property
     def form(self) -> Type[ModelForm]:
@@ -56,7 +57,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         verbose_name_plural = _("WebAuthn Authenticator Setup Stages")
 
 
-class WebAuthnDevice(models.Model):
+class WebAuthnDevice(Device):
     """WebAuthn Device for a single user"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

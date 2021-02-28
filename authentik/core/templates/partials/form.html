@@ -3,7 +3,7 @@
 
 {% csrf_token %}
 {% if form.non_field_errors %}
-<div class="pf-c-form__group has-error">
+<div class="pf-c-form__group">
     <p class="pf-c-form__helper-text pf-m-error">
         {{ form.non_field_errors }}
     </p>
@@ -13,7 +13,7 @@
 {% if field.field.widget|fieldtype == 'HiddenInput' %}
     {{ field }}
 {% else %}
-<div class="pf-c-form__group {% if field.errors %} has-error {% endif %}">
+<div class="pf-c-form__group">
     {% if field.field.widget|fieldtype == 'RadioSelect' %}
         <label class="pf-c-form__label" {% if field.field.required %}class="required" {% endif %}
             for="{{ field.name }}-{{ forloop.counter0 }}">

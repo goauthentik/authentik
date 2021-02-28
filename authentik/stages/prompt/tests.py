@@ -1,8 +1,8 @@
 """Prompt tests"""
 from unittest.mock import MagicMock, patch
 
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
@@ -11,9 +11,8 @@ from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.policies.expression.models import ExpressionPolicy
-from authentik.stages.prompt.forms import PromptForm
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT, PromptResponseChallenge
 
 
 class TestPromptStage(TestCase):
@@ -104,9 +103,7 @@ class TestPromptStage(TestCase):
         session.save()
 
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
         for prompt in self.stage.fields.all():
@@ -114,8 +111,8 @@ class TestPromptStage(TestCase):
             self.assertIn(prompt.label, force_str(response.content))
             self.assertIn(prompt.placeholder, force_str(response.content))
 
-    def test_valid_form_with_policy(self) -> PromptForm:
-        """Test form validation"""
+    def test_valid_challenge_with_policy(self) -> PromptResponseChallenge:
+        """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
@@ -125,12 +122,14 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
-        self.assertEqual(form.is_valid(), True)
-        return form
+        challenge_response = PromptResponseChallenge(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), True)
+        return challenge_response
 
-    def test_invalid_form(self) -> PromptForm:
-        """Test form validation"""
+    def test_invalid_challenge(self) -> PromptResponseChallenge:
+        """Test challenge_response validation"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
@@ -140,12 +139,14 @@ class TestPromptStage(TestCase):
         )
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
-        form = PromptForm(stage=self.stage, plan=plan, data=self.prompt_data)
-        self.assertEqual(form.is_valid(), False)
-        return form
+        challenge_response = PromptResponseChallenge(
+            None, stage=self.stage, plan=plan, data=self.prompt_data
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+        return challenge_response
 
-    def test_valid_form_request(self):
-        """Test a request with valid form data"""
+    def test_valid_challenge_request(self):
+        """Test a request with valid challenge_response data"""
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex, stages=[self.stage], markers=[StageMarker()]
         )
@@ -153,20 +154,20 @@ class TestPromptStage(TestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        form = self.test_valid_form_with_policy()
+        challenge_response = self.test_valid_challenge_with_policy()
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             response = self.client.post(
                 reverse(
-                    "authentik_flows:flow-executor",
+                    "authentik_api:flow-executor",
                     kwargs={"flow_slug": self.flow.slug},
                 ),
-                form.cleaned_data,
+                challenge_response.validated_data,
             )
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
         # Check that valid data has been saved

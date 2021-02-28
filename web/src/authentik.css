@@ -85,6 +85,11 @@ select[multiple] {
     z-index: auto !important;
 }
 
+/* Fix spacing between messages */
+ak-message {
+    display: block;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
@@ -230,11 +235,17 @@ select[multiple] {
     .pf-c-login__main {
         background-color: var(--ak-dark-background);
     }
-    .pf-c-login__main-body {
+    .pf-c-login__main-body,
+    .pf-c-login__main-header,
+    .pf-c-login__main-header-desc {
         color: var(--ak-dark-foreground);
     }
     .pf-c-login__main-footer-links-item-link > img {
         filter: invert(1);
+    }
+    .pf-c-login__main-footer-band {
+        background-color: var(--ak-dark-background-lighter);
+        color: var(--ak-dark-foreground);
     }
     .form-control-static {
         color: var(--ak-dark-foreground);

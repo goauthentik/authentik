@@ -21,7 +21,7 @@
             "attrs": {
                 "field_key": "username",
                 "label": "Username",
-                "type": "text",
+                "type": "username",
                 "required": true,
                 "placeholder": "Username",
                 "order": 0

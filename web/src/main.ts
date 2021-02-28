@@ -22,7 +22,6 @@ import "./elements/Spinner";
 import "./elements/Tabs";
 import "./elements/router/RouterOutlet";
 
-import "./pages/generic/FlowShellCard";
 import "./pages/generic/SiteShell";
 
 import "./pages/admin-overview/AdminOverviewPage";
@@ -31,8 +30,5 @@ import "./pages/applications/ApplicationListPage";
 import "./pages/applications/ApplicationViewPage";
 import "./pages/tokens/UserTokenList";
 import "./pages/LibraryPage";
-
-import "./elements/stages/authenticator_webauthn/WebAuthnRegister";
-import "./elements/stages/authenticator_webauthn/WebAuthnAuth";
 
 import "./interfaces/AdminInterface";

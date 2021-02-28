@@ -2,6 +2,8 @@
 import base64
 import os
 
+from django.http import HttpRequest
+
 CHALLENGE_DEFAULT_BYTE_LEN = 32
 
 
@@ -21,3 +23,18 @@ def generate_challenge(challenge_len=CHALLENGE_DEFAULT_BYTE_LEN):
     if not isinstance(challenge_base64, str):
         challenge_base64 = challenge_base64.decode("utf-8")
     return challenge_base64
+
+
+def get_rp_id(request: HttpRequest) -> str:
+    """Get hostname from http request, without port"""
+    host = request.get_host()
+    if ":" in host:
+        return host.split(":")[0]
+    return host
+
+
+def get_origin(request: HttpRequest) -> str:
+    """Return Origin by building an absolute URL and removing the
+    trailing slash"""
+    full_url = request.build_absolute_uri("/")
+    return full_url[:-1]

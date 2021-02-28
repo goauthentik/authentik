@@ -29,7 +29,8 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
 class DisableView(LoginRequiredMixin, View):
     """Disable TOTP for user"""
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, **kwargs) -> HttpResponse:
         """Delete all the devices for user"""
         totp = TOTPDevice.objects.filter(user=request.user, confirmed=True)
         totp.delete()

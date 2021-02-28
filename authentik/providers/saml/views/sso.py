@@ -4,6 +4,7 @@ from typing import Optional
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -31,7 +32,10 @@ from authentik.providers.saml.views.flows import (
     SESSION_KEY_AUTH_N_REQUEST,
     SAMLFlowFinalView,
 )
-from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TEMPLATE
+from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_HEADER,
+    PLAN_CONTEXT_CONSENT_PERMISSIONS,
+)
 
 LOGGER = get_logger()
 
@@ -68,7 +72,11 @@ class SAMLSSOView(PolicyAccessView):
             {
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_APPLICATION: self.application,
-                PLAN_CONTEXT_CONSENT_TEMPLATE: "providers/saml/consent.html",
+                PLAN_CONTEXT_CONSENT_HEADER: _(
+                    "You're about to sign into %(application)s."
+                )
+                % {"application": self.application.name},
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
             },
         )
         plan.append(in_memory_stage(SAMLFlowFinalView))

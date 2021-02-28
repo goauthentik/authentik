@@ -134,11 +134,7 @@ export abstract class Table<T> extends LitElement {
                     <div class="pf-c-empty-state pf-m-sm">
                         <div class="pf-c-empty-state__content">
                             <div class="pf-c-empty-state__icon">
-                                <span class="pf-c-spinner" role="progressbar">
-                                    <span class="pf-c-spinner__clipper"></span>
-                                    <span class="pf-c-spinner__lead-ball"></span>
-                                    <span class="pf-c-spinner__tail-ball"></span>
-                                </span>
+                                <ak-spinner></ak-spinner>
                             </div>
                             <h2 class="pf-c-title pf-m-lg">${gettext("Loading")}</h2>
                         </div>

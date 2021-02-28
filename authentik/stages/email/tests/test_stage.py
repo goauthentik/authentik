@@ -2,8 +2,8 @@
 from unittest.mock import MagicMock, patch
 
 from django.core import mail
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Token, User
@@ -46,7 +46,7 @@ class TestEmailStage(TestCase):
         session.save()
 
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -61,7 +61,7 @@ class TestEmailStage(TestCase):
         session.save()
 
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -77,7 +77,7 @@ class TestEmailStage(TestCase):
         session.save()
 
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         with self.settings(
             EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
@@ -118,7 +118,7 @@ class TestEmailStage(TestCase):
             # Call the actual executor to get the JSON Response
             response = self.client.get(
                 reverse(
-                    "authentik_flows:flow-executor",
+                    "authentik_api:flow-executor",
                     kwargs={"flow_slug": self.flow.slug},
                 )
             )
@@ -126,7 +126,7 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {"type": "redirect", "to": reverse("authentik_core:shell")},
+                {"to": reverse("authentik_core:shell"), "type": "redirect"},
             )
 
             session = self.client.session

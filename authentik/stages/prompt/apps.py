@@ -2,7 +2,7 @@
 from django.apps import AppConfig
 
 
-class AuthentikStagPromptConfig(AppConfig):
+class AuthentikStagePromptConfig(AppConfig):
     """authentik prompt stage config"""
 
     name = "authentik.stages.prompt"

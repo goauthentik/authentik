@@ -67,6 +67,7 @@ class ProxyProviderViewSet(ModelViewSet):
 
     queryset = ProxyProvider.objects.all()
     serializer_class = ProxyProviderSerializer
+    ordering = ["name"]
 
 
 class ProxyOutpostConfigSerializer(ModelSerializer):
@@ -115,3 +116,4 @@ class ProxyOutpostConfigViewSet(ModelViewSet):
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)
     serializer_class = ProxyOutpostConfigSerializer
+    ordering = ["name"]

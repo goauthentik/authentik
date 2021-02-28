@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from authentik.core.models import User
 from authentik.flows.markers import StageMarker
@@ -46,7 +46,7 @@ class TestEmailStageSending(TestCase):
         session.save()
 
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         with self.settings(
             EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
@@ -67,7 +67,7 @@ class TestEmailStageSending(TestCase):
         session.save()
 
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         with self.settings(
             EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"

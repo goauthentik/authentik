@@ -3,7 +3,8 @@ from typing import Optional, Type
 
 from django.db import models
 from django.forms import ModelForm
-from django.urls import reverse, reverse_lazy
+from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -56,11 +57,11 @@ class OAuthSource(Source):
     @property
     def ui_login_button(self) -> UILoginButton:
         return UILoginButton(
-            url=reverse_lazy(
+            url=reverse(
                 "authentik_sources_oauth:oauth-client-login",
                 kwargs={"source_slug": self.slug},
             ),
-            icon_path=f"authentik/sources/{self.provider_type}.svg",
+            icon_url=static(f"authentik/sources/{self.provider_type}.svg"),
             name=self.name,
         )
 

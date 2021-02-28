@@ -1,6 +1,6 @@
 """dummy tests"""
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
@@ -34,22 +34,20 @@ class TestDummyStage(TestCase):
     def test_valid_render(self):
         """Test that View renders correctly"""
         response = self.client.get(
-            reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
-            )
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
         """Test with valid email, check that URL redirects back to itself"""
         url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
         )
         response = self.client.post(url, {})
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_form(self):

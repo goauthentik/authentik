@@ -4,8 +4,8 @@ from random import SystemRandom
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import reverse
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
@@ -59,7 +59,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Still have to send the password so the form is valid
             {"password": self.password},
@@ -83,7 +83,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.get(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
         )
         self.assertEqual(response.status_code, 200)
@@ -101,7 +101,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password},
@@ -110,7 +110,7 @@ class TestPasswordStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_invalid_password(self):
@@ -125,7 +125,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},
@@ -145,7 +145,7 @@ class TestPasswordStage(TestCase):
         for _ in range(self.stage.failed_attempts_before_cancel):
             response = self.client.post(
                 reverse(
-                    "authentik_flows:flow-executor",
+                    "authentik_api:flow-executor",
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 # Form data
@@ -155,7 +155,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},
@@ -185,7 +185,7 @@ class TestPasswordStage(TestCase):
 
         response = self.client.post(
             reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": self.flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
             ),
             # Form data
             {"password": self.password + "test"},

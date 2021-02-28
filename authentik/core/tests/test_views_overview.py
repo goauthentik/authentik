@@ -2,8 +2,8 @@
 import string
 from random import SystemRandom
 
-from django.shortcuts import reverse
 from django.test import TestCase
+from django.urls import reverse
 
 from authentik.core.models import User
 
@@ -27,10 +27,4 @@ class TestOverviewViews(TestCase):
         """Test shell"""
         self.assertEqual(
             self.client.get(reverse("authentik_core:shell")).status_code, 200
-        )
-
-    def test_overview(self):
-        """Test overview"""
-        self.assertEqual(
-            self.client.get(reverse("authentik_core:overview")).status_code, 200
         )

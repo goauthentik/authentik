@@ -2,7 +2,7 @@
 from dataclasses import asdict
 
 from django.db.models.base import Model
-from django.shortcuts import reverse
+from django.urls import reverse
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, SerializerMethodField

@@ -3,18 +3,19 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, reverse
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django.views.generic import FormView
+from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import StageView
+from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views import SESSION_KEY_GET
-from authentik.stages.email.forms import EmailStageSendForm
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -24,11 +25,22 @@ QS_KEY_TOKEN = "token"  # nosec
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 
 
-class EmailStageView(FormView, StageView):
+class EmailChallenge(Challenge):
+    """Email challenge"""
+
+
+class EmailChallengeResponse(ChallengeResponse):
+    """Email challenge resposen. No fields. This challenge is
+    always declared invalid to give the user a chance to retry"""
+
+    def validate(self, data):
+        raise ValidationError("")
+
+
+class EmailStageView(ChallengeStageView):
     """Email stage which sends Email for verification"""
 
-    form_class = EmailStageSendForm
-    template_name = "stages/email/waiting_message.html"
+    response_class = EmailChallengeResponse
 
     def get_full_url(self, **kwargs) -> str:
         """Get full URL to be used in template"""
@@ -80,11 +92,20 @@ class EmailStageView(FormView, StageView):
             self.executor.plan.context[PLAN_CONTEXT_EMAIL_SENT] = True
         return super().get(request, *args, **kwargs)
 
-    def form_invalid(self, form: EmailStageSendForm) -> HttpResponse:
+    def get_challenge(self) -> Challenge:
+        challenge = EmailChallenge(
+            data={"type": ChallengeTypes.native, "component": "ak-stage-email"}
+        )
+        return challenge
+
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        return super().challenge_invalid(response)
+
+    def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             messages.error(self.request, _("No pending user."))
-            return super().form_invalid(form)
+            return super().challenge_invalid(response)
         self.send_email()
         # We can't call stage_ok yet, as we're still waiting
         # for the user to click the link in the email
-        return super().form_invalid(form)
+        return super().challenge_invalid(response)

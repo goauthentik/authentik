@@ -2,28 +2,20 @@
 from drf_yasg2.utils import swagger_auto_schema
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
+from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    BooleanField,
-    ModelSerializer,
-    SerializerMethodField,
-)
+from rest_framework.serializers import BooleanField, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.models import User
-from authentik.lib.templatetags.authentik_utils import avatar
 
 
 class UserSerializer(ModelSerializer):
     """User Serializer"""
 
     is_superuser = BooleanField(read_only=True)
-    avatar = SerializerMethodField()
-
-    def get_avatar(self, user: User) -> str:
-        """Add user's avatar as URL"""
-        return avatar(user)
+    avatar = CharField(read_only=True)
 
     class Meta:
 

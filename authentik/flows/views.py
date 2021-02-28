@@ -3,14 +3,8 @@ from traceback import format_tb
 from typing import Any, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import (
-    Http404,
-    HttpRequest,
-    HttpResponse,
-    HttpResponseRedirect,
-    JsonResponse,
-)
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
@@ -19,6 +13,12 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict
+from authentik.flows.challenge import (
+    ChallengeTypes,
+    HttpChallengeResponse,
+    RedirectChallenge,
+    ShellChallenge,
+)
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import ConfigurableStage, Flow, FlowDesignation, Stage
 from authentik.flows.planner import (
@@ -176,7 +176,7 @@ class FlowExecutorView(View):
                 reamining=len(self.plan.stages),
             )
             return redirect_with_qs(
-                "authentik_flows:flow-executor", self.request.GET, **self.kwargs
+                "authentik_api:flow-executor", self.request.GET, **self.kwargs
             )
         # User passed all stages
         self._logger.debug(
@@ -246,9 +246,7 @@ class FlowExecutorShellView(TemplateView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         flow: Flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["background_url"] = flow.background.url
-        kwargs["exec_url"] = reverse(
-            "authentik_flows:flow-executor", kwargs=self.kwargs
-        )
+        kwargs["flow_slug"] = flow.slug
         self.request.session[SESSION_KEY_GET] = self.request.GET
         return kwargs
 
@@ -292,16 +290,30 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
     if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
         redirect_url = source["Location"]
         if request.path != redirect_url:
-            return JsonResponse({"type": "redirect", "to": redirect_url})
+            return HttpChallengeResponse(
+                RedirectChallenge(
+                    {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
+                )
+            )
         return source
     if isinstance(source, TemplateResponse):
-        return JsonResponse(
-            {"type": "template", "body": source.render().content.decode("utf-8")}
+        return HttpChallengeResponse(
+            ShellChallenge(
+                {
+                    "type": ChallengeTypes.shell,
+                    "body": source.render().content.decode("utf-8"),
+                }
+            )
         )
     # Check for actual HttpResponse (without isinstance as we dont want to check inheritance)
     if source.__class__ == HttpResponse:
-        return JsonResponse(
-            {"type": "template", "body": source.content.decode("utf-8")}
+        return HttpChallengeResponse(
+            ShellChallenge(
+                {
+                    "type": ChallengeTypes.shell,
+                    "body": source.content.decode("utf-8"),
+                }
+            )
         )
     return source
 

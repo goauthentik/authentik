@@ -2,12 +2,13 @@
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
@@ -62,9 +63,7 @@ class TestFlowExecutor(TestCase):
         cancel_mock = MagicMock()
         with patch("authentik.flows.views.FlowExecutorView.cancel", cancel_mock):
             response = self.client.get(
-                reverse(
-                    "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
-                ),
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             )
             self.assertEqual(response.status_code, 302)
             self.assertEqual(cancel_mock.call_count, 2)
@@ -87,7 +86,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, AccessDeniedResponse)
@@ -107,7 +106,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:shell"))
@@ -126,7 +125,7 @@ class TestFlowExecutor(TestCase):
 
         CONFIG.update_from_dict({"domain": "testserver"})
         dest = "/unique-string"
-        url = reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug})
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("authentik_core:shell"))
@@ -146,7 +145,7 @@ class TestFlowExecutor(TestCase):
         )
 
         exec_url = reverse(
-            "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+            "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
         )
         # First Request, start planning, renders form
         response = self.client.get(exec_url)
@@ -196,7 +195,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -250,7 +249,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -284,7 +283,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_reevaluate_keep(self):
@@ -317,7 +316,7 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -361,7 +360,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_reevaluate_remove_consecutive(self):
@@ -401,12 +400,19 @@ class TestFlowExecutor(TestCase):
         ):
 
             exec_url = reverse(
-                "authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}
+                "authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}
             )
             # First request, run the planner
             response = self.client.get(exec_url)
             self.assertEqual(response.status_code, 200)
-            self.assertIn("dummy1", force_str(response.content))
+            self.assertJSONEqual(
+                force_str(response.content),
+                {
+                    "type": ChallengeTypes.native.value,
+                    "component": "",
+                    "title": binding.stage.name,
+                },
+            )
 
             plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
 
@@ -429,7 +435,14 @@ class TestFlowExecutor(TestCase):
         # but it won't save it, hence we cant' check the plan
         response = self.client.get(exec_url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("dummy4", force_str(response.content))
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "type": ChallengeTypes.native.value,
+                "component": "",
+                "title": binding4.stage.name,
+            },
+        )
 
         # fourth request, this confirms the last stage (dummy4)
         # We do this request without the patch, so the policy results in false
@@ -437,7 +450,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"type": "redirect", "to": reverse("authentik_core:shell")},
+            {"to": reverse("authentik_core:shell"), "type": "redirect"},
         )
 
     def test_stageview_user_identifier(self):
@@ -455,7 +468,7 @@ class TestFlowExecutor(TestCase):
 
         user = User.objects.create(username="test-user")
         request = self.request_factory.get(
-            reverse("authentik_flows:flow-executor", kwargs={"flow_slug": flow.slug}),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         request.user = user
         planner = FlowPlanner(flow)
@@ -468,4 +481,4 @@ class TestFlowExecutor(TestCase):
         executor.flow = flow
 
         stage_view = StageView(executor)
-        self.assertEqual(ident, stage_view.get_context_data()["user"].username)
+        self.assertEqual(ident, stage_view.get_pending_user().username)
