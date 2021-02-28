@@ -4,6 +4,12 @@ title: Next release
 
 ## Headline Changes
 
+- WebAuthn support
+
+    This release introduces support for [WebAuthn](https://webauthn.io/), an open standard for the use of hardware authentication keys like YubiKeys on the web.
+
+    You can configure a WebAuthn device using the "WebAuthn Authenticator Setup Stage" stage. Afterwards, it can be used as an n-th factor, just like TOTP authenticators.
+
 - Simplify role-based access
 
     Instead of having to create a Group Membership policy for every group you want to use, you can now select a Group and even a User directly in a binding.
@@ -12,3 +18,28 @@ title: Next release
 
     When a user is selected, the binding checks the user of the request, and denies the request when the user doesn't match.
 
+    Group Membership policies are automatically migrated to use this simplified access.
+
+- Invisible reCAPTCHA
+
+    The checkbox-based reCAPTCHA has been replaced with [reCAPTCHA v2 Invisible](https://developers.google.com/recaptcha/docs/invisible).
+
+    This is a breaking change, as a set of reCAPTCHA keys are only valid for a single type. For this, go to https://www.google.com/recaptcha/admin and create a new set of keys with the "reCAPTCHA v2" type and "Invisible reCAPTCHA badge" mode.
+
+- Migration of Flow Executor to SPA/API
+
+    The flow executor has been migrated to a full SPA/API architecture. This was required for WebAuthn, but also allows for greater customizability.
+
+    It also allows other services to use the flow executor via an API, which will be used by the outpost further down the road.
+
+## Upgrading
+
+This release does not introduce any new requirements.
+
+### docker-compose
+
+Download the latest docker-compose file from [here](https://raw.githubusercontent.com/BeryJu/authentik/version-2021.1/docker-compose.yml). Afterwards, simply run `docker-compose up -d` and then the standard upgrade command of `docker-compose run --rm server migrate`.
+
+### Kubernetes
+
+Run `helm repo update` and then upgrade your release with `helm upgrade passbook authentik/authentik --devel -f values.yaml`.
