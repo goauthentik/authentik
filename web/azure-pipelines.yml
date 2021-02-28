@@ -75,9 +75,7 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              set -x
-              branchName=$(echo "$(System.PullRequest.SourceBranch)" | sed "s/\//-/g")
-              echo "##vso[task.setvariable variable=branchName]$branchName"
+              python ./scripts/az_do_set_branch.py
         - task: Docker@2
           inputs:
             containerRegistry: 'dockerhub'
