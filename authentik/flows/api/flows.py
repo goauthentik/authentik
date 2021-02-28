@@ -107,13 +107,6 @@ class FlowViewSet(ModelViewSet):
             .filter(target=flow)
             .order_by("order")
         ):
-            body.append(
-                DiagramElement(
-                    f"stage_{s_index}",
-                    "operation",
-                    f"Stage\n{stage_binding.stage.name}",
-                )
-            )
             for p_index, policy_binding in enumerate(
                 get_objects_for_user(
                     request.user, "authentik_policies.view_policybinding"
@@ -128,6 +121,13 @@ class FlowViewSet(ModelViewSet):
                         f"Policy\n{policy_binding.policy.name}",
                     )
                 )
+            body.append(
+                DiagramElement(
+                    f"stage_{s_index}",
+                    "operation",
+                    f"Stage\n{stage_binding.stage.name}",
+                )
+            )
         # If the 2nd last element is a policy, we need to have an item to point to
         # for a negative case
         body.append(
