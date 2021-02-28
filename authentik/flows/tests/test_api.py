@@ -12,16 +12,16 @@ from authentik.stages.dummy.models import DummyStage
 DIAGRAM_EXPECTED = """st=>start: Start
 stage_0=>operation: Stage
 dummy1
-stage_1=>operation: Stage
-dummy2
 stage_1_policy_0=>condition: Policy
 None
+stage_1=>operation: Stage
+dummy2
 e=>end: End|future
 st(right)->stage_0
-stage_0(bottom)->stage_1
-stage_1(bottom)->stage_1_policy_0
-stage_1_policy_0(yes, right)->e
-stage_1_policy_0(no, bottom)->e"""
+stage_0(bottom)->stage_1_policy_0
+stage_1_policy_0(yes, right)->stage_1
+stage_1_policy_0(no, bottom)->e
+stage_1(bottom)->e"""
 DIAGRAM_SHORT_EXPECTED = """st=>start: Start
 e=>end: End|future
 st(right)->e"""
