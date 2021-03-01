@@ -12,7 +12,7 @@ class ApplicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):  # pragma: no cover
         super().__init__(*args, **kwargs)
         self.fields["provider"].queryset = (
-            Provider.objects.all().order_by("pk").select_subclasses()
+            Provider.objects.all().order_by("name").select_subclasses()
         )
 
     class Meta:

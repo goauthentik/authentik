@@ -15,7 +15,8 @@ class PolicyBindingForm(forms.ModelForm):
         to_field_name="pbm_uuid",
     )
     policy = GroupedModelChoiceField(
-        queryset=Policy.objects.all().select_subclasses(), required=False
+        queryset=Policy.objects.all().order_by("name").select_subclasses(),
+        required=False,
     )
     group = forms.ModelChoiceField(
         queryset=Group.objects.all().order_by("name"), required=False
