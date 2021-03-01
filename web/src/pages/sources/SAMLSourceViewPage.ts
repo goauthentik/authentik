@@ -1,5 +1,8 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { until } from "lit-html/directives/until";
+import { Source } from "../../api/Sources";
+import { SAMLSource } from "../../api/sources/SAML";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -7,28 +10,26 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { OAuthSource } from "../../api/sources/OAuth";
-import { Source } from "../../api/Sources";
 
-@customElement("ak-source-oauth-view")
-export class OAuthSourceViewPage extends Page {
+@customElement("ak-source-saml-view")
+export class SAMLSourceViewPage extends Page {
     pageTitle(): string {
-        return gettext(`OAuth Source ${this.source?.name || ""}`);
+        return gettext(`SAML Source ${this.source?.name || ""}`);
     }
     pageDescription(): string | undefined {
         return;
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-middleware";
+        return "pf-icon pf-icon-integration";
     }
 
     @property({ type: String })
-    set sourceSlug(value: string) {
-        OAuthSource.get(value).then((s) => this.source = s);
+    set sourceSlug(slug: string) {
+        SAMLSource.get(slug).then((s) => this.source = s);
     }
 
     @property({ attribute: false })
-    source?: OAuthSource;
+    source?: SAMLSource;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -52,7 +53,7 @@ export class OAuthSourceViewPage extends Page {
                         <div class="pf-u-w-75">
                             <div class="pf-c-card pf-c-card-aggregate">
                                 <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text">${gettext("Name")}</span>
@@ -63,42 +64,26 @@ export class OAuthSourceViewPage extends Page {
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Provider Type")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("SSO URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.provider_type}</div>
+                                                <div class="pf-c-description-list__text">${this.source.sso_url}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Callback URL")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("SLO URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <code class="pf-c-description-list__text">${this.source.callback_url}</code>
+                                                <div class="pf-c-description-list__text">${this.source.slo_url}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Access Key")}</span>
+                                                <span class="pf-c-description-list__text">${gettext("Issuer")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.consumer_key}</div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Authorization URL")}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.authorization_url}</div>
-                                            </dd>
-                                        </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text">${gettext("Token URL")}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.access_token_url}</div>
+                                                <div class="pf-c-description-list__text">${this.source.issuer}</div>
                                             </dd>
                                         </div>
                                     </dl>
@@ -110,6 +95,26 @@ export class OAuthSourceViewPage extends Page {
                                         </ak-spinner-button>
                                         <div slot="modal"></div>
                                     </ak-modal-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-2" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-u-display-flex pf-u-justify-content-center">
+                        <div class="pf-u-w-75">
+                            <div class="pf-c-card pf-c-card-aggregate">
+                                <div class="pf-c-card__body">
+                                    ${until(
+                                        SAMLSource.getMetadata(this.source.slug).then(m => {
+                                            return html`<ak-codemirror mode="xml"><textarea class="pf-c-form-control" readonly>${m.metadata}</textarea></ak-codemirror>`;
+                                        })
+                                    )}
+                                </div>
+                                <div class="pf-c-card__footer">
+                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${SAMLSource.appUrl(this.source.slug, "metadata/")}">
+                                        ${gettext("Download")}
+                                    </a>
                                 </div>
                             </div>
                         </div>

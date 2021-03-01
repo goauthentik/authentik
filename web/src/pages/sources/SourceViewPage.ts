@@ -7,6 +7,7 @@ import { SpinnerSize } from "../../elements/Spinner";
 
 import "./LDAPSourceViewPage";
 import "./OAuthSourceViewPage";
+import "./SAMLSourceViewPage";
 import { Source } from "../../api/Sources";
 
 @customElement("ak-source-view")
@@ -49,6 +50,8 @@ export class SourceViewPage extends LitElement {
                 return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
             case "oauth":
                 return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
+            case "saml":
+                return html`<ak-source-saml-view sourceSlug=${this.source.slug}></ak-source-saml-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.object_type}</p>`;
         }
