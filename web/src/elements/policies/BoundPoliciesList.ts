@@ -8,6 +8,9 @@ import "../../elements/Tabs";
 import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/buttons/Dropdown";
+import { Policy } from "../../api/Policies";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -85,6 +88,26 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     renderToolbar(): TemplateResult {
         return html`
+        <ak-dropdown class="pf-c-dropdown">
+            <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+                <span class="pf-c-dropdown__toggle-text">${gettext("Create Policy")}</span>
+                <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+            </button>
+            <ul class="pf-c-dropdown__menu" hidden>
+                ${until(Policy.getTypes().then((types) => {
+                    return types.map((type) => {
+                        return html`<li>
+                            <ak-modal-button href="${type.link}">
+                                <button slot="trigger" class="pf-c-dropdown__menu-item">${type.name}<br>
+                                    <small>${type.description}</small>
+                                </button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </li>`;
+                    });
+                }), html`<ak-spinner></ak-spinner>`)}
+            </ul>
+        </ak-dropdown>
         <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Bind Policy")}
