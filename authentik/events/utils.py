@@ -85,7 +85,7 @@ def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:
             value = asdict(value)
         if isinstance(value, dict):
             final_dict[key] = sanitize_dict(value)
-        elif isinstance(value, User):
+        elif isinstance(value, (User, AnonymousUser)):
             final_dict[key] = sanitize_dict(get_user(value))
         elif isinstance(value, models.Model):
             final_dict[key] = sanitize_dict(model_to_dict(value))
