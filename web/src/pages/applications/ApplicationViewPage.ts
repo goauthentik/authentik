@@ -82,7 +82,7 @@ export class ApplicationViewPage extends LitElement {
                                 </div>
                             </div>
                             <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list pf-m-horizontal">
+                                <dl class="pf-c-description-list">
                                     ${this.application.provider ?
                                     html`<div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
