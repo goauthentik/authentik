@@ -378,7 +378,7 @@ stages:
               python ./scripts/az_do_set_branch.py
         - task: Docker@2
           inputs:
-            containerRegistry: 'dockerhub'
+            containerRegistry: 'GHCR'
             repository: 'beryju/authentik'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
