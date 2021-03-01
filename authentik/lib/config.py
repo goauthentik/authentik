@@ -114,7 +114,9 @@ class ConfigLoader:
         for key, value in os.environ.items():
             if not key.startswith(ENV_PREFIX):
                 continue
-            relative_key = key.replace(f"{ENV_PREFIX}_", "").replace("__", ".").lower()
+            relative_key = (
+                key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
+            )
             # Recursively convert path from a.b.c into outer[a][b][c]
             current_obj = outer
             dot_parts = relative_key.split(".")
