@@ -24,7 +24,7 @@
         "flowchart.js": "^1.15.0",
         "lit-element": "^2.4.0",
         "lit-html": "^1.3.0",
-        "rollup": "^2.39.1",
+        "rollup": "^2.40.0",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.2",
         "rollup-plugin-external-globals": "^0.6.1",
