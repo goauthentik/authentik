@@ -41,7 +41,11 @@ from authentik.policies.expression.api import ExpressionPolicyViewSet
 from authentik.policies.group_membership.api import GroupMembershipPolicyViewSet
 from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
-from authentik.policies.reputation.api import ReputationPolicyViewSet
+from authentik.policies.reputation.api import (
+    IPReputationViewSet,
+    ReputationPolicyViewSet,
+    UserReputationViewSet,
+)
 from authentik.providers.oauth2.api import OAuth2ProviderViewSet, ScopeMappingViewSet
 from authentik.providers.proxy.api import (
     ProxyOutpostConfigViewSet,
@@ -117,6 +121,8 @@ router.register("policies/group_membership", GroupMembershipPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password_expiry", PasswordExpiryPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)
+router.register("policies/reputation/users", UserReputationViewSet)
+router.register("policies/reputation/ips", IPReputationViewSet)
 router.register("policies/reputation", ReputationPolicyViewSet)
 
 router.register("providers/all", ProviderViewSet)

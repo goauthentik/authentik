@@ -3821,7 +3821,7 @@ paths:
   /policies/reputation/:
     get:
       operationId: policies_reputation_list
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters:
         - name: ordering
           in: query
@@ -3870,7 +3870,7 @@ paths:
         - policies
     post:
       operationId: policies_reputation_create
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters:
         - name: data
           in: body
@@ -3885,10 +3885,262 @@ paths:
       tags:
         - policies
     parameters: []
+  /policies/reputation/ips/:
+    get:
+      operationId: policies_reputation_ips_list
+      description: IPReputation Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/IPReputation'
+      tags:
+        - policies
+    post:
+      operationId: policies_reputation_ips_create
+      description: IPReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IPReputation'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/IPReputation'
+      tags:
+        - policies
+    parameters: []
+  /policies/reputation/ips/{id}/:
+    get:
+      operationId: policies_reputation_ips_read
+      description: IPReputation Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IPReputation'
+      tags:
+        - policies
+    put:
+      operationId: policies_reputation_ips_update
+      description: IPReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IPReputation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IPReputation'
+      tags:
+        - policies
+    patch:
+      operationId: policies_reputation_ips_partial_update
+      description: IPReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/IPReputation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/IPReputation'
+      tags:
+        - policies
+    delete:
+      operationId: policies_reputation_ips_delete
+      description: IPReputation Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this ip reputation.
+        required: true
+        type: integer
+  /policies/reputation/users/:
+    get:
+      operationId: policies_reputation_users_list
+      description: UserReputation Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserReputation'
+      tags:
+        - policies
+    post:
+      operationId: policies_reputation_users_create
+      description: UserReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserReputation'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserReputation'
+      tags:
+        - policies
+    parameters: []
+  /policies/reputation/users/{id}/:
+    get:
+      operationId: policies_reputation_users_read
+      description: UserReputation Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserReputation'
+      tags:
+        - policies
+    put:
+      operationId: policies_reputation_users_update
+      description: UserReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserReputation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserReputation'
+      tags:
+        - policies
+    patch:
+      operationId: policies_reputation_users_partial_update
+      description: UserReputation Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserReputation'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserReputation'
+      tags:
+        - policies
+    delete:
+      operationId: policies_reputation_users_delete
+      description: UserReputation Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this user reputation.
+        required: true
+        type: integer
   /policies/reputation/{policy_uuid}/:
     get:
       operationId: policies_reputation_read
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters: []
       responses:
         '200':
@@ -3899,7 +4151,7 @@ paths:
         - policies
     put:
       operationId: policies_reputation_update
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters:
         - name: data
           in: body
@@ -3915,7 +4167,7 @@ paths:
         - policies
     patch:
       operationId: policies_reputation_partial_update
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters:
         - name: data
           in: body
@@ -3931,7 +4183,7 @@ paths:
         - policies
     delete:
       operationId: policies_reputation_delete
-      description: Source Viewset
+      description: Reputation Policy Viewset
       parameters: []
       responses:
         '204':
@@ -10105,6 +10357,53 @@ definitions:
         type: integer
         maximum: 2147483647
         minimum: -2147483648
+  IPReputation:
+    description: IPReputation Serializer
+    required:
+      - ip
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      ip:
+        title: Ip
+        type: string
+        minLength: 1
+      score:
+        title: Score
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      updated:
+        title: Updated
+        type: string
+        format: date-time
+        readOnly: true
+  UserReputation:
+    description: UserReputation Serializer
+    required:
+      - user
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      score:
+        title: Score
+        type: integer
+        maximum: 2147483647
+        minimum: -2147483648
+      updated:
+        title: Updated
+        type: string
+        format: date-time
+        readOnly: true
   PropertyMapping:
     description: PropertyMapping Serializer
     required:
