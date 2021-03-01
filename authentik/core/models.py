@@ -286,11 +286,6 @@ class Source(SerializerModel, PolicyBindingModel):
         return None
 
     @property
-    def ui_additional_info(self) -> Optional[str]:
-        """Return additional Info, such as a callback URL. Show in the administration interface."""
-        return None
-
-    @property
     def ui_user_settings(self) -> Optional[str]:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or a string with the URL to fetch."""

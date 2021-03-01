@@ -4,7 +4,7 @@ from typing import Type
 from django.db import models
 from django.forms import ModelForm
 from django.http import HttpRequest
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -169,13 +169,6 @@ class SAMLSource(Source):
                 "authentik_sources_saml:login", kwargs={"source_slug": self.slug}
             ),
         )
-
-    @property
-    def ui_additional_info(self) -> str:
-        metadata_url = reverse_lazy(
-            "authentik_sources_saml:metadata", kwargs={"source_slug": self.slug}
-        )
-        return f'<a href="{metadata_url}" class="btn btn-default btn-sm">Metadata Download</a>'
 
     def __str__(self):
         return f"SAML Source {self.name}"
