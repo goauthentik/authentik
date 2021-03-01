@@ -1,6 +1,7 @@
 """authentik SAML SP Forms"""
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
@@ -50,4 +51,8 @@ class SAMLSourceForm(forms.ModelForm):
             "sso_url": forms.TextInput(),
             "slo_url": forms.TextInput(),
             "temporary_user_delete_after": forms.TextInput(),
+        }
+        labels = {
+            "name_id_policy": _("Name ID Policy"),
+            "allow_idp_initiated": _("Allow IDP-initiated logins"),
         }

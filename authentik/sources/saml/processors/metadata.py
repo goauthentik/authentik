@@ -90,4 +90,4 @@ class MetadataProcessor:
             self.http_request
         )
 
-        return tostring(entity_descriptor).decode()
+        return tostring(entity_descriptor, pretty_print=True).decode()

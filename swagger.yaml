@@ -5571,6 +5571,26 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /sources/saml/{slug}/metadata/:
+    get:
+      operationId: sources_saml_metadata
+      description: Return metadata as XML string
+      parameters: []
+      responses:
+        '200':
+          description: SAML Provider Metadata serializer
+          schema:
+            $ref: '#/definitions/SAMLMetadata'
+      tags:
+        - sources
+    parameters:
+      - name: slug
+        in: path
+        description: Internal source name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /stages/all/:
     get:
       operationId: stages_all_list

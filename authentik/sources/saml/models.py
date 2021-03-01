@@ -79,7 +79,7 @@ class SAMLSource(Source):
     )
     name_id_policy = models.TextField(
         choices=SAMLNameIDPolicy.choices,
-        default=SAMLNameIDPolicy.TRANSIENT,
+        default=SAMLNameIDPolicy.PERSISTENT,
         help_text=_(
             "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
         ),
