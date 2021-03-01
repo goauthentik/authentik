@@ -111,7 +111,7 @@ class TestPolicyProcess(TestCase):
 
     def test_exception(self):
         """Test policy execution"""
-        policy = Policy.objects.create()
+        policy = Policy.objects.create(name="test-execution")
         binding = PolicyBinding(
             policy=policy, target=Application.objects.create(name="test")
         )
@@ -123,7 +123,11 @@ class TestPolicyProcess(TestCase):
     def test_execution_logging(self):
         """Test policy execution creates event"""
         policy = DummyPolicy.objects.create(
-            result=False, wait_min=0, wait_max=1, execution_logging=True
+            name="test-execution-logging",
+            result=False,
+            wait_min=0,
+            wait_max=1,
+            execution_logging=True,
         )
         binding = PolicyBinding(
             policy=policy, target=Application.objects.create(name="test")
@@ -153,7 +157,11 @@ class TestPolicyProcess(TestCase):
     def test_execution_logging_anonymous(self):
         """Test policy execution creates event with anonymous user"""
         policy = DummyPolicy.objects.create(
-            result=False, wait_min=0, wait_max=1, execution_logging=True
+            name="test-execution-logging-anon",
+            result=False,
+            wait_min=0,
+            wait_max=1,
+            execution_logging=True,
         )
         binding = PolicyBinding(
             policy=policy, target=Application.objects.create(name="test")
