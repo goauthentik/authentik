@@ -31,7 +31,6 @@ export class ActionButton extends SpinnerButton {
                 }
                 return r;
             })
-            .then((r) => r.json())
             .then(() => {
                 this.setDone(SUCCESS_CLASS);
             })

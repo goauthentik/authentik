@@ -5,6 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
+import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { User } from "../../api/Users";
 
@@ -90,9 +91,9 @@ export class UserListPage extends TablePage<User> {
                     </li>
                 </ul>
             </ak-dropdown>
-            <a class="pf-c-button pf-m-tertiary" href="${User.adminUrl(`${item.pk}/reset/`)}">
+            <ak-action-button method="GET" url="${User.adminUrl(`${item.pk}/reset/`)}">
                 ${gettext("Reset Password")}
-            </a>
+            </ak-action-button>
             <a class="pf-c-button pf-m-tertiary" href="${`-/impersonation/${item.pk}/`}">
                 ${gettext("Impersonate")}
             </a>`,

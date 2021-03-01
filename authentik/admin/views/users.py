@@ -127,7 +127,5 @@ class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailV
         link = request.build_absolute_uri(
             reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
         )
-        messages.success(
-            request, _("Password reset link: <pre>%(link)s</pre>" % {"link": link})
-        )
+        messages.success(request, _("Password reset link: %(link)s" % {"link": link}))
         return redirect("/")

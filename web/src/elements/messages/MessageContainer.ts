@@ -92,14 +92,14 @@ export class MessageContainer extends LitElement {
     render(): TemplateResult {
         return html`<ul class="pf-c-alert-group pf-m-toast">
             ${this.messages.map((m) => {
-        return html`<ak-message
+                return html`<ak-message
                     .message=${m}
                     .onRemove=${(m: APIMessage) => {
-        this.messages = this.messages.filter((v) => v !== m);
-        this.requestUpdate();
-    }}>
-                </ak-message>`;
-    })}
+                        this.messages = this.messages.filter((v) => v !== m);
+                            this.requestUpdate();
+                        }}>
+                    </ak-message>`;
+                })}
         </ul>`;
     }
 }

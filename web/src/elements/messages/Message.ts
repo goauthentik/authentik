@@ -20,7 +20,7 @@ export class Message extends LitElement {
     message?: APIMessage;
 
     @property({type: Number})
-    removeAfter = 3000;
+    removeAfter = 8000;
 
     @property({attribute: false})
     onRemove?: (m: APIMessage) => void;
