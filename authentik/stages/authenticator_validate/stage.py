@@ -133,6 +133,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             if stage.not_configured_action == NotConfiguredAction.DENY:
                 LOGGER.debug("Authenticator not configured, denying")
                 return self.executor.stage_invalid()
+            if stage.not_configured_action == NotConfiguredAction.CONFIGURE:
+                LOGGER.debug("Authenticator not configured, sending user to configure")
+                # plan.insert inserts at 1 index, so when stage_ok pops 0,
+                # the configuration stage is next
+                self.executor.plan.insert(stage.configuration_stage)
+                return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
 
     def get_challenge(self) -> AuthenticatorChallenge:

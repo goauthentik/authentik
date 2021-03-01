@@ -24,7 +24,7 @@ class NotConfiguredAction(models.TextChoices):
 
     SKIP = "skip"
     DENY = "deny"
-    # CONFIGURE = "configure"
+    CONFIGURE = "configure"
 
 
 class FlowDesignation(models.TextChoices):

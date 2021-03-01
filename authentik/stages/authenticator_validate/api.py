@@ -1,12 +1,26 @@
 """AuthenticatorValidateStage API Views"""
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.flows.api.stages import StageSerializer
+from authentik.flows.models import NotConfiguredAction
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 
 
 class AuthenticatorValidateStageSerializer(StageSerializer):
     """AuthenticatorValidateStage Serializer"""
+
+    def validate_not_configured_action(self, value):
+        """Ensure that a configuration stage is set when not_configured_action is configure"""
+        configuration_stage = self.initial_data.get("configuration_stage")
+        if value == NotConfiguredAction.CONFIGURE and configuration_stage is None:
+            raise ValidationError(
+                (
+                    'When "Not configured action" is set to "Configure", '
+                    "you must set a configuration stage."
+                )
+            )
+        return value
 
     class Meta:
 
@@ -14,6 +28,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "not_configured_action",
             "device_classes",
+            "configuration_stage",
         ]
 
 

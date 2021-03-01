@@ -47,6 +47,11 @@ class FlowPlan:
         self.stages.append(stage)
         self.markers.append(marker or StageMarker())
 
+    def insert(self, stage: Stage, marker: Optional[StageMarker] = None):
+        """Insert stage into plan, as immediate next stage"""
+        self.stages.insert(1, stage)
+        self.markers.insert(1, marker or StageMarker())
+
     def next(self, http_request: Optional[HttpRequest]) -> Optional[Stage]:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:

@@ -11070,6 +11070,7 @@ definitions:
         enum:
           - skip
           - deny
+          - configure
       device_classes:
         description: ''
         type: array
@@ -11077,6 +11078,14 @@ definitions:
           title: Device classes
           type: string
           minLength: 1
+      configuration_stage:
+        title: Configuration stage
+        description: Stage used to configure Authenticator when user doesn't have
+          any compatible devices. After this configuration Stage passes, the user
+          is not prompted again.
+        type: string
+        format: uuid
+        x-nullable: true
   AuthenticateWebAuthnStage:
     description: AuthenticateWebAuthnStage Serializer
     required:
