@@ -1,4 +1,4 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -25,7 +25,11 @@ export class SourceViewPage extends LitElement {
     source?: Source;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(css`
+            * {
+                height: 100%;
+            }
+        `);
     }
 
     render(): TemplateResult {
@@ -45,8 +49,6 @@ export class SourceViewPage extends LitElement {
                 return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
             case "oauth":
                 return html`<ak-source-oauth-view sourceSlug=${this.source.slug}></ak-source-oauth-view>`;
-            // case "proxy":
-            //     return html`<ak-provider-proxy-view providerID=${this.source.pk}></ak-provider-proxy-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.object_type}</p>`;
         }

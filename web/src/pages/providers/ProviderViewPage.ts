@@ -1,4 +1,4 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Provider } from "../../api/Providers";
 import { COMMON_STYLES } from "../../common/styles";
 
@@ -22,7 +22,11 @@ export class ProviderViewPage extends LitElement {
     provider?: Provider;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(css`
+            * {
+                height: 100%;
+            }
+        `);
     }
 
     render(): TemplateResult {

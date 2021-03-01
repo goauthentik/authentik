@@ -1,7 +1,7 @@
 import { customElement } from "lit-element";
 import { User } from "../api/Users";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
-import { SLUG_REGEX } from "../elements/router/Route";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
@@ -13,7 +13,9 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return User.me().then(u => u.is_superuser);
     }),
     new SidebarItem("Events").children(
-        new SidebarItem("Log", "/events/log"),
+        new SidebarItem("Log", "/events/log").activeWhen(
+            `^/events/log/(?<id>${UUID_REGEX})$`
+        ),
         new SidebarItem("Notification Rules", "/events/rules"),
         new SidebarItem("Notification Transports", "/events/transports"),
     ).when((): Promise<boolean> => {
@@ -26,7 +28,9 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Sources", "/core/sources").activeWhen(
             `^/core/sources/(?<slug>${SLUG_REGEX})$`,
         ),
-        new SidebarItem("Providers", "/core/providers"),
+        new SidebarItem("Providers", "/core/providers").activeWhen(
+            `^/core/providers/(?<id>${ID_REGEX})$`,
+        ),
         new SidebarItem("Outposts", "/outpost/outposts"),
         new SidebarItem("Outpost Service Connections", "/outpost/service-connections"),
     ).when((): Promise<boolean> => {

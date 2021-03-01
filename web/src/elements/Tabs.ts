@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property, CSSResult, TemplateResult } from "lit-element";
+import { LitElement, html, customElement, property, CSSResult, TemplateResult, css } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 // @ts-ignore
 import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
@@ -13,7 +13,11 @@ export class Tabs extends LitElement {
     currentPage?: string;
 
     static get styles(): CSSResult[] {
-        return [GlobalsStyle, TabsStyle];
+        return [GlobalsStyle, TabsStyle, css`
+            ::slotted(*) {
+                height: 100%;
+            }
+        `];
     }
 
     renderTab(page: Element): TemplateResult {

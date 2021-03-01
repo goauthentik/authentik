@@ -27,6 +27,9 @@ export class FlowViewPage extends LitElement {
                 img.pf-icon {
                     max-height: 24px;
                 }
+                ak-tabs {
+                    height: 100%;
+                }
             `
         );
     }
