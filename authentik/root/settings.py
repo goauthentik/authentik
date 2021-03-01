@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     "authentik.stages.authenticator_webauthn.apps.AuthentikStageAuthenticatorWebAuthnConfig",
     "authentik.stages.captcha.apps.AuthentikStageCaptchaConfig",
     "authentik.stages.consent.apps.AuthentikStageConsentConfig",
+    "authentik.stages.deny.apps.AuthentikStageDenyConfig",
     "authentik.stages.dummy.apps.AuthentikStageDummyConfig",
     "authentik.stages.email.apps.AuthentikStageEmailConfig",
     "authentik.stages.identification.apps.AuthentikStageIdentificationConfig",

@@ -6469,6 +6469,133 @@ paths:
         required: true
         type: string
         format: uuid
+  /stages/deny/:
+    get:
+      operationId: stages_deny_list
+      description: DenyStage Viewset
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: A page number within the paginated result set.
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Number of results to return per page.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - count
+              - results
+            type: object
+            properties:
+              count:
+                type: integer
+              next:
+                type: string
+                format: uri
+                x-nullable: true
+              previous:
+                type: string
+                format: uri
+                x-nullable: true
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/DenyStage'
+      tags:
+        - stages
+    post:
+      operationId: stages_deny_create
+      description: DenyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DenyStage'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/DenyStage'
+      tags:
+        - stages
+    parameters: []
+  /stages/deny/{stage_uuid}/:
+    get:
+      operationId: stages_deny_read
+      description: DenyStage Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DenyStage'
+      tags:
+        - stages
+    put:
+      operationId: stages_deny_update
+      description: DenyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DenyStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DenyStage'
+      tags:
+        - stages
+    patch:
+      operationId: stages_deny_partial_update
+      description: DenyStage Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DenyStage'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/DenyStage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_deny_delete
+      description: DenyStage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - stages
+    parameters:
+      - name: stage_uuid
+        in: path
+        description: A UUID string identifying this Deny Stage.
+        required: true
+        type: string
+        format: uuid
   /stages/dummy/:
     get:
       operationId: stages_dummy_list
@@ -9684,6 +9811,7 @@ definitions:
           - authentik.stages.authenticator_webauthn
           - authentik.stages.captcha
           - authentik.stages.consent
+          - authentik.stages.deny
           - authentik.stages.dummy
           - authentik.stages.email
           - authentik.stages.identification
@@ -11206,6 +11334,38 @@ definitions:
         description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
         type: string
         minLength: 1
+  DenyStage:
+    description: DenyStage Serializer
+    required:
+      - name
+    type: object
+    properties:
+      pk:
+        title: Stage uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      flow_set:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Flow'
   DummyStage:
     description: DummyStage Serializer
     required:

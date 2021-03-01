@@ -59,6 +59,7 @@ from authentik.stages.authenticator_validate.api import (
 from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageViewSet
 from authentik.stages.captcha.api import CaptchaStageViewSet
 from authentik.stages.consent.api import ConsentStageViewSet
+from authentik.stages.deny.api import DenyStageViewSet
 from authentik.stages.dummy.api import DummyStageViewSet
 from authentik.stages.email.api import EmailStageViewSet
 from authentik.stages.identification.api import IdentificationStageViewSet
@@ -135,6 +136,7 @@ router.register("stages/authenticator/validate", AuthenticatorValidateStageViewS
 router.register("stages/authenticator/webauthn", AuthenticateWebAuthnStageViewSet)
 router.register("stages/captcha", CaptchaStageViewSet)
 router.register("stages/consent", ConsentStageViewSet)
+router.register("stages/deny", DenyStageViewSet)
 router.register("stages/email", EmailStageViewSet)
 router.register("stages/identification", IdentificationStageViewSet)
 router.register("stages/invitation/invitations", InvitationViewSet)
