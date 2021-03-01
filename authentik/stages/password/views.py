@@ -2,11 +2,10 @@
 from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.utils.http import urlencode
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
-from authentik.flows.views import NEXT_ARG_NAME
+from authentik.stages.password.models import PasswordStage
 
 
 class UserSettingsCardView(LoginRequiredMixin, TemplateView):
@@ -15,12 +14,7 @@ class UserSettingsCardView(LoginRequiredMixin, TemplateView):
     template_name = "stages/password/user-settings-card.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        base_url = reverse(
-            "authentik_flows:configure",
-            kwargs={"stage_uuid": self.kwargs["stage_uuid"]},
-        )
-        args = urlencode({NEXT_ARG_NAME: reverse("authentik_core:user-settings")})
-
+        stage = get_object_or_404(PasswordStage, pk=self.kwargs["stage_uuid"])
         kwargs = super().get_context_data(**kwargs)
-        kwargs["url"] = f"{base_url}?{args}"
+        kwargs["stage"] = stage
         return kwargs
