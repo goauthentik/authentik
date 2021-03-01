@@ -42,9 +42,6 @@ class CaptchaStage(Stage):
 
         return CaptchaStageForm
 
-    def __str__(self):
-        return f"Captcha Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Captcha Stage")

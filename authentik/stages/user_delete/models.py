@@ -31,9 +31,6 @@ class UserDeleteStage(Stage):
 
         return UserDeleteStageForm
 
-    def __str__(self):
-        return f"User Delete Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("User Delete Stage")

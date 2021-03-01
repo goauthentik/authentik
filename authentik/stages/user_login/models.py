@@ -42,9 +42,6 @@ class UserLoginStage(Stage):
 
         return UserLoginStageForm
 
-    def __str__(self):
-        return f"User Login Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("User Login Stage")

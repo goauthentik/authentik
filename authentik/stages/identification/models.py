@@ -89,9 +89,6 @@ class IdentificationStage(Stage):
 
         return IdentificationStageForm
 
-    def __str__(self):
-        return f"Identification Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Identification Stage")

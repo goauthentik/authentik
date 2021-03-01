@@ -31,9 +31,6 @@ class UserWriteStage(Stage):
 
         return UserWriteStageForm
 
-    def __str__(self):
-        return f"User Write Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("User Write Stage")

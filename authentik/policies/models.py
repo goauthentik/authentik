@@ -138,7 +138,7 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     def __str__(self):
-        return f"{self.__class__.__name__} {self.name}"
+        return self.name
 
     def passes(self, request: PolicyRequest) -> PolicyResult:  # pragma: no cover
         """Check if request passes this policy"""

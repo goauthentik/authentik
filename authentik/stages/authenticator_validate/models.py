@@ -66,9 +66,6 @@ class AuthenticatorValidateStage(Stage):
 
         return AuthenticatorValidateStageForm
 
-    def __str__(self) -> str:
-        return f"Authenticator Validation Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Authenticator Validation Stage")

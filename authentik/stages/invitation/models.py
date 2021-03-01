@@ -45,9 +45,6 @@ class InvitationStage(Stage):
 
         return InvitationStageForm
 
-    def __str__(self):
-        return f"Invitation Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Invitation Stage")

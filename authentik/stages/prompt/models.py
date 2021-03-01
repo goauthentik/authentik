@@ -115,7 +115,7 @@ class Prompt(SerializerModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Prompt '{self.field_key}' type={self.type}"
+        return f"Prompt field '{self.field_key}' type {self.type}"
 
     class Meta:
 
@@ -147,9 +147,6 @@ class PromptStage(Stage):
         from authentik.stages.prompt.forms import PromptStageForm
 
         return PromptStageForm
-
-    def __str__(self):
-        return f"Prompt Stage {self.name}"
 
     class Meta:
 

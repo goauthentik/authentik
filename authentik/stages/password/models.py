@@ -55,9 +55,6 @@ class PasswordStage(ConfigurableStage, Stage):
             "authentik_stages_password:user-settings", kwargs={"stage_uuid": self.pk}
         )
 
-    def __str__(self):
-        return f"Password Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Password Stage")

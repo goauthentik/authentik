@@ -32,9 +32,6 @@ class DummyStage(Stage):
 
         return DummyStageForm
 
-    def __str__(self):
-        return f"Dummy Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Dummy Stage")

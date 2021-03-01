@@ -56,9 +56,6 @@ class ConsentStage(Stage):
 
         return ConsentStageForm
 
-    def __str__(self):
-        return f"Consent Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("Consent Stage")

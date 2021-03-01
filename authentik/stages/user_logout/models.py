@@ -30,9 +30,6 @@ class UserLogoutStage(Stage):
 
         return UserLogoutStageForm
 
-    def __str__(self):
-        return f"User Logout Stage {self.name}"
-
     class Meta:
 
         verbose_name = _("User Logout Stage")
