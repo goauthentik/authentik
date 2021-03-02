@@ -44,7 +44,7 @@ urllib3 = {extras = ["secure"],version = "*"}
 uvicorn = {extras = ["standard"],version = "*"}
 webauthn = "*"
 xmlsec = "*"
-twisted = "==20.3.0"
+twisted = "==21.2.0"
 
 [requires]
 python_version = "3.9"
