@@ -40,9 +40,7 @@ export class NotificationDrawer extends LitElement {
     }
 
     renderItem(item: Notification): TemplateResult {
-        const delta = Date.now() - (parseInt(item.created, 10) * 1000);
-        // TODO: more flexible display, minutes and seconds
-        const age = `${Math.round(delta / 1000 / 3600)} Hours ago`;
+        const created = new Date(parseInt(item.created, 10) * 1000);
         let level = "";
         switch (item.severity) {
         case "notice":
@@ -76,7 +74,7 @@ export class NotificationDrawer extends LitElement {
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
-            <small class="pf-c-notification-drawer__list-item-timestamp">${age}</small>
+            <small class="pf-c-notification-drawer__list-item-timestamp">${created.toLocaleString()}</small>
         </li>`;
     }
 
