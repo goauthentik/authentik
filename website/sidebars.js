@@ -106,6 +106,7 @@ module.exports = {
                     type: "category",
                     label: "as Provider",
                     items: [
+                        "integrations/services/apache-guacamole/index",
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
                         "integrations/services/gitlab/index",
