@@ -4,7 +4,7 @@
 |-----------------------------------|-------------------------|-------------|
 | image.name                        | beryju/authentik        | Image used to run the authentik server and worker |
 | image.name_static                 | beryju/authentik-static | Image used to run the authentik static server (CSS and JS Files) |
-| image.tag                         | 2021.3.1-rc1           | Image tag |
+| image.tag                         | 2021.3.1-rc2           | Image tag |
 | image.pullPolicy                  | IfNotPresent            | Image Pull Policy used for all deployments |
 | serverReplicas                    | 1                       | Replicas for the Server deployment |
 | workerReplicas                    | 1                       | Replicas for the Worker deployment |
