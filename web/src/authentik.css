@@ -61,11 +61,6 @@ select[multiple] {
     font-family: monospace;
 }
 
-/* Fix pre elements within alerts */
-.pf-c-alert pre {
-    white-space: pre-wrap;
-}
-
 .pf-c-content h1 {
     display: flex;
     align-items: flex-start;
@@ -83,6 +78,12 @@ select[multiple] {
 
 .pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
     z-index: auto !important;
+}
+
+/* ensure background on non-flow pages match */
+.pf-c-background-image::before {
+    background-image: url("dist/assets/images/flow_background.jpg");
+    background-position: center;
 }
 
 /* Fix spacing between messages */
