@@ -9,6 +9,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -32,6 +33,7 @@ export class ProviderListPage extends TablePage<Provider> {
         return Provider.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

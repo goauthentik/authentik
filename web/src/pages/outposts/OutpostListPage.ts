@@ -10,6 +10,7 @@ import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/TokenCopyButton";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -29,6 +30,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return Outpost.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

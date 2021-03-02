@@ -9,6 +9,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
@@ -35,6 +36,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return PropertyMapping.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
             managed__isnull: this.hideManaged,
         });

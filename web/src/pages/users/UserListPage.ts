@@ -8,6 +8,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { User } from "../../api/Users";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -31,6 +32,7 @@ export class UserListPage extends TablePage<User> {
         return User.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

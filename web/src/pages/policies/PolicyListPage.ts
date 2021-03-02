@@ -9,6 +9,7 @@ import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Policy } from "../../api/Policies";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -31,7 +32,8 @@ export class PolicyListPage extends TablePage<Policy> {
     apiEndpoint(page: number): Promise<AKResponse<Policy>> {
         return Policy.list({
             ordering: this.order,
-        page: page,
+            page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

@@ -7,6 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Group } from "../../api/Groups";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
@@ -30,6 +31,7 @@ export class GroupListPage extends TablePage<Group> {
         return Group.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

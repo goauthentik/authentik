@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Event } from "../../api/Events";
+import { PAGE_SIZE } from "../../constants";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 import { time } from "../../utils";
@@ -31,6 +32,7 @@ export class EventListPage extends TablePage<Event> {
         return Event.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE * 3,
             search: this.search || "",
         });
     }

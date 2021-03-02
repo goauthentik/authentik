@@ -9,6 +9,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
 import { Stage } from "../../api/Flows";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -32,6 +33,7 @@ export class StageListPage extends TablePage<Stage> {
         return Stage.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

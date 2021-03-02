@@ -7,6 +7,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
 import { Table, TableColumn } from "../../elements/table/Table";
 import { Token } from "../../api/Tokens";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-token-user-list")
 export class UserTokenList extends Table<Token> {
@@ -21,6 +22,7 @@ export class UserTokenList extends Table<Token> {
         return Token.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }
