@@ -79,3 +79,8 @@ class WebAuthnDevice(Device):
 
     def __str__(self):
         return self.name or str(self.user)
+
+    class Meta:
+
+        verbose_name = _("WebAuthn Device")
+        verbose_name_plural = _("WebAuthn Devices")

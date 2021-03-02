@@ -17,6 +17,20 @@
                                 Created {{ created_on }}
                             {% endblocktrans %}
                         </div>
+                        <div class="pf-c-data-list__cell">
+                            <ak-modal-button href="{% url 'authentik_stages_authenticator_webauthn:device-update' pk=device.pk %}">
+                                <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                    {% trans 'Update' %}
+                                </ak-spinner-button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                            <ak-modal-button href="{% url 'authentik_stages_authenticator_webauthn:device-delete' pk=device.pk %}">
+                                <ak-spinner-button slot="trigger" class="pf-m-danger">
+                                    {% trans 'Delete' %}
+                                </ak-spinner-button>
+                                <div slot="modal"></div>
+                            </ak-modal-button>
+                        </div>
                     </div>
                 </div>
             </li>
