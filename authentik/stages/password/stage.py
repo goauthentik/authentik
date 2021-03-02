@@ -42,14 +42,14 @@ def authenticate(
         except ImportError:
             LOGGER.warning("Failed to import backend", path=backend_path)
             continue
-        LOGGER.debug("Attempting authentication...", backend=backend)
+        LOGGER.debug("Attempting authentication...", backend=backend_path)
         user = backend.authenticate(request, **credentials)
         if user is None:
-            LOGGER.debug("Backend returned nothing, continuing")
+            LOGGER.debug("Backend returned nothing, continuing", backend=backend_path)
             continue
         # Annotate the user object with the path of the backend.
         user.backend = backend_path
-        LOGGER.debug("Successful authentication", user=user, backend=backend)
+        LOGGER.debug("Successful authentication", user=user, backend=backend_path)
         return user
 
     # The credentials supplied are invalid to all backends, fire signal
