@@ -1,7 +1,10 @@
 """Sync LDAP Users into authentik"""
+from datetime import datetime
+
 import ldap3
 import ldap3.core.exceptions
 from django.db.utils import IntegrityError
+from pytz import UTC
 
 from authentik.core.models import User
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
@@ -53,11 +56,21 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     )
                 )
             else:
-                if created:
-                    ak_user.set_unusable_password()
-                    ak_user.save()
                 self._logger.debug(
                     "Synced User", user=ak_user.username, created=created
                 )
                 user_count += 1
+                # pylint: disable=no-value-for-parameter
+                pwd_last_set = UTC.localize(
+                    attributes.get("pwdLastSet", datetime.now())
+                )
+                if created or pwd_last_set >= ak_user.password_change_date:
+                    self._logger.debug(
+                        "Reset user's password",
+                        user=ak_user.username,
+                        created=created,
+                        pwd_last_set=pwd_last_set,
+                    )
+                    ak_user.set_unusable_password()
+                    ak_user.save()
         return user_count
