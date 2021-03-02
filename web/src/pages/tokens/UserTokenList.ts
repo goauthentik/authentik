@@ -37,6 +37,18 @@ export class UserTokenList extends Table<Token> {
         ];
     }
 
+    renderToolbar(): TemplateResult {
+        return html`
+        <ak-modal-button href="-/user/tokens/create/">
+            <ak-spinner-button slot="trigger" class="pf-m-primary">
+                ${gettext("Create")}
+            </ak-spinner-button>
+            <div slot="modal"></div>
+        </ak-modal-button>
+        ${super.renderToolbar()}
+        `;
+    }
+
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
