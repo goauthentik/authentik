@@ -51,6 +51,7 @@ module.exports = {
                 "flow/stages/authenticator_validate/index",
                 "flow/stages/authenticator_webauthn/index",
                 "flow/stages/captcha/index",
+                "flow/stages/deny",
                 "flow/stages/email/index",
                 "flow/stages/identification/index",
                 "flow/stages/invitation/index",
