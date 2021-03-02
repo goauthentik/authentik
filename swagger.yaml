@@ -84,12 +84,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -120,12 +120,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -133,20 +133,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -173,12 +180,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -186,20 +193,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -331,12 +345,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -344,20 +358,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -478,12 +499,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -491,20 +512,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -639,12 +667,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -652,20 +680,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -721,12 +756,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -813,12 +848,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -826,20 +861,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -983,12 +1025,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -996,20 +1038,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1039,12 +1088,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1119,12 +1168,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1132,20 +1181,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1230,12 +1286,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1243,20 +1299,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1357,12 +1420,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1370,20 +1433,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1550,12 +1620,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1563,20 +1633,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1697,12 +1774,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1710,20 +1787,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -1784,12 +1868,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1904,12 +1988,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -1917,20 +2001,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2053,12 +2144,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2066,20 +2157,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2184,12 +2282,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2197,20 +2295,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2256,12 +2361,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2371,12 +2476,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2384,20 +2489,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2498,12 +2610,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2511,20 +2623,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2635,12 +2754,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2648,20 +2767,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2696,12 +2822,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2739,12 +2865,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2819,12 +2945,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2832,20 +2958,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -2946,12 +3079,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -2959,20 +3092,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3073,12 +3213,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3086,20 +3226,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3200,12 +3347,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3213,20 +3360,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3327,12 +3481,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3340,20 +3494,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3454,12 +3615,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3467,20 +3628,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3581,12 +3749,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3594,20 +3762,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3708,12 +3883,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3721,20 +3896,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3835,12 +4017,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3848,20 +4030,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -3902,12 +4091,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -3915,20 +4104,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4028,12 +4224,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4041,20 +4237,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4219,12 +4422,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4232,20 +4435,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4275,12 +4485,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4330,12 +4540,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4343,20 +4553,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4457,12 +4674,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4470,20 +4687,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4584,12 +4808,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4597,20 +4821,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4716,12 +4947,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4729,20 +4960,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -4788,12 +5026,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4883,12 +5121,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -4896,20 +5134,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5027,12 +5272,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5040,20 +5285,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5153,12 +5405,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5166,20 +5418,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5329,12 +5588,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5342,20 +5601,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5380,12 +5646,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5436,12 +5702,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5449,20 +5715,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5584,12 +5857,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5597,20 +5870,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5712,12 +5992,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5725,20 +6005,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5865,12 +6152,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5878,20 +6165,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -5921,12 +6215,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5976,12 +6270,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -5989,20 +6283,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6103,12 +6404,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6116,20 +6417,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6230,12 +6538,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6243,20 +6551,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6357,12 +6672,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6370,20 +6685,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6484,12 +6806,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6497,20 +6819,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6611,12 +6940,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6624,20 +6953,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6738,12 +7074,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6751,20 +7087,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6865,12 +7208,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -6878,20 +7221,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -6992,12 +7342,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7005,20 +7355,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7119,12 +7476,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7132,20 +7489,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7256,12 +7620,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7269,20 +7633,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7383,12 +7754,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7396,20 +7767,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7510,12 +7888,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7523,20 +7901,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7657,12 +8042,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7670,20 +8055,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7784,12 +8176,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7797,20 +8189,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -7911,12 +8310,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -7924,20 +8323,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -8038,12 +8444,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -8051,20 +8457,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -8165,12 +8578,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -8178,20 +8591,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:
@@ -8292,12 +8712,12 @@ paths:
           type: string
         - name: page
           in: query
-          description: A page number within the paginated result set.
+          description: Page Index
           required: false
           type: integer
         - name: page_size
           in: query
-          description: Number of results to return per page.
+          description: Page Size
           required: false
           type: integer
       responses:
@@ -8305,20 +8725,27 @@ paths:
           description: ''
           schema:
             required:
-              - count
               - results
+              - pagination
             type: object
             properties:
-              count:
-                type: integer
-              next:
-                type: string
-                format: uri
-                x-nullable: true
-              previous:
-                type: string
-                format: uri
-                x-nullable: true
+              pagination:
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
               results:
                 type: array
                 items:

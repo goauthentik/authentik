@@ -139,6 +139,9 @@ GUARDIAN_MONKEY_PATCH = False
 
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": "authentik.api.v2.urls.info",
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        "authentik.api.pagination_schema.PaginationInspector",
+    ],
     "SECURITY_DEFINITIONS": {
         "token": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
