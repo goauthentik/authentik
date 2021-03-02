@@ -119,13 +119,15 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
             return html`<ak-stage-authenticator-validate-code
                 .host=${this}
                 .challenge=${this.challenge}
-                .deviceChallenge=${this.selectedDeviceChallenge}>
+                .deviceChallenge=${this.selectedDeviceChallenge}
+                .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
             </ak-stage-authenticator-validate-code>`;
         case DeviceClasses.WEBAUTHN:
             return html`<ak-stage-authenticator-validate-webauthn
                 .host=${this}
                 .challenge=${this.challenge}
-                .deviceChallenge=${this.selectedDeviceChallenge}>
+                .deviceChallenge=${this.selectedDeviceChallenge}
+                .showBackButton=${(this.challenge?.device_challenges.length || []) > 1}>
             </ak-stage-authenticator-validate-webauthn>`;
         }
     }

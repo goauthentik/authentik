@@ -21,6 +21,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
     @property()
     authenticateMessage = "";
 
+    @property({type: Boolean})
+    showBackButton = false;
+
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
     }
@@ -98,14 +101,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
         </div>
         <footer class="pf-c-login__main-footer">
             <ul class="pf-c-login__main-footer-links">
-                <li class="pf-c-login__main-footer-links-item">
-                    <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
-                        if (!this.host) return;
-                        (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
-                    }}>
-                        ${gettext("Return to device picker")}
-                    </button>
-                </li>
+                ${this.showBackButton ?
+                    html`<li class="pf-c-login__main-footer-links-item">
+                        <button class="pf-c-button pf-m-secondary pf-m-block" @click=${() => {
+                            if (!this.host) return;
+                            (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
+                        }}>
+                            ${gettext("Return to device picker")}
+                        </button>
+                    </li>`:
+                    html``}
             </ul>
         </footer>`;
     }
