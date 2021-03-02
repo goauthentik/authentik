@@ -13,7 +13,7 @@
         "@fortawesome/fontawesome-free": "^5.15.2",
         "@patternfly/patternfly": "^4.87.3",
         "@sentry/browser": "^6.2.1",
-        "@sentry/tracing": "^6.2.0",
+        "@sentry/tracing": "^6.2.1",
         "@types/chart.js": "^2.9.31",
         "@types/codemirror": "0.0.108",
         "@types/grecaptcha": "^3.0.1",
