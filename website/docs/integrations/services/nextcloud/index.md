@@ -22,17 +22,17 @@ In case something goes wrong with the configuration, you can use the URL `http:/
 
 The following placeholders will be used:
 
--   `nextcloud.company` is the FQDN of the NextCloud install.
--   `authentik.company` is the FQDN of the authentik install.
+- `nextcloud.company` is the FQDN of the NextCloud install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
--   Signing Keypair: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
+- Signing Keypair: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
 
