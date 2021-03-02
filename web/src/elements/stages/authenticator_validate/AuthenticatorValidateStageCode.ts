@@ -14,7 +14,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
-    @@property({ type: Boolean })
+    @property({ type: Boolean })
     showBackButton = false;
 
     static get styles(): CSSResult[] {
