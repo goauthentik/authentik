@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from django.views.generic.base import TemplateView
@@ -35,7 +34,7 @@ class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = UserDetailForm
 
     success_message = _("Successfully updated user.")
-    success_url = reverse_lazy("authentik_core:user-details")
+    success_url = "/"
 
     def get_object(self):
         return self.request.user
@@ -62,7 +61,7 @@ class TokenCreateView(
     permission_required = "authentik_core.add_token"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:user-tokens")
+    success_url = "/"
     success_message = _("Successfully created Token")
 
     def form_valid(self, form: UserTokenForm) -> HttpResponse:
@@ -80,7 +79,7 @@ class TokenUpdateView(
     form_class = UserTokenForm
     permission_required = "authentik_core.change_token"
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:user-tokens")
+    success_url = "/"
     success_message = _("Successfully updated Token")
 
     def get_object(self) -> Token:
@@ -100,7 +99,7 @@ class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessage
     model = Token
     permission_required = "authentik_core.delete_token"
     template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:user-tokens")
+    success_url = "/"
     success_message = _("Successfully deleted Token")
 
     def get_object(self) -> Token:
