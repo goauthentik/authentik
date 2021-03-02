@@ -27,7 +27,9 @@
     </div>
 </section>
 <footer class="pf-c-modal-box__footer">
-    <input class="pf-c-button pf-m-primary" type="submit" form="main-form" value="{% block action %}{% endblock %}" />
+    <ak-spinner-button form="main-form">
+        {% block action %}{% endblock %}
+    </ak-spinner-button>&nbsp;
     <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Cancel" %}</a>
 </footer>
 {% endblock %}
