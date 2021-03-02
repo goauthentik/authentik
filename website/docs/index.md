@@ -13,5 +13,7 @@ See [Docker-compose](installation/docker-compose) or [Kubernetes](installation/k
 
 ## Screenshots
 
-![](/img/screen_apps.png)
-![](/img/screen_admin.png)
+Light | Dark
+--- | ---
+![](/img/screen_apps_light.png) | ![](/img/screen_apps_dark.png)
+![](/img/screen_admin_light.png) | ![](/img/screen_admin_dark.png)

@@ -22,8 +22,10 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Screenshots
 
-![](https://goauthentik.io/img/screen_apps.png)
-![](https://goauthentik.io/img/screen_admin.png)
+Light | Dark
+--- | ---
+![](https://goauthentik.io/img/screen_apps_light.png) | ![](https://goauthentik.io/img/screen_apps_dark.png)
+![](https://goauthentik.io/img/screen_admin_light.png) | ![](https://goauthentik.io/img/screen_admin_dark.png)
 
 ## Development
 

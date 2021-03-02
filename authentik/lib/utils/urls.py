@@ -2,8 +2,8 @@
 from urllib.parse import urlparse
 
 from django.http import HttpResponse
-from django.shortcuts import redirect, reverse
-from django.urls import NoReverseMatch
+from django.shortcuts import redirect
+from django.urls import NoReverseMatch, reverse
 from django.utils.http import urlencode
 from structlog.stdlib import get_logger
 
