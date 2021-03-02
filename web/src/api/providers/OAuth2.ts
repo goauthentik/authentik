@@ -8,6 +8,7 @@ export interface OAuth2SetupURLs {
     token: string;
     user_info: string;
     provider_info?: string;
+    logout?: string;
 
 }
 

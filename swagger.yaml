@@ -10684,6 +10684,10 @@ definitions:
         title: Provider info
         type: string
         readOnly: true
+      logout:
+        title: Logout
+        type: string
+        readOnly: true
   ProxyProvider:
     description: ProxyProvider Serializer
     required:

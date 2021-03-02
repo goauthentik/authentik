@@ -148,9 +148,15 @@ export class OAuth2ProviderViewPage extends Page {
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
-                                                <span class="pf-c-form__label-text">${gettext("Userinfo Endpoint")}</span>
+                                                <span class="pf-c-form__label-text">${gettext("Userinfo URL")}</span>
                                             </label>
                                             <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.user_info || "-"}" />
+                                        </div>
+                                        <div class="pf-c-form__group">
+                                            <label class="pf-c-form__label" for="help-text-simple-form-name">
+                                                <span class="pf-c-form__label-text">${gettext("Logout URL")}</span>
+                                            </label>
+                                            <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.logout || "-"}" />
                                         </div>
                                     </form>
                                 </div>
