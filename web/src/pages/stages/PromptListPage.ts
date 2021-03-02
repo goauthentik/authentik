@@ -7,6 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Prompt } from "../../api/Prompts";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
@@ -30,6 +31,7 @@ export class PromptListPage extends TablePage<Prompt> {
         return Prompt.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

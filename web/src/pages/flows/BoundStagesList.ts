@@ -11,6 +11,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/policies/BoundPoliciesList";
 import { FlowStageBinding, Stage } from "../../api/Flows";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -24,6 +25,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             target: this.target || "",
             ordering: "order",
             page: page,
+            page_size: PAGE_SIZE,
         });
     }
 

@@ -59,9 +59,9 @@ export class SpinnerButton extends LitElement {
             return;
         }
         if (this.form) {
-            // Because safari we can't just extend HTMLButtonElement, hence I have to implement
-            // these attributes by myself here, sigh...
-            document.querySelector<HTMLFormElement>(`#${this.form}`)?.submit();
+            // Since the form= attribute is only used within a modal button,
+            // we can assume the form is always two levels up
+            this.parentElement?.parentElement?.querySelector < HTMLFormElement>(`#${this.form}`)?.dispatchEvent(new Event("submit"));
         }
         this.setLoading();
     }

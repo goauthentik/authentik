@@ -62,11 +62,15 @@ class PolicyAccessView(AccessMixin, View):
             return self.handle_no_permission()
         try:
             self.resolve_provider_application()
-        except (Application.DoesNotExist, Provider.DoesNotExist):
-            return self.handle_no_permission_authenticated()
+        except (Application.DoesNotExist, Provider.DoesNotExist) as exc:
+            LOGGER.warning("failed to resolve application", exc=exc)
+            return self.handle_no_permission_authenticated(
+                PolicyResult(False, _("Failed to resolve application"))
+            )
         # Check if user is unauthenticated, so we pass the application
         # for the identification stage
         if not request.user.is_authenticated:
+            LOGGER.warning("user not authenticated")
             return self.handle_no_permission()
         # Check permissions
         result = self.user_has_access()

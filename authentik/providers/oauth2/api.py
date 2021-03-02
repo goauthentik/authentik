@@ -45,6 +45,7 @@ class OAuth2ProviderSetupURLs(Serializer):
     token = ReadOnlyField()
     user_info = ReadOnlyField()
     provider_info = ReadOnlyField()
+    logout = ReadOnlyField()
 
     def create(self, request: Request) -> Response:
         raise NotImplementedError
@@ -83,11 +84,18 @@ class OAuth2ProviderViewSet(ModelViewSet):
                 )
             ),
             "provider_info": None,
+            "logout": None,
         }
         try:
             data["provider_info"] = request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:provider-info",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["logout"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:end-session",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

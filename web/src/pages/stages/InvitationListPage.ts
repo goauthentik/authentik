@@ -7,6 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Invitation } from "../../api/Invitations";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -30,6 +31,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         return Invitation.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

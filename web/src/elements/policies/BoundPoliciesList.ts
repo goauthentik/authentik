@@ -11,6 +11,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { Policy } from "../../api/Policies";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -22,6 +23,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             target: this.target || "",
             ordering: "order",
             page: page,
+            page_size: PAGE_SIZE,
         });
     }
 

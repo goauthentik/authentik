@@ -6,6 +6,7 @@ from rest_framework.response import Response
 class Pagination(pagination.PageNumberPagination):
     """Pagination which includes total pages and current page"""
 
+    page_query_param = "page"
     page_size_query_param = "page_size"
 
     def get_paginated_response(self, data):

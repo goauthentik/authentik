@@ -4,3 +4,4 @@ export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
 export const VERSION = "2021.3.1-rc1";
+export const PAGE_SIZE = 20;

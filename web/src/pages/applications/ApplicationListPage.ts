@@ -7,6 +7,7 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -30,6 +31,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return Application.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

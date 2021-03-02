@@ -90,7 +90,7 @@ class UserManager(DjangoUserManager):
 
 
 class User(GuardianUserMixin, AbstractUser):
-    """Custom User model to allow easier adding o f user-based settings"""
+    """Custom User model to allow easier adding of user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False)
     name = models.TextField(help_text=_("User's display name."))

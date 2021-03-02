@@ -1,4 +1,6 @@
-<img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="250" alt="authentik logo">
+<p align="center">
+    <img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="150" alt="authentik logo">
+</p>
 
 ---
 
@@ -22,8 +24,10 @@ For bigger setups, there is a Helm Chart in the `helm/` directory. This is docum
 
 ## Screenshots
 
-![](https://goauthentik.io/img/screen_apps.png)
-![](https://goauthentik.io/img/screen_admin.png)
+Light | Dark
+--- | ---
+![](https://goauthentik.io/img/screen_apps_light.png) | ![](https://goauthentik.io/img/screen_apps_dark.png)
+![](https://goauthentik.io/img/screen_admin_light.png) | ![](https://goauthentik.io/img/screen_admin_dark.png)
 
 ## Development
 

@@ -9,6 +9,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -32,6 +33,7 @@ export class SourceListPage extends TablePage<Source> {
         return Source.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

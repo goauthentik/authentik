@@ -4,7 +4,9 @@ import { NotFoundError, RequestError } from "./Error";
 export const VERSION = "v2beta";
 
 export interface QueryArguments {
-    [key: string]: number | string | boolean | null;
+    page?: number;
+    page_size?: number;
+    [key: string]: number | string | boolean | undefined | null;
 }
 
 export interface BaseInheritanceModel {

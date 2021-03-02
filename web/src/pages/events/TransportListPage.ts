@@ -8,6 +8,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Transport } from "../../api/EventTransports";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<Transport> {
@@ -31,6 +32,7 @@ export class TransportListPage extends TablePage<Transport> {
         return Transport.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

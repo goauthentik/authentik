@@ -8,6 +8,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { Rule } from "../../api/EventRules";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<Rule> {
@@ -33,6 +34,7 @@ export class RuleListPage extends TablePage<Rule> {
         return Rule.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

@@ -11,6 +11,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<OutpostServiceConnection> {
@@ -31,6 +32,7 @@ export class OutpostServiceConnectionListPage extends TablePage<OutpostServiceCo
         return OutpostServiceConnection.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

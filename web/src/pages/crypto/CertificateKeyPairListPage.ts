@@ -7,6 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { CertificateKeyPair } from "../../api/CertificateKeyPair";
+import { PAGE_SIZE } from "../../constants";
 
 @customElement("ak-crypto-certificatekeypair-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
@@ -32,6 +33,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return CertificateKeyPair.list({
             ordering: this.order,
             page: page,
+            page_size: PAGE_SIZE,
             search: this.search || "",
         });
     }

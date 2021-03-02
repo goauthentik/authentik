@@ -100,7 +100,7 @@ function Home() {
                         <div className="row">
                             <div className="col col--5">
                                 <div>
-                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_apps.png')} alt="library screenshot"/>
+                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_apps_light.png')} alt="library screenshot"/>
                                 </div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
@@ -131,7 +131,7 @@ function Home() {
                             </div>
                             <div className="col col--5">
                                 <div>
-                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_admin.png')} alt="library screenshot" />
+                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_admin_light.png')} alt="library screenshot" />
                                 </div>
                             </div>
                         </div>

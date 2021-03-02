@@ -4,9 +4,9 @@
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| 0.13.x     | :white_check_mark: |
-| 0.14.x     | :white_check_mark: |
 | 2021.1.x   | :white_check_mark: |
+| 2021.2.x   | :white_check_mark: |
+| 2021.3.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

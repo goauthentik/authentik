@@ -9657,7 +9657,7 @@ definitions:
             readOnly: true
         readOnly: true
       user:
-        description: Custom User model to allow easier adding o f user-based settings
+        description: Custom User model to allow easier adding of user-based settings
         required:
           - password
           - username
@@ -10682,6 +10682,10 @@ definitions:
         readOnly: true
       provider_info:
         title: Provider info
+        type: string
+        readOnly: true
+      logout:
+        title: Logout
         type: string
         readOnly: true
   ProxyProvider:
@@ -11867,7 +11871,7 @@ definitions:
         description: Optional fixed data to enforce on user enrollment.
         type: object
       created_by:
-        description: Custom User model to allow easier adding o f user-based settings
+        description: Custom User model to allow easier adding of user-based settings
         required:
           - password
           - username
