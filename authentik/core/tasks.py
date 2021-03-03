@@ -46,8 +46,7 @@ def backup_database(self: MonitoredTask):  # pragma: no cover
             TaskResult(
                 TaskResultStatus.SUCCESSFUL,
                 [
-                    f"Successfully finished database backup {naturaltime(start)}",
-                    out.getvalue(),
+                    f"Successfully finished database backup {naturaltime(start)} {out.getvalue()}",
                 ],
             )
         )
