@@ -70,7 +70,7 @@ export class ApplicationViewPage extends LitElement {
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
                                     <ak-admin-logins-chart
-                                        url="${["core", "applications", this.application?.slug, "metrics"]}">
+                                        .url="${["core", "applications", this.application?.slug, "metrics"]}">
                                     </ak-admin-logins-chart>`: ""}
                             </div>
                         </div>

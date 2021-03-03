@@ -14,7 +14,7 @@ export interface LoginMetrics {
 
 @customElement("ak-admin-logins-chart")
 export class AdminLoginsChart extends LitElement {
-    @property()
+    @property({type: Array})
     url: string[] = [];
 
     chart?: Chart;

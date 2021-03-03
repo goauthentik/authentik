@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, TemplateResult, property } from "lit-element";
-import { DefaultClient } from "../../api/Client";
 import "./Message";
 import { APIMessage } from "./Message";
 
@@ -15,7 +14,6 @@ export function showMessage(message: APIMessage): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends LitElement {
-    url = DefaultClient.makeUrl(["root", "messages"]);
 
     @property({attribute: false})
     messages: APIMessage[] = [];
@@ -34,10 +32,6 @@ export class MessageContainer extends LitElement {
         } catch (error) {
             console.warn(`authentik/messages: failed to connect to ws ${error}`);
         }
-    }
-
-    firstUpdated(): void {
-        this.fetchMessages();
     }
 
     connect(): void {
@@ -72,21 +66,6 @@ export class MessageContainer extends LitElement {
             console.warn(`authentik/messages: error ${e}`);
             this.retryDelay = this.retryDelay * 2;
         });
-    }
-
-    /* Fetch messages which were stored in the session.
-     * This mostly gets messages which were created when the user arrives/leaves the site
-     * and especially the login flow */
-    fetchMessages(): Promise<void> {
-        console.debug("authentik/messages: fetching messages over direct api");
-        return fetch(this.url)
-            .then((r) => r.json())
-            .then((r: APIMessage[]) => {
-                r.forEach((m: APIMessage) => {
-                    this.messages.push(m);
-                    this.requestUpdate();
-                });
-            });
     }
 
     render(): TemplateResult {
