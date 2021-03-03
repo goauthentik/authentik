@@ -12,10 +12,17 @@ export class Tabs extends LitElement {
     @property()
     currentPage?: string;
 
+    @property({type: Boolean})
+    vertical = false;
+
     static get styles(): CSSResult[] {
         return [GlobalsStyle, TabsStyle, css`
             ::slotted(*) {
                 height: 100%;
+                flex-grow: 2;
+            }
+            :host([vertical]) {
+                display: flex;
             }
         `];
     }
@@ -39,7 +46,7 @@ export class Tabs extends LitElement {
             }
             this.currentPage = pages[0].attributes.getNamedItem("slot")?.value;
         }
-        return html`<div class="pf-c-tabs">
+        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
                 <ul class="pf-c-tabs__list">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>

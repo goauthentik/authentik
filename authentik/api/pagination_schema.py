@@ -61,7 +61,8 @@ class PaginationInspector(PaginatorInspector):
         """
         Get the pagination parameters for a single paginator **instance**.
 
-        Should return :data:`.NotHandled` if this inspector does not know how to handle the given `paginator`.
+        Should return :data:`.NotHandled` if this inspector
+        does not know how to handle the given `paginator`.
 
         :param BasePagination paginator: the paginator
         :rtype: list[openapi.Parameter]
