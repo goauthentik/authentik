@@ -96,10 +96,7 @@ paths:
         '200':
           description: Get running and latest version.
           schema:
-            description: ''
-            type: array
-            items:
-              $ref: '#/definitions/Version'
+            $ref: '#/definitions/Version'
       tags:
         - admin
     parameters: []
@@ -9338,7 +9335,11 @@ definitions:
         format: date-time
       status:
         title: Status
-        type: integer
+        type: string
+        enum:
+          - SUCCESSFUL
+          - WARNING
+          - ERROR
       messages:
         description: ''
         type: array
