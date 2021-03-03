@@ -1,16 +1,21 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import Chart from "chart.js";
-import { showMessage } from "./messages/MessageContainer";
+import { DefaultClient } from "../api/Client";
 
 interface TickValue {
     value: number;
     major: boolean;
 }
 
+export interface LoginMetrics {
+    logins_failed_per_1h: { x: number, y: number }[];
+    logins_per_1h: { x: number, y: number }[];
+}
+
 @customElement("ak-admin-logins-chart")
 export class AdminLoginsChart extends LitElement {
-    @property()
-    url = "";
+    @property({type: Array})
+    url: string[] = [];
 
     chart?: Chart;
 
@@ -40,15 +45,7 @@ export class AdminLoginsChart extends LitElement {
     }
 
     firstUpdated(): void {
-        fetch(this.url)
-            .then((r) => r.json())
-            .catch((e) => {
-                showMessage({
-                    level_tag: "error",
-                    message: "Unexpected error"
-                });
-                console.error(e);
-            })
+        DefaultClient.fetch<LoginMetrics>(this.url)
             .then((r) => {
                 const canvas = <HTMLCanvasElement>this.shadowRoot?.querySelector("canvas");
                 if (!canvas) {

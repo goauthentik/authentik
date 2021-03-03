@@ -1,7 +1,6 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Application } from "../../api/Applications";
-import { DefaultClient } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
@@ -71,7 +70,7 @@ export class ApplicationViewPage extends LitElement {
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
                                     <ak-admin-logins-chart
-                                        url="${DefaultClient.makeUrl(["core", "applications", this.application?.slug, "metrics"])}">
+                                        .url="${["core", "applications", this.application?.slug, "metrics"]}">
                                     </ak-admin-logins-chart>`: ""}
                             </div>
                         </div>

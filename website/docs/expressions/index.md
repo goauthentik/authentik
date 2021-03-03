@@ -12,8 +12,8 @@ These functions/objects are available wherever expressions are used. For more sp
 
 ## Global objects
 
--   `ak_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
--   `requests`: requests Session object. ([ref](https://requests.readthedocs.io/en/master/user/advanced/))
+- `ak_logger`: structlog BoundLogger. ([ref](https://www.structlog.org/en/stable/api.html#structlog.BoundLogger))
+- `requests`: requests Session object. ([ref](https://requests.readthedocs.io/en/master/user/advanced/))
 
 ## Generally available functions
 

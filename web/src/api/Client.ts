@@ -1,3 +1,5 @@
+import { gettext } from "django";
+import { showMessage } from "../elements/messages/MessageContainer";
 import { getCookie } from "../utils";
 import { NotFoundError, RequestError } from "./Error";
 
@@ -46,6 +48,13 @@ export class Client {
                     }
                 }
                 return r;
+            })
+            .catch((e) => {
+                showMessage({
+                    level_tag: "error",
+                    message: gettext(`Unexpected error while fetching: ${e.toString()}`),
+                });
+                return e;
             })
             .then((r) => r.json())
             .then((r) => <T>r);

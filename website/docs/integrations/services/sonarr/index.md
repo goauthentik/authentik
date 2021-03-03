@@ -20,18 +20,18 @@ Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS fee
 
 The following placeholders will be used:
 
--   `sonarr.company` is the FQDN of the Sonarr install.
--   `authentik.company` is the FQDN of the authentik install.
+- `sonarr.company` is the FQDN of the Sonarr install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create a Proxy Provider with the following values
 
--   Internal host
+- Internal host
 
     If Sonarr is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://sonarr:8989`, where sonarr is the name of your container.
 
     If Sonarr is running on a different server than where you are deploying the authentik proxy, set the value to `http://sonarr.company:8989`.
 
--   External host
+- External host
 
     Set this to the external URL you will be accessing Sonarr from.
 

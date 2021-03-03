@@ -5,6 +5,7 @@ from typing import Type
 from kubernetes.client import OpenApiException
 from kubernetes.client.api_client import ApiClient
 from structlog.testing import capture_logs
+from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
 from authentik.outposts.controllers.base import BaseController, ControllerException
@@ -42,7 +43,7 @@ class KubernetesController(BaseController):
                 reconciler = self.reconcilers[reconcile_key](self)
                 reconciler.up()
 
-        except OpenApiException as exc:
+        except (OpenApiException, HTTPError) as exc:
             raise ControllerException from exc
 
     def up_with_logs(self) -> list[str]:
@@ -54,7 +55,7 @@ class KubernetesController(BaseController):
                     reconciler.up()
                 all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
             return all_logs
-        except OpenApiException as exc:
+        except (OpenApiException, HTTPError) as exc:
             raise ControllerException from exc
 
     def down(self):

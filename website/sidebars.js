@@ -49,7 +49,9 @@ module.exports = {
                 "flow/stages/authenticator_static/index",
                 "flow/stages/authenticator_totp/index",
                 "flow/stages/authenticator_validate/index",
+                "flow/stages/authenticator_webauthn/index",
                 "flow/stages/captcha/index",
+                "flow/stages/deny",
                 "flow/stages/email/index",
                 "flow/stages/identification/index",
                 "flow/stages/invitation/index",
@@ -106,6 +108,7 @@ module.exports = {
                     type: "category",
                     label: "as Provider",
                     items: [
+                        "integrations/services/apache-guacamole/index",
                         "integrations/services/aws/index",
                         "integrations/services/awx-tower/index",
                         "integrations/services/gitlab/index",
@@ -120,6 +123,7 @@ module.exports = {
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
+                        "integrations/services/wiki-js/index",
                     ],
                 },
             ],
@@ -141,6 +145,7 @@ module.exports = {
                 "releases/0.14",
                 "releases/2021.1",
                 "releases/2021.2",
+                "releases/2021.3",
             ],
         },
         {

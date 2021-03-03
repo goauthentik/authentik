@@ -378,8 +378,8 @@ stages:
               python ./scripts/az_do_set_branch.py
         - task: Docker@2
           inputs:
-            containerRegistry: 'GHCR'
-            repository: 'beryju/authentik'
+            containerRegistry: 'beryjuorg-harbor'
+            repository: 'authentik/server'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
             tags: "gh-$(branchName)"

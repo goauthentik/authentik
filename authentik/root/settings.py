@@ -139,6 +139,9 @@ GUARDIAN_MONKEY_PATCH = False
 
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": "authentik.api.v2.urls.info",
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        "authentik.api.pagination_schema.PaginationInspector",
+    ],
     "SECURITY_DEFINITIONS": {
         "token": {"type": "apiKey", "name": "Authorization", "in": "header"}
     },
@@ -147,7 +150,6 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "PAGE_SIZE": 100,
-    "DATETIME_FORMAT": "%s",
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework_guardian.filters.ObjectPermissionsFilter",
         "django_filters.rest_framework.DjangoFilterBackend",

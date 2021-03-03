@@ -18,16 +18,16 @@ better software faster with Sentry. Won’t you join them?
 
 The following placeholders will be used:
 
--   `sentry.company` is the FQDN of the Sentry install.
--   `authentik.company` is the FQDN of the authentik install.
+- `sentry.company` is the FQDN of the Sentry install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik. Create a SAML Provider with the following values
 
--   ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
--   Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
--   Issuer: `authentik`
--   Service Provider Binding: `Post`
--   Property Mapping: Select all Managed Mappings
+- ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
+- Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
+- Issuer: `authentik`
+- Service Provider Binding: `Post`
+- Property Mapping: Select all Managed Mappings
 
 ## Sentry
 

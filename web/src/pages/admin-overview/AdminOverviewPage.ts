@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-import { DefaultClient } from "../../api/Client";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/AdminLoginsChart";
@@ -31,7 +30,7 @@ export class AdminOverviewPage extends LitElement {
         <section class="pf-c-page__main-section">
             <div class="pf-l-gallery pf-m-gutter">
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Logins over the last 24 hours" style="grid-column-end: span 3;grid-row-end: span 2;">
-                    <ak-admin-logins-chart url="${DefaultClient.makeUrl(["admin", "metrics"])}"></ak-admin-logins-chart>
+                    <ak-admin-logins-chart .url="${["admin", "metrics"]}"></ak-admin-logins-chart>
                 </ak-aggregate-card>
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>

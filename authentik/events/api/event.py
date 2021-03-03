@@ -29,7 +29,7 @@ class EventSerializer(ModelSerializer):
         ]
 
 
-class EventTopPerUserSerialier(Serializer):
+class EventTopPerUserSerializer(Serializer):
     """Response object of Event's top_per_user"""
 
     application = DictField()
@@ -60,7 +60,7 @@ class EventViewSet(ReadOnlyModelViewSet):
     filterset_fields = ["action"]
 
     @swagger_auto_schema(
-        method="GET", responses={200: EventTopPerUserSerialier(many=True)}
+        method="GET", responses={200: EventTopPerUserSerializer(many=True)}
     )
     @action(detail=False, methods=["GET"])
     def top_per_user(self, request: Request):

@@ -55,7 +55,7 @@ class VersionViewSet(ListModelMixin, GenericViewSet):
     def get_queryset(self):  # pragma: no cover
         return None
 
-    @swagger_auto_schema(responses={200: VersionSerializer(many=True)})
+    @swagger_auto_schema(responses={200: VersionSerializer(many=False)})
     def list(self, request: Request) -> Response:
         """Get running and latest version."""
         return Response(VersionSerializer(True).data)
