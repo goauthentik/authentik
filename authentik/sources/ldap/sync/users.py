@@ -60,10 +60,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                     "Synced User", user=ak_user.username, created=created
                 )
                 user_count += 1
-                # pylint: disable=no-value-for-parameter
-                pwd_last_set = UTC.localize(
-                    attributes.get("pwdLastSet", datetime.now())
-                )
+                pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
+                pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
                 if created or pwd_last_set >= ak_user.password_change_date:
                     self._logger.debug(
                         "Reset user's password",
