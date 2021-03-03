@@ -123,6 +123,7 @@ module.exports = {
                         "integrations/services/ubuntu-landscape/index",
                         "integrations/services/veeam-enterprise-manager/index",
                         "integrations/services/vmware-vcenter/index",
+                        "integrations/services/wiki-js/index",
                     ],
                 },
             ],
