@@ -1159,7 +1159,7 @@ paths:
             description: ''
             type: array
             items:
-              $ref: '#/definitions/EventTopPerUserSerialier'
+              $ref: '#/definitions/EventTopPerUser'
       tags:
         - events
     parameters: []
@@ -9709,7 +9709,7 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-  EventTopPerUserSerialier:
+  EventTopPerUser:
     description: Response object of Event's top_per_user
     required:
       - application
