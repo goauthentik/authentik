@@ -99,7 +99,7 @@ stages:
           - task: Docker@2
             inputs:
               containerRegistry: 'beryjuorg-harbor'
-              repository: 'beryju/authentik-proxy'
+              repository: 'authentik/proxy'
               command: 'buildAndPush'
               Dockerfile: 'outpost/proxy.Dockerfile'
               buildContext: 'outpost/'

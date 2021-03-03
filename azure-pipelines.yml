@@ -379,7 +379,7 @@ stages:
         - task: Docker@2
           inputs:
             containerRegistry: 'beryjuorg-harbor'
-            repository: 'beryju/authentik'
+            repository: 'authentik/server'
             command: 'buildAndPush'
             Dockerfile: 'Dockerfile'
             tags: "gh-$(branchName)"
