@@ -5841,10 +5841,7 @@ paths:
         '200':
           description: Serialize authentik Config into DRF Object
           schema:
-            description: ''
-            type: array
-            items:
-              $ref: '#/definitions/Config'
+            $ref: '#/definitions/Config'
       tags:
         - root
     parameters: []
@@ -11815,21 +11812,24 @@ definitions:
         title: Branding logo
         type: string
         readOnly: true
+        minLength: 1
       branding_title:
         title: Branding title
         type: string
         readOnly: true
+        minLength: 1
       error_reporting_enabled:
         title: Error reporting enabled
-        type: string
+        type: boolean
         readOnly: true
       error_reporting_environment:
         title: Error reporting environment
         type: string
         readOnly: true
+        minLength: 1
       error_reporting_send_pii:
         title: Error reporting send pii
-        type: string
+        type: boolean
         readOnly: true
   Source:
     description: Source Serializer

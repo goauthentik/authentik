@@ -24,9 +24,10 @@ class TaskSerializer(Serializer):
     task_description = CharField()
     task_finish_timestamp = DateTimeField(source="finish_timestamp")
 
-    status = ChoiceField(source="result.status.name", choices=[
-        (x.name, x.name) for x in TaskResultStatus
-    ])
+    status = ChoiceField(
+        source="result.status.name",
+        choices=[(x.name, x.name) for x in TaskResultStatus],
+    )
     messages = ListField(source="result.messages")
 
     def create(self, validated_data: dict) -> Model:
