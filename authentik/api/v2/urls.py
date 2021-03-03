@@ -10,7 +10,6 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionViewSet
 from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigsViewSet
-from authentik.api.v2.messages import MessagesViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
@@ -77,7 +76,6 @@ from authentik.stages.user_write.api import UserWriteStageViewSet
 
 router = routers.DefaultRouter()
 
-router.register("root/messages", MessagesViewSet, basename="messages")
 router.register("root/config", ConfigsViewSet, basename="configs")
 
 router.register("admin/version", VersionViewSet, basename="admin_version")

@@ -5851,22 +5851,6 @@ paths:
       tags:
         - root
     parameters: []
-  /root/messages/:
-    get:
-      operationId: root_messages_list
-      description: List current messages and pass into Serializer
-      parameters: []
-      responses:
-        '200':
-          description: Serialize Django Message into DRF Object
-          schema:
-            description: ''
-            type: array
-            items:
-              $ref: '#/definitions/Message'
-      tags:
-        - root
-    parameters: []
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -11844,30 +11828,6 @@ definitions:
         readOnly: true
       error_reporting_send_pii:
         title: Error reporting send pii
-        type: string
-        readOnly: true
-  Message:
-    description: Serialize Django Message into DRF Object
-    type: object
-    properties:
-      message:
-        title: Message
-        type: string
-        readOnly: true
-      level:
-        title: Level
-        type: string
-        readOnly: true
-      tags:
-        title: Tags
-        type: string
-        readOnly: true
-      extra_tags:
-        title: Extra tags
-        type: string
-        readOnly: true
-      level_tag:
-        title: Level tag
         type: string
         readOnly: true
   Source:
