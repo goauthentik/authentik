@@ -138,6 +138,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -198,6 +206,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -363,6 +379,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -517,6 +541,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -685,6 +717,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -866,6 +906,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1043,6 +1091,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1186,6 +1242,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1304,6 +1368,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1438,6 +1510,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1638,6 +1718,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -1792,6 +1880,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2006,6 +2102,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2162,6 +2266,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2300,6 +2412,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2494,6 +2614,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2628,6 +2756,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2772,6 +2908,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -2963,6 +3107,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3097,6 +3249,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3231,6 +3391,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3365,6 +3533,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3499,6 +3675,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3633,6 +3817,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3767,6 +3959,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -3901,6 +4101,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4035,6 +4243,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4109,6 +4325,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4242,6 +4466,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4440,6 +4672,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4558,6 +4798,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4692,6 +4940,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4826,6 +5082,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -4965,6 +5229,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5139,6 +5411,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5290,6 +5570,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5423,6 +5711,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5606,6 +5902,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5720,6 +6024,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -5875,6 +6187,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6010,6 +6330,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6170,6 +6498,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6288,6 +6624,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6422,6 +6766,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6556,6 +6908,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6690,6 +7050,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6824,6 +7192,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -6958,6 +7334,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7092,6 +7476,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7226,6 +7618,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7360,6 +7760,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7494,6 +7902,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7638,6 +8054,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7772,6 +8196,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -7906,6 +8338,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8060,6 +8500,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8194,6 +8642,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8328,6 +8784,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8462,6 +8926,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8596,6 +9068,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:
@@ -8730,6 +9210,14 @@ paths:
             type: object
             properties:
               pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
                 type: object
                 properties:
                   next:

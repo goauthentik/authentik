@@ -49,6 +49,15 @@ class PaginationInspector(PaginatorInspector):
                                     ),
                                 )
                             ),
+                            required=[
+                                "next",
+                                "previous",
+                                "count",
+                                "current",
+                                "total_pages",
+                                "start_index",
+                                "end_index",
+                            ],
                         ),
                     ),
                     ("results", response_schema),
