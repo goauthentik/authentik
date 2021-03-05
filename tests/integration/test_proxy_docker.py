@@ -13,12 +13,12 @@ from authentik import __version__
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.outposts.apps import AuthentikOutpostConfig
-from authentik.outposts.controllers.docker import DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
+from authentik.providers.proxy.controllers.docker import DockerController
 from authentik.providers.proxy.models import ProxyProvider
 
 
-class OutpostDockerTests(TestCase):
+class TestProxyDocker(TestCase):
     """Test Docker Controllers"""
 
     def _start_container(self, ssl_folder: str) -> Container:

@@ -9,7 +9,7 @@ from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesCont
 from authentik.providers.proxy.models import ProxyProvider
 
 
-class TestControllers(TestCase):
+class TestProxyKubernetes(TestCase):
     """Test Controllers"""
 
     def setUp(self):
