@@ -19,6 +19,7 @@ from authentik.providers.oauth2.models import (
     ResponseTypes,
     ScopeMapping,
 )
+from authentik.providers.oauth2.utils import cors_allow_any
 
 LOGGER = get_logger()
 
@@ -108,5 +109,5 @@ class ProviderInfoView(View):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Since this view only supports get, we can statically set the CORS headers
         response = super().dispatch(request, *args, **kwargs)
-        response["Access-Control-Allow-Origin"] = "*"
+        cors_allow_any(request, response)
         return response
