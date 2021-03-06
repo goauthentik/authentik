@@ -156,6 +156,10 @@ ak-message {
     .pf-c-table__sort-indicator i {
         color: var(--ak-dark-foreground) !important;
     }
+    /* tabs, vertical */
+    .pf-c-tabs__link {
+        background-color: var(--ak-dark-background-light);
+    }
     /* table, on mobile */
     @media screen and (max-width: 1200px) {
         .pf-m-grid-xl.pf-c-table tbody:first-of-type {
