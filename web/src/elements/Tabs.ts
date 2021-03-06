@@ -4,6 +4,8 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+// @ts-ignore
+import AKGlobal from "../authentik.css";
 import { CURRENT_CLASS } from "../constants";
 import { gettext } from "django";
 
@@ -16,13 +18,16 @@ export class Tabs extends LitElement {
     vertical = false;
 
     static get styles(): CSSResult[] {
-        return [GlobalsStyle, TabsStyle, css`
+        return [GlobalsStyle, TabsStyle, AKGlobal, css`
             ::slotted(*) {
                 height: 100%;
                 flex-grow: 2;
             }
             :host([vertical]) {
                 display: flex;
+            }
+            :host([vertical]) .pf-c-tabs__list {
+                height: 100%;
             }
         `];
     }
