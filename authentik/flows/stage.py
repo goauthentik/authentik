@@ -5,6 +5,7 @@ from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.views.generic.base import View
 from structlog.stdlib import get_logger
+from rest_framework.request import Request
 
 from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
@@ -67,9 +68,9 @@ class ChallengeStageView(StageView):
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def post(self, request: Request, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
-        challenge: ChallengeResponse = self.get_response_instance(data=request.POST)
+        challenge: ChallengeResponse = self.get_response_instance(data=request.data)
         if not challenge.is_valid():
             return self.challenge_invalid(challenge)
         return self.challenge_valid(challenge)
