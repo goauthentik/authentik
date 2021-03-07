@@ -4,3 +4,8 @@ node_modules
 dist
 # don't lint nyc coverage output
 coverage
+# don't lint generated code
+src/api/apis
+src/api/models
+src/api/index.ts
+src/api/runtime.ts

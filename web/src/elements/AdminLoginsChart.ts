@@ -68,7 +68,7 @@ export class AdminLoginsChart extends LitElement {
                                 return {
                                     x: cord.xCord,
                                     y: cord.yCord,
-                                }
+                                };
                             }),
                         },
                         {
@@ -79,7 +79,7 @@ export class AdminLoginsChart extends LitElement {
                                 return {
                                     x: cord.xCord,
                                     y: cord.yCord,
-                                }
+                                };
                             }),
                         },
                     ],
