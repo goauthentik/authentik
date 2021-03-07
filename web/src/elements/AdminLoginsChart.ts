@@ -64,13 +64,23 @@ export class AdminLoginsChart extends LitElement {
                             label: "Failed Logins",
                             backgroundColor: "rgba(201, 25, 11, .5)",
                             spanGaps: true,
-                            data: r.loginsFailedPer1h,
+                            data: r.loginsFailedPer1h?.map((cord) => {
+                                return {
+                                    x: cord.xCord,
+                                    y: cord.yCord,
+                                }
+                            }),
                         },
                         {
                             label: "Successful Logins",
                             backgroundColor: "rgba(189, 229, 184, .5)",
                             spanGaps: true,
-                            data: r.loginsPer1h,
+                            data: r.loginsPer1h?.map((cord) => {
+                                return {
+                                    x: cord.xCord,
+                                    y: cord.yCord,
+                                }
+                            }),
                         },
                     ],
                 },

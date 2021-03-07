@@ -20,7 +20,7 @@ export class FlowViewPage extends LitElement {
             slug: value
         }).then((flow) => {
             this.flow = flow;
-        })
+        });
     }
 
     @property({attribute: false})

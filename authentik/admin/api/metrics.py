@@ -37,8 +37,9 @@ def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
     for hour in range(0, -24, -1):
         results.append(
             {
-                "x": time.mktime((_now + timedelta(hours=hour)).timetuple()) * 1000,
-                "y": data[hour * -1],
+                "x_cord": time.mktime((_now + timedelta(hours=hour)).timetuple())
+                * 1000,
+                "y_cord": data[hour * -1],
             }
         )
     return results
@@ -47,8 +48,8 @@ def get_events_per_1h(**filter_kwargs) -> list[dict[str, int]]:
 class CoordinateSerializer(Serializer):
     """Coordinates for diagrams"""
 
-    x = IntegerField(read_only=True)
-    y = IntegerField(read_only=True)
+    x_cord = IntegerField(read_only=True)
+    y_cord = IntegerField(read_only=True)
 
     def create(self, validated_data: dict) -> Model:
         raise NotImplementedError

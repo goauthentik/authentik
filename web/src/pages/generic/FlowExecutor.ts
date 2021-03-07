@@ -1,7 +1,6 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
-import { getCookie } from "../../utils";
 import "../../elements/stages/authenticator_static/AuthenticatorStaticStage";
 import "../../elements/stages/authenticator_totp/AuthenticatorTOTPStage";
 import "../../elements/stages/authenticator_validate/AuthenticatorValidateStage";

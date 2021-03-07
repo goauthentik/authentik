@@ -18,7 +18,7 @@ export class EventInfoPage extends LitElement {
             eventUuid: value
         }).then((ev) => {
             this.event = ev;
-        })
+        });
     }
 
     @property({ attribute: false })

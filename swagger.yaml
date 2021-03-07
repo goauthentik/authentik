@@ -9331,12 +9331,12 @@ definitions:
     description: Coordinates for diagrams
     type: object
     properties:
-      x:
-        title: X
+      x_cord:
+        title: X cord
         type: integer
         readOnly: true
-      y:
-        title: Y
+      y_cord:
+        title: Y cord
         type: integer
         readOnly: true
   LoginMetrics:
