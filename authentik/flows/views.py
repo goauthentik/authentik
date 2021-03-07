@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 from drf_yasg2.utils import no_body, swagger_auto_schema
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -46,6 +47,8 @@ SESSION_KEY_GET = "authentik_flows_get"
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
     """Stage 1 Flow executor, passing requests to Stage Views"""
+
+    permission_classes = [AllowAny]
 
     flow: Flow
 
