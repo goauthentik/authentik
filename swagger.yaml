@@ -9332,11 +9332,11 @@ definitions:
         format: date-time
       status:
         title: Status
-        type: integer
+        type: string
         enum:
-          - 1
-          - 2
-          - 4
+          - SUCCESSFUL
+          - WARNING
+          - ERROR
       messages:
         description: ''
         type: array
