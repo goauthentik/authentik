@@ -1623,7 +1623,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: ''
+          description: Notification test serializer
           schema:
             $ref: '#/definitions/NotificationTransportTest'
       tags:
@@ -9943,7 +9943,7 @@ definitions:
         title: Webhook url
         type: string
   NotificationTransportTest:
-    description: ''
+    description: Notification test serializer
     required:
       - messages
     type: object
@@ -10409,22 +10409,23 @@ definitions:
         readOnly: true
   TypeCreate:
     description: Types of an object that can be created
+    required:
+      - name
+      - description
+      - link
     type: object
     properties:
       name:
         title: Name
         type: string
-        readOnly: true
         minLength: 1
       description:
         title: Description
         type: string
-        readOnly: true
         minLength: 1
       link:
         title: Link
         type: string
-        readOnly: true
         minLength: 1
   ServiceConnectionState:
     description: Serializer for Service connection state
