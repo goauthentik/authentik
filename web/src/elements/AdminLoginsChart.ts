@@ -13,7 +13,7 @@ export class AdminLoginsChart extends LitElement {
     url: string[] = [];
 
     @property({attribute: false})
-    apiRequest: () => Promise<LoginMetrics> = () => { throw new Error() };
+    apiRequest: () => Promise<LoginMetrics> = () => { throw new Error(); };
 
     chart?: Chart;
 

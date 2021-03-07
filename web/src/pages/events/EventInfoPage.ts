@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Event, EventsApi } from "../../api";
+import { EventsApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";

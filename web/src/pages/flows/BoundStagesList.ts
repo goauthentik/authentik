@@ -14,7 +14,6 @@ import { PAGE_SIZE } from "../../constants";
 import { FlowsApi, FlowStageBinding, StagesApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
-import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {

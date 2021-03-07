@@ -13,7 +13,7 @@ export class ActionButton extends SpinnerButton {
 
     @property({attribute: false})
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    apiRequest: () => Promise<any> = () => { throw new Error() };
+    apiRequest: () => Promise<any> = () => { throw new Error(); };
 
     callAction(): void {
         if (this.isRunning === true) {
