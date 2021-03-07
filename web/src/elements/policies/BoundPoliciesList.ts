@@ -5,7 +5,6 @@ import { Table, TableColumn } from "../../elements/table/Table";
 import { PoliciesApi, PolicyBinding } from "../../api";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";

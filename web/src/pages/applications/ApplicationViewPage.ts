@@ -3,7 +3,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
+import "../../elements/charts/ApplicationAuthorizeChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
@@ -74,11 +74,8 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
-                                    <ak-admin-logins-chart
-                                        .apiRequest=${() => {
-                                            return new CoreApi(DEFAULT_CONFIG).coreApplicationsMetrics({slug: this.application?.slug});
-                                        }}>
-                                    </ak-admin-logins-chart>`: ""}
+                                    <ak-charts-application-authorize applicationSlug=${this.application.slug}>
+                                    </ak-charts-application-authorize>`: ""}
                             </div>
                         </div>
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">

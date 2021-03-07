@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
 
-import "../../elements/AdminLoginsChart";
+import "../../elements/charts/AdminLoginsChart";
 import "../../elements/cards/AggregatePromiseCard";
 import "./TopApplicationsTable";
 import "./cards/AdminStatusCard";
@@ -13,8 +13,6 @@ import "./cards/ProviderStatusCard";
 import "./cards/UserCountStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
-import { AdminApi } from "../../api";
-import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
@@ -32,11 +30,7 @@ export class AdminOverviewPage extends LitElement {
         <section class="pf-c-page__main-section">
             <div class="pf-l-gallery pf-m-gutter">
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Logins over the last 24 hours" style="grid-column-end: span 3;grid-row-end: span 2;">
-                    <ak-admin-logins-chart
-                        .apiRequest=${() => {
-                            return new AdminApi(DEFAULT_CONFIG).adminMetricsList();
-                        }}>
-                    </ak-admin-logins-chart>
+                    <ak-charts-admin-login></ak-charts-admin-login>
                 </ak-aggregate-card>
                 <ak-aggregate-card class="pf-l-gallery__item pf-m-4-col" icon="pf-icon pf-icon-server" header="Apps with most usage" style="grid-column-end: span 2;grid-row-end: span 3;">
                     <ak-top-applications-table></ak-top-applications-table>

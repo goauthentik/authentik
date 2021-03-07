@@ -3,7 +3,6 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
