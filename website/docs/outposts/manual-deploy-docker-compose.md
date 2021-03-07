@@ -10,13 +10,13 @@ You can also run the outpost in a separate docker-compose project, you just have
 version: "3.5"
 
 services:
-    authentik_proxy:
-        image: beryju/authentik-proxy:0.10.0-stable
-        ports:
-            - 4180:4180
-            - 4443:4443
-        environment:
-            AUTHENTIK_HOST: https://your-authentik.tld
-            AUTHENTIK_INSECURE: "false"
-            AUTHENTIK_TOKEN: token-generated-by-authentik
+  authentik_proxy:
+    image: beryju/authentik-proxy:2021.3.2
+    ports:
+      - 4180:4180
+      - 4443:4443
+    environment:
+      AUTHENTIK_HOST: https://your-authentik.tld
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: token-generated-by-authentik
 ```

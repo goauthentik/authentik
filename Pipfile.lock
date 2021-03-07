@@ -116,18 +116,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:c9513a9ea00f8d17ecdc02c391ae956bf0f990aa07deec11c421607c09b294e1",
-                "sha256:f84ca60e9605af69022f039c035b33d519531eeaac52724b9223a5465f4a8b6b"
+                "sha256:8624a959c9122d3d5cd8c84231c1cd0cfe5cfbfc93a7b51eb380eb3f9ce0bac6",
+                "sha256:b52180720eb7a67bb8d2260aa3abaa30f6d7dd061663a83ad6e4dcd1263ab36a"
             ],
             "index": "pypi",
-            "version": "==1.17.19"
+            "version": "==1.17.21"
         },
         "botocore": {
             "hashes": [
-                "sha256:135b5f30e6662b46d804f993bf31d9c7769c6c0848321ed0aa0393f5b9c19a94",
-                "sha256:8e42c78d2eb888551635309158c04ef2648a96d8c2c70dbce7712c6ce8629759"
+                "sha256:8c0ea010847cd2104e0798f03e6d921c96bce6ddbd7a6e175c8fecc2e9c7bc83",
+                "sha256:b604bbda4205b1a463c20d8434c7ddce1abbc3f6a4d5bf911e2b7774b2807f03"
             ],
-            "version": "==1.20.19"
+            "version": "==1.20.21"
         },
         "cachetools": {
             "hashes": [
@@ -304,11 +304,11 @@
         },
         "defusedxml": {
             "hashes": [
-                "sha256:6687150770438374ab581bb7a1b327a847dd9c5749e396102de3fad4e8a3ef93",
-                "sha256:f684034d135af4c6cbb949b8a4d2ed61634515257a67299e5f940fbaa34377f5"
+                "sha256:86b15d9e3c639de79f4cb38aeffea3281f62aff78dde7d798e1352c63bfa6ea0",
+                "sha256:a290cad10346ed366c8a0133d868eaf6585ec6afdd0c511286cdb11f5fc3d285"
             ],
             "index": "pypi",
-            "version": "==0.6.0"
+            "version": "==0.7.0"
         },
         "django": {
             "hashes": [
@@ -445,10 +445,10 @@
         },
         "google-auth": {
             "hashes": [
-                "sha256:d3640ea61ee025d5af00e3ffd82ba0a06dd99724adaf50bdd52f49daf29f3f65",
-                "sha256:da5218cbf33b8461d7661d6b4ad91c12c0107e2767904d5e3ae6408031d5463e"
+                "sha256:63a5636d7eacfe6ef5b7e36e112b3149fa1c5b5ad77dd6df54910459bcd6b89f",
+                "sha256:d8958af6968e4ecd599f82357ebcfeb126f826ed0656126ad68416f810f7531e"
             ],
-            "version": "==1.27.0"
+            "version": "==1.27.1"
         },
         "gunicorn": {
             "hashes": [
@@ -1083,11 +1083,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:4ae8d1ced6c67f1c8ea51d82a16721c166c489b76876c9f2c202b8a50334b237",
-                "sha256:e75c8c58932bda8cd293ea8e4b242527129e1caaec91433d21b8b2f20fee030b"
+                "sha256:71de00c9711926816f750bc0f57ef2abbcb1bfbdf5378c601df7ec978f44857a",
+                "sha256:9221e985f425913204989d0e0e1cbb719e8b7fa10540f1bc509f660c06a34e66"
             ],
             "index": "pypi",
-            "version": "==0.20.3"
+            "version": "==1.0.0"
         },
         "service-identity": {
             "hashes": [

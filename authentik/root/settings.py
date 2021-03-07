@@ -150,6 +150,7 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "PAGE_SIZE": 100,
+    "DATETIME_FORMAT": "%s",
     "DEFAULT_FILTER_BACKENDS": [
         "rest_framework_guardian.filters.ObjectPermissionsFilter",
         "django_filters.rest_framework.DjangoFilterBackend",

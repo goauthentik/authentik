@@ -61,7 +61,10 @@ export class SpinnerButton extends LitElement {
         if (this.form) {
             // Since the form= attribute is only used within a modal button,
             // we can assume the form is always two levels up
-            this.parentElement?.parentElement?.querySelector < HTMLFormElement>(`#${this.form}`)?.dispatchEvent(new Event("submit"));
+            this.parentElement?.parentElement?.querySelector<HTMLFormElement>(`#${this.form}`)?.dispatchEvent(new Event("submit", {
+                bubbles: true,
+                cancelable: true,
+            }));
         }
         this.setLoading();
     }
