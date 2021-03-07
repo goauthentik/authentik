@@ -1620,17 +1620,12 @@ paths:
       description: |-
         Send example notification using selected transport. Requires
         Modify permissions.
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/NotificationTransport'
+      parameters: []
       responses:
-        '201':
+        '200':
           description: ''
           schema:
-            $ref: '#/definitions/NotificationTransport'
+            $ref: '#/definitions/NotificationTransportTest'
       tags:
         - events
     parameters:
@@ -9895,6 +9890,18 @@ definitions:
       webhook_url:
         title: Webhook url
         type: string
+  NotificationTransportTest:
+    description: ''
+    required:
+      - messages
+    type: object
+    properties:
+      messages:
+        description: ''
+        type: array
+        items:
+          type: string
+          minLength: 1
   Flow:
     description: Flow Serializer
     required:
