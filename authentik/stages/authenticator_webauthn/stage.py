@@ -122,7 +122,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         return AuthenticatorWebAuthnChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-authenticator-webauthn",
                 "registration": make_credential_options.registration_dict,
             }

@@ -38,7 +38,7 @@ class ConsentStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = ConsentChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-consent",
             }
         )
