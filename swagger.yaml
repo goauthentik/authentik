@@ -9728,8 +9728,6 @@ definitions:
         type: integer
   Notification:
     description: Notification Serializer
-    required:
-      - event
     type: object
     properties:
       pk:

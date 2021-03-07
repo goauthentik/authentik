@@ -1,4 +1,5 @@
 """api v2 urls"""
+from django.conf import settings
 from django.urls import path, re_path
 from drf_yasg2 import openapi
 from drf_yasg2.views import get_schema_view
@@ -182,3 +183,12 @@ urlpatterns = [
         name="flow-executor",
     ),
 ] + router.urls
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns + [
+        path(
+            "swagger/",
+            SchemaView.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+    ]
