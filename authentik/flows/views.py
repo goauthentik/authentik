@@ -192,8 +192,10 @@ class FlowExecutorView(APIView):
                 "f(exec): Continuing with next stage",
                 reamining=len(self.plan.stages),
             )
+            kwargs = self.kwargs
+            kwargs.update({"flow_slug": self.flow.slug})
             return redirect_with_qs(
-                "authentik_api:flow-executor", self.request.GET, **self.kwargs
+                "authentik_api:flow-executor", self.request.GET, **kwargs
             )
         # User passed all stages
         self._logger.debug(
