@@ -59,6 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: prepare ts api client
+        run: |
+          docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/src/api --additional-properties=typescriptThreePlus=true
       - name: Docker Login Registry
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
