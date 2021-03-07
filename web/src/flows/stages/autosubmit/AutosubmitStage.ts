@@ -1,19 +1,28 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Challenge } from "../../../api";
+import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "../../../elements/Spinner";
+import "../../../elements/utils/LoadingState";
 
-export type EmailChallenge = Challenge;
+export interface AutosubmitChallenge extends WithUserInfoChallenge {
+    url: string;
+    attrs: { [key: string]: string };
+}
 
-@customElement("ak-stage-email")
-export class EmailStage extends BaseStage {
+@customElement("ak-stage-autosubmit")
+export class AutosubmitStage extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: EmailChallenge;
+    challenge?: AutosubmitChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
+    }
+
+    updated(): void {
+        this.shadowRoot?.querySelectorAll("form").forEach((form) => {form.submit();});
     }
 
     render(): TemplateResult {
@@ -26,16 +35,15 @@ export class EmailStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
-                    <div class="pf-c-form__group">
-                        <p>
-                            ${gettext("Check your Emails for a password reset link.")}
-                        </p>
-                    </div>
+                <form class="pf-c-form" action="${this.challenge.url}" method="POST">
+                    ${Object.entries(this.challenge.attrs).map(([ key, value ]) => {
+                        return html`<input type="hidden" name="${key}" value="${value}">`;
+                    })}
+                    <ak-spinner></ak-spinner>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${gettext("Send Email again.")}
+                            ${gettext("Continue")}
                         </button>
                     </div>
                 </form>

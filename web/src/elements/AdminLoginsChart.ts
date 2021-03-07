@@ -12,6 +12,9 @@ export class AdminLoginsChart extends LitElement {
     @property({type: Array})
     url: string[] = [];
 
+    @property({attribute: false})
+    apiRequest: () => Promise<LoginMetrics> = () => { throw new Error() };
+
     chart?: Chart;
 
     static get styles(): CSSResult[] {
@@ -37,11 +40,6 @@ export class AdminLoginsChart extends LitElement {
                 this.chart.resize();
             }
         });
-    }
-
-    @property({ attribute: false })
-    apiRequest(): Promise<LoginMetrics> {
-        throw new Error();
     }
 
     firstUpdated(): void {

@@ -1,29 +1,36 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "../form";
+import "../../../elements/utils/LoadingState";
 
-export interface Permission {
-    name: string;
-    id: string;
+export interface AuthenticatorStaticChallenge extends WithUserInfoChallenge {
+    codes: number[];
 }
 
-export interface ConsentChallenge extends WithUserInfoChallenge {
-
-    header_text: string;
-    permissions?: Permission[];
-
-}
-
-@customElement("ak-stage-consent")
-export class ConsentStage extends BaseStage {
+@customElement("ak-stage-authenticator-static")
+export class AuthenticatorStaticStage extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: ConsentChallenge;
+    challenge?: AuthenticatorStaticChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(css`
+            /* Static OTP Tokens */
+            .ak-otp-tokens {
+                list-style: circle;
+                columns: 2;
+                -webkit-columns: 2;
+                -moz-columns: 2;
+                margin-left: var(--pf-global--spacer--xs);
+            }
+            .ak-otp-tokens li {
+                font-size: var(--pf-global--FontSize--2xl);
+                font-family: monospace;
+            }
+        `);
     }
 
     render(): TemplateResult {
@@ -48,18 +55,16 @@ export class ConsentStage extends BaseStage {
                             </div>
                         </div>
                     </div>
-
-                    <div class="pf-c-form__group">
-                        <p id="header-text">
-                            ${this.challenge.header_text}
-                        </p>
-                        <p>${gettext("Application requires following permissions")}</p>
-                        <ul class="pf-c-list" id="permmissions">
-                            ${(this.challenge.permissions || []).map((permission) => {
-                                return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
+                    <ak-form-element
+                        label="${gettext("Tokens")}"
+                        ?required="${true}"
+                        class="pf-c-form__group">
+                        <ul class="ak-otp-tokens">
+                            ${this.challenge.codes.map((token) => {
+                                return html`<li>${token}</li>`;
                             })}
                         </ul>
-                    </div>
+                    </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

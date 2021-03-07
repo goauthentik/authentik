@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Event, EventsApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { EventWithContext } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
 import "./EventInfo";
 
@@ -17,12 +18,12 @@ export class EventInfoPage extends LitElement {
         new EventsApi(DEFAULT_CONFIG).eventsEventsRead({
             eventUuid: value
         }).then((ev) => {
-            this.event = ev;
+            this.event = ev as EventWithContext;
         });
     }
 
     @property({ attribute: false })
-    event!: Event;
+    event!: EventWithContext;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(css`

@@ -5,6 +5,7 @@ import { Challenge } from "../../../api";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../form";
+import "../../../elements/utils/LoadingState";
 
 export interface Prompt {
     field_key: string;

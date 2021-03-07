@@ -5,6 +5,7 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { configureSentry } from "../../api/Config";
 import { Config } from "../../api";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 export const DefaultConfig: Config = {
     brandingLogo: " /static/dist/assets/icons/icon_left_brand.svg",
@@ -47,7 +48,7 @@ export class SidebarBrand extends LitElement {
     render(): TemplateResult {
         return html` <a href="#/" class="pf-c-page__header-brand-link">
             <div class="pf-c-brand ak-brand">
-                <img src="${this.config.brandingLogo}" alt="authentik icon" loading="lazy" />
+                <img src="${ifDefined(this.config.brandingLogo)}" alt="authentik icon" loading="lazy" />
             </div>
         </a>`;
     }

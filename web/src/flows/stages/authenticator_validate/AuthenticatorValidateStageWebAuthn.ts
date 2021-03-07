@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../../common/styles";
-import { SpinnerSize } from "../../Spinner";
+import { SpinnerSize } from "../../../elements/Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
 import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";

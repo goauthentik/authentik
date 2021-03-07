@@ -3,17 +3,20 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import "webcomponent-qr-code";
 import "../form";
+import { showMessage } from "../../../elements/messages/MessageContainer";
+import "../../../elements/utils/LoadingState";
 
-export interface PasswordChallenge extends WithUserInfoChallenge {
-    recovery_url?: string;
+export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
+    config_url: string;
 }
 
-@customElement("ak-stage-password")
-export class PasswordStage extends BaseStage {
+@customElement("ak-stage-authenticator-totp")
+export class AuthenticatorTOTPStage extends BaseStage {
 
-    @property({attribute: false})
-    challenge?: PasswordChallenge;
+    @property({ attribute: false })
+    challenge?: AuthenticatorTOTPChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -29,7 +32,7 @@ export class PasswordStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form" @submit=${(e: Event) => {this.submitForm(e);}}>
+                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <div class="pf-c-form__group">
                         <div class="form-control-static">
                             <div class="left">
@@ -41,24 +44,40 @@ export class PasswordStage extends BaseStage {
                             </div>
                         </div>
                     </div>
-
+                    <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
+                    <ak-form-element>
+                        <!-- @ts-ignore -->
+                        <qr-code data="${this.challenge.config_url}"></qr-code>
+                        <button type="button" class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress" @click=${(e: Event) => {
+                            e.preventDefault();
+                            if (!this.challenge?.config_url) return;
+                            navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
+                                showMessage({
+                                    level_tag: "success",
+                                    message: gettext("Successfully copied TOTP Config.")
+                                });
+                            });
+                        }}>
+                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
+                            ${gettext("Copy")}
+                        </button>
+                    </ak-form-element>
                     <ak-form-element
-                        label="${gettext("Password")}"
+                        label="${gettext("Code")}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["password"]}>
-                        <input type="password"
-                            name="password"
-                            placeholder="${gettext("Please enter your password")}"
+                        .errors=${(this.challenge?.responseErrors || {})["code"]}>
+                        <!-- @ts-ignore -->
+                        <input type="text"
+                            name="code"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            placeholder="${gettext("Please enter your TOTP Code")}"
                             autofocus=""
-                            autocomplete="current-password"
+                            autocomplete="one-time-code"
                             class="pf-c-form-control"
                             required="">
                     </ak-form-element>
-
-                    ${this.challenge.recovery_url ?
-                        html`<a href="${this.challenge.recovery_url}">
-                        ${gettext("Forgot password?")}</a>` : ""}
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

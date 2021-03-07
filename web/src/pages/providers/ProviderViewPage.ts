@@ -10,6 +10,7 @@ import "./OAuth2ProviderViewPage";
 import "./ProxyProviderViewPage";
 import { Provider, ProvidersApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
@@ -38,11 +39,11 @@ export class ProviderViewPage extends LitElement {
         }
         switch (this.provider?.objectType) {
             case "saml":
-                return html`<ak-provider-saml-view providerID=${this.provider.pk}></ak-provider-saml-view>`;
+                return html`<ak-provider-saml-view providerID=${ifDefined(this.provider.pk)}></ak-provider-saml-view>`;
             case "oauth2":
-                return html`<ak-provider-oauth2-view providerID=${this.provider.pk}></ak-provider-oauth2-view>`;
+                return html`<ak-provider-oauth2-view providerID=${ifDefined(this.provider.pk)}></ak-provider-oauth2-view>`;
             case "proxy":
-                return html`<ak-provider-proxy-view providerID=${this.provider.pk}></ak-provider-proxy-view>`;
+                return html`<ak-provider-proxy-view providerID=${ifDefined(this.provider.pk)}></ak-provider-proxy-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.objectType}</p>`;
         }

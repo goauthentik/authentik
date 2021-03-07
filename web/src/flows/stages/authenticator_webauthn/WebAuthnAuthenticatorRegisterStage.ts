@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
-import { SpinnerSize } from "../../Spinner";
+import { SpinnerSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
 

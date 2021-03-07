@@ -9,6 +9,7 @@ import { me } from "../../api/Users";
 import { until } from "lit-html/directives/until";
 
 import "../notifications/NotificationTrigger";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-sidebar-user")
 export class SidebarUser extends LitElement {
@@ -38,7 +39,7 @@ export class SidebarUser extends LitElement {
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(me().then((u) => {
-                    return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />`;
+                    return html`<img class="pf-c-avatar" src="${ifDefined(u.avatar)}" alt="" />`;
                 }), html``)}
             </a>
             <ak-notification-trigger class="pf-c-nav__link user-notifications">

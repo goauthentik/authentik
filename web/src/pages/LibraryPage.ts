@@ -32,7 +32,7 @@ export class LibraryApplication extends LitElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        return html` <a href="${this.application.launchUrl}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        return html` <a href="${ifDefined(this.application.launchUrl)}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
                     ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`

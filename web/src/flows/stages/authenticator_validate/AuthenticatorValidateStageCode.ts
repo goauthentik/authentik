@@ -4,6 +4,7 @@ import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
 import "../form";
+import "../../../elements/utils/LoadingState";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseStage {

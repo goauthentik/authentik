@@ -13,6 +13,7 @@ import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -54,7 +55,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ul>${item.providersObj?.map((p) => {
                 return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
             })}</ul>`,
-            html`<ak-outpost-health outpostId=${item.pk}></ak-outpost-health>`,
+            html`<ak-outpost-health outpostId=${ifDefined(item.pk)}></ak-outpost-health>`,
             html`
             <ak-modal-button href="${AdminURLManager.outposts(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
@@ -90,7 +91,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                                     <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                                 </label>
                                 <div>
-                                    <ak-token-copy-button identifier="${item.tokenIdentifier}">
+                                    <ak-token-copy-button identifier="${ifDefined(item.tokenIdentifier)}">
                                         ${gettext("Click to copy token")}
                                     </ak-token-copy-button>
                                 </div>

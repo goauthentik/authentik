@@ -4,6 +4,7 @@ import { until } from "lit-html/directives/until";
 import { OutpostsApi } from "../../api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";
+import "../../elements/Spinner";
 
 @customElement("ak-outpost-health")
 export class OutpostHealth extends LitElement {

@@ -13,6 +13,7 @@ import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {

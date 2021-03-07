@@ -2,53 +2,29 @@ import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
-import { SpinnerSize } from "../../Spinner";
 import { BaseStage } from "../base";
-import "../form";
+import "../../../elements/utils/LoadingState";
 
-export interface CaptchaChallenge extends WithUserInfoChallenge {
-    site_key: string;
+export interface Permission {
+    name: string;
+    id: string;
 }
 
-@customElement("ak-stage-captcha")
-export class CaptchaStage extends BaseStage {
+export interface ConsentChallenge extends WithUserInfoChallenge {
+
+    header_text: string;
+    permissions?: Permission[];
+
+}
+
+@customElement("ak-stage-consent")
+export class ConsentStage extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: CaptchaChallenge;
+    challenge?: ConsentChallenge;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
-    }
-
-    submitFormAlt(token: string): void {
-        const form = new FormData();
-        form.set("token", token);
-        this.host?.submit(form);
-    }
-
-    firstUpdated(): void {
-        const script = document.createElement("script");
-        script.src = "https://www.google.com/recaptcha/api.js";//?render=${this.challenge?.site_key}`;
-        script.async = true;
-        script.defer = true;
-        const captchaContainer = document.createElement("div");
-        document.body.appendChild(captchaContainer);
-        script.onload = () => {
-            console.debug("authentik/stages/captcha: script loaded");
-            grecaptcha.ready(() => {
-                if (!this.challenge?.site_key) return;
-                console.debug("authentik/stages/captcha: ready");
-                const captchaId = grecaptcha.render(captchaContainer, {
-                    sitekey: this.challenge.site_key,
-                    callback: (token) => {
-                        this.submitFormAlt(token);
-                    },
-                    size: "invisible",
-                });
-                grecaptcha.execute(captchaId);
-            });
-        };
-        document.head.appendChild(script);
     }
 
     render(): TemplateResult {
@@ -61,7 +37,7 @@ export class CaptchaStage extends BaseStage {
                 </h1>
             </header>
             <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+                <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
                     <div class="pf-c-form__group">
                         <div class="form-control-static">
                             <div class="left">
@@ -73,8 +49,23 @@ export class CaptchaStage extends BaseStage {
                             </div>
                         </div>
                     </div>
-                    <div class="ak-loading">
-                        <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+
+                    <div class="pf-c-form__group">
+                        <p id="header-text">
+                            ${this.challenge.header_text}
+                        </p>
+                        <p>${gettext("Application requires following permissions")}</p>
+                        <ul class="pf-c-list" id="permmissions">
+                            ${(this.challenge.permissions || []).map((permission) => {
+                                return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
+                            })}
+                        </ul>
+                    </div>
+
+                    <div class="pf-c-form__group pf-m-action">
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                            ${gettext("Continue")}
+                        </button>
                     </div>
                 </form>
             </div>
