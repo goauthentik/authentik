@@ -40,8 +40,15 @@ class NotificationTransportSerializer(ModelSerializer):
 
 
 class NotificationTransportTestSerializer(Serializer):
+    """Notification test serializer"""
 
     messages = ListField(child=CharField())
+
+    def create(self, request: Request) -> Response:
+        raise NotImplementedError
+
+    def update(self, request: Request) -> Response:
+        raise NotImplementedError
 
 
 class NotificationTransportViewSet(ModelViewSet):
