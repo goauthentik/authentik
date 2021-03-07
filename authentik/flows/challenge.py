@@ -38,7 +38,9 @@ class Challenge(Serializer):
     """Challenge that gets sent to the client based on which stage
     is currently active"""
 
-    type = ChoiceField(choices=list(ChallengeTypes))
+    type = ChoiceField(
+        choices=[(x.name, x.name) for x in ChallengeTypes],
+    )
     component = CharField(required=False)
     title = CharField(required=False)
 
@@ -90,7 +92,7 @@ class ChallengeResponse(Serializer):
 
     stage: Optional["StageView"]
 
-    def __init__(self, instance, data, **kwargs):
+    def __init__(self, instance=None, data=None, **kwargs):
         self.stage = kwargs.pop("stage", None)
         super().__init__(instance=instance, data=data, **kwargs)
 

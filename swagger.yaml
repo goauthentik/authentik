@@ -1817,6 +1817,42 @@ paths:
         required: true
         type: string
         format: uuid
+  /flows/executor/{flow_slug}/:
+    get:
+      operationId: flows_executor_get
+      description: Get the next pending challenge from the currently active flow.
+      parameters: []
+      responses:
+        '200':
+          description: Challenge that gets sent to the client based on which stage
+            is currently active
+          schema:
+            $ref: '#/definitions/Challenge'
+      tags:
+        - flows
+    post:
+      operationId: flows_executor_solve
+      description: Solve the previously retrieved challenge and advanced to the next
+        stage.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ChallengeResponse'
+      responses:
+        '200':
+          description: Challenge that gets sent to the client based on which stage
+            is currently active
+          schema:
+            $ref: '#/definitions/Challenge'
+      tags:
+        - flows
+    parameters:
+      - name: flow_slug
+        in: path
+        required: true
+        type: string
   /flows/instances/:
     get:
       operationId: flows_instances_list
@@ -10055,6 +10091,55 @@ definitions:
           format: uuid
         readOnly: true
         uniqueItems: true
+  ErrorDetail:
+    description: Serializer for rest_framework's error messages
+    required:
+      - string
+      - code
+    type: object
+    properties:
+      string:
+        title: String
+        type: string
+        minLength: 1
+      code:
+        title: Code
+        type: string
+        minLength: 1
+  Challenge:
+    description: Challenge that gets sent to the client based on which stage is currently
+      active
+    required:
+      - type
+    type: object
+    properties:
+      type:
+        title: Type
+        type: string
+        enum:
+          - native
+          - shell
+          - redirect
+      component:
+        title: Component
+        type: string
+        minLength: 1
+      title:
+        title: Title
+        type: string
+        minLength: 1
+      response_errors:
+        title: Response errors
+        type: object
+        additionalProperties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/definitions/ErrorDetail'
+  ChallengeResponse:
+    description: Base class for all challenge responses
+    type: object
+    properties: {}
   Cache:
     description: Generic cache stats for an object
     type: object
