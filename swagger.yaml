@@ -29,10 +29,7 @@ paths:
         '200':
           description: Login Metrics per 1h
           schema:
-            description: ''
-            type: array
-            items:
-              $ref: '#/definitions/AdministrationMetrics'
+            $ref: '#/definitions/LoginMetrics'
       tags:
         - admin
     parameters: []
@@ -318,9 +315,12 @@ paths:
       parameters: []
       responses:
         '200':
-          description: ''
+          description: Coordinates for diagrams
           schema:
-            $ref: '#/definitions/Application'
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/Coordinate'
       tags:
         - core
     parameters:
@@ -9327,17 +9327,33 @@ paths:
         type: string
         format: uuid
 definitions:
-  AdministrationMetrics:
+  Coordinate:
+    description: Coordinates for diagrams
+    type: object
+    properties:
+      x:
+        title: X
+        type: integer
+        readOnly: true
+      y:
+        title: Y
+        type: integer
+        readOnly: true
+  LoginMetrics:
     description: Login Metrics per 1h
     type: object
     properties:
       logins_per_1h:
-        title: Logins per 1h
-        type: string
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Coordinate'
         readOnly: true
       logins_failed_per_1h:
-        title: Logins failed per 1h
-        type: string
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Coordinate'
         readOnly: true
   Task:
     description: Serialize TaskInfo and TaskResult
