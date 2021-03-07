@@ -1,7 +1,5 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Provider } from "../../api/Providers";
-import { OAuth2Provider, OAuth2SetupURLs } from "../../api/providers/OAuth2";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -11,6 +9,9 @@ import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import { convertToTitle } from "../../utils";
 import "./RelatedApplicationButton";
+import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends Page {
@@ -26,15 +27,24 @@ export class OAuth2ProviderViewPage extends Page {
 
     @property({type: Number})
     set providerID(value: number) {
-        OAuth2Provider.get(value).then((app) => this.provider = app);
-        OAuth2Provider.getLaunchURls(value).then((urls) => this.providerUrls = urls);
+        const api = new ProvidersApi(DEFAULT_CONFIG);
+        api.providersOauth2Read({
+            id: value
+        }).then((prov) => {
+            this.provider = prov;
+        });
+        api.providersOauth2SetupUrls({
+            id: value
+        }).then((prov) => {
+            this.providerUrls = prov;
+        });
     }
 
     @property({ attribute: false })
     provider?: OAuth2Provider;
 
     @property({ attribute: false })
-    providerUrls?: OAuth2SetupURLs;
+    providerUrls?: OAuth2ProviderSetupURLs;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -82,7 +92,7 @@ export class OAuth2ProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Client type")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${convertToTitle(this.provider.client_type)}</div>
+                                                <div class="pf-c-description-list__text">${convertToTitle(this.provider.clientType || "")}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -90,7 +100,7 @@ export class OAuth2ProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Client ID")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.client_id}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.clientId}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -98,13 +108,13 @@ export class OAuth2ProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Redirect URIs")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.redirect_uris}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.redirectUris}</div>
                                             </dd>
                                         </div>
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Provider.adminUrl(`${this.provider.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.providers(`${this.provider.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>
@@ -125,7 +135,7 @@ export class OAuth2ProviderViewPage extends Page {
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
                                                 <span class="pf-c-form__label-text">${gettext("OpenID Configuration URL")}</span>
                                             </label>
-                                            <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.provider_info || "-"}" />
+                                            <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.providerInfo || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
@@ -150,7 +160,7 @@ export class OAuth2ProviderViewPage extends Page {
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">
                                                 <span class="pf-c-form__label-text">${gettext("Userinfo URL")}</span>
                                             </label>
-                                            <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.user_info || "-"}" />
+                                            <input class="pf-c-form-control" readonly type="text" value="${this.providerUrls?.userInfo || "-"}" />
                                         </div>
                                         <div class="pf-c-form__group">
                                             <label class="pf-c-form__label" for="help-text-simple-form-name">

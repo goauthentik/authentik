@@ -7,11 +7,13 @@ import "../../elements/policies/BoundPoliciesList";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Rule } from "../../api/EventRules";
 import { PAGE_SIZE } from "../../constants";
+import { EventsApi, NotificationRule } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-event-rule-list")
-export class RuleListPage extends TablePage<Rule> {
+export class RuleListPage extends TablePage<NotificationRule> {
     expandable = true;
 
     searchEnabled(): boolean {
@@ -30,11 +32,11 @@ export class RuleListPage extends TablePage<Rule> {
     @property()
     order = "name";
 
-    apiEndpoint(page: number): Promise<AKResponse<Rule>> {
-        return Rule.list({
+    apiEndpoint(page: number): Promise<AKResponse<NotificationRule>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -48,19 +50,19 @@ export class RuleListPage extends TablePage<Rule> {
         ];
     }
 
-    row(item: Rule): TemplateResult[] {
+    row(item: NotificationRule): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.severity}`,
             html`${item.group?.name || gettext("None (rule disabled)")}`,
             html`
-            <ak-modal-button href="${Rule.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.eventRules(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Rule.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.eventRules(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -72,7 +74,7 @@ export class RuleListPage extends TablePage<Rule> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Rule.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.eventRules("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
@@ -82,7 +84,7 @@ export class RuleListPage extends TablePage<Rule> {
         `;
     }
 
-    renderExpanded(item: Rule): TemplateResult {
+    renderExpanded(item: NotificationRule): TemplateResult {
         return html`
         <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

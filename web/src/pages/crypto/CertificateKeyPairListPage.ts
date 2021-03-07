@@ -3,11 +3,14 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
+import { CryptoApi, CertificateKeyPair } from "../../api";
+
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { CertificateKeyPair } from "../../api/CertificateKeyPair";
 import { PAGE_SIZE } from "../../constants";
+import { AdminURLManager } from "../../api/legacy";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-crypto-certificatekeypair-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
@@ -30,10 +33,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     order = "name";
 
     apiEndpoint(page: number): Promise<AKResponse<CertificateKeyPair>> {
-        return CertificateKeyPair.list({
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -50,16 +53,16 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     row(item: CertificateKeyPair): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${gettext(item.private_key_available ? "Yes" : "No")}`,
-            html`${new Date(item.cert_expiry * 1000).toLocaleString()}`,
+            html`${gettext(item.privateKeyAvailable ? "Yes" : "No")}`,
+            html`${item.certExpiry?.toLocaleString()}`,
             html`
-            <ak-modal-button href="${CertificateKeyPair.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.cryptoCertificates(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${CertificateKeyPair.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.cryptoCertificates(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -87,7 +90,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                                 <span class="pf-c-description-list__text">${gettext("Certificate Subjet")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">${item.cert_subject}</div>
+                                <div class="pf-c-description-list__text">${item.certSubject}</div>
                             </dd>
                         </div>
                     </dl>
@@ -99,13 +102,13 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${CertificateKeyPair.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.cryptoCertificates("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
             <div slot="modal"></div>
         </ak-modal-button>
-        <ak-modal-button href=${CertificateKeyPair.adminUrl("generate/")}>
+        <ak-modal-button href=${AdminURLManager.cryptoCertificates("generate/")}>
             <ak-spinner-button slot="trigger" class="pf-m-secondary">
                 ${gettext("Generate")}
             </ak-spinner-button>

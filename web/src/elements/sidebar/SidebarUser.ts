@@ -5,7 +5,7 @@ import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
 import fa from "@fortawesome/fontawesome-free/css/all.css";
 // @ts-ignore
 import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
-import { User } from "../../api/Users";
+import { me } from "../../api/Users";
 import { until } from "lit-html/directives/until";
 
 import "../notifications/NotificationTrigger";
@@ -37,7 +37,7 @@ export class SidebarUser extends LitElement {
     render(): TemplateResult {
         return html`
             <a href="#/-/user/" class="pf-c-nav__link user-avatar" id="user-settings">
-                ${until(User.me().then((u) => {
+                ${until(me().then((u) => {
                     return html`<img class="pf-c-avatar" src="${u.avatar}" alt="" />`;
                 }), html``)}
             </a>

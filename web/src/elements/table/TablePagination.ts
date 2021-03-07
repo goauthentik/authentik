@@ -1,12 +1,12 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
-import { PBPagination } from "../../api/Client";
+import { AKPagination } from "../../api/Client";
 import { gettext } from "django";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
     @property({attribute: false})
-    pages?: PBPagination;
+    pages?: AKPagination;
 
     @property({attribute: false})
     // eslint-disable-next-line
@@ -22,8 +22,8 @@ export class TablePagination extends LitElement {
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                         <span class="pf-c-options-menu__toggle-text">
-                            ${this.pages?.start_index} -
-                            ${this.pages?.end_index} of
+                            ${this.pages?.startIndex} -
+                            ${this.pages?.endIndex} of
                             ${this.pages?.count}
                         </span>
                     </div>

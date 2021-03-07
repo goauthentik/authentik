@@ -1,12 +1,17 @@
 import { customElement } from "lit-element";
-import { User } from "../../../api/Users";
+import { CoreApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-user-count")
 export class UserCountStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return User.count();
+        return new CoreApi(DEFAULT_CONFIG).coreUsersList({
+            pageSize: 1
+        }).then((value) => {
+            return value.pagination.count;
+        });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

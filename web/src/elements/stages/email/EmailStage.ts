@@ -1,10 +1,10 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Challenge } from "../../../api/Flows";
+import { Challenge } from "../../../api";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 
-export type EmailChallenge = Challenge
+export type EmailChallenge = Challenge;
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage {

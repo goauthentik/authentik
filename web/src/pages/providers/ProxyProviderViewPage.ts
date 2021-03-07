@@ -1,7 +1,5 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Provider } from "../../api/Providers";
-import { ProxyProvider } from "../../api/providers/Proxy";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -10,6 +8,9 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import "./RelatedApplicationButton";
+import { ProvidersApi, ProxyProvider } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends Page {
@@ -30,7 +31,9 @@ export class ProxyProviderViewPage extends Page {
 
     @property({type: Number})
     set providerID(value: number) {
-        ProxyProvider.get(value).then((app) => (this.provider = app));
+        new ProvidersApi(DEFAULT_CONFIG).providersProxyRead({
+            id: value,
+        }).then((prov) => (this.provider = prov));
     }
 
     @property({ attribute: false })
@@ -82,7 +85,7 @@ export class ProxyProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Internal Host")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.internal_host}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.internalHost}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -90,7 +93,7 @@ export class ProxyProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("External Host")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.internal_host}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.externalHost}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -99,7 +102,7 @@ export class ProxyProviderViewPage extends Page {
                                             </dt>
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
-                                                    ${this.provider.basic_auth_enabled ?
+                                                    ${this.provider.basicAuthEnabled ?
                                                         html`<span class="pf-c-button__icon pf-m-start">
                                                             <i class="fas fa-check-circle" aria-hidden="true"></i>
                                                             </span>${gettext("Yes")}`:
@@ -113,7 +116,7 @@ export class ProxyProviderViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Provider.adminUrl(`${this.provider.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.providers(`${this.provider.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>

@@ -1,11 +1,12 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
+import { Event, EventsApi } from "../../api";
 import { AKResponse } from "../../api/Client";
-import { Event } from "../../api/Events";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { EventWithContext } from "../../api/Events";
 import { PAGE_SIZE } from "../../constants";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
-import { time } from "../../utils";
 import "./EventInfo";
 
 @customElement("ak-event-list")
@@ -29,10 +30,10 @@ export class EventListPage extends TablePage<Event> {
     order = "-created";
 
     apiEndpoint(page: number): Promise<AKResponse<Event>> {
-        return Event.list({
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE * 3,
+            pageSize: PAGE_SIZE * 3,
             search: this.search || "",
         });
     }
@@ -45,16 +46,16 @@ export class EventListPage extends TablePage<Event> {
             new TableColumn("Client IP", "client_ip"),
         ];
     }
-    row(item: Event): TemplateResult[] {
+    row(item: EventWithContext): TemplateResult[] {
         return [
             html`<div>${item.action}</div>
             <small>${item.app}</small>`,
-            html`<div>${item.user.username}</div>
+            html`<div>${item.user?.username}</div>
             ${item.user.on_behalf_of ? html`<small>
                 ${gettext(`On behalf of ${item.user.on_behalf_of.username}`)}
             </small>` : html``}`,
-            html`<span>${time(item.created).toLocaleString()}</span>`,
-            html`<span>${item.client_ip}</span>`,
+            html`<span>${item.created?.toLocaleString()}</span>`,
+            html`<span>${item.clientIp}</span>`,
         ];
     }
 

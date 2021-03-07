@@ -13,8 +13,7 @@ import "../../elements/stages/email/EmailStage";
 import "../../elements/stages/identification/IdentificationStage";
 import "../../elements/stages/password/PasswordStage";
 import "../../elements/stages/prompt/PromptStage";
-import { ShellChallenge, Challenge, ChallengeTypes, Flow, RedirectChallenge } from "../../api/Flows";
-import { DefaultClient } from "../../api/Client";
+import { ShellChallenge, RedirectChallenge } from "../../api/Flows";
 import { IdentificationChallenge } from "../../elements/stages/identification/IdentificationStage";
 import { PasswordChallenge } from "../../elements/stages/password/PasswordStage";
 import { ConsentChallenge } from "../../elements/stages/consent/ConsentStage";
@@ -29,6 +28,8 @@ import { CaptchaChallenge } from "../../elements/stages/captcha/CaptchaStage";
 import { COMMON_STYLES } from "../../common/styles";
 import { SpinnerSize } from "../../elements/Spinner";
 import { StageHost } from "../../elements/stages/base";
+import { Challenge, ChallengeTypeEnum, FlowsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -69,35 +70,26 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     submit(formData?: FormData): Promise<void> {
-        const csrftoken = getCookie("authentik_csrf");
-        const request = new Request(DefaultClient.makeUrl(["flows", "executor", this.flowSlug]), {
-            headers: {
-                "X-CSRFToken": csrftoken,
-            },
-        });
         this.loading = true;
-        return fetch(request, {
-            method: "POST",
-            mode: "same-origin",
-            body: formData,
+        return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+            flowSlug: this.flowSlug,
+            data: formData || {},
+        }).then((data) => {
+            this.challenge = data;
         })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                this.challenge = data;
-            })
-            .catch((e) => {
-                this.errorMessage(e);
-            })
-            .finally(() => {
-                this.loading = false;
-            });
+        .catch((e) => {
+            this.errorMessage(e);
+        })
+        .finally(() => {
+            this.loading = false;
+        });
     }
 
     firstUpdated(): void {
         this.loading = true;
-        Flow.executor(this.flowSlug).then((challenge) => {
+        new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
+            flowSlug: this.flowSlug
+        }).then((challenge) => {
             this.challenge = challenge;
         }).catch((e) => {
             // Catch JSON or Update errors
@@ -109,7 +101,7 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     errorMessage(error: string): void {
         this.challenge = <ShellChallenge>{
-            type: ChallengeTypes.shell,
+            type: ChallengeTypeEnum.Shell,
             body: `<style>
                     .ak-exception {
                         font-family: monospace;
@@ -139,13 +131,13 @@ export class FlowExecutor extends LitElement implements StageHost {
             return html``;
         }
         switch (this.challenge.type) {
-            case ChallengeTypes.redirect:
+            case ChallengeTypeEnum.Redirect:
                 console.debug(`authentik/flows: redirecting to ${(this.challenge as RedirectChallenge).to}`);
                 window.location.assign((this.challenge as RedirectChallenge).to);
                 break;
-            case ChallengeTypes.shell:
+            case ChallengeTypeEnum.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
-            case ChallengeTypes.native:
+            case ChallengeTypeEnum.Native:
                 switch (this.challenge.component) {
                     case "ak-stage-identification":
                         return html`<ak-stage-identification .host=${this} .challenge=${this.challenge as IdentificationChallenge}></ak-stage-identification>`;

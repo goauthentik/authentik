@@ -1,14 +1,17 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
-import { Flow } from "../../../api/Flows";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import "../../../elements/buttons/ModalButton";
+import { FlowsApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-admin-status-card-flow-cache")
 export class FlowCacheStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return Flow.cached();
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCached({}).then((value) => {
+            return value.count || 0;
+        });
     }
 
     getStatus(value: number): Promise<AdminStatus> {

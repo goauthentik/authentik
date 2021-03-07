@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
-import { Challenge } from "../../../api/Flows";
+import { Challenge } from "../../../api";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../form";
@@ -126,7 +126,7 @@ export class PromptStage extends BaseStage {
                             label="${prompt.label}"
                             ?required="${prompt.required}"
                             class="pf-c-form__group"
-                            .errors=${(this.challenge?.response_errors || {})[prompt.field_key]}>
+                            .errors=${(this.challenge?.responseErrors || {})[prompt.field_key]}>
                             ${unsafeHTML(this.renderPromptInner(prompt))}
                         </ak-form-element>`;
                     })}

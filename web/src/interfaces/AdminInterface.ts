@@ -1,5 +1,5 @@
 import { customElement } from "lit-element";
-import { User } from "../api/Users";
+import { me } from "../api/Users";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "../elements/router/Route";
 import { Interface } from "./Interface";
@@ -10,7 +10,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Overview", "/administration/overview"),
         new SidebarItem("System Tasks", "/administration/system-tasks"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Events").children(
         new SidebarItem("Log", "/events/log").activeWhen(
@@ -19,7 +19,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Notification Rules", "/events/rules"),
         new SidebarItem("Notification Transports", "/events/transports"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Resources").children(
         new SidebarItem("Applications", "/core/applications").activeWhen(
@@ -34,13 +34,13 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Outposts", "/outpost/outposts"),
         new SidebarItem("Outpost Service Connections", "/outpost/service-connections"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Customisation").children(
         new SidebarItem("Policies", "/policy/policies"),
         new SidebarItem("Property Mappings", "/core/property-mappings"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Flows").children(
         new SidebarItem("Flows", "/flow/flows").activeWhen(`^/flow/flows/(?<slug>${SLUG_REGEX})$`),
@@ -48,7 +48,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Prompts", "/flow/stages/prompts"),
         new SidebarItem("Invitations", "/flow/stages/invitations"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Identity & Cryptography").children(
         new SidebarItem("User", "/identity/users"),
@@ -56,7 +56,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/core/tokens"),
     ).when((): Promise<boolean> => {
-        return User.me().then(u => u.is_superuser);
+        return me().then(u => u.isSuperuser||false);
     }),
 ];
 

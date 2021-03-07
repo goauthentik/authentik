@@ -8,8 +8,10 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
-import { Stage } from "../../api/Flows";
 import { PAGE_SIZE } from "../../constants";
+import { Stage, StagesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -30,10 +32,10 @@ export class StageListPage extends TablePage<Stage> {
     order = "name";
 
     apiEndpoint(page: number): Promise<AKResponse<Stage>> {
-        return Stage.list({
+        return new StagesApi(DEFAULT_CONFIG).stagesAllList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -50,21 +52,21 @@ export class StageListPage extends TablePage<Stage> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <small>${item.verbose_name}</small>
+                <small>${item.verboseName}</small>
             </div>`,
-            html`${item.flow_set.map((flow) => {
+            html`${item.flowSet?.map((flow) => {
                 return html`<a href="#/flow/flows/${flow.slug}">
                     <code>${flow.slug}</code>
                 </a>`;
             })}`,
             html`
-            <ak-modal-button href="${Stage.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.stages(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Stage.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.stages(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -82,7 +84,7 @@ export class StageListPage extends TablePage<Stage> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(Stage.getTypes().then((types) => {
+                ${until(new StagesApi(DEFAULT_CONFIG).stagesAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-modal-button href="${type.link}">

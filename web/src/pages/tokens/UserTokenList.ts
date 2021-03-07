@@ -6,8 +6,10 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
 import { Table, TableColumn } from "../../elements/table/Table";
-import { Token } from "../../api/Tokens";
 import { PAGE_SIZE } from "../../constants";
+import { CoreApi, Token } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-token-user-list")
 export class UserTokenList extends Table<Token> {
@@ -19,10 +21,10 @@ export class UserTokenList extends Table<Token> {
     order = "expires";
 
     apiEndpoint(page: number): Promise<AKResponse<Token>> {
-        return Token.list({
+        return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -54,15 +56,15 @@ export class UserTokenList extends Table<Token> {
             html`${item.identifier}`,
             html`${item.user.username}`,
             html`${item.expiring ? "Yes" : "No"}`,
-            html`${item.expiring ? new Date(item.expires * 1000).toLocaleString() : "-"}`,
+            html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
-            <ak-modal-button href="${Token.userUrl(`${item.identifier}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.tokens(`${item.identifier}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Token.userUrl(`${item.identifier}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.tokens(`${item.identifier}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>

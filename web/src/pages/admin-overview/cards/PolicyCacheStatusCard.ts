@@ -1,15 +1,18 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
 import { TemplateResult, html } from "lit-html";
-import { Policy } from "../../../api/Policies";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 import "../../../elements/buttons/ModalButton";
+import { PoliciesApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-admin-status-card-policy-cache")
 export class PolicyCacheStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return Policy.cached();
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllCached({}).then((value) => {
+            return value.count || 0;
+        });
     }
 
     getStatus(value: number): Promise<AdminStatus> {

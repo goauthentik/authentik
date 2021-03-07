@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Challenge } from "../../../api/Flows";
+import { Challenge } from "../../../api";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../form";
@@ -85,7 +85,7 @@ export class IdentificationStage extends BaseStage {
                         label="${gettext("Email or Username")}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.response_errors || {})["uid_field"]}>
+                        .errors=${(this.challenge?.responseErrors || {})["uid_field"]}>
                         <input type="text"
                             name="uid_field"
                             placeholder="Email or Username"

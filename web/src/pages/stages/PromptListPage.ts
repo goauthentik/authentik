@@ -6,8 +6,10 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Prompt } from "../../api/Prompts";
 import { PAGE_SIZE } from "../../constants";
+import { Prompt, StagesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
@@ -28,10 +30,10 @@ export class PromptListPage extends TablePage<Prompt> {
     order = "order";
 
     apiEndpoint(page: number): Promise<AKResponse<Prompt>> {
-        return Prompt.list({
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -49,21 +51,21 @@ export class PromptListPage extends TablePage<Prompt> {
 
     row(item: Prompt): TemplateResult[] {
         return [
-            html`${item.field_key}`,
+            html`${item.fieldKey}`,
             html`${item.label}`,
             html`${item.type}`,
             html`${item.order}`,
-            html`${item.promptstage_set.map((stage) => {
+            html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`
-            <ak-modal-button href="${Prompt.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.stagePrompts(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Prompt.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.stagePrompts(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -74,7 +76,7 @@ export class PromptListPage extends TablePage<Prompt> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Prompt.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.stagePrompts("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>

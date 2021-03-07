@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { Application } from "../../api/Applications";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -8,6 +7,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
+import { Application, CoreApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -28,10 +30,10 @@ export class ApplicationListPage extends TablePage<Application> {
     order = "name";
 
     apiEndpoint(page: number): Promise<AKResponse<Application>> {
-        return Application.list({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -49,26 +51,26 @@ export class ApplicationListPage extends TablePage<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            item.meta_icon ?
-                html`<img class="app-icon pf-c-avatar" src="${item.meta_icon}" alt="${gettext("Application Icon")}">` :
+            item.metaIcon ?
+                html`<img class="app-icon pf-c-avatar" src="${item.metaIcon}" alt="${gettext("Application Icon")}">` :
                 html`<i class="pf-icon pf-icon-arrow"></i>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>
                     ${item.name}
                 </div>
-                ${item.meta_publisher ? html`<small>${item.meta_publisher}</small>` : html``}
+                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
             html`<code>${item.slug}</code>`,
             html`${item.provider?.name}`,
-            html`${item.provider?.verbose_name}`,
+            html`${item.provider?.verboseName}`,
             html`
-            <ak-modal-button href="${Application.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.applications(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Application.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.applications(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -80,7 +82,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Application.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.applications("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>

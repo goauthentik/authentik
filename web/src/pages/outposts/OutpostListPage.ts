@@ -2,7 +2,6 @@ import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { AKResponse } from "../../api/Client";
-import { Outpost } from "../../api/Outposts";
 import { TableColumn } from "../../elements/table/Table";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -11,6 +10,9 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/TokenCopyButton";
 import { PAGE_SIZE } from "../../constants";
+import { Outpost, OutpostsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
@@ -27,10 +29,10 @@ export class OutpostListPage extends TablePage<Outpost> {
         return true;
     }
     apiEndpoint(page: number): Promise<AKResponse<Outpost>> {
-        return Outpost.list({
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -49,18 +51,18 @@ export class OutpostListPage extends TablePage<Outpost> {
     row(item: Outpost): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`<ul>${item.providers_obj.map((p) => {
+            html`<ul>${item.providersObj?.map((p) => {
                 return html`<li><a href="#/core/providers/${p.pk}">${p.name}</a></li>`;
             })}</ul>`,
             html`<ak-outpost-health outpostId=${item.pk}></ak-outpost-health>`,
             html`
-            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.outposts(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>&nbsp;
-            <ak-modal-button href="${Outpost.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.outposts(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -88,7 +90,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                                     <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                                 </label>
                                 <div>
-                                    <ak-token-copy-button identifier="${item.token_identifier}">
+                                    <ak-token-copy-button identifier="${item.tokenIdentifier}">
                                         ${gettext("Click to copy token")}
                                     </ak-token-copy-button>
                                 </div>
@@ -112,7 +114,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Outpost.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.outposts("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
