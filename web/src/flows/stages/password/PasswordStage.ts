@@ -47,7 +47,7 @@ export class PasswordStage extends BaseStage {
                         label="${gettext("Password")}"
                         ?required="${true}"
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["password"]}>
+                        .errors=${(this.challenge?.response_errors || {})["password"]}>
                         <input type="password"
                             name="password"
                             placeholder="${gettext("Please enter your password")}"

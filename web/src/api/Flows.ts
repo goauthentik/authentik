@@ -1,4 +1,4 @@
-import { Challenge } from ".";
+import { ChallengeTypeEnum } from "./models";
 
 export interface Error {
     code: string;
@@ -7,6 +7,13 @@ export interface Error {
 
 export interface ErrorDict {
     [key: string]: Error[];
+}
+
+export interface Challenge {
+    type: ChallengeTypeEnum;
+    component?: string;
+    title?: string;
+    response_errors?: ErrorDict;
 }
 
 export interface WithUserInfoChallenge extends Challenge {

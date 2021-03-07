@@ -36,8 +36,8 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
     @property({attribute: false})
     selectedDeviceChallenge?: DeviceChallenge;
 
-    submit(formData?: FormData): Promise<void> {
-        return this.host?.submit(formData) || Promise.resolve();
+    submit<T>(formData?: T): Promise<void> {
+        return this.host?.submit<T>(formData) || Promise.resolve();
     }
 
     static get styles(): CSSResult[] {

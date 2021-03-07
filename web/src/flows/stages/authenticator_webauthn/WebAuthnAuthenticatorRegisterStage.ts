@@ -99,8 +99,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
                         </div>`:
                     html`
                     <div class="pf-c-form__group pf-m-action">
-                        ${this.challenge?.responseErrors ?
-                            html`<p class="pf-m-block">${this.challenge.responseErrors["response"][0].string}</p>`:
+                        ${this.challenge?.response_errors ?
+                            html`<p class="pf-m-block">${this.challenge.response_errors["response"][0].string}</p>`:
                             html``}
                         <p class="pf-m-block">${this.registerMessage}</p>
                         <button class="pf-c-button pf-m-primary pf-m-block" @click=${() => {

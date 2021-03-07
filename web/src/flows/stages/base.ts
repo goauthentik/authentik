@@ -1,7 +1,7 @@
 import { LitElement } from "lit-element";
 
 export interface StageHost {
-    submit(formData?: FormData): Promise<void>;
+    submit<T>(formData?: T): Promise<void>;
 }
 
 export class BaseStage extends LitElement {
@@ -10,8 +10,12 @@ export class BaseStage extends LitElement {
 
     submitForm(e: Event): void {
         e.preventDefault();
+        const object: {
+            [key: string]: unknown;
+        } = {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
-        this.host?.submit(form);
+        form.forEach((value, key) => object[key] = value);
+        this.host?.submit(object);
     }
 
 }

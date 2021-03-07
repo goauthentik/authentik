@@ -43,7 +43,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                     label="${gettext("Code")}"
                     ?required="${true}"
                     class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {})["code"]}>
+                    .errors=${(this.challenge?.response_errors || {})["code"]}>
                     <!-- @ts-ignore -->
                     <input type="text"
                         name="code"

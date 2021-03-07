@@ -68,28 +68,30 @@ export class FlowExecutor extends LitElement implements StageHost {
         });
     }
 
-    submit(formData?: FormData): Promise<void> {
+    submit<T>(formData?: T): Promise<void> {
         this.loading = true;
-        return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+        return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolveRaw({
             flowSlug: this.flowSlug,
             data: formData || {},
+        }).then((challengeRaw) => {
+            return challengeRaw.raw.json();
         }).then((data) => {
             this.challenge = data;
-        })
-        .catch((e) => {
+        }).catch((e) => {
             this.errorMessage(e);
-        })
-        .finally(() => {
+        }).finally(() => {
             this.loading = false;
         });
     }
 
     firstUpdated(): void {
         this.loading = true;
-        new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
+        new FlowsApi(DEFAULT_CONFIG).flowsExecutorGetRaw({
             flowSlug: this.flowSlug
+        }).then((challengeRaw) => {
+            return challengeRaw.raw.json();
         }).then((challenge) => {
-            this.challenge = challenge;
+            this.challenge = challenge as Challenge;
         }).catch((e) => {
             // Catch JSON or Update errors
             this.errorMessage(e);
