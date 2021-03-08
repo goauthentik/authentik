@@ -96,6 +96,12 @@ export abstract class Table<T> extends LitElement {
     search?: string;
 
     @property({type: Boolean})
+    checkbox = false;
+
+    @property({attribute: false})
+    selectedElements: T[] = [];
+
+    @property({type: Boolean})
     expandable = false;
 
     @property({attribute: false})
@@ -169,6 +175,21 @@ export abstract class Table<T> extends LitElement {
             }
             return html`<tbody role="rowgroup" class="${this.expandedRows[idx] ? "pf-m-expanded" : ""}">
                 <tr role="row">
+                    ${this.checkbox ? html`<td class="pf-c-table__check" role="cell">
+                        <input type="checkbox"
+                            ?checked=${this.selectedElements.indexOf(item) >= 0}
+                            @input=${(ev: InputEvent) => {
+                                if ((ev.target as HTMLInputElement).checked) {
+                                    // Add item to selected
+                                    this.selectedElements.push(item);
+                                } else {
+                                    // Get index of item and remove if selected
+                                    const index = this.selectedElements.indexOf(item);
+                                    if (index <= -1) return;
+                                    this.selectedElements.splice(index, 1);
+                                }
+                            }} />
+                    </td>` : html``}
                     ${this.expandable ? html`<td class="pf-c-table__toggle" role="cell">
                     <button class="pf-c-button pf-m-plain ${this.expandedRows[idx] ? "pf-m-expanded" : ""}" @click=${() => {
                         this.expandedRows[idx] = !this.expandedRows[idx];
@@ -227,7 +248,16 @@ export abstract class Table<T> extends LitElement {
             <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>
                     <tr role="row">
-                        ${this.expandable ? html`<td role="cell">` : html``}
+                        ${this.checkbox ? html`<td class="pf-c-table__check" role="cell">
+                            <input type="checkbox" aria-label=${gettext("Select all rows")} @input=${(ev: InputEvent) => {
+                                if ((ev.target as HTMLInputElement).checked) {
+                                    this.selectedElements = this.data?.results || [];
+                                } else {
+                                    this.selectedElements = [];
+                                }
+                            }} />
+                        </td>` : html``}
+                        ${this.expandable ? html`<td role="cell"></td>` : html``}
                         ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
