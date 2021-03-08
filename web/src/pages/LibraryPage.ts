@@ -1,9 +1,11 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { until } from "lit-html/directives/until";
 import { Application, CoreApi } from "../api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { me } from "../api/Users";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 
@@ -24,6 +26,15 @@ export class LibraryApplication extends LitElement {
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
                 }
+                .pf-c-card__header {
+                    justify-content: space-between;
+                }
+                .pf-c-card__header a {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    margin-right: 0.25em;
+                }
             `
         );
     }
@@ -37,6 +48,14 @@ export class LibraryApplication extends LitElement {
                 ${this.application.metaIcon
                     ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
                     : html`<i class="pf-icon pf-icon-arrow"></i>`}
+                ${until(me().then((u) => {
+                    if (!u.isSuperuser) return html``;
+                    return html`
+                        <a href="#/core/applications/${this.application?.slug}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    `;
+                }))}
             </div>
             <div class="pf-c-card__title">
                 <p id="card-1-check-label">${this.application.name}</p>
