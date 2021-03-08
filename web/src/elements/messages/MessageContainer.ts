@@ -35,6 +35,7 @@ export class MessageContainer extends LitElement {
     }
 
     connect(): void {
+        if (navigator.webdriver) return;
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
         }/ws/client/`;
