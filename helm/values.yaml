@@ -14,6 +14,9 @@ workerReplicas: 1
 # Enable the Kubernetes integration which lets authentik deploy outposts into kubernetes
 kubernetesIntegration: true
 
+monitoring:
+  enabled: true
+
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o

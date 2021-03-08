@@ -1,0 +1,17 @@
+{{- if .Values.monitoring.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ include "authentik.fullname" . }}-static-monitoring
+spec:
+  endpoints:
+  - port: http
+  selector:
+    matchLabels:
+      k8s.goauthentik.io/component: static
+{{- end }}
