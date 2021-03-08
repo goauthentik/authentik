@@ -136,13 +136,13 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     renderChallenge(): TemplateResult {
         if (!this.challenge) {
-            return html``;
+            return this.renderLoading();
         }
         switch (this.challenge.type) {
             case ChallengeTypes.redirect:
                 console.debug(`authentik/flows: redirecting to ${(this.challenge as RedirectChallenge).to}`);
                 window.location.assign((this.challenge as RedirectChallenge).to);
-                break;
+                return this.renderLoading();
             case ChallengeTypes.shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeTypes.native:
