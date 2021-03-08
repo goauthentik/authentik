@@ -6,10 +6,10 @@ export interface QueryArguments {
 
 export interface BaseInheritanceModel {
 
-    object_type: string;
+    objectType: string;
 
-    verbose_name: string;
-    verbose_name_plural: string;
+    verboseName: string;
+    verboseNamePlural: string;
 
 }
 

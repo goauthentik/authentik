@@ -1,9 +1,6 @@
-{% extends container_template|default:"administration/base.html" %}
-
 {% load i18n %}
 {% load authentik_utils %}
 
-{% block content %}
 <section class="pf-c-page__main-section pf-m-light">
     <div class="pf-c-content">
         {% block above_form %}
@@ -38,4 +35,3 @@
     <input class="pf-c-button pf-m-danger" type="submit" form="delete-form" value="{% trans 'Delete' %}" />
     <a class="pf-c-button pf-m-secondary" href="{% back %}">{% trans "Back" %}</a>
 </footer>
-{% endblock %}
