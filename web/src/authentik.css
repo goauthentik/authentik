@@ -55,6 +55,7 @@ select[multiple] {
     -webkit-columns: 2;
     -moz-columns: 2;
     margin-left: var(--pf-global--spacer--xs);
+    width: 100%;
 }
 .ak-otp-tokens li {
     font-size: var(--pf-global--FontSize--2xl);
