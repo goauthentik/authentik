@@ -5,9 +5,13 @@ import { SentryIgnoredError } from "../common/errors";
 import { Configuration } from "./runtime";
 import { RootApi } from "./apis";
 import { Config } from ".";
+import { getCookie } from "../utils";
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: "/api/v2beta"
+    basePath: "/api/v2beta",
+    headers: {
+        "X-CSRFToken": getCookie("authentik_csrf"),
+    }
 });
 
 export function configureSentry(): Promise<Config> {
