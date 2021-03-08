@@ -17,6 +17,8 @@ export class UserTokenList extends Table<Token> {
         return true;
     }
 
+    expandable = true;
+
     @property()
     order = "expires";
 
@@ -32,9 +34,6 @@ export class UserTokenList extends Table<Token> {
     columns(): TableColumn[] {
         return [
             new TableColumn("Identifier", "identifier"),
-            new TableColumn("User", "user"),
-            new TableColumn("Expires?", "expiring"),
-            new TableColumn("Expiry date", "expires"),
             new TableColumn(""),
         ];
     }
@@ -51,12 +50,44 @@ export class UserTokenList extends Table<Token> {
         `;
     }
 
+    renderExpanded(item: Token): TemplateResult {
+        return html`
+        <td role="cell" colspan="3">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${gettext("User")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.user.username}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${gettext("Expiring")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.expiring ? "Yes" : "No"}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${gettext("Expiring")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.expiring ? item.expires?.toLocaleString() : "-"}</div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>
+        <td></td>`;
+    }
+
     row(item: Token): TemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.user.username}`,
-            html`${item.expiring ? "Yes" : "No"}`,
-            html`${item.expiring ? item.expires?.toLocaleString() : "-"}`,
             html`
             <ak-modal-button href="${AdminURLManager.tokens(`${item.identifier}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">

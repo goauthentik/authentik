@@ -76,24 +76,24 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return html`
         <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${gettext("Certificate Fingerprint")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">${item.fingerprint}</div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${gettext("Certificate Subjet")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">${item.certSubject}</div>
-                            </dd>
-                        </div>
-                    </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${gettext("Certificate Fingerprint")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.fingerprint}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${gettext("Certificate Subjet")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${item.certSubject}</div>
+                        </dd>
+                    </div>
+                </dl>
             </div>
         </td>
         <td></td>
