@@ -34,7 +34,8 @@ class UserSettingsView(LoginRequiredMixin, TemplateView):
 class DisableView(LoginRequiredMixin, View):
     """Disable Static Tokens for user"""
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    # pylint: disable=unused-argument
+    def get(self, request: HttpRequest, **kwargs) -> HttpResponse:
         """Delete all the devices for user"""
         devices = StaticDevice.objects.filter(user=request.user, confirmed=True)
         devices.delete()
