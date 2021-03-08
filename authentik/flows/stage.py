@@ -4,8 +4,8 @@ from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.views.generic.base import View
-from structlog.stdlib import get_logger
 from rest_framework.request import Request
+from structlog.stdlib import get_logger
 
 from authentik.core.models import DEFAULT_AVATAR, User
 from authentik.flows.challenge import (
