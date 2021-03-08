@@ -71,6 +71,8 @@ export class NotificationDrawer extends LitElement {
                         data: {
                             seen: true,
                         }
+                    }).then(() => {
+                        this.firstUpdated();
                     });
                 }}>
                     <i class="fas fa-times"></i>
