@@ -1,14 +1,15 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Application } from "../../api/Applications";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
+import "../../elements/charts/ApplicationAuthorizeChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "../../elements/utils/LoadingState";
+import { Application, CoreApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
@@ -19,11 +20,15 @@ export class ApplicationViewPage extends LitElement {
 
     @property()
     set applicationSlug(value: string) {
-        Application.get(value).then((app) => (this.application = app));
+        new CoreApi(DEFAULT_CONFIG).coreApplicationsRead({
+            slug: value
+        }).then((app) => {
+            this.application = app;
+        });
     }
 
     @property({attribute: false})
-    application?: Application;
+    application!: Application;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
@@ -52,10 +57,10 @@ export class ApplicationViewPage extends LitElement {
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <img class="pf-icon" src="${this.application?.meta_icon || ""}" />
+                        <img class="pf-icon" src="${this.application?.metaIcon || ""}" />
                         ${this.application?.name}
                     </h1>
-                    <p>${this.application?.meta_publisher}</p>
+                    <p>${this.application?.metaPublisher}</p>
                 </div>
             </section>
             <ak-tabs>
@@ -69,9 +74,8 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
-                                    <ak-admin-logins-chart
-                                        .url="${["core", "applications", this.application?.slug, "metrics"]}">
-                                    </ak-admin-logins-chart>`: ""}
+                                    <ak-charts-application-authorize applicationSlug=${this.application.slug}>
+                                    </ak-charts-application-authorize>`: ""}
                             </div>
                         </div>
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">

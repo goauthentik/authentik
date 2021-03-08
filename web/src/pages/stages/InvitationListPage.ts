@@ -6,8 +6,10 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Invitation } from "../../api/Invitations";
 import { PAGE_SIZE } from "../../constants";
+import { Invitation, StagesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
@@ -28,10 +30,10 @@ export class InvitationListPage extends TablePage<Invitation> {
     order = "expires";
 
     apiEndpoint(page: number): Promise<AKResponse<Invitation>> {
-        return Invitation.list({
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -48,10 +50,10 @@ export class InvitationListPage extends TablePage<Invitation> {
     row(item: Invitation): TemplateResult[] {
         return [
             html`${item.pk}`,
-            html`${item.created_by.username}`,
-            html`${new Date(item.expires * 1000).toLocaleString()}`,
+            html`${item.createdBy?.username}`,
+            html`${item.expires?.toLocaleString()}`,
             html`
-            <ak-modal-button href="${Invitation.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.stageInvitations(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -62,7 +64,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Invitation.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.stageInvitations("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>

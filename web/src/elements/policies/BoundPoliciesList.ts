@@ -2,16 +2,16 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
-import { PolicyBinding } from "../../api/PolicyBindings";
+import { PoliciesApi, PolicyBinding } from "../../api";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
-import { Policy } from "../../api/Policies";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -19,11 +19,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     target?: string;
 
     apiEndpoint(page: number): Promise<AKResponse<PolicyBinding>> {
-        return PolicyBinding.list({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
             ordering: "order",
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
         });
     }
 
@@ -56,13 +56,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.order}`,
             html`${item.timeout}`,
             html`
-            <ak-modal-button href="${PolicyBinding.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${PolicyBinding.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -78,7 +78,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 ${gettext("No policies are currently bound to this object.")}
             </div>
             <div slot="primary">
-                <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
+                <ak-modal-button href=${AdminURLManager.policyBindings(`create/?target=${this.target}`)}>
                     <ak-spinner-button slot="trigger" class="pf-m-primary">
                         ${gettext("Bind Policy")}
                     </ak-spinner-button>
@@ -96,7 +96,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(Policy.getTypes().then((types) => {
+                ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-modal-button href="${type.link}">
@@ -110,7 +110,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 }), html`<ak-spinner></ak-spinner>`)}
             </ul>
         </ak-dropdown>
-        <ak-modal-button href=${PolicyBinding.adminUrl(`create/?target=${this.target}`)}>
+        <ak-modal-button href=${AdminURLManager.policyBindings(`create/?target=${this.target}`)}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Bind Policy")}
             </ak-spinner-button>

@@ -1,4 +1,4 @@
-import { DefaultClient, AKResponse, QueryArguments } from "./Client";
+import { Event } from "./models";
 
 export interface EventUser {
     pk: number;
@@ -11,37 +11,7 @@ export interface EventContext {
     [key: string]: EventContext | string | number | string[];
 }
 
-export class Event {
-    pk: string;
+export interface EventWithContext extends Event {
     user: EventUser;
-    action: string;
-    app: string;
     context: EventContext;
-    client_ip: string;
-    created: string;
-
-    constructor() {
-        throw Error();
-    }
-
-    static get(pk: string): Promise<Event> {
-        return DefaultClient.fetch<Event>(["events", "events", pk]);
-    }
-
-    static list(filter?: QueryArguments): Promise<AKResponse<Event>> {
-        return DefaultClient.fetch<AKResponse<Event>>(["events", "events"], filter);
-    }
-
-    // events/events/top_per_user/?filter_action=authorize_application
-    static topForUser(action: string): Promise<TopNEvent[]> {
-        return DefaultClient.fetch<TopNEvent[]>(["events", "events", "top_per_user"], {
-            "filter_action": action,
-        });
-    }
-}
-
-export interface TopNEvent {
-    application: { [key: string]: string};
-    counted_events: number;
-    unique_users: number;
 }

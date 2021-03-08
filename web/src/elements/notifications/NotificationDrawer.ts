@@ -1,7 +1,8 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { EventsApi, Notification } from "../../api";
 import { AKResponse } from "../../api/Client";
-import { Notification } from "../../api/EventNotification";
+import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("ak-notification-drawer")
@@ -30,9 +31,9 @@ export class NotificationDrawer extends LitElement {
     }
 
     firstUpdated(): void {
-        Notification.list({
-            seen: false,
-            ordering: "-created"
+        new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
+            seen: "false",
+            ordering: "-created",
         }).then(r => {
             this.notifications = r;
             this.unread = r.results.length;
@@ -40,7 +41,6 @@ export class NotificationDrawer extends LitElement {
     }
 
     renderItem(item: Notification): TemplateResult {
-        const created = new Date(parseInt(item.created, 10) * 1000);
         let level = "";
         switch (item.severity) {
         case "notice":
@@ -66,15 +66,18 @@ export class NotificationDrawer extends LitElement {
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
                 <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {
-                    Notification.markSeen(item.pk).then(() => {
-                        this.firstUpdated();
+                    new EventsApi(DEFAULT_CONFIG).eventsNotificationsPartialUpdate({
+                        uuid: item.pk || "",
+                        data: {
+                            seen: true,
+                        }
                     });
                 }}>
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
-            <small class="pf-c-notification-drawer__list-item-timestamp">${created.toLocaleString()}</small>
+            <small class="pf-c-notification-drawer__list-item-timestamp">${item.created?.toLocaleString()}</small>
         </li>`;
     }
 

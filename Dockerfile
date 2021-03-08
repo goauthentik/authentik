@@ -45,4 +45,5 @@ COPY ./lifecycle/ /lifecycle
 USER authentik
 STOPSIGNAL SIGINT
 ENV TMPDIR /dev/shm/
+ENV PYTHONUBUFFERED 1
 ENTRYPOINT [ "/lifecycle/bootstrap.sh" ]

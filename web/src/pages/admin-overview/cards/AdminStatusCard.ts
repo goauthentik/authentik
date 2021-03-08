@@ -23,14 +23,14 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     renderInner(): TemplateResult {
         return html`<p class="center-value">
             ${until(this.getPrimaryValue().then((v) => {
-        this.value = v;
-        return this.getStatus(v);
-    }).then((status) => {
-        return html`<p class="ak-aggregate-card">
-                    <i class="${status.icon}"></i> ${this.renderValue()}
-                </p>
-                ${status.message ? html`<p class="subtext">${status.message}</p>` : html``}`;
-    }), html`<ak-spinner size="${SpinnerSize.Large}"></ak-spinner>`)}
+                this.value = v;
+                return this.getStatus(v);
+            }).then((status) => {
+                return html`<p class="ak-aggregate-card">
+                        <i class="${status.icon}"></i> ${this.renderValue()}
+                    </p>
+                    ${status.message ? html`<p class="subtext">${status.message}</p>` : html``}`;
+            }), html`<ak-spinner size="${SpinnerSize.Large}"></ak-spinner>`)}
         </p>`;
     }
 }

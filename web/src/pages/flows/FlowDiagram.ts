@@ -1,7 +1,8 @@
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import FlowChart from "flowchart.js";
-import { Flow } from "../../api/Flows";
 import { loading } from "../../utils";
+import { FlowsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
@@ -16,8 +17,10 @@ export class FlowDiagram extends LitElement {
     @property()
     set flowSlug(value: string) {
         this._flowSlug = value;
-        Flow.diagram(value).then((data) => {
-            this.diagram = FlowChart.parse(data.diagram);
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesDiagram({
+            slug: value,
+        }).then((data) => {
+            this.diagram = FlowChart.parse(data.diagram || "");
         });
     }
 

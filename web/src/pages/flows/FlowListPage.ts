@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { Flow } from "../../api/Flows";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -8,6 +7,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
+import { Flow, FlowsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
@@ -28,10 +30,10 @@ export class FlowListPage extends TablePage<Flow> {
     order = "slug";
 
     apiEndpoint(page: number): Promise<AKResponse<Flow>> {
-        return Flow.list({
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -54,25 +56,25 @@ export class FlowListPage extends TablePage<Flow> {
             </a>`,
             html`${item.name}`,
             html`${item.designation}`,
-            html`${item.stages.length}`,
-            html`${item.policies.length}`,
+            html`${item.stages?.size}`,
+            html`${item.policies?.size}`,
             html`
-            <ak-modal-button href="${Flow.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.flows(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Flow.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.flows(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <a class="pf-c-button pf-m-secondary ak-root-link" href="${Flow.adminUrl(`${item.pk}/execute/?next=/%23${window.location.href}`)}">
+            <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${item.pk}/execute/?next=/%23${window.location.href}`)}">
                 ${gettext("Execute")}
             </a>
-            <a class="pf-c-button pf-m-secondary ak-root-link" href="${Flow.adminUrl(`${item.pk}/export/`)}">
+            <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${item.pk}/export/`)}">
                 ${gettext("Export")}
             </a>
             `,
@@ -81,13 +83,13 @@ export class FlowListPage extends TablePage<Flow> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Flow.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.flows("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>
             <div slot="modal"></div>
         </ak-modal-button>
-        <ak-modal-button href=${Flow.adminUrl("import/")}>
+        <ak-modal-button href=${AdminURLManager.flows("import/")}>
             <ak-spinner-button slot="trigger" class="pf-m-secondary">
                 ${gettext("Import")}
             </ak-spinner-button>

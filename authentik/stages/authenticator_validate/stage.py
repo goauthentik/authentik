@@ -145,7 +145,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         challenges = self.request.session["device_challenges"]
         return AuthenticatorChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-authenticator-validate",
                 "device_challenges": challenges,
             }

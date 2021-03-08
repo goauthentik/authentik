@@ -5,7 +5,7 @@ import { COMMON_STYLES } from "../../common/styles";
 
 import "./TablePagination";
 import "../EmptyState";
-
+import "../Spinner";
 
 export class TableColumn {
 

@@ -1,25 +1,29 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../common/styles";
-import { Flow } from "../../api/Flows";
 
 import "../../elements/Tabs";
-import "../../elements/AdminLoginsChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
+import { Flow, FlowsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
     @property()
     set flowSlug(value: string) {
-        Flow.get(value).then((flow) => (this.flow = flow));
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRead({
+            slug: value
+        }).then((flow) => {
+            this.flow = flow;
+        });
     }
 
     @property({attribute: false})
-    flow?: Flow;
+    flow!: Flow;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
@@ -67,7 +71,7 @@ export class FlowViewPage extends LitElement {
                                 ${gettext("These policies control which users can access this flow.")}
                             </div>
                         </div>
-                        <ak-bound-policies-list .target=${this.flow.policybindingmodel_ptr_id}>
+                        <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                         </ak-bound-policies-list>
                     </div>
                 </div>

@@ -8,10 +8,10 @@ import "../../elements/buttons/ActionButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { LDAPSource } from "../../api/sources/LDAP";
-import { Source } from "../../api/Sources";
 import { until } from "lit-html/directives/until";
-import { DefaultClient } from "../../api/Client";
+import { LDAPSource, SourcesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends Page {
@@ -27,11 +27,15 @@ export class LDAPSourceViewPage extends Page {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        LDAPSource.get(slug).then((s) => this.source = s);
+        new SourcesApi(DEFAULT_CONFIG).sourcesLdapRead({
+            slug: slug
+        }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
-    source?: LDAPSource;
+    source!: LDAPSource;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
@@ -69,7 +73,7 @@ export class LDAPSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Server URI")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.server_uri}</div>
+                                                <div class="pf-c-description-list__text">${this.source.serverUri}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -79,7 +83,7 @@ export class LDAPSourceViewPage extends Page {
                                             <dd class="pf-c-description-list__description">
                                                 <div class="pf-c-description-list__text">
                                                     <ul>
-                                                        <li>${this.source.base_dn}</li>
+                                                        <li>${this.source.baseDn}</li>
                                                     </ul>
                                                 </div>
                                             </dd>
@@ -87,7 +91,7 @@ export class LDAPSourceViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Source.adminUrl(`${this.source.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.sources(`${this.source.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>
@@ -102,26 +106,31 @@ export class LDAPSourceViewPage extends Page {
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card pf-c-card-aggregate">
-                                <div class="pf-c-card pf-c-card-aggregate">
-                                    <div class="pf-c-card__title">
-                                        <p>${gettext("Sync status")}</p>
-                                    </div>
-                                    <div class="pf-c-card__body">
-                                        <p>
-                                        ${until(LDAPSource.syncStatus(this.source.slug).then((ls) => {
-                                            if (!ls.last_sync) {
-                                                return gettext("Not synced in the last hour, check System tasks.");
-                                            }
-                                            const syncDate = new Date(ls.last_sync * 1000);
-                                            return gettext(`Last sync: ${syncDate.toLocaleString()}`);
-                                        }), "loading")}
-                                        </p>
-                                    </div>
-                                    <div class="pf-c-card__footer">
-                                        <ak-action-button method="PATCH" url="${DefaultClient.makeUrl(["sources", "ldap", this.source.slug])}">
-                                            ${gettext("Retry Task")}
-                                        </ak-action-button>
-                                    </div>
+                                <div class="pf-c-card__title">
+                                    <p>${gettext("Sync status")}</p>
+                                </div>
+                                <div class="pf-c-card__body">
+                                    <p>
+                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatus({
+                                        slug: this.source.slug
+                                    }).then((ls) => {
+                                        if (!ls.lastSync) {
+                                            return gettext("Not synced in the last hour, check System tasks.");
+                                        }
+                                        return gettext(`Last sync: ${ls.lastSync.toLocaleString()}`);
+                                    }), "loading")}
+                                    </p>
+                                </div>
+                                <div class="pf-c-card__footer">
+                                    <ak-action-button
+                                        .apiRequest=${() => {
+                                            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
+                                                slug: this.source?.slug || "",
+                                                data: this.source,
+                                            });
+                                        }}>
+                                        ${gettext("Retry Task")}
+                                    </ak-action-button>
                                 </div>
                             </div>
                         </div>

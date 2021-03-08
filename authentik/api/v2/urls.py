@@ -1,4 +1,5 @@
 """api v2 urls"""
+from django.conf import settings
 from django.urls import path, re_path
 from drf_yasg2 import openapi
 from drf_yasg2.views import get_schema_view
@@ -156,6 +157,14 @@ router.register("stages/user_write", UserWriteStageViewSet)
 router.register("stages/dummy", DummyStageViewSet)
 router.register("policies/dummy", DummyPolicyViewSet)
 
+api_urls = router.urls + [
+    path(
+        "flows/executor/<slug:flow_slug>/",
+        FlowExecutorView.as_view(),
+        name="flow-executor",
+    ),
+]
+
 info = openapi.Info(
     title="authentik API",
     default_version="v2",
@@ -165,26 +174,22 @@ info = openapi.Info(
     ),
 )
 SchemaView = get_schema_view(
-    info,
-    public=True,
-    permission_classes=(AllowAny,),
+    info, public=True, permission_classes=(AllowAny,), patterns=api_urls
 )
 
-urlpatterns = [
+urlpatterns = api_urls + [
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         SchemaView.without_ui(cache_timeout=0),
         name="schema-json",
     ),
-    path(
-        "swagger/",
-        SchemaView.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    path("redoc/", SchemaView.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path(
-        "flows/executor/<slug:flow_slug>/",
-        FlowExecutorView.as_view(),
-        name="flow-executor",
-    ),
-] + router.urls
+]
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns + [
+        path(
+            "swagger/",
+            SchemaView.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+    ]

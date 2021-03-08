@@ -1,18 +1,19 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { Event, EventContext } from "../../api/Events";
-import { Flow } from "../../api/Flows";
+import { FlowsApi } from "../../api";
 import { COMMON_STYLES } from "../../common/styles";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { SpinnerSize } from "../../elements/Spinner";
+import { EventContext, EventWithContext } from "../../api/Events";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
 
     @property({attribute: false})
-    event?: Event;
+    event!: EventWithContext;
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES.concat(
@@ -73,15 +74,15 @@ export class EventInfo extends LitElement {
 
     defaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
-                    <div class="pf-l-flex__item">
-                        <h3>${gettext("Context")}</h3>
-                        <code>${JSON.stringify(this.event?.context, null, 4)}</code>
-                    </div>
-                    <div class="pf-l-flex__item">
-                        <h3>${gettext("User")}</h3>
-                        <code>${JSON.stringify(this.event?.user, null, 4)}</code>
-                    </div>
-                </div>`;
+                <div class="pf-l-flex__item">
+                    <h3>${gettext("Context")}</h3>
+                    <code>${JSON.stringify(this.event?.context, null, 4)}</code>
+                </div>
+                <div class="pf-l-flex__item">
+                    <h3>${gettext("User")}</h3>
+                    <code>${JSON.stringify(this.event?.user, null, 4)}</code>
+                </div>
+            </div>`;
     }
 
     render(): TemplateResult {
@@ -94,7 +95,7 @@ export class EventInfo extends LitElement {
         case "model_deleted":
             return html`
                 <h3>${gettext("Affected model:")}</h3>
-                ${this.getModelInfo(this.event.context.model as EventContext)}
+                ${this.getModelInfo(this.event.context?.model as EventContext)}
                 `;
         case "authorize_application":
             return html`<div class="pf-l-flex">
@@ -104,8 +105,8 @@ export class EventInfo extends LitElement {
                     </div>
                     <div class="pf-l-flex__item">
                         <h3>${gettext("Using flow")}</h3>
-                        <span>${until(Flow.list({
-                            flow_uuid: this.event.context.flow as string,
+                        <span>${until(new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                            flowUuid: this.event.context.flow as string,
                         }).then(resp => {
                             return html`<a href="#/flow/flows/${resp.results[0].slug}">${resp.results[0].name}</a>`;
                         }), html`<ak-spinner size=${SpinnerSize.Medium}></ak-spinner>`)}

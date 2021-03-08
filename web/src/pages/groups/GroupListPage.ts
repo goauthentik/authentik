@@ -6,8 +6,10 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Group } from "../../api/Groups";
 import { PAGE_SIZE } from "../../constants";
+import { CoreApi, Group } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
@@ -28,10 +30,10 @@ export class GroupListPage extends TablePage<Group> {
     order = "slug";
 
     apiEndpoint(page: number): Promise<AKResponse<Group>> {
-        return Group.list({
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -50,16 +52,16 @@ export class GroupListPage extends TablePage<Group> {
         return [
             html`${item.name}`,
             html`${item.parent || "-"}`,
-            html`${item.users.length}`,
-            html`${item.is_superuser ? "Yes" : "No"}`,
+            html`${item.users.keys.length}`,
+            html`${item.isSuperuser ? "Yes" : "No"}`,
             html`
-            <ak-modal-button href="${Group.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.groups(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Group.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.groups(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -70,7 +72,7 @@ export class GroupListPage extends TablePage<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${Group.adminUrl("create/")}>
+        <ak-modal-button href=${AdminURLManager.groups("create/")}>
             <ak-spinner-button slot="trigger" class="pf-m-primary">
                 ${gettext("Create")}
             </ak-spinner-button>

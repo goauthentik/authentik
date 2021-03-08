@@ -1,8 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { Source } from "../../api/Sources";
-import { SAMLSource } from "../../api/sources/SAML";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -10,6 +8,9 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
+import { SAMLSource, SourcesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager, AppURLManager } from "../../api/legacy";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends Page {
@@ -25,7 +26,11 @@ export class SAMLSourceViewPage extends Page {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        SAMLSource.get(slug).then((s) => this.source = s);
+        new SourcesApi(DEFAULT_CONFIG).sourcesSamlRead({
+            slug: slug
+        }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
@@ -67,7 +72,7 @@ export class SAMLSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("SSO URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.sso_url}</div>
+                                                <div class="pf-c-description-list__text">${this.source.ssoUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -75,7 +80,7 @@ export class SAMLSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("SLO URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.slo_url}</div>
+                                                <div class="pf-c-description-list__text">${this.source.sloUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -89,7 +94,7 @@ export class SAMLSourceViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Source.adminUrl(`${this.source.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.sources(`${this.source.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>
@@ -105,14 +110,15 @@ export class SAMLSourceViewPage extends Page {
                         <div class="pf-u-w-75">
                             <div class="pf-c-card pf-c-card-aggregate">
                                 <div class="pf-c-card__body">
-                                    ${until(
-                                        SAMLSource.getMetadata(this.source.slug).then(m => {
+                                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesSamlMetadata({
+                                            slug: this.source.slug,
+                                        }).then(m => {
                                             return html`<ak-codemirror mode="xml"><textarea class="pf-c-form-control" readonly>${m.metadata}</textarea></ak-codemirror>`;
                                         })
                                     )}
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${SAMLSource.appUrl(this.source.slug, "metadata/")}">
+                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${AppURLManager.sourceSAML(this.source.slug, "metadata/")}">
                                         ${gettext("Download")}
                                     </a>
                                 </div>

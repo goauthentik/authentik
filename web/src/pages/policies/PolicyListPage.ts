@@ -7,9 +7,11 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
-import { Policy } from "../../api/Policies";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
+import { PoliciesApi, Policy } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -30,10 +32,10 @@ export class PolicyListPage extends TablePage<Policy> {
     order = "name";
 
     apiEndpoint(page: number): Promise<AKResponse<Policy>> {
-        return Policy.list({
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -50,29 +52,29 @@ export class PolicyListPage extends TablePage<Policy> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                ${item.bound_to > 0 ?
+                ${(item.boundTo || 0) > 0 ?
                         html`<i class="pf-icon pf-icon-ok"></i>
                         <small>
-                            ${gettext(`Assigned to ${item.bound_to} objects.`)}
+                            ${gettext(`Assigned to ${item.boundTo} objects.`)}
                         </small>`:
                     html`<i class="pf-icon pf-icon-warning-triangle"></i>
                     <small>${gettext("Warning: Policy is not assigned.")}</small>`}
             </div>`,
-            html`${item.verbose_name}`,
+            html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${Policy.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.policies(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Policy.adminUrl(`${item.pk}/test/`)}">
+            <ak-modal-button href="${AdminURLManager.policies(`${item.pk}/test/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Test")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Policy.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.policies(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -90,7 +92,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(Policy.getTypes().then((types) => {
+                    ${until(new PoliciesApi(DEFAULT_CONFIG).policiesAllTypes({}).then((types) => {
                         return types.map((type) => {
                             return html`<li>
                                 <ak-modal-button href="${type.link}">

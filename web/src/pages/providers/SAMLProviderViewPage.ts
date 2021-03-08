@@ -1,8 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { Provider } from "../../api/Providers";
-import { SAMLProvider } from "../../api/providers/SAML";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -11,6 +9,9 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import "./RelatedApplicationButton";
+import { ProvidersApi, SAMLProvider } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager, AppURLManager } from "../../api/legacy";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends Page {
@@ -31,7 +32,9 @@ export class SAMLProviderViewPage extends Page {
 
     @property({type: Number})
     set providerID(value: number) {
-        SAMLProvider.get(value).then((app) => (this.provider = app));
+        new ProvidersApi(DEFAULT_CONFIG).providersSamlRead({
+            id: value,
+        }).then((prov) => (this.provider = prov));
     }
 
     @property({ attribute: false })
@@ -83,7 +86,7 @@ export class SAMLProviderViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("ACS URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.provider.acs_url}</div>
+                                                <div class="pf-c-description-list__text">${this.provider.acsUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -105,7 +108,7 @@ export class SAMLProviderViewPage extends Page {
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Provider.adminUrl(`${this.provider.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.providers(`${this.provider.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>
@@ -122,13 +125,15 @@ export class SAMLProviderViewPage extends Page {
                             <div class="pf-c-card pf-c-card-aggregate">
                                 <div class="pf-c-card__body">
                                     ${until(
-                                        SAMLProvider.getMetadata(this.provider.pk).then(m => {
+                                        new ProvidersApi(DEFAULT_CONFIG).providersSamlMetadata({
+                                            id: this.provider.pk || 0,
+                                        }).then(m => {
                                             return html`<ak-codemirror mode="xml"><textarea class="pf-c-form-control" readonly>${m.metadata}</textarea></ak-codemirror>`;
                                         })
                                     )}
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${SAMLProvider.appUrl(`${this.provider.assigned_application_slug}/metadata/`)}">
+                                    <a class="pf-c-button pf-m-primary" target="_blank" href="${AppURLManager.providerSAML(`${this.provider.assignedApplicationSlug}/metadata/`)}">
                                         ${gettext("Download")}
                                     </a>
                                 </div>

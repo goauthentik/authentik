@@ -1,10 +1,3 @@
-import { gettext } from "django";
-import { showMessage } from "../elements/messages/MessageContainer";
-import { getCookie } from "../utils";
-import { NotFoundError, RequestError } from "./Error";
-
-export const VERSION = "v2beta";
-
 export interface QueryArguments {
     page?: number;
     page_size?: number;
@@ -20,97 +13,20 @@ export interface BaseInheritanceModel {
 
 }
 
-export class Client {
-    makeUrl(url: string[], query?: QueryArguments): string {
-        let builtUrl = `/api/${VERSION}/${url.join("/")}/`;
-        if (query) {
-            const queryString = Object.keys(query)
-                .filter((k) => query[k] !== null)
-                // we default to a string in query[k] as we've filtered out the null above
-                // this is just for type-hinting
-                .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(query[k] || ""))
-                .join("&");
-            builtUrl += `?${queryString}`;
-        }
-        return builtUrl;
-    }
-
-    fetch<T>(url: string[], query?: QueryArguments): Promise<T> {
-        const finalUrl = this.makeUrl(url, query);
-        return fetch(finalUrl)
-            .then((r) => {
-                if (r.status > 300) {
-                    switch (r.status) {
-                    case 404:
-                        throw new NotFoundError(`URL ${finalUrl} not found`);
-                    default:
-                        throw new RequestError(r.statusText);
-                    }
-                }
-                return r;
-            })
-            .catch((e) => {
-                showMessage({
-                    level_tag: "error",
-                    message: gettext(`Unexpected error while fetching: ${e.toString()}`),
-                });
-                return e;
-            })
-            .then((r) => r.json())
-            .then((r) => <T>r);
-    }
-
-    private writeRequest<T>(url: string[], body: T, method: string, query?: QueryArguments): Promise<T> {
-        const finalUrl = this.makeUrl(url, query);
-        const csrftoken = getCookie("authentik_csrf");
-        const request = new Request(finalUrl, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrftoken,
-            },
-        });
-        return fetch(request, {
-            method: method,
-            mode: "same-origin",
-            body: JSON.stringify(body),
-        })
-            .then((r) => {
-                if (r.status > 300) {
-                    switch (r.status) {
-                    case 404:
-                        throw new NotFoundError(`URL ${finalUrl} not found`);
-                    default:
-                        throw new RequestError(r.statusText);
-                    }
-                }
-                return r;
-            })
-            .then((r) => r.json())
-            .then((r) => <T>r);
-    }
-
-    update<T>(url: string[], body: T, query?: QueryArguments): Promise<T> {
-        return this.writeRequest(url, body, "PATCH", query);
-    }
-}
-
-export const DefaultClient = new Client();
-
-export interface PBPagination {
+export interface AKPagination {
     next?: number;
     previous?: number;
 
     count: number;
     current: number;
-    total_pages: number;
+    totalPages: number;
 
-    start_index: number;
-    end_index: number;
+    startIndex: number;
+    endIndex: number;
 }
 
 export interface AKResponse<T> {
-    pagination: PBPagination;
+    pagination: AKPagination;
 
     results: Array<T>;
 }

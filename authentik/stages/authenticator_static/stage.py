@@ -31,7 +31,7 @@ class AuthenticatorStaticStageView(ChallengeStageView):
         tokens: list[StaticToken] = self.request.session[SESSION_STATIC_TOKENS]
         return AuthenticatorStaticChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-authenticator-static",
                 "codes": [token.token for token in tokens],
             }

@@ -51,7 +51,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         return AuthenticatorTOTPChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-authenticator-totp",
                 "config_url": device.config_url,
             }

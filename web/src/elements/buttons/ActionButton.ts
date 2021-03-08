@@ -1,4 +1,3 @@
-import { getCookie } from "../../utils";
 import { customElement, property } from "lit-element";
 import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
@@ -12,43 +11,33 @@ export class ActionButton extends SpinnerButton {
     @property()
     method = "POST";
 
+    @property({attribute: false})
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    apiRequest: () => Promise<any> = () => { throw new Error(); };
+
     callAction(): void {
         if (this.isRunning === true) {
             return;
         }
         this.setLoading();
-        const csrftoken = getCookie("authentik_csrf");
-        const request = new Request(this.url, {
-            headers: { "X-CSRFToken": csrftoken },
-        });
-        fetch(request, {
-            method: this.method,
-            mode: "same-origin",
+        this.apiRequest().then(() => {
+            this.setDone(SUCCESS_CLASS);
         })
-            .then((r) => {
-                if (!r.ok) {
-                    throw r;
-                }
-                return r;
-            })
-            .then(() => {
-                this.setDone(SUCCESS_CLASS);
-            })
-            .catch((e: Error | Response) => {
-                if (e instanceof Error) {
+        .catch((e: Error | Response) => {
+            if (e instanceof Error) {
+                showMessage({
+                    level_tag: "error",
+                    message: e.toString()
+                });
+            } else {
+                e.text().then(t => {
                     showMessage({
                         level_tag: "error",
-                        message: e.toString()
+                        message: t
                     });
-                } else {
-                    e.text().then(t => {
-                        showMessage({
-                            level_tag: "error",
-                            message: t
-                        });
-                    });
-                }
-                this.setDone(ERROR_CLASS);
-            });
+                });
+            }
+            this.setDone(ERROR_CLASS);
+        });
     }
 }

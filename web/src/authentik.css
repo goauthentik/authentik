@@ -157,7 +157,7 @@ ak-message {
         color: var(--ak-dark-foreground) !important;
     }
     /* tabs, vertical */
-    .pf-c-tabs__link {
+    .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
         background-color: var(--ak-dark-background-light);
     }
     /* table, on mobile */

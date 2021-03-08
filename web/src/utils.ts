@@ -41,17 +41,9 @@ export function truncate(input?: string, max = 10): string {
     return array.slice(0, max).join(" ") + ellipsis;
 }
 
-export function htmlFromString(...strings: string[]): TemplateResult {
-    return html(<TemplateStringsArray><unknown>strings);
-}
-
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
         return html`<ak-loading-state></ak-loading-state>`;
     }
     return actual;
-}
-
-export function time(t: string): Date {
-    return new Date(parseInt(t, 10) * 1000);
 }
