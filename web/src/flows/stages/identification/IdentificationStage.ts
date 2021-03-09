@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../form";
@@ -32,7 +32,13 @@ export class IdentificationStage extends BaseStage {
     challenge?: IdentificationChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return COMMON_STYLES.concat(
+            css`
+                .pf-c-login__main-footer-links-item-link img {
+                    width: 100px;
+                }
+            `
+        );
     }
 
     renderSource(source: UILoginButton): TemplateResult {
