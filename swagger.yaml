@@ -165,6 +165,711 @@ paths:
       tags:
         - admin
     parameters: []
+  /authenticators/admin/static/:
+    get:
+      operationId: authenticators_admin_static_list
+      description: Viewset for static authenticator devices (for admins)
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/admin/static/{id}/:
+    get:
+      operationId: authenticators_admin_static_read
+      description: Viewset for static authenticator devices (for admins)
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this static device.
+        required: true
+        type: integer
+  /authenticators/admin/totp/:
+    get:
+      operationId: authenticators_admin_totp_list
+      description: Viewset for totp authenticator devices (for admins)
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/admin/totp/{id}/:
+    get:
+      operationId: authenticators_admin_totp_read
+      description: Viewset for totp authenticator devices (for admins)
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this TOTP device.
+        required: true
+        type: integer
+  /authenticators/admin/webauthn/:
+    get:
+      operationId: authenticators_admin_webauthn_list
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/admin/webauthn/{id}/:
+    get:
+      operationId: authenticators_admin_webauthn_read
+      description: Viewset for WebAuthn authenticator devices (for admins)
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+        type: integer
+  /authenticators/static/:
+    get:
+      operationId: authenticators_static_list
+      description: Viewset for static authenticator devices
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    post:
+      operationId: authenticators_static_create
+      description: Viewset for static authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/static/{id}/:
+    get:
+      operationId: authenticators_static_read
+      description: Viewset for static authenticator devices
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    put:
+      operationId: authenticators_static_update
+      description: Viewset for static authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    patch:
+      operationId: authenticators_static_partial_update
+      description: Viewset for static authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/StaticDevice'
+      tags:
+        - authenticators
+    delete:
+      operationId: authenticators_static_delete
+      description: Viewset for static authenticator devices
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this static device.
+        required: true
+        type: integer
+  /authenticators/totp/:
+    get:
+      operationId: authenticators_totp_list
+      description: Viewset for totp authenticator devices
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    post:
+      operationId: authenticators_totp_create
+      description: Viewset for totp authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/totp/{id}/:
+    get:
+      operationId: authenticators_totp_read
+      description: Viewset for totp authenticator devices
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    put:
+      operationId: authenticators_totp_update
+      description: Viewset for totp authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    patch:
+      operationId: authenticators_totp_partial_update
+      description: Viewset for totp authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/TOTPDevice'
+      tags:
+        - authenticators
+    delete:
+      operationId: authenticators_totp_delete
+      description: Viewset for totp authenticator devices
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this TOTP device.
+        required: true
+        type: integer
+  /authenticators/webauthn/:
+    get:
+      operationId: authenticators_webauthn_list
+      description: Viewset for WebAuthn authenticator devices
+      parameters:
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    post:
+      operationId: authenticators_webauthn_create
+      description: Viewset for WebAuthn authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    parameters: []
+  /authenticators/webauthn/{id}/:
+    get:
+      operationId: authenticators_webauthn_read
+      description: Viewset for WebAuthn authenticator devices
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    put:
+      operationId: authenticators_webauthn_update
+      description: Viewset for WebAuthn authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    patch:
+      operationId: authenticators_webauthn_partial_update
+      description: Viewset for WebAuthn authenticator devices
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/WebAuthnDevice'
+      tags:
+        - authenticators
+    delete:
+      operationId: authenticators_webauthn_delete
+      description: Viewset for WebAuthn authenticator devices
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - authenticators
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this WebAuthn Device.
+        required: true
+        type: integer
   /core/applications/:
     get:
       operationId: core_applications_list
@@ -9405,6 +10110,107 @@ definitions:
         title: Outdated
         type: boolean
         readOnly: true
+  StaticDevice:
+    description: Serializer for static authenticator devices
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        title: Name
+        description: The human-readable name of this device.
+        type: string
+        maxLength: 64
+        minLength: 1
+      token_set:
+        description: ''
+        type: array
+        items:
+          description: 'A single token belonging to a :class:`StaticDevice`. .. attribute::
+            device *ForeignKey*: A foreign key to :class:`StaticDevice`. .. attribute::
+            token *CharField*: A random string up to 16 characters.'
+          required:
+            - token
+          type: object
+          properties:
+            id:
+              title: ID
+              type: integer
+              readOnly: true
+            token:
+              title: Token
+              type: string
+              maxLength: 16
+              minLength: 1
+            device:
+              description: "A static :class:`~django_otp.models.Device` simply consists\
+                \ of random tokens shared by the database and the user. These are\
+                \ frequently used as emergency tokens in case a user's normal device\
+                \ is lost or unavailable. They can be consumed in any order; each\
+                \ token will be removed from the database as soon as it is used. This\
+                \ model has no fields of its own, but serves as a container for :class:`StaticToken`\
+                \ objects. .. attribute:: token_set The RelatedManager for our tokens."
+              required:
+                - name
+                - user
+              type: object
+              properties:
+                id:
+                  title: ID
+                  type: integer
+                  readOnly: true
+                name:
+                  title: Name
+                  description: The human-readable name of this device.
+                  type: string
+                  maxLength: 64
+                  minLength: 1
+                confirmed:
+                  title: Confirmed
+                  description: Is this device ready for use?
+                  type: boolean
+                throttling_failure_timestamp:
+                  title: Throttling failure timestamp
+                  description: A timestamp of the last failed verification attempt.
+                    Null if last attempt succeeded.
+                  type: string
+                  format: date-time
+                  x-nullable: true
+                throttling_failure_count:
+                  title: Throttling failure count
+                  description: Number of successive failed attempts.
+                  type: integer
+                  maximum: 2147483647
+                  minimum: 0
+                user:
+                  title: User
+                  description: The user that this device belongs to.
+                  type: integer
+              readOnly: true
+        readOnly: true
+  TOTPDevice:
+    description: Serializer for totp authenticator devices
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        title: Name
+        description: The human-readable name of this device.
+        type: string
+        maxLength: 64
+        minLength: 1
+  WebAuthnDevice:
+    description: Serializer for WebAuthn authenticator devices
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        maxLength: 200
+        minLength: 1
   Provider:
     title: Provider
     description: Provider Serializer
