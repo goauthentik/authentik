@@ -83,7 +83,7 @@ select[multiple] {
 
 /* ensure background on non-flow pages match */
 .pf-c-background-image::before {
-    background-image: url("dist/assets/images/flow_background.jpg");
+    background-image: url("/static/dist/assets/images/flow_background.jpg");
     background-position: center;
 }
 
