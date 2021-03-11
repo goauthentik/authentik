@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -36,6 +36,17 @@ export class ApplicationListPage extends TablePage<Application> {
             pageSize: PAGE_SIZE,
             search: this.search || "",
         });
+    }
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(css`
+            tr td:first-child {
+                width: auto;
+                min-width: 0px;
+                text-align: center;
+                vertical-align: middle;
+            }
+        `);
     }
 
     columns(): TableColumn[] {
