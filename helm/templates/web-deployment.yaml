@@ -88,9 +88,17 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
                   key: "postgresql-password"
+            {{ if .Values.geoip.enabled -}}
+            - name: AUTHENTIK_AUTHENTIK__GEOIP
+              value: /geoip/GeoLite2-City.mmdb
+            {{- end }}
           volumeMounts:
             - name: authentik-uploads
               mountPath: /media
+            {{ if .Values.geoip.enabled -}}
+            - name: geoip
+              mountPath: /geoip
+            {{- end }}
           ports:
             - name: http
               containerPort: 8000
@@ -116,3 +124,8 @@ spec:
         - name: authentik-uploads
           persistentVolumeClaim:
             claimName: {{ include "authentik.fullname" . }}-uploads
+        {{ if .Values.geoip.enabled -}}
+        - name: geoip
+          persistentVolumeClaim:
+            claimName: {{ include "authentik.fullname" . }}-geoip
+        {{- end }}

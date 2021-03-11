@@ -4,7 +4,7 @@
 |-----------------------------------|-------------------------|-------------|
 | image.name                        | beryju/authentik        | Image used to run the authentik server and worker |
 | image.name_static                 | beryju/authentik-static | Image used to run the authentik static server (CSS and JS Files) |
-| image.tag                         | 2021.3.3           | Image tag |
+| image.tag                         | 2021.3.3                | Image tag |
 | image.pullPolicy                  | IfNotPresent            | Image Pull Policy used for all deployments |
 | serverReplicas                    | 1                       | Replicas for the Server deployment |
 | workerReplicas                    | 1                       | Replicas for the Worker deployment |
@@ -22,6 +22,10 @@
 | config.email.use_ssl              | false                   | Enable SSL |
 | config.email.timeout              | 10                      | SMTP Timeout |
 | config.email.from                 | authentik@localhost     | Email address authentik will send from, should have a correct @domain |
+| geoip.enabled                     | false                   | Optionally enable GeoIP |
+| geoip.accountId                   |                         | GeoIP MaxMind Account ID |
+| geoip.licenseKey                  |                         | GeoIP MaxMind License key |
+| geoip.image                       | maxmindinc/geoipupdate:latest  | GeoIP Updater image |
 | backup.accessKey                  |                         | Optionally enable S3 Backup, Access Key |
 | backup.secretKey                  |                         | Optionally enable S3 Backup, Secret Key |
 | backup.bucket                     |                         | Optionally enable S3 Backup, Bucket |

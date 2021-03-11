@@ -44,6 +44,13 @@ config:
     # Email address authentik will send from, should have a correct @domain
     from: authentik@localhost
 
+# Enable MaxMind GeoIP
+geoip:
+  enabled: false
+  accountId: ""
+  licenseKey: ""
+  image: maxmindinc/geoipupdate:latest
+
 # Enable Database Backups to S3
 # backup:
 #   accessKey: access-key
