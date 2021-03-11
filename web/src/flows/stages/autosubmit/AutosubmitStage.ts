@@ -3,7 +3,6 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
-import "../../../elements/Spinner";
 import "../../../elements/utils/LoadingState";
 
 export interface AutosubmitChallenge extends WithUserInfoChallenge {
@@ -39,7 +38,7 @@ export class AutosubmitStage extends BaseStage {
                     ${Object.entries(this.challenge.attrs).map(([ key, value ]) => {
                         return html`<input type="hidden" name="${key}" value="${value}">`;
                     })}
-                    <ak-spinner></ak-spinner>
+                    <ak-loading-state></ak-loading-state>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
