@@ -31,6 +31,7 @@ services:
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
+      - geoip:/geoip
     ports:
       - 8000
     networks:
@@ -61,6 +62,7 @@ services:
       - ./backups:/backups
       - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
+      - geoip:/geoip
     env_file:
       - .env
   static:
@@ -93,9 +95,20 @@ services:
       - "127.0.0.1:8080:8080"
     networks:
       - internal
+  geoipupdate:
+    image: "maxmindinc/geoipupdate:latest"
+    volumes:
+      - "geoip:/usr/share/GeoIP"
+    environment:
+      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
+      GEOIPUPDATE_FREQUENCY: "8"
+    env_file:
+      - .env
 
 volumes:
   database:
+    driver: local
+  geoip:
     driver: local
 
 networks:
