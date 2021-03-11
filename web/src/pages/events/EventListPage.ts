@@ -33,7 +33,7 @@ export class EventListPage extends TablePage<Event> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ordering: this.order,
             page: page,
-            pageSize: PAGE_SIZE * 3,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -61,7 +61,7 @@ export class EventListPage extends TablePage<Event> {
 
     renderExpanded(item: Event): TemplateResult {
         return html`
-        <td role="cell" colspan="4">
+        <td role="cell" colspan="1">
             <div class="pf-c-table__expandable-row-content">
                 <ak-event-info .event=${item as EventWithContext}></ak-event-info>
             </div>
