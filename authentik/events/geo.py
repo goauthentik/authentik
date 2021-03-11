@@ -12,7 +12,10 @@ def get_geoip_reader() -> Optional[Reader]:
     path = CONFIG.y("authentik.geoip")
     if path == "" or not path:
         return None
-    return Reader(path)
+    try:
+        return Reader(path)
+    except OSError:
+        return None
 
 
 GEOIP_READER = get_geoip_reader()
