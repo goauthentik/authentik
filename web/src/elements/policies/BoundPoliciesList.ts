@@ -49,6 +49,33 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         }
     }
 
+    getObjectEditButton(item: PolicyBinding): TemplateResult {
+        if (item.policy) {
+            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.policy?.policyUuid}/update/`)}">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                    ${gettext("Edit Policy")}
+                </ak-spinner-button>
+                <div slot="modal"></div>
+            </ak-modal-button>`;
+        } else if (item.group) {
+            return html`<ak-modal-button href="${AdminURLManager.groups(`${item.group?.groupUuid}/update/`)}">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                    ${gettext("Edit Group")}
+                </ak-spinner-button>
+                <div slot="modal"></div>
+            </ak-modal-button>`;
+        } else if (item.user) {
+            return html`<ak-modal-button href="${AdminURLManager.policies(`${item.user?.id}/update/`)}">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                    ${gettext("Edit User")}
+                </ak-spinner-button>
+                <div slot="modal"></div>
+            </ak-modal-button>`;
+        } else {
+            return html``;
+        }
+    }
+
     row(item: PolicyBinding): TemplateResult[] {
         return [
             html`${this.getPolicyUserGroupRow(item)}`,
@@ -56,15 +83,16 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${item.order}`,
             html`${item.timeout}`,
             html`
+            ${this.getObjectEditButton(item)}
             <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    ${gettext("Edit")}
+                    ${gettext("Edit Binding")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
             <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
-                    ${gettext("Delete")}
+                    ${gettext("Delete Binding")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>

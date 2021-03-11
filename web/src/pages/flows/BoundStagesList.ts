@@ -45,21 +45,21 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html`
-            <ak-modal-button href="${AdminURLManager.stageBindings(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
-                    ${gettext("Edit Binding")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
             <ak-modal-button href="${AdminURLManager.stages(`${item.stage}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit Stage")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.stages(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.stageBindings(`${item.pk}/update/`)}">
+                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                    ${gettext("Edit Binding")}
+                </ak-spinner-button>
+                <div slot="modal"></div>
+            </ak-modal-button>
+            <ak-modal-button href="${AdminURLManager.stageBindings(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
-                    ${gettext("Delete")}
+                    ${gettext("Delete Binding")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
