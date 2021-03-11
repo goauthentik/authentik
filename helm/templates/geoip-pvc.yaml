@@ -13,5 +13,5 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: Gi
+      storage: 1Gi
 {{- end }}
