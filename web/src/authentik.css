@@ -5,6 +5,12 @@ html {
     --pf-c-nav__link--PaddingLeft: 0.5rem;
 }
 
+html > input {
+    position: absolute;
+    top: -2000px;
+    left: -2000px;
+}
+
 .pf-c-page__header {
     z-index: 0;
 }
