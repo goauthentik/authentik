@@ -5,6 +5,7 @@ import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../form";
 import "../../../elements/utils/LoadingState";
+import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 
 export interface PasswordChallenge extends WithUserInfoChallenge {
     recovery_url?: string;
@@ -43,6 +44,7 @@ export class PasswordStage extends BaseStage {
                         </div>
                     </div>
 
+                    <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pending_user}">
                     <ak-form-element
                         label="${gettext("Password")}"
                         ?required="${true}"
@@ -54,7 +56,8 @@ export class PasswordStage extends BaseStage {
                             autofocus=""
                             autocomplete="current-password"
                             class="pf-c-form-control"
-                            required="">
+                            required=""
+                            value=${PasswordManagerPrefill.password || ""}>
                     </ak-form-element>
 
                     ${this.challenge.recovery_url ?

@@ -5,6 +5,7 @@ import { BaseStage } from "../base";
 import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
 import "../form";
 import "../../../elements/utils/LoadingState";
+import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseStage {
@@ -53,6 +54,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                         autofocus=""
                         autocomplete="one-time-code"
                         class="pf-c-form-control"
+                        value="${PasswordManagerPrefill.totp || ""}"
                         required="">
                 </ak-form-element>
 

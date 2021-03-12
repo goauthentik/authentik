@@ -6,6 +6,14 @@ import "../form";
 import "../../../elements/utils/LoadingState";
 import { Challenge } from "../../../api/Flows";
 
+export const PasswordManagerPrefill: {
+    password: string | undefined;
+    totp: string | undefined;
+} = {
+    password: undefined,
+    totp: undefined,
+};
+
 export interface IdentificationChallenge extends Challenge {
 
     input_type: string;
@@ -39,6 +47,69 @@ export class IdentificationStage extends BaseStage {
                 }
             `
         );
+    }
+
+    firstUpdated(): void {
+        // This is a workaround for the fact that we're in a shadow dom
+        // adapted from https://github.com/home-assistant/frontend/issues/3133
+        const username = document.createElement("input");
+        username.setAttribute("type", "text");
+        username.setAttribute("name", "username"); // username as name for high compatibility
+        username.setAttribute("autocomplete", "username");
+        username.onkeyup = (ev: Event) => {
+            const el = ev.target as HTMLInputElement;
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+                input.value = el.value;
+                // Because we assume only one input field exists that matches this
+                // call focus so the user can press enter
+                input.focus();
+            });
+        };
+        document.documentElement.appendChild(username);
+        const password = document.createElement("input");
+        password.setAttribute("type", "password");
+        password.setAttribute("name", "password");
+        password.setAttribute("autocomplete", "current-password");
+        password.onkeyup = (ev: KeyboardEvent) => {
+            if (ev.key == "Enter") {
+                this.submitForm(ev);
+            }
+            const el = ev.target as HTMLInputElement;
+            // Because the password field is not actually on this page,
+            // and we want to 'prefill' the password for the user,
+            // save it globally
+            PasswordManagerPrefill.password = el.value;
+            // Because password managers fill username, then password,
+            // we need to re-focus the uid_field here too
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+                // Because we assume only one input field exists that matches this
+                // call focus so the user can press enter
+                input.focus();
+            });
+        };
+        document.documentElement.appendChild(password);
+        const totp = document.createElement("input");
+        totp.setAttribute("type", "text");
+        totp.setAttribute("name", "code");
+        totp.setAttribute("autocomplete", "one-time-code");
+        totp.onkeyup = (ev: KeyboardEvent) => {
+            if (ev.key == "Enter") {
+                this.submitForm(ev);
+            }
+            const el = ev.target as HTMLInputElement;
+            // Because the totp field is not actually on this page,
+            // and we want to 'prefill' the totp for the user,
+            // save it globally
+            PasswordManagerPrefill.totp = el.value;
+            // Because totp managers fill username, then password, then optionally,
+            // we need to re-focus the uid_field here too
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uid_field]").forEach(input => {
+                // Because we assume only one input field exists that matches this
+                // call focus so the user can press enter
+                input.focus();
+            });
+        };
+        document.documentElement.appendChild(totp);
     }
 
     renderSource(source: UILoginButton): TemplateResult {
