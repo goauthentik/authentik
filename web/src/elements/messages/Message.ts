@@ -46,6 +46,15 @@ export class Message extends LitElement {
                 <p class="pf-c-alert__title">
                     ${this.message?.message}
                 </p>
+                <div class="pf-c-alert__action">
+                    <button class="pf-c-button pf-m-plain" type="button" @click=${() => {
+                        if (!this.message) return;
+                        if (!this.onRemove) return;
+                        this.onRemove(this.message);
+                    }}>
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </li>`;
     }
