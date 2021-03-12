@@ -8,7 +8,7 @@ export function showMessage(message: APIMessage): void {
     if (!container) {
         throw new Error("failed to find message container");
     }
-    container.messages.push(message);
+    container.addMessage(message);
     container.requestUpdate();
 }
 
@@ -31,6 +31,14 @@ export class MessageContainer extends LitElement {
             this.connect();
         } catch (error) {
             console.warn(`authentik/messages: failed to connect to ws ${error}`);
+        }
+    }
+
+    // add a new message, but only if the message isn't currently shown.
+    addMessage(message: APIMessage): void {
+        const matchingMessages = this.messages.filter(m => m.message == message.message);
+        if (matchingMessages.length < 1) {
+            this.messages.push(message);
         }
     }
 
@@ -60,7 +68,7 @@ export class MessageContainer extends LitElement {
         });
         this.messageSocket.addEventListener("message", (e) => {
             const data = JSON.parse(e.data);
-            this.messages.push(data);
+            this.addMessage(data);
             this.requestUpdate();
         });
         this.messageSocket.addEventListener("error", (e) => {
@@ -76,8 +84,8 @@ export class MessageContainer extends LitElement {
                     .message=${m}
                     .onRemove=${(m: APIMessage) => {
                         this.messages = this.messages.filter((v) => v !== m);
-                            this.requestUpdate();
-                        }}>
+                        this.requestUpdate();
+                    }}>
                     </ak-message>`;
                 })}
         </ul>`;

@@ -50,18 +50,17 @@ export class RouterOutlet extends LitElement {
         if (activeUrl === "") {
             activeUrl = this.defaultUrl || "/";
             window.location.hash = `#${activeUrl}`;
-            console.debug(`authentik/router: set to ${window.location.hash}`);
+            console.debug(`authentik/router: defaulted URL to ${window.location.hash}`);
             return;
         }
         let matchedRoute: RouteMatch | null = null;
         ROUTES.some((route) => {
-            console.debug(`authentik/router: matching ${activeUrl} against ${route.url}`);
             const match = route.url.exec(activeUrl);
             if (match != null) {
                 matchedRoute = new RouteMatch(route);
                 matchedRoute.arguments = match.groups || {};
                 matchedRoute.fullUrl = activeUrl;
-                console.debug(`authentik/router: found match ${matchedRoute}`);
+                console.debug("authentik/router: found match ", matchedRoute);
                 return true;
             }
         });
