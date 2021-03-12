@@ -12,7 +12,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.2",
         "@patternfly/patternfly": "^4.90.5",
-        "@sentry/browser": "^6.2.1",
+        "@sentry/browser": "^6.2.2",
         "@sentry/tracing": "^6.2.1",
         "@types/chart.js": "^2.9.31",
         "@types/codemirror": "0.0.108",
