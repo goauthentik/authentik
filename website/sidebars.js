@@ -17,6 +17,7 @@ module.exports = {
                 "installation/docker-compose-config",
                 "installation/reverse-proxy",
                 "installation/kubernetes",
+                "installation/beta",
             ],
         },
         {

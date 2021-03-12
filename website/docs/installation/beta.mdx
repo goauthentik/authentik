@@ -1,0 +1,43 @@
+---
+title: Beta versions
+---
+
+You can test upcoming authentik versions by switching to the *next* images. These beta versions supported upgrades from the latest stable version, and have a supported upgrade plan to the next stable version.
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
+Add the following block to your `.env` file:
+
+```shell
+AUTHENTIK_IMAGE=docker.beryju.org/authentik/server
+AUTHENTIK_IMAGE_STATIC=docker.beryju.org/authentik/static
+AUTHENTIK_TAG=gh-next
+AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=docker.beryju.org/authentik
+```
+
+Afterwards, run the upgrade commands from the [release notes](../releases/next)
+  </TabItem>
+  <TabItem value="kubernetes">
+Add the following block to your `values.yml` file:
+
+```yaml
+image:
+  name: docker.beryju.org/authentik/server
+  name_static: docker.beryju.org/authentik/static
+  name_outposts: docker.beryju.org/authentik
+  tag: gh-next
+  # pullPolicy: Always to ensure you always get the latest version
+  pullPolicy: Always
+```
+
+Afterwards, run the upgrade commands from the [release notes](../releases/next)
+  </TabItem>
+</Tabs>
