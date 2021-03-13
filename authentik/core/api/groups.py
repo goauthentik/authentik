@@ -21,3 +21,4 @@ class GroupViewSet(ModelViewSet):
     serializer_class = GroupSerializer
     search_fields = ["name", "is_superuser"]
     filterset_fields = ["name", "is_superuser"]
+    ordering = ["name"]

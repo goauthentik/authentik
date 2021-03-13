@@ -7,10 +7,11 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
-import { SystemTask, TaskStatus } from "../../api/SystemTask";
+import { AdminApi, Task, TaskStatusEnum } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-system-task-list")
-export class SystemTaskListPage extends TablePage<SystemTask> {
+export class SystemTaskListPage extends TablePage<Task> {
     searchEnabled(): boolean {
         return false;
     }
@@ -27,18 +28,15 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     @property()
     order = "slug";
 
-    apiEndpoint(page: number): Promise<AKResponse<SystemTask>> {
-        return SystemTask.list({
-            ordering: this.order,
-            page: page,
-        }).then((tasks) => {
+    apiEndpoint(page: number): Promise<AKResponse<Task>> {
+        return new AdminApi(DEFAULT_CONFIG).adminSystemTasksList().then((tasks) => {
             return {
                 pagination: {
                     count: tasks.length,
-                    total_pages: 1,
-                    start_index: 0,
-                    end_index: tasks.length,
-                    current: 1,
+                    totalPages: 1,
+                    startIndex: 0,
+                    endIndex: tasks.length,
+                    current: page,
                 },
                 results: tasks,
             };
@@ -56,29 +54,34 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         ];
     }
 
-    taskStatus(task: SystemTask): TemplateResult {
+    taskStatus(task: Task): TemplateResult {
         switch (task.status) {
-            case TaskStatus.SUCCESSFUL:
+            case TaskStatusEnum.Successful:
                 return html`<i class="fas fa-check pf-m-success" > </i> ${gettext("Successful")}`;
-            case TaskStatus.WARNING:
+            case TaskStatusEnum.Warning:
                 return html`<i class="fas fa-exclamation-triangle pf-m-warning" > </i> ${gettext("Warning")}`;
-            case TaskStatus.ERROR:
+            case TaskStatusEnum.Error:
                 return html`<i class="fas fa-times pf-m-danger" > </i> ${gettext("Error")}`;
             default:
                 return html`<i class="fas fa-question-circle" > </i> ${gettext("Unknown")}`;
         }
     }
 
-    row(item: SystemTask): TemplateResult[] {
+    row(item: Task): TemplateResult[] {
         return [
-            html`${item.task_name}`,
-            html`${item.task_description}`,
-            html`${new Date(item.task_finish_timestamp * 1000).toLocaleString()}`,
+            html`${item.taskName}`,
+            html`${item.taskDescription}`,
+            html`${item.taskFinishTimestamp.toLocaleString()}`,
             this.taskStatus(item),
             html`${item.messages.map(m => {
                 return html`<li>${m}</li>`;
             })}`,
-            html`<ak-action-button url=${SystemTask.retry(item.task_name)}>
+            html`<ak-action-button
+                .apiRequest=${() => {
+                    return new AdminApi(DEFAULT_CONFIG).adminSystemTasksRetry({
+                        id: item.taskName
+                    });
+                }}>
                 ${gettext("Retry Task")}
             </ak-action-button>`,
         ];

@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { PropertyMapping } from "../../api/PropertyMapping";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -10,6 +9,9 @@ import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
+import { PropertyMapping, PropertymappingsApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
@@ -33,12 +35,12 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     hideManaged = false;
 
     apiEndpoint(page: number): Promise<AKResponse<PropertyMapping>> {
-        return PropertyMapping.list({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
-            managed__isnull: this.hideManaged,
+            managedIsnull: this.hideManaged.toString(),
         });
     }
 
@@ -53,21 +55,21 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     row(item: PropertyMapping): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${item.verbose_name}`,
+            html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${PropertyMapping.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.propertyMappings(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${PropertyMapping.adminUrl(`${item.pk}/test/`)}">
+            <ak-modal-button href="${AdminURLManager.propertyMappings(`${item.pk}/test/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Test")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${PropertyMapping.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.propertyMappings(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -85,7 +87,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(PropertyMapping.getTypes().then((types) => {
+                ${until(new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-modal-button href="${type.link}">

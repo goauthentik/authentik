@@ -21,10 +21,10 @@ It is also recommended to configure global email credentials. These are used by 
 # Values directly affecting authentik
 ###################################
 image:
-    name: beryju/authentik
-    name_static: beryju/authentik-static
-    name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
-    tag: 2021.3.3
+  name: beryju/authentik
+  name_static: beryju/authentik-static
+  name_outposts: beryju/authentik # Prefix used for Outpost deployments, Outpost type and version is appended
+  tag: 2021.3.3
 
 serverReplicas: 1
 workerReplicas: 1
@@ -33,31 +33,38 @@ workerReplicas: 1
 kubernetesIntegration: true
 
 config:
-    # Optionally specify fixed secret_key, otherwise generated automatically
-    # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
-    # Enable error reporting
-    errorReporting:
-        enabled: false
-        environment: customer
-        sendPii: false
-    # Log level used by web and worker
-    # Can be either debug, info, warning, error
-    logLevel: warning
-    # Global Email settings
-    email:
-        # SMTP Host Emails are sent to
-        host: localhost
-        port: 25
-        # Optionally authenticate
-        username: ""
-        password: ""
-        # Use StartTLS
-        useTls: false
-        # Use SSL
-        useSsl: false
-        timeout: 10
-        # Email address authentik will send from, should have a correct @domain
-        from: authentik@localhost
+  # Optionally specify fixed secret_key, otherwise generated automatically
+  # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
+  # Enable error reporting
+  errorReporting:
+    enabled: false
+    environment: customer
+    sendPii: false
+  # Log level used by web and worker
+  # Can be either debug, info, warning, error
+  logLevel: warning
+  # Global Email settings
+  email:
+    # SMTP Host Emails are sent to
+    host: localhost
+    port: 25
+    # Optionally authenticate
+    username: ""
+    password: ""
+    # Use StartTLS
+    useTls: false
+    # Use SSL
+    useSsl: false
+    timeout: 10
+    # Email address authentik will send from, should have a correct @domain
+    from: authentik@localhost
+
+# Enable MaxMind GeoIP
+# geoip:
+#   enabled: false
+#   accountId: ""
+#   licenseKey: ""
+#   image: maxmindinc/geoipupdate:latest
 
 # Enable Database Backups to S3
 # backup:
@@ -68,33 +75,22 @@ config:
 #   host: s3-host
 
 ingress:
-    annotations:
-        {}
-        # kubernetes.io/ingress.class: nginx
-        # kubernetes.io/tls-acme: "true"
-    hosts:
-        - authentik.k8s.local
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - authentik.k8s.local
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - authentik.k8s.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - authentik.k8s.local
 
 ###################################
 # Values controlling dependencies
 ###################################
 
 install:
-    postgresql: true
-    redis: true
-
-# These values influence the bundled postgresql and redis charts, but are also used by authentik to connect
-postgresql:
-    postgresqlDatabase: authentik
-
-redis:
-    cluster:
-        enabled: false
-    master:
-        persistence:
-            enabled: false
+  postgresql: true
+  redis: true
 ```

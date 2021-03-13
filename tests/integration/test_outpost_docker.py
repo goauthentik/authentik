@@ -3,11 +3,13 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from time import sleep
 
+import yaml
 from django.test import TestCase
 from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
+from authentik import __version__
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.outposts.apps import AuthentikOutpostConfig
@@ -93,3 +95,14 @@ class OutpostDockerTests(TestCase):
         controller = DockerController(self.outpost, self.service_connection)
         controller.up()
         controller.down()
+
+    def test_docker_static(self):
+        """test that deployment requires update"""
+        controller = DockerController(self.outpost, self.service_connection)
+        manifest = controller.get_static_deployment()
+        compose = yaml.load(manifest, Loader=yaml.SafeLoader)
+        self.assertEqual(compose["version"], "3.5")
+        self.assertEqual(
+            compose["services"]["authentik_proxy"]["image"],
+            f"beryju/authentik-proxy:{__version__}",
+        )

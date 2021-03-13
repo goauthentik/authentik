@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Application } from "../../api/Applications";
-import { Provider } from "../../api/Providers";
+import { Provider } from "../../api";
+import { AdminURLManager } from "../../api/legacy";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/Spinner";
@@ -13,12 +13,12 @@ export class RelatedApplicationButton extends LitElement {
     provider?: Provider;
 
     render(): TemplateResult {
-        if (this.provider?.assigned_application_slug) {
-            return html`<a href="#/core/applications/${this.provider.assigned_application_slug}">
-                ${this.provider.assigned_application_name}
+        if (this.provider?.assignedApplicationSlug) {
+            return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
+                ${this.provider.assignedApplicationName}
             </a>`;
         }
-        return html`<ak-modal-button href=${Application.adminUrl(`create/?provider=${this.provider ? this.provider.pk : ""}`)}>
+        return html`<ak-modal-button href=${AdminURLManager.applications(`create/?provider=${this.provider ? this.provider.pk : ""}`)}>
                 <ak-spinner-button slot="trigger" class="pf-m-primary">
                     ${gettext("Create")}
                 </ak-spinner-button>

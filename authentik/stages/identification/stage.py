@@ -78,7 +78,7 @@ class IdentificationStageView(ChallengeStageView):
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "primary_action": _("Log in"),
                 "input_type": "text",

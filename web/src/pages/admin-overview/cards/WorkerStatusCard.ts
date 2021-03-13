@@ -1,14 +1,15 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { DefaultClient, AKResponse } from "../../../api/Client";
+import { AdminApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return DefaultClient.fetch<AKResponse<number>>(["admin", "workers"]).then((r) => {
-            return r.pagination.count;
+        return new AdminApi(DEFAULT_CONFIG).adminWorkersList({}).then((workers) => {
+            return workers.pagination.count;
         });
     }
 

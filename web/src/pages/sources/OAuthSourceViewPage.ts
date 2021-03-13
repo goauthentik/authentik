@@ -7,8 +7,9 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { OAuthSource } from "../../api/sources/OAuth";
-import { Source } from "../../api/Sources";
+import { OAuthSource, SourcesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends Page {
@@ -24,7 +25,11 @@ export class OAuthSourceViewPage extends Page {
 
     @property({ type: String })
     set sourceSlug(value: string) {
-        OAuthSource.get(value).then((s) => this.source = s);
+        new SourcesApi(DEFAULT_CONFIG).sourcesOauthRead({
+            slug: value
+        }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
@@ -66,7 +71,7 @@ export class OAuthSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Provider Type")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.provider_type}</div>
+                                                <div class="pf-c-description-list__text">${this.source.providerType}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -74,7 +79,7 @@ export class OAuthSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Callback URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <code class="pf-c-description-list__text">${this.source.callback_url}</code>
+                                                <code class="pf-c-description-list__text">${this.source.callbackUrl}</code>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -82,7 +87,7 @@ export class OAuthSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Access Key")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.consumer_key}</div>
+                                                <div class="pf-c-description-list__text">${this.source.consumerKey}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -90,7 +95,7 @@ export class OAuthSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Authorization URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.authorization_url}</div>
+                                                <div class="pf-c-description-list__text">${this.source.authorizationUrl}</div>
                                             </dd>
                                         </div>
                                         <div class="pf-c-description-list__group">
@@ -98,13 +103,13 @@ export class OAuthSourceViewPage extends Page {
                                                 <span class="pf-c-description-list__text">${gettext("Token URL")}</span>
                                             </dt>
                                             <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">${this.source.access_token_url}</div>
+                                                <div class="pf-c-description-list__text">${this.source.accessTokenUrl}</div>
                                             </dd>
                                         </div>
                                     </dl>
                                 </div>
                                 <div class="pf-c-card__footer">
-                                    <ak-modal-button href="${Source.adminUrl(`${this.source.pk}/update/`)}">
+                                    <ak-modal-button href="${AdminURLManager.sources(`${this.source.pk}/update/`)}">
                                         <ak-spinner-button slot="trigger" class="pf-m-primary">
                                             ${gettext("Edit")}
                                         </ak-spinner-button>

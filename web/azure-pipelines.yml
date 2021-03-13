@@ -10,6 +10,25 @@ variables:
     branchName: ${{ replace(variables['Build.SourceBranchName'], 'refs/heads/', '') }}
 
 stages:
+  - stage: generate
+    jobs:
+      - job: swagger_generate
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '12.x'
+            displayName: 'Install Node.js'
+          - task: CmdLine@2
+            inputs:
+              script: |
+                docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/src/api --additional-properties=typescriptThreePlus=true
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: 'web/src/api/'
+              artifact: 'ts_swagger_client'
+              publishLocation: 'pipeline'
   - stage: lint
     jobs:
       - job: eslint
@@ -20,6 +39,11 @@ stages:
             inputs:
               versionSpec: '12.x'
             displayName: 'Install Node.js'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'ts_swagger_client'
+              path: "web/src/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -37,6 +61,11 @@ stages:
             inputs:
               versionSpec: '12.x'
             displayName: 'Install Node.js'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'ts_swagger_client'
+              path: "web/src/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -56,6 +85,11 @@ stages:
             inputs:
               versionSpec: '12.x'
             displayName: 'Install Node.js'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'ts_swagger_client'
+              path: "web/src/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -71,16 +105,21 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: |
-              python ./scripts/az_do_set_branch.py
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'beryjuorg-harbor'
-            repository: 'authentik/static'
-            command: 'buildAndPush'
-            Dockerfile: 'web/Dockerfile'
-            tags: "gh-$(branchName)"
-            buildContext: 'web/'
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'ts_swagger_client'
+              path: "web/src/api/"
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                python ./scripts/az_do_set_branch.py
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'beryjuorg-harbor'
+              repository: 'authentik/static'
+              command: 'buildAndPush'
+              Dockerfile: 'web/Dockerfile'
+              tags: "gh-$(branchName)"
+              buildContext: 'web/'

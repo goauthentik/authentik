@@ -28,9 +28,9 @@ class MetaNameSerializer(Serializer):
 class TypeCreateSerializer(Serializer):
     """Types of an object that can be created"""
 
-    name = CharField(read_only=True)
-    description = CharField(read_only=True)
-    link = CharField(read_only=True)
+    name = CharField(required=True)
+    description = CharField(required=True)
+    link = CharField(required=True)
 
     def create(self, validated_data: dict) -> Model:
         raise NotImplementedError

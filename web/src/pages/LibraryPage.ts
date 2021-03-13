@@ -1,8 +1,11 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { Application } from "../api/Applications";
+import { until } from "lit-html/directives/until";
+import { Application, CoreApi } from "../api";
 import { AKResponse } from "../api/Client";
+import { DEFAULT_CONFIG } from "../api/Config";
+import { me } from "../api/Users";
 import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
 
@@ -23,6 +26,15 @@ export class LibraryApplication extends LitElement {
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
                 }
+                .pf-c-card__header {
+                    justify-content: space-between;
+                }
+                .pf-c-card__header a {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    margin-right: 0.25em;
+                }
             `
         );
     }
@@ -31,19 +43,27 @@ export class LibraryApplication extends LitElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
-        return html` <a href="${this.application.launch_url}" class="pf-c-card pf-m-hoverable pf-m-compact">
+        return html` <a href="${ifDefined(this.application.launchUrl)}" class="pf-c-card pf-m-hoverable pf-m-compact">
             <div class="pf-c-card__header">
-                ${this.application.meta_icon
-                    ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.meta_icon)}" alt="Application Icon"/>`
+                ${this.application.metaIcon
+                    ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
                     : html`<i class="pf-icon pf-icon-arrow"></i>`}
+                ${until(me().then((u) => {
+                    if (!u.isSuperuser) return html``;
+                    return html`
+                        <a href="#/core/applications/${this.application?.slug}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                    `;
+                }))}
             </div>
             <div class="pf-c-card__title">
                 <p id="card-1-check-label">${this.application.name}</p>
                 <div class="pf-c-content">
-                    <small>${this.application.meta_publisher}</small>
+                    <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">${truncate(this.application.meta_description, 35)}</div>
+            <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
         </a>`;
     }
 
@@ -64,7 +84,9 @@ export class LibraryPage extends LitElement {
     }
 
     firstUpdated(): void {
-        Application.list().then((r) => (this.apps = r));
+        new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
+            this.apps = apps;
+        });
     }
 
     renderEmptyState(): TemplateResult {

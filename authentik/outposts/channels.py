@@ -55,13 +55,21 @@ class OutpostConsumer(AuthJsonConsumer):
         OutpostState(
             uid=self.channel_name, last_seen=datetime.now(), _outpost=self.outpost
         ).save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
-        LOGGER.debug("added channel to cache", channel_name=self.channel_name)
+        LOGGER.debug(
+            "added outpost instace to cache",
+            outpost=self.outpost,
+            channel_name=self.channel_name,
+        )
 
     # pylint: disable=unused-argument
     def disconnect(self, close_code):
         if self.outpost:
             OutpostState.for_channel(self.outpost, self.channel_name).delete()
-        LOGGER.debug("removed channel from cache", channel_name=self.channel_name)
+        LOGGER.debug(
+            "removed outpost instance from cache",
+            outpost=self.outpost,
+            channel_name=self.channel_name,
+        )
 
     def receive_json(self, content: Data):
         msg = from_dict(WebsocketMessage, content)

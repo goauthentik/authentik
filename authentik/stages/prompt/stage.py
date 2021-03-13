@@ -164,7 +164,7 @@ class PromptStageView(ChallengeStageView):
         fields = list(self.executor.current_stage.fields.all().order_by("order"))
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-prompt",
                 "fields": [PromptSerializer(field).data for field in fields],
             },

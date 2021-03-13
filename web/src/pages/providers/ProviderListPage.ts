@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { Provider } from "../../api/Providers";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
@@ -10,6 +9,9 @@ import "../../elements/buttons/Dropdown";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
+import { Provider, ProvidersApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -30,10 +32,10 @@ export class ProviderListPage extends TablePage<Provider> {
     order = "name";
 
     apiEndpoint(page: number): Promise<AKResponse<Provider>> {
-        return Provider.list({
+        return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ordering: this.order,
             page: page,
-            page_size: PAGE_SIZE,
+            pageSize: PAGE_SIZE,
             search: this.search || "",
         });
     }
@@ -52,21 +54,21 @@ export class ProviderListPage extends TablePage<Provider> {
             html`<a href="#/core/providers/${item.pk}">
                 ${item.name}
             </a>`,
-            item.assigned_application_name ?
+            item.assignedApplicationName ?
                 html`<i class="pf-icon pf-icon-ok"></i>
                     ${gettext("Assigned to application ")}
-                    <a href="#/core/applications/${item.assigned_application_slug}">${item.assigned_application_name}</a>` :
+                    <a href="#/core/applications/${item.assignedApplicationSlug}">${item.assignedApplicationName}</a>` :
                 html`<i class="pf-icon pf-icon-warning-triangle"></i>
                 ${gettext("Warning: Provider not assigned to any application.")}`,
-            html`${item.verbose_name}`,
+            html`${item.verboseName}`,
             html`
-            <ak-modal-button href="${Provider.adminUrl(`${item.pk}/update/`)}">
+            <ak-modal-button href="${AdminURLManager.providers(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">
                     ${gettext("Edit")}
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${Provider.adminUrl(`${item.pk}/delete/`)}">
+            <ak-modal-button href="${AdminURLManager.providers(`${item.pk}/delete/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-danger">
                     ${gettext("Delete")}
                 </ak-spinner-button>
@@ -84,7 +86,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
             </button>
             <ul class="pf-c-dropdown__menu" hidden>
-                ${until(Provider.getTypes().then((types) => {
+                ${until(new ProvidersApi(DEFAULT_CONFIG).providersAllTypes({}).then((types) => {
                     return types.map((type) => {
                         return html`<li>
                             <ak-modal-button href="${type.link}">

@@ -18,7 +18,7 @@ export abstract class TablePage<T> extends Table<T> {
             this.search = value;
             this.fetch();
         }}>
-        </ak-table-search>`;
+        </ak-table-search>&nbsp;`;
     }
 
     render(): TemplateResult {

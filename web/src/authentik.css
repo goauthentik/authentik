@@ -5,6 +5,12 @@ html {
     --pf-c-nav__link--PaddingLeft: 0.5rem;
 }
 
+html > input {
+    position: absolute;
+    top: -2000px;
+    left: -2000px;
+}
+
 .pf-c-page__header {
     z-index: 0;
 }
@@ -83,7 +89,7 @@ select[multiple] {
 
 /* ensure background on non-flow pages match */
 .pf-c-background-image::before {
-    background-image: url("dist/assets/images/flow_background.jpg");
+    background-image: url("/static/dist/assets/images/flow_background.jpg");
     background-position: center;
 }
 
@@ -157,7 +163,7 @@ ak-message {
         color: var(--ak-dark-foreground) !important;
     }
     /* tabs, vertical */
-    .pf-c-tabs__link {
+    .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
         background-color: var(--ak-dark-background-light);
     }
     /* table, on mobile */

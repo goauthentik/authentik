@@ -1,0 +1,26 @@
+{{- if .Values.monitoring.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ include "authentik.fullname" . }}-web-monitoring
+spec:
+  endpoints:
+  - basicAuth:
+      password:
+        name: {{ include "authentik.fullname" . }}-secret-key
+        key: SECRET_KEY
+      username:
+        name: {{ include "authentik.fullname" . }}-secret-key
+        key: monitoring_username
+    port: http
+    path: /metrics/
+    interval: 10s
+  selector:
+    matchLabels:
+      k8s.goauthentik.io/component: web
+{{- end }}

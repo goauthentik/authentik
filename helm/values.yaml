@@ -14,6 +14,9 @@ workerReplicas: 1
 # Enable the Kubernetes integration which lets authentik deploy outposts into kubernetes
 kubernetesIntegration: true
 
+monitoring:
+  enabled: true
+
 config:
   # Optionally specify fixed secret_key, otherwise generated automatically
   # secretKey: _k*@6h2u2@q-dku57hhgzb7tnx*ba9wodcb^s9g0j59@=y(@_o
@@ -40,6 +43,13 @@ config:
     timeout: 10
     # Email address authentik will send from, should have a correct @domain
     from: authentik@localhost
+
+# Enable MaxMind GeoIP
+geoip:
+  enabled: false
+  accountId: ""
+  licenseKey: ""
+  image: maxmindinc/geoipupdate:latest
 
 # Enable Database Backups to S3
 # backup:

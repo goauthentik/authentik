@@ -1,0 +1,39 @@
+{{- if .Values.geoip.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "authentik.fullname" . }}-geoip
+  labels:
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    k8s.goauthentik.io/component: geoip
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "authentik.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      k8s.goauthentik.io/component: geoip
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "authentik.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        k8s.goauthentik.io/component: geoip
+    spec:
+      containers:
+        - name: geoip
+          image: "{{ .Values.geoip.image }}"
+          envFrom:
+            - configMapRef:
+                name: {{ include "authentik.fullname" . }}-geoip-config
+          volumeMounts:
+            - name: geoip
+              mountPath: /usr/share/GeoIP
+      volumes:
+        - name: geoip
+          persistentVolumeClaim:
+            claimName: {{ include "authentik.fullname" . }}-geoip
+{{- end }}

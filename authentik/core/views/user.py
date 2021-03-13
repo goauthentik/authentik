@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import HttpResponse
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from django.views.generic.base import TemplateView
@@ -34,7 +35,7 @@ class UserDetailsView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = UserDetailForm
 
     success_message = _("Successfully updated user.")
-    success_url = "/"
+    success_url = reverse_lazy("authentik_core:user-details")
 
     def get_object(self):
         return self.request.user

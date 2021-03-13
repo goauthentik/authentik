@@ -1,17 +1,18 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { Policy } from "../../../api/Policies";
+import { PoliciesApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-policy-unbound")
 export class PolicyUnboundStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return Policy.list({
-            "bindings__isnull": true,
-            "promptstage__isnull": true,
-        }).then((response) => {
-            return response.pagination.count;
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
+            bindingsIsnull: "true",
+            promptstageIsnull: "true",
+        }).then((value) => {
+            return value.pagination.count;
         });
     }
 

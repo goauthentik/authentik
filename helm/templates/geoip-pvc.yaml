@@ -1,0 +1,17 @@
+{{- if .Values.geoip.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "authentik.fullname" . }}-geoip
+  labels:
+    app.kubernetes.io/name: {{ include "authentik.name" . }}
+    helm.sh/chart: {{ include "authentik.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+{{- end }}

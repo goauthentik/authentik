@@ -68,6 +68,15 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-postgresql"
                   key: "postgresql-password"
+            {{ if .Values.geoip.enabled -}}
+            - name: AUTHENTIK_AUTHENTIK__GEOIP
+              value: /geoip/GeoLite2-City.mmdb
+            {{- end }}
+          {{ if .Values.geoip.enabled -}}
+          volumeMounts:
+            - name: geoip
+              mountPath: /geoip
+          {{- end }}
           resources:
             requests:
               cpu: 150m
@@ -75,3 +84,9 @@ spec:
             limits:
               cpu: 300m
               memory: 600M
+      {{ if .Values.geoip.enabled -}}
+      volumes:
+        - name: geoip
+          persistentVolumeClaim:
+            claimName: {{ include "authentik.fullname" . }}-geoip
+      {{- end -}}

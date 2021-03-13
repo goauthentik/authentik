@@ -1,0 +1,11 @@
+{{- if .Values.geoip.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "authentik.fullname" . }}-geoip-config
+data:
+  GEOIPUPDATE_ACCOUNT_ID: "{{ .Values.geoip.accountId }}"
+  GEOIPUPDATE_LICENSE_KEY: "{{ .Values.geoip.licenseKey }}"
+  GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
+  GEOIPUPDATE_FREQUENCY: "8"
+{{- end }}

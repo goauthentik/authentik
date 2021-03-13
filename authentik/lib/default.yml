@@ -13,6 +13,7 @@ redis:
   ws_db: 2
 
 debug: false
+
 log_level: info
 
 # Error reporting, sends stacktrace to sentry.beryju.org

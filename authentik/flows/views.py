@@ -9,11 +9,16 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
+from drf_yasg2.utils import no_body, swagger_auto_schema
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict
 from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
     ChallengeTypes,
     HttpChallengeResponse,
     RedirectChallenge,
@@ -40,8 +45,10 @@ SESSION_KEY_GET = "authentik_flows_get"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
-class FlowExecutorView(View):
+class FlowExecutorView(APIView):
     """Stage 1 Flow executor, passing requests to Stage Views"""
+
+    permission_classes = [AllowAny]
 
     flow: Flow
 
@@ -113,8 +120,13 @@ class FlowExecutorView(View):
         self.current_stage_view.request = request
         return super().dispatch(request)
 
+    @swagger_auto_schema(
+        responses={200: Challenge()},
+        request_body=no_body,
+        operation_id="flows_executor_get",
+    )
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """pass get request to current stage"""
+        """Get the next pending challenge from the currently active flow."""
         self._logger.debug(
             "f(exec): Passing GET",
             view_class=class_to_path(self.current_stage_view.__class__),
@@ -127,8 +139,13 @@ class FlowExecutorView(View):
             self._logger.exception(exc)
             return to_stage_response(request, FlowErrorResponse(request, exc))
 
+    @swagger_auto_schema(
+        responses={200: Challenge()},
+        request_body=ChallengeResponse(),
+        operation_id="flows_executor_solve",
+    )
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """pass post request to current stage"""
+        """Solve the previously retrieved challenge and advanced to the next stage."""
         self._logger.debug(
             "f(exec): Passing POST",
             view_class=class_to_path(self.current_stage_view.__class__),
@@ -175,8 +192,10 @@ class FlowExecutorView(View):
                 "f(exec): Continuing with next stage",
                 reamining=len(self.plan.stages),
             )
+            kwargs = self.kwargs
+            kwargs.update({"flow_slug": self.flow.slug})
             return redirect_with_qs(
-                "authentik_api:flow-executor", self.request.GET, **self.kwargs
+                "authentik_api:flow-executor", self.request.GET, **kwargs
             )
         # User passed all stages
         self._logger.debug(

@@ -1,4 +1,6 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { Source, SourcesApi } from "../../api";
+import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
@@ -8,7 +10,6 @@ import { SpinnerSize } from "../../elements/Spinner";
 import "./LDAPSourceViewPage";
 import "./OAuthSourceViewPage";
 import "./SAMLSourceViewPage";
-import { Source } from "../../api/Sources";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {
@@ -19,7 +20,11 @@ export class SourceViewPage extends LitElement {
 
     @property({ type: String })
     set sourceSlug(slug: string) {
-        Source.get(slug).then((app) => (this.source = app));
+        new SourcesApi(DEFAULT_CONFIG).sourcesAllRead({
+            slug: slug
+        }).then((source) => {
+            this.source = source;
+        });
     }
 
     @property({ attribute: false })
@@ -45,7 +50,7 @@ export class SourceViewPage extends LitElement {
                 </div>
             </div>`;
         }
-        switch (this.source?.object_type) {
+        switch (this.source?.objectType) {
             case "ldap":
                 return html`<ak-source-ldap-view sourceSlug=${this.source.slug}></ak-source-ldap-view>`;
             case "oauth":
@@ -53,7 +58,7 @@ export class SourceViewPage extends LitElement {
             case "saml":
                 return html`<ak-source-saml-view sourceSlug=${this.source.slug}></ak-source-saml-view>`;
             default:
-                return html`<p>Invalid source type ${this.source.object_type}</p>`;
+                return html`<p>Invalid source type ${this.source.objectType}</p>`;
         }
     }
 }

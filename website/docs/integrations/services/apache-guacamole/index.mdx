@@ -43,8 +43,8 @@ import TabItem from '@theme/TabItem';
 ```yaml
 OPENID_AUTHORIZATION_ENDPOINT: https://authentik.company/application/o/authorize/
 OPENID_CLIENT_ID: # client ID from above
-OPENID_ISSUER: https://authentik.company/application/o/apache-guacamole/
-OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/apache-guacamole/jwks/
+OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
+OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
 OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
 ```
   </TabItem>
@@ -54,8 +54,8 @@ OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect U
 ```
 openid-authorization-endpoint=https://authentik.company/application/o/authorize/
 openid-client-id=# client ID from above
-openid-issuer=https://authentik.company/application/o/apache-guacamole/
-openid-jwks-endpoint=https://authentik.company/application/o/apache-guacamole/jwks/
+openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
+openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
 openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
 ```
   </TabItem>

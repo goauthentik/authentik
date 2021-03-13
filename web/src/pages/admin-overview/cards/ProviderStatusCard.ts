@@ -1,16 +1,17 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { Provider } from "../../../api/Providers";
+import { ProvidersApi } from "../../../api";
+import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 
 @customElement("ak-admin-status-card-provider")
 export class ProviderStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return Provider.list({
-            "application__isnull": true
-        }).then((response) => {
-            return response.pagination.count;
+        return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
+            applicationIsnull: "true"
+        }).then((value) => {
+            return value.pagination.count;
         });
     }
 

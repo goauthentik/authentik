@@ -63,7 +63,7 @@ class CaptchaStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return CaptchaChallenge(
             data={
-                "type": ChallengeTypes.native,
+                "type": ChallengeTypes.native.value,
                 "component": "ak-stage-captcha",
                 "site_key": self.executor.current_stage.public_key,
             }

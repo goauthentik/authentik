@@ -2,6 +2,7 @@
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http.response import Http404
+from drf_yasg2.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
@@ -13,7 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
-from authentik.admin.api.metrics import get_events_per_1h
+from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Application
 from authentik.events.models import EventAction
@@ -109,6 +110,7 @@ class ApplicationViewSet(ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
+    @swagger_auto_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True)
     def metrics(self, request: Request, slug: str):
         """Metrics for application logins"""

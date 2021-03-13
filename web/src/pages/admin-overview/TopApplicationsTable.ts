@@ -1,34 +1,39 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Event, TopNEvent } from "../../api/Events";
 import { COMMON_STYLES } from "../../common/styles";
+import { EventsApi, EventTopPerUser } from "../../api";
 
 import "../../elements/Spinner";
+import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends LitElement {
 
     @property({attribute: false})
-    topN?: TopNEvent[];
+    topN?: EventTopPerUser[];
 
     static get styles(): CSSResult[] {
         return COMMON_STYLES;
     }
 
     firstUpdated(): void {
-        Event.topForUser("authorize_application").then(events => this.topN = events);
+        new EventsApi(DEFAULT_CONFIG).eventsEventsTopPerUser({
+            action: "authorize_application",
+        }).then((events) => {
+            this.topN = events;
+        });
     }
 
-    renderRow(event: TopNEvent): TemplateResult {
+    renderRow(event: EventTopPerUser): TemplateResult {
         return html`<tr role="row">
             <td role="cell">
                 ${event.application.name}
             </td>
             <td role="cell">
-                ${event.counted_events}
+                ${event.countedEvents}
             </td>
             <td role="cell">
-                <progress value="${event.counted_events}" max="${this.topN ? this.topN[0].counted_events : 0}"></progress>
+                <progress value="${event.countedEvents}" max="${this.topN ? this.topN[0].countedEvents : 0}"></progress>
             </td>
         </tr>`;
     }

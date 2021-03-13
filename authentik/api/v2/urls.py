@@ -1,4 +1,5 @@
 """api v2 urls"""
+from django.conf import settings
 from django.urls import path, re_path
 from drf_yasg2 import openapi
 from drf_yasg2.views import get_schema_view
@@ -54,12 +55,24 @@ from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProvide
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api import OAuthSourceViewSet
 from authentik.sources.saml.api import SAMLSourceViewSet
-from authentik.stages.authenticator_static.api import AuthenticatorStaticStageViewSet
-from authentik.stages.authenticator_totp.api import AuthenticatorTOTPStageViewSet
+from authentik.stages.authenticator_static.api import (
+    AuthenticatorStaticStageViewSet,
+    StaticAdminDeviceViewSet,
+    StaticDeviceViewSet,
+)
+from authentik.stages.authenticator_totp.api import (
+    AuthenticatorTOTPStageViewSet,
+    TOTPAdminDeviceViewSet,
+    TOTPDeviceViewSet,
+)
 from authentik.stages.authenticator_validate.api import (
     AuthenticatorValidateStageViewSet,
 )
-from authentik.stages.authenticator_webauthn.api import AuthenticateWebAuthnStageViewSet
+from authentik.stages.authenticator_webauthn.api import (
+    AuthenticateWebAuthnStageViewSet,
+    WebAuthnAdminDeviceViewSet,
+    WebAuthnDeviceViewSet,
+)
 from authentik.stages.captcha.api import CaptchaStageViewSet
 from authentik.stages.consent.api import ConsentStageViewSet
 from authentik.stages.deny.api import DenyStageViewSet
@@ -133,6 +146,13 @@ router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
 
+router.register("authenticators/static", StaticDeviceViewSet)
+router.register("authenticators/totp", TOTPDeviceViewSet)
+router.register("authenticators/webauthn", WebAuthnDeviceViewSet)
+router.register("authenticators/admin/static", StaticAdminDeviceViewSet)
+router.register("authenticators/admin/totp", TOTPAdminDeviceViewSet)
+router.register("authenticators/admin/webauthn", WebAuthnAdminDeviceViewSet)
+
 router.register("stages/all", StageViewSet)
 router.register("stages/authenticator/static", AuthenticatorStaticStageViewSet)
 router.register("stages/authenticator/totp", AuthenticatorTOTPStageViewSet)
@@ -164,27 +184,26 @@ info = openapi.Info(
         name="GNU GPLv3", url="https://github.com/BeryJu/authentik/blob/master/LICENSE"
     ),
 )
-SchemaView = get_schema_view(
-    info,
-    public=True,
-    permission_classes=(AllowAny,),
-)
+SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
 
-urlpatterns = [
-    re_path(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        SchemaView.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-    path(
-        "swagger/",
-        SchemaView.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    path("redoc/", SchemaView.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+urlpatterns = router.urls + [
     path(
         "flows/executor/<slug:flow_slug>/",
         FlowExecutorView.as_view(),
         name="flow-executor",
     ),
-] + router.urls
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        SchemaView.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+]
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns + [
+        path(
+            "swagger/",
+            SchemaView.with_ui("swagger", cache_timeout=0),
+            name="schema-swagger-ui",
+        ),
+    ]

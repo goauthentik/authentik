@@ -19,7 +19,7 @@ services:
     networks:
       - internal
   server:
-    image: beryju/authentik:${AUTHENTIK_TAG:-2021.3.3}
+    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.3.3}
     command: server
     environment:
       AUTHENTIK_REDIS__HOST: redis
@@ -27,9 +27,11 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: true
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
+      - geoip:/geoip
     ports:
       - 8000
     networks:
@@ -45,7 +47,7 @@ services:
     env_file:
       - .env
   worker:
-    image: beryju/authentik:${AUTHENTIK_TAG:-2021.3.3}
+    image: ${AUTHENTIK_IMAGE:-beryju/authentik}:${AUTHENTIK_TAG:-2021.3.3}
     command: worker
     networks:
       - internal
@@ -55,14 +57,16 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: true
     volumes:
       - ./backups:/backups
       - /var/run/docker.sock:/var/run/docker.sock
       - ./custom-templates:/templates
+      - geoip:/geoip
     env_file:
       - .env
   static:
-    image: beryju/authentik-static:${AUTHENTIK_TAG:-2021.3.3}
+    image: ${AUTHENTIK_IMAGE_STATIC:-beryju/authentik-static}:${AUTHENTIK_TAG:-2021.3.3}
     networks:
       - internal
     labels:
@@ -91,9 +95,20 @@ services:
       - "127.0.0.1:8080:8080"
     networks:
       - internal
+  geoipupdate:
+    image: "maxmindinc/geoipupdate:latest"
+    volumes:
+      - "geoip:/usr/share/GeoIP"
+    environment:
+      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
+      GEOIPUPDATE_FREQUENCY: "8"
+    env_file:
+      - .env
 
 volumes:
   database:
+    driver: local
+  geoip:
     driver: local
 
 networks:
