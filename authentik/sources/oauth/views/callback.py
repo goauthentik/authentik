@@ -4,6 +4,7 @@ from typing import Any, Optional
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, HttpRequest, HttpResponse
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -151,6 +152,8 @@ class OAuthCallback(OAuthClientMixin, View):
                 PLAN_CONTEXT_REDIRECT: final_redirect,
             }
         )
+        if not flow:
+            return HttpResponseBadRequest()
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
         plan = planner.plan(self.request, kwargs)
@@ -233,6 +236,9 @@ class OAuthCallback(OAuthClientMixin, View):
             PLAN_CONTEXT_SOURCES_OAUTH_ACCESS: access,
         }
         # We run the Flow planner here so we can pass the Pending user in the context
+        if not source.enrollment_flow:
+            LOGGER.warning("source has no enrollment flow", source=source)
+            return HttpResponseBadRequest()
         planner = FlowPlanner(source.enrollment_flow)
         plan = planner.plan(self.request, context)
         plan.append(in_memory_stage(PostUserEnrollmentStage))

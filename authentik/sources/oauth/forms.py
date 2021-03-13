@@ -15,9 +15,11 @@ class OAuthSourceForm(forms.ModelForm):
         self.fields["authentication_flow"].queryset = Flow.objects.filter(
             designation=FlowDesignation.AUTHENTICATION
         )
+        self.fields["authentication_flow"].required = True
         self.fields["enrollment_flow"].queryset = Flow.objects.filter(
             designation=FlowDesignation.ENROLLMENT
         )
+        self.fields["enrollment_flow"].required = True
         if hasattr(self.Meta, "overrides"):
             for overide_field, overide_value in getattr(self.Meta, "overrides").items():
                 self.fields[overide_field].initial = overide_value
