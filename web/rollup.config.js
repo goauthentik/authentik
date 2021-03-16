@@ -15,9 +15,10 @@ const resources = [
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
-    if (id.includes('node_modules')) {
-        return 'vendor';
+    if (id.includes("node_modules")) {
+        return "vendor";
     }
     if (id.includes("src/api/")) {
         return "api";
