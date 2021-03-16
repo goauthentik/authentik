@@ -9,7 +9,7 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import "./RelatedApplicationButton";
-import { ProvidersApi, SAMLProvider } from "../../api";
+import { ProvidersApi, SAMLProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager, AppURLManager } from "../../api/legacy";
 

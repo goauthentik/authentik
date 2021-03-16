@@ -1,6 +1,5 @@
-import { CoreApi } from "./apis";
+import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "./Config";
-import { User } from "./models";
 
 let _globalMePromise: Promise<User>;
 export function me(): Promise<User> {

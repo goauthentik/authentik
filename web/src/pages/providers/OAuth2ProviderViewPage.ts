@@ -9,7 +9,7 @@ import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import { convertToTitle } from "../../utils";
 import "./RelatedApplicationButton";
-import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "../../api";
+import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

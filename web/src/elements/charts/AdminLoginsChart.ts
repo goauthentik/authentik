@@ -1,6 +1,6 @@
 import { customElement } from "lit-element";
 import Chart from "chart.js";
-import { AdminApi, LoginMetrics } from "../../api";
+import { AdminApi, LoginMetrics } from "authentik-api";
 import { AKChart } from "./Chart";
 import { DEFAULT_CONFIG } from "../../api/Config";
 

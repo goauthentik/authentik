@@ -11,7 +11,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { OutpostsApi, ServiceConnection } from "../../api";
+import { OutpostsApi, ServiceConnection } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

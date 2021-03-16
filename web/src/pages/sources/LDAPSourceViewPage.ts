@@ -9,7 +9,7 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import { until } from "lit-html/directives/until";
-import { LDAPSource, SourcesApi } from "../../api";
+import { LDAPSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

@@ -2,9 +2,7 @@ import * as Sentry from "@sentry/browser";
 import { Integrations } from "@sentry/tracing";
 import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
-import { Configuration } from "./runtime";
-import { RootApi } from "./apis";
-import { Config } from ".";
+import { Config, Configuration, RootApi } from "authentik-api";
 import { getCookie } from "../utils";
 
 export const DEFAULT_CONFIG = new Configuration({

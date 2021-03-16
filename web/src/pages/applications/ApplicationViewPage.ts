@@ -8,7 +8,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "../../elements/utils/LoadingState";
-import { Application, CoreApi } from "../../api";
+import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-application-view")

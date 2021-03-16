@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
-import { Application, CoreApi } from "../api";
+import { Application, CoreApi } from "authentik-api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";

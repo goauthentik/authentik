@@ -3,7 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
-import { CryptoApi, CertificateKeyPair } from "../../api";
+import { CryptoApi, CertificateKeyPair } from "authentik-api";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";

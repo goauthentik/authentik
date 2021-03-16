@@ -1,4 +1,4 @@
-import { ChallengeTypeEnum } from "./models";
+import { ChallengeTypeEnum } from "authentik-api";
 
 export interface Error {
     code: string;

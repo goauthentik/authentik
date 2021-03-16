@@ -2,6 +2,7 @@ FROM node as npm-builder
 
 COPY . /static/
 
+ENV NODE_ENV production
 RUN cd /static && npm i && npm run build
 
 FROM nginx

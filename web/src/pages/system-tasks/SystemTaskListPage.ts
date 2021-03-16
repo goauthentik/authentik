@@ -7,7 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
-import { AdminApi, Task, TaskStatusEnum } from "../../api";
+import { AdminApi, Task, TaskStatusEnum } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-system-task-list")

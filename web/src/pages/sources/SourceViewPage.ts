@@ -1,5 +1,5 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Source, SourcesApi } from "../../api";
+import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";
 

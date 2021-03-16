@@ -10,7 +10,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/TokenCopyButton";
 import { PAGE_SIZE } from "../../constants";
-import { Outpost, OutpostsApi } from "../../api";
+import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 import { ifDefined } from "lit-html/directives/if-defined";

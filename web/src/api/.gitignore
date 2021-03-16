@@ -1,5 +1,0 @@
-apis/**
-models/**
-index.ts
-runtime.ts
-.openapi-generator/**

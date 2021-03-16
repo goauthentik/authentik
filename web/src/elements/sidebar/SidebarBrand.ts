@@ -4,7 +4,7 @@ import PageStyle from "@patternfly/patternfly/components/Page/page.css";
 // @ts-ignore
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 import { configureSentry } from "../../api/Config";
-import { Config } from "../../api";
+import { Config } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
 
 export const DefaultConfig: Config = {

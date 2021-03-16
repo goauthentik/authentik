@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement } from "lit-element";
-import { ProvidersApi } from "../../../api";
+import { ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 

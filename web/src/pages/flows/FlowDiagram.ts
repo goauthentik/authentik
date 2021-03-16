@@ -1,7 +1,7 @@
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import FlowChart from "flowchart.js";
 import { loading } from "../../utils";
-import { FlowsApi } from "../../api";
+import { FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";

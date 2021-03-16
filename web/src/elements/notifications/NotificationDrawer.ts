@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { EventsApi, Notification } from "../../api";
+import { EventsApi, Notification } from "authentik-api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";

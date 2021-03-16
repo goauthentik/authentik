@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { Challenge } from "../../../api";
+import { Challenge } from "authentik-api";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "../../../elements/utils/LoadingState";

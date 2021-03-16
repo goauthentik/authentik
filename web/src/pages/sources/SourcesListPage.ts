@@ -9,7 +9,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { Source, SourcesApi } from "../../api";
+import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

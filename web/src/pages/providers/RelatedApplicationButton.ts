@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { Provider } from "../../api";
+import { Provider } from "authentik-api";
 import { AdminURLManager } from "../../api/legacy";
 
 import "../../elements/buttons/ModalButton";

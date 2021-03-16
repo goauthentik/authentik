@@ -9,7 +9,7 @@ import "../../elements/buttons/Dropdown";
 import { TableColumn } from "../../elements/table/Table";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
-import { Provider, ProvidersApi } from "../../api";
+import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

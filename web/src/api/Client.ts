@@ -5,12 +5,10 @@ export interface QueryArguments {
 }
 
 export interface BaseInheritanceModel {
-
     objectType: string;
 
     verboseName: string;
     verboseNamePlural: string;
-
 }
 
 export interface AKPagination {

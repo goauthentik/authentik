@@ -1,5 +1,5 @@
 import { customElement } from "lit-element";
-import { CoreApi } from "../../../api";
+import { CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 import { AdminStatusCard, AdminStatus } from "./AdminStatusCard";
 

@@ -8,7 +8,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { SAMLSource, SourcesApi } from "../../api";
+import { SAMLSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager, AppURLManager } from "../../api/legacy";
 

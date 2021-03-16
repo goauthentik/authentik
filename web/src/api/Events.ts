@@ -1,4 +1,4 @@
-import { Event } from "./models";
+import { Event } from "authentik-api";
 
 export interface EventUser {
     pk: number;

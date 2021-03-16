@@ -8,7 +8,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "./BoundStagesList";
 import "./FlowDiagram";
-import { Flow, FlowsApi } from "../../api";
+import { Flow, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-flow-view")

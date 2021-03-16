@@ -7,7 +7,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
-import { OAuthSource, SourcesApi } from "../../api";
+import { OAuthSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

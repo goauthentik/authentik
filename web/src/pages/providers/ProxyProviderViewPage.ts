@@ -8,7 +8,7 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import { Page } from "../../elements/Page";
 import "./RelatedApplicationButton";
-import { ProvidersApi, ProxyProvider } from "../../api";
+import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

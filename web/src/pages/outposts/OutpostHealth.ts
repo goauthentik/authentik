@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { OutpostsApi } from "../../api";
+import { OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { COMMON_STYLES } from "../../common/styles";
 import "../../elements/Spinner";

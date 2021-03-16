@@ -8,7 +8,7 @@ import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/ActionButton";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { CoreApi, User } from "../../api";
+import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 

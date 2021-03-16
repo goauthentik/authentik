@@ -3,7 +3,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
-import { CoreApi } from "../../api";
+import { CoreApi } from "authentik-api";
 import { ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
 import { ColorStyles } from "../../common/styles";
 import { DEFAULT_CONFIG } from "../../api/Config";

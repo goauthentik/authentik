@@ -27,7 +27,7 @@ import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
 import { COMMON_STYLES } from "../common/styles";
 import { SpinnerSize } from "../elements/Spinner";
 import { StageHost } from "./stages/base";
-import { Challenge, ChallengeTypeEnum, FlowsApi } from "../api";
+import { Challenge, ChallengeTypeEnum, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
 
 @customElement("ak-flow-executor")

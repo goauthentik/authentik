@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
-import { PoliciesApi, PolicyBinding } from "../../api";
+import { PoliciesApi, PolicyBinding } from "authentik-api";
 
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";

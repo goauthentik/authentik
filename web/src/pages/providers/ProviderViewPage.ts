@@ -8,7 +8,7 @@ import "../../elements/utils/LoadingState";
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
 import "./ProxyProviderViewPage";
-import { Provider, ProvidersApi } from "../../api";
+import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 

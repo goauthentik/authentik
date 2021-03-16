@@ -17,6 +17,7 @@
         "@types/chart.js": "^2.9.31",
         "@types/codemirror": "0.0.108",
         "@types/grecaptcha": "^3.0.1",
+        "authentik-api": "file:api",
         "base64-js": "^1.5.1",
         "chart.js": "^2.9.4",
         "codemirror": "^5.59.4",

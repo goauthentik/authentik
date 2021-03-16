@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
 import "../../../elements/buttons/ModalButton";
-import { FlowsApi } from "../../../api";
+import { FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
 
 @customElement("ak-admin-status-card-flow-cache")
