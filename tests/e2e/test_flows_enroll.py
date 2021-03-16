@@ -93,7 +93,10 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.initial_stages()
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
+        interface_admin = self.get_shadow_root("ak-interface-admin")
+        wait = WebDriverWait(interface_admin, self.wait_timeout)
+
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
         self.driver.get(self.shell_url("authentik_core:user-settings"))
 
         user = User.objects.get(username="foo")
@@ -188,7 +191,11 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         # We're now logged in
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
+        wait = WebDriverWait(
+            self.get_shadow_root("ak-interface-admin"), self.wait_timeout
+        )
+
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
         self.driver.get(self.shell_url("authentik_core:user-settings"))
 
         self.assert_user(User.objects.get(username="foo"))
