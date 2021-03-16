@@ -73,22 +73,18 @@ export class SidebarItem {
                 return html``;
             }
         }
-        return html` <li class="pf-c-nav__item ${this.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
-            ${this.path ?
-        html`<a href="#${this.path}" class="pf-c-nav__link ${this.isActive(activePath) ? "pf-m-current" : ""}">
-                        ${this.name}
-                    </a>` :
-        html`<a class="pf-c-nav__link" aria-expanded="true">
-                        ${this.name}
-                        <span class="pf-c-nav__toggle">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
-                    </a>
-                    <section class="pf-c-nav__subnav">
-                        <ul class="pf-c-nav__simple-list">
-                            ${this._children.map((i) => until(i.render(activePath), html``))}
-                        </ul>
-                    </section>`}
+        if (!this.path) {
+            return html`<section class="pf-c-nav__section">
+                <h2 class="pf-c-nav__section-title">${this.name}</h2>
+                <ul class="pf-c-nav__list">
+                    ${this._children.map((i) => until(i.render(activePath), html``))}
+                </ul>
+            </section>`;
+        }
+        return html`<li class="pf-c-nav__item ${this.hasChildren() ? "pf-m-expandable pf-m-expanded" : ""}">
+            <a href="#${this.path}" class="pf-c-nav__link ${this.isActive(activePath) ? "pf-m-current" : ""}">
+                ${this.name}
+            </a>
         </li>`;
     }
 }
@@ -108,6 +104,15 @@ export class Sidebar extends LitElement {
             NavStyle,
             AKGlobal,
             css`
+                .pf-c-nav__link.pf-m-current::after,
+                .pf-c-nav__link.pf-m-current:hover::after,
+                .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
+                    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+                }
+
+                .pf-c-nav__section + .pf-c-nav__section {
+                    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+                }
                 .pf-c-nav__list .sidebar-brand {
                     max-height: 82px;
                     margin-bottom: -0.5rem;
@@ -129,8 +134,11 @@ export class Sidebar extends LitElement {
                     --pf-c-nav__link--PaddingRight: 0.5rem;
                     --pf-c-nav__link--PaddingBottom: 0.5rem;
                 }
-                .pf-c-nav__subnav {
-                    --pf-c-nav__subnav--PaddingBottom: 0px;
+                .pf-c-nav__section-title {
+                    font-size: 12px;
+                }
+                .pf-c-nav__item {
+                    --pf-c-nav__item--MarginTop: 0px;
                 }
             `,
         ];
