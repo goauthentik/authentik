@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../common/styles";
+import PFExpandableSection from "../../node_modules/@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 
 @customElement("ak-expand")
 export class Expand extends LitElement {
@@ -15,7 +15,7 @@ export class Expand extends LitElement {
     textClosed = "Show more";
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFExpandableSection];
     }
 
     render(): TemplateResult {
