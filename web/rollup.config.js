@@ -18,6 +18,15 @@ const resources = [
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
 
+function manualChunks(id) {
+    if (id.includes('node_modules')) {
+        return 'vendor';
+    }
+    if (id.includes("src/api/")) {
+        return "api";
+    }
+}
+
 export default [
     {
         input: "./src/main.ts",
@@ -26,6 +35,7 @@ export default [
                 format: "es",
                 dir: "dist",
                 sourcemap: true,
+                manualChunks: manualChunks,
             },
         ],
         plugins: [
@@ -55,6 +65,7 @@ export default [
                 format: "es",
                 dir: "dist",
                 sourcemap: true,
+                manualChunks: manualChunks,
             },
         ],
         plugins: [
