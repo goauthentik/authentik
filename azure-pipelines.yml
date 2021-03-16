@@ -381,6 +381,13 @@ stages:
           inputs:
             containerRegistry: 'beryjuorg-harbor'
             repository: 'authentik/server'
-            command: 'buildAndPush'
+            command: 'build'
             Dockerfile: 'Dockerfile'
-            tags: "gh-$(branchName)"
+            tags: 'gh-$(branchName)'
+            arguments: '--build-arg GIT_BUILD_HASH=$(git rev-parse HEAD)'
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'beryjuorg-harbor'
+            repository: 'authentik/server'
+            command: 'push'
+            tags: 'gh-$(branchName)'

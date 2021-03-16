@@ -1,4 +1,6 @@
 """authentik administration overview"""
+from os import environ
+
 from django.core.cache import cache
 from django.db.models import Model
 from drf_yasg2.utils import swagger_auto_schema
@@ -11,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
 
-from authentik import __version__
+from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.admin.tasks import VERSION_CACHE_KEY, update_latest_version
 
 
@@ -20,7 +22,12 @@ class VersionSerializer(Serializer):
 
     version_current = SerializerMethodField()
     version_latest = SerializerMethodField()
+    build_hash = SerializerMethodField()
     outdated = SerializerMethodField()
+
+    def get_build_hash(self, _) -> str:
+        """Get build hash, if version is not latest or released"""
+        return environ.get(ENV_GIT_HASH_KEY, "")
 
     def get_version_current(self, _) -> str:
         """Get current version"""

@@ -10106,6 +10106,10 @@ definitions:
         title: Version latest
         type: string
         readOnly: true
+      build_hash:
+        title: Build hash
+        type: string
+        readOnly: true
       outdated:
         title: Outdated
         type: boolean

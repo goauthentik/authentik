@@ -12,17 +12,22 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     }
 
     getStatus(value: Version): Promise<AdminStatus> {
+        if (value.buildHash) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-check-circle pf-m-success",
+                message: gettext(`Build hash: ${value.buildHash?.substring(0, 10)}`),
+            });
+        }
         if (value.outdated) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: gettext(`${value.versionLatest} is available!`),
             });
-        } else {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-check-circle pf-m-success",
-                message: gettext("Up-to-date!")
-            });
         }
+        return Promise.resolve<AdminStatus>({
+            icon: "fa fa-check-circle pf-m-success",
+            message: gettext("Up-to-date!")
+        });
     }
 
     renderValue(): TemplateResult {

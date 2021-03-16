@@ -15,6 +15,9 @@ WORKDIR /
 COPY --from=locker /app/requirements.txt /
 COPY --from=locker /app/requirements-dev.txt /
 
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates gnupg && \
     curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \

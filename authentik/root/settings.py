@@ -24,7 +24,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 
-from authentik import __version__
+from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.core.middleware import structlog_add_request_id
 from authentik.lib.config import CONFIG
 from authentik.lib.logging import add_process_id
@@ -474,6 +474,7 @@ for _app in INSTALLED_APPS:
 
 if DEBUG:
     CELERY_TASK_ALWAYS_EAGER = True
+    os.environ[ENV_GIT_HASH_KEY] = "dev"
 
 INSTALLED_APPS.append("authentik.core.apps.AuthentikCoreConfig")
 
