@@ -42,7 +42,7 @@ export class OutpostHealth extends LitElement {
                             ${h.versionOutdated ?
                             html`<i class="fas fa-times pf-m-danger"></i>
                                 ${gettext(`${h.version}, should be ${h.versionShould}`)}` :
-                            html`<i class="fas fa-check pf-m-success"></i>${gettext(`Version: ${h.version}`)}`}
+                            html`<i class="fas fa-check pf-m-success"></i>${gettext(`Version: ${h.version || ""}`)}`}
                         </li>
                     </ul>
                 </li>`;
