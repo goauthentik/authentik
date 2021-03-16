@@ -29,6 +29,7 @@ export default [
         ],
         plugins: [
             typescript(),
+            // eslint-disable-next-line no-undef
             process.env.NODE_ENV === "production" ? terser() : undefined,
         ].filter(p => p),
         watch: {
@@ -54,6 +55,7 @@ export default [
             resolve({ browser: true }),
             commonjs(),
             sourcemaps(),
+            // eslint-disable-next-line no-undef
             process.env.NODE_ENV === "production" ? terser() : undefined,
             copy({
                 targets: [...resources],
@@ -84,6 +86,7 @@ export default [
             resolve({ browser: true }),
             commonjs(),
             sourcemaps(),
+            // eslint-disable-next-line no-undef
             process.env.NODE_ENV === "production" ? terser() : undefined,
             copy({
                 targets: [...resources],

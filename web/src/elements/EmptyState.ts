@@ -1,6 +1,6 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css"
-import PFBase from "@patternfly/patternfly/patternfly-base.css"
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
 
 @customElement("ak-empty-state")
