@@ -18,11 +18,11 @@ jobs:
       - name: Building Docker Image
         run: docker build
           --no-cache
-          -t beryju/authentik:2021.3.3
+          -t beryju/authentik:2021.3.4
           -t beryju/authentik:latest
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik:2021.3.3
+        run: docker push beryju/authentik:2021.3.4
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/authentik:latest
   build-proxy:
@@ -48,11 +48,11 @@ jobs:
           cd outpost/
           docker build \
           --no-cache \
-          -t beryju/authentik-proxy:2021.3.3 \
+          -t beryju/authentik-proxy:2021.3.4 \
           -t beryju/authentik-proxy:latest \
           -f proxy.Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik-proxy:2021.3.3
+        run: docker push beryju/authentik-proxy:2021.3.4
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/authentik-proxy:latest
   build-static:
@@ -72,11 +72,11 @@ jobs:
           cd web/
           docker build \
           --no-cache \
-          -t beryju/authentik-static:2021.3.3 \
+          -t beryju/authentik-static:2021.3.4 \
           -t beryju/authentik-static:latest \
           -f Dockerfile .
       - name: Push Docker Container to Registry (versioned)
-        run: docker push beryju/authentik-static:2021.3.3
+        run: docker push beryju/authentik-static:2021.3.4
       - name: Push Docker Container to Registry (latest)
         run: docker push beryju/authentik-static:latest
   test-release:
@@ -110,5 +110,5 @@ jobs:
           SENTRY_PROJECT: authentik
           SENTRY_URL: https://sentry.beryju.org
         with:
-          tagName: 2021.3.3
+          tagName: 2021.3.4
           environment: beryjuorg-prod

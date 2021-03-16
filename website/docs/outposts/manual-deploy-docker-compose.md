@@ -11,7 +11,7 @@ version: "3.5"
 
 services:
   authentik_proxy:
-    image: beryju/authentik-proxy:2021.3.3
+    image: beryju/authentik-proxy:2021.3.4
     ports:
       - 4180:4180
       - 4443:4443
