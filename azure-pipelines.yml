@@ -281,6 +281,7 @@ stages:
               script: |
                 docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
                 cd web
+                sudo chmod 777 -R api/
                 npm i
                 npm run build
           - task: CmdLine@2
