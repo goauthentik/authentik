@@ -384,7 +384,7 @@ stages:
             command: 'build'
             Dockerfile: 'Dockerfile'
             tags: 'gh-$(branchName)'
-            arguments: '--build-arg GIT_BUILD_HASH=$(git rev-parse HEAD)'
+            arguments: '--build-arg GIT_BUILD_HASH=$(Build.SourceVersion)'
         - task: Docker@2
           inputs:
             containerRegistry: 'beryjuorg-harbor'
