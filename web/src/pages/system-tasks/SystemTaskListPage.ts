@@ -34,7 +34,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                 pagination: {
                     count: tasks.length,
                     totalPages: 1,
-                    startIndex: 0,
+                    startIndex: 1,
                     endIndex: tasks.length,
                     current: page,
                 },
