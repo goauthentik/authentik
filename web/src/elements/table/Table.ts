@@ -6,6 +6,7 @@ import { COMMON_STYLES } from "../../common/styles";
 import "./TablePagination";
 import "../EmptyState";
 import "../Spinner";
+import { SpinnerSize } from "../Spinner";
 
 export class TableColumn {
 
@@ -140,7 +141,7 @@ export abstract class Table<T> extends LitElement {
                     <div class="pf-c-empty-state pf-m-sm">
                         <div class="pf-c-empty-state__content">
                             <div class="pf-c-empty-state__icon">
-                                <ak-spinner></ak-spinner>
+                                <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
                             </div>
                             <h2 class="pf-c-title pf-m-lg">${gettext("Loading")}</h2>
                         </div>
