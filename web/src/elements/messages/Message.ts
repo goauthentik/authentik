@@ -1,4 +1,5 @@
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { COMMON_STYLES } from "../../common/styles";
 
 export interface APIMessage {
     level_tag: string;
@@ -25,8 +26,8 @@ export class Message extends LitElement {
     @property({attribute: false})
     onRemove?: (m: APIMessage) => void;
 
-    createRenderRoot(): ShadowRoot | Element {
-        return this;
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
     }
 
     firstUpdated(): void {

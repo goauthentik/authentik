@@ -1,5 +1,6 @@
 import { gettext } from "django";
-import { LitElement, html, customElement, TemplateResult, property } from "lit-element";
+import { LitElement, html, customElement, TemplateResult, property, CSSResult } from "lit-element";
+import { COMMON_STYLES } from "../../common/styles";
 import "./Message";
 import { APIMessage } from "./Message";
 
@@ -21,8 +22,8 @@ export class MessageContainer extends LitElement {
     messageSocket?: WebSocket;
     retryDelay = 200;
 
-    createRenderRoot(): ShadowRoot | Element {
-        return this;
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
     }
 
     constructor() {

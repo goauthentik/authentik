@@ -1,6 +1,7 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
+import { COMMON_STYLES } from "../../../common/styles";
 import { SpinnerSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
@@ -25,8 +26,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
     @property()
     registerMessage = "";
 
-    createRenderRoot(): Element | ShadowRoot {
-        return this;
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
     }
 
     async register(): Promise<void> {

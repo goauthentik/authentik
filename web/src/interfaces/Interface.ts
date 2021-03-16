@@ -1,11 +1,12 @@
 import { gettext } from "django";
-import { html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
 
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/sidebar/SidebarHamburger";
 import "../elements/notifications/NotificationDrawer";
+import { COMMON_STYLES } from "../common/styles";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -16,8 +17,8 @@ export abstract class Interface extends LitElement {
 
     abstract get sidebar(): SidebarItem[];
 
-    createRenderRoot(): ShadowRoot | Element {
-        return this;
+    static get styles(): CSSResult[] {
+        return COMMON_STYLES;
     }
 
     constructor() {
