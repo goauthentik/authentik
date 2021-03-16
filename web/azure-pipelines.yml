@@ -26,7 +26,7 @@ stages:
                 docker run --rm -v $(pwd):/local openapitools/openapi-generator-cli generate -i /local/swagger.yaml -g typescript-fetch -o /local/web/api --additional-properties=typescriptThreePlus=true,supportsES6=true,npmName=authentik-api,npmVersion=1.0.0
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: 'web/src/api/'
+              targetPath: 'web/api/'
               artifact: 'ts_swagger_client'
               publishLocation: 'pipeline'
   - stage: lint
@@ -43,7 +43,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'ts_swagger_client'
-              path: "web/src/api/"
+              path: "web/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -65,7 +65,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'ts_swagger_client'
-              path: "web/src/api/"
+              path: "web/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -89,7 +89,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'ts_swagger_client'
-              path: "web/src/api/"
+              path: "web/api/"
           - task: Npm@1
             inputs:
               command: 'install'
@@ -109,7 +109,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'ts_swagger_client'
-              path: "web/src/api/"
+              path: "web/api/"
           - task: Bash@3
             inputs:
               targetType: 'inline'
