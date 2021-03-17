@@ -12,6 +12,8 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
+import CodeMirrorStyle from "codemirror/lib/codemirror.css";
+import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
@@ -30,7 +32,7 @@ export class ModalButton extends LitElement {
     modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal].concat(
+        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, CodeMirrorStyle, CodeMirrorTheme].concat(
             css`
                 :host {
                     text-align: left;
