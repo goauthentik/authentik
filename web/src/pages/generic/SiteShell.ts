@@ -4,10 +4,20 @@ import { showMessage } from "../../elements/messages/MessageContainer";
 import { gettext } from "django";
 import { SentryIgnoredError } from "../../common/errors";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
-
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import AKGlobal from "../../authentik.css";
+import CodeMirrorStyle from "codemirror/lib/codemirror.css";
+import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -26,7 +36,7 @@ export class SiteShell extends LitElement {
     body = "";
 
     static get styles(): CSSResult[] {
-        return [PFPage, PFGallery, PFContent].concat(
+        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal, CodeMirrorStyle, CodeMirrorTheme].concat(
             css`
                 :host,
                 ::slotted(*) {
