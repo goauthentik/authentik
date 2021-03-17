@@ -1,13 +1,9 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/patternfly-base.css";
-// @ts-ignore
-import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
-// @ts-ignore
-import SpinnerStyle from "@patternfly/patternfly/components/Spinner/spinner.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import { SpinnerSize } from "../Spinner";
 import { PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
-import { ColorStyles } from "../../common/styles";
 
 @customElement("ak-spinner-button")
 export class SpinnerButton extends LitElement {
@@ -19,10 +15,9 @@ export class SpinnerButton extends LitElement {
 
     static get styles(): CSSResult[] {
         return [
-            GlobalsStyle,
-            ButtonStyle,
-            SpinnerStyle,
-            ColorStyles,
+            PFBase,
+            PFButton,
+            PFSpinner,
             css`
                 button {
                     /* Have to use !important here, as buttons with pf-m-progress have transition already */

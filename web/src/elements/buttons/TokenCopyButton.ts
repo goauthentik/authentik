@@ -1,12 +1,10 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/patternfly-base.css";
-// @ts-ignore
-import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import { CoreApi } from "authentik-api";
 import { ERROR_CLASS, PRIMARY_CLASS, SUCCESS_CLASS } from "../../constants";
-import { ColorStyles } from "../../common/styles";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-token-copy-button")
 export class TokenCopyButton extends LitElement {
@@ -18,9 +16,9 @@ export class TokenCopyButton extends LitElement {
 
     static get styles(): CSSResult[] {
         return [
-            GlobalsStyle,
-            ButtonStyle,
-            ColorStyles,
+            PFBase,
+            PFButton,
+            AKGlobal,
             css`
                 button {
                     transition: background-color 0.3s ease 0s;

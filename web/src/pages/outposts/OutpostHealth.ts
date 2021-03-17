@@ -5,7 +5,7 @@ import { OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import "../../elements/Spinner";
-import { ColorStyles } from "../../common/styles";
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-outpost-health")
 export class OutpostHealth extends LitElement {
@@ -14,7 +14,7 @@ export class OutpostHealth extends LitElement {
     outpostId?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, ColorStyles];
+        return [PFBase, AKGlobal];
     }
 
     render(): TemplateResult {
