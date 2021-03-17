@@ -77,6 +77,7 @@ ak-message {
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);
+        --pf-global--BackgroundColor--light-300: var(--ak-dark-background);
     }
     /* Global page background colour */
     .pf-c-page {
@@ -130,6 +131,10 @@ ak-message {
     }
     .pf-c-table__expandable-row.pf-m-expanded {
         --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(--ak-dark-background-lighter);
+    }
+    /* tabs */
+    .pf-c-tabs {
+        background-color: var(--ak-dark-background-light);
     }
     /* tabs, vertical */
     .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {

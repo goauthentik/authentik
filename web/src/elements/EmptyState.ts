@@ -2,6 +2,7 @@ import { CSSResult, customElement, html, LitElement, property, TemplateResult } 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import AKGlobal from "../authentik.css";
 
 import { SpinnerSize } from "./Spinner";
 
@@ -14,15 +15,18 @@ export class EmptyState extends LitElement {
     @property({type: Boolean})
     loading = false;
 
+    @property({type: Boolean})
+    fullHeight = false;
+
     @property()
-    header?: string;
+    header: string = "";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle];
+        return [PFBase, PFEmptyState, PFTitle, AKGlobal];
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-empty-state">
+        return html`<div class="pf-c-empty-state ${this.fullHeight && 'pf-m-full-height'}">
             <div class="pf-c-empty-state__content">
                 ${this.loading ?
                     html`<div class="pf-c-empty-state__icon">

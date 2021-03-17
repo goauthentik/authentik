@@ -2,6 +2,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { Route } from "./Route";
 import { ROUTES } from "../../routes";
 import { RouteMatch } from "./RouteMatch";
+import AKGlobal from "../../authentik.css";
 
 import "../../pages/generic/SiteShell";
 import "./Router404";
@@ -15,10 +16,11 @@ export class RouterOutlet extends LitElement {
     defaultUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [
+        return [AKGlobal,
             css`
                 :host {
                     height: 100vh;
+                    background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 *:first-child {
                     height: 100%;
