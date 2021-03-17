@@ -73,11 +73,10 @@ export class CaptchaStage extends BaseStage {
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-form-static class="pf-c-form__group">
-                        <div slot="avatar">
-                            <img class="pf-c-avatar" src="${this.challenge.pending_user_avatar}" alt="${gettext("User's avatar")}">
-                            ${this.challenge.pending_user}
-                        </div>
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pending_user_avatar}"
+                        user=${this.challenge.pending_user}>
                         <div slot="link">
                             <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
                         </div>

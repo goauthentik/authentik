@@ -1,10 +1,19 @@
-import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
+import { gettext } from "django";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import { ifDefined } from "lit-html/directives/if-defined";
 
 @customElement("ak-form-static")
 export class FormStatic extends LitElement {
 
+    @property()
+    userAvatar?: string;
+
+    @property()
+    user = "";
+
     static get styles(): CSSResult[] {
-        return [css`
+        return [PFAvatar, css`
             /* Form with user */
             .form-control-static {
                 margin-top: var(--pf-global--spacer--sm);
@@ -12,7 +21,7 @@ export class FormStatic extends LitElement {
                 align-items: center;
                 justify-content: space-between;
             }
-            .form-control-static slot[name=avatar] {
+            .form-control-static .avatar {
                 display: flex;
                 align-items: center;
             }
@@ -30,7 +39,10 @@ export class FormStatic extends LitElement {
     render(): TemplateResult {
         return html`
             <div class="form-control-static">
-                <slot name="avatar"></slot>
+                <div class="avatar">
+                    <img class="pf-c-avatar" src="${ifDefined(this.userAvatar)}" alt="${gettext("User's avatar")}">
+                    ${this.user}
+                </div>
                 <slot name="link"></slot>
             </div>
         `;
