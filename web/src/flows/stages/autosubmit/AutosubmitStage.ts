@@ -48,8 +48,7 @@ export class AutosubmitStage extends BaseStage {
                         return html`<input type="hidden" name="${key}" value="${value}">`;
                     })}
                     <ak-empty-state
-                        ?loading="${true}"
-                        header=${gettext("Loading")}>
+                        ?loading="${true}">
                     </ak-empty-state>
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

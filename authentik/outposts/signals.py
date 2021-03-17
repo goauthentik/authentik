@@ -1,4 +1,5 @@
 """authentik outpost signals"""
+from django.conf import settings
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
@@ -41,6 +42,14 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()
     # To ensure that deployment is cleaned up *consistently* we call the controller, and wait
-    # for it to finish. We don't want to call it in this thread, as we don't have the K8s
-    # credentials here
-    outpost_pre_delete.delay(instance.pk.hex).get()
+    # for it to finish. We don't want to call it in this thread, as we don't have the Outpost
+    # Service connection here
+    try:
+        outpost_pre_delete.delay(instance.pk.hex).get()
+    except RuntimeError:
+        # In e2e/integration tests, this might run inside a thread/process and
+        # trigger the celery `Never call result.get() within a task` detection
+        if settings.TEST:
+            pass
+        else:
+            raise
