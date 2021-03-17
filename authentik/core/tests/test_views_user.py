@@ -23,12 +23,6 @@ class TestUserViews(TestCase):
         )
         self.client.force_login(self.user)
 
-    def test_user_settings(self):
-        """Test UserSettingsView"""
-        self.assertEqual(
-            self.client.get(reverse("authentik_core:user-settings")).status_code, 200
-        )
-
     def test_user_details(self):
         """Test UserDetailsView"""
         self.assertEqual(

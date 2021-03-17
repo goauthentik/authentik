@@ -29,6 +29,25 @@ export class Tabs extends LitElement {
         `];
     }
 
+    observer: MutationObserver;
+
+    constructor() {
+        super();
+        this.observer = new MutationObserver(() => {
+            this.requestUpdate();
+        });
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.observer.observe(this, { attributes: true, childList: true, subtree: true });
+    }
+
+    disconnectedCallback(): void {
+        this.observer.disconnect();
+        super.disconnectedCallback();
+    }
+
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
