@@ -10,6 +10,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton
+from authentik.flows.challenge import Challenge, ChallengeTypes
 
 
 class OAuthSource(Source):
@@ -66,9 +67,15 @@ class OAuthSource(Source):
         )
 
     @property
-    def ui_user_settings(self) -> Optional[str]:
+    def ui_user_settings(self) -> Optional[Challenge]:
         view_name = "authentik_sources_oauth:oauth-client-user"
-        return reverse(view_name, kwargs={"source_slug": self.slug})
+        return Challenge(
+            data={
+                "type": ChallengeTypes.shell.value,
+                "title": self.name,
+                "component": reverse(view_name, kwargs={"source_slug": self.slug}),
+            }
+        )
 
     def __str__(self) -> str:
         return f"OAuth Source {self.name}"

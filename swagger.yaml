@@ -6688,6 +6688,43 @@ paths:
       tags:
         - sources
     parameters: []
+  /sources/all/user_settings/:
+    get:
+      operationId: sources_all_user_settings
+      description: Get all sources the user can configure
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Challenge that gets sent to the client based on which stage
+            is currently active
+          schema:
+            description: ''
+            type: array
+            items:
+              $ref: '#/definitions/Challenge'
+      tags:
+        - sources
+    parameters: []
   /sources/all/{slug}/:
     get:
       operationId: sources_all_read
