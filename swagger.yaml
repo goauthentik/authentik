@@ -1854,6 +1854,11 @@ paths:
           description: Page Size
           required: false
           type: integer
+        - name: top_n
+          in: query
+          required: false
+          type: integer
+          default: 15
       responses:
         '200':
           description: Response object of Event's top_per_user

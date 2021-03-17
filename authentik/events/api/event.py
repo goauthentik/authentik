@@ -29,6 +29,18 @@ class EventSerializer(ModelSerializer):
         ]
 
 
+class EventTopPerUserParams(Serializer):
+    """Query params for top_per_user"""
+
+    top_n = IntegerField(default=15)
+
+    def create(self, request: Request) -> Response:
+        raise NotImplementedError
+
+    def update(self, request: Request) -> Response:
+        raise NotImplementedError
+
+
 class EventTopPerUserSerializer(Serializer):
     """Response object of Event's top_per_user"""
 
@@ -60,12 +72,14 @@ class EventViewSet(ReadOnlyModelViewSet):
     filterset_fields = ["action"]
 
     @swagger_auto_schema(
-        method="GET", responses={200: EventTopPerUserSerializer(many=True)}
+        method="GET",
+        responses={200: EventTopPerUserSerializer(many=True)},
+        query_serializer=EventTopPerUserParams,
     )
     @action(detail=False, methods=["GET"])
     def top_per_user(self, request: Request):
         """Get the top_n events grouped by user count"""
-        filtered_action = request.query_params.get("filter_action", EventAction.LOGIN)
+        filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = request.query_params.get("top_n", 15)
         return Response(
             Event.objects.filter(action=filtered_action)
