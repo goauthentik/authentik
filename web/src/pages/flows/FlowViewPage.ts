@@ -12,7 +12,8 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -29,7 +30,7 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFPage, PFContent, PFGallery].concat(
+        return [PFBase, PFPage, PFContent, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;

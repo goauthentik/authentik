@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import AKGlobal from "../../authentik.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -17,7 +19,7 @@ export class NotificationDrawer extends LitElement {
     unread = 0;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFNotificationDrawer, PFDropdown].concat(
+        return [PFBase, PFNotificationDrawer, PFContent, PFDropdown, AKGlobal].concat(
             css`
                 .pf-c-notification-drawer__header {
                     height: 114px;
@@ -57,9 +59,9 @@ export class NotificationDrawer extends LitElement {
         default:
             break;
         }
-        return html`<li class="pf-c-notification-drawer__list-item pf-m-read ${level}">
+        return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
-                <span class="pf-c-notification-drawer__list-item-header-icon">
+                <span class="pf-c-notification-drawer__list-item-header-icon ${level}">
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </span>
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
@@ -67,6 +69,11 @@ export class NotificationDrawer extends LitElement {
                 </h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">
+                ${item.event && html`
+                    <a class="pf-c-dropdown__toggle pf-m-plain" href="#/events/log/${item.event?.pk}">
+                        <i class="pf-icon pf-icon-arrow"></i>
+                    </a>
+                `}
                 <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {
                     new EventsApi(DEFAULT_CONFIG).eventsNotificationsPartialUpdate({
                         uuid: item.pk || "",
