@@ -20,7 +20,7 @@ export class RouterOutlet extends LitElement {
             css`
                 :host {
                     height: 100vh;
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                    background-color: var(--ak-dark-background, var(--pf-c-page--BackgroundColor)) !important;
                 }
                 *:first-child {
                     height: 100%;

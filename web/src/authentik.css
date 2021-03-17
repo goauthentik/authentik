@@ -77,7 +77,6 @@ ak-message {
         --pf-global--Color--100: var(--ak-dark-foreground);
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);
-        --pf-global--BackgroundColor--light-300: var(--ak-dark-background);
     }
     /* Global page background colour */
     .pf-c-page {
