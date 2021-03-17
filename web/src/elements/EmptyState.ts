@@ -1,7 +1,7 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-empty-state")
 export class EmptyState extends LitElement {
@@ -13,7 +13,7 @@ export class EmptyState extends LitElement {
     header?: string;
 
     static get styles(): CSSResult[] {
-        return [PFEmptyState, PFBase, FA];
+        return [PFBase, FA, PFEmptyState];
     }
 
     render(): TemplateResult {

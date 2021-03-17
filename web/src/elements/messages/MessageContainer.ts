@@ -1,8 +1,9 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, TemplateResult, property, CSSResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 import "./Message";
 import { APIMessage } from "./Message";
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function showMessage(message: APIMessage): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
@@ -23,7 +24,7 @@ export class MessageContainer extends LitElement {
     retryDelay = 200;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFAlertGroup];
     }
 
     constructor() {

@@ -1,9 +1,9 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 
-import PFLogin from "../../node_modules/@patternfly/patternfly/components/Login/login.css";
-import PFBackgroundImage from "../../node_modules/@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFList from "../../node_modules/@patternfly/patternfly/components/List/list.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import AKGlobal from "../authentik.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
