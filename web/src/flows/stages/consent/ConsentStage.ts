@@ -6,6 +6,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
@@ -29,7 +31,7 @@ export class ConsentStage extends BaseStage {
     challenge?: ConsentChallenge;
 
     static get styles(): CSSResult[] {
-        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     render(): TemplateResult {

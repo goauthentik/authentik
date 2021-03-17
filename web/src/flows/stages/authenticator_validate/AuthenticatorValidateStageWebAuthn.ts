@@ -5,6 +5,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../../authentik.css";
 import { SpinnerSize } from "../../../elements/Spinner";
 import { transformAssertionForServer, transformCredentialRequestOptions } from "../authenticator_webauthn/utils";
 import { BaseStage } from "../base";
@@ -29,7 +31,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage {
     showBackButton = false;
 
     static get styles(): CSSResult[] {
-        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
     }
 
     async authenticate(): Promise<void> {

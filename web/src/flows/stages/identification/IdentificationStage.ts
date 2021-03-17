@@ -6,6 +6,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../../authentik.css";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { Challenge } from "../../../api/Flows";
@@ -44,7 +46,7 @@ export class IdentificationStage extends BaseStage {
     challenge?: IdentificationChallenge;
 
     static get styles(): CSSResult[] {
-        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(
             css`
                 /* login page's icons */
                 .pf-c-login__main-footer-links-item-link img {
