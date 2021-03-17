@@ -1,7 +1,10 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -31,7 +34,7 @@ export class SourceViewPage extends LitElement {
     source?: Source;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [PFPage, PFGallery, PFContent].concat(css`
             * {
                 height: 100%;
             }

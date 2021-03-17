@@ -1,6 +1,11 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -40,7 +45,7 @@ export class ProxyProviderViewPage extends Page {
     provider?: ProxyProvider;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFPage, PFContent, PFDescriptionList, PFCard, PFBase];
     }
 
     constructor() {

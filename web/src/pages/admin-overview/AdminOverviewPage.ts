@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/charts/AdminLoginsChart";
 import "../../elements/cards/AggregatePromiseCard";
@@ -14,11 +13,15 @@ import "./cards/UserCountStatusCard";
 import "./cards/VersionStatusCard";
 import "./cards/WorkerStatusCard";
 
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFGallery, PFPage, PFContent];
     }
 
     render(): TemplateResult {

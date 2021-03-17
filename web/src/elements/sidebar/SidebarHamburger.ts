@@ -1,11 +1,13 @@
 import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 
 @customElement("ak-sidebar-hamburger")
 export class SidebarHamburger extends LitElement {
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFButton].concat(
             css`
                 :host {
                     position: absolute;

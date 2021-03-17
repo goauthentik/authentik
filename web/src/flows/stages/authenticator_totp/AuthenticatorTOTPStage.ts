@@ -1,12 +1,17 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
-import { COMMON_STYLES } from "../../../common/styles";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import { BaseStage } from "../base";
 import "webcomponent-qr-code";
 import "../../../elements/forms/FormElement";
 import { showMessage } from "../../../elements/messages/MessageContainer";
-import "../../../elements/utils/LoadingState";
+import "../../../elements/EmptyState";
+import "../../FormStatic";
 
 export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
     config_url: string;
@@ -19,12 +24,15 @@ export class AuthenticatorTOTPStage extends BaseStage {
     challenge?: AuthenticatorTOTPChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<ak-empty-state
+                ?loading="${true}"
+                header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">
@@ -33,17 +41,15 @@ export class AuthenticatorTOTPStage extends BaseStage {
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
-                    <div class="pf-c-form__group">
-                        <div class="form-control-static">
-                            <div class="left">
-                                <img class="pf-c-avatar" src="${this.challenge.pending_user_avatar}" alt="${gettext("User's avatar")}">
-                                ${this.challenge.pending_user}
-                            </div>
-                            <div class="right">
-                                <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
-                            </div>
+                    <ak-form-static class="pf-c-form__group">
+                        <div slot="avatar">
+                            <img class="pf-c-avatar" src="${this.challenge.pending_user_avatar}" alt="${gettext("User's avatar")}">
+                            ${this.challenge.pending_user}
                         </div>
-                    </div>
+                        <div slot="link">
+                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                        </div>
+                    </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
                     <ak-form-element>
                         <!-- @ts-ignore -->

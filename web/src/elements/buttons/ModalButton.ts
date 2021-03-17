@@ -1,11 +1,21 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS } from "../../constants";
 import { showMessage } from "../messages/MessageContainer";
-import { COMMON_STYLES } from "../../common/styles";
 
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
@@ -19,7 +29,7 @@ export class ModalButton extends LitElement {
     modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent].concat(
             css`
                 :host {
                     text-align: left;
@@ -29,6 +39,10 @@ export class ModalButton extends LitElement {
                 }
                 .pf-c-modal-box > .pf-c-button + * {
                     margin-right: 0;
+                }
+                /* fix multiple selects height */
+                select[multiple] {
+                    height: 15em;
                 }
             `
         );

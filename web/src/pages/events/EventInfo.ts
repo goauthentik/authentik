@@ -2,12 +2,16 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
 import { FlowsApi } from "authentik-api";
-import { COMMON_STYLES } from "../../common/styles";
 import "../../elements/Spinner";
 import "../../elements/Expand";
 import { SpinnerSize } from "../../elements/Spinner";
 import { EventContext, EventWithContext } from "../../api/Events";
 import { DEFAULT_CONFIG } from "../../api/Config";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-event-info")
 export class EventInfo extends LitElement {
@@ -16,7 +20,7 @@ export class EventInfo extends LitElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFFlex, PFList, PFDescriptionList,
             css`
                 code {
                     display: block;
@@ -29,7 +33,7 @@ export class EventInfo extends LitElement {
                     min-width: 25%;
                 }
             `
-        );
+        ];
     }
 
     getModelInfo(context: EventContext): TemplateResult {

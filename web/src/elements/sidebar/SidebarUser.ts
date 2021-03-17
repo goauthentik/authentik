@@ -1,12 +1,9 @@
 import { css, CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
-// @ts-ignore
-import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
-// @ts-ignore
-import fa from "@fortawesome/fontawesome-free/css/all.css";
-// @ts-ignore
-import AvatarStyle from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import { me } from "../../api/Users";
 import { until } from "lit-html/directives/until";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "../notifications/NotificationTrigger";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -16,9 +13,9 @@ export class SidebarUser extends LitElement {
 
     static get styles(): CSSResult[] {
         return [
-            fa,
-            NavStyle,
-            AvatarStyle,
+            PFBase,
+            PFNav,
+            PFAvatar,
             css`
                 :host {
                     display: flex;

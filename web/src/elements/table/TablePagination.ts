@@ -1,7 +1,10 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 import { AKPagination } from "../../api/Client";
 import { gettext } from "django";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+
 
 @customElement("ak-table-pagination")
 export class TablePagination extends LitElement {
@@ -13,7 +16,7 @@ export class TablePagination extends LitElement {
     pageChangeHandler: (page: number) => void = (page: number) => {}
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFButton, PFPagination];
     }
 
     render(): TemplateResult {

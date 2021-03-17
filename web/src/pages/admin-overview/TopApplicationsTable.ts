@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 import { EventsApi, EventTopPerUser } from "authentik-api";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import "../../elements/Spinner";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -13,7 +13,7 @@ export class TopApplicationsTable extends LitElement {
     topN?: EventTopPerUser[];
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFTable];
     }
 
     firstUpdated(): void {

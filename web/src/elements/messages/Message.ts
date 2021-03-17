@@ -4,7 +4,6 @@ import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-gro
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
 
 export interface APIMessage {
     level_tag: string;
@@ -32,7 +31,7 @@ export class Message extends LitElement {
     onRemove?: (m: APIMessage) => void;
 
     static get styles(): CSSResult[] {
-        return [PFBase, FA, PFButton, PFAlert, PFAlertGroup];
+        return [PFBase, PFButton, PFAlert, PFAlertGroup];
     }
 
     firstUpdated(): void {

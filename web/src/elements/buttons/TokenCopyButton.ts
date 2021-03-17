@@ -1,6 +1,6 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 // @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+import GlobalsStyle from "@patternfly/patternfly/patternfly-base.css";
 // @ts-ignore
 import ButtonStyle from "@patternfly/patternfly/components/Button/button.css";
 import { CoreApi } from "authentik-api";

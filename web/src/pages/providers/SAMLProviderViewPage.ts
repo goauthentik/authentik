@@ -1,7 +1,10 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { until } from "lit-html/directives/until";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -41,7 +44,7 @@ export class SAMLProviderViewPage extends Page {
     provider?: SAMLProvider;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFPage, PFGallery, PFContent];
     }
 
     constructor() {

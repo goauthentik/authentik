@@ -1,9 +1,8 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/utils/LoadingState";
+import "../../elements/EmptyState";
 
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
@@ -11,6 +10,7 @@ import "./ProxyProviderViewPage";
 import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
+import { gettext } from "django";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
@@ -26,16 +26,19 @@ export class ProviderViewPage extends LitElement {
     provider?: Provider;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [css`
             * {
                 height: 100%;
             }
-        `);
+        `];
     }
 
     render(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<ak-empty-state
+                ?loading="${true}"
+                header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         switch (this.provider?.objectType) {
             case "saml":

@@ -1,7 +1,9 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+
+import { SpinnerSize } from "./Spinner";
 
 @customElement("ak-empty-state")
 export class EmptyState extends LitElement {
@@ -9,17 +11,24 @@ export class EmptyState extends LitElement {
     @property({type: String})
     icon = "";
 
+    @property({type: Boolean})
+    loading = false;
+
     @property()
     header?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, FA, PFEmptyState];
+        return [PFBase, PFEmptyState, PFTitle];
     }
 
     render(): TemplateResult {
         return html`<div class="pf-c-empty-state">
             <div class="pf-c-empty-state__content">
-                <i class="pf-icon fa ${this.icon || "fa-question-circle"} pf-c-empty-state__icon" aria-hidden="true"></i>
+                ${this.loading ?
+                    html`<div class="pf-c-empty-state__icon">
+                        <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+                    </div>`:
+                    html`<i class="pf-icon fa ${this.icon || "fa-question-circle"} pf-c-empty-state__icon" aria-hidden="true"></i>`}
                 <h1 class="pf-c-title pf-m-lg">
                     ${this.header}
                 </h1>

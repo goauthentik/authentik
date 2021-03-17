@@ -1,8 +1,6 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import PageStyle from "@patternfly/patternfly/components/Page/page.css";
-// @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import { configureSentry } from "../../api/Config";
 import { Config } from "authentik-api";
 import { ifDefined } from "lit-html/directives/if-defined";
@@ -23,8 +21,8 @@ export class SidebarBrand extends LitElement {
 
     static get styles(): CSSResult[] {
         return [
-            GlobalsStyle,
-            PageStyle,
+            PFGlobal,
+            PFPage,
             css`
                 :host {
                     display: flex;

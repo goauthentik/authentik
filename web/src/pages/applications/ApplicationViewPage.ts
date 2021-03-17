@@ -1,15 +1,18 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
 import "../../elements/charts/ApplicationAuthorizeChart";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
-import "../../elements/utils/LoadingState";
+import "../../elements/EmptyState";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
@@ -31,7 +34,7 @@ export class ApplicationViewPage extends LitElement {
     application!: Application;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFPage, PFContent, PFGallery].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
@@ -52,7 +55,10 @@ export class ApplicationViewPage extends LitElement {
                     </h1>
                 </div>
             </section>
-            <ak-loading-state></ak-loading-state>`;
+            <ak-empty-state
+                ?loading="${true}"
+                header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

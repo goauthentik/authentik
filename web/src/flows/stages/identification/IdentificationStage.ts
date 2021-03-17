@@ -1,9 +1,13 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import "../../../elements/forms/FormElement";
-import "../../../elements/utils/LoadingState";
+import "../../../elements/EmptyState";
 import { Challenge } from "../../../api/Flows";
 
 export const PasswordManagerPrefill: {
@@ -40,10 +44,15 @@ export class IdentificationStage extends BaseStage {
     challenge?: IdentificationChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(
             css`
+                /* login page's icons */
                 .pf-c-login__main-footer-links-item-link img {
-                    width: 100px;
+                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                    width: 100%;
+                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                    height: 100%;
+                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
                 }
             `
         );
@@ -144,7 +153,10 @@ export class IdentificationStage extends BaseStage {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<ak-empty-state
+                ?loading="${true}"
+                header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">

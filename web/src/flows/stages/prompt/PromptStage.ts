@@ -1,10 +1,14 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
-import { COMMON_STYLES } from "../../../common/styles";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
-import "../../../elements/utils/LoadingState";
+import "../../../elements/EmptyState";
 import { Challenge } from "../../../api/Flows";
 
 export interface Prompt {
@@ -27,7 +31,7 @@ export class PromptStage extends BaseStage {
     challenge?: PromptChallenge;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
     renderPromptInner(prompt: Prompt): string {
@@ -113,7 +117,10 @@ export class PromptStage extends BaseStage {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<ak-empty-state
+    ?loading="${true}"
+    header=${gettext("Loading")}>
+</ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">

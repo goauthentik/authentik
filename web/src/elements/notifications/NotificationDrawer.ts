@@ -3,7 +3,9 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { EventsApi, Notification } from "authentik-api";
 import { AKResponse } from "../../api/Client";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { COMMON_STYLES } from "../../common/styles";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends LitElement {
@@ -15,7 +17,7 @@ export class NotificationDrawer extends LitElement {
     unread = 0;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFNotificationDrawer, PFDropdown].concat(
             css`
                 .pf-c-notification-drawer__header {
                     height: 114px;
