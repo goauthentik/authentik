@@ -1,10 +1,7 @@
 import { LitElement, html, customElement, property, CSSResult, TemplateResult, css } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
-// @ts-ignore
-import TabsStyle from "@patternfly/patternfly/components/Tabs/tabs.css";
-// @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
-// @ts-ignore
+import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
+import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../authentik.css";
 import { CURRENT_CLASS } from "../constants";
 import { gettext } from "django";
@@ -18,7 +15,7 @@ export class Tabs extends LitElement {
     vertical = false;
 
     static get styles(): CSSResult[] {
-        return [GlobalsStyle, TabsStyle, AKGlobal, css`
+        return [PFGlobal, PFTabs, AKGlobal, css`
             ::slotted(*) {
                 height: 100%;
                 flex-grow: 2;

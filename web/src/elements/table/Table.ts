@@ -1,12 +1,18 @@
 import { gettext } from "django";
 import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import AKGlobal from "../../authentik.css";
 
 import "./TablePagination";
 import "../EmptyState";
-import "../Spinner";
-import { SpinnerSize } from "../Spinner";
 
 export class TableColumn {
 
@@ -109,7 +115,7 @@ export abstract class Table<T> extends LitElement {
     expandedRows: boolean[] = [];
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFTable, PFBullseye, PFButton, PFToolbar, PFDropdown, PFPagination, AKGlobal];
     }
 
     constructor() {
@@ -138,14 +144,10 @@ export abstract class Table<T> extends LitElement {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <div class="pf-c-empty-state pf-m-sm">
-                        <div class="pf-c-empty-state__content">
-                            <div class="pf-c-empty-state__icon">
-                                <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
-                            </div>
-                            <h2 class="pf-c-title pf-m-lg">${gettext("Loading")}</h2>
-                        </div>
-                    </div>
+                    <ak-empty-state
+                        ?loading="${true}"
+                        header=${gettext("Loading")}>
+                    </ak-empty-state>
                 </div>
             </td>
         </tr>`;

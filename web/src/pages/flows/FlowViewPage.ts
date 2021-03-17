@@ -1,6 +1,5 @@
 import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
@@ -10,6 +9,11 @@ import "./BoundStagesList";
 import "./FlowDiagram";
 import { Flow, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -26,7 +30,7 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFPage, PFContent, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;

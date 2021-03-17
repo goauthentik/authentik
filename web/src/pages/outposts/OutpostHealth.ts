@@ -3,8 +3,9 @@ import { CSSResult, customElement, html, LitElement, property, TemplateResult } 
 import { until } from "lit-html/directives/until";
 import { OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { COMMON_STYLES } from "../../common/styles";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import "../../elements/Spinner";
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-outpost-health")
 export class OutpostHealth extends LitElement {
@@ -13,7 +14,7 @@ export class OutpostHealth extends LitElement {
     outpostId?: string;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, AKGlobal];
     }
 
     render(): TemplateResult {

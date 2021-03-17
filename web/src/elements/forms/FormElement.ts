@@ -1,22 +1,21 @@
 import { customElement, LitElement, CSSResult, property, css } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { Error } from "../../api/Flows";
-import { COMMON_STYLES } from "../../common/styles";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 @customElement("ak-form-element")
 export class FormElement extends LitElement {
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
-            css`
-                slot {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-around;
-                }
-            `
-        );
+        return [PFForm, PFFormControl, css`
+            slot {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-around;
+            }
+        `];
     }
 
     @property()

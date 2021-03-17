@@ -1,6 +1,8 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-router-404")
 export class Router404 extends LitElement {
@@ -9,7 +11,7 @@ export class Router404 extends LitElement {
     url = "";
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFEmptyState, PFTitle];
     }
 
     render(): TemplateResult {

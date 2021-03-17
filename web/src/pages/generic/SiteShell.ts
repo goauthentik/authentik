@@ -4,7 +4,10 @@ import { showMessage } from "../../elements/messages/MessageContainer";
 import { gettext } from "django";
 import { SentryIgnoredError } from "../../common/errors";
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -23,7 +26,7 @@ export class SiteShell extends LitElement {
     body = "";
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFPage, PFGallery, PFContent].concat(
             css`
                 :host,
                 ::slotted(*) {

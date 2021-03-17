@@ -1,5 +1,6 @@
+import { gettext } from "django";
 import { html, TemplateResult } from "lit-html";
-import "./elements/utils/LoadingState";
+import "./elements/EmptyState";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -43,7 +44,10 @@ export function truncate(input?: string, max = 10): string {
 
 export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
     if (!v) {
-        return html`<ak-loading-state></ak-loading-state>`;
+        return html`<ak-empty-state
+            ?loading="${true}"
+            header=${gettext("Loading")}>
+        </ak-empty-state>`;
     }
     return actual;
 }

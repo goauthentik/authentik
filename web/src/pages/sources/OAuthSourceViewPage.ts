@@ -1,6 +1,16 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
+import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import AKGlobal from "../../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -36,7 +46,7 @@ export class OAuthSourceViewPage extends Page {
     source?: OAuthSource;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
     }
 
     constructor() {

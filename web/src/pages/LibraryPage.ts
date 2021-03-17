@@ -6,8 +6,16 @@ import { Application, CoreApi } from "authentik-api";
 import { AKResponse } from "../api/Client";
 import { DEFAULT_CONFIG } from "../api/Config";
 import { me } from "../api/Users";
-import { COMMON_STYLES } from "../common/styles";
 import { loading, truncate } from "../utils";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import AKGlobal from "../authentik.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -15,13 +23,16 @@ export class LibraryApplication extends LitElement {
     application?: Application;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(
+        return [PFBase, PFCard, PFAvatar, AKGlobal,
             css`
                 a {
                     height: 100%;
                 }
                 i.pf-icon {
                     height: 36px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
@@ -36,7 +47,7 @@ export class LibraryApplication extends LitElement {
                     margin-right: 0.25em;
                 }
             `
-        );
+        ];
     }
 
     render(): TemplateResult {
@@ -47,7 +58,7 @@ export class LibraryApplication extends LitElement {
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
                     ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
-                    : html`<i class="pf-icon pf-icon-arrow"></i>`}
+                    : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(me().then((u) => {
                     if (!u.isSuperuser) return html``;
                     return html`
@@ -75,7 +86,7 @@ export class LibraryPage extends LitElement {
     apps?: AKResponse<Application>;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [PFBase, PFEmptyState, PFTitle, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,
             main {
                 height: 100%;

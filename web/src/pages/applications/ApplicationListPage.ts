@@ -10,6 +10,7 @@ import { PAGE_SIZE } from "../../constants";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
@@ -39,7 +40,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+        return super.styles.concat(PFAvatar, css`
             tr td:first-child {
                 width: auto;
                 min-width: 0px;
@@ -64,7 +65,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return [
             item.metaIcon ?
                 html`<img class="app-icon pf-c-avatar" src="${item.metaIcon}" alt="${gettext("Application Icon")}">` :
-                html`<i class="pf-icon pf-icon-arrow"></i>`,
+                html`<i class="fas fas fa-share-square"></i>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>
                     ${item.name}

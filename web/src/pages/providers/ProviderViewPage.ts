@@ -1,9 +1,8 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import "../../elements/utils/LoadingState";
+import "../../elements/EmptyState";
 
 import "./SAMLProviderViewPage";
 import "./OAuth2ProviderViewPage";
@@ -26,16 +25,16 @@ export class ProviderViewPage extends LitElement {
     provider?: Provider;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [css`
             * {
                 height: 100%;
             }
-        `);
+        `];
     }
 
     render(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-loading-state></ak-loading-state>`;
+            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
         switch (this.provider?.objectType) {
             case "saml":

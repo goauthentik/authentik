@@ -1,10 +1,12 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 
-import PFLogin from "../../node_modules/@patternfly/patternfly/components/Login/login.css";
-import PFBackgroundImage from "../../node_modules/@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFList from "../../node_modules/@patternfly/patternfly/components/List/list.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import AKGlobal from "../authentik.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
@@ -30,7 +32,6 @@ import { AuthenticatorStaticChallenge } from "./stages/authenticator_static/Auth
 import { AuthenticatorValidateStageChallenge } from "./stages/authenticator_validate/AuthenticatorValidateStage";
 import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
-import { COMMON_STYLES } from "../common/styles";
 import { SpinnerSize } from "../elements/Spinner";
 import { StageHost } from "./stages/base";
 import { Challenge, ChallengeTypeEnum, FlowsApi } from "authentik-api";
@@ -48,7 +49,7 @@ export class FlowExecutor extends LitElement implements StageHost {
     loading = false;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [PFBase, PFLogin, PFTitle].concat(css`
             .ak-loading {
                 display: flex;
                 height: 100%;
@@ -63,6 +64,10 @@ export class FlowExecutor extends LitElement implements StageHost {
             }
             :host {
                 position: relative;
+            }
+            .ak-exception {
+                font-family: monospace;
+                overflow-x: scroll;
             }
         `);
     }
@@ -110,21 +115,15 @@ export class FlowExecutor extends LitElement implements StageHost {
     errorMessage(error: string): void {
         this.challenge = <ShellChallenge>{
             type: ChallengeTypeEnum.Shell,
-            body: `<style>
-                    .ak-exception {
-                        font-family: monospace;
-                        overflow-x: scroll;
-                    }
-                </style>
-                <header class="pf-c-login__main-header">
-                    <h1 class="pf-c-title pf-m-3xl">
-                        ${gettext("Whoops!")}
-                    </h1>
-                </header>
-                <div class="pf-c-login__main-body">
-                    <h3>${gettext("Something went wrong! Please try again later.")}</h3>
-                    <pre class="ak-exception">${error}</pre>
-                </div>`
+            body: `<header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">
+                    ${gettext("Whoops!")}
+                </h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                <h3>${gettext("Something went wrong! Please try again later.")}</h3>
+                <pre class="ak-exception">${error}</pre>
+            </div>`
         };
     }
 

@@ -3,7 +3,10 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { EventsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { EventWithContext } from "../../api/Events";
-import { COMMON_STYLES } from "../../common/styles";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import AKGlobal from "../../authentik.css";
 import "./EventInfo";
 
 @customElement("ak-event-info-page")
@@ -26,7 +29,7 @@ export class EventInfoPage extends LitElement {
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES.concat(css`
+        return [PFBase, PFPage, PFCard, AKGlobal].concat(css`
             .pf-c-card {
                 color: var(--ak-dark-foreground);
             }

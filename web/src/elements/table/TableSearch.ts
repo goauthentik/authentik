@@ -1,6 +1,11 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { COMMON_STYLES } from "../../common/styles";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-table-search")
 export class TableSearch extends LitElement {
@@ -12,7 +17,7 @@ export class TableSearch extends LitElement {
     onSearch?: (value: string) => void;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFButton, PFToolbar, PFInputGroup, PFFormControl, AKGlobal];
     }
 
     render(): TemplateResult {

@@ -20,54 +20,6 @@ html > input {
     display: block;
 }
 
-/* login page's icons */
-.pf-c-login__main-footer-links-item-link img {
-    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-    width: 100%;
-    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-    height: 100%;
-    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-}
-
-/* fix multiple selects height */
-select[multiple] {
-    height: 15em;
-}
-
-/* Form with user */
-.form-control-static {
-    margin-top: var(--pf-global--spacer--sm);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.form-control-static .left {
-    display: flex;
-    align-items: center;
-}
-.form-control-static img {
-    margin-right: var(--pf-global--spacer--xs);
-}
-.form-control-static a {
-    padding-top: var(--pf-global--spacer--xs);
-    padding-bottom: var(--pf-global--spacer--xs);
-    line-height: var(--pf-global--spacer--xl);
-}
-
-/* Static OTP Tokens, authentik.stages.otp_static */
-.ak-otp-tokens {
-    list-style: circle;
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-    margin-left: var(--pf-global--spacer--xs);
-    width: 100%;
-}
-.ak-otp-tokens li {
-    font-size: var(--pf-global--FontSize--2xl);
-    font-family: monospace;
-}
-
 .pf-c-content h1 {
     display: flex;
     align-items: flex-start;
@@ -79,14 +31,6 @@ select[multiple] {
     margin-right: var(--pf-global--spacer--sm);
 }
 
-.subtext {
-    font-size: var(--pf-global--FontSize--sm);
-}
-
-.pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
-    z-index: auto !important;
-}
-
 /* ensure background on non-flow pages match */
 .pf-c-background-image::before {
     background-image: url("/static/dist/assets/images/flow_background.jpg");
@@ -96,6 +40,28 @@ select[multiple] {
 /* Fix spacing between messages */
 ak-message {
     display: block;
+}
+
+.pf-m-success {
+    color: var(--pf-global--success-color--100);
+}
+.pf-c-button.pf-m-success {
+    color: var(--pf-c-button--m-primary--Color);
+    background-color: var(--pf-global--success-color--100);
+}
+.pf-m-warning {
+    color: var(--pf-global--warning-color--100);
+}
+.pf-c-button.pf-m-warning {
+    color: var(--pf-c-button--m-primary--Color);
+    background-color: var(--pf-global--warning-color--100);
+}
+.pf-m-danger {
+    color: var(--pf-global--danger-color--100);
+}
+.pf-c-button.pf-m-danger {
+    color: var(--pf-c-button--m-primary--Color);
+    background-color: var(--pf-global--danger-color--100);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -124,7 +90,7 @@ ak-message {
     }
     /* Header sections */
     .pf-c-page__main-section {
-        background-color: var(--ak-dark-background);
+        --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
     }
     .pf-c-page__main-section.pf-m-light {
         background-color: var(--ak-dark-background-light);
@@ -161,6 +127,16 @@ ak-message {
     }
     .pf-c-table__sort-indicator i {
         color: var(--ak-dark-foreground) !important;
+    }
+    .pf-c-table__expandable-row.pf-m-expanded {
+        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(--ak-dark-background-lighter);
+    }
+    /* tabs */
+    .pf-c-tabs {
+        background-color: var(--ak-dark-background-light);
+    }
+    .pf-c-tabs__item.pf-m-current {
+        --pf-c-tabs__link--after--BorderColor: #fd4b2d;
     }
     /* tabs, vertical */
     .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
@@ -199,7 +175,7 @@ ak-message {
         --pf-c-form-control--BorderRightColor: var(--ak-dark-background-lighter);
         --pf-c-form-control--BorderLeftColor: var(--ak-dark-background-lighter);
         --pf-global--BackgroundColor--100: transparent;
-        background-color: var(--ak-dark-background-light);
+        --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
         color: var(--ak-dark-foreground);
     }
     .pf-c-form-control[readonly] {

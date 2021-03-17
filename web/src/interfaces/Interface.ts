@@ -1,12 +1,15 @@
-import { gettext } from "django";
-import { CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, html, LitElement, property, TemplateResult } from "lit-element";
 import { SidebarItem } from "../elements/sidebar/Sidebar";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFSkipToContent from "@patternfly/patternfly/components/SkipToContent/skip-to-content.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 
 import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/sidebar/SidebarHamburger";
 import "../elements/notifications/NotificationDrawer";
-import { COMMON_STYLES } from "../common/styles";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -18,7 +21,11 @@ export abstract class Interface extends LitElement {
     abstract get sidebar(): SidebarItem[];
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFPage, PFSkipToContent, PFButton, PFDrawer, css`
+            .pf-c-page__main, .pf-c-drawer__content, .pf-c-page__drawer {
+                z-index: auto !important;
+            }
+        `];
     }
 
     constructor() {
@@ -38,7 +45,6 @@ export abstract class Interface extends LitElement {
     render(): TemplateResult {
         return html`<ak-message-container></ak-message-container>
             <div class="pf-c-page">
-                <a class="pf-c-skip-to-content pf-c-button pf-m-primary" href="#main-content">${gettext("Skip to content")}</a>
                 <ak-sidebar-hamburger>
                 </ak-sidebar-hamburger>
                 <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}" .items=${this.sidebar}>

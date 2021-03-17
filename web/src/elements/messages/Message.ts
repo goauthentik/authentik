@@ -1,5 +1,9 @@
 import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import { COMMON_STYLES } from "../../common/styles";
+
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 export interface APIMessage {
     level_tag: string;
@@ -27,7 +31,7 @@ export class Message extends LitElement {
     onRemove?: (m: APIMessage) => void;
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFButton, PFAlert, PFAlertGroup];
     }
 
     firstUpdated(): void {

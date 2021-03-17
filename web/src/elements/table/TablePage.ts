@@ -1,14 +1,21 @@
 import { gettext } from "django";
+import { CSSResult } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { Table } from "./Table";
 import "./TableSearch";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export abstract class TablePage<T> extends Table<T> {
     abstract pageTitle(): string;
     abstract pageDescription(): string | undefined;
     abstract pageIcon(): string;
     abstract searchEnabled(): boolean;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFPage, PFContent);
+    }
 
     renderSearch(): TemplateResult {
         if (!this.searchEnabled()) {

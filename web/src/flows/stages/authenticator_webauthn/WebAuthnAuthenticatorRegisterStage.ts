@@ -1,7 +1,13 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { WithUserInfoChallenge } from "../../../api/Flows";
-import { COMMON_STYLES } from "../../../common/styles";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../../authentik.css";
 import { SpinnerSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
 import { Assertion, transformCredentialCreateOptions, transformNewAssertionForServer } from "./utils";
@@ -27,7 +33,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage {
     registerMessage = "";
 
     static get styles(): CSSResult[] {
-        return COMMON_STYLES;
+        return [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton, AKGlobal];
     }
 
     async register(): Promise<void> {

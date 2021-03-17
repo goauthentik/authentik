@@ -1,11 +1,7 @@
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-// @ts-ignore
-import PageStyle from "@patternfly/patternfly/components/Page/page.css";
-// @ts-ignore
-import NavStyle from "@patternfly/patternfly/components/Nav/nav.css";
-// @ts-ignore
-import GlobalsStyle from "@patternfly/patternfly/base/patternfly-globals.css";
-// @ts-ignore
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import AKGlobal from "../../authentik.css";
 
 import { until } from "lit-html/directives/until";
@@ -99,9 +95,9 @@ export class Sidebar extends LitElement {
 
     static get styles(): CSSResult[] {
         return [
-            GlobalsStyle,
-            PageStyle,
-            NavStyle,
+            PFBase,
+            PFPage,
+            PFNav,
             AKGlobal,
             css`
                 .pf-c-nav__link.pf-m-current::after,
