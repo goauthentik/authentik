@@ -15,6 +15,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends LitElement {
@@ -22,13 +23,16 @@ export class LibraryApplication extends LitElement {
     application?: Application;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFAvatar,
+        return [PFBase, PFCard, PFAvatar, AKGlobal,
             css`
                 a {
                     height: 100%;
                 }
                 i.pf-icon {
                     height: 36px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
@@ -82,7 +86,7 @@ export class LibraryPage extends LitElement {
     apps?: AKResponse<Application>;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle, PFPage, PFContent, AKGlobal].concat(css`
+        return [PFBase, PFEmptyState, PFTitle, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,
             main {
                 height: 100%;
