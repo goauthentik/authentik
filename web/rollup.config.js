@@ -40,7 +40,10 @@ export default [
             },
         ],
         plugins: [
-            typescript(),
+            typescript({
+                "declaration": true,
+                "outDir": "./api/dist/",
+            }),
             isProdBuild && terser(),
         ].filter(p => p),
         watch: {
