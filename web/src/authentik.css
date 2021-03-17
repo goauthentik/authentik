@@ -128,6 +128,9 @@ ak-message {
     .pf-c-table__sort-indicator i {
         color: var(--ak-dark-foreground) !important;
     }
+    .pf-c-table__expandable-row.pf-m-expanded {
+        --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(--ak-dark-background-lighter);
+    }
     /* tabs, vertical */
     .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
         background-color: var(--ak-dark-background-light);
