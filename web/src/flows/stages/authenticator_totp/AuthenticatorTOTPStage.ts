@@ -4,7 +4,7 @@ import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import "webcomponent-qr-code";
-import "../form";
+import "../../../elements/forms/FormElement";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import "../../../elements/utils/LoadingState";
 

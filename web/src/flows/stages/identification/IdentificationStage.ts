@@ -2,7 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
-import "../form";
+import "../../../elements/forms/FormElement";
 import "../../../elements/utils/LoadingState";
 import { Challenge } from "../../../api/Flows";
 

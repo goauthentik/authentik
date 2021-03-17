@@ -3,7 +3,7 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
 import { AuthenticatorValidateStage, AuthenticatorValidateStageChallenge, DeviceChallenge } from "./AuthenticatorValidateStage";
-import "../form";
+import "../../../elements/forms/FormElement";
 import "../../../elements/utils/LoadingState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 

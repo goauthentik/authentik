@@ -3,7 +3,7 @@ import { CSSResult, customElement, html, property, TemplateResult } from "lit-el
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import { COMMON_STYLES } from "../../../common/styles";
 import { BaseStage } from "../base";
-import "../form";
+import "../../../elements/forms/FormElement";
 import "../../../elements/utils/LoadingState";
 import { Challenge } from "../../../api/Flows";
 

@@ -4,7 +4,7 @@ import { WithUserInfoChallenge } from "../../../api/Flows";
 import { COMMON_STYLES } from "../../../common/styles";
 import { SpinnerSize } from "../../../elements/Spinner";
 import { BaseStage } from "../base";
-import "../form";
+import "../../../elements/forms/FormElement";
 import "../../../elements/utils/LoadingState";
 
 export interface CaptchaChallenge extends WithUserInfoChallenge {
