@@ -10,7 +10,7 @@
         "lit-analyse": "lit-analyzer src"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.15.2",
+        "@fortawesome/fontawesome-free": "^5.15.3",
         "@patternfly/patternfly": "^4.90.5",
         "@sentry/browser": "^6.2.2",
         "@sentry/tracing": "^6.2.2",
