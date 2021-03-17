@@ -39,4 +39,4 @@ class DisableView(LoginRequiredMixin, View):
         Event.new("totp_disable", message="User disabled Time-based OTP.").from_http(
             request
         )
-        return redirect("authentik_core:user-settings")
+        return redirect("/")

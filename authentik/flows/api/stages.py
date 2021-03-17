@@ -1,4 +1,6 @@
 """Flow Stage API Views"""
+from typing import Iterable
+
 from django.urls import reverse
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
@@ -6,12 +8,16 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.flows.api.flows import FlowSerializer
+from authentik.flows.challenge import Challenge
 from authentik.flows.models import Stage
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
+
+LOGGER = get_logger()
 
 
 class StageSerializer(ModelSerializer, MetaNameSerializer):
@@ -64,3 +70,19 @@ class StageViewSet(ReadOnlyModelViewSet):
             )
         data = sorted(data, key=lambda x: x["name"])
         return Response(TypeCreateSerializer(data, many=True).data)
+
+    @swagger_auto_schema(responses={200: Challenge(many=True)})
+    @action(detail=False)
+    def user_settings(self, request: Request) -> Response:
+        """Get all stages the user can configure"""
+        _all_stages: Iterable[Stage] = Stage.objects.all().select_subclasses()
+        matching_stages: list[dict] = []
+        for stage in _all_stages:
+            user_settings = stage.ui_user_settings
+            if not user_settings:
+                continue
+            stage_challenge = user_settings
+            if not stage_challenge.is_valid():
+                LOGGER.warning(stage_challenge.errors)
+            matching_stages.append(stage_challenge.initial_data)
+        return Response(matching_stages)

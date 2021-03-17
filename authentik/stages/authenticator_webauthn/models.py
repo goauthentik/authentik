@@ -11,6 +11,7 @@ from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
+from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.flows.models import ConfigurableStage, Stage
 
 
@@ -42,10 +43,16 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         return AuthenticateWebAuthnStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[str]:
-        return reverse(
-            "authentik_stages_authenticator_webauthn:user-settings",
-            kwargs={"stage_uuid": self.stage_uuid},
+    def ui_user_settings(self) -> Optional[Challenge]:
+        return Challenge(
+            data={
+                "type": ChallengeTypes.shell.value,
+                "title": self._meta.verbose_name,
+                "component": reverse(
+                    "authentik_stages_authenticator_webauthn:user-settings",
+                    kwargs={"stage_uuid": self.stage_uuid},
+                ),
+            }
         )
 
     def __str__(self) -> str:

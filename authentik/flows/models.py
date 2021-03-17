@@ -10,6 +10,7 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.flows.challenge import Challenge
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
@@ -64,9 +65,9 @@ class Stage(SerializerModel):
         raise NotImplementedError
 
     @property
-    def ui_user_settings(self) -> Optional[str]:
+    def ui_user_settings(self) -> Optional[Challenge]:
         """Entrypoint to integrate with User settings. Can either return None if no
-        user settings are available, or a string with the URL to fetch."""
+        user settings are available, or a challenge."""
         return None
 
     def __str__(self):

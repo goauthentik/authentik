@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.flows.models import ConfigurableStage, Stage
 
 
@@ -48,11 +49,18 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[str]:
+    def ui_user_settings(self) -> Optional[Challenge]:
         if not self.configure_flow:
             return None
-        return reverse(
-            "authentik_stages_password:user-settings", kwargs={"stage_uuid": self.pk}
+        return Challenge(
+            data={
+                "type": ChallengeTypes.shell.value,
+                "title": self._meta.verbose_name,
+                "component": reverse(
+                    "authentik_stages_password:user-settings",
+                    kwargs={"stage_uuid": self.pk},
+                ),
+            }
         )
 
     class Meta:

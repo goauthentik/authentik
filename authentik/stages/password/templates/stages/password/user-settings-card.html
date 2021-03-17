@@ -6,7 +6,7 @@
         {% trans 'Reset your password' %}
     </div>
     <div class="pf-c-card__body">
-        <a class="pf-c-button pf-m-primary ak-root-link" href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next=/%23{% url 'authentik_core:user-settings' %}">
+        <a class="pf-c-button pf-m-primary ak-root-link" href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next=/%23user">
             {% trans 'Change password' %}
         </a>
     </div>

@@ -44,4 +44,4 @@ class DisableView(LoginRequiredMixin, View):
         Event.new(
             "static_otp_disable", message="User disabled Static OTP Tokens."
         ).from_http(request)
-        return redirect("authentik_core:user-settings")
+        return redirect("/")

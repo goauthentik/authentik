@@ -39,7 +39,7 @@
     </div>
     <div class="pf-c-card__footer">
         {% if stage.configure_flow %}
-        <a href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next=/%23{% url 'authentik_core:user-settings' %}"
+        <a href="{% url 'authentik_flows:configure' stage_uuid=stage.stage_uuid %}?next=/%23user"
             class="ak-root-link pf-c-button pf-m-primary">{% trans "Configure WebAuthn" %}
         </a>
         {% endif %}
