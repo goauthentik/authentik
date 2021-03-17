@@ -4,6 +4,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import AKGlobal from "../../authentik.css"
 
 @customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {
@@ -17,7 +18,7 @@ export class AggregateCard extends LitElement {
     headerLink?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFFlex].concat([css`
+        return [PFBase, PFCard, PFFlex, AKGlobal].concat([css`
             .pf-c-card.pf-c-card-aggregate {
                 height: 100%;
             }

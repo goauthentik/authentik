@@ -11,6 +11,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import AKGlobal from "../../authentik.css"
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
@@ -29,7 +30,7 @@ export class ModalButton extends LitElement {
     modal = "<slot name='modal'></slot>";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent].concat(
+        return [PFBase, PFButton, PFModalBox, PFForm, PFFormControl, PFBullseye, PFBackdrop, PFPage, PFStack, PFCard, PFContent, AKGlobal].concat(
             css`
                 :host {
                     text-align: left;
