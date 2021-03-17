@@ -122,7 +122,7 @@ export class IdentificationStage extends BaseStage {
     }
 
     renderSource(source: UILoginButton): TemplateResult {
-        let icon = html`<i class="pf-icon pf-icon-arrow" title="${source.name}"></i>`;
+        let icon = html`<i class="fas fas fa-share-square" title="${source.name}"></i>`;
         if (source.icon_url) {
             icon = html`<img src="${source.icon_url}" alt="${source.name}">`;
         }

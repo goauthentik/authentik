@@ -71,7 +71,7 @@ export class NotificationDrawer extends LitElement {
             <div class="pf-c-notification-drawer__list-item-action">
                 ${item.event && html`
                     <a class="pf-c-dropdown__toggle pf-m-plain" href="#/events/log/${item.event?.pk}">
-                        <i class="pf-icon pf-icon-arrow"></i>
+                        <i class="fas fas fa-share-square"></i>
                     </a>
                 `}
                 <button class="pf-c-dropdown__toggle pf-m-plain" type="button" @click=${() => {

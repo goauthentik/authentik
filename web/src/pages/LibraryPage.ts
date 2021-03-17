@@ -58,7 +58,7 @@ export class LibraryApplication extends LitElement {
             <div class="pf-c-card__header">
                 ${this.application.metaIcon
                     ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
-                    : html`<i class="pf-icon pf-icon-arrow"></i>`}
+                    : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(me().then((u) => {
                     if (!u.isSuperuser) return html``;
                     return html`

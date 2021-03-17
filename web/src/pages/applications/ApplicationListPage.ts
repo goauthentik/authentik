@@ -65,7 +65,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return [
             item.metaIcon ?
                 html`<img class="app-icon pf-c-avatar" src="${item.metaIcon}" alt="${gettext("Application Icon")}">` :
-                html`<i class="pf-icon pf-icon-arrow"></i>`,
+                html`<i class="fas fas fa-share-square"></i>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>
                     ${item.name}
