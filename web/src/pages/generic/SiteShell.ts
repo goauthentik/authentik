@@ -67,7 +67,6 @@ export class SiteShell extends LitElement {
                     return response;
                 }
                 console.debug(`authentik/site-shell: Request failed ${this._url}`);
-                window.location.hash = "#/";
                 showMessage({
                     level_tag: "error",
                     message: gettext(`Request failed: ${response.statusText}`),
