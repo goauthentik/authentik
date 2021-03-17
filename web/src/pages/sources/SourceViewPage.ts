@@ -2,13 +2,9 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import { Source, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
-import { SpinnerSize } from "../../elements/Spinner";
+import "../../elements/EmptyState";
 
 import "./LDAPSourceViewPage";
 import "./OAuthSourceViewPage";
@@ -34,24 +30,16 @@ export class SourceViewPage extends LitElement {
     source?: Source;
 
     static get styles(): CSSResult[] {
-        return [PFPage, PFGallery, PFContent].concat(css`
+        return [css`
             * {
                 height: 100%;
             }
-        `);
+        `];
     }
 
     render(): TemplateResult {
         if (!this.source) {
-            return html`<div class="pf-c-empty-state pf-m-full-height">
-                <div class="pf-c-empty-state__content">
-                    <div class="pf-l-bullseye">
-                        <div class="pf-l-bullseye__item">
-                            <ak-spinner size="${SpinnerSize.XLarge}"></ak-spinner>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
         switch (this.source?.objectType) {
             case "ldap":

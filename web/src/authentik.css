@@ -136,6 +136,9 @@ ak-message {
     .pf-c-tabs {
         background-color: var(--ak-dark-background-light);
     }
+    .pf-c-tabs__item.pf-m-current {
+        --pf-c-tabs__link--after--BorderColor: #fd4b2d;
+    }
     /* tabs, vertical */
     .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
         background-color: var(--ak-dark-background-light);

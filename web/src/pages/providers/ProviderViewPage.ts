@@ -10,7 +10,6 @@ import "./ProxyProviderViewPage";
 import { Provider, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { gettext } from "django";
 
 @customElement("ak-provider-view")
 export class ProviderViewPage extends LitElement {
@@ -35,10 +34,7 @@ export class ProviderViewPage extends LitElement {
 
     render(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-empty-state
-                ?loading="${true}"
-                header=${gettext("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
         switch (this.provider?.objectType) {
             case "saml":

@@ -4,7 +4,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import AKGlobal from "../../authentik.css"
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-aggregate-card")
 export class AggregateCard extends LitElement {

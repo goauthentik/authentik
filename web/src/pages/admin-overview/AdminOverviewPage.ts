@@ -16,7 +16,7 @@ import "./cards/WorkerStatusCard";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import AKGlobal from "../../authentik.css"
+import AKGlobal from "../../authentik.css";
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends LitElement {

@@ -19,14 +19,14 @@ export class EmptyState extends LitElement {
     fullHeight = false;
 
     @property()
-    header: string = "";
+    header = "";
 
     static get styles(): CSSResult[] {
         return [PFBase, PFEmptyState, PFTitle, AKGlobal];
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-empty-state ${this.fullHeight && 'pf-m-full-height'}">
+        return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
                 ${this.loading ?
                     html`<div class="pf-c-empty-state__icon">
