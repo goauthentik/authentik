@@ -2,9 +2,6 @@ import { gettext } from "django";
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, css } from "lit-element";
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import AKGlobal from "../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
@@ -77,7 +74,6 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.addEventListener("ak-flow-submit", () => {
             this.submit();
         });
-        document.adoptedStyleSheets = [PFLogin, PFBackgroundImage, PFList, AKGlobal];
     }
 
     submit<T>(formData?: T): Promise<void> {
