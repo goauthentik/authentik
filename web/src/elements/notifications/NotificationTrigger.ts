@@ -1,12 +1,13 @@
 import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
 
 @customElement("ak-notification-trigger")
 export class NotificationRule extends LitElement {
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFDropdown];
+        return [PFBase, PFDropdown, FA];
     }
 
     constructor() {
