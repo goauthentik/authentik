@@ -38,6 +38,7 @@ export class LibraryApplication extends LitElement {
                     --pf-c-avatar--BorderRadius: 0;
                 }
                 .pf-c-card__header {
+                    min-height: 60px;
                     justify-content: space-between;
                 }
                 .pf-c-card__header a {
