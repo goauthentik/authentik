@@ -43,7 +43,7 @@ export abstract class Interface extends LitElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-message-container></ak-message-container>
+        return html`
             <div class="pf-c-page">
                 <ak-sidebar-hamburger>
                 </ak-sidebar-hamburger>
