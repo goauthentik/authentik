@@ -86,6 +86,10 @@ export class LibraryPage extends LitElement {
     @property({attribute: false})
     apps?: AKResponse<Application>;
 
+    pageTitle(): string {
+        return gettext("Applications");
+    }
+
     static get styles(): CSSResult[] {
         return [PFBase, PFEmptyState, PFTitle, PFPage, PFContent, PFGallery, AKGlobal].concat(css`
             :host,

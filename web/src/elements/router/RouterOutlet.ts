@@ -6,6 +6,9 @@ import AKGlobal from "../../authentik.css";
 
 import "../../pages/generic/SiteShell";
 import "./Router404";
+import { Page } from "../Page";
+
+export const TITLE_SUFFIX = "authentik";
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends LitElement {
@@ -38,6 +41,19 @@ export class RouterOutlet extends LitElement {
 
     firstUpdated(): void {
         this.navigate();
+    }
+
+    updated(): void {
+        if (!this.shadowRoot) return;
+        Array.from(this.shadowRoot?.children).forEach((el) => {
+            console.log("pageTitle" in el);
+            if ("pageTitle" in el) {
+                const title = (el as Page).pageTitle();
+                document.title = `${title} - ${TITLE_SUFFIX}`;
+            } else {
+                document.title = TITLE_SUFFIX;
+            }
+        });
     }
 
     navigate(): void {

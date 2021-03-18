@@ -100,6 +100,7 @@ class FlowViewSet(ModelViewSet):
         },
     )
     @action(detail=True)
+    # pylint: disable=unused-argument
     def export(self, request: Request, slug: str) -> Response:
         """Export flow to .akflow file"""
         flow = self.get_object()
