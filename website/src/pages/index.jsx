@@ -2,6 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
+import ClientOnly from "@docusaurus/core/lib/client/exports/ClientOnly.js";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
@@ -102,13 +103,15 @@ function Home() {
                         <div className="row">
                             <div className="col col--5">
                                 <div>
-                                    <BeforeAfterSlider
-                                        className={styles.featureImage}
-                                        before={useBaseUrl("img/screen_apps_light.png")}
-                                        after={useBaseUrl("img/screen_apps_dark.png")}
-                                        width={640}
-                                        height={480}
-                                    />
+                                    <ClientOnly>
+                                        <BeforeAfterSlider
+                                            className={styles.featureImage}
+                                            before={useBaseUrl("img/screen_apps_light.png")}
+                                            after={useBaseUrl("img/screen_apps_dark.png")}
+                                            width={640}
+                                            height={480}
+                                        />
+                                    </ClientOnly>
                                 </div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
@@ -139,13 +142,15 @@ function Home() {
                             </div>
                             <div className="col col--5">
                                 <div>
-                                    <BeforeAfterSlider
-                                        className={styles.featureImage}
-                                        before={useBaseUrl("img/screen_admin_light.png")}
-                                        after={useBaseUrl("img/screen_admin_dark.png")}
-                                        width={640}
-                                        height={480}
-                                    />
+                                    <ClientOnly>
+                                        <BeforeAfterSlider
+                                            className={styles.featureImage}
+                                            before={useBaseUrl("img/screen_admin_light.png")}
+                                            after={useBaseUrl("img/screen_admin_dark.png")}
+                                            width={640}
+                                            height={480}
+                                        />
+                                    </ClientOnly>
                                 </div>
                             </div>
                         </div>
