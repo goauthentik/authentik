@@ -156,8 +156,8 @@ class Event(models.Model):
             }
             if response.city.name:
                 self.context["geo"]["city"] = response.city.name
-        except GeoIP2Error:
-            pass
+        except GeoIP2Error as exc:
+            LOGGER.warning("Failed to add geoIP Data to event", exc=exc)
 
     def save(self, *args, **kwargs):
         if self._state.adding:

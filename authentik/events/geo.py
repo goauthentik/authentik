@@ -1,10 +1,12 @@
 """events GeoIP Reader"""
-
 from typing import Optional
 
 from geoip2.database import Reader
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+
+LOGGER = get_logger()
 
 
 def get_geoip_reader() -> Optional[Reader]:
@@ -13,7 +15,9 @@ def get_geoip_reader() -> Optional[Reader]:
     if path == "" or not path:
         return None
     try:
-        return Reader(path)
+        reader = Reader(path)
+        LOGGER.info("Enabled GeoIP support")
+        return reader
     except OSError:
         return None
 

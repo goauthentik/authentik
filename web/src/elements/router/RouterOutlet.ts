@@ -46,7 +46,6 @@ export class RouterOutlet extends LitElement {
     updated(): void {
         if (!this.shadowRoot) return;
         Array.from(this.shadowRoot?.children).forEach((el) => {
-            console.log("pageTitle" in el);
             if ("pageTitle" in el) {
                 const title = (el as Page).pageTitle();
                 document.title = `${title} - ${TITLE_SUFFIX}`;
