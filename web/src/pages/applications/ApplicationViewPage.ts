@@ -7,6 +7,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
 import "../../elements/EmptyState";
+import "../../elements/events/ObjectChangelog";
 import { Application, CoreApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -109,6 +110,20 @@ export class ApplicationViewPage extends LitElement {
                                         </div>`:
                                     html``}
                                 </dl>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
+                            <div class="pf-c-card__header">
+                                <div class="pf-c-card__header-main">
+                                    <i class="pf-icon pf-icon-server"></i> ${gettext("Changelog")}
+                                </div>
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this.application.pk || ""}
+                                    targetModelApp="authentik_core"
+                                    targetModelName="application">
+                                </ak-object-changelog>
                             </div>
                         </div>
                     </div>

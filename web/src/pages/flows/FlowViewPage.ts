@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 
 import "../../elements/Tabs";
+import "../../elements/events/ObjectChangelog";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/policies/BoundPoliciesList";
@@ -77,6 +78,15 @@ export class FlowViewPage extends LitElement {
                         </div>
                         <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                         </ak-bound-policies-list>
+                    </div>
+                </div>
+                <div slot="page-4" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <ak-object-changelog
+                            targetModelPk=${this.flow.pk || ""}
+                            targetModelApp="authentik_flows"
+                            targetModelName="flow">
+                        </ak-object-changelog>
                     </div>
                 </div>
             </ak-tabs>`;

@@ -13,7 +13,7 @@ export class DeleteForm extends ModalButton {
     objectLabel?: string;
 
     @property({attribute: false})
-    delete!: () => Promise<void>;
+    delete!: () => Promise<unknown>;
 
     confirm(): void {
         this.delete().then(() => {
