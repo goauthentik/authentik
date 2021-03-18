@@ -15,7 +15,7 @@ export class ActionButton extends SpinnerButton {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apiRequest: () => Promise<any> = () => { throw new Error(); };
 
-    callAction(): void {
+    defaultCallAction(): void {
         if (this.isRunning === true) {
             return;
         }

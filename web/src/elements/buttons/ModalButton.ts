@@ -158,6 +158,10 @@ export class ModalButton extends LitElement {
         }
     }
 
+    renderModalInner(): TemplateResult {
+        return html`${unsafeHTML(this.modal)}`;
+    }
+
     renderModal(): TemplateResult {
         return html`<div class="pf-c-backdrop">
             <div class="pf-l-bullseye">
@@ -176,7 +180,7 @@ export class ModalButton extends LitElement {
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    ${unsafeHTML(this.modal)}
+                    ${this.renderModalInner()}
                 </div>
             </div>
         </div>`;

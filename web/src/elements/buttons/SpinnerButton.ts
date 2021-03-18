@@ -13,6 +13,9 @@ export class SpinnerButton extends LitElement {
     @property()
     form?: string;
 
+    @property()
+    callAction: () => void = this.defaultCallAction;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -49,7 +52,7 @@ export class SpinnerButton extends LitElement {
         }, 1000);
     }
 
-    callAction(): void {
+    defaultCallAction(): void {
         if (this.isRunning === true) {
             return;
         }

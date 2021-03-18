@@ -3,6 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
+import "../../elements/forms/DeleteForm";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import { TableColumn } from "../../elements/table/Table";
@@ -61,12 +62,18 @@ export class GroupListPage extends TablePage<Group> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.groups(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Group")}
+                .delete=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsDelete({
+                        groupUuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 
