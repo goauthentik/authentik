@@ -1,23 +1,18 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
-import { BaseInheritanceModel } from "../../api/Client";
 import { ModalButton } from "../buttons/ModalButton";
-
-export interface DeletableObject extends BaseInheritanceModel {
-    name: string | number;
-}
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
 
-    @property()
-    obj?: DeletableObject;
+    @property({attribute: false})
+    obj?: Record<string, unknown>;
 
     @property()
     objectLabel?: string;
 
     @property({attribute: false})
-    delete!: () => Promise<DeletableObject>;
+    delete!: () => Promise<void>;
 
     confirm(): void {
         this.delete().then(() => {
@@ -35,7 +30,7 @@ export class DeleteForm extends ModalButton {
         return html`<section class="pf-c-page__main-section pf-m-light">
             <div class="pf-c-content">
                 <h1 class="pf-c-title pf-m-2xl">
-                    ${gettext(`Delete ${(this.obj?.verboseName) || this.objectLabel}`)}
+                    ${gettext(`Delete ${this.objectLabel}`)}
                 </h1>
             </div>
         </section>
@@ -47,7 +42,7 @@ export class DeleteForm extends ModalButton {
                             <form class="pf-c-form pf-m-horizontal">
                                 <p>
                                     ${gettext(
-                                        `Are you sure you want to delete ${(this.obj?.verboseName) || this.objectLabel} '${this.obj?.name}'?`
+                                        `Are you sure you want to delete ${this.objectLabel} '${this.obj?.name}'?`
                                     )}
                                 </p>
                             </form>
