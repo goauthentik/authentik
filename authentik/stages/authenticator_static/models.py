@@ -46,7 +46,7 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
         return Challenge(
             data={
                 "type": ChallengeTypes.shell.value,
-                "title": self._meta.verbose_name,
+                "title": str(self._meta.verbose_name),
                 "component": reverse(
                     "authentik_stages_authenticator_static:user-settings",
                     kwargs={"stage_uuid": self.stage_uuid},

@@ -55,7 +55,7 @@ class PasswordStage(ConfigurableStage, Stage):
         return Challenge(
             data={
                 "type": ChallengeTypes.shell.value,
-                "title": self._meta.verbose_name,
+                "title": str(self._meta.verbose_name),
                 "component": reverse(
                     "authentik_stages_password:user-settings",
                     kwargs={"stage_uuid": self.pk},
