@@ -12,6 +12,7 @@ import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 import "../../elements/forms/DeleteForm";
+import "./UserActiveForm";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -71,19 +72,23 @@ export class UserListPage extends TablePage<User> {
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
                     <li>
-                        ${item.isActive ?
-                            html`<ak-modal-button href="${AdminURLManager.users(`${item.pk}/disable/`)}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${gettext("Disable")}
-                                </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>`:
-                            html`<ak-modal-button href="${AdminURLManager.users(`${item.pk}/enable/`)}">
-                                <button slot="trigger" class="pf-c-dropdown__menu-item">
-                                    ${gettext("Enable")}
-                                </button>
-                                <div slot="modal"></div>
-                            </ak-modal-button>`}
+                        <ak-user-active-form
+                            .obj=${item}
+                            objectLabel=${gettext("User")}
+                            .delete=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                    id: item.pk || 0,
+                                    data: {
+                                        username: item.username,
+                                        name: item.name,
+                                        isActive: !item.isActive,
+                                    }
+                                });
+                            }}>
+                            <button slot="trigger" class="pf-c-dropdown__menu-item">
+                                ${item.isActive ? gettext("Disable") : gettext("Enable")}
+                            </button>
+                        </ak-user-active-form>
                     </li>
                     <li class="pf-c-divider" role="separator"></li>
                     <li>
@@ -95,7 +100,7 @@ export class UserListPage extends TablePage<User> {
                                     id: item.pk || 0
                                 });
                             }}>
-                            <button slot="trigger" class="pf-c-button pf-m-danger">
+                            <button slot="trigger" class="pf-c-dropdown__menu-item">
                                 ${gettext("Delete")}
                             </button>
                         </ak-forms-delete>

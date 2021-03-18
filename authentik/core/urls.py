@@ -17,11 +17,6 @@ urlpatterns = [
         user.TokenUpdateView.as_view(),
         name="user-tokens-update",
     ),
-    path(
-        "-/user/tokens/<slug:identifier>/delete/",
-        user.TokenDeleteView.as_view(),
-        name="user-tokens-delete",
-    ),
     # Impersonation
     path(
         "-/impersonation/<int:user_id>/",

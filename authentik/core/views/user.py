@@ -14,7 +14,6 @@ from django.views.generic.base import TemplateView
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.token import UserTokenForm
 from authentik.core.forms.users import UserDetailForm
 from authentik.core.models import Token, TokenIntents
@@ -82,26 +81,6 @@ class TokenUpdateView(
     template_name = "generic/update.html"
     success_url = "/"
     success_message = _("Successfully updated Token")
-
-    def get_object(self) -> Token:
-        identifier = self.kwargs.get("identifier")
-        return (
-            get_objects_for_user(
-                self.request.user, self.permission_required, self.model
-            )
-            .filter(intent=TokenIntents.INTENT_API, identifier=identifier)
-            .first()
-        )
-
-
-class TokenDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete token"""
-
-    model = Token
-    permission_required = "authentik_core.delete_token"
-    template_name = "generic/delete.html"
-    success_url = "/"
-    success_message = _("Successfully deleted Token")
 
     def get_object(self) -> Token:
         identifier = self.kwargs.get("identifier")

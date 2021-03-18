@@ -173,10 +173,6 @@ urlpatterns = [
     path("users/create/", users.UserCreateView.as_view(), name="user-create"),
     path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
     path(
-        "users/<int:pk>/disable/", users.UserDisableView.as_view(), name="user-disable"
-    ),
-    path("users/<int:pk>/enable/", users.UserEnableView.as_view(), name="user-enable"),
-    path(
         "users/<int:pk>/reset/",
         users.UserPasswordResetView.as_view(),
         name="user-password-reset",

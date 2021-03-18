@@ -6,7 +6,6 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
@@ -15,7 +14,6 @@ from django.views.generic import DetailView, UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.users import UserForm
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.models import Token, User
 from authentik.lib.views import CreateAssignPermView
 
@@ -54,48 +52,6 @@ class UserUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated User")
-
-
-class UserDisableView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Disable user"""
-
-    object: User
-
-    model = User
-    permission_required = "authentik_core.update_user"
-
-    # By default the object's name is user which is used by other checks
-    context_object_name = "object"
-    template_name = "administration/user/disable.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully disabled User")
-
-    def delete(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        self.object: User = self.get_object()
-        success_url = self.get_success_url()
-        self.object.is_active = False
-        self.object.save()
-        return HttpResponseRedirect(success_url)
-
-
-class UserEnableView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    """Enable user"""
-
-    object: User
-
-    model = User
-    permission_required = "authentik_core.update_user"
-
-    # By default the object's name is user which is used by other checks
-    context_object_name = "object"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully enabled User")
-
-    def get(self, request: HttpRequest, *args, **kwargs):
-        self.object: User = self.get_object()
-        self.object.is_active = True
-        self.object.save()
-        return HttpResponseRedirect(self.success_url)
 
 
 class UserPasswordResetView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):

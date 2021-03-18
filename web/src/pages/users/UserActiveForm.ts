@@ -1,45 +1,21 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
-import { ModalButton } from "../buttons/ModalButton";
-import { showMessage } from "../messages/MessageContainer";
+import { customElement, html, TemplateResult } from "lit-element";
+import { DeleteForm } from "../../elements/forms/DeleteForm";
+import { showMessage } from "../../elements/messages/MessageContainer";
 
-@customElement("ak-forms-delete")
-export class DeleteForm extends ModalButton {
-
-    @property({attribute: false})
-    obj?: Record<string, unknown>;
-
-    @property()
-    objectLabel?: string;
-
-    @property({attribute: false})
-    delete!: () => Promise<void>;
-
-    confirm(): void {
-        this.delete().then(() => {
-            this.onSuccess();
-            this.open = false;
-            this.dispatchEvent(
-                new CustomEvent("ak-refresh", {
-                    bubbles: true,
-                    composed: true,
-                })
-            );
-        }).catch((e) => {
-            this.onError(e);
-        });
-    }
+@customElement("ak-user-active-form")
+export class UserActiveForm extends DeleteForm {
 
     onSuccess(): void {
         showMessage({
-            message: gettext(`Successfully deleted ${this.objectLabel} ${ this.obj?.name }`),
+            message: gettext(`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
             level_tag: "success",
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: gettext(`Failed to delete ${this.objectLabel}: ${e.toString()}`),
+            message: gettext(`Failed to update ${this.objectLabel}: ${e.toString()}`),
             level_tag: "error",
         });
     }
@@ -48,7 +24,7 @@ export class DeleteForm extends ModalButton {
         return html`<section class="pf-c-page__main-section pf-m-light">
             <div class="pf-c-content">
                 <h1 class="pf-c-title pf-m-2xl">
-                    ${gettext(`Delete ${this.objectLabel}`)}
+                    ${gettext(`Update ${this.objectLabel}`)}
                 </h1>
             </div>
         </section>
@@ -60,7 +36,7 @@ export class DeleteForm extends ModalButton {
                             <form class="pf-c-form pf-m-horizontal">
                                 <p>
                                     ${gettext(
-                                        `Are you sure you want to delete ${this.objectLabel} '${this.obj?.name}'?`
+                                        `Are you sure you want to update ${this.objectLabel} '${this.obj?.name}'?`
                                     )}
                                 </p>
                             </form>
@@ -74,8 +50,8 @@ export class DeleteForm extends ModalButton {
                 .callAction=${() => {
                     this.confirm();
                 }}
-                class="pf-m-danger">
-                ${gettext("Delete")}
+                class="pf-m-warning">
+                ${gettext("Update")}
             </ak-spinner-button>&nbsp;
             <ak-spinner-button
                 .callAction=${() => {
