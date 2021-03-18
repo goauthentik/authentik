@@ -26,6 +26,7 @@ class EventSerializer(ModelSerializer):
             "context",
             "client_ip",
             "created",
+            "expires",
         ]
 
 

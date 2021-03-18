@@ -1,4 +1,5 @@
 """authentik events models"""
+from datetime import timedelta
 from inspect import getmodule, stack
 from smtplib import SMTPException
 from typing import Optional, Union
@@ -7,6 +8,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.db import models
 from django.http import HttpRequest
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from geoip2.errors import GeoIP2Error
 from requests import RequestException, post
@@ -17,7 +19,7 @@ from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
-from authentik.core.models import Group, User
+from authentik.core.models import ExpiringModel, Group, User
 from authentik.events.geo import GEOIP_READER
 from authentik.events.utils import cleanse_dict, get_user, sanitize_dict
 from authentik.lib.sentry import SentryIgnoredException
@@ -26,6 +28,11 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger("authentik.events")
+
+
+def default_event_duration():
+    """Default duration an Event is saved"""
+    return now() + timedelta(days=365)
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -71,7 +78,7 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
-class Event(models.Model):
+class Event(ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -81,6 +88,9 @@ class Event(models.Model):
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    # Shadow the expires attribute from ExpiringModel to override the default duration
+    expires = models.DateTimeField(default=default_event_duration)
 
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
