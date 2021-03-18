@@ -17,6 +17,7 @@
         "clsx": "^1.1.1",
         "postcss": "^8.2.8",
         "react": "^17.0.1",
+        "react-before-after-slider": "^1.0.4",
         "react-dom": "^17.0.1"
     },
     "browserslist": {

@@ -1,6 +1,6 @@
 module.exports = {
     title: "authentik",
-    tagline: "The authentication glue you need.",
+    tagline: "Making authentication simple.",
     url: "https://goauthentik.io",
     baseUrl: "/",
     onBrokenLinks: "throw",

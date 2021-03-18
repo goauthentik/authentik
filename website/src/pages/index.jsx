@@ -5,6 +5,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
+import BeforeAfterSlider from 'react-before-after-slider'
 
 const features = [
     {
@@ -100,7 +101,13 @@ function Home() {
                         <div className="row">
                             <div className="col col--5">
                                 <div>
-                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_apps_light.png')} alt="library screenshot"/>
+                                    <BeforeAfterSlider
+                                        className={styles.featureImage}
+                                        before={useBaseUrl("img/screen_apps_light.png")}
+                                        after={useBaseUrl("img/screen_apps_dark.png")}
+                                        width={640}
+                                        height={480}
+                                    />
                                 </div>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
@@ -131,7 +138,13 @@ function Home() {
                             </div>
                             <div className="col col--5">
                                 <div>
-                                    <img className={styles.featureImage} src={useBaseUrl('img/screen_admin_light.png')} alt="library screenshot" />
+                                    <BeforeAfterSlider
+                                        className={styles.featureImage}
+                                        before={useBaseUrl("img/screen_admin_light.png")}
+                                        after={useBaseUrl("img/screen_admin_dark.png")}
+                                        width={640}
+                                        height={480}
+                                    />
                                 </div>
                             </div>
                         </div>
