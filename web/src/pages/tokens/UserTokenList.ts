@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 
+import "../../elements/forms/DeleteForm";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
 import "../../elements/buttons/TokenCopyButton";
@@ -95,12 +96,18 @@ export class UserTokenList extends Table<Token> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.tokens(`${item.identifier}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Token")}
+                .delete=${() => {
+                    return new CoreApi(DEFAULT_CONFIG).coreTokensDelete({
+                        identifier: item.identifier
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-delete>
             <ak-token-copy-button identifier="${item.identifier}">
                 ${gettext("Copy Key")}
             </ak-token-copy-button>

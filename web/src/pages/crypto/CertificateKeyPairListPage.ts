@@ -7,6 +7,7 @@ import { CryptoApi, CertificateKeyPair } from "authentik-api";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { AdminURLManager } from "../../api/legacy";
@@ -62,13 +63,18 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.cryptoCertificates(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Certificate-Key Pair")}
+                .delete=${() => {
+                    return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsDelete({
+                        kpUuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
-            `,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

@@ -17,6 +17,10 @@ export class DeleteForm extends ModalButton {
 
     confirm(): void {
         this.delete().then(() => {
+            showMessage({
+                message: gettext(`Successfully deleted ${this.objectLabel} ${this.obj?.name}`),
+                level_tag: "success",
+            });
             this.open = false;
             this.dispatchEvent(
                 new CustomEvent("ak-refresh", {
@@ -28,8 +32,8 @@ export class DeleteForm extends ModalButton {
             showMessage({
                 message: gettext(`Failed to delete ${this.objectLabel}: ${e.toString()}`),
                 level_tag: "error",
-            })
-        })
+            });
+        });
     }
 
     renderModalInner(): TemplateResult {

@@ -7,6 +7,7 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/Dropdown";
+import "../../elements/forms/DeleteForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { Source, SourcesApi } from "authentik-api";
@@ -62,13 +63,18 @@ export class SourceListPage extends TablePage<Source> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.sources(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Source")}
+                .delete=${() => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesAllDelete({
+                        slug: item.slug || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
-            `,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

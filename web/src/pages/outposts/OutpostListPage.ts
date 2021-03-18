@@ -9,6 +9,7 @@ import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/TokenCopyButton";
+import "../../elements/forms/DeleteForm";
 import { PAGE_SIZE } from "../../constants";
 import { Outpost, OutpostsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -63,12 +64,18 @@ export class OutpostListPage extends TablePage<Outpost> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>&nbsp;
-            <ak-modal-button href="${AdminURLManager.outposts(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Outpost")}
+                .delete=${() => {
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsOutpostsDelete({
+                        uuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-delete>
             <ak-modal-button>
                 <button slot="trigger" class="pf-c-button pf-m-tertiary">
                     ${gettext("View Deployment Info")}

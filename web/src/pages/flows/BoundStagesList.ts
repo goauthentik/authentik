@@ -3,6 +3,7 @@ import { customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 
+import "../../elements/forms/DeleteForm";
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -57,13 +58,18 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.stageBindings(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Stage binding")}
+                .delete=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDelete({
+                        fsbUuid: item.pk || "",
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete Binding")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
-            `,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

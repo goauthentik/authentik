@@ -9,6 +9,7 @@ import "./OutpostHealth";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/Dropdown";
+import "../../elements/forms/DeleteForm";
 import { until } from "lit-html/directives/until";
 import { PAGE_SIZE } from "../../constants";
 import { OutpostsApi, ServiceConnection } from "authentik-api";
@@ -73,12 +74,18 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.outpostServiceConnections(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Outpost Service-connection")}
+                .delete=${() => {
+                    return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllDelete({
+                        uuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

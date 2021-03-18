@@ -11,6 +11,7 @@ import { PAGE_SIZE } from "../../constants";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import "../../elements/forms/DeleteForm";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -86,12 +87,18 @@ export class UserListPage extends TablePage<User> {
                     </li>
                     <li class="pf-c-divider" role="separator"></li>
                     <li>
-                        <ak-modal-button href="${AdminURLManager.users(`${item.pk}/delete/`)}">
-                            <button slot="trigger" class="pf-c-dropdown__menu-item">
+                        <ak-forms-delete
+                            .obj=${item}
+                            objectLabel=${gettext("User")}
+                            .delete=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersDelete({
+                                    id: item.pk || 0
+                                });
+                            }}>
+                            <button slot="trigger" class="pf-c-button pf-m-danger">
                                 ${gettext("Delete")}
                             </button>
-                            <div slot="modal"></div>
-                        </ak-modal-button>
+                        </ak-forms-delete>
                     </li>
                 </ul>
             </ak-dropdown>

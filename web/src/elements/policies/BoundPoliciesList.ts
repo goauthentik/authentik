@@ -4,6 +4,7 @@ import { AKResponse } from "../../api/Client";
 import { Table, TableColumn } from "../../elements/table/Table";
 import { PoliciesApi, PolicyBinding } from "authentik-api";
 
+import "../../elements/forms/DeleteForm";
 import "../../elements/Tabs";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -90,13 +91,18 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.policyBindings(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Policy binding")}
+                .delete=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDelete({
+                        policyBindingUuid: item.pk || "",
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete Binding")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
-            `,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

@@ -5,6 +5,7 @@ import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/DeleteForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { Invitation, StagesApi } from "authentik-api";
@@ -53,12 +54,18 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString()}`,
             html`
-            <ak-modal-button href="${AdminURLManager.stageInvitations(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Prompt")}
+                .delete=${() => {
+                    return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDelete({
+                        inviteUuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 

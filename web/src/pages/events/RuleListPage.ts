@@ -11,6 +11,7 @@ import { PAGE_SIZE } from "../../constants";
 import { EventsApi, NotificationRule } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import "../../elements/forms/DeleteForm";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
@@ -62,13 +63,18 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-spinner-button>
                 <div slot="modal"></div>
             </ak-modal-button>
-            <ak-modal-button href="${AdminURLManager.eventRules(`${item.pk}/delete/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-danger">
+            <ak-forms-delete
+                .obj=${item}
+                objectLabel=${gettext("Notification rule")}
+                .delete=${() => {
+                    return new EventsApi(DEFAULT_CONFIG).eventsRulesDelete({
+                        pbmUuid: item.pk || ""
+                    });
+                }}>
+                <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
-            `,
+                </button>
+            </ak-forms-delete>`,
         ];
     }
 
