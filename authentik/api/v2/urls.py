@@ -195,17 +195,21 @@ info = openapi.Info(
 )
 SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
 
-urlpatterns = [
-    path("", SwaggerView.as_view(), name="swagger"),
-] + router.urls + [
-    path(
-        "flows/executor/<slug:flow_slug>/",
-        FlowExecutorView.as_view(),
-        name="flow-executor",
-    ),
-    re_path(
-        r"^swagger(?P<format>\.json|\.yaml)$",
-        SchemaView.without_ui(cache_timeout=0),
-        name="schema-json",
-    ),
-]
+urlpatterns = (
+    [
+        path("", SwaggerView.as_view(), name="swagger"),
+    ]
+    + router.urls
+    + [
+        path(
+            "flows/executor/<slug:flow_slug>/",
+            FlowExecutorView.as_view(),
+            name="flow-executor",
+        ),
+        re_path(
+            r"^swagger(?P<format>\.json|\.yaml)$",
+            SchemaView.without_ui(cache_timeout=0),
+            name="schema-json",
+        ),
+    ]
+)

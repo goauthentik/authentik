@@ -6,6 +6,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import BeforeAfterSlider from 'react-before-after-slider'
+import Comparison from "../comparison";
 
 const features = [
     {
@@ -149,6 +150,9 @@ function Home() {
                             </div>
                         </div>
                     </div>
+                </section>
+                <section>
+                    <Comparison></Comparison>
                 </section>
             </main>
         </Layout>

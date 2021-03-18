@@ -162,7 +162,10 @@ module.exports = {
         {
             type: "category",
             label: "Development",
-            items: ["development/local-dev-environment"],
+            items: [
+                "development/local-dev-environment",
+                "development/api"
+            ],
         },
     ],
 };

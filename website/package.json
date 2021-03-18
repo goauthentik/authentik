@@ -18,7 +18,8 @@
         "postcss": "^8.2.8",
         "react": "^17.0.1",
         "react-before-after-slider": "^1.0.4",
-        "react-dom": "^17.0.1"
+        "react-dom": "^17.0.1",
+        "react-feather": "^2.0.9"
     },
     "browserslist": {
         "production": [
