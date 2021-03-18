@@ -1866,6 +1866,36 @@ paths:
           description: ''
           required: false
           type: string
+        - name: client_ip
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_pk
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_app
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_authorized_app
+          in: query
+          description: ''
+          required: false
+          type: string
         - name: ordering
           in: query
           description: Which field to use when ordering the results.
@@ -1933,6 +1963,36 @@ paths:
       description: Get the top_n events grouped by user count
       parameters:
         - name: action
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: client_ip
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_pk
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_model_app
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: context_authorized_app
           in: query
           description: ''
           required: false
@@ -10991,30 +11051,7 @@ definitions:
       action:
         title: Action
         type: string
-        enum:
-          - login
-          - login_failed
-          - logout
-          - user_write
-          - suspicious_request
-          - password_set
-          - secret_view
-          - invitation_used
-          - authorize_application
-          - source_linked
-          - impersonation_started
-          - impersonation_ended
-          - policy_execution
-          - policy_exception
-          - property_mapping_exception
-          - system_task_execution
-          - system_task_exception
-          - configuration_error
-          - model_created
-          - model_updated
-          - model_deleted
-          - update_available
-          - custom_
+        minLength: 1
       app:
         title: App
         type: string
@@ -11032,6 +11069,10 @@ definitions:
         type: string
         format: date-time
         readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
   EventTopPerUser:
     description: Response object of Event's top_per_user
     required:

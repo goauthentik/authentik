@@ -1,9 +1,10 @@
 """Events API Views"""
+import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
-from rest_framework.fields import DictField, IntegerField
+from rest_framework.fields import CharField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -14,6 +15,11 @@ from authentik.events.models import Event, EventAction
 
 class EventSerializer(ModelSerializer):
     """Event Serializer"""
+
+    # Since we only use this serializer for read-only operations,
+    # no checking of the action is done here.
+    # This allows clients to check wildcards, prefixes and custom types
+    action = CharField()
 
     class Meta:
 
@@ -56,6 +62,49 @@ class EventTopPerUserSerializer(Serializer):
         raise NotImplementedError
 
 
+class EventsFilter(django_filters.FilterSet):
+    """Filter for events"""
+
+    username = django_filters.CharFilter(
+        field_name="user", lookup_expr="username", label="Username"
+    )
+    context_model_pk = django_filters.CharFilter(
+        field_name="context",
+        lookup_expr="model__pk",
+        label="Context Model Primary Key",
+        method="filter_context_model_pk",
+    )
+    context_model_name = django_filters.CharFilter(
+        field_name="context",
+        lookup_expr="model__model_name",
+        label="Context Model Name",
+    )
+    context_model_app = django_filters.CharFilter(
+        field_name="context", lookup_expr="model__app", label="Context Model App"
+    )
+    context_authorized_app = django_filters.CharFilter(
+        field_name="context",
+        lookup_expr="authorized_application__pk",
+        label="Context Authorized application",
+    )
+    action = django_filters.CharFilter(
+        field_name="action",
+        lookup_expr="icontains",
+    )
+
+    # pylint: disable=unused-argument
+    def filter_context_model_pk(self, queryset, name, value):
+        """Because we store the PK as UUID.hex,
+        we need to remove the dashes that a client may send. We can't use a
+        UUIDField for this, as some models might not have a UUID PK"""
+        value = str(value).replace("-", "")
+        return queryset.filter(context__model__pk=value)
+
+    class Meta:
+        model = Event
+        fields = ["action", "client_ip", "username"]
+
+
 class EventViewSet(ReadOnlyModelViewSet):
     """Event Read-Only Viewset"""
 
@@ -70,7 +119,7 @@ class EventViewSet(ReadOnlyModelViewSet):
         "context",
         "client_ip",
     ]
-    filterset_fields = ["action"]
+    filterset_class = EventsFilter
 
     @swagger_auto_schema(
         method="GET",

@@ -28,13 +28,3 @@ export interface ShellChallenge extends Challenge {
 export interface RedirectChallenge extends Challenge {
     to: string;
 }
-
-export enum FlowDesignation {
-    Authentication = "authentication",
-    Authorization = "authorization",
-    Invalidation = "invalidation",
-    Enrollment = "enrollment",
-    Unrenollment = "unenrollment",
-    Recovery = "recovery",
-    StageConfiguration = "stage_configuration",
-}
