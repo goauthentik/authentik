@@ -1369,6 +1369,109 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /core/user_consent/:
+    get:
+      operationId: core_user_consent_list
+      description: UserConsent Viewset
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: application
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserConsent'
+      tags:
+        - core
+    parameters: []
+  /core/user_consent/{id}/:
+    get:
+      operationId: core_user_consent_read
+      description: UserConsent Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserConsent'
+      tags:
+        - core
+    delete:
+      operationId: core_user_consent_delete
+      description: UserConsent Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - core
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this User Consent.
+        required: true
+        type: integer
   /core/users/:
     get:
       operationId: core_users_list
@@ -10799,6 +10902,25 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
+  UserConsent:
+    description: UserConsent Serializer
+    required:
+      - user
+      - application
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+      user:
+        $ref: '#/definitions/User'
+      application:
+        $ref: '#/definitions/Application'
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:

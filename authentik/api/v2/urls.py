@@ -79,7 +79,7 @@ from authentik.stages.authenticator_webauthn.api import (
     WebAuthnDeviceViewSet,
 )
 from authentik.stages.captcha.api import CaptchaStageViewSet
-from authentik.stages.consent.api import ConsentStageViewSet
+from authentik.stages.consent.api import ConsentStageViewSet, UserConsentViewSet
 from authentik.stages.deny.api import DenyStageViewSet
 from authentik.stages.dummy.api import DummyStageViewSet
 from authentik.stages.email.api import EmailStageViewSet
@@ -104,6 +104,7 @@ router.register("admin/system_tasks", TaskViewSet, basename="admin_system_tasks"
 router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
+router.register("core/user_consent", UserConsentViewSet)
 router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)
