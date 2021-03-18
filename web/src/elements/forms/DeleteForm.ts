@@ -1,6 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { ModalButton } from "../buttons/ModalButton";
+import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
@@ -23,7 +24,12 @@ export class DeleteForm extends ModalButton {
                     composed: true,
                 })
             );
-        });
+        }).catch((e) => {
+            showMessage({
+                message: gettext(`Failed to delete ${this.objectLabel}: ${e.toString()}`),
+                level_tag: "error",
+            })
+        })
     }
 
     renderModalInner(): TemplateResult {
