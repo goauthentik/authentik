@@ -163,6 +163,9 @@ REST_FRAMEWORK = {
         "authentik.api.auth.AuthentikTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 CACHES = {

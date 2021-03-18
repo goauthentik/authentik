@@ -1,5 +1,4 @@
 """api v2 urls"""
-from django.conf import settings
 from django.urls import path, re_path
 from drf_yasg2 import openapi
 from drf_yasg2.views import get_schema_view
@@ -11,6 +10,7 @@ from authentik.admin.api.tasks import TaskViewSet
 from authentik.admin.api.version import VersionViewSet
 from authentik.admin.api.workers import WorkerViewSet
 from authentik.api.v2.config import ConfigsViewSet
+from authentik.api.views import SwaggerView
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
@@ -195,7 +195,9 @@ info = openapi.Info(
 )
 SchemaView = get_schema_view(info, public=True, permission_classes=(AllowAny,))
 
-urlpatterns = router.urls + [
+urlpatterns = [
+    path("", SwaggerView.as_view(), name="swagger"),
+] + router.urls + [
     path(
         "flows/executor/<slug:flow_slug>/",
         FlowExecutorView.as_view(),
@@ -207,12 +209,3 @@ urlpatterns = router.urls + [
         name="schema-json",
     ),
 ]
-
-if settings.DEBUG:
-    urlpatterns = urlpatterns + [
-        path(
-            "swagger/",
-            SchemaView.with_ui("swagger", cache_timeout=0),
-            name="schema-swagger-ui",
-        ),
-    ]

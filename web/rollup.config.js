@@ -8,6 +8,8 @@ import copy from "rollup-plugin-copy";
 import externalGlobals from "rollup-plugin-external-globals";
 
 const resources = [
+    { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
+
     { src: "node_modules/@patternfly/patternfly/patternfly.min.css", dest: "dist/" },
     { src: "src/authentik.css", dest: "dist/" },
 
@@ -16,6 +18,7 @@ const resources = [
     { src: "src/assets/*", dest: "dist/assets" },
     { src: "./icons/*", dest: "dist/assets/icons" },
 ];
+
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
