@@ -3,10 +3,13 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
+from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
+from drf_yasg2 import openapi
 from drf_yasg2.utils import swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
@@ -20,6 +23,8 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.utils import CacheSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import cache_key
+from authentik.flows.transfer.common import DataclassEncoder
+from authentik.flows.transfer.exporter import FlowExporter
 
 
 class FlowSerializer(ModelSerializer):
@@ -86,6 +91,24 @@ class FlowViewSet(ModelViewSet):
     def cached(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
+
+    @swagger_auto_schema(
+        responses={
+            "200": openapi.Response(
+                "File Attachment", schema=openapi.Schema(type=openapi.TYPE_FILE)
+            ),
+        },
+    )
+    @action(detail=True)
+    def export(self, request: Request, slug: str) -> Response:
+        """Export flow to .akflow file"""
+        flow = self.get_object()
+        if not request.user.has_perm("authentik_flows.export_flow", flow):
+            raise PermissionDenied()
+        exporter = FlowExporter(flow)
+        response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
+        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
+        return response
 
     @swagger_auto_schema(responses={200: FlowDiagramSerializer()})
     @action(detail=True, methods=["get"])

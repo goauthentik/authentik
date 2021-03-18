@@ -81,7 +81,7 @@ export class FlowListPage extends TablePage<Flow> {
             <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${item.pk}/execute/?next=/%23${window.location.href}`)}">
                 ${gettext("Execute")}
             </a>
-            <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${item.pk}/export/`)}">
+            <a class="pf-c-button pf-m-secondary ak-root-link" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
                 ${gettext("Export")}
             </a>
             `,

@@ -2800,6 +2800,26 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /flows/instances/{slug}/export/:
+    get:
+      operationId: flows_instances_export
+      description: Export flow to .akflow file
+      parameters: []
+      responses:
+        '200':
+          description: File Attachment
+          schema:
+            type: file
+      tags:
+        - flows
+    parameters:
+      - name: slug
+        in: path
+        description: Visible in the URL.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list

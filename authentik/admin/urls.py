@@ -148,11 +148,6 @@ urlpatterns = [
         flows.FlowDebugExecuteView.as_view(),
         name="flow-execute",
     ),
-    path(
-        "flows/<uuid:pk>/export/",
-        flows.FlowExportView.as_view(),
-        name="flow-export",
-    ),
     # Property Mappings
     path(
         "property-mappings/create/",

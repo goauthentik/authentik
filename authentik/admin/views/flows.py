@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, UpdateView
@@ -15,8 +15,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.transfer.common import DataclassEncoder
-from authentik.flows.transfer.exporter import FlowExporter
 from authentik.flows.transfer.importer import FlowImporter
 from authentik.flows.views import SESSION_KEY_PLAN, FlowPlanner
 from authentik.lib.utils.urls import redirect_with_qs
@@ -108,19 +106,3 @@ class FlowImportView(LoginRequiredMixin, FormView):
         else:
             messages.success(self.request, _("Successfully imported flow."))
         return super().form_valid(form)
-
-
-class FlowExportView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    """Export Flow"""
-
-    model = Flow
-    permission_required = "authentik_flows.export_flow"
-
-    # pylint: disable=unused-argument
-    def get(self, request: HttpRequest, pk: str) -> HttpResponse:
-        """Debug exectue flow, setting the current user as pending user"""
-        flow: Flow = self.get_object()
-        exporter = FlowExporter(flow)
-        response = JsonResponse(exporter.export(), encoder=DataclassEncoder, safe=False)
-        response["Content-Disposition"] = f'attachment; filename="{flow.slug}.akflow"'
-        return response
