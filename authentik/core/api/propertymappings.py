@@ -1,11 +1,12 @@
 """PropertyMapping API Views"""
 from django.urls import reverse
 from drf_yasg2.utils import swagger_auto_schema
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import PropertyMapping
@@ -41,7 +42,12 @@ class PropertyMappingSerializer(ModelSerializer, MetaNameSerializer):
         ]
 
 
-class PropertyMappingViewSet(ReadOnlyModelViewSet):
+class PropertyMappingViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """PropertyMapping Viewset"""
 
     queryset = PropertyMapping.objects.none()

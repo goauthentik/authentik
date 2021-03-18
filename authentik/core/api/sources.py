@@ -3,11 +3,12 @@ from typing import Iterable
 
 from django.urls import reverse
 from drf_yasg2.utils import swagger_auto_schema
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
@@ -45,7 +46,12 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
         ]
 
 
-class SourceViewSet(ReadOnlyModelViewSet):
+class SourceViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Source Viewset"""
 
     queryset = Source.objects.none()

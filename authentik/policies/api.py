@@ -3,6 +3,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from drf_yasg2.utils import swagger_auto_schema
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
     SerializerMethodField,
 )
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.utils import (
     CacheSerializer,
@@ -98,7 +99,12 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         depth = 3
 
 
-class PolicyViewSet(ReadOnlyModelViewSet):
+class PolicyViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """Policy Viewset"""
 
     queryset = Policy.objects.all()

@@ -3778,6 +3778,15 @@ paths:
             $ref: '#/definitions/Policy'
       tags:
         - policies
+    delete:
+      operationId: policies_all_delete
+      description: Policy Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - policies
     parameters:
       - name: policy_uuid
         in: path
@@ -5494,6 +5503,15 @@ paths:
             $ref: '#/definitions/PropertyMapping'
       tags:
         - propertymappings
+    delete:
+      operationId: propertymappings_all_delete
+      description: PropertyMapping Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - propertymappings
     parameters:
       - name: pm_uuid
         in: path
@@ -6737,6 +6755,15 @@ paths:
             $ref: '#/definitions/Source'
       tags:
         - sources
+    delete:
+      operationId: sources_all_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
     parameters:
       - name: slug
         in: path
@@ -7378,6 +7405,15 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/Stage'
+      tags:
+        - stages
+    delete:
+      operationId: stages_all_delete
+      description: Stage Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
       tags:
         - stages
     parameters:
