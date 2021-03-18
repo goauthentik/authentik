@@ -8,11 +8,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    InheritanceCreateView,
-    InheritanceUpdateView,
-)
+from authentik.admin.views.utils import InheritanceCreateView, InheritanceUpdateView
 from authentik.outposts.models import OutpostServiceConnection
 
 
@@ -46,16 +42,3 @@ class OutpostServiceConnectionUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Outpost Service Connection")
-
-
-class OutpostServiceConnectionDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete outpostserviceconnection"""
-
-    model = OutpostServiceConnection
-    permission_required = "authentik_outposts.delete_outpostserviceconnection"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Outpost Service Connection")

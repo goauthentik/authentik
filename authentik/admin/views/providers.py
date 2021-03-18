@@ -7,11 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    InheritanceCreateView,
-    InheritanceUpdateView,
-)
+from authentik.admin.views.utils import InheritanceCreateView, InheritanceUpdateView
 from authentik.core.models import Provider
 
 
@@ -43,15 +39,3 @@ class ProviderUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Provider")
-
-
-class ProviderDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete provider"""
-
-    model = Provider
-    permission_required = "authentik_core.delete_provider"
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Provider")

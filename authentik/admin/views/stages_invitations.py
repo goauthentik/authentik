@@ -7,9 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.lib.views import CreateAssignPermView
 from authentik.stages.invitation.forms import InvitationForm
 from authentik.stages.invitation.models import Invitation
@@ -36,16 +34,3 @@ class InvitationCreateView(
         obj.created_by = self.request.user
         obj.save()
         return HttpResponseRedirect(self.success_url)
-
-
-class InvitationDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete invitation"""
-
-    model = Invitation
-    permission_required = "authentik_stages_invitation.delete_invitation"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Invitation")

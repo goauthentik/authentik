@@ -7,11 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext as _
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    InheritanceCreateView,
-    InheritanceUpdateView,
-)
+from authentik.admin.views.utils import InheritanceCreateView, InheritanceUpdateView
 from authentik.core.models import Source
 
 
@@ -45,14 +41,3 @@ class SourceUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Source")
-
-
-class SourceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete source"""
-
-    model = Source
-    permission_required = "authentik_core.delete_source"
-
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Source")

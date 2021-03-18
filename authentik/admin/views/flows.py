@@ -11,7 +11,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import DetailView, FormView, UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.forms import FlowForm, FlowImportForm
 from authentik.flows.models import Flow
@@ -56,17 +55,6 @@ class FlowUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Flow")
-
-
-class FlowDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete flow"""
-
-    model = Flow
-    permission_required = "authentik_flows.delete_flow"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Flow")
 
 
 class FlowDebugExecuteView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):

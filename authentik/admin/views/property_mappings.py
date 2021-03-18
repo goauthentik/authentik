@@ -14,11 +14,7 @@ from django.views.generic.detail import DetailView
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.policies import PolicyTestForm
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    InheritanceCreateView,
-    InheritanceUpdateView,
-)
+from authentik.admin.views.utils import InheritanceCreateView, InheritanceUpdateView
 from authentik.core.models import PropertyMapping
 
 
@@ -50,18 +46,6 @@ class PropertyMappingUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Property Mapping")
-
-
-class PropertyMappingDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete property_mapping"""
-
-    model = PropertyMapping
-    permission_required = "authentik_core.delete_propertymapping"
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Property Mapping")
 
 
 class PropertyMappingTestView(

@@ -11,7 +11,6 @@ from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.applications import ApplicationForm
 from authentik.core.models import Application
 from authentik.lib.views import CreateAssignPermView
@@ -65,16 +64,3 @@ class ApplicationUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Application")
-
-
-class ApplicationDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete application"""
-
-    model = Application
-    permission_required = "authentik_core.delete_application"
-
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Application")

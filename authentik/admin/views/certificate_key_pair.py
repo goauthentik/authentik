@@ -11,7 +11,6 @@ from django.views.generic import UpdateView
 from django.views.generic.edit import FormView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.forms import (
     CertificateKeyPairForm,
@@ -80,16 +79,3 @@ class CertificateKeyPairUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Certificate-Key Pair")
-
-
-class CertificateKeyPairDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete certificatekeypair"""
-
-    model = CertificateKeyPair
-    permission_required = "authentik_crypto.delete_certificatekeypair"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Certificate-Key Pair")

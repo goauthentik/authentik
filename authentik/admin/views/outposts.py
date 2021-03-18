@@ -11,7 +11,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.lib.views import CreateAssignPermView
 from authentik.outposts.forms import OutpostForm
 from authentik.outposts.models import Outpost, OutpostConfig
@@ -54,13 +53,3 @@ class OutpostUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Outpost")
-
-
-class OutpostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete outpost"""
-
-    model = Outpost
-    permission_required = "authentik_outposts.delete_outpost"
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Outpost")

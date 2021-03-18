@@ -20,7 +20,6 @@ from authentik.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
-    tokens,
     users,
 )
 from authentik.providers.saml.views.metadata import MetadataImportView
@@ -47,17 +46,6 @@ urlpatterns = [
         applications.ApplicationUpdateView.as_view(),
         name="application-update",
     ),
-    path(
-        "applications/<uuid:pk>/delete/",
-        applications.ApplicationDeleteView.as_view(),
-        name="application-delete",
-    ),
-    # Tokens
-    path(
-        "tokens/<uuid:pk>/delete/",
-        tokens.TokenDeleteView.as_view(),
-        name="token-delete",
-    ),
     # Sources
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(
@@ -65,22 +53,12 @@ urlpatterns = [
         sources.SourceUpdateView.as_view(),
         name="source-update",
     ),
-    path(
-        "sources/<uuid:pk>/delete/",
-        sources.SourceDeleteView.as_view(),
-        name="source-delete",
-    ),
     # Policies
     path("policies/create/", policies.PolicyCreateView.as_view(), name="policy-create"),
     path(
         "policies/<uuid:pk>/update/",
         policies.PolicyUpdateView.as_view(),
         name="policy-update",
-    ),
-    path(
-        "policies/<uuid:pk>/delete/",
-        policies.PolicyDeleteView.as_view(),
-        name="policy-delete",
     ),
     path(
         "policies/<uuid:pk>/test/",
@@ -98,11 +76,6 @@ urlpatterns = [
         policies_bindings.PolicyBindingUpdateView.as_view(),
         name="policy-binding-update",
     ),
-    path(
-        "policies/bindings/<uuid:pk>/delete/",
-        policies_bindings.PolicyBindingDeleteView.as_view(),
-        name="policy-binding-delete",
-    ),
     # Providers
     path(
         "providers/create/",
@@ -119,22 +92,12 @@ urlpatterns = [
         providers.ProviderUpdateView.as_view(),
         name="provider-update",
     ),
-    path(
-        "providers/<int:pk>/delete/",
-        providers.ProviderDeleteView.as_view(),
-        name="provider-delete",
-    ),
     # Stages
     path("stages/create/", stages.StageCreateView.as_view(), name="stage-create"),
     path(
         "stages/<uuid:pk>/update/",
         stages.StageUpdateView.as_view(),
         name="stage-update",
-    ),
-    path(
-        "stages/<uuid:pk>/delete/",
-        stages.StageDeleteView.as_view(),
-        name="stage-delete",
     ),
     # Stage bindings
     path(
@@ -147,11 +110,6 @@ urlpatterns = [
         stages_bindings.StageBindingUpdateView.as_view(),
         name="stage-binding-update",
     ),
-    path(
-        "stages/bindings/<uuid:pk>/delete/",
-        stages_bindings.StageBindingDeleteView.as_view(),
-        name="stage-binding-delete",
-    ),
     # Stage Prompts
     path(
         "stages_prompts/create/",
@@ -163,21 +121,11 @@ urlpatterns = [
         stages_prompts.PromptUpdateView.as_view(),
         name="stage-prompt-update",
     ),
-    path(
-        "stages_prompts/<uuid:pk>/delete/",
-        stages_prompts.PromptDeleteView.as_view(),
-        name="stage-prompt-delete",
-    ),
     # Stage Invitations
     path(
         "stages/invitations/create/",
         stages_invitations.InvitationCreateView.as_view(),
         name="stage-invitation-create",
-    ),
-    path(
-        "stages/invitations/<uuid:pk>/delete/",
-        stages_invitations.InvitationDeleteView.as_view(),
-        name="stage-invitation-delete",
     ),
     # Flows
     path(
@@ -205,11 +153,6 @@ urlpatterns = [
         flows.FlowExportView.as_view(),
         name="flow-export",
     ),
-    path(
-        "flows/<uuid:pk>/delete/",
-        flows.FlowDeleteView.as_view(),
-        name="flow-delete",
-    ),
     # Property Mappings
     path(
         "property-mappings/create/",
@@ -222,11 +165,6 @@ urlpatterns = [
         name="property-mapping-update",
     ),
     path(
-        "property-mappings/<uuid:pk>/delete/",
-        property_mappings.PropertyMappingDeleteView.as_view(),
-        name="property-mapping-delete",
-    ),
-    path(
         "property-mappings/<uuid:pk>/test/",
         property_mappings.PropertyMappingTestView.as_view(),
         name="property-mapping-test",
@@ -234,7 +172,6 @@ urlpatterns = [
     # Users
     path("users/create/", users.UserCreateView.as_view(), name="user-create"),
     path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
-    path("users/<int:pk>/delete/", users.UserDeleteView.as_view(), name="user-delete"),
     path(
         "users/<int:pk>/disable/", users.UserDisableView.as_view(), name="user-disable"
     ),
@@ -250,11 +187,6 @@ urlpatterns = [
         "groups/<uuid:pk>/update/",
         groups.GroupUpdateView.as_view(),
         name="group-update",
-    ),
-    path(
-        "groups/<uuid:pk>/delete/",
-        groups.GroupDeleteView.as_view(),
-        name="group-delete",
     ),
     # Certificate-Key Pairs
     path(
@@ -272,11 +204,6 @@ urlpatterns = [
         certificate_key_pair.CertificateKeyPairUpdateView.as_view(),
         name="certificatekeypair-update",
     ),
-    path(
-        "crypto/certificates/<uuid:pk>/delete/",
-        certificate_key_pair.CertificateKeyPairDeleteView.as_view(),
-        name="certificatekeypair-delete",
-    ),
     # Outposts
     path(
         "outposts/create/",
@@ -287,11 +214,6 @@ urlpatterns = [
         "outposts/<uuid:pk>/update/",
         outposts.OutpostUpdateView.as_view(),
         name="outpost-update",
-    ),
-    path(
-        "outposts/<uuid:pk>/delete/",
-        outposts.OutpostDeleteView.as_view(),
-        name="outpost-delete",
     ),
     # Outpost Service Connections
     path(
@@ -304,11 +226,6 @@ urlpatterns = [
         outposts_service_connections.OutpostServiceConnectionUpdateView.as_view(),
         name="outpost-service-connection-update",
     ),
-    path(
-        "outpost_service_connections/<uuid:pk>/delete/",
-        outposts_service_connections.OutpostServiceConnectionDeleteView.as_view(),
-        name="outpost-service-connection-delete",
-    ),
     # Event Notification Transpots
     path(
         "events/transports/create/",
@@ -320,11 +237,6 @@ urlpatterns = [
         events_notifications_transports.NotificationTransportUpdateView.as_view(),
         name="notification-transport-update",
     ),
-    path(
-        "events/transports/<uuid:pk>/delete/",
-        events_notifications_transports.NotificationTransportDeleteView.as_view(),
-        name="notification-transport-delete",
-    ),
     # Event Notification Rules
     path(
         "events/rules/create/",
@@ -335,10 +247,5 @@ urlpatterns = [
         "events/rules/<uuid:pk>/update/",
         events_notifications_rules.NotificationRuleUpdateView.as_view(),
         name="notification-rule-update",
-    ),
-    path(
-        "events/rules/<uuid:pk>/delete/",
-        events_notifications_rules.NotificationRuleDeleteView.as_view(),
-        name="notification-rule-delete",
     ),
 ]

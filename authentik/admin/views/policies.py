@@ -14,11 +14,7 @@ from django.views.generic.detail import DetailView
 from guardian.mixins import PermissionRequiredMixin
 
 from authentik.admin.forms.policies import PolicyTestForm
-from authentik.admin.views.utils import (
-    DeleteMessageView,
-    InheritanceCreateView,
-    InheritanceUpdateView,
-)
+from authentik.admin.views.utils import InheritanceCreateView, InheritanceUpdateView
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess, PolicyRequest
 
@@ -53,17 +49,6 @@ class PolicyUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Policy")
-
-
-class PolicyDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete policy"""
-
-    model = Policy
-    permission_required = "authentik_policies.delete_policy"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Policy")
 
 
 class PolicyTestView(LoginRequiredMixin, DetailView, PermissionRequiredMixin, FormView):

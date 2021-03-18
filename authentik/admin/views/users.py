@@ -56,19 +56,6 @@ class UserUpdateView(
     success_message = _("Successfully updated User")
 
 
-class UserDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete user"""
-
-    model = User
-    permission_required = "authentik_core.delete_user"
-
-    # By default the object's name is user which is used by other checks
-    context_object_name = "object"
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted User")
-
-
 class UserDisableView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
     """Disable user"""
 

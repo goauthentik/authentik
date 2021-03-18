@@ -8,7 +8,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.events.forms import NotificationTransportForm
 from authentik.events.models import NotificationTransport
 from authentik.lib.views import CreateAssignPermView
@@ -44,15 +43,3 @@ class NotificationTransportUpdateView(
     success_url = "/"
     template_name = "generic/update.html"
     success_message = _("Successfully updated Notification Transport")
-
-
-class NotificationTransportDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete application"""
-
-    model = NotificationTransport
-    permission_required = "authentik_events.delete_notificationtransport"
-    success_url = "/"
-    template_name = "generic/delete.html"
-    success_message = _("Successfully deleted Notification Transport")

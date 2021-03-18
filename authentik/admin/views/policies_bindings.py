@@ -12,7 +12,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.lib.views import CreateAssignPermView
 from authentik.policies.forms import PolicyBindingForm
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -66,16 +65,3 @@ class PolicyBindingUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated PolicyBinding")
-
-
-class PolicyBindingDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete policybinding"""
-
-    model = PolicyBinding
-    permission_required = "authentik_policies.delete_policybinding"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted PolicyBinding")

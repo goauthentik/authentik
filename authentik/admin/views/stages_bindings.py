@@ -12,7 +12,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.flows.forms import FlowStageBindingForm
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.lib.views import CreateAssignPermView
@@ -64,16 +63,3 @@ class StageBindingUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated StageBinding")
-
-
-class StageBindingDeleteView(
-    LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView
-):
-    """Delete FlowStageBinding"""
-
-    model = FlowStageBinding
-    permission_required = "authentik_flows.delete_flowstagebinding"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted FlowStageBinding")

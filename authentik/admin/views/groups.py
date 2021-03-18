@@ -9,7 +9,6 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 from guardian.mixins import PermissionRequiredMixin
 
-from authentik.admin.views.utils import DeleteMessageView
 from authentik.core.forms.groups import GroupForm
 from authentik.core.models import Group
 from authentik.lib.views import CreateAssignPermView
@@ -47,14 +46,3 @@ class GroupUpdateView(
     template_name = "generic/update.html"
     success_url = reverse_lazy("authentik_core:shell")
     success_message = _("Successfully updated Group")
-
-
-class GroupDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteMessageView):
-    """Delete group"""
-
-    model = Group
-    permission_required = "authentik_flows.delete_group"
-
-    template_name = "generic/delete.html"
-    success_url = reverse_lazy("authentik_core:shell")
-    success_message = _("Successfully deleted Group")
