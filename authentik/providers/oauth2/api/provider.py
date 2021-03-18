@@ -6,13 +6,12 @@ from rest_framework.fields import ReadOnlyField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.utils import MetaNameSerializer
 from authentik.core.models import Provider
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
@@ -102,27 +101,3 @@ class OAuth2ProviderViewSet(ModelViewSet):
         except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
             pass
         return Response(data)
-
-
-class ScopeMappingSerializer(ModelSerializer, MetaNameSerializer):
-    """ScopeMapping Serializer"""
-
-    class Meta:
-
-        model = ScopeMapping
-        fields = [
-            "pk",
-            "name",
-            "scope_name",
-            "description",
-            "expression",
-            "verbose_name",
-            "verbose_name_plural",
-        ]
-
-
-class ScopeMappingViewSet(ModelViewSet):
-    """ScopeMapping Viewset"""
-
-    queryset = ScopeMapping.objects.all()
-    serializer_class = ScopeMappingSerializer

@@ -2820,6 +2820,212 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /oauth2/authorization_codes/:
+    get:
+      operationId: oauth2_authorization_codes_list
+      description: AuthorizationCode Viewset
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: provider
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ExpiringBaseGrantModel'
+      tags:
+        - oauth2
+    parameters: []
+  /oauth2/authorization_codes/{id}/:
+    get:
+      operationId: oauth2_authorization_codes_read
+      description: AuthorizationCode Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpiringBaseGrantModel'
+      tags:
+        - oauth2
+    delete:
+      operationId: oauth2_authorization_codes_delete
+      description: AuthorizationCode Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - oauth2
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this Authorization Code.
+        required: true
+        type: integer
+  /oauth2/refresh_tokens/:
+    get:
+      operationId: oauth2_refresh_tokens_list
+      description: RefreshToken Viewset
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: provider
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/ExpiringBaseGrantModel'
+      tags:
+        - oauth2
+    parameters: []
+  /oauth2/refresh_tokens/{id}/:
+    get:
+      operationId: oauth2_refresh_tokens_read
+      description: RefreshToken Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/ExpiringBaseGrantModel'
+      tags:
+        - oauth2
+    delete:
+      operationId: oauth2_refresh_tokens_delete
+      description: RefreshToken Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - oauth2
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this OAuth2 Token.
+        required: true
+        type: integer
   /outposts/outposts/:
     get:
       operationId: outposts_outposts_list
@@ -11123,6 +11329,149 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
+  OAuth2Provider:
+    title: Provider
+    description: OAuth2Provider Serializer
+    required:
+      - name
+      - application
+      - authorization_flow
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        minLength: 1
+      application:
+        title: Application
+        type: string
+      authorization_flow:
+        title: Authorization flow
+        description: Flow used when authorizing this provider.
+        type: string
+        format: uuid
+      property_mappings:
+        type: array
+        items:
+          type: string
+          format: uuid
+        uniqueItems: true
+      object_type:
+        title: Object type
+        type: string
+        readOnly: true
+      assigned_application_slug:
+        title: Assigned application slug
+        type: string
+        readOnly: true
+      assigned_application_name:
+        title: Assigned application name
+        type: string
+        readOnly: true
+      verbose_name:
+        title: Verbose name
+        type: string
+        readOnly: true
+      verbose_name_plural:
+        title: Verbose name plural
+        type: string
+        readOnly: true
+      client_type:
+        title: Client Type
+        description: |-
+          Confidential clients are capable of maintaining the confidentiality
+              of their credentials. Public clients are incapable.
+        type: string
+        enum:
+          - confidential
+          - public
+      client_id:
+        title: Client ID
+        type: string
+        maxLength: 255
+        minLength: 1
+      client_secret:
+        title: Client Secret
+        type: string
+        maxLength: 255
+      token_validity:
+        title: Token validity
+        description: 'Tokens not valid on or after current time + this value (Format:
+          hours=1;minutes=2;seconds=3).'
+        type: string
+        minLength: 1
+      include_claims_in_id_token:
+        title: Include claims in id_token
+        description: Include User claims from scopes in the id_token, for applications
+          that don't access the userinfo endpoint.
+        type: boolean
+      jwt_alg:
+        title: JWT Algorithm
+        description: Algorithm used to sign the JWT Token
+        type: string
+        enum:
+          - HS256
+          - RS256
+      rsa_key:
+        title: RSA Key
+        description: Key used to sign the tokens. Only required when JWT Algorithm
+          is set to RS256.
+        type: string
+        format: uuid
+        x-nullable: true
+      redirect_uris:
+        title: Redirect URIs
+        description: Enter each URI on a new line.
+        type: string
+        minLength: 1
+      sub_mode:
+        title: Sub mode
+        description: Configure what data should be used as unique User Identifier.
+          For most cases, the default should be fine.
+        type: string
+        enum:
+          - hashed_user_id
+          - user_username
+          - user_email
+          - user_upn
+      issuer_mode:
+        title: Issuer mode
+        description: Configure how the issuer field of the ID Token should be filled.
+        type: string
+        enum:
+          - global
+          - per_provider
+  ExpiringBaseGrantModel:
+    description: Serializer for BaseGrantModel and ExpiringBaseGrant
+    required:
+      - provider
+      - user
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      provider:
+        $ref: '#/definitions/OAuth2Provider'
+      user:
+        $ref: '#/definitions/User'
+      is_expired:
+        title: Is expired
+        type: string
+        readOnly: true
+      expires:
+        title: Expires
+        type: string
+        format: date-time
+      scope:
+        title: Scope
+        type: string
+        readOnly: true
   Outpost:
     description: Outpost Serializer
     required:
@@ -12499,121 +12848,6 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
-  OAuth2Provider:
-    description: OAuth2Provider Serializer
-    required:
-      - name
-      - application
-      - authorization_flow
-    type: object
-    properties:
-      pk:
-        title: ID
-        type: integer
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        minLength: 1
-      application:
-        title: Application
-        type: string
-      authorization_flow:
-        title: Authorization flow
-        description: Flow used when authorizing this provider.
-        type: string
-        format: uuid
-      property_mappings:
-        type: array
-        items:
-          type: string
-          format: uuid
-        uniqueItems: true
-      object_type:
-        title: Object type
-        type: string
-        readOnly: true
-      assigned_application_slug:
-        title: Assigned application slug
-        type: string
-        readOnly: true
-      assigned_application_name:
-        title: Assigned application name
-        type: string
-        readOnly: true
-      verbose_name:
-        title: Verbose name
-        type: string
-        readOnly: true
-      verbose_name_plural:
-        title: Verbose name plural
-        type: string
-        readOnly: true
-      client_type:
-        title: Client Type
-        description: |-
-          Confidential clients are capable of maintaining the confidentiality
-              of their credentials. Public clients are incapable.
-        type: string
-        enum:
-          - confidential
-          - public
-      client_id:
-        title: Client ID
-        type: string
-        maxLength: 255
-        minLength: 1
-      client_secret:
-        title: Client Secret
-        type: string
-        maxLength: 255
-      token_validity:
-        title: Token validity
-        description: 'Tokens not valid on or after current time + this value (Format:
-          hours=1;minutes=2;seconds=3).'
-        type: string
-        minLength: 1
-      include_claims_in_id_token:
-        title: Include claims in id_token
-        description: Include User claims from scopes in the id_token, for applications
-          that don't access the userinfo endpoint.
-        type: boolean
-      jwt_alg:
-        title: JWT Algorithm
-        description: Algorithm used to sign the JWT Token
-        type: string
-        enum:
-          - HS256
-          - RS256
-      rsa_key:
-        title: RSA Key
-        description: Key used to sign the tokens. Only required when JWT Algorithm
-          is set to RS256.
-        type: string
-        format: uuid
-        x-nullable: true
-      redirect_uris:
-        title: Redirect URIs
-        description: Enter each URI on a new line.
-        type: string
-        minLength: 1
-      sub_mode:
-        title: Sub mode
-        description: Configure what data should be used as unique User Identifier.
-          For most cases, the default should be fine.
-        type: string
-        enum:
-          - hashed_user_id
-          - user_username
-          - user_email
-          - user_upn
-      issuer_mode:
-        title: Issuer mode
-        description: Configure how the issuer field of the ID Token should be filled.
-        type: string
-        enum:
-          - global
-          - per_provider
   OAuth2ProviderSetupURLs:
     description: OAuth2 Provider Metadata serializer
     type: object

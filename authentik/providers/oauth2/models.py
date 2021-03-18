@@ -119,7 +119,7 @@ class ScopeMapping(PropertyMapping):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.providers.oauth2.api import ScopeMappingSerializer
+        from authentik.providers.oauth2.api.scope import ScopeMappingSerializer
 
         return ScopeMappingSerializer
 
@@ -287,7 +287,7 @@ class OAuth2Provider(Provider):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.providers.oauth2.api import OAuth2ProviderSerializer
+        from authentik.providers.oauth2.api.provider import OAuth2ProviderSerializer
 
         return OAuth2ProviderSerializer
 
