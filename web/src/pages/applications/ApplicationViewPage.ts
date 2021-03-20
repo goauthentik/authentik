@@ -76,11 +76,7 @@ export class ApplicationViewPage extends LitElement {
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
-                            <div class="pf-c-card__header">
-                                <div class="pf-c-card__header-main">
-                                    <i class="pf-icon pf-icon-server"></i> ${gettext("Logins over the last 24 hours")}
-                                </div>
-                            </div>
+                            <div class="pf-c-card__title">${gettext("Logins over the last 24 hours")}</div>
                             <div class="pf-c-card__body">
                                 ${this.application ? html`
                                     <ak-charts-application-authorize applicationSlug=${this.application.slug}>
@@ -88,11 +84,7 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                         </div>
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">
-                            <div class="pf-c-card__header">
-                                <div class="pf-c-card__header-main">
-                                    <i class="fas fa-external-link-alt"></i> ${gettext("Related")}
-                                </div>
-                            </div>
+                            <div class="pf-c-card__title">${gettext("Related")}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     ${this.application.provider ?
@@ -113,11 +105,7 @@ export class ApplicationViewPage extends LitElement {
                             </div>
                         </div>
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
-                            <div class="pf-c-card__header">
-                                <div class="pf-c-card__header-main">
-                                    <i class="pf-icon pf-icon-server"></i> ${gettext("Changelog")}
-                                </div>
-                            </div>
+                            <div class="pf-c-card__title">${gettext("Changelog")}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
                                     targetModelPk=${this.application.pk || ""}
@@ -130,11 +118,7 @@ export class ApplicationViewPage extends LitElement {
                 </section>
                 <div slot="page-2" data-tab-title="${gettext("Policy Bindings")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__header-main">
-                                ${gettext("These policies control which users can access this application.")}
-                            </div>
-                        </div>
+                        <div class="pf-c-card__title">${gettext("These policies control which users can access this application.")}</div>
                         <ak-bound-policies-list .target=${this.application.pk}>
                         </ak-bound-policies-list>
                     </div>
