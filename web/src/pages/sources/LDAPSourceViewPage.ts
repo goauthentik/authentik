@@ -17,6 +17,7 @@ import "../../elements/buttons/SpinnerButton";
 import "../../elements/buttons/ActionButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
+import "../../elements/events/ObjectChangelog";
 import { Page } from "../../elements/Page";
 import { until } from "lit-html/directives/until";
 import { LDAPSource, SourcesApi } from "authentik-api";
@@ -112,7 +113,18 @@ export class LDAPSourceViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Sync")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelApp="authentik_sources_ldap"
+                                targetModelName="ldapsource">
+                            </ak-object-changelog>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-3" data-tab-title="${gettext("Sync")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card pf-c-card-aggregate">

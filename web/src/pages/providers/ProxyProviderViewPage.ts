@@ -16,8 +16,9 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
-import { Page } from "../../elements/Page";
+import "../../elements/events/ObjectChangelog";
 import "./RelatedApplicationButton";
+import { Page } from "../../elements/Page";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
@@ -134,6 +135,17 @@ export class ProxyProviderViewPage extends Page {
                                     </ak-modal-button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider.pk || ""}
+                                targetModelApp="authentik_providers_proxy"
+                                targetModelName="proxyprovider">
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </section>

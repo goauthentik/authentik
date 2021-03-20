@@ -18,9 +18,10 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
+import "../../elements/events/ObjectChangelog";
+import "./RelatedApplicationButton";
 import { Page } from "../../elements/Page";
 import { convertToTitle } from "../../utils";
-import "./RelatedApplicationButton";
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
@@ -137,7 +138,18 @@ export class OAuth2ProviderViewPage extends Page {
                         </div>
                     </div>
                 </section>
-                <section slot="page-2" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider.pk || ""}
+                                targetModelApp="authentik_providers_oauth2"
+                                targetModelName="oauth2provider">
+                            </ak-object-changelog>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-3" data-tab-title="${gettext("Metadata")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card pf-c-card-aggregate">

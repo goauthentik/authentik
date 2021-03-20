@@ -16,6 +16,7 @@ import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/CodeMirror";
 import "../../elements/Tabs";
+import "../../elements/events/ObjectChangelog";
 import { Page } from "../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -127,6 +128,17 @@ export class OAuthSourceViewPage extends Page {
                                     </ak-modal-button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-2" data-tab-title="${gettext("Changelog")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.source.pk || ""}
+                                targetModelApp="authentik_sources_oauth"
+                                targetModelName="oauthsource">
+                            </ak-object-changelog>
                         </div>
                     </div>
                 </section>
