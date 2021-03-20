@@ -24,7 +24,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         return gettext("Create Invitation Links to enroll Users, and optionally force specific attributes of their account.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-migration");
+        return "pf-icon pf-icon-migration";
     }
 
     @property()

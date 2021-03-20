@@ -24,7 +24,7 @@ export class PromptListPage extends TablePage<Prompt> {
         return gettext("Single Prompts that can be used for Prompt Stages.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-plugged");
+        return "pf-icon pf-icon-plugged";
     }
 
     @property()

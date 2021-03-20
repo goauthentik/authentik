@@ -26,7 +26,7 @@ export class PolicyListPage extends TablePage<Policy> {
         return gettext("Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-infrastructure");
+        return "pf-icon pf-icon-infrastructure";
     }
 
     @property()

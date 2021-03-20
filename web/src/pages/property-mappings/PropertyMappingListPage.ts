@@ -26,7 +26,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return gettext("Control how authentik exposes and interprets information.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-blueprint");
+        return "pf-icon pf-icon-blueprint";
     }
 
     @property()

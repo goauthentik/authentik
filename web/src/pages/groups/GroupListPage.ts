@@ -24,7 +24,7 @@ export class GroupListPage extends TablePage<Group> {
         return gettext("Group users together and give them permissions based on the membership.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-users");
+        return "pf-icon pf-icon-users";
     }
 
     @property()

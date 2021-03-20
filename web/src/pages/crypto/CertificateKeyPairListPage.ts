@@ -27,7 +27,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return gettext("Import certificates of external providers or create certificates to sign requests with.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-key");
+        return "pf-icon pf-icon-key";
     }
 
     @property()

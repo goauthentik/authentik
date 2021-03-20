@@ -25,7 +25,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return gettext("Define how notifications are sent to users, like Email or Webhook.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-export");
+        return "pf-icon pf-icon-export";
     }
 
     @property()

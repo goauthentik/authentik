@@ -26,7 +26,7 @@ export class ProviderListPage extends TablePage<Provider> {
         return gettext("Provide support for protocols like SAML and OAuth to assigned applications.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-integration");
+        return "pf-icon pf-icon-integration";
     }
 
     @property()

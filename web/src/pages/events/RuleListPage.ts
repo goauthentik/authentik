@@ -27,7 +27,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return gettext("Send notifications whenever a specific Event is created and matched by policies.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-attention-bell");
+        return "pf-icon pf-icon-attention-bell";
     }
 
     @property()

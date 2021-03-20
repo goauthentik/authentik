@@ -24,7 +24,7 @@ export class FlowListPage extends TablePage<Flow> {
         return gettext("Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-process-automation");
+        return "pf-icon pf-icon-process-automation";
     }
 
     @property()

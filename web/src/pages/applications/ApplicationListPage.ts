@@ -25,7 +25,7 @@ export class ApplicationListPage extends TablePage<Application> {
         return gettext("External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-applications");
+        return "pf-icon pf-icon-applications";
     }
 
     @property()

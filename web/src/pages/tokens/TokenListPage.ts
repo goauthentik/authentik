@@ -24,7 +24,7 @@ export class TokenListPage extends TablePage<Token> {
         return gettext("Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-security");
+        return "pf-icon pf-icon-security";
     }
 
     @property()

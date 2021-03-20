@@ -22,7 +22,7 @@ export class SystemTaskListPage extends TablePage<Task> {
         return gettext("Long-running operations which authentik executes in the background.");
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-automation");
+        return "pf-icon pf-icon-automation";
     }
 
     @property()

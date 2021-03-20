@@ -26,7 +26,7 @@ export class UserListPage extends TablePage<User> {
         return "";
     }
     pageIcon(): string {
-        return gettext("pf-icon pf-icon-user");
+        return "pf-icon pf-icon-user";
     }
 
     @property()
