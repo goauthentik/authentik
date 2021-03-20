@@ -18,6 +18,8 @@ import "../../elements/CodeMirror";
 import "../../elements/Tabs";
 import "../../elements/events/ObjectChangelog";
 import "../../elements/user/UserConsentList";
+import "../../elements/oauth/UserCodeList";
+import "../../elements/oauth/UserRefreshList";
 import { Page } from "../../elements/Page";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -88,6 +90,22 @@ export class UserViewPage extends Page {
                         <div class="pf-c-card__body">
                             <ak-user-consent-list .userId="${(this.user.pk || 0).toString()}">
                             </ak-user-consent-list>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-4" data-tab-title="${gettext("OAuth Authorization Codes")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-code-list .userId="${(this.user.pk || 0).toString()}">
+                            </ak-user-oauth-code-list>
+                        </div>
+                    </div>
+                </section>
+                <section slot="page-5" data-tab-title="${gettext("OAuth Refresh Codes")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-oauth-refresh-list .userId="${(this.user.pk || 0).toString()}">
+                            </ak-user-oauth-refresh-list>
                         </div>
                     </div>
                 </section>
