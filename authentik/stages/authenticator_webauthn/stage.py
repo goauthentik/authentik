@@ -120,11 +120,16 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             user.avatar,
         )
 
+        registration_dict = make_credential_options.registration_dict
+        registration_dict["authenticatorSelection"] = {
+            "authenticatorAttachment": "cross-platform"
+        }
+
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.native.value,
                 "component": "ak-stage-authenticator-webauthn",
-                "registration": make_credential_options.registration_dict,
+                "registration": registration_dict,
             }
         )
 
