@@ -9,8 +9,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import AKGlobal from "../../authentik.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -24,6 +24,7 @@ import "../../elements/charts/UserChart";
 import { Page } from "../../elements/Page";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-user-view")
 export class UserViewPage extends Page {
@@ -31,10 +32,10 @@ export class UserViewPage extends Page {
         return gettext(`User ${this.user?.username || ""}`);
     }
     pageDescription(): string | undefined {
-        return;
+        return this.user?.name || "";
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-integration";
+        return "pf-icon pf-icon-user";
     }
 
     @property({ type: Number })
@@ -68,7 +69,84 @@ export class UserViewPage extends Page {
         return html`<ak-tabs>
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col">
+                            <div class="pf-c-card__title">
+                                ${gettext("User Info")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Username")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">${this.user.username}</div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Name")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">${this.user.name}</div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Email")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">${this.user.email}</div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Last login")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">${this.user.lastLogin?.toLocaleString()}</div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Active")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <i class="fa ${this.user.isActive ? "fa-check-circle pf-m-success" : "fa-exclamation-triangle pf-m-warning"}"></i>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Superuser")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <i class="fa ${this.user.isSuperuser ? "fa-check-circle pf-m-success" : "fa-exclamation-triangle pf-m-warning"}"></i>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-modal-button href="${AdminURLManager.users(`${this.user.pk}/update/`)}">
+                                    <ak-spinner-button slot="trigger" class="pf-m-primary">
+                                        ${gettext("Edit")}
+                                    </ak-spinner-button>
+                                    <div slot="modal"></div>
+                                </ak-modal-button>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-modal-button href="${AdminURLManager.users(`${this.user.pk}/reset/`)}">
+                                    <ak-spinner-button slot="trigger" class="pf-m-secondary">
+                                        ${gettext("Reset Password")}
+                                    </ak-spinner-button>
+                                    <div slot="modal"></div>
+                                </ak-modal-button>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card__body">
                                 <ak-charts-user>
                                 </ak-charts-user>
