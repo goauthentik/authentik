@@ -17,11 +17,13 @@ function Comparison() {
                                 <th>Microsoft Azure AD</th>
                                 <th>Okta</th>
                                 <th>Duo</th>
+                                <th>Authelia</th>
                             </tr>
                         </thead>
                         <thead className="group">
                             <tr>
                                 <th>Protocol Support</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -39,6 +41,7 @@ function Comparison() {
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
                             </tr>
                             <tr>
                                 <td className="row-label">OAuth2 and OIDC</td>
@@ -48,11 +51,13 @@ function Comparison() {
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
                             </tr>
                         </tbody>
                         <thead className="group">
                             <tr>
                                 <th>Use-cases</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -70,15 +75,17 @@ function Comparison() {
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
                             </tr>
                             <tr>
                                 <td className="row-label">Enrollment</td>
                                 <td className="result passed authentik"><Check></Check></td>
-                                <td className="result passed"><X></X></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
-                                <td className="result passed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
+                                <td className="result failed"><X></X></td>
                             </tr>
                             <tr>
                                 <td className="row-label">Self-service</td>
@@ -88,11 +95,13 @@ function Comparison() {
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
+                                <td className="result failed"><X></X></td>
                             </tr>
                         </tbody>
                         <thead className="group">
                             <tr>
                                 <th>Features</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -110,6 +119,7 @@ function Comparison() {
                                 <td className="result failed"><Check></Check></td>
                                 <td className="result failed"><Check></Check></td>
                                 <td className="result passed"><Check></Check></td>
+                                <td className="result passed"><Check></Check></td>
                             </tr>
                             <tr>
                                 <td className="row-label">Conditional Access</td>
@@ -119,6 +129,7 @@ function Comparison() {
                                 <td className="result warning"><AlertTriangle></AlertTriangle></td>
                                 <td className="result passed"><Check></Check></td>
                                 <td className="result warning"><AlertTriangle></AlertTriangle></td>
+                                <td className="result passed"><Check></Check></td>
                             </tr>
                             <tr>
                                 <td className="row-label">Open-source</td>
@@ -128,6 +139,7 @@ function Comparison() {
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
+                                <td className="result passed"><Check></Check></td>
                             </tr>
                             <tr>
                                 <td className="row-label">Application Proxy</td>
@@ -137,6 +149,7 @@ function Comparison() {
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
                                 <td className="result failed"><X></X></td>
+                                <td className="result warning"><AlertTriangle></AlertTriangle></td>
                             </tr>
                         </tbody>
                     </table>
