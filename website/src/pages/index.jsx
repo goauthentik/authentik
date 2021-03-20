@@ -106,8 +106,8 @@ function Home() {
                                     <ClientOnly>
                                         <BeforeAfterSlider
                                             className={styles.featureImage}
-                                            before={useBaseUrl("img/screen_apps_light.png")}
-                                            after={useBaseUrl("img/screen_apps_dark.png")}
+                                            before={useBaseUrl("img/screen_apps_light.jpg")}
+                                            after={useBaseUrl("img/screen_apps_dark.jpg")}
                                             width={640}
                                             height={480}
                                         />
@@ -145,8 +145,8 @@ function Home() {
                                     <ClientOnly>
                                         <BeforeAfterSlider
                                             className={styles.featureImage}
-                                            before={useBaseUrl("img/screen_admin_light.png")}
-                                            after={useBaseUrl("img/screen_admin_dark.png")}
+                                            before={useBaseUrl("img/screen_admin_light.jpg")}
+                                            after={useBaseUrl("img/screen_admin_dark.jpg")}
                                             width={640}
                                             height={480}
                                         />

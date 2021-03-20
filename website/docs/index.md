@@ -15,5 +15,5 @@ See [Docker-compose](installation/docker-compose) or [Kubernetes](installation/k
 
 Light | Dark
 --- | ---
-![](/img/screen_apps_light.png) | ![](/img/screen_apps_dark.png)
-![](/img/screen_admin_light.png) | ![](/img/screen_admin_dark.png)
+![](/img/screen_apps_light.jpg) | ![](/img/screen_apps_dark.jpg)
+![](/img/screen_admin_light.jpg) | ![](/img/screen_admin_dark.jpg)
