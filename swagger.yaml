@@ -24,7 +24,27 @@ paths:
     get:
       operationId: admin_metrics_list
       description: Login Metrics per 1h
-      parameters: []
+      parameters:
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
       responses:
         '200':
           description: Login Metrics per 1h
@@ -33,6 +53,21 @@ paths:
       tags:
         - admin
     parameters: []
+  /admin/metrics/{id}/:
+    get:
+      operationId: admin_metrics_read
+      description: Login Metrics per 1h
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - admin
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
   /admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
@@ -1614,6 +1649,54 @@ paths:
           description: User Serializer
           schema:
             $ref: '#/definitions/User'
+      tags:
+        - core
+    parameters: []
+  /core/users/metrics/:
+    get:
+      operationId: core_users_metrics
+      description: User metrics per 1h
+      parameters:
+        - name: username
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: is_active
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: User Metrics
+          schema:
+            $ref: '#/definitions/UserMetrics'
       tags:
         - core
     parameters: []
@@ -10981,6 +11064,28 @@ definitions:
         $ref: '#/definitions/User'
       application:
         $ref: '#/definitions/Application'
+  UserMetrics:
+    description: User Metrics
+    type: object
+    properties:
+      logins_per_1h:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Coordinate'
+        readOnly: true
+      logins_failed_per_1h:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Coordinate'
+        readOnly: true
+      authorizations_per_1h:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Coordinate'
+        readOnly: true
   CertificateKeyPair:
     description: CertificateKeyPair Serializer
     required:
