@@ -20,6 +20,7 @@ import "../../elements/events/ObjectChangelog";
 import "../../elements/user/UserConsentList";
 import "../../elements/oauth/UserCodeList";
 import "../../elements/oauth/UserRefreshList";
+import "../../elements/charts/UserChart";
 import { Page } from "../../elements/Page";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
@@ -68,8 +69,9 @@ export class UserViewPage extends Page {
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
-                            <div class="pf-c-card__title">${gettext("Logins over the last 24 hours")}</div>
                             <div class="pf-c-card__body">
+                                <ak-charts-user>
+                                </ak-charts-user>
                             </div>
                         </div>
                     </div>
