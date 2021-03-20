@@ -151,7 +151,7 @@ table.comparison tr td.result.warning {
 
 table.comparison tr td.result.passed.authentik {
     background: var(--ifm-color-primary);
-    color: var(--ifm-background-color);
+    color: var(--ifm-color-secondary);
 }
 
 table.comparison tr td.bar {
