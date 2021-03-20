@@ -30,7 +30,7 @@ export class UserListPage extends TablePage<User> {
     }
 
     @property()
-    order = "username";
+    order = "last_login";
 
     apiEndpoint(page: number): Promise<AKResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
