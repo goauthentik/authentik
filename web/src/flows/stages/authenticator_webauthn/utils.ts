@@ -27,7 +27,7 @@ export function hexEncode(buf: Uint8Array): string {
  */
 export function transformCredentialCreateOptions(credentialCreateOptions: PublicKeyCredentialCreationOptions): PublicKeyCredentialCreationOptions {
     const user = credentialCreateOptions.user;
-    user.id = u8arr(credentialCreateOptions.user.id.toString());
+    user.id = u8arr(b64enc(credentialCreateOptions.user.id as Uint8Array));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
     const transformedCredentialCreateOptions = Object.assign(
