@@ -78,9 +78,9 @@ export class ApplicationViewPage extends LitElement {
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__title">${gettext("Logins over the last 24 hours")}</div>
                             <div class="pf-c-card__body">
-                                ${this.application ? html`
+                                ${this.application && html`
                                     <ak-charts-application-authorize applicationSlug=${this.application.slug}>
-                                    </ak-charts-application-authorize>`: ""}
+                                    </ak-charts-application-authorize>`}
                             </div>
                         </div>
                         <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">

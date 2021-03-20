@@ -52,10 +52,10 @@ export class UserListPage extends TablePage<User> {
 
     row(item: User): TemplateResult[] {
         return [
-            html`<div>
+            html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
                 <small>${item.name}</small>
-            </div>`,
+            </a>`,
             html`${item.isActive ? "Yes" : "No"}`,
             html`${item.lastLogin?.toLocaleString()}`,
             html`

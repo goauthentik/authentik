@@ -51,7 +51,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return me().then(u => u.isSuperuser||false);
     }),
     new SidebarItem("Identity & Cryptography").children(
-        new SidebarItem("User", "/identity/users"),
+        new SidebarItem("User", "/identity/users").activeWhen(`^/identity/users/(?<id>${ID_REGEX})$`),
         new SidebarItem("Groups", "/identity/groups"),
         new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/core/tokens"),
