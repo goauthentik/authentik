@@ -1,6 +1,5 @@
 import { customElement, LitElement, property } from "lit-element";
 
-// @ts-ignore
 import CodeMirror from "codemirror";
 import "codemirror/addon/display/autorefresh";
 import "codemirror/mode/xml/xml.js";

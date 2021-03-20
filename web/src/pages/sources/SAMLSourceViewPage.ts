@@ -12,6 +12,8 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import CodeMirrorStyle from "codemirror/lib/codemirror.css";
+import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
@@ -48,7 +50,7 @@ export class SAMLSourceViewPage extends Page {
     source?: SAMLSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, AKGlobal];
+        return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, CodeMirrorStyle, CodeMirrorTheme, AKGlobal];
     }
 
     constructor() {

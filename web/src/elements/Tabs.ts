@@ -17,7 +17,6 @@ export class Tabs extends LitElement {
     static get styles(): CSSResult[] {
         return [PFGlobal, PFTabs, AKGlobal, css`
             ::slotted(*) {
-                height: 100%;
                 flex-grow: 2;
             }
             :host([vertical]) {
