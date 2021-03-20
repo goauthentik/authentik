@@ -24,27 +24,7 @@ paths:
     get:
       operationId: admin_metrics_list
       description: Login Metrics per 1h
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
+      parameters: []
       responses:
         '200':
           description: Login Metrics per 1h
@@ -53,21 +33,6 @@ paths:
       tags:
         - admin
     parameters: []
-  /admin/metrics/{id}/:
-    get:
-      operationId: admin_metrics_read
-      description: Login Metrics per 1h
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - admin
-    parameters:
-      - name: id
-        in: path
-        required: true
-        type: string
   /admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list
@@ -11718,6 +11683,7 @@ definitions:
     required:
       - provider
       - user
+      - scope
     type: object
     properties:
       pk:
@@ -11737,9 +11703,11 @@ definitions:
         type: string
         format: date-time
       scope:
-        title: Scope
-        type: string
-        readOnly: true
+        description: ''
+        type: array
+        items:
+          type: string
+          minLength: 1
   Outpost:
     description: Outpost Serializer
     required:

@@ -35,9 +35,9 @@ export class UserOAuthRefreshList extends Table<ExpiringBaseGrantModel> {
 
     row(item: ExpiringBaseGrantModel): TemplateResult[] {
         return [
-            html`${item.provider}`,
+            html`${item.provider.name}`,
             html`${item.expires?.toLocaleString()}`,
-            html`${item.scope}`,
+            html`${item.scope.join(", ")}`,
             html`
             <ak-forms-delete
                 .obj=${item}

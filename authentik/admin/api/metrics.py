@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ViewSet
 
 from authentik.events.models import Event, EventAction
 
@@ -81,7 +81,7 @@ class LoginMetricsSerializer(Serializer):
         raise NotImplementedError
 
 
-class AdministrationMetricsViewSet(ReadOnlyModelViewSet):
+class AdministrationMetricsViewSet(ViewSet):
     """Login Metrics per 1h"""
 
     permission_classes = [IsAdminUser]

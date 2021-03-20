@@ -1,5 +1,6 @@
 """OAuth2Provider API Views"""
 from rest_framework import mixins
+from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
@@ -14,6 +15,7 @@ class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
 
     user = UserSerializer()
     provider = OAuth2ProviderSerializer()
+    scope = ListField(child=CharField())
 
     class Meta:
 
