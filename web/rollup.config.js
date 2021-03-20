@@ -23,6 +23,10 @@ const resources = [
 const isProdBuild = process.env.NODE_ENV === "production";
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function manualChunks(id) {
+    if (id.includes("construct-style-sheets-polyfill")) {
+        // Keep polyfills in the main file so they are loaded when dependencies are loaded
+        return "vendor-poly";
+    }
     if (id.includes("node_modules")) {
         if (id.includes("codemirror")) {
             return "vendor-cm";
