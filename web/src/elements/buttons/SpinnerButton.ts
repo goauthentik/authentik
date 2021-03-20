@@ -2,6 +2,7 @@ import { css, CSSResult, customElement, html, LitElement, property, TemplateResu
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
+import AKGlobal from "../../authentik.css";
 import { SpinnerSize } from "../Spinner";
 import { PRIMARY_CLASS, PROGRESS_CLASS } from "../../constants";
 
@@ -21,6 +22,7 @@ export class SpinnerButton extends LitElement {
             PFBase,
             PFButton,
             PFSpinner,
+            AKGlobal,
             css`
                 button {
                     /* Have to use !important here, as buttons with pf-m-progress have transition already */
