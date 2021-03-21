@@ -1,4 +1,6 @@
 """impersonation tests"""
+from json import loads
+
 from django.test.testcases import TestCase
 from django.urls import reverse
 
@@ -25,14 +27,16 @@ class TestImpersonation(TestCase):
         )
 
         response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertIn(self.other_user.username, response.content.decode())
-        self.assertNotIn(self.akadmin.username, response.content.decode())
+        response_body = loads(response.content.decode())
+        self.assertEqual(response_body["user"]["username"], self.other_user.username)
+        self.assertEqual(response_body["original"]["username"], self.akadmin.username)
 
         self.client.get(reverse("authentik_core:impersonate-end"))
 
         response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertNotIn(self.other_user.username, response.content.decode())
-        self.assertIn(self.akadmin.username, response.content.decode())
+        response_body = loads(response.content.decode())
+        self.assertEqual(response_body["user"]["username"], self.akadmin.username)
+        self.assertNotIn("original", response_body)
 
     def test_impersonate_denied(self):
         """test impersonation without permissions"""
@@ -45,8 +49,8 @@ class TestImpersonation(TestCase):
         )
 
         response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertIn(self.other_user.username, response.content.decode())
-        self.assertNotIn(self.akadmin.username, response.content.decode())
+        response_body = loads(response.content.decode())
+        self.assertEqual(response_body["user"]["username"], self.other_user.username)
 
     def test_un_impersonate_empty(self):
         """test un-impersonation without impersonating first"""

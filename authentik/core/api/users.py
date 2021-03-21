@@ -10,6 +10,10 @@ from rest_framework.serializers import BooleanField, ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
+from authentik.core.middleware import (
+    SESSION_IMPERSONATE_ORIGINAL_USER,
+    SESSION_IMPERSONATE_USER,
+)
 from authentik.core.models import User
 from authentik.events.models import EventAction
 
@@ -34,6 +38,20 @@ class UserSerializer(ModelSerializer):
             "avatar",
             "attributes",
         ]
+
+
+class SessionUserSerializer(Serializer):
+    """Response for the /user/me endpoint, returns the currently active user (as `user` property)
+    and, if this user is being impersonated, the original user in the `original` property."""
+
+    user = UserSerializer()
+    original = UserSerializer(required=False)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
 
 
 class UserMetricsSerializer(Serializer):
@@ -83,12 +101,20 @@ class UserViewSet(ModelViewSet):
     def get_queryset(self):
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
-    @swagger_auto_schema(responses={200: UserSerializer(many=False)})
+    @swagger_auto_schema(responses={200: SessionUserSerializer(many=False)})
     @action(detail=False)
     # pylint: disable=invalid-name
     def me(self, request: Request) -> Response:
         """Get information about current user"""
-        return Response(UserSerializer(request.user).data)
+        serializer = SessionUserSerializer(
+            data={"user": UserSerializer(request.user).data}
+        )
+        if SESSION_IMPERSONATE_USER in request._request.session:
+            serializer.initial_data["original"] = UserSerializer(
+                request._request.session[SESSION_IMPERSONATE_ORIGINAL_USER]
+            ).data
+        serializer.is_valid()
+        return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=False)

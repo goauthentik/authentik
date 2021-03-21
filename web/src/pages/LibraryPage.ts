@@ -61,7 +61,7 @@ export class LibraryApplication extends LitElement {
                     ? html`<img class="app-icon pf-c-avatar" src="${ifDefined(this.application.metaIcon)}" alt="Application Icon"/>`
                     : html`<i class="fas fas fa-share-square"></i>`}
                 ${until(me().then((u) => {
-                    if (!u.isSuperuser) return html``;
+                    if (!u.user.isSuperuser) return html``;
                     return html`
                         <a href="#/core/applications/${this.application?.slug}">
                             <i class="fas fa-pencil-alt"></i>
