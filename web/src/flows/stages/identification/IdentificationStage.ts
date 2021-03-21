@@ -61,6 +61,8 @@ export class IdentificationStage extends BaseStage {
     }
 
     firstUpdated(): void {
+        const wrapperForm = document.createElement("form");
+        document.documentElement.appendChild(wrapperForm);
         // This is a workaround for the fact that we're in a shadow dom
         // adapted from https://github.com/home-assistant/frontend/issues/3133
         const username = document.createElement("input");
@@ -76,7 +78,7 @@ export class IdentificationStage extends BaseStage {
                 input.focus();
             });
         };
-        document.documentElement.appendChild(username);
+        wrapperForm.appendChild(username);
         const password = document.createElement("input");
         password.setAttribute("type", "password");
         password.setAttribute("name", "password");
@@ -98,7 +100,7 @@ export class IdentificationStage extends BaseStage {
                 input.focus();
             });
         };
-        document.documentElement.appendChild(password);
+        wrapperForm.appendChild(password);
         const totp = document.createElement("input");
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
@@ -120,7 +122,7 @@ export class IdentificationStage extends BaseStage {
                 input.focus();
             });
         };
-        document.documentElement.appendChild(totp);
+        wrapperForm.appendChild(totp);
     }
 
     renderSource(source: UILoginButton): TemplateResult {
