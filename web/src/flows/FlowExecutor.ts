@@ -54,7 +54,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                 justify-content: center;
                 align-items: center;
                 position: absolute;
-                background-color: #0303039e;
+                background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
+                z-index: 1;
             }
             .ak-hidden {
                 display: none;
