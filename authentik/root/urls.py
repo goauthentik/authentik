@@ -4,7 +4,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
-from django.views.i18n import JavaScriptCatalog
 from structlog.stdlib import get_logger
 
 from authentik.core.views import error
@@ -59,7 +58,6 @@ urlpatterns += [
     path("metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
-    path("-/jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
 ]
 
 if settings.DEBUG:

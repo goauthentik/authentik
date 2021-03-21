@@ -1,6 +1,5 @@
 """flow urls"""
 from django.urls import path
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 
 from authentik.flows.models import FlowDesignation
