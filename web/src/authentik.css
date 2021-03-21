@@ -15,10 +15,35 @@ html > input {
     z-index: 0;
 }
 
+/*****************************
+* Login adjustments
+*****************************/
 /* Ensure card is displayed on small screens */
 .pf-c-login__main {
     display: block;
 }
+.ak-login-container {
+    height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
+    width: 35rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.pf-c-login__header {
+    flex-grow: 1;
+}
+.pf-c-login__main {
+    flex-shrink: 1;
+}
+.pf-c-login__footer {
+    flex-grow: 1;
+}
+.pf-c-login__footer ul.pf-c-list.pf-m-inline {
+    justify-content: center;
+}
+/*****************************
+* End Login adjustments
+*****************************/
 
 .pf-c-content h1 {
     display: flex;
