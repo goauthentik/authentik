@@ -103,6 +103,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "background": flow.background.url,
                 "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
@@ -145,6 +146,7 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "background": flow.background.url,
                 "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",

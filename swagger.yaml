@@ -11547,6 +11547,10 @@ definitions:
         title: Title
         type: string
         minLength: 1
+      background:
+        title: Background
+        type: string
+        minLength: 1
       response_errors:
         title: Response errors
         type: object

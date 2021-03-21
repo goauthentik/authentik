@@ -408,6 +408,7 @@ class TestFlowExecutor(TestCase):
             self.assertJSONEqual(
                 force_str(response.content),
                 {
+                    "background": flow.background.url,
                     "type": ChallengeTypes.native.value,
                     "component": "",
                     "title": binding.stage.name,
@@ -438,6 +439,7 @@ class TestFlowExecutor(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "background": flow.background.url,
                 "type": ChallengeTypes.native.value,
                 "component": "",
                 "title": binding4.stage.name,
