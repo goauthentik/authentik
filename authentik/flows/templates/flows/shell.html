@@ -1,7 +1,6 @@
-{% extends 'login/base_full.html' %}
+{% extends "base/skeleton.html" %}
 
 {% load static %}
-{% load i18n %}
 
 {% block head %}
 {{ block.super }}
@@ -14,7 +13,6 @@
 <script src="{% static 'dist/flow.js' %}?v={{ ak_version }}" type="module"></script>
 {% endblock %}
 
-{% block main_container %}
-<ak-flow-executor class="pf-c-login__main" flowSlug="{{ flow_slug }}">
-</ak-flow-executor>
+{% block body %}
+<ak-flow-executor></ak-flow-executor>
 {% endblock %}

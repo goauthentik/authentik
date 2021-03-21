@@ -51,7 +51,7 @@ export class IdentificationStage extends BaseStage {
                 /* login page's icons */
                 .pf-c-login__main-footer-links-item-link img {
                     fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100%;
+                    width: 100px;
                     max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
                     height: 100%;
                     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);

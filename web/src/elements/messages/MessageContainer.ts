@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { LitElement, html, customElement, TemplateResult, property, CSSResult } from "lit-element";
+import { LitElement, html, customElement, TemplateResult, property, CSSResult, css } from "lit-element";
 import "./Message";
 import { APIMessage } from "./Message";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
@@ -24,7 +24,12 @@ export class MessageContainer extends LitElement {
     retryDelay = 200;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlertGroup];
+        return [PFBase, PFAlertGroup, css`
+            /* Fix spacing between messages */
+            ak-message {
+                display: block;
+            }
+        `];
     }
 
     constructor() {

@@ -62,11 +62,6 @@ html > input {
     background-position: center;
 }
 
-/* Fix spacing between messages */
-ak-message {
-    display: block;
-}
-
 .pf-m-success {
     color: var(--pf-global--success-color--100);
 }

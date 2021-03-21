@@ -4,6 +4,9 @@ import { LitElement, html, customElement, property, TemplateResult, CSSResult, c
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import AKGlobal from "../authentik.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
@@ -31,13 +34,15 @@ import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_w
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
 import { SpinnerSize } from "../elements/Spinner";
 import { StageHost } from "./stages/base";
-import { Challenge, ChallengeTypeEnum, FlowsApi } from "authentik-api";
+import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
+import { ifDefined } from "lit-html/directives/if-defined";
+import { until } from "lit-html/directives/until";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
-    @property()
-    flowSlug = "";
+
+    flowSlug: string;
 
     @property({attribute: false})
     challenge?: Challenge;
@@ -45,8 +50,11 @@ export class FlowExecutor extends LitElement implements StageHost {
     @property({type: Boolean})
     loading = false;
 
+    @property({ attribute: false })
+    config?: Config;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFTitle].concat(css`
+        return [PFBase, PFLogin, PFTitle, PFList, PFBackgroundImage, AKGlobal].concat(css`
             .ak-loading {
                 display: flex;
                 height: 100%;
@@ -75,6 +83,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.addEventListener("ak-flow-submit", () => {
             this.submit();
         });
+        this.flowSlug = window.location.pathname.split("/")[2];
     }
 
     submit<T>(formData?: T): Promise<void> {
@@ -94,6 +103,9 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     firstUpdated(): void {
+        new RootApi(DEFAULT_CONFIG).rootConfigList().then((config) => {
+            this.config = config;
+        });
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorGetRaw({
             flowSlug: this.flowSlug
@@ -176,7 +188,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         return html``;
     }
 
-    render(): TemplateResult {
+    renderChallengeWrapper(): TemplateResult {
         if (!this.challenge) {
             return this.renderLoading();
         }
@@ -185,4 +197,47 @@ export class FlowExecutor extends LitElement implements StageHost {
             ${this.renderChallenge()}
         `;
     }
+
+    render(): TemplateResult {
+        return html`<div class="pf-c-background-image">
+            <svg xmlns="http://www.w3.org/2000/svg" class="pf-c-background-image__filter" width="0" height="0">
+                <filter id="image_overlay">
+                    <feColorMatrix in="SourceGraphic" type="matrix" values="1.3 0 0 0 0 0 1.3 0 0 0 0 0 1.3 0 0 0 0 0 1 0" />
+                    <feComponentTransfer color-interpolation-filters="sRGB" result="duotone">
+                        <feFuncR type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncR>
+                        <feFuncG type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncG>
+                        <feFuncB type="table" tableValues="0.086274509803922 0.43921568627451"></feFuncB>
+                        <feFuncA type="table" tableValues="0 1"></feFuncA>
+                    </feComponentTransfer>
+                </filter>
+            </svg>
+        </div>
+        <ak-message-container></ak-message-container>
+        <div class="pf-c-login">
+            <div class="ak-login-container">
+                <header class="pf-c-login__header">
+                    <div class="pf-c-brand ak-brand">
+                        <img src="${ifDefined(this.config?.brandingLogo)}" alt="authentik icon" />
+                    </div>
+                </header>
+                <div class="pf-c-login__main">
+                    ${this.renderChallengeWrapper()}
+                </div>
+                <footer class="pf-c-login__footer">
+                    <p></p>
+                    <ul class="pf-c-list pf-m-inline">
+                        ${until(this.config?.uiFooterLinks?.map((link) => {
+                            return html`<li>
+                                <a href="${link.href || ""}">${link.name}</a>
+                            </li>`;
+                        }))}
+                        ${this.config?.brandingTitle != "authentik" ? html`
+                        <li><a href="https://goauthentik.io">${gettext("Powered by authentik")}</a></li>
+                        ` : html``}
+                    </ul>
+                </footer>
+            </div>
+        </div>`;
+    }
+
 }
