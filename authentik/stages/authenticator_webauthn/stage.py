@@ -122,7 +122,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         registration_dict = make_credential_options.registration_dict
         registration_dict["authenticatorSelection"] = {
-            "authenticatorAttachment": "cross-platform"
+            "requireResidentKey": False,
+            "userVerification": "preferred",
         }
 
         return AuthenticatorWebAuthnChallenge(
