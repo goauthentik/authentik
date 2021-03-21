@@ -10,6 +10,10 @@ import "../elements/router/RouterOutlet";
 import "../elements/messages/MessageContainer";
 import "../elements/sidebar/SidebarHamburger";
 import "../elements/notifications/NotificationDrawer";
+import "../elements/Banner";
+import { until } from "lit-html/directives/until";
+import { me } from "../api/Users";
+import { gettext } from "django";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -44,6 +48,17 @@ export abstract class Interface extends LitElement {
 
     render(): TemplateResult {
         return html`
+            ${until(me().then((u) => {
+                if (u.original) {
+                    return html`<ak-banner>
+                        ${gettext(`You're currently impersonating ${u.user.username}.`)}
+                        <a href=${`/-/impersonation/end/?back=${window.location.pathname}%23${window.location.hash}`}>
+                            ${gettext("Stop impersonation")}
+                        </a>
+                    </ak-banner>`;
+                }
+                return html``;
+            }))}
             <div class="pf-c-page">
                 <ak-sidebar-hamburger>
                 </ak-sidebar-hamburger>

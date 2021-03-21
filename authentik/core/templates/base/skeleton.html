@@ -18,16 +18,6 @@
         {% endblock %}
     </head>
     <body>
-        {% if 'authentik_impersonate_user' in request.session %}
-        <div class="pf-c-banner pf-m-warning pf-c-alert pf-m-sticky">
-            <div class="pf-l-flex pf-m-justify-content-center pf-m-justify-content-space-between-on-lg pf-m-nowrap" style="height: 100%;">
-                <div class="pf-u-display-none pf-u-display-block-on-lg">
-                    {% blocktrans with user=user %}You're currently impersonating {{ user }}.{% endblocktrans %}
-                    <a href="{% url 'authentik_core:impersonate-end' %}?back={{ request.get_full_path }}" id="acceptMessage">{% trans 'Stop impersonation' %}</a>
-                </div>
-            </div>
-        </div>
-        {% endif %}
         {% block body %}
         {% endblock %}
         {% block scripts %}

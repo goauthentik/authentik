@@ -35,6 +35,7 @@ urlpatterns = [
         impersonate.ImpersonateEndView.as_view(),
         name="impersonate-end",
     ),
+    # Interfaces
     path(
         "if/flow/<slug:flow_slug>/",
         ensure_csrf_cookie(FlowExecutorShellView.as_view()),
