@@ -158,9 +158,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         user = UserSerializer(data=json.loads(user_json))
         user.is_valid()
-        self.assertEqual(user["username"].value, expected_user.username)
-        self.assertEqual(user["name"].value, expected_user.name)
-        self.assertEqual(user["email"].value, expected_user.email)
+        self.assertEqual(user["user"]["username"].value, expected_user.username)
+        self.assertEqual(user["user"]["name"].value, expected_user.name)
+        self.assertEqual(user["user"]["email"].value, expected_user.email)
 
 
 @lru_cache
