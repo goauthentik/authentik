@@ -35,10 +35,13 @@ class TestFlowsStageSetup(SeleniumTestCase):
         new_password = generate_client_secret()
 
         self.driver.get(
-            f"{self.live_server_url}/flows/default-authentication-flow/?next=%2F"
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+            )
         )
         self.login()
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
 
         self.driver.get(
             self.url(
@@ -60,7 +63,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
             By.CSS_SELECTOR, "input[name=password_repeat]"
         ).send_keys(Keys.ENTER)
 
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         # Because USER() is cached, we need to get the user manually here
         user = User.objects.get(username=USER().username)
         self.assertTrue(user.check_password(new_password))

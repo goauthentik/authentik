@@ -13332,7 +13332,7 @@ definitions:
         type: string
         readOnly: true
   Link:
-    description: ''
+    description: Links returned in Config API
     type: object
     properties:
       href:

@@ -14,7 +14,12 @@ class TestFlowsLogin(SeleniumTestCase):
     @apply_migration("authentik_flows", "0008_default_flows")
     def test_login(self):
         """test default login flow"""
-        self.driver.get(f"{self.live_server_url}/flows/default-authentication-flow/")
+        self.driver.get(
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+            )
+        )
         self.login()
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.assert_user(USER())

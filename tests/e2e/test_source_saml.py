@@ -145,7 +145,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
@@ -207,7 +207,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
@@ -267,7 +267,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         # Wait until we've loaded the user info page
