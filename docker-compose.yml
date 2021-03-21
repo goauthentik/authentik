@@ -72,7 +72,7 @@ services:
     labels:
       traefik.enable: 'true'
       traefik.docker.network: internal
-      traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/media`, `/robots.txt`, `/favicon.ico`)
+      traefik.http.routers.static-router.rule: PathPrefix(`/static`, `/if`, `/media`, `/robots.txt`, `/favicon.ico`)
       traefik.http.routers.static-router.tls: 'true'
       traefik.http.routers.static-router.service: static-service
       traefik.http.services.static-service.loadbalancer.healthcheck.path: /

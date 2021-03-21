@@ -83,7 +83,7 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.addEventListener("ak-flow-submit", () => {
             this.submit();
         });
-        this.flowSlug = window.location.pathname.split("/")[2];
+        this.flowSlug = window.location.pathname.split("/")[3];
     }
 
     submit<T>(formData?: T): Promise<void> {

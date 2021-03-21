@@ -31,7 +31,7 @@ class UserCreateView(
     permission_required = "authentik_core.add_user"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created User")
 
 
@@ -50,7 +50,7 @@ class UserUpdateView(
     # By default the object's name is user which is used by other checks
     context_object_name = "object"
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully updated User")
 
 

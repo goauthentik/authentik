@@ -14,7 +14,7 @@ from authentik.lib.views import CreateAssignPermView
 class DeleteMessageView(SuccessMessageMixin, DeleteView):
     """DeleteView which shows `self.success_message` on successful deletion"""
 
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)

@@ -26,7 +26,7 @@ class InvitationCreateView(
     permission_required = "authentik_stages_invitation.add_invitation"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created Invitation")
 
     def form_valid(self, form):

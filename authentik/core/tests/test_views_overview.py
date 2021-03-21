@@ -26,5 +26,5 @@ class TestOverviewViews(TestCase):
     def test_shell(self):
         """Test shell"""
         self.assertEqual(
-            self.client.get(reverse("authentik_core:shell")).status_code, 200
+            self.client.get(reverse("authentik_core:if-admin")).status_code, 200
         )

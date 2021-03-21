@@ -110,7 +110,7 @@ class TestPasswordStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:shell"), "type": "redirect"},
+            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
         )
 
     def test_invalid_password(self):

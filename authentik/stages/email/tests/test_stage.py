@@ -109,7 +109,7 @@ class TestEmailStage(TestCase):
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             # Call the executor shell to preseed the session
             url = reverse(
-                "authentik_flows:flow-executor-shell",
+                "authentik_core:if-flow",
                 kwargs={"flow_slug": self.flow.slug},
             )
             token = Token.objects.get(user=self.user)
@@ -126,7 +126,7 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {"to": reverse("authentik_core:shell"), "type": "redirect"},
+                {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
             )
 
             session = self.client.session

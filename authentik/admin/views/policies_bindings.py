@@ -30,7 +30,7 @@ class PolicyBindingCreateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created PolicyBinding")
 
     def get_initial(self) -> dict[str, Any]:
@@ -63,5 +63,5 @@ class PolicyBindingUpdateView(
     form_class = PolicyBindingForm
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully updated PolicyBinding")

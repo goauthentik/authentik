@@ -85,7 +85,7 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:shell"), "type": "redirect"},
+            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
         )
 
         self.stage.continue_flow_without_invitation = False
@@ -124,5 +124,5 @@ class TestUserLoginStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:shell"), "type": "redirect"},
+            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
         )

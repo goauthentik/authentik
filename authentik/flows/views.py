@@ -173,7 +173,7 @@ class FlowExecutorView(APIView):
             next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
         if not next_param:
             next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-                NEXT_ARG_NAME, "authentik_core:shell"
+                NEXT_ARG_NAME, "authentik_core:if-admin"
             )
         self.cancel()
         return to_stage_response(self.request, redirect_with_qs(next_param))
@@ -278,7 +278,7 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
-        return redirect("authentik_core:shell")
+        return redirect("authentik_core:if-admin")
 
 
 class ToDefaultFlow(View):
@@ -300,7 +300,7 @@ class ToDefaultFlow(View):
                 )
                 del self.request.session[SESSION_KEY_PLAN]
         return redirect_with_qs(
-            "authentik_flows:flow-executor-shell", request.GET, flow_slug=flow.slug
+            "authentik_core:if-flow", request.GET, flow_slug=flow.slug
         )
 
 
@@ -360,7 +360,7 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
         )
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
-            "authentik_flows:flow-executor-shell",
+            "authentik_core:if-flow",
             self.request.GET,
             flow_slug=stage.configure_flow.slug,
         )
