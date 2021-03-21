@@ -13331,6 +13331,20 @@ definitions:
         title: Metadata
         type: string
         readOnly: true
+  Link:
+    description: ''
+    type: object
+    properties:
+      href:
+        title: Href
+        type: string
+        readOnly: true
+        minLength: 1
+      name:
+        title: Name
+        type: string
+        readOnly: true
+        minLength: 1
   Config:
     description: Serialize authentik Config into DRF Object
     type: object
@@ -13345,6 +13359,12 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
+      ui_footer_links:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/Link'
+        readOnly: true
       error_reporting_enabled:
         title: Error reporting enabled
         type: boolean
