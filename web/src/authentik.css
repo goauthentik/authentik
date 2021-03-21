@@ -56,7 +56,7 @@ html > form > input {
 
 /* ensure background on non-flow pages match */
 .pf-c-background-image::before {
-    background-image: url("/static/dist/assets/images/flow_background.jpg");
+    background-image: var(--ak-flow-background, url("/static/dist/assets/images/flow_background.jpg"));
     background-position: center;
 }
 

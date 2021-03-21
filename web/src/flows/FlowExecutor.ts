@@ -86,6 +86,12 @@ export class FlowExecutor extends LitElement implements StageHost {
         this.flowSlug = window.location.pathname.split("/")[3];
     }
 
+    setBackground(url: string): void {
+        this.shadowRoot?.querySelectorAll<HTMLDivElement>(".pf-c-background-image").forEach((bg) => {
+            bg.style.setProperty("--ak-flow-background", `url('${url}')`);
+        });
+    }
+
     submit<T>(formData?: T): Promise<void> {
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolveRaw({
@@ -95,6 +101,9 @@ export class FlowExecutor extends LitElement implements StageHost {
             return challengeRaw.raw.json();
         }).then((data) => {
             this.challenge = data;
+            if (this.challenge?.background) {
+                this.setBackground(this.challenge.background);
+            }
         }).catch((e) => {
             this.errorMessage(e);
         }).finally(() => {
@@ -113,6 +122,9 @@ export class FlowExecutor extends LitElement implements StageHost {
             return challengeRaw.raw.json();
         }).then((challenge) => {
             this.challenge = challenge as Challenge;
+            if (this.challenge?.background) {
+                this.setBackground(this.challenge.background);
+            }
         }).catch((e) => {
             // Catch JSON or Update errors
             this.errorMessage(e);
