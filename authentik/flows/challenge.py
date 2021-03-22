@@ -43,6 +43,7 @@ class Challenge(Serializer):
     )
     component = CharField(required=False)
     title = CharField(required=False)
+    background = CharField(required=False)
 
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=False, required=False

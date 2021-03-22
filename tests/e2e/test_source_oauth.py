@@ -159,7 +159,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         )
 
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(
@@ -254,7 +254,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(
@@ -358,7 +358,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've loaded the user info page
         sleep(2)
         # Wait until we've logged in
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.driver.get(self.url("authentik_core:user-details"))
 
         self.assertEqual(

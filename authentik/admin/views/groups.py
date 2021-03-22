@@ -27,7 +27,7 @@ class GroupCreateView(
     permission_required = "authentik_core.add_group"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created Group")
 
 
@@ -44,5 +44,5 @@ class GroupUpdateView(
     permission_required = "authentik_core.change_group"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully updated Group")

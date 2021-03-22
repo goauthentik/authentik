@@ -21,4 +21,4 @@ class UseTokenView(View):
         login(request, token.user, backend="django.contrib.auth.backends.ModelBackend")
         token.delete()
         messages.warning(request, _("Used recovery-link to authenticate."))
-        return redirect("authentik_core:shell")
+        return redirect("authentik_core:if-admin")

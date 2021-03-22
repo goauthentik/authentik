@@ -53,7 +53,7 @@ class TestIdentificationStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:shell"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
 
     def test_invalid_with_username(self):
@@ -103,10 +103,14 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "background": flow.background.url,
                 "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
-                "enroll_url": "/flows/unique-enrollment-string/",
+                "enroll_url": reverse(
+                    "authentik_core:if-flow",
+                    kwargs={"flow_slug": "unique-enrollment-string"},
+                ),
                 "primary_action": "Log in",
                 "title": self.flow.title,
                 "sources": [
@@ -142,10 +146,14 @@ class TestIdentificationStage(TestCase):
         self.assertJSONEqual(
             force_str(response.content),
             {
+                "background": flow.background.url,
                 "type": ChallengeTypes.native.value,
                 "component": "ak-stage-identification",
                 "input_type": "email",
-                "recovery_url": "/flows/unique-recovery-string/",
+                "recovery_url": reverse(
+                    "authentik_core:if-flow",
+                    kwargs={"flow_slug": "unique-recovery-string"},
+                ),
                 "primary_action": "Log in",
                 "title": self.flow.title,
                 "sources": [

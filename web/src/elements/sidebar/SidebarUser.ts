@@ -36,7 +36,7 @@ export class SidebarUser extends LitElement {
         return html`
             <a href="#/user" class="pf-c-nav__link user-avatar" id="user-settings">
                 ${until(me().then((u) => {
-                    return html`<img class="pf-c-avatar" src="${ifDefined(u.avatar)}" alt="" />`;
+                    return html`<img class="pf-c-avatar" src="${ifDefined(u.user.avatar)}" alt="" />`;
                 }), html``)}
             </a>
             <ak-notification-trigger class="pf-c-nav__link user-notifications">

@@ -1611,9 +1611,11 @@ paths:
           type: integer
       responses:
         '200':
-          description: User Serializer
+          description: Response for the /user/me endpoint, returns the currently active
+            user (as `user` property) and, if this user is being impersonated, the
+            original user in the `original` property.
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/SessionUser'
       tags:
         - core
     parameters: []
@@ -11029,6 +11031,18 @@ definitions:
         $ref: '#/definitions/User'
       application:
         $ref: '#/definitions/Application'
+  SessionUser:
+    description: Response for the /user/me endpoint, returns the currently active
+      user (as `user` property) and, if this user is being impersonated, the original
+      user in the `original` property.
+    required:
+      - user
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/User'
+      original:
+        $ref: '#/definitions/User'
   UserMetrics:
     description: User Metrics
     type: object
@@ -11531,6 +11545,10 @@ definitions:
         minLength: 1
       title:
         title: Title
+        type: string
+        minLength: 1
+      background:
+        title: Background
         type: string
         minLength: 1
       response_errors:
@@ -13332,7 +13350,7 @@ definitions:
         type: string
         readOnly: true
   Link:
-    description: ''
+    description: Links returned in Config API
     type: object
     properties:
       href:

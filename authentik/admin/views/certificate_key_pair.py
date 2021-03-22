@@ -33,7 +33,7 @@ class CertificateKeyPairCreateView(
     permission_required = "authentik_crypto.add_certificatekeypair"
 
     template_name = "generic/create.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created Certificate-Key Pair")
 
 
@@ -50,7 +50,7 @@ class CertificateKeyPairGenerateView(
     permission_required = "authentik_crypto.add_certificatekeypair"
 
     template_name = "administration/certificatekeypair/generate.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully generated Certificate-Key Pair")
 
     def form_valid(self, form: CertificateKeyPairGenerateForm) -> HttpResponse:
@@ -77,5 +77,5 @@ class CertificateKeyPairUpdateView(
     permission_required = "authentik_crypto.change_certificatekeypair"
 
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully updated Certificate-Key Pair")

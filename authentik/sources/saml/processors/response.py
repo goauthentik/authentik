@@ -195,7 +195,7 @@ class ResponseProcessor:
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self._http_request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:shell"
+            NEXT_ARG_NAME, "authentik_core:if-admin"
         )
         if matching_users.exists():
             # User exists already, switch to authentication flow
@@ -221,7 +221,7 @@ class ResponseProcessor:
         kwargs[PLAN_CONTEXT_SOURCE] = self._source
         request.session[SESSION_KEY_PLAN] = FlowPlanner(flow).plan(request, kwargs)
         return redirect_with_qs(
-            "authentik_flows:flow-executor-shell",
+            "authentik_core:if-flow",
             request.GET,
             flow_slug=flow.slug,
         )

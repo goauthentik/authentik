@@ -109,9 +109,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
         return self.live_server_url + reverse(view, kwargs=kwargs)
 
-    def shell_url(self, view) -> str:
+    def if_admin_url(self, view) -> str:
         """same as self.url() but show URL in shell"""
-        return f"{self.live_server_url}/#{view}"
+        return f"{self.live_server_url}/if/admin/#{view}"
 
     def get_shadow_root(
         self, selector: str, container: Optional[WebElement] = None
@@ -156,7 +156,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """Check users/me API and assert it matches expected_user"""
         self.driver.get(self.url("authentik_api:user-me") + "?format=json")
         user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        user = UserSerializer(data=json.loads(user_json))
+        user = UserSerializer(data=json.loads(user_json)["user"])
         user.is_valid()
         self.assertEqual(user["username"].value, expected_user.username)
         self.assertEqual(user["name"].value, expected_user.name)

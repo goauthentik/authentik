@@ -24,7 +24,7 @@ class StageCreateView(
     template_name = "generic/create.html"
     permission_required = "authentik_flows.add_stage"
 
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully created Stage")
 
 
@@ -39,5 +39,5 @@ class StageUpdateView(
     model = Stage
     permission_required = "authentik_flows.update_application"
     template_name = "generic/update.html"
-    success_url = reverse_lazy("authentik_core:shell")
+    success_url = reverse_lazy("authentik_core:if-admin")
     success_message = _("Successfully updated Stage")

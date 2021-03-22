@@ -464,7 +464,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         plan.append(in_memory_stage(OAuthFulfillmentStage))
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
-            "authentik_flows:flow-executor-shell",
+            "authentik_core:if-flow",
             self.request.GET,
             flow_slug=self.provider.authorization_flow.slug,
         )

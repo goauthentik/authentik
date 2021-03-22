@@ -39,7 +39,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
             target=flow, order=30, stage=AuthenticatorValidateStage.objects.create()
         )
 
-        self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
+        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
         # Get expected token
@@ -59,7 +59,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(
             Keys.ENTER
         )
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.assert_user(USER())
 
     @retry()
@@ -70,10 +70,10 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
-        self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
+        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(
@@ -120,10 +120,10 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
 
-        self.driver.get(f"{self.live_server_url}/flows/{flow.slug}/")
+        self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.shell_url("/library"))
+        self.wait_for_url(self.if_admin_url("/library"))
         self.assert_user(USER())
 
         self.driver.get(

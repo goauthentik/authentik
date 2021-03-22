@@ -49,7 +49,7 @@ class TestUserLogoutStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:shell"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
 
     def test_form(self):

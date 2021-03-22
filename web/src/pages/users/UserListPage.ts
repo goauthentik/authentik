@@ -110,7 +110,7 @@ export class UserListPage extends TablePage<User> {
             <ak-action-button method="GET" url="${AdminURLManager.users(`${item.pk}/reset/`)}">
                 ${gettext("Reset Password")}
             </ak-action-button>
-            <a class="pf-c-button pf-m-tertiary" href="${`-/impersonation/${item.pk}/`}">
+            <a class="pf-c-button pf-m-tertiary" href="${`/-/impersonation/${item.pk}/`}">
                 ${gettext("Impersonate")}
             </a>`,
         ];

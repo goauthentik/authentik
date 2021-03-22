@@ -95,12 +95,12 @@ class IdentificationStageView(ChallengeStageView):
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
             challenge.initial_data["enroll_url"] = reverse(
-                "authentik_flows:flow-executor-shell",
+                "authentik_core:if-flow",
                 kwargs={"flow_slug": current_stage.enrollment_flow.slug},
             )
         if current_stage.recovery_flow:
             challenge.initial_data["recovery_url"] = reverse(
-                "authentik_flows:flow-executor-shell",
+                "authentik_core:if-flow",
                 kwargs={"flow_slug": current_stage.recovery_flow.slug},
             )
 
