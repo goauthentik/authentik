@@ -35,8 +35,8 @@ class AuthentikOutpostConfig(AppConfig):
     def init_local_connection():
         """Check if local kubernetes or docker connections should be created"""
         from authentik.outposts.models import (
-            KubernetesServiceConnection,
             DockerServiceConnection,
+            KubernetesServiceConnection,
         )
 
         if Path(SERVICE_TOKEN_FILENAME).exists():

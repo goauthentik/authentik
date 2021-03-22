@@ -26,8 +26,8 @@ class AuthentikStageEmailConfig(AppConfig):
 
     def validate_stage_templates(self):
         """Ensure all stage's templates actually exist"""
-        from authentik.stages.email.models import EmailStage, EmailTemplates
         from authentik.events.models import Event, EventAction
+        from authentik.stages.email.models import EmailStage, EmailTemplates
 
         for stage in EmailStage.objects.all():
             try:

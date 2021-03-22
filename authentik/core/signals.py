@@ -12,8 +12,8 @@ password_changed = Signal()
 # pylint: disable=unused-argument
 def post_save_application(sender, instance, created: bool, **_):
     """Clear user's application cache upon application creation"""
-    from authentik.core.models import Application
     from authentik.core.api.applications import user_app_cache_key
+    from authentik.core.models import Application
 
     if sender != Application:
         return
