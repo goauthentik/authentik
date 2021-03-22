@@ -38,6 +38,7 @@ import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authent
 import { DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
+import { TITLE_SUFFIX } from "../elements/router/RouterOutlet";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -92,6 +93,17 @@ export class FlowExecutor extends LitElement implements StageHost {
         });
     }
 
+    private postUpdate(): void {
+        if (this.challenge?.background) {
+            this.setBackground(this.challenge.background);
+        }
+        if (this.challenge?.title) {
+            document.title = `${this.challenge.title} - ${TITLE_SUFFIX}`;
+        } else {
+            document.title = TITLE_SUFFIX;
+        }
+    }
+
     submit<T>(formData?: T): Promise<void> {
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolveRaw({
@@ -101,9 +113,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             return challengeRaw.raw.json();
         }).then((data) => {
             this.challenge = data;
-            if (this.challenge?.background) {
-                this.setBackground(this.challenge.background);
-            }
+            this.postUpdate();
         }).catch((e) => {
             this.errorMessage(e);
         }).finally(() => {
@@ -122,9 +132,7 @@ export class FlowExecutor extends LitElement implements StageHost {
             return challengeRaw.raw.json();
         }).then((challenge) => {
             this.challenge = challenge as Challenge;
-            if (this.challenge?.background) {
-                this.setBackground(this.challenge.background);
-            }
+            this.postUpdate();
         }).catch((e) => {
             // Catch JSON or Update errors
             this.errorMessage(e);
