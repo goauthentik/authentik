@@ -156,11 +156,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         """Check users/me API and assert it matches expected_user"""
         self.driver.get(self.url("authentik_api:user-me") + "?format=json")
         user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        user = UserSerializer(data=json.loads(user_json))
+        user = UserSerializer(data=json.loads(user_json)["user"])
         user.is_valid()
-        self.assertEqual(user["user"]["username"].value, expected_user.username)
-        self.assertEqual(user["user"]["name"].value, expected_user.name)
-        self.assertEqual(user["user"]["email"].value, expected_user.email)
+        self.assertEqual(user["username"].value, expected_user.username)
+        self.assertEqual(user["name"].value, expected_user.name)
+        self.assertEqual(user["email"].value, expected_user.email)
 
 
 @lru_cache
