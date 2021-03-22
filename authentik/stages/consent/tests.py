@@ -51,7 +51,7 @@ class TestConsentStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
         self.assertFalse(UserConsent.objects.filter(user=self.user).exists())
 
@@ -82,7 +82,7 @@ class TestConsentStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
         self.assertTrue(
             UserConsent.objects.filter(
@@ -119,7 +119,7 @@ class TestConsentStage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
         self.assertTrue(
             UserConsent.objects.filter(

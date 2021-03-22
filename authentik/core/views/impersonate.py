@@ -55,4 +55,4 @@ class ImpersonateEndView(View):
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
 
-        return redirect("authentik_core:if-admin")
+        return redirect("authentik_core:root-redirect")

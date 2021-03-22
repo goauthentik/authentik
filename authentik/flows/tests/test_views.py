@@ -109,7 +109,7 @@ class TestFlowExecutor(TestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("authentik_core:if-admin"))
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     @patch(
         "authentik.flows.views.to_stage_response",
@@ -128,7 +128,7 @@ class TestFlowExecutor(TestCase):
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("authentik_core:if-admin"))
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     def test_multi_stage_flow(self):
         """Test a full flow with multiple stages"""
@@ -217,7 +217,7 @@ class TestFlowExecutor(TestCase):
         # We do this request without the patch, so the policy results in false
         response = self.client.post(exec_url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("authentik_core:if-admin"))
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     def test_reevaluate_remove_middle(self):
         """Test planner with re-evaluate (middle stage is removed)"""
@@ -283,7 +283,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
 
     def test_reevaluate_keep(self):
@@ -360,7 +360,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
 
     def test_reevaluate_remove_consecutive(self):
@@ -452,7 +452,7 @@ class TestFlowExecutor(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             force_str(response.content),
-            {"to": reverse("authentik_core:if-admin"), "type": "redirect"},
+            {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
         )
 
     def test_stageview_user_identifier(self):
