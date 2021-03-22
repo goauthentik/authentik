@@ -32,7 +32,6 @@ import { AuthenticatorStaticChallenge } from "./stages/authenticator_static/Auth
 import { AuthenticatorValidateStageChallenge } from "./stages/authenticator_validate/AuthenticatorValidateStage";
 import { WebAuthnAuthenticatorRegisterChallenge } from "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import { CaptchaChallenge } from "./stages/captcha/CaptchaStage";
-import { SpinnerSize } from "../elements/Spinner";
 import { StageHost } from "./stages/base";
 import { Challenge, ChallengeTypeEnum, Config, FlowsApi, RootApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../api/Config";
@@ -157,14 +156,15 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     renderLoading(): TemplateResult {
-        return html`<div class="ak-loading">
-            <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
-        </div>`;
+        return html`<ak-empty-state
+                ?loading=${true}
+                header=${gettext("Loading")}>
+        </ak-empty-state>`;
     }
 
     renderChallenge(): TemplateResult {
         if (!this.challenge) {
-            return this.renderLoading();
+            return html``;
         }
         switch (this.challenge.type) {
             case ChallengeTypeEnum.Redirect:
