@@ -75,11 +75,11 @@ class TestSourceOAuth2(SeleniumTestCase):
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         return {
-            "image": "quay.io/dexidp/dex:v2.24.0",
+            "image": "ghcr.io/dexidp/dex:v2.28.1",
             "detach": True,
             "network_mode": "host",
             "auto_remove": True,
-            "command": "serve /config.yml",
+            "command": "dex serve /config.yml",
             "healthcheck": Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
                 interval=5 * 100 * 1000000,
