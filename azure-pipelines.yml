@@ -25,6 +25,12 @@ stages:
           - task: UsePythonVersion@0
             inputs:
               versionSpec: '3.9'
+          - task: DockerCompose@0
+            displayName: Run services
+            inputs:
+              dockerComposeFile: 'scripts/ci.docker-compose.yml'
+              action: 'Run services'
+              buildImages: false
           - task: CmdLine@2
             inputs:
               script: |
