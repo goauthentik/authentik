@@ -39,7 +39,7 @@ export class UserChart extends AKChart<UserMetrics> {
                 label: "Application authorizations",
                 backgroundColor: "rgba(43, 154, 243, .5)",
                 spanGaps: true,
-                data: data.loginsPer1h?.map((cord) => {
+                data: data.authorizationsPer1h?.map((cord) => {
                     return {
                         x: cord.xCord,
                         y: cord.yCord,
