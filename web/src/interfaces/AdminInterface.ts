@@ -13,7 +13,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return me().then(u => u.user.isSuperuser||false);
     }),
     new SidebarItem("Events").children(
-        new SidebarItem("Log", "/events/log").activeWhen(
+        new SidebarItem("Logs", "/events/log").activeWhen(
             `^/events/log/(?<id>${UUID_REGEX})$`
         ),
         new SidebarItem("Notification Rules", "/events/rules"),
@@ -51,7 +51,7 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         return me().then(u => u.user.isSuperuser||false);
     }),
     new SidebarItem("Identity & Cryptography").children(
-        new SidebarItem("User", "/identity/users").activeWhen(`^/identity/users/(?<id>${ID_REGEX})$`),
+        new SidebarItem("Users", "/identity/users").activeWhen(`^/identity/users/(?<id>${ID_REGEX})$`),
         new SidebarItem("Groups", "/identity/groups"),
         new SidebarItem("Certificates", "/crypto/certificates"),
         new SidebarItem("Tokens", "/core/tokens"),
