@@ -47,7 +47,7 @@ class UserWriteStageView(StageView):
         # Also check that we're not currently impersonating, so we don't update the session
         should_update_seesion = False
         if (
-            any(["password" in x for x in data.keys()])
+            any("password" in x for x in data.keys())
             and self.request.user.pk == user.pk
             and SESSION_IMPERSONATE_USER not in self.request.session
         ):

@@ -31,6 +31,7 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
     def use_pk_only_optimization(self):
         return False
 
+    # pylint: disable=inconsistent-return-statements
     def to_internal_value(self, data):
         if self.pk_field is not None:
             data = self.pk_field.to_internal_value(data)

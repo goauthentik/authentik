@@ -2,13 +2,13 @@
 from functools import partial
 from typing import Callable
 
-from django.contrib.auth.models import User
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 from guardian.models import UserObjectPermission
 
 from authentik.core.middleware import LOCAL
+from authentik.core.models import User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.signals import EventNewThread
 from authentik.events.utils import model_to_dict

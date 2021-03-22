@@ -13,7 +13,7 @@ disable =
     similarities,
     cyclic-import,
     protected-access,
-    unsubscriptable-object # remove when pylint is upgraded to 2.6
+    raise-missing-from
 
 load-plugins=pylint_django,pylint.extensions.bad_builtin
 django-settings-module=authentik.root.settings

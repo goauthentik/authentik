@@ -454,7 +454,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSNET in self.params.prompt:
-            if not any([isinstance(x, ConsentStageView) for x in plan.stages]):
+            if not any(isinstance(x, ConsentStageView) for x in plan.stages):
                 # Plan does not have any consent stage, so we add an in-memory one
                 stage = ConsentStage(
                     name="OAuth2 Provider In-memory consent stage",

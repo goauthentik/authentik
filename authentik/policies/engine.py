@@ -148,11 +148,11 @@ class PolicyEngine:
             return PolicyResult(self.empty_result)
         passing = False
         if self.mode == PolicyEngineMode.MODE_AND:
-            passing = all([x.passing for x in all_results])
+            passing = all(x.passing for x in all_results)
         if self.mode == PolicyEngineMode.MODE_OR:
-            passing = any([x.passing for x in all_results])
+            passing = any(x.passing for x in all_results)
         result = PolicyResult(passing)
-        result.messages = tuple([y for x in all_results for y in x.messages])
+        result.messages = tuple(y for x in all_results for y in x.messages)
         return result
 
     @property

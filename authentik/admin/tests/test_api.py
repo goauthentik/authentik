@@ -27,7 +27,7 @@ class TestAdminAPI(TestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
         self.assertTrue(
-            any([task["task_name"] == "clean_expired_models" for task in body])
+            any(task["task_name"] == "clean_expired_models" for task in body)
         )
 
     def test_tasks_retry(self):
