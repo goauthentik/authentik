@@ -16,7 +16,7 @@ disable =
     unsubscriptable-object # remove when pylint is upgraded to 2.6
 
 load-plugins=pylint_django,pylint.extensions.bad_builtin
-
+django-settings-module=authentik.root.settings
 extension-pkg-whitelist=lxml,xmlsec
 
 # Allow constants to be shorter than normal (and lowercase, for settings.py)

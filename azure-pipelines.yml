@@ -50,23 +50,6 @@ stages:
           - task: CmdLine@2
             inputs:
               script: pipenv run black --check authentik tests lifecycle
-      - job: prospector
-        pool:
-          vmImage: 'ubuntu-latest'
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '3.9'
-          - task: CmdLine@2
-            inputs:
-              script: |
-                sudo apt install -y libxmlsec1-dev pkg-config
-                sudo pip install -U wheel pipenv
-                pipenv install --dev
-                pipenv install --dev prospector --skip-lock
-          - task: CmdLine@2
-            inputs:
-              script: pipenv run prospector
       - job: bandit
         pool:
           vmImage: 'ubuntu-latest'

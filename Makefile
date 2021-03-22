@@ -14,14 +14,13 @@ coverage:
 	coverage report
 
 lint-fix:
-	isort -rc authentik tests lifecycle
+	isort authentik tests lifecycle
 	black authentik tests lifecycle
 
 lint:
 	pyright authentik tests lifecycle
 	bandit -r authentik tests lifecycle -x node_modules
 	pylint authentik tests lifecycle
-	prospector
 
 gen: coverage
 	./manage.py generate_swagger -o swagger.yaml -f yaml
