@@ -82,6 +82,10 @@ html > form > input {
     background-color: var(--pf-global--danger-color--100);
 }
 
+body {
+    background-color: var(--ak-dark-background) !important;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-dark-foreground: #fafafa;
