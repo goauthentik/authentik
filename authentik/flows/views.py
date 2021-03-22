@@ -173,7 +173,7 @@ class FlowExecutorView(APIView):
             next_param = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
         if not next_param:
             next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
-                NEXT_ARG_NAME, "authentik_core:if-admin"
+                NEXT_ARG_NAME, "authentik_core:root-redirect"
             )
         self.cancel()
         return to_stage_response(self.request, redirect_with_qs(next_param))
@@ -275,7 +275,7 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
-        return redirect("authentik_core:if-admin")
+        return redirect("authentik_core:root-redirect")
 
 
 class ToDefaultFlow(View):
