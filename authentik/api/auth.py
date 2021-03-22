@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Token, TokenIntents, User
 
 LOGGER = get_logger()
+X_AUTHENTIK_PREVENT_BASIC_HEADER = "HTTP_X_AUTHENTIK_PREVENT_BASIC"
 
 
 def token_from_header(raw_header: bytes) -> Optional[Token]:
@@ -55,4 +56,6 @@ class AuthentikTokenAuthentication(BaseAuthentication):
         return (token.user, None)
 
     def authenticate_header(self, request: Request) -> str:
+        if X_AUTHENTIK_PREVENT_BASIC_HEADER in request._request.META:
+            return ""
         return 'Basic realm="authentik"'
