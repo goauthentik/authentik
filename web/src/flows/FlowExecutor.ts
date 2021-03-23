@@ -127,14 +127,6 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     firstUpdated(): void {
-        // Check if there is a ?next arg and save it
-        // this is used for deep linking, if a user tries to access an application,
-        // but needs to authenticate first
-        const queryVars = getQueryVariables();
-        if (NEXT_ARG in queryVars) {
-            const next = queryVars[NEXT_ARG];
-            localStorage.setItem(NEXT_ARG, next);
-        }
         new RootApi(DEFAULT_CONFIG).rootConfigList().then((config) => {
             this.config = config;
         });
@@ -175,19 +167,29 @@ export class FlowExecutor extends LitElement implements StageHost {
         </div>`;
     }
 
+    private redirect(challenge: RedirectChallenge): void {
+        // Check if there is a ?next arg and save it
+        // this is used for deep linking, if a user tries to access an application,
+        // but needs to authenticate first
+        const queryVars = getQueryVariables();
+        localStorage.clear();
+        if (NEXT_ARG in queryVars) {
+            const next = queryVars[NEXT_ARG];
+            console.debug("authentik/flows: redirecting to saved url", next);
+            window.location.assign(next);
+            return;
+        }
+        console.debug("authentik/flows: redirecting to url from server", challenge.to);
+        window.location.assign(challenge.to);
+    }
+
     renderChallenge(): TemplateResult {
         if (!this.challenge) {
             return html``;
         }
         switch (this.challenge.type) {
             case ChallengeTypeEnum.Redirect:
-                console.debug(`authentik/flows: redirecting to ${(this.challenge as RedirectChallenge).to}`);
-                if (localStorage.getItem(NEXT_ARG) === null) {
-                    window.location.assign((this.challenge as RedirectChallenge).to);
-                } else {
-                    localStorage.clear();
-                    window.location.assign(localStorage.getItem(NEXT_ARG) || "");
-                }
+                this.redirect(this.challenge as RedirectChallenge);
                 return this.renderLoading();
             case ChallengeTypeEnum.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
