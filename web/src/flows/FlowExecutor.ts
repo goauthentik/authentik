@@ -99,9 +99,6 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     private postUpdate(): void {
-        if (this.challenge?.background) {
-            this.setBackground(this.challenge.background);
-        }
         if (this.challenge?.title) {
             document.title = `${this.challenge.title} - ${TITLE_SUFFIX}`;
         } else {
@@ -137,6 +134,10 @@ export class FlowExecutor extends LitElement implements StageHost {
             return challengeRaw.raw.json();
         }).then((challenge) => {
             this.challenge = challenge as Challenge;
+            // Only set background on first update, flow won't change throughout execution
+            if (this.challenge?.background) {
+                this.setBackground(this.challenge.background);
+            }
             this.postUpdate();
         }).catch((e) => {
             // Catch JSON or Update errors
@@ -190,7 +191,10 @@ export class FlowExecutor extends LitElement implements StageHost {
         switch (this.challenge.type) {
             case ChallengeTypeEnum.Redirect:
                 this.redirect(this.challenge as RedirectChallenge);
-                return this.renderLoading();
+                return html`<ak-empty-state
+                        ?loading=${true}
+                        header=${gettext("Loading")}>
+                    </ak-empty-state>`;
             case ChallengeTypeEnum.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeTypeEnum.Native:
