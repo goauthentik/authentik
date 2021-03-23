@@ -70,7 +70,7 @@ export class UserViewPage extends Page {
         return html`<ak-tabs>
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col">
+                        <div class="pf-c-card pf-l-gallery__item pf-m-4-col">
                             <div class="pf-c-card__title">
                                 ${gettext("User Info")}
                             </div>
@@ -147,7 +147,7 @@ export class UserViewPage extends Page {
                                 </ak-modal-button>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 4;grid-row-end: span 2;">
                             <div class="pf-c-card__body">
                                 <ak-charts-user>
                                 </ak-charts-user>

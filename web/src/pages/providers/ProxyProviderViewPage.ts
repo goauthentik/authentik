@@ -71,7 +71,7 @@ export class ProxyProviderViewPage extends Page {
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
-                            <div class="pf-c-card pf-c-card-aggregate">
+                            <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                         <div class="pf-c-description-list__group">
