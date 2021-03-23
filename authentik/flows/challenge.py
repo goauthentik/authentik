@@ -75,6 +75,12 @@ class WithUserInfoChallenge(Challenge):
     pending_user_avatar = CharField()
 
 
+class AccessDeniedChallenge(Challenge):
+    """Challenge when a flow's active stage calls `stage_invalid()`."""
+
+    error_message = CharField(required=False)
+
+
 class PermissionSerializer(Serializer):
     """Permission used for consent"""
 

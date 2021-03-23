@@ -20,6 +20,7 @@ import "./stages/email/EmailStage";
 import "./stages/identification/IdentificationStage";
 import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
+import "./access_denied/FlowAccessDenied";
 import { ShellChallenge, RedirectChallenge } from "../api/Flows";
 import { IdentificationChallenge } from "./stages/identification/IdentificationStage";
 import { PasswordChallenge } from "./stages/password/PasswordStage";
@@ -38,6 +39,7 @@ import { DEFAULT_CONFIG } from "../api/Config";
 import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { TITLE_SUFFIX } from "../elements/router/RouterOutlet";
+import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -175,6 +177,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeTypeEnum.Native:
                 switch (this.challenge.component) {
+                    case "ak-stage-access-denied":
+                        return html`<ak-stage-access-denied .host=${this} .challenge=${this.challenge as AccessDeniedChallenge}></ak-stage-access-denied>`;
                     case "ak-stage-identification":
                         return html`<ak-stage-identification .host=${this} .challenge=${this.challenge as IdentificationChallenge}></ak-stage-identification>`;
                     case "ak-stage-password":

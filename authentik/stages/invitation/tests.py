@@ -7,12 +7,12 @@ from django.utils.encoding import force_str
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.policies.http import AccessDeniedResponse
 from authentik.stages.invitation.forms import InvitationStageForm
 from authentik.stages.invitation.models import Invitation, InvitationStage
 from authentik.stages.invitation.stage import INVITATION_TOKEN_KEY, PLAN_CONTEXT_PROMPT
@@ -61,7 +61,15 @@ class TestUserLoginStage(TestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "title": "",
+                "type": ChallengeTypes.native.value,
+            },
+        )
 
     def test_without_invitation_continue(self):
         """Test without any invitation, continue_flow_without_invitation is set."""

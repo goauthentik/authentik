@@ -17,7 +17,6 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageVie
 from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.policies.dummy.models import DummyPolicy
-from authentik.policies.http import AccessDeniedResponse
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyResult
 from authentik.stages.dummy.models import DummyStage
@@ -89,8 +88,15 @@ class TestFlowExecutor(TestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response, AccessDeniedResponse)
-        self.assertInHTML(FlowNonApplicableException.__doc__, response.rendered_content)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": FlowNonApplicableException.__doc__,
+                "title": "",
+                "type": ChallengeTypes.native.value,
+            },
+        )
 
     @patch(
         "authentik.flows.views.to_stage_response",

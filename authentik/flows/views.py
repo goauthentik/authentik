@@ -17,6 +17,7 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.models import USER_ATTRIBUTE_DEBUG
 from authentik.events.models import cleanse_dict
 from authentik.flows.challenge import (
+    AccessDeniedChallenge,
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
@@ -34,7 +35,6 @@ from authentik.flows.planner import (
 )
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
-from authentik.policies.http import AccessDeniedResponse
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -212,10 +212,16 @@ class FlowExecutorView(APIView):
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
         self.cancel()
-        response = AccessDeniedResponse(
-            self.request, template="flows/denied_shell.html"
+        response = HttpChallengeResponse(
+            AccessDeniedChallenge(
+                {
+                    "error_message": error_message,
+                    "title": self.flow.title,
+                    "type": ChallengeTypes.native.value,
+                    "component": "ak-stage-access-denied",
+                }
+            )
         )
-        response.error_message = error_message
         return to_stage_response(self.request, response)
 
     def cancel(self):

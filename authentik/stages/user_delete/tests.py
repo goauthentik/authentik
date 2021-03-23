@@ -6,12 +6,12 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests.test_views import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views import SESSION_KEY_PLAN
-from authentik.policies.http import AccessDeniedResponse
 from authentik.stages.user_delete.models import UserDeleteStage
 
 
@@ -49,7 +49,15 @@ class TestUserDeleteStage(TestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response, AccessDeniedResponse)
+        self.assertJSONEqual(
+            force_str(response.content),
+            {
+                "component": "ak-stage-access-denied",
+                "error_message": None,
+                "title": "",
+                "type": ChallengeTypes.native.value,
+            },
+        )
 
     def test_user_delete_get(self):
         """Test Form render"""
