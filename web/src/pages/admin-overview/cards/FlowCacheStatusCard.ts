@@ -1,9 +1,9 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
 import { AdminStatus, AdminStatusCard } from "./AdminStatusCard";
-import "../../../elements/buttons/ModalButton";
 import { FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import "../../../elements/forms/ConfirmationForm";
 
 @customElement("ak-admin-status-card-flow-cache")
 export class FlowCacheStatusCard extends AdminStatusCard<number> {
@@ -28,12 +28,25 @@ export class FlowCacheStatusCard extends AdminStatusCard<number> {
     }
 
     renderHeaderLink(): TemplateResult {
-        return html`<ak-modal-button href="/administration/overview/cache/flow/">
-            <a slot="trigger">
-                <i class="fa fa-trash"> </i>
-            </a>
-            <div slot="modal"></div>
-        </ak-modal-button>`;
+        return html`<ak-forms-confirm
+                successMessage="Successfully cleared flow cache"
+                errorMessage="Failed to delete flow cache"
+                action="Clear cache"
+                .onConfirm=${() => {
+                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClear();
+                }}>
+                <span slot="header">
+                    ${gettext("Clear Flow cache")}
+                </span>
+                <p slot="body">
+                    ${gettext(`Are you sure you want to clear the flow cache?
+                        This will cause all flows to be re-evaluated on their next usage.`)}
+                </p>
+                <a slot="trigger">
+                    <i class="fa fa-trash"> </i>
+                </a>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
 
 }
