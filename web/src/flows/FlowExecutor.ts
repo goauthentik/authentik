@@ -40,10 +40,7 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import { until } from "lit-html/directives/until";
 import { TITLE_SUFFIX } from "../elements/router/RouterOutlet";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
-import { getQueryVariables } from "./utils";
 import { SpinnerSize } from "../elements/Spinner";
-
-export const NEXT_ARG = "next";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends LitElement implements StageHost {
@@ -129,7 +126,8 @@ export class FlowExecutor extends LitElement implements StageHost {
         });
         this.loading = true;
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorGetRaw({
-            flowSlug: this.flowSlug
+            flowSlug: this.flowSlug,
+            query: window.location.search.substring(1),
         }).then((challengeRaw) => {
             return challengeRaw.raw.json();
         }).then((challenge) => {
@@ -168,29 +166,14 @@ export class FlowExecutor extends LitElement implements StageHost {
         </div>`;
     }
 
-    private redirect(challenge: RedirectChallenge): void {
-        // Check if there is a ?next arg and save it
-        // this is used for deep linking, if a user tries to access an application,
-        // but needs to authenticate first
-        const queryVars = getQueryVariables();
-        localStorage.clear();
-        if (NEXT_ARG in queryVars) {
-            const next = queryVars[NEXT_ARG];
-            console.debug("authentik/flows: redirecting to saved url", next);
-            window.location.assign(next);
-            return;
-        }
-        console.debug("authentik/flows: redirecting to url from server", challenge.to);
-        window.location.assign(challenge.to);
-    }
-
     renderChallenge(): TemplateResult {
         if (!this.challenge) {
             return html``;
         }
         switch (this.challenge.type) {
             case ChallengeTypeEnum.Redirect:
-                this.redirect(this.challenge as RedirectChallenge);
+                console.debug("authentik/flows: redirecting to url from server", (this.challenge as RedirectChallenge).to);
+                window.location.assign((this.challenge as RedirectChallenge).to);
                 return html`<ak-empty-state
                         ?loading=${true}
                         header=${gettext("Loading")}>
