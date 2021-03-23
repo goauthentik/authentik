@@ -1,5 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
+import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { showMessage } from "../messages/MessageContainer";
 
@@ -20,7 +21,7 @@ export class DeleteForm extends ModalButton {
             this.onSuccess();
             this.open = false;
             this.dispatchEvent(
-                new CustomEvent("ak-refresh", {
+                new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 })

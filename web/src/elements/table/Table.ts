@@ -13,6 +13,7 @@ import AKGlobal from "../../authentik.css";
 
 import "./TablePagination";
 import "../EmptyState";
+import { EVENT_REFRESH } from "../../constants";
 
 export class TableColumn {
 
@@ -120,7 +121,7 @@ export abstract class Table<T> extends LitElement {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             this.fetch();
         });
     }

@@ -24,6 +24,7 @@ import { Page } from "../../elements/Page";
 import { SAMLSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager, AppURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends Page {
@@ -55,7 +56,7 @@ export class SAMLSourceViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
             this.sourceSlug = this.source?.slug;
         });

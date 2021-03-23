@@ -14,6 +14,7 @@ import "../elements/Banner";
 import { until } from "lit-html/directives/until";
 import { me } from "../api/Users";
 import { gettext } from "django";
+import { EVENT_NOTIFICATION_TOGGLE, EVENT_SIDEBAR_TOGGLE } from "../constants";
 
 export abstract class Interface extends LitElement {
     @property({type: Boolean})
@@ -38,10 +39,10 @@ export abstract class Interface extends LitElement {
         window.addEventListener("resize", () => {
             this.sidebarOpen = window.innerWidth >= 1280;
         });
-        window.addEventListener("ak-sidebar-toggle", () => {
+        window.addEventListener(EVENT_SIDEBAR_TOGGLE, () => {
             this.sidebarOpen = !this.sidebarOpen;
         });
-        window.addEventListener("ak-notification-toggle", () => {
+        window.addEventListener(EVENT_NOTIFICATION_TOGGLE, () => {
             this.notificationOpen = !this.notificationOpen;
         });
     }

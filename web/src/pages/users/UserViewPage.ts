@@ -25,6 +25,7 @@ import { Page } from "../../elements/Page";
 import { CoreApi, User } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-user-view")
 export class UserViewPage extends Page {
@@ -56,7 +57,7 @@ export class UserViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.user?.pk) return;
             this.userId = this.user?.pk;
         });

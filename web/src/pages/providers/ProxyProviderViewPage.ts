@@ -22,6 +22,7 @@ import { Page } from "../../elements/Page";
 import { ProvidersApi, ProxyProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends Page {
@@ -56,7 +57,7 @@ export class ProxyProviderViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });

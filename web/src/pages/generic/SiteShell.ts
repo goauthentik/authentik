@@ -18,6 +18,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -54,7 +55,7 @@ export class SiteShell extends LitElement {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             this.loadContent();
         });
     }

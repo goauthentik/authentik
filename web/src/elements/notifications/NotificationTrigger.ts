@@ -2,6 +2,7 @@ import { CSSResult, customElement, html, LitElement, TemplateResult } from "lit-
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import FA from "@fortawesome/fontawesome-free/css/fontawesome.css";
+import { EVENT_NOTIFICATION_TOGGLE } from "../../constants";
 
 @customElement("ak-notification-trigger")
 export class NotificationRule extends LitElement {
@@ -14,7 +15,7 @@ export class NotificationRule extends LitElement {
         super();
         this.addEventListener("click", () => {
             this.dispatchEvent(
-                new CustomEvent("ak-notification-toggle", {
+                new CustomEvent(EVENT_NOTIFICATION_TOGGLE, {
                     bubbles: true,
                     composed: true,
                 })

@@ -25,6 +25,7 @@ import { Page } from "../../elements/Page";
 import { ProvidersApi, SAMLProvider } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager, AppURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends Page {
@@ -59,7 +60,7 @@ export class SAMLProviderViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });

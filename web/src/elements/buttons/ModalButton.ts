@@ -17,7 +17,7 @@ import CodeMirrorTheme from "codemirror/theme/monokai.css";
 
 import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
-import { PRIMARY_CLASS } from "../../constants";
+import { PRIMARY_CLASS, EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-modal-button")
@@ -113,7 +113,7 @@ export class ModalButton extends LitElement {
                             this.open = false;
                             console.debug("authentik/modalbutton: successful submit");
                             this.dispatchEvent(
-                                new CustomEvent("ak-refresh", {
+                                new CustomEvent(EVENT_REFRESH, {
                                     bubbles: true,
                                     composed: true,
                                 })

@@ -2,6 +2,7 @@ import { css, CSSResult, customElement, html, LitElement, TemplateResult } from 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
+import { EVENT_SIDEBAR_TOGGLE } from "../../constants";
 
 @customElement("ak-sidebar-hamburger")
 export class SidebarHamburger extends LitElement {
@@ -21,7 +22,7 @@ export class SidebarHamburger extends LitElement {
 
     onClick(): void {
         this.dispatchEvent(
-            new CustomEvent("ak-sidebar-toggle", {
+            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
                 bubbles: true,
                 composed: true,
             })

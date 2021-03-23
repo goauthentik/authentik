@@ -23,6 +23,7 @@ import { until } from "lit-html/directives/until";
 import { LDAPSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends Page {
@@ -54,7 +55,7 @@ export class LDAPSourceViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
             this.sourceSlug = this.source?.slug;
         });

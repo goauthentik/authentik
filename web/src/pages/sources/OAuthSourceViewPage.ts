@@ -21,6 +21,7 @@ import { Page } from "../../elements/Page";
 import { OAuthSource, SourcesApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends Page {
@@ -52,7 +53,7 @@ export class OAuthSourceViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
             this.sourceSlug = this.source?.slug;
         });

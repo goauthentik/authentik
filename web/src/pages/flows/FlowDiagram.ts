@@ -3,6 +3,7 @@ import FlowChart from "flowchart.js";
 import { loading } from "../../utils";
 import { FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
+import { EVENT_REFRESH } from "../../constants";
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
@@ -39,7 +40,7 @@ export class FlowDiagram extends LitElement {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this._flowSlug) return;
             this.flowSlug = this._flowSlug;
         });

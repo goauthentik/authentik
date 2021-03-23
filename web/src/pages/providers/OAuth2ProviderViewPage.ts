@@ -25,6 +25,7 @@ import { convertToTitle } from "../../utils";
 import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
+import { EVENT_REFRESH } from "../../constants";
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends Page {
@@ -65,7 +66,7 @@ export class OAuth2ProviderViewPage extends Page {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });

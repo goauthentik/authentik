@@ -1,5 +1,6 @@
 import { html, TemplateResult } from "lit-html";
 import { until } from "lit-html/directives/until";
+import { EVENT_REFRESH } from "../../../constants";
 import { AggregateCard } from "../../../elements/cards/AggregateCard";
 import { SpinnerSize } from "../../../elements/Spinner";
 
@@ -18,7 +19,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     constructor() {
         super();
-        this.addEventListener("ak-refresh", () => {
+        this.addEventListener(EVENT_REFRESH, () => {
             this.requestUpdate();
         });
     }
