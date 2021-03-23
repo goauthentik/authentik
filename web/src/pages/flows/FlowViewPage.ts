@@ -16,9 +16,8 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends LitElement {
@@ -35,7 +34,7 @@ export class FlowViewPage extends LitElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFCard, PFContent, PFFlex, PFSizing, PFDisplay, AKGlobal].concat(
+        return [PFBase, PFPage, PFCard, PFContent, PFGallery, AKGlobal].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
@@ -62,13 +61,32 @@ export class FlowViewPage extends LitElement {
             </section>
             <ak-tabs>
                 <div slot="page-1" data-tab-title="${gettext("Flow Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                    <div class="pf-u-display-flex">
-                        <div class="pf-u-w-75">
+                    <div class="pf-l-gallery pf-m-gutter">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__body">
                                     <ak-flow-diagram flowSlug=${this.flow.slug}>
                                     </ak-flow-diagram>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-l-gallery__item">
+                            <div class="pf-c-card__title">${gettext("Related")}</div>
+                            <div class="pf-c-card__body">
+                                <dl class="pf-c-description-list">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text">${gettext("Execute flow")}</span>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${this.flow.pk}/execute/?next=/%23${window.location.href}`)}">
+                                                    ${gettext("Execute")}
+                                                </a>
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
                             </div>
                         </div>
                     </div>

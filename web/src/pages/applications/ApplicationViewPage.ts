@@ -75,7 +75,7 @@ export class ApplicationViewPage extends LitElement {
             <ak-tabs>
                 <section slot="page-1" data-tab-title="${gettext("Overview")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-l-gallery pf-m-gutter">
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__title">${gettext("Logins over the last 24 hours")}</div>
                             <div class="pf-c-card__body">
                                 ${this.application && html`
@@ -83,7 +83,7 @@ export class ApplicationViewPage extends LitElement {
                                     </ak-charts-application-authorize>`}
                             </div>
                         </div>
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-2-col">
+                        <div class="pf-c-card pf-l-gallery__item">
                             <div class="pf-c-card__title">${gettext("Related")}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
@@ -104,7 +104,7 @@ export class ApplicationViewPage extends LitElement {
                                 </dl>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-c-card-aggregate pf-l-gallery__item pf-m-4-col" style="grid-column-end: span 3;grid-row-end: span 2;">
+                        <div class="pf-c-card pf-l-gallery__item" style="grid-column-end: span 3;grid-row-end: span 2;">
                             <div class="pf-c-card__title">${gettext("Changelog")}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
