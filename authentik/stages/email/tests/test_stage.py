@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Token, User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -110,7 +109,7 @@ class TestEmailStage(TestCase):
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
             # Call the executor shell to preseed the session
             url = reverse(
-                "authentik_core:if-flow",
+                "authentik_stages_email:from-email",
                 kwargs={"flow_slug": self.flow.slug},
             )
             token = Token.objects.get(user=self.user)
@@ -127,12 +126,7 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {
-                    "component": "ak-stage-access-denied",
-                    "error_message": None,
-                    "title": "",
-                    "type": ChallengeTypes.native.value,
-                },
+                {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
             )
 
             session = self.client.session

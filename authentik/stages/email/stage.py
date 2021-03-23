@@ -45,7 +45,7 @@ class EmailStageView(ChallengeStageView):
     def get_full_url(self, **kwargs) -> str:
         """Get full URL to be used in template"""
         base_url = reverse(
-            "authentik_core:if-flow",
+            "authentik_stages_email:from-email",
             kwargs={"flow_slug": self.executor.flow.slug},
         )
         relative_url = f"{base_url}?{urlencode(kwargs)}"
