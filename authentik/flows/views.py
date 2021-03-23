@@ -311,13 +311,15 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
     """Convert normal HttpResponse into JSON Response"""
     if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
         redirect_url = source["Location"]
-        if request.path != redirect_url:
-            return HttpChallengeResponse(
-                RedirectChallenge(
-                    {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
-                )
+        # Redirects to the same URL usually indicate an Error within a form
+        if request.path == redirect_url:
+            return source
+        LOGGER.debug("converting to redirect challenge", to=str(redirect_url))
+        return HttpChallengeResponse(
+            RedirectChallenge(
+                {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
             )
-        return source
+        )
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
             ShellChallenge(
