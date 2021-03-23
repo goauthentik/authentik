@@ -6,7 +6,6 @@ from django.views.generic import RedirectView
 from django.views.generic.base import TemplateView
 
 from authentik.core.views import impersonate, user
-from authentik.flows.views import FlowExecutorShellView
 
 urlpatterns = [
     path(
@@ -40,12 +39,12 @@ urlpatterns = [
     # Interfaces
     path(
         "if/admin/",
-        ensure_csrf_cookie(TemplateView.as_view(template_name="shell.html")),
+        ensure_csrf_cookie(TemplateView.as_view(template_name="if/admin.html")),
         name="if-admin",
     ),
     path(
         "if/flow/<slug:flow_slug>/",
-        ensure_csrf_cookie(FlowExecutorShellView.as_view()),
+        ensure_csrf_cookie(TemplateView.as_view(template_name="if/flow.html")),
         name="if-flow",
     ),
 ]

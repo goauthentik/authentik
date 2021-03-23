@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 from drf_yasg2.utils import no_body, swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -260,17 +260,6 @@ class FlowErrorResponse(TemplateResponse):
             ):
                 context["tb"] = "".join(format_tb(self.error.__traceback__))
         return context
-
-
-class FlowExecutorShellView(TemplateView):
-    """Executor Shell view, loads a dummy card with a spinner
-    that loads the next stage in the background."""
-
-    template_name = "flows/shell.html"
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        self.request.session[SESSION_KEY_GET] = self.request.GET
-        return super().get_context_data(**kwargs)
 
 
 class CancelView(View):
