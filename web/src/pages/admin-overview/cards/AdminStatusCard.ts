@@ -16,6 +16,13 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     value?: T;
 
+    constructor() {
+        super();
+        this.addEventListener("ak-refresh", () => {
+            this.requestUpdate();
+        });
+    }
+
     renderValue(): TemplateResult {
         return html`${this.value}`;
     }
