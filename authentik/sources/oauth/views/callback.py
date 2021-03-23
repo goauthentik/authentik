@@ -136,7 +136,9 @@ class OAuthCallback(OAuthClientMixin, View):
         messages.error(self.request, _("Authentication Failed."))
         return redirect(self.get_error_redirect(source, reason))
 
-    def handle_login_flow(self, flow: Flow, **kwargs) -> HttpResponse:
+    def handle_login_flow(
+        self, flow: Flow, *stages_to_append, **kwargs
+    ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
         # Ensure redirect is carried through when user was trying to
         # authorize application
@@ -157,6 +159,8 @@ class OAuthCallback(OAuthClientMixin, View):
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
         plan = planner.plan(self.request, kwargs)
+        for stage in stages_to_append:
+            plan.append(stage)
         self.request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",
@@ -224,27 +228,18 @@ class OAuthCallback(OAuthClientMixin, View):
                 % {"source": self.source.name}
             ),
         )
-        # Because we inject a stage into the planned flow, we can't use `self.handle_login_flow`
-        context = {
-            # Since we authenticate the user by their token, they have no backend set
-            PLAN_CONTEXT_AUTHENTICATION_BACKEND: "django.contrib.auth.backends.ModelBackend",
-            PLAN_CONTEXT_SSO: True,
-            PLAN_CONTEXT_SOURCE: self.source,
-            PLAN_CONTEXT_PROMPT: delete_none_keys(
-                self.get_user_enroll_context(source, access, info)
-            ),
-            PLAN_CONTEXT_SOURCES_OAUTH_ACCESS: access,
-        }
+
         # We run the Flow planner here so we can pass the Pending user in the context
         if not source.enrollment_flow:
             LOGGER.warning("source has no enrollment flow", source=source)
             return HttpResponseBadRequest()
-        planner = FlowPlanner(source.enrollment_flow)
-        plan = planner.plan(self.request, context)
-        plan.append(in_memory_stage(PostUserEnrollmentStage))
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=source.enrollment_flow.slug,
+        return self.handle_login_flow(
+            source.enrollment_flow,
+            in_memory_stage(PostUserEnrollmentStage),
+            **{
+                PLAN_CONTEXT_PROMPT: delete_none_keys(
+                    self.get_user_enroll_context(source, access, info)
+                ),
+                PLAN_CONTEXT_SOURCES_OAUTH_ACCESS: access,
+            },
         )
