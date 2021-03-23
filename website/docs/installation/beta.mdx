@@ -20,7 +20,7 @@ Add the following block to your `.env` file:
 AUTHENTIK_IMAGE=docker.beryju.org/authentik/server
 AUTHENTIK_IMAGE_STATIC=docker.beryju.org/authentik/static
 AUTHENTIK_TAG=gh-next
-AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=docker.beryju.org/authentik
+AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=docker.beryju.org/authentik/outpost
 ```
 
 Afterwards, run the upgrade commands from the [release notes](../releases/next)
@@ -32,7 +32,7 @@ Add the following block to your `values.yml` file:
 image:
   name: docker.beryju.org/authentik/server
   name_static: docker.beryju.org/authentik/static
-  name_outposts: docker.beryju.org/authentik
+  name_outposts: docker.beryju.org/authentik/outpost
   tag: gh-next
   # pullPolicy: Always to ensure you always get the latest version
   pullPolicy: Always
