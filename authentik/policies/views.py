@@ -12,8 +12,8 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application, Provider, User
 from authentik.flows.views import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.policies.engine import PolicyEngine
 from authentik.policies.denied import AccessDeniedResponse
+from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
 
 LOGGER = get_logger()

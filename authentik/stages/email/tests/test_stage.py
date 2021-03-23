@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.encoding import force_str
 
 from authentik.core.models import Token, User
+from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -126,7 +127,12 @@ class TestEmailStage(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertJSONEqual(
                 force_str(response.content),
-                {"to": reverse("authentik_core:root-redirect"), "type": "redirect"},
+                {
+                    "component": "ak-stage-access-denied",
+                    "error_message": None,
+                    "title": "",
+                    "type": ChallengeTypes.native.value,
+                },
             )
 
             session = self.client.session
