@@ -16,7 +16,6 @@ class AuthentikStageEmailConfig(AppConfig):
     name = "authentik.stages.email"
     label = "authentik_stages_email"
     verbose_name = "authentik Stages.Email"
-    mountpoint = "stages/email/"
 
     def ready(self):
         import_module("authentik.stages.email.tasks")

@@ -2744,7 +2744,12 @@ paths:
     get:
       operationId: flows_executor_get
       description: Get the next pending challenge from the currently active flow.
-      parameters: []
+      parameters:
+        - name: query
+          in: query
+          description: Querystring as received
+          required: true
+          type: string
       responses:
         '200':
           description: Challenge that gets sent to the client based on which stage

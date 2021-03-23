@@ -45,7 +45,7 @@ class EmailStageView(ChallengeStageView):
     def get_full_url(self, **kwargs) -> str:
         """Get full URL to be used in template"""
         base_url = reverse(
-            "authentik_stages_email:from-email",
+            "authentik_core:if-flow",
             kwargs={"flow_slug": self.executor.flow.slug},
         )
         relative_url = f"{base_url}?{urlencode(kwargs)}"
@@ -66,7 +66,7 @@ class EmailStageView(ChallengeStageView):
             template_name=current_stage.template,
             to=[pending_user.email],
             template_context={
-                "url": self.get_full_url(**{QS_KEY_TOKEN: token.pk.hex}),
+                "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                 "user": pending_user,
                 "expires": token.expires,
             },
@@ -77,7 +77,7 @@ class EmailStageView(ChallengeStageView):
         # Check if the user came back from the email link to verify
         if QS_KEY_TOKEN in request.session.get(SESSION_KEY_GET, {}):
             token = get_object_or_404(
-                Token, pk=request.session[SESSION_KEY_GET][QS_KEY_TOKEN]
+                Token, key=request.session[SESSION_KEY_GET][QS_KEY_TOKEN]
             )
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = token.user
             token.delete()

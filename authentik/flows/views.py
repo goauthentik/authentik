@@ -4,11 +4,13 @@ from typing import Any, Optional
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
+from drf_yasg2 import openapi
 from drf_yasg2.utils import no_body, swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -101,6 +103,8 @@ class FlowExecutorView(APIView):
                 # To match behaviour with loading an empty flow plan from cache,
                 # we don't show an error message here, but rather call _flow_done()
                 return self._flow_done()
+            # Initial flow request, check if we have an upstream query string passed in
+            request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         next_stage = self.plan.next(self.request)
@@ -121,8 +125,19 @@ class FlowExecutorView(APIView):
         return super().dispatch(request)
 
     @swagger_auto_schema(
-        responses={200: Challenge()},
+        responses={
+            200: Challenge(),
+        },
         request_body=no_body,
+        manual_parameters=[
+            openapi.Parameter(
+                "query",
+                openapi.IN_QUERY,
+                required=True,
+                description="Querystring as received",
+                type=openapi.TYPE_STRING,
+            )
+        ],
         operation_id="flows_executor_get",
     )
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
