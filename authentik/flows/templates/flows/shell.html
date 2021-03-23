@@ -3,16 +3,10 @@
 {% load static %}
 
 {% block head %}
-{{ block.super }}
-<style>
-.pf-c-background-image::before {
-    background-image: url("{{ background_url }}");
-    background-position: center;
-}
-</style>
 <script src="{% static 'dist/flow.js' %}?v={{ ak_version }}" type="module"></script>
 {% endblock %}
 
 {% block body %}
+<ak-message-container></ak-message-container>
 <ak-flow-executor></ak-flow-executor>
 {% endblock %}

@@ -232,7 +232,6 @@ export class FlowExecutor extends LitElement implements StageHost {
                 </filter>
             </svg>
         </div>
-        <ak-message-container></ak-message-container>
         <div class="pf-c-login">
             <div class="ak-login-container">
                 <header class="pf-c-login__header">
