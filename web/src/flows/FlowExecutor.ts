@@ -41,6 +41,7 @@ import { until } from "lit-html/directives/until";
 import { TITLE_SUFFIX } from "../elements/router/RouterOutlet";
 import { AccessDeniedChallenge } from "./access_denied/FlowAccessDenied";
 import { getQueryVariables } from "./utils";
+import { SpinnerSize } from "../elements/Spinner";
 
 export const NEXT_ARG = "next";
 
@@ -169,10 +170,9 @@ export class FlowExecutor extends LitElement implements StageHost {
     }
 
     renderLoading(): TemplateResult {
-        return html`<ak-empty-state
-                ?loading=${true}
-                header=${gettext("Loading")}>
-        </ak-empty-state>`;
+        return html`<div class="ak-loading">
+            <ak-spinner size=${SpinnerSize.XLarge}></ak-spinner>
+        </div>`;
     }
 
     renderChallenge(): TemplateResult {
@@ -230,7 +230,10 @@ export class FlowExecutor extends LitElement implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         if (!this.challenge) {
-            return this.renderLoading();
+            return html`<ak-empty-state
+                    ?loading=${true}
+                    header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         return html`
             ${this.loading ? this.renderLoading() : html``}
