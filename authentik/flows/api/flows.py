@@ -3,10 +3,10 @@ from dataclasses import dataclass
 
 from django.core.cache import cache
 from django.db.models import Model
-from django.http.response import JsonResponse
+from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from drf_yasg2 import openapi
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg2.utils import no_body, swagger_auto_schema, unset
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -19,12 +19,15 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import CacheSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import cache_key
 from authentik.flows.transfer.common import DataclassEncoder
 from authentik.flows.transfer.exporter import FlowExporter
+
+LOGGER = get_logger()
 
 
 class FlowSerializer(ModelSerializer):
@@ -88,9 +91,23 @@ class FlowViewSet(ModelViewSet):
 
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False)
-    def cached(self, request: Request) -> Response:
+    def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
+
+    @swagger_auto_schema(
+        request_body=no_body,
+        responses={204: "Successfully cleared cache", 400: "Bad request"},
+    )
+    @action(detail=False, methods=["POST"])
+    def cache_clear(self, request: Request) -> Response:
+        """Clear flow cache"""
+        if not request.user.is_superuser:
+            return HttpResponseBadRequest()
+        keys = cache.keys("flow_*")
+        cache.delete_many(keys)
+        LOGGER.debug("Cleared flow cache", keys=len(keys))
+        return Response(status=204)
 
     @swagger_auto_schema(
         responses={

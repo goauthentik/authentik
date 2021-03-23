@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "../../../api/Config";
 export class FlowCacheStatusCard extends AdminStatusCard<number> {
 
     getPrimaryValue(): Promise<number> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCached({}).then((value) => {
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheInfo({}).then((value) => {
             return value.count || 0;
         });
     }

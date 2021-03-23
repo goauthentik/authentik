@@ -2878,9 +2878,22 @@ paths:
       tags:
         - flows
     parameters: []
-  /flows/instances/cached/:
+  /flows/instances/cache_clear/:
+    post:
+      operationId: flows_instances_cache_clear
+      description: Clear flow cache
+      parameters: []
+      responses:
+        '204':
+          description: Successfully cleared cache
+        '400':
+          description: Bad request
+      tags:
+        - flows
+    parameters: []
+  /flows/instances/cache_info/:
     get:
-      operationId: flows_instances_cached
+      operationId: flows_instances_cache_info
       description: Info about cached flows
       parameters:
         - name: flow_uuid
@@ -4116,9 +4129,22 @@ paths:
       tags:
         - policies
     parameters: []
-  /policies/all/cached/:
+  /policies/all/cache_clear/:
+    post:
+      operationId: policies_all_cache_clear
+      description: Clear policy cache
+      parameters: []
+      responses:
+        '204':
+          description: Successfully cleared cache
+        '400':
+          description: Bad request
+      tags:
+        - policies
+    parameters: []
+  /policies/all/cache_info/:
     get:
-      operationId: policies_all_cached
+      operationId: policies_all_cache_info
       description: Info about cached policies
       parameters:
         - name: bindings__isnull

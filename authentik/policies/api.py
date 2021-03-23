@@ -1,8 +1,9 @@
 """policy API Views"""
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.http.response import HttpResponseBadRequest
 from django.urls import reverse
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg2.utils import no_body, swagger_auto_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -13,7 +14,9 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from structlog.stdlib import get_logger
 
+from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.utils import (
     CacheSerializer,
     MetaNameSerializer,
@@ -22,6 +25,8 @@ from authentik.core.api.utils import (
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
+
+LOGGER = get_logger()
 
 
 class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
@@ -139,9 +144,26 @@ class PolicyViewSet(
 
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False)
-    def cached(self, request: Request) -> Response:
+    def cache_info(self, request: Request) -> Response:
         """Info about cached policies"""
         return Response(data={"count": len(cache.keys("policy_*"))})
+
+    @swagger_auto_schema(
+        request_body=no_body,
+        responses={204: "Successfully cleared cache", 400: "Bad request"},
+    )
+    @action(detail=False, methods=["POST"])
+    def cache_clear(self, request: Request) -> Response:
+        """Clear policy cache"""
+        if not request.user.is_superuser:
+            return HttpResponseBadRequest()
+        keys = cache.keys("policy_*")
+        cache.delete_many(keys)
+        LOGGER.debug("Cleared Policy cache", keys=len(keys))
+        # Also delete user application cache
+        keys = cache.keys(user_app_cache_key("*"))
+        cache.delete_many(keys)
+        return Response(status=204)
 
 
 class PolicyBindingSerializer(ModelSerializer):

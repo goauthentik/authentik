@@ -10,7 +10,6 @@ from authentik.admin.views import (
     groups,
     outposts,
     outposts_service_connections,
-    overview,
     policies,
     policies_bindings,
     property_mappings,
@@ -25,16 +24,6 @@ from authentik.admin.views import (
 from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
-    path(
-        "overview/cache/flow/",
-        overview.FlowCacheClearView.as_view(),
-        name="overview-clear-flow-cache",
-    ),
-    path(
-        "overview/cache/policy/",
-        overview.PolicyCacheClearView.as_view(),
-        name="overview-clear-policy-cache",
-    ),
     # Applications
     path(
         "applications/create/",
