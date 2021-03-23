@@ -29,9 +29,16 @@
             {% endif %}
             {% if policy_result %}
             <hr>
-            <em>
-                {% trans 'Explanation:' %}
-            </em>
+            <em>{% trans 'Messages:' %}</em>
+            <ul class="pf-c-list">
+                {% for message in policy_result.messages %}
+                <li>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if policy_result.source_results %}
+            <em>{% trans 'Explanation:' %}</em>
             <ul class="pf-c-list">
                 {% for source_result in policy_result.source_results %}
                 <li>
@@ -48,6 +55,7 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% endif %}
             {% endif %}
         </div>
         {% if 'back' in request.GET %}
