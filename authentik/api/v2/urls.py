@@ -38,7 +38,6 @@ from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet
 from authentik.policies.expression.api import ExpressionPolicyViewSet
-from authentik.policies.group_membership.api import GroupMembershipPolicyViewSet
 from authentik.policies.hibp.api import HaveIBeenPwendPolicyViewSet
 from authentik.policies.password.api import PasswordPolicyViewSet
 from authentik.policies.reputation.api import (
@@ -134,7 +133,6 @@ router.register("policies/all", PolicyViewSet)
 router.register("policies/bindings", PolicyBindingViewSet)
 router.register("policies/expression", ExpressionPolicyViewSet)
 router.register("policies/event_matcher", EventMatcherPolicyViewSet)
-router.register("policies/group_membership", GroupMembershipPolicyViewSet)
 router.register("policies/haveibeenpwned", HaveIBeenPwendPolicyViewSet)
 router.register("policies/password_expiry", PasswordExpiryPolicyViewSet)
 router.register("policies/password", PasswordPolicyViewSet)

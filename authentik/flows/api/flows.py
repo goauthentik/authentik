@@ -6,7 +6,7 @@ from django.db.models import Model
 from django.http.response import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from drf_yasg2 import openapi
-from drf_yasg2.utils import no_body, swagger_auto_schema, unset
+from drf_yasg2.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
