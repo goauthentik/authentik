@@ -8,7 +8,6 @@ import "./elements/buttons/ModalButton";
 import "./elements/buttons/SpinnerButton";
 import "./elements/CodeMirror";
 
-import "./pages/tokens/UserTokenList";
 import "./pages/generic/SiteShell";
 import "./interfaces/AdminInterface";
 import "./elements/messages/MessageContainer";

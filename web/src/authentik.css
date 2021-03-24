@@ -88,6 +88,7 @@ body {
 
 @media (prefers-color-scheme: dark) {
     :root {
+        --ak-accent: #fd4b2d;
         --ak-dark-foreground: #fafafa;
         --ak-dark-foreground-darker: #bebebe;
         --ak-dark-foreground-link: #5a5cb9;
@@ -100,6 +101,12 @@ body {
         --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
         --pf-global--link--Color: var(--ak-dark-foreground-link);
     }
+
+    paper-input {
+        /* --paper-input-container-color: var(--ak-accent); */
+        --paper-input-container-input-color: var(--ak-dark-foreground);
+    }
+
     /* Global page background colour */
     .pf-c-page {
         --pf-c-page--BackgroundColor: var(--ak-dark-background);

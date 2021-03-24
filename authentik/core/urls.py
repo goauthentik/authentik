@@ -14,7 +14,6 @@ urlpatterns = [
         name="root-redirect",
     ),
     # User views
-    path("-/user/details/", user.UserDetailsView.as_view(), name="user-details"),
     path(
         "-/user/tokens/create/",
         user.TokenCreateView.as_view(),

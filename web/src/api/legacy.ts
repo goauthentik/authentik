@@ -105,6 +105,10 @@ export class AppURLManager {
 
 export class FlowURLManager {
 
+    static defaultUnenrollment(): string {
+        return "-/default/unenrollment/";
+    }
+
     static configure(stageUuid: string, rest: string): string {
         return `-/configure/${stageUuid}/${rest}`;
     }

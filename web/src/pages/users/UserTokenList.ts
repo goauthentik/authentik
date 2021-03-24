@@ -12,7 +12,7 @@ import { CoreApi, Token } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 
-@customElement("ak-token-user-list")
+@customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
     searchEnabled(): boolean {
         return true;

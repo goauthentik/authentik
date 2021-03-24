@@ -18,8 +18,8 @@ import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
 import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
-import "../tokens/UserTokenList";
-import "../generic/SiteShell";
+import "./UserDetailsPage";
+import "./UserTokenList";
 import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorStatic";
 import "./settings/UserSettingsAuthenticatorWebAuthnDevices";
@@ -48,13 +48,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-static>`;
             default:
-                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
-                    <div class="pf-u-w-75">
-                        <ak-site-shell url="${ifDefined(stage.component)}">
-                            <div slot="body"></div>
-                        </ak-site-shell>
-                    </div>
-                </div>`;
+                return html`<p>${gettext(`Error: unsupported stage settings: ${stage.component}`)}</p>`;
         }
     }
 
@@ -64,13 +58,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-source-oauth objectId=${source.objectUid}>
                 </ak-user-settings-source-oauth>`;
             default:
-                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
-                    <div class="pf-u-w-75">
-                        <ak-site-shell url="${ifDefined(source.component)}">
-                            <div slot="body"></div>
-                        </ak-site-shell>
-                    </div>
-                </div>`;
+                return html`<p>${gettext(`Error: unsupported source settings: ${source.component}`)}</p>`;
         }
     }
 
@@ -88,16 +76,10 @@ export class UserSettingsPage extends LitElement {
                 </section>
                 <ak-tabs ?vertical="${true}" style="height: 100%;">
                     <section slot="page-1" data-tab-title="${gettext("User details")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                        <div class="pf-u-display-flex pf-u-justify-content-center">
-                            <div class="pf-u-w-75">
-                                <ak-site-shell url="/-/user/details/">
-                                    <div slot="body"></div>
-                                </ak-site-shell>
-                            </div>
-                        </div>
+                        <ak-user-details></ak-user-details>
                     </section>
                     <section slot="page-2" data-tab-title="${gettext("Tokens")}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                        <ak-token-user-list></ak-token-user-list>
+                        <ak-user-token-list></ak-user-token-list>
                     </section>
                     ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettings({}).then((stages) => {
                         return stages.map((stage) => {

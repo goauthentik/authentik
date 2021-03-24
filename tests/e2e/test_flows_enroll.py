@@ -98,7 +98,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         wait = WebDriverWait(interface_admin, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
-        self.driver.get(self.if_admin_url("authentik_core:user-details"))
+        self.driver.get(self.if_admin_url("/user"))
 
         user = User.objects.get(username="foo")
         self.assertEqual(user.username, "foo")
@@ -198,7 +198,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         )
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-sidebar")))
-        self.driver.get(self.if_admin_url("authentik_core:user-details"))
+        self.driver.get(self.if_admin_url("/user"))
 
         self.assert_user(User.objects.get(username="foo"))
 
