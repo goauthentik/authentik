@@ -23,7 +23,7 @@ class UserOAuthSourceConnectionViewSet(ModelViewSet):
 
     queryset = UserOAuthSourceConnection.objects.all()
     serializer_class = UserOAuthSourceConnectionSerializer
-    filterset_fields = ["source"]
+    filterset_fields = ["source__slug"]
 
     def get_queryset(self):
         if not self.request:
