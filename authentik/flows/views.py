@@ -316,9 +316,13 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
     if isinstance(source, HttpResponseRedirect) or source.status_code == 302:
         redirect_url = source["Location"]
         # Redirects to the same URL usually indicate an Error within a form
-        if request.path == redirect_url:
+        if request.get_full_path() == redirect_url:
             return source
-        LOGGER.debug("converting to redirect challenge", to=str(redirect_url))
+        LOGGER.debug(
+            "converting to redirect challenge",
+            to=str(redirect_url),
+            current=request.path,
+        )
         return HttpChallengeResponse(
             RedirectChallenge(
                 {"type": ChallengeTypes.redirect, "to": str(redirect_url)}
