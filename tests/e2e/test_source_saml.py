@@ -98,12 +98,18 @@ class TestSourceSAML(SeleniumTestCase):
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_migration(
+        "authentik_sources_saml", "0010_samlsource_pre_authentication_flow"
+    )
     @object_manager
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        pre_authentication_flow = Flow.objects.get(
+            slug="default-source-pre-authentication"
+        )
         keypair = CertificateKeyPair.objects.create(
             name="test-idp-cert",
             certificate_data=IDP_CERT,
@@ -115,6 +121,7 @@ class TestSourceSAML(SeleniumTestCase):
             slug="saml-idp-test",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
+            pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
             sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.Redirect,
@@ -158,23 +165,30 @@ class TestSourceSAML(SeleniumTestCase):
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_migration(
+        "authentik_sources_saml", "0010_samlsource_pre_authentication_flow"
+    )
     @object_manager
     def test_idp_post(self):
         """test SAML Source With post binding"""
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        pre_authentication_flow = Flow.objects.get(
+            slug="default-source-pre-authentication"
+        )
         keypair = CertificateKeyPair.objects.create(
             name="test-idp-cert",
             certificate_data=IDP_CERT,
             key_data=IDP_KEY,
         )
 
-        SAMLSource.objects.create(
+        source = SAMLSource.objects.create(
             name="saml-idp-test",
             slug="saml-idp-test",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
+            pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
             sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.POST,
@@ -198,7 +212,18 @@ class TestSourceSAML(SeleniumTestCase):
             By.CLASS_NAME, "pf-c-login__main-footer-links-item-link"
         ).click()
         sleep(1)
-        self.driver.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+
+        self.assertIn(
+            source.name,
+            consent_stage.find_element(By.CSS_SELECTOR, "#header-text").text,
+        )
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            ("[type=submit]"),
+        ).click()
 
         # Now we should be at the IDP, wait for the username field
         self.wait.until(ec.presence_of_element_located((By.ID, "username")))
@@ -220,12 +245,18 @@ class TestSourceSAML(SeleniumTestCase):
     @apply_migration("authentik_flows", "0008_default_flows")
     @apply_migration("authentik_flows", "0009_source_flows")
     @apply_migration("authentik_crypto", "0002_create_self_signed_kp")
+    @apply_migration(
+        "authentik_sources_saml", "0010_samlsource_pre_authentication_flow"
+    )
     @object_manager
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""
         # Bootstrap all needed objects
         authentication_flow = Flow.objects.get(slug="default-source-authentication")
         enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        pre_authentication_flow = Flow.objects.get(
+            slug="default-source-pre-authentication"
+        )
         keypair = CertificateKeyPair.objects.create(
             name="test-idp-cert",
             certificate_data=IDP_CERT,
@@ -237,6 +268,7 @@ class TestSourceSAML(SeleniumTestCase):
             slug="saml-idp-test",
             authentication_flow=authentication_flow,
             enrollment_flow=enrollment_flow,
+            pre_authentication_flow=pre_authentication_flow,
             issuer="entity-id",
             sso_url="http://localhost:8080/simplesaml/saml2/idp/SSOService.php",
             binding_type=SAMLBindingTypes.POST_AUTO,

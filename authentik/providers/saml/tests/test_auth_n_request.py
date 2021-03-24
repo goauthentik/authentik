@@ -81,6 +81,9 @@ class TestAuthNRequest(TestCase):
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
+            pre_authentication_flow=Flow.objects.get(
+                slug="default-source-pre-authentication"
+            ),
             signing_kp=cert,
         )
         self.factory = RequestFactory()

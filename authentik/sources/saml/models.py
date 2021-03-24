@@ -11,6 +11,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Source
 from authentik.core.types import UILoginButton
 from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -50,6 +51,13 @@ class SAMLNameIDPolicy(models.TextChoices):
 
 class SAMLSource(Source):
     """Authenticate using an external SAML Identity Provider."""
+
+    pre_authentication_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.CASCADE,
+        help_text=_("Flow used before authentication."),
+        related_name="source_pre_authentication",
+    )
 
     issuer = models.TextField(
         blank=True,

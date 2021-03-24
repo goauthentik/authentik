@@ -4,6 +4,7 @@ from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.models import Flow
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 
@@ -20,6 +21,9 @@ class TestMetadataProcessor(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=CertificateKeyPair.objects.first(),
+            pre_authentication_flow=Flow.objects.get(
+                slug="default-source-pre-authentication"
+            ),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()

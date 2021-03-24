@@ -26,7 +26,7 @@ class UILoginButtonSerializer(Serializer):
 
     name = CharField()
     url = CharField()
-    icon_url = CharField()
+    icon_url = CharField(required=False)
 
     def create(self, validated_data: dict) -> Model:
         return Model()

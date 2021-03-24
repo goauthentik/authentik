@@ -2,7 +2,8 @@
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http.response import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
@@ -10,8 +11,20 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from xmlsec import VerificationError
 
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.models import in_memory_stage
+from authentik.flows.planner import (
+    PLAN_CONTEXT_REDIRECT,
+    PLAN_CONTEXT_SOURCE,
+    PLAN_CONTEXT_SSO,
+    FlowPlanner,
+)
+from authentik.flows.stage import ChallengeStageView
+from authentik.flows.views import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
+from authentik.providers.saml.views.flows import AutosubmitChallenge
 from authentik.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
@@ -20,10 +33,67 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
+from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_HEADER,
+    PLAN_CONTEXT_CONSENT_TITLE,
+    ConsentStageView,
+)
+
+PLAN_CONTEXT_TITLE = "title"
+PLAN_CONTEXT_URL = "url"
+PLAN_CONTEXT_ATTRS = "attrs"
+
+
+class AutosubmitStageView(ChallengeStageView):
+    """Wrapper stage to create an autosubmit challenge from plan context variables"""
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        return AutosubmitChallenge(
+            data={
+                "type": ChallengeTypes.native.value,
+                "component": "ak-stage-autosubmit",
+                "title": self.executor.plan.context.get(PLAN_CONTEXT_TITLE, ""),
+                "url": self.executor.plan.context.get(PLAN_CONTEXT_URL, ""),
+                "attrs": self.executor.plan.context.get(PLAN_CONTEXT_ATTRS, ""),
+            },
+        )
+
+    # Since `ak-stage-autosubmit` redirects off site, we don't have anything to check
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        return HttpResponseBadRequest()
 
 
 class InitiateView(View):
     """Get the Form with SAML Request, which sends us to the IDP"""
+
+    def handle_login_flow(
+        self, source: SAMLSource, *stages_to_append, **kwargs
+    ) -> HttpResponse:
+        """Prepare Authentication Plan, redirect user FlowExecutor"""
+        # Ensure redirect is carried through when user was trying to
+        # authorize application
+        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
+            NEXT_ARG_NAME, "authentik_core:if-admin"
+        )
+        kwargs.update(
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_SOURCE: source,
+                PLAN_CONTEXT_REDIRECT: final_redirect,
+            }
+        )
+        # We run the Flow planner here so we can pass the Pending user in the context
+        planner = FlowPlanner(source.pre_authentication_flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(self.request, kwargs)
+        for stage in stages_to_append:
+            plan.append(stage)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            self.request.GET,
+            flow_slug=source.pre_authentication_flow.slug,
+        )
 
     def get(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
@@ -38,29 +108,29 @@ class InitiateView(View):
             return redirect(f"{source.sso_url}?{url_args}")
         # As POST Binding we show a form
         saml_request = nice64(auth_n_req.build_auth_n())
+        injected_stages = []
+        plan_kwargs = {
+            PLAN_CONTEXT_TITLE: _("Redirecting to %(app)s..." % {"app": source.name}),
+            PLAN_CONTEXT_CONSENT_TITLE: _(
+                "Redirecting to %(app)s..." % {"app": source.name}
+            ),
+            PLAN_CONTEXT_ATTRS: {
+                "SAMLRequest": saml_request,
+                "RelayState": relay_state,
+            },
+            PLAN_CONTEXT_URL: source.sso_url,
+        }
+        # For just POST we add a consent stage,
+        # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
-            return render(
-                request,
-                "saml/sp/login.html",
-                {
-                    "request_url": source.sso_url,
-                    "request": saml_request,
-                    "relay_state": relay_state,
-                    "source": source,
-                },
-            )
-        # Or an auto-submit form
-        if source.binding_type == SAMLBindingTypes.POST_AUTO:
-            return render(
-                request,
-                "generic/autosubmit_form_full.html",
-                {
-                    "title": _("Redirecting to %(app)s..." % {"app": source.name}),
-                    "attrs": {"SAMLRequest": saml_request, "RelayState": relay_state},
-                    "url": source.sso_url,
-                },
-            )
-        raise Http404
+            injected_stages.append(in_memory_stage(ConsentStageView))
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = f"Continue to {source.name}"
+        injected_stages.append(in_memory_stage(AutosubmitStageView))
+        return self.handle_login_flow(
+            source,
+            *injected_stages,
+            **plan_kwargs,
+        )
 
 
 @method_decorator(csrf_exempt, name="dispatch")

@@ -37,6 +37,9 @@ class TestSchema(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=cert,
+            pre_authentication_flow=Flow.objects.get(
+                slug="default-source-pre-authentication"
+            ),
         )
         self.factory = RequestFactory()
 

@@ -15,6 +15,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
+PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
 
@@ -42,6 +43,10 @@ class ConsentStageView(ChallengeStageView):
                 "component": "ak-stage-consent",
             }
         )
+        if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
+            challenge.initial_data["title"] = self.executor.plan.context[
+                PLAN_CONTEXT_CONSENT_TITLE
+            ]
         if PLAN_CONTEXT_CONSENT_HEADER in self.executor.plan.context:
             challenge.initial_data["header_text"] = self.executor.plan.context[
                 PLAN_CONTEXT_CONSENT_HEADER
@@ -50,16 +55,15 @@ class ConsentStageView(ChallengeStageView):
             challenge.initial_data["permissions"] = self.executor.plan.context[
                 PLAN_CONTEXT_CONSENT_PERMISSIONS
             ]
-        # If there's a pending user, update the `username` field
-        # this field is only used by password managers.
-        # If there's no user set, an error is raised later.
-        if user := self.get_pending_user():
-            challenge.initial_data["pending_user"] = user.username
-            challenge.initial_data["pending_user_avatar"] = user.avatar
         return challenge
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         current_stage: ConsentStage = self.executor.current_stage
+        # Make this StageView work when injected, in which case `current_stage` is an instance
+        # of the base class, and we don't save any consent, as it is assumed to be a one-time
+        # prompt
+        if not isinstance(current_stage, ConsentStage):
+            return super().get(request, *args, **kwargs)
         # For always require, we always return the challenge
         if current_stage.mode == ConsentMode.ALWAYS_REQUIRE:
             return super().get(request, *args, **kwargs)
@@ -85,6 +89,11 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_APPLICATION not in self.executor.plan.context:
             return self.executor.stage_ok()
         application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
+        # Make this StageView work when injected, in which case `current_stage` is an instance
+        # of the base class, and we don't save any consent, as it is assumed to be a one-time
+        # prompt
+        if not isinstance(current_stage, ConsentStage):
+            return self.executor.stage_ok()
         # Since we only get here when no consent exists, we can create it without update
         if current_stage.mode == ConsentMode.PERMANENT:
             UserConsent.objects.create(
