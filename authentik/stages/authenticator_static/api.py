@@ -30,7 +30,7 @@ class StaticDeviceSerializer(ModelSerializer):
     class Meta:
 
         model = StaticDevice
-        fields = ["name", "token_set"]
+        fields = ["name", "token_set", "pk"]
         depth = 2
 
 

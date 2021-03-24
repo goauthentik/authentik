@@ -16,7 +16,7 @@ class AuthenticateWebAuthnStageSerializer(StageSerializer):
     class Meta:
 
         model = AuthenticateWebAuthnStage
-        fields = StageSerializer.Meta.fields
+        fields = StageSerializer.Meta.fields + ["configure_flow"]
 
 
 class AuthenticateWebAuthnStageViewSet(ModelViewSet):
@@ -32,9 +32,7 @@ class WebAuthnDeviceSerializer(ModelSerializer):
     class Meta:
 
         model = WebAuthnDevice
-        fields = [
-            "name",
-        ]
+        fields = ["pk", "name", "created_on"]
         depth = 2
 
 

@@ -32,6 +32,7 @@ class TOTPDeviceSerializer(ModelSerializer):
         model = TOTPDevice
         fields = [
             "name",
+            "pk",
         ]
         depth = 2
 

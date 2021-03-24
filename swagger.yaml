@@ -10786,6 +10786,10 @@ definitions:
                   type: integer
               readOnly: true
         readOnly: true
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
   TOTPDevice:
     description: Serializer for totp authenticator devices
     required:
@@ -10798,17 +10802,30 @@ definitions:
         type: string
         maxLength: 64
         minLength: 1
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
   WebAuthnDevice:
     description: Serializer for WebAuthn authenticator devices
     required:
       - name
     type: object
     properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
       name:
         title: Name
         type: string
         maxLength: 200
         minLength: 1
+      created_on:
+        title: Created on
+        type: string
+        format: date-time
+        readOnly: true
   Provider:
     title: Provider
     description: Provider Serializer
@@ -14014,6 +14031,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Flow'
+      configure_flow:
+        title: Configure flow
+        description: Flow used by an authenticated user to configure this Stage. If
+          empty, user will not be able to configure this stage.
+        type: string
+        format: uuid
+        x-nullable: true
   CaptchaStage:
     description: CaptchaStage Serializer
     required:
