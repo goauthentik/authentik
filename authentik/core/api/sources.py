@@ -13,7 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source
-from authentik.flows.challenge import Challenge
+from authentik.core.types import UserSettingSerializer
 from authentik.lib.templatetags.authentik_utils import verbose_name
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
@@ -77,14 +77,14 @@ class SourceViewSet(
             )
         return Response(TypeCreateSerializer(data, many=True).data)
 
-    @swagger_auto_schema(responses={200: Challenge(many=True)})
+    @swagger_auto_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False)
     def user_settings(self, request: Request) -> Response:
         """Get all sources the user can configure"""
         _all_sources: Iterable[Source] = Source.objects.filter(
             enabled=True
         ).select_subclasses()
-        matching_sources: list[Challenge] = []
+        matching_sources: list[UserSettingSerializer] = []
         for source in _all_sources:
             user_settings = source.ui_user_settings
             if not user_settings:
@@ -94,6 +94,7 @@ class SourceViewSet(
             if not policy_engine.passing:
                 continue
             source_settings = source.ui_user_settings
+            source_settings["object_uid"] = str(source.pk)
             if not source_settings.is_valid():
                 LOGGER.warning(source_settings.errors)
             matching_sources.append(source_settings.validated_data)

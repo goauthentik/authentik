@@ -33,3 +33,17 @@ class UILoginButtonSerializer(Serializer):
 
     def update(self, instance: Model, validated_data: dict) -> Model:
         return Model()
+
+
+class UserSettingSerializer(Serializer):
+    """Serializer for User settings for stages and sources"""
+
+    object_uid = CharField()
+    component = CharField()
+    title = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        return Model()
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        return Model()
