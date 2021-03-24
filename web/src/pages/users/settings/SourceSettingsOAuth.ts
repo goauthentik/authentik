@@ -26,7 +26,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
 
     renderInner(source: OAuthSource): TemplateResult {
         return html`${until(new SourcesApi(DEFAULT_CONFIG).sourcesOauthUserConnectionsList({
-            source: this.objectId
+            sourceSlug: this.objectId
         }).then((connection) => {
             if (connection.results.length > 0) {
                 return html`<p>${gettext("Connected.")}</p>

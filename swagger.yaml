@@ -7415,7 +7415,7 @@ paths:
       operationId: sources_oauth_user_connections_list
       description: Source Viewset
       parameters:
-        - name: source
+        - name: source__slug
           in: query
           description: ''
           required: false
