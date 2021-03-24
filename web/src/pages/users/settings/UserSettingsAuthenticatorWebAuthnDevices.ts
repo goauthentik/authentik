@@ -1,24 +1,16 @@
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import AKGlobal from "../../../authentik.css";
+import { customElement, html, TemplateResult } from "lit-element";
 import { gettext } from "django";
 import { AuthenticatorsApi, StagesApi } from "authentik-api";
 import { until } from "lit-html/directives/until";
 import { FlowURLManager, UserURLManager } from "../../../api/legacy";
 import { DEFAULT_CONFIG } from "../../../api/Config";
+import { BaseUserSettings } from "./BaseUserSettings";
+import "../../../elements/buttons/ModalButton";
+import "../../../elements/buttons/SpinnerButton";
+import "../../../elements/forms/DeleteForm";
 
 @customElement("ak-user-settings-authenticator-webauthn")
-export class UserSettingsAuthenticatorWebAuthnDevices extends LitElement {
-
-    @property()
-    stageId!: string;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFDataList, AKGlobal];
-    }
+export class UserSettingsAuthenticatorWebAuthnDevices extends BaseUserSettings {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
@@ -39,7 +31,7 @@ export class UserSettingsAuthenticatorWebAuthnDevices extends LitElement {
                                         <div class="pf-c-data-list__cell">
                                             <ak-modal-button href="${UserURLManager.authenticatorWebauthn(`devices/${device.pk}/update/`)}">
                                                 <ak-spinner-button slot="trigger" class="pf-m-primary">
-                                                    ${gettext('Update')}
+                                                    ${gettext("Update")}
                                                 </ak-spinner-button>
                                                 <div slot="modal"></div>
                                             </ak-modal-button>
@@ -64,9 +56,9 @@ export class UserSettingsAuthenticatorWebAuthnDevices extends LitElement {
                 </ul>
             </div>
             <div class="pf-c-card__footer">
-                ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRead({stageUuid: this.stageId}).then((stage) => {
+                ${until(new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRead({ stageUuid: this.objectId}).then((stage) => {
                     if (stage.configureFlow) {
-                        return html`<a href="${FlowURLManager.configure(stage.pk || "", '?next=/%23user')}"
+                        return html`<a href="${FlowURLManager.configure(stage.pk || "", "?next=/%23%2Fuser")}"
                                 class="pf-c-button pf-m-primary">${gettext("Configure WebAuthn")}
                             </a>`;
                     }

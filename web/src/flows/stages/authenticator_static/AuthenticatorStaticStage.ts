@@ -13,6 +13,21 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
 
+export const STATIC_TOKEN_STYLE = css`
+/* Static OTP Tokens */
+.ak-otp-tokens {
+    list-style: circle;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    margin-left: var(--pf-global--spacer--xs);
+}
+.ak-otp-tokens li {
+    font-size: var(--pf-global--FontSize--2xl);
+    font-family: monospace;
+}
+`;
+
 export interface AuthenticatorStaticChallenge extends WithUserInfoChallenge {
     codes: number[];
 }
@@ -24,20 +39,7 @@ export class AuthenticatorStaticStage extends BaseStage {
     challenge?: AuthenticatorStaticChallenge;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal].concat(css`
-            /* Static OTP Tokens */
-            .ak-otp-tokens {
-                list-style: circle;
-                columns: 2;
-                -webkit-columns: 2;
-                -moz-columns: 2;
-                margin-left: var(--pf-global--spacer--xs);
-            }
-            .ak-otp-tokens li {
-                font-size: var(--pf-global--FontSize--2xl);
-                font-family: monospace;
-            }
-        `);
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal, STATIC_TOKEN_STYLE];
     }
 
     render(): TemplateResult {

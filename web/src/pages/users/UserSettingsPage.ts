@@ -20,8 +20,10 @@ import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
 import "../tokens/UserTokenList";
 import "../generic/SiteShell";
-import "./settings/AuthenticatorWebAuthnDevices";
-import "./settings/Password";
+import "./settings/UserSettingsAuthenticatorTOTP";
+import "./settings/UserSettingsAuthenticatorStatic";
+import "./settings/UserSettingsAuthenticatorWebAuthnDevices";
+import "./settings/UserSettingsPassword";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -38,6 +40,12 @@ export class UserSettingsPage extends LitElement {
             case "ak-user-settings-password":
                 return html`<ak-user-settings-password stageId=${stage.objectUid}>
                 </ak-user-settings-password>`;
+            case "ak-user-settings-authenticator-totp":
+                return html`<ak-user-settings-authenticator-totp stageId=${stage.objectUid}>
+                </ak-user-settings-authenticator-totp>`;
+            case "ak-user-settings-authenticator-static":
+                return html`<ak-user-settings-authenticator-static stageId=${stage.objectUid}>
+                </ak-user-settings-authenticator-static>`;
             default:
                 return html`<div class="pf-u-display-flex pf-u-justify-content-center">
                     <div class="pf-u-w-75">
