@@ -157,6 +157,15 @@ class FlowExecutorView(APIView):
     @swagger_auto_schema(
         responses={200: Challenge()},
         request_body=ChallengeResponse(),
+        manual_parameters=[
+            openapi.Parameter(
+                "query",
+                openapi.IN_QUERY,
+                required=True,
+                description="Querystring as received",
+                type=openapi.TYPE_STRING,
+            )
+        ],
         operation_id="flows_executor_solve",
     )
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
