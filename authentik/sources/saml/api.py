@@ -18,6 +18,7 @@ class SAMLSourceSerializer(SourceSerializer):
 
         model = SAMLSource
         fields = SourceSerializer.Meta.fields + [
+            "pre_authentication_flow",
             "issuer",
             "sso_url",
             "slo_url",
