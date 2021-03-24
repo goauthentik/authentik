@@ -103,8 +103,8 @@ class FlowExecutorView(APIView):
                 # To match behaviour with loading an empty flow plan from cache,
                 # we don't show an error message here, but rather call _flow_done()
                 return self._flow_done()
-            # Initial flow request, check if we have an upstream query string passed in
-            request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
+        # Initial flow request, check if we have an upstream query string passed in
+        request.session[SESSION_KEY_GET] = QueryDict(request.GET.get("query", ""))
         # We don't save the Plan after getting the next stage
         # as it hasn't been successfully passed yet
         next_stage = self.plan.next(self.request)

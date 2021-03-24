@@ -84,6 +84,7 @@ class EmailStageView(ChallengeStageView):
             messages.success(request, _("Successfully verified Email."))
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            LOGGER.debug("No pending user")
             messages.error(self.request, _("No pending user."))
             return self.executor.stage_invalid()
         # Check if we've already sent the initial e-mail
@@ -94,7 +95,11 @@ class EmailStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         challenge = EmailChallenge(
-            data={"type": ChallengeTypes.native.value, "component": "ak-stage-email"}
+            data={
+                "type": ChallengeTypes.native.value,
+                "component": "ak-stage-email",
+                "title": "Email sent.",
+            }
         )
         return challenge
 

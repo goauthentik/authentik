@@ -5,12 +5,13 @@ from django.core import mail
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_str
+from django.utils.http import urlencode
 
 from authentik.core.models import Token, User
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.views import SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views import SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import QS_KEY_TOKEN
 
@@ -104,11 +105,23 @@ class TestEmailStage(TestCase):
         )
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
-        token: Token = Token.objects.get(user=self.user)
-        session[SESSION_KEY_GET] = {QS_KEY_TOKEN: token.key}
         session.save()
+        token: Token = Token.objects.get(user=self.user)
 
         with patch("authentik.flows.views.FlowExecutorView.cancel", MagicMock()):
+            # Call the executor shell to preseed the session
+            url = reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.flow.slug},
+            )
+            url_query = urlencode(
+                {
+                    QS_KEY_TOKEN: token.key,
+                }
+            )
+            url += f"?query={url_query}"
+            self.client.get(url)
+
             # Call the actual executor to get the JSON Response
             response = self.client.get(
                 reverse(

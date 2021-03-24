@@ -16,9 +16,25 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.views import FlowExecutorView
+from authentik.lib.sentry import SentryIgnoredException
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
 LOGGER = get_logger()
+
+
+class InvalidChallengeError(SentryIgnoredException):
+    """Error raised when a challenge from a stage is not valid"""
+
+    def __init__(self, errors, stage_view: View, challenge: Challenge) -> None:
+        super().__init__()
+        self.errors = errors
+        self.stage_view = stage_view
+        self.challenge = challenge
+
+    def __str__(self) -> str:
+        return (
+            f"Invalid challenge from {self.stage_view}: {self.errors}\n{self.challenge}"
+        )
 
 
 class StageView(View):
@@ -64,7 +80,7 @@ class ChallengeStageView(StageView):
         """Return a challenge for the frontend to solve"""
         challenge = self._get_challenge(*args, **kwargs)
         if not challenge.is_valid():
-            LOGGER.warning(challenge.errors)
+            LOGGER.warning(challenge.errors, stage_view=self, challenge=challenge)
         return HttpChallengeResponse(challenge)
 
     # pylint: disable=unused-argument

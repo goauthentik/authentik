@@ -89,10 +89,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             )
             self.driver.save_screenshot(screenshot_file)
             self.logger.warning("Saved screenshot", file=screenshot_file)
+        self.logger.debug("--------browser logs")
         for line in self.driver.get_log("browser"):
-            self.logger.warning(
+            self.logger.debug(
                 line["message"], source=line["source"], level=line["level"]
             )
+        self.logger.debug("--------end browser logs")
         if self.container:
             self.container.kill()
         self.driver.quit()

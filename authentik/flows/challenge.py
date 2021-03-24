@@ -46,7 +46,7 @@ class Challenge(Serializer):
     background = CharField(required=False)
 
     response_errors = DictField(
-        child=ErrorDetailSerializer(many=True), allow_empty=False, required=False
+        child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
     )
 
     def create(self, validated_data: dict) -> Model:
