@@ -15,7 +15,7 @@ class SAMLSourceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields["pre_authentication_flow"].queryset = Flow.objects.filter(
-            designation=FlowDesignation.AUTHENTICATION
+            designation=FlowDesignation.STAGE_CONFIGURATION
         )
         self.fields["authentication_flow"].queryset = Flow.objects.filter(
             designation=FlowDesignation.AUTHENTICATION

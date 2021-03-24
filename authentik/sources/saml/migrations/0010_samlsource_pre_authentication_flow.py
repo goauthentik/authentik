@@ -19,7 +19,7 @@ def create_default_pre_authentication_flow(
     # Empty flow for providers where consent is implicitly given
     flow, _ = Flow.objects.using(db_alias).update_or_create(
         slug="default-source-pre-authentication",
-        designation=FlowDesignation.AUTHENTICATION,
+        designation=FlowDesignation.STAGE_CONFIGURATION,
         defaults={"name": "Pre-Authentication", "title": ""},
     )
 
