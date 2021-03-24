@@ -1,17 +1,16 @@
 """WebAuthn stage"""
+from authentik.core.types import UserSettingSerializer
 from typing import Optional, Type
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.forms import ModelForm
-from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
-from authentik.flows.challenge import Challenge, ChallengeTypes
 from authentik.flows.models import ConfigurableStage, Stage
 
 
@@ -43,15 +42,11 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         return AuthenticateWebAuthnStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[Challenge]:
-        return Challenge(
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        return UserSettingSerializer(
             data={
-                "type": ChallengeTypes.shell.value,
                 "title": str(self._meta.verbose_name),
-                "component": reverse(
-                    "authentik_stages_authenticator_webauthn:user-settings",
-                    kwargs={"stage_uuid": self.stage_uuid},
-                ),
+                "component": "ak-user-settings-authenticator-webauthn",
             }
         )
 

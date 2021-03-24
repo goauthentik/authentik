@@ -83,6 +83,10 @@ export class UserURLManager {
         return `/-/user/tokens/${rest}`;
     }
 
+    static authenticatorWebauthn(rest: string): string {
+        return `/-/user/authenticator/webauthn/${rest}`;
+    }
+
 }
 
 export class AppURLManager {
@@ -92,6 +96,14 @@ export class AppURLManager {
     }
     static providerSAML(rest: string): string {
         return `/application/saml/${rest}`;
+    }
+
+}
+
+export class FlowURLManager {
+
+    static configure(stageUuid: string, rest: string): string {
+        return `-/configure/${stageUuid}/${rest}`;
     }
 
 }

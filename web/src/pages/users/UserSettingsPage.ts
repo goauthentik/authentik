@@ -13,19 +13,36 @@ import AKGlobal from "../../authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import { SourcesApi, StagesApi } from "authentik-api";
+import { SourcesApi, StagesApi, UserSetting } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { until } from "lit-html/directives/until";
+import { ifDefined } from "lit-html/directives/if-defined";
 import "../../elements/Tabs";
 import "../tokens/UserTokenList";
 import "../generic/SiteShell";
-import { ifDefined } from "lit-html/directives/if-defined";
+import "./settings/AuthenticatorWebAuthnDevices";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFFlex, PFDisplay, PFGallery, PFContent, PFCard, PFDescriptionList, PFSizing, PFForm, PFFormControl, AKGlobal];
+    }
+
+    renderStageSettings(stage: UserSetting): TemplateResult {
+        switch (stage.component) {
+            case "ak-user-settings-authenticator-webauthn":
+                return html`<ak-user-settings-authenticator-webauthn stageId=${stage.objectUid}>
+                </ak-user-settings-authenticator-webauthn>`;
+            default:
+                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <ak-site-shell url="${ifDefined(stage.component)}">
+                            <div slot="body"></div>
+                        </ak-site-shell>
+                    </div>
+                </div>`;
+        }
     }
 
     render(): TemplateResult {
@@ -55,22 +72,15 @@ export class UserSettingsPage extends LitElement {
                     </section>
                     ${until(new StagesApi(DEFAULT_CONFIG).stagesAllUserSettings({}).then((stages) => {
                         return stages.map((stage) => {
-                            // TODO: Check for non-shell stages
-                            return html`<section slot="page-${stage.title}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                                        <div class="pf-u-w-75">
-                                            <ak-site-shell url="${ifDefined(stage.component)}">
-                                                <div slot="body"></div>
-                                            </ak-site-shell>
-                                        </div>
-                                    </div>
-                                </section>`;
+                            return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                                ${this.renderStageSettings(stage)}
+                            </section>`;
                         });
                     }))}
                     ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettings({}).then((sources) => {
                         return sources.map((source) => {
                             // TODO: Check for non-shell sources
-                            return html`<section slot="page-${source.title}" data-tab-title="${ifDefined(source.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                            return html`<section slot="page-${source.objectUid}" data-tab-title="${ifDefined(source.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
                                     <div class="pf-u-display-flex pf-u-justify-content-center">
                                         <div class="pf-u-w-75">
                                             <ak-site-shell url="${ifDefined(source.component)}">
