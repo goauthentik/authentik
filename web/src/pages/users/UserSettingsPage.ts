@@ -21,6 +21,7 @@ import "../../elements/Tabs";
 import "../tokens/UserTokenList";
 import "../generic/SiteShell";
 import "./settings/AuthenticatorWebAuthnDevices";
+import "./settings/Password";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -34,6 +35,9 @@ export class UserSettingsPage extends LitElement {
             case "ak-user-settings-authenticator-webauthn":
                 return html`<ak-user-settings-authenticator-webauthn stageId=${stage.objectUid}>
                 </ak-user-settings-authenticator-webauthn>`;
+            case "ak-user-settings-password":
+                return html`<ak-user-settings-password stageId=${stage.objectUid}>
+                </ak-user-settings-password>`;
             default:
                 return html`<div class="pf-u-display-flex pf-u-justify-content-center">
                     <div class="pf-u-w-75">

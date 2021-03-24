@@ -1,5 +1,4 @@
 """WebAuthn stage"""
-from authentik.core.types import UserSettingSerializer
 from typing import Optional, Type
 
 from django.contrib.auth import get_user_model
@@ -11,6 +10,7 @@ from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 
 

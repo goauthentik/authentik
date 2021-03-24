@@ -6,9 +6,8 @@ from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
 
 from authentik.stages.authenticator_webauthn.forms import DeviceEditForm
-from authentik.stages.authenticator_webauthn.models import (
-    WebAuthnDevice,
-)
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+
 
 class DeviceUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     """Update device"""

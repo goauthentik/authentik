@@ -4,12 +4,11 @@ from typing import Optional, Type
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.forms import ModelForm
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
-from authentik.flows.challenge import Challenge, ChallengeTypes
+from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 
 
@@ -49,17 +48,13 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageForm
 
     @property
-    def ui_user_settings(self) -> Optional[Challenge]:
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         if not self.configure_flow:
             return None
-        return Challenge(
+        return UserSettingSerializer(
             data={
-                "type": ChallengeTypes.shell.value,
                 "title": str(self._meta.verbose_name),
-                "component": reverse(
-                    "authentik_stages_password:user-settings",
-                    kwargs={"stage_uuid": self.pk},
-                ),
+                "component": "ak-user-settings-password",
             }
         )
 
