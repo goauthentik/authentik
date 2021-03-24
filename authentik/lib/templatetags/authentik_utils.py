@@ -2,30 +2,10 @@
 
 from django import template
 from django.db.models import Model
-from django.template import Context
 from structlog.stdlib import get_logger
-
-from authentik.lib.utils.urls import is_url_absolute
 
 register = template.Library()
 LOGGER = get_logger()
-
-
-@register.simple_tag(takes_context=True)
-def back(context: Context) -> str:
-    """Return a link back (either from GET parameter or referer."""
-    if "request" not in context:
-        return ""
-    request = context.get("request")
-    url = ""
-    if "HTTP_REFERER" in request.META:
-        url = request.META.get("HTTP_REFERER")
-    if "back" in request.GET:
-        url = request.GET.get("back")
-
-    if not is_url_absolute(url):
-        return url
-    return ""
 
 
 @register.filter("fieldtype")

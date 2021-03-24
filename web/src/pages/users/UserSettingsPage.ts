@@ -24,6 +24,7 @@ import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorStatic";
 import "./settings/UserSettingsAuthenticatorWebAuthnDevices";
 import "./settings/UserSettingsPassword";
+import "./settings/SourceSettingsOAuth";
 
 @customElement("ak-user-settings")
 export class UserSettingsPage extends LitElement {
@@ -35,21 +36,37 @@ export class UserSettingsPage extends LitElement {
     renderStageSettings(stage: UserSetting): TemplateResult {
         switch (stage.component) {
             case "ak-user-settings-authenticator-webauthn":
-                return html`<ak-user-settings-authenticator-webauthn stageId=${stage.objectUid}>
+                return html`<ak-user-settings-authenticator-webauthn objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-webauthn>`;
             case "ak-user-settings-password":
-                return html`<ak-user-settings-password stageId=${stage.objectUid}>
+                return html`<ak-user-settings-password objectId=${stage.objectUid}>
                 </ak-user-settings-password>`;
             case "ak-user-settings-authenticator-totp":
-                return html`<ak-user-settings-authenticator-totp stageId=${stage.objectUid}>
+                return html`<ak-user-settings-authenticator-totp objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-totp>`;
             case "ak-user-settings-authenticator-static":
-                return html`<ak-user-settings-authenticator-static stageId=${stage.objectUid}>
+                return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-static>`;
             default:
                 return html`<div class="pf-u-display-flex pf-u-justify-content-center">
                     <div class="pf-u-w-75">
                         <ak-site-shell url="${ifDefined(stage.component)}">
+                            <div slot="body"></div>
+                        </ak-site-shell>
+                    </div>
+                </div>`;
+        }
+    }
+
+    renderSourceSettings(source: UserSetting): TemplateResult {
+        switch (source.component) {
+            case "ak-user-settings-source-oauth":
+                return html`<ak-user-settings-source-oauth objectId=${source.objectUid}>
+                </ak-user-settings-source-oauth>`;
+            default:
+                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
+                    <div class="pf-u-w-75">
+                        <ak-site-shell url="${ifDefined(source.component)}">
                             <div slot="body"></div>
                         </ak-site-shell>
                     </div>
@@ -89,18 +106,11 @@ export class UserSettingsPage extends LitElement {
                             </section>`;
                         });
                     }))}
-                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettings({}).then((sources) => {
-                        return sources.map((source) => {
-                            // TODO: Check for non-shell sources
-                            return html`<section slot="page-${source.objectUid}" data-tab-title="${ifDefined(source.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
-                                    <div class="pf-u-display-flex pf-u-justify-content-center">
-                                        <div class="pf-u-w-75">
-                                            <ak-site-shell url="${ifDefined(source.component)}">
-                                                <div slot="body"></div>
-                                            </ak-site-shell>
-                                        </div>
-                                    </div>
-                                </section>`;
+                    ${until(new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettings({}).then((source) => {
+                        return source.map((stage) => {
+                            return html`<section slot="page-${stage.objectUid}" data-tab-title="${ifDefined(stage.title)}" class="pf-c-page__main-section pf-m-no-padding-mobile">
+                                ${this.renderSourceSettings(stage)}
+                            </section>`;
                         });
                     }))}
                 </ak-tabs>

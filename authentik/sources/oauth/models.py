@@ -9,8 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Source, UserSourceConnection
-from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge, ChallengeTypes
+from authentik.core.types import UILoginButton, UserSettingSerializer
 
 
 class OAuthSource(Source):
@@ -67,13 +66,11 @@ class OAuthSource(Source):
         )
 
     @property
-    def ui_user_settings(self) -> Optional[Challenge]:
-        view_name = "authentik_sources_oauth:oauth-client-user"
-        return Challenge(
+    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+        return UserSettingSerializer(
             data={
-                "type": ChallengeTypes.shell.value,
-                "title": self.name,
-                "component": reverse(view_name, kwargs={"source_slug": self.slug}),
+                "title": f"OAuth {self.name}",
+                "component": "ak-user-settings-source-oauth",
             }
         )
 

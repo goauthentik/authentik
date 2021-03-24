@@ -1188,147 +1188,6 @@ paths:
         required: true
         type: string
         format: uuid
-  /core/source_user_connections_oauth/:
-    get:
-      operationId: core_source_user_connections_oauth_list
-      description: Source Viewset
-      parameters:
-        - name: ordering
-          in: query
-          description: Which field to use when ordering the results.
-          required: false
-          type: string
-        - name: search
-          in: query
-          description: A search term.
-          required: false
-          type: string
-        - name: page
-          in: query
-          description: Page Index
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Page Size
-          required: false
-          type: integer
-      responses:
-        '200':
-          description: ''
-          schema:
-            required:
-              - results
-              - pagination
-            type: object
-            properties:
-              pagination:
-                required:
-                  - next
-                  - previous
-                  - count
-                  - current
-                  - total_pages
-                  - start_index
-                  - end_index
-                type: object
-                properties:
-                  next:
-                    type: number
-                  previous:
-                    type: number
-                  count:
-                    type: number
-                  current:
-                    type: number
-                  total_pages:
-                    type: number
-                  start_index:
-                    type: number
-                  end_index:
-                    type: number
-              results:
-                type: array
-                items:
-                  $ref: '#/definitions/UserOAuthSourceConnection'
-      tags:
-        - core
-    post:
-      operationId: core_source_user_connections_oauth_create
-      description: Source Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      tags:
-        - core
-    parameters: []
-  /core/source_user_connections_oauth/{id}/:
-    get:
-      operationId: core_source_user_connections_oauth_read
-      description: Source Viewset
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      tags:
-        - core
-    put:
-      operationId: core_source_user_connections_oauth_update
-      description: Source Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      tags:
-        - core
-    patch:
-      operationId: core_source_user_connections_oauth_partial_update
-      description: Source Viewset
-      parameters:
-        - name: data
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/UserOAuthSourceConnection'
-      tags:
-        - core
-    delete:
-      operationId: core_source_user_connections_oauth_delete
-      description: Source Viewset
-      parameters: []
-      responses:
-        '204':
-          description: ''
-      tags:
-        - core
-    parameters:
-      - name: id
-        in: path
-        description: A unique integer value identifying this User OAuth Source Connection.
-        required: true
-        type: integer
   /core/tokens/:
     get:
       operationId: core_tokens_list
@@ -7551,6 +7410,152 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /sources/oauth_user_connections/:
+    get:
+      operationId: sources_oauth_user_connections_list
+      description: Source Viewset
+      parameters:
+        - name: source
+          in: query
+          description: ''
+          required: false
+          type: string
+        - name: ordering
+          in: query
+          description: Which field to use when ordering the results.
+          required: false
+          type: string
+        - name: search
+          in: query
+          description: A search term.
+          required: false
+          type: string
+        - name: page
+          in: query
+          description: Page Index
+          required: false
+          type: integer
+        - name: page_size
+          in: query
+          description: Page Size
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+          schema:
+            required:
+              - results
+              - pagination
+            type: object
+            properties:
+              pagination:
+                required:
+                  - next
+                  - previous
+                  - count
+                  - current
+                  - total_pages
+                  - start_index
+                  - end_index
+                type: object
+                properties:
+                  next:
+                    type: number
+                  previous:
+                    type: number
+                  count:
+                    type: number
+                  current:
+                    type: number
+                  total_pages:
+                    type: number
+                  start_index:
+                    type: number
+                  end_index:
+                    type: number
+              results:
+                type: array
+                items:
+                  $ref: '#/definitions/UserOAuthSourceConnection'
+      tags:
+        - sources
+    post:
+      operationId: sources_oauth_user_connections_create
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      tags:
+        - sources
+    parameters: []
+  /sources/oauth_user_connections/{id}/:
+    get:
+      operationId: sources_oauth_user_connections_read
+      description: Source Viewset
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      tags:
+        - sources
+    put:
+      operationId: sources_oauth_user_connections_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      tags:
+        - sources
+    patch:
+      operationId: sources_oauth_user_connections_partial_update
+      description: Source Viewset
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserOAuthSourceConnection'
+      tags:
+        - sources
+    delete:
+      operationId: sources_oauth_user_connections_delete
+      description: Source Viewset
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - sources
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this User OAuth Source Connection.
+        required: true
+        type: integer
   /sources/saml/:
     get:
       operationId: sources_saml_list
@@ -10963,29 +10968,6 @@ definitions:
       attributes:
         title: Attributes
         type: object
-  UserOAuthSourceConnection:
-    description: OAuth Source Serializer
-    required:
-      - user
-      - source
-      - identifier
-    type: object
-    properties:
-      user:
-        title: User
-        type: integer
-      source:
-        title: Source
-        type: string
-      identifier:
-        title: Identifier
-        type: string
-        maxLength: 255
-        minLength: 1
-      access_token:
-        title: Access token
-        type: string
-        x-nullable: true
   User:
     title: User
     description: User Serializer
@@ -13742,6 +13724,29 @@ definitions:
         title: Callback url
         type: string
         readOnly: true
+  UserOAuthSourceConnection:
+    description: OAuth Source Serializer
+    required:
+      - user
+      - source
+      - identifier
+    type: object
+    properties:
+      pk:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      source:
+        title: Source
+        type: string
+      identifier:
+        title: Identifier
+        type: string
+        maxLength: 255
+        minLength: 1
   SAMLSource:
     description: SAMLSource Serializer
     required:

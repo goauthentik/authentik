@@ -9,6 +9,7 @@ from authentik.events.models import Event
 @receiver(pre_delete, sender=TOTPDevice)
 # pylint: disable=unused-argument
 def pre_delete_event(sender, instance: TOTPDevice, **_):
+    """Create event before deleting TOTP Devices"""
     # Create event with email notification
     event = Event.new("totp_disable", message="User disabled Time-based OTP.")
     event.set_user(instance.user)

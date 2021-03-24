@@ -87,7 +87,7 @@ class StageViewSet(
             user_settings = stage.ui_user_settings
             if not user_settings:
                 continue
-            user_settings.initial_data["object_uid"] = stage.pk
+            user_settings.initial_data["object_uid"] = str(stage.pk)
             if not user_settings.is_valid():
                 LOGGER.warning(user_settings.errors)
             matching_stages.append(user_settings.initial_data)

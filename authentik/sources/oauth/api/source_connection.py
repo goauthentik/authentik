@@ -11,10 +11,10 @@ class UserOAuthSourceConnectionSerializer(SourceSerializer):
     class Meta:
         model = UserOAuthSourceConnection
         fields = [
+            "pk",
             "user",
             "source",
             "identifier",
-            "access_token",
         ]
 
 
@@ -23,6 +23,7 @@ class UserOAuthSourceConnectionViewSet(ModelViewSet):
 
     queryset = UserOAuthSourceConnection.objects.all()
     serializer_class = UserOAuthSourceConnectionSerializer
+    filterset_fields = ["source"]
 
     def get_queryset(self):
         if not self.request:

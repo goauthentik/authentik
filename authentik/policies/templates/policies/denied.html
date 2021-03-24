@@ -15,7 +15,6 @@
 {% block card %}
     <form method="POST" class="pf-c-form">
         {% csrf_token %}
-        {% include 'partials/form.html' %}
         <div class="pf-c-form__group">
             <p>
                 <i class="pf-icon pf-icon-error-circle-o"></i>
@@ -37,29 +36,26 @@
                 </li>
                 {% endfor %}
             </ul>
-            {% if policy_result.source_results %}
-            <em>{% trans 'Explanation:' %}</em>
-            <ul class="pf-c-list">
-                {% for source_result in policy_result.source_results %}
-                <li>
-                    {% blocktrans with name=source_result.source_policy.name result=source_result.passing %}
-                    Policy '{{ name }}' returned result '{{ result }}'
-                    {% endblocktrans %}
-                    {% if source_result.messages %}
-                    <ul class="pf-c-list">
-                        {% for message in source_result.messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+                {% if policy_result.source_results %}
+                <em>{% trans 'Explanation:' %}</em>
+                <ul class="pf-c-list">
+                    {% for source_result in policy_result.source_results %}
+                    <li>
+                        {% blocktrans with name=source_result.source_policy.name result=source_result.passing %}
+                        Policy '{{ name }}' returned result '{{ result }}'
+                        {% endblocktrans %}
+                        {% if source_result.messages %}
+                        <ul class="pf-c-list">
+                            {% for message in source_result.messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             {% endif %}
         </div>
-        {% if 'back' in request.GET %}
-        <a href="{% back %}" class="btn btn-primary btn-block btn-lg">{% trans 'Back' %}</a>
-        {% endif %}
     </form>
 {% endblock %}

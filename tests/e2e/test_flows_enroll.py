@@ -1,5 +1,6 @@
 """Test Enroll flow"""
 from sys import platform
+from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
 
@@ -190,6 +191,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
 
+        sleep(2)
         # We're now logged in
         wait = WebDriverWait(
             self.get_shadow_root("ak-interface-admin"), self.wait_timeout

@@ -94,7 +94,7 @@ class SourceViewSet(
             if not policy_engine.passing:
                 continue
             source_settings = source.ui_user_settings
-            source_settings.initial_data["object_uid"] = str(source.pk)
+            source_settings.initial_data["object_uid"] = source.slug
             if not source_settings.is_valid():
                 LOGGER.warning(source_settings.errors)
             matching_sources.append(source_settings.validated_data)
