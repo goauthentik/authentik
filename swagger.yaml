@@ -13543,6 +13543,7 @@ definitions:
     required:
       - name
       - slug
+      - pre_authentication_flow
       - sso_url
     type: object
     properties:
@@ -13591,6 +13592,11 @@ definitions:
         title: Verbose name plural
         type: string
         readOnly: true
+      pre_authentication_flow:
+        title: Pre authentication flow
+        description: Flow used before authentication.
+        type: string
+        format: uuid
       issuer:
         title: Issuer
         description: Also known as Entity ID. Defaults the Metadata URL.
