@@ -4,13 +4,17 @@ import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
 import { Config, Configuration, RootApi } from "authentik-api";
 import { getCookie } from "../utils";
+import { MIDDLEWARE } from "../elements/notifications/APIDrawer";
 
 export const DEFAULT_CONFIG = new Configuration({
     basePath: "/api/v2beta",
     headers: {
         "X-CSRFToken": getCookie("authentik_csrf"),
         "X-Authentik-Prevent-Basic": "true"
-    }
+    },
+    middleware: [
+        MIDDLEWARE
+    ],
 });
 
 export function configureSentry(): Promise<Config> {
