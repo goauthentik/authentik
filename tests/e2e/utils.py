@@ -32,6 +32,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.managed.manager import ObjectManager
 
+RETRIES = int(environ.get("RETRIES", "3"))
 
 # pylint: disable=invalid-name
 def USER() -> User:  # noqa
@@ -205,7 +206,7 @@ def object_manager(func: Callable):
     return wrapper
 
 
-def retry(max_retires=3, exceptions=None):
+def retry(max_retires=RETRIES, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:

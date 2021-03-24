@@ -51,7 +51,7 @@ class OAuthSource(Source):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.sources.oauth.api import OAuthSourceSerializer
+        from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
 

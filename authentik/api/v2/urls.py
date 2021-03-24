@@ -57,7 +57,10 @@ from authentik.providers.proxy.api import (
 )
 from authentik.providers.saml.api import SAMLPropertyMappingViewSet, SAMLProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
-from authentik.sources.oauth.api import OAuthSourceViewSet
+from authentik.sources.oauth.api.source import OAuthSourceViewSet
+from authentik.sources.oauth.api.source_connection import (
+    UserOAuthSourceConnectionViewSet,
+)
 from authentik.sources.saml.api import SAMLSourceViewSet
 from authentik.stages.authenticator_static.api import (
     AuthenticatorStaticStageViewSet,
@@ -104,6 +107,7 @@ router.register("core/applications", ApplicationViewSet)
 router.register("core/groups", GroupViewSet)
 router.register("core/users", UserViewSet)
 router.register("core/user_consent", UserConsentViewSet)
+router.register("core/source_user_connections_oauth", UserOAuthSourceConnectionViewSet)
 router.register("core/tokens", TokenViewSet)
 
 router.register("outposts/outposts", OutpostViewSet)

@@ -152,6 +152,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.container = self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
+        sleep(2)
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))
         sleep(1)
@@ -264,6 +265,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
         self.container = self.setup_client()
         self.driver.get("http://localhost:9009/implicit/")
+        sleep(2)
         self.login()
         self.wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1"))
