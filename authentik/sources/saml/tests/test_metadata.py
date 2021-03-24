@@ -40,6 +40,9 @@ class TestMetadataProcessor(TestCase):
             slug="provider",
             issuer="authentik",
             signing_kp=CertificateKeyPair.objects.first(),
+            pre_authentication_flow=Flow.objects.get(
+                slug="default-source-pre-authentication"
+            ),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
@@ -51,7 +54,9 @@ class TestMetadataProcessor(TestCase):
         source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",
-            # signing_kp=CertificateKeyPair.objects.first(),
+            pre_authentication_flow=Flow.objects.get(
+                slug="default-source-pre-authentication"
+            ),
         )
         request = self.factory.get("/")
         xml = MetadataProcessor(source, request).build_entity_descriptor()
