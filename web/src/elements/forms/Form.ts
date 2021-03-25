@@ -10,8 +10,16 @@ import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
-export interface ErrorResponse {
+interface ErrorResponse {
     [key: string]: string[];
+}
+
+export class APIError extends Error {
+
+    constructor(public response: ErrorResponse) {
+        super();
+    }
+
 }
 
 @customElement("ak-form")
@@ -27,7 +35,7 @@ export class Form<T> extends LitElement {
         return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
     }
 
-    submit(ev: Event): Promise<T | ErrorResponse> | undefined {
+    submit(ev: Event): Promise<T> | undefined {
         ev.preventDefault();
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         if (!ironForm) {
@@ -57,7 +65,7 @@ export class Form<T> extends LitElement {
                     element.invalid = true;
                 }
             });
-            return errorMessage;
+            throw new APIError(errorMessage);
         });
     }
 
