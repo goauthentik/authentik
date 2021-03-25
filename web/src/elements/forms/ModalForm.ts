@@ -7,13 +7,15 @@ import { Form } from "./Form";
 export class ModalForm extends ModalButton {
 
     confirm(): void {
-        this.querySelectorAll<Form<unknown>>("ak-form").forEach(form => {
+        this.querySelectorAll<Form<unknown>>("[slot=form]").forEach(form => {
             const formPromise = form.submit(new Event("submit"));
             if (!formPromise) {
                 return;
             }
-            formPromise.then(() => {
+            formPromise.then((a) => {
                 this.open = false;
+            }).catch((e) => {
+                console.log(e);
             });
         });
     }
