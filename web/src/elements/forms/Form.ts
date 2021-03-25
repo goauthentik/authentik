@@ -17,14 +17,14 @@ export class Form extends LitElement {
     @property()
     send!: (data: Record<string, unknown>) => Promise<unknown>;
 
-    submit(ev: Event): void {
+    submit(ev: Event): Promise<unknown> | undefined {
         ev.preventDefault();
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         if (!ironForm) {
             return;
         }
         const data = ironForm.serializeForm();
-        this.send(data).then(() => {
+        return this.send(data).then(() => {
             showMessage({
                 level_tag: "success",
                 message: this.successMessage

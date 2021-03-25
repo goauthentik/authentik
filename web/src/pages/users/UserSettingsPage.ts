@@ -22,7 +22,7 @@ import "./UserDetailsPage";
 import "./UserTokenList";
 import "./settings/UserSettingsAuthenticatorTOTP";
 import "./settings/UserSettingsAuthenticatorStatic";
-import "./settings/UserSettingsAuthenticatorWebAuthnDevices";
+import "./settings/UserSettingsAuthenticatorWebAuthn";
 import "./settings/UserSettingsPassword";
 import "./settings/SourceSettingsOAuth";
 
