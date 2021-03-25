@@ -4,10 +4,10 @@ import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
 
 @customElement("ak-forms-modal")
-export class DeleteForm extends ModalButton {
+export class ModalForm extends ModalButton {
 
     confirm(): void {
-        this.querySelectorAll<Form>("ak-form").forEach(form => {
+        this.querySelectorAll<Form<unknown>>("ak-form").forEach(form => {
             const formPromise = form.submit(new Event("submit"));
             if (!formPromise) {
                 return;

@@ -103,8 +103,11 @@ body {
     }
 
     paper-input {
-        /* --paper-input-container-color: var(--ak-accent); */
-        --paper-input-container-input-color: var(--ak-dark-foreground);
+        /* --paper-input-container-input-color: var(--ak-dark-foreground); */
+        --primary-text-color: var(--ak-dark-foreground);
+    }
+    paper-checkbox {
+        --primary-text-color: var(--ak-dark-foreground);
     }
 
     /* Global page background colour */

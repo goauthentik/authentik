@@ -2,40 +2,52 @@ import "@polymer/paper-input/paper-input";
 import "@polymer/iron-form/iron-form";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import AKGlobal from "../../authentik.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 export interface ErrorResponse {
     [key: string]: string[];
 }
 
 @customElement("ak-form")
-export class Form extends LitElement {
+export class Form<T> extends LitElement {
 
     @property()
     successMessage = "";
 
     @property()
-    send!: (data: Record<string, unknown>) => Promise<unknown>;
+    send!: (data: T) => Promise<T>;
 
-    submit(ev: Event): Promise<unknown> | undefined {
+    static get styles(): CSSResult[] {
+        return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
+    }
+
+    submit(ev: Event): Promise<T | ErrorResponse> | undefined {
         ev.preventDefault();
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         if (!ironForm) {
+            console.warn("authentik/forms: failed to find iron-form");
             return;
         }
-        const data = ironForm.serializeForm();
-        return this.send(data).then(() => {
+        const data = ironForm.serializeForm() as T;
+        return this.send(data).then((r) => {
             showMessage({
                 level_tag: "success",
                 message: this.successMessage
             });
+            return r;
         }).catch((ex: Response) => {
             if (ex.status > 399 && ex.status < 500) {
                 return ex.json();
             }
             return ex;
-        }).then((errorMessage?: ErrorResponse) => {
-            if (!errorMessage) return;
+        }).then((errorMessage: ErrorResponse) => {
+            if (!errorMessage) return errorMessage;
             const elements: PaperInputElement[] = ironForm._getSubmittableElements();
             elements.forEach((element) => {
                 const elementName = element.name;
@@ -45,13 +57,18 @@ export class Form extends LitElement {
                     element.invalid = true;
                 }
             });
+            return errorMessage;
         });
+    }
+
+    renderForm(): TemplateResult {
+        return html`<slot></slot>`;
     }
 
     render(): TemplateResult {
         return html`<iron-form
             @iron-form-presubmit=${(ev: Event) => { this.submit(ev); }}>
-            <slot></slot>
+            ${this.renderForm()}
         </iron-form>`;
     }
 
