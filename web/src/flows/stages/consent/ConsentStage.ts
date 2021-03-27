@@ -11,6 +11,7 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
+import { FlowURLManager } from "../../../api/legacy";
 
 export interface Permission {
     name: string;
@@ -53,7 +54,7 @@ export class ConsentStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <div class="pf-c-form__group">

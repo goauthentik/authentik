@@ -6,7 +6,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 export enum MessageLevel {
-    "error", "warning", "success", "info"
+    error = "error",
+    warning = "warning",
+    success = "success",
+    info = "info"
 }
 export interface APIMessage {
     level: MessageLevel;

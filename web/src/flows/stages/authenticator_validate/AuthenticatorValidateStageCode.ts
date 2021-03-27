@@ -13,6 +13,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
+import { FlowURLManager } from "../../../api/legacy";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseStage {
@@ -44,7 +45,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage {
                     userAvatar="${this.challenge.pending_user_avatar}"
                     user=${this.challenge.pending_user}>
                     <div slot="link">
-                        <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                        <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                     </div>
                 </ak-form-static>
                 <ak-form-element

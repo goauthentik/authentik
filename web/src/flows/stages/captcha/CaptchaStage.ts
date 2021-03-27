@@ -13,6 +13,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
+import { FlowURLManager } from "../../../api/legacy";
 
 export interface CaptchaChallenge extends WithUserInfoChallenge {
     site_key: string;
@@ -78,7 +79,7 @@ export class CaptchaStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <div class="ak-loading">

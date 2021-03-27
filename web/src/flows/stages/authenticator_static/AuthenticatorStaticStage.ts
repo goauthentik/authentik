@@ -12,6 +12,7 @@ import { BaseStage } from "../base";
 import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
+import { FlowURLManager } from "../../../api/legacy";
 
 export const STATIC_TOKEN_STYLE = css`
 /* Static OTP Tokens */
@@ -61,7 +62,7 @@ export class AuthenticatorStaticStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <ak-form-element
