@@ -48,13 +48,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-authenticator-static objectId=${stage.objectUid}>
                 </ak-user-settings-authenticator-static>`;
             default:
-                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
-                    <div class="pf-u-w-75">
-                        <ak-site-shell url="${ifDefined(stage.component)}">
-                            <div slot="body"></div>
-                        </ak-site-shell>
-                    </div>
-                </div>`;
+                return html`<p>unsupported component ${stage.component}</p>`;
         }
     }
 
@@ -64,13 +58,7 @@ export class UserSettingsPage extends LitElement {
                 return html`<ak-user-settings-source-oauth objectId=${source.objectUid}>
                 </ak-user-settings-source-oauth>`;
             default:
-                return html`<div class="pf-u-display-flex pf-u-justify-content-center">
-                    <div class="pf-u-w-75">
-                        <ak-site-shell url="${ifDefined(source.component)}">
-                            <div slot="body"></div>
-                        </ak-site-shell>
-                    </div>
-                </div>`;
+                return html`<p>unsupported component ${source.component}</p>`;
         }
     }
 

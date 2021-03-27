@@ -65,7 +65,7 @@ export default [
     },
     // Main Application
     {
-        input: "./src/main.ts",
+        input: "./src/interfaces/AdminInterface.ts",
         output: [
             {
                 format: "es",
@@ -92,7 +92,7 @@ export default [
     },
     // Flow executor
     {
-        input: "./src/flow.ts",
+        input: "./src/interfaces/FlowInterface.ts",
         output: [
             {
                 format: "es",
