@@ -25,7 +25,7 @@ class DummyStageView(ChallengeStageView):
         return DummyChallenge(
             data={
                 "type": ChallengeTypes.native.value,
-                "component": "",
+                "component": "ak-stage-dummy",
                 "title": self.executor.current_stage.name,
             }
         )

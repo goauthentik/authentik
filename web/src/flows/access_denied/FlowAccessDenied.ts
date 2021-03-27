@@ -14,7 +14,6 @@ import "../../elements/EmptyState";
 
 export interface AccessDeniedChallenge extends Challenge {
     error_message?: string;
-    policy_result?: Record<string, unknown>;
 }
 
 @customElement("ak-stage-access-denied")
@@ -49,27 +48,6 @@ export class FlowAccessDenied extends BaseStage {
                         ${this.challenge?.error_message &&
                             html`<hr>
                             <p>${this.challenge.error_message}</p>`}
-                        ${this.challenge.policy_result &&
-                            html`<hr>
-                            <em>
-                                ${gettext("Explanation:")}
-                            </em>
-                            <ul class="pf-c-list">
-                                {% for source_result in policy_result.source_results %}
-                                <li>
-                                    {% blocktrans with name=source_result.source_policy.name result=source_result.passing %}
-                                    Policy '{{ name }}' returned result '{{ result }}'
-                                    {% endblocktrans %}
-                                    {% if source_result.messages %}
-                                    <ul class="pf-c-list">
-                                        {% for message in source_result.messages %}
-                                            <li>{{ message }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% endif %}
-                                </li>
-                                {% endfor %}
-                            </ul>`}
                     </div>
                 </form>
             </div>
