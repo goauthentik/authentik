@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
+import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-forms-confirm")
@@ -36,14 +37,14 @@ export class ConfirmationForm extends ModalButton {
     onSuccess(): void {
         showMessage({
             message: gettext(this.successMessage),
-            level_tag: "success",
+            level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
             message: gettext(`${this.errorMessage}: ${e.toString()}`),
-            level_tag: "error",
+            level: MessageLevel.error,
         });
     }
 

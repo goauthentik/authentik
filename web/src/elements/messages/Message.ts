@@ -5,10 +5,17 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
+export enum MessageLevel {
+    error = "error",
+    warning = "warning",
+    success = "success",
+    info = "info"
+}
 export interface APIMessage {
-    level_tag: string;
+    level: MessageLevel;
     tags?: string;
     message: string;
+    description?: string;
 }
 
 const LEVEL_ICON_MAP: { [key: string]: string } = {
@@ -44,13 +51,16 @@ export class Message extends LitElement {
 
     render(): TemplateResult {
         return html`<li class="pf-c-alert-group__item">
-            <div class="pf-c-alert pf-m-${this.message?.level_tag} ${this.message?.level_tag === "error" ? "pf-m-danger" : ""}">
+            <div class="pf-c-alert pf-m-${this.message?.level} ${this.message?.level === MessageLevel.error ? "pf-m-danger" : ""}">
                 <div class="pf-c-alert__icon">
-                    <i class="${this.message ? LEVEL_ICON_MAP[this.message.level_tag] : ""}"></i>
+                    <i class="${this.message ? LEVEL_ICON_MAP[this.message.level] : ""}"></i>
                 </div>
                 <p class="pf-c-alert__title">
                     ${this.message?.message}
                 </p>
+                ${this.message?.description && html`<div class="pf-c-alert__description">
+                    <p>${this.message.description}</p>
+                </div>`}
                 <div class="pf-c-alert__action">
                     <button class="pf-c-button pf-m-plain" type="button" @click=${() => {
                         if (!this.message) return;

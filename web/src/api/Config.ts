@@ -4,7 +4,8 @@ import { VERSION } from "../constants";
 import { SentryIgnoredError } from "../common/errors";
 import { Config, Configuration, RootApi } from "authentik-api";
 import { getCookie } from "../utils";
-import { MIDDLEWARE } from "../elements/notifications/APIDrawer";
+import { API_DRAWER_MIDDLEWARE } from "../elements/notifications/APIDrawer";
+import { MessageMiddleware } from "../elements/messages/Middleware";
 
 export const DEFAULT_CONFIG = new Configuration({
     basePath: "/api/v2beta",
@@ -13,7 +14,8 @@ export const DEFAULT_CONFIG = new Configuration({
         "X-Authentik-Prevent-Basic": "true"
     },
     middleware: [
-        MIDDLEWARE
+        API_DRAWER_MIDDLEWARE,
+        new MessageMiddleware(),
     ],
 });
 

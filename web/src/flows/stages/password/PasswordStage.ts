@@ -13,6 +13,7 @@ import "../../../elements/forms/FormElement";
 import "../../../elements/EmptyState";
 import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 import "../../FormStatic";
+import { FlowURLManager } from "../../../api/legacy";
 
 export interface PasswordChallenge extends WithUserInfoChallenge {
     recovery_url?: string;
@@ -47,7 +48,7 @@ export class PasswordStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <input name="username" autocomplete="username" type="hidden" value="${this.challenge.pending_user}">

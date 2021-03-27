@@ -19,6 +19,7 @@ import { convertToSlug } from "../../utils";
 import { SpinnerButton } from "./SpinnerButton";
 import { PRIMARY_CLASS, EVENT_REFRESH } from "../../constants";
 import { showMessage } from "../messages/MessageContainer";
+import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-modal-button")
 export class ModalButton extends LitElement {
@@ -122,7 +123,7 @@ export class ModalButton extends LitElement {
                     })
                     .catch((e) => {
                         showMessage({
-                            level_tag: "error",
+                            level: MessageLevel.error,
                             message: "Unexpected error"
                         });
                         console.error(e);
@@ -150,7 +151,7 @@ export class ModalButton extends LitElement {
                 })
                 .catch((e) => {
                     showMessage({
-                        level_tag: "error",
+                        level: MessageLevel.error,
                         message: "Unexpected error"
                     });
                     console.error(e);

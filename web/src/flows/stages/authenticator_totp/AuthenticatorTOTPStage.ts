@@ -14,6 +14,8 @@ import "../../../elements/forms/FormElement";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
+import { MessageLevel } from "../../../elements/messages/Message";
+import { FlowURLManager } from "../../../api/legacy";
 
 export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
     config_url: string;
@@ -48,7 +50,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                         userAvatar="${this.challenge.pending_user_avatar}"
                         user=${this.challenge.pending_user}>
                         <div slot="link">
-                            <a href="/flows/-/cancel/">${gettext("Not you?")}</a>
+                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
                         </div>
                     </ak-form-static>
                     <input type="hidden" name="otp_uri" value=${this.challenge.config_url} />
@@ -60,7 +62,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             if (!this.challenge?.config_url) return;
                             navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
                                 showMessage({
-                                    level_tag: "success",
+                                    level: MessageLevel.success,
                                     message: gettext("Successfully copied TOTP Config.")
                                 });
                             });

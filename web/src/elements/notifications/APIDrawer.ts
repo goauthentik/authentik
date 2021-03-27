@@ -39,7 +39,7 @@ export class APIMiddleware implements Middleware {
 }
 
 export const MAX_REQUESTS = 50;
-export const MIDDLEWARE = new APIMiddleware();
+export const API_DRAWER_MIDDLEWARE = new APIMiddleware();
 
 @customElement("ak-api-drawer")
 export class APIDrawer extends LitElement {
@@ -76,7 +76,7 @@ export class APIDrawer extends LitElement {
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${MIDDLEWARE.requests.map(n => this.renderItem(n))}
+                        ${API_DRAWER_MIDDLEWARE.requests.map(n => this.renderItem(n))}
                     </ul>
                 </div>
             </div>

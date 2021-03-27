@@ -1,7 +1,7 @@
 import { gettext } from "django";
 import { LitElement, html, customElement, TemplateResult, property, CSSResult, css } from "lit-element";
 import "./Message";
-import { APIMessage } from "./Message";
+import { APIMessage, MessageLevel } from "./Message";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -63,7 +63,7 @@ export class MessageContainer extends LitElement {
             console.debug(`authentik/messages: closed ws connection: ${e}`);
             if (this.retryDelay > 3000) {
                 showMessage({
-                    level_tag: "error",
+                    level: MessageLevel.error,
                     message: gettext("Connection error, reconnecting...")
                 });
             }

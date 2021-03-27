@@ -1,6 +1,6 @@
 import { gettext } from "django";
 import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
-import { WithUserInfoChallenge } from "../../../api/Flows";
+import { Challenge } from "../../../api/Flows";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -11,25 +11,12 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage } from "../base";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
-import { FlowURLManager } from "../../../api/legacy";
 
-export interface Permission {
-    name: string;
-    id: string;
-}
-
-export interface ConsentChallenge extends WithUserInfoChallenge {
-
-    header_text: string;
-    permissions?: Permission[];
-
-}
-
-@customElement("ak-stage-consent")
-export class ConsentStage extends BaseStage {
+@customElement("ak-stage-dummy")
+export class DummyStage extends BaseStage {
 
     @property({ attribute: false })
-    challenge?: ConsentChallenge;
+    challenge?: Challenge;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
@@ -49,26 +36,6 @@ export class ConsentStage extends BaseStage {
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form" @submit=${(e: Event) => { this.submitForm(e); }}>
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pending_user_avatar}"
-                        user=${this.challenge.pending_user}>
-                        <div slot="link">
-                            <a href="${FlowURLManager.cancel()}">${gettext("Not you?")}</a>
-                        </div>
-                    </ak-form-static>
-                    <div class="pf-c-form__group">
-                        <p id="header-text">
-                            ${this.challenge.header_text}
-                        </p>
-                        <p>${gettext("Application requires following permissions")}</p>
-                        <ul class="pf-c-list" id="permmissions">
-                            ${(this.challenge.permissions || []).map((permission) => {
-                                return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
-                            })}
-                        </ul>
-                    </div>
-
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${gettext("Continue")}

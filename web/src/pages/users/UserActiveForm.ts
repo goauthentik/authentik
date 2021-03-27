@@ -1,6 +1,7 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
 import { DeleteForm } from "../../elements/forms/DeleteForm";
+import { MessageLevel } from "../../elements/messages/Message";
 import { showMessage } from "../../elements/messages/MessageContainer";
 
 @customElement("ak-user-active-form")
@@ -9,14 +10,14 @@ export class UserActiveForm extends DeleteForm {
     onSuccess(): void {
         showMessage({
             message: gettext(`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
-            level_tag: "success",
+            level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
             message: gettext(`Failed to update ${this.objectLabel}: ${e.toString()}`),
-            level_tag: "error",
+            level: MessageLevel.error,
         });
     }
 

@@ -2,6 +2,7 @@ import { gettext } from "django";
 import { customElement, html, property, TemplateResult } from "lit-element";
 import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
+import { MessageLevel } from "../messages/Message";
 import { showMessage } from "../messages/MessageContainer";
 
 @customElement("ak-forms-delete")
@@ -34,14 +35,14 @@ export class DeleteForm extends ModalButton {
     onSuccess(): void {
         showMessage({
             message: gettext(`Successfully deleted ${this.objectLabel} ${ this.obj?.name }`),
-            level_tag: "success",
+            level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
             message: gettext(`Failed to delete ${this.objectLabel}: ${e.toString()}`),
-            level_tag: "error",
+            level: MessageLevel.error,
         });
     }
 

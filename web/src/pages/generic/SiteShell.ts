@@ -19,6 +19,7 @@ import AKGlobal from "../../authentik.css";
 import CodeMirrorStyle from "codemirror/lib/codemirror.css";
 import CodeMirrorTheme from "codemirror/theme/monokai.css";
 import { EVENT_REFRESH } from "../../constants";
+import { MessageLevel } from "../../elements/messages/Message";
 
 @customElement("ak-site-shell")
 export class SiteShell extends LitElement {
@@ -79,7 +80,7 @@ export class SiteShell extends LitElement {
                 }
                 console.debug(`authentik/site-shell: Request failed ${this._url}`);
                 showMessage({
-                    level_tag: "error",
+                    level: MessageLevel.error,
                     message: gettext(`Request failed: ${response.statusText}`),
                 });
                 this.loading = false;
@@ -148,7 +149,7 @@ export class SiteShell extends LitElement {
                     })
                     .catch((e) => {
                         showMessage({
-                            level_tag: "error",
+                            level: MessageLevel.error,
                             message: "Unexpected error"
                         });
                         console.error(e);

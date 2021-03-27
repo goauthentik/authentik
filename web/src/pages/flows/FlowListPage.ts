@@ -57,8 +57,8 @@ export class FlowListPage extends TablePage<Flow> {
             </a>`,
             html`${item.name}`,
             html`${item.designation}`,
-            html`${item.stages?.size}`,
-            html`${item.policies?.size}`,
+            html`${Array.from(item.stages || []).length}`,
+            html`${Array.from(item.policies || []).length}`,
             html`
             <ak-modal-button href="${AdminURLManager.flows(`${item.pk}/update/`)}">
                 <ak-spinner-button slot="trigger" class="pf-m-secondary">

@@ -9,6 +9,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import AKGlobal from "../authentik.css";
 
 import { unsafeHTML } from "lit-html/directives/unsafe-html";
+import "./access_denied/FlowAccessDenied";
 import "./stages/authenticator_static/AuthenticatorStaticStage";
 import "./stages/authenticator_totp/AuthenticatorTOTPStage";
 import "./stages/authenticator_validate/AuthenticatorValidateStage";
@@ -16,11 +17,11 @@ import "./stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "./stages/autosubmit/AutosubmitStage";
 import "./stages/captcha/CaptchaStage";
 import "./stages/consent/ConsentStage";
+import "./stages/dummy/DummyStage";
 import "./stages/email/EmailStage";
 import "./stages/identification/IdentificationStage";
 import "./stages/password/PasswordStage";
 import "./stages/prompt/PromptStage";
-import "./access_denied/FlowAccessDenied";
 import { ShellChallenge, RedirectChallenge } from "../api/Flows";
 import { IdentificationChallenge } from "./stages/identification/IdentificationStage";
 import { PasswordChallenge } from "./stages/password/PasswordStage";
@@ -193,6 +194,8 @@ export class FlowExecutor extends LitElement implements StageHost {
                         return html`<ak-stage-captcha .host=${this} .challenge=${this.challenge as CaptchaChallenge}></ak-stage-captcha>`;
                     case "ak-stage-consent":
                         return html`<ak-stage-consent .host=${this} .challenge=${this.challenge as ConsentChallenge}></ak-stage-consent>`;
+                    case "ak-stage-dummy":
+                        return html`<ak-stage-dummy .host=${this} .challenge=${this.challenge as Challenge}></ak-stage-dummy>`;
                     case "ak-stage-email":
                         return html`<ak-stage-email .host=${this} .challenge=${this.challenge as EmailChallenge}></ak-stage-email>`;
                     case "ak-stage-autosubmit":
