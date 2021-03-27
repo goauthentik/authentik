@@ -416,7 +416,7 @@ class TestFlowExecutor(TestCase):
                 {
                     "background": flow.background.url,
                     "type": ChallengeTypes.native.value,
-                    "component": "",
+                    "component": "ak-stage-dummy",
                     "title": binding.stage.name,
                 },
             )
