@@ -10934,42 +10934,7 @@ definitions:
           format: uuid
         readOnly: true
         uniqueItems: true
-  Group:
-    description: Group Serializer
-    required:
-      - name
-      - parent
-      - users
-    type: object
-    properties:
-      pk:
-        title: Group uuid
-        type: string
-        format: uuid
-        readOnly: true
-      name:
-        title: Name
-        type: string
-        maxLength: 80
-        minLength: 1
-      is_superuser:
-        title: Is superuser
-        description: Users added to this group will be superusers.
-        type: boolean
-      parent:
-        title: Parent
-        type: string
-        format: uuid
-      users:
-        type: array
-        items:
-          type: integer
-        uniqueItems: true
-      attributes:
-        title: Attributes
-        type: object
   User:
-    title: User
     description: User Serializer
     required:
       - username
@@ -11017,6 +10982,88 @@ definitions:
         type: string
         readOnly: true
         minLength: 1
+      attributes:
+        title: Attributes
+        type: object
+  Group:
+    description: Group Serializer
+    required:
+      - name
+      - users
+    type: object
+    properties:
+      pk:
+        title: Group uuid
+        type: string
+        format: uuid
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 80
+        minLength: 1
+      is_superuser:
+        title: Is superuser
+        description: Users added to this group will be superusers.
+        type: boolean
+      parent:
+        description: Custom Group model which supports a basic hierarchy
+        required:
+          - name
+        type: object
+        properties:
+          group_uuid:
+            title: Group uuid
+            type: string
+            format: uuid
+            readOnly: true
+          name:
+            title: Name
+            type: string
+            maxLength: 80
+            minLength: 1
+          is_superuser:
+            title: Is superuser
+            description: Users added to this group will be superusers.
+            type: boolean
+          attributes:
+            title: Attributes
+            type: object
+          parent:
+            description: Custom Group model which supports a basic hierarchy
+            required:
+              - name
+              - parent
+            type: object
+            properties:
+              group_uuid:
+                title: Group uuid
+                type: string
+                format: uuid
+                readOnly: true
+              name:
+                title: Name
+                type: string
+                maxLength: 80
+                minLength: 1
+              is_superuser:
+                title: Is superuser
+                description: Users added to this group will be superusers.
+                type: boolean
+              attributes:
+                title: Attributes
+                type: object
+              parent:
+                title: Parent
+                type: string
+                format: uuid
+            readOnly: true
+        readOnly: true
+      users:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/User'
       attributes:
         title: Attributes
         type: object
