@@ -2,13 +2,14 @@ import "@polymer/paper-input/paper-input";
 import "@polymer/iron-form/iron-form";
 import { PaperInputElement } from "@polymer/paper-input/paper-input";
 import { showMessage } from "../../elements/messages/MessageContainer";
-import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { css, CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import AKGlobal from "../../authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import { MessageLevel } from "../messages/Message";
 
 interface ErrorResponse {
     [key: string]: string[];
@@ -32,7 +33,11 @@ export class Form<T> extends LitElement {
     send!: (data: T) => Promise<T>;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
+        return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal, css`
+            select[multiple] {
+                height: 15em;
+            }
+        `];
     }
 
     submit(ev: Event): Promise<T> | undefined {
@@ -45,7 +50,7 @@ export class Form<T> extends LitElement {
         const data = ironForm.serializeForm() as T;
         return this.send(data).then((r) => {
             showMessage({
-                level_tag: "success",
+                level: MessageLevel.success,
                 message: this.successMessage
             });
             return r;
