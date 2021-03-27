@@ -25,7 +25,7 @@ class ChannelsStorage(FallbackStorage):
                     uid,
                     {
                         "type": "event.update",
-                        "level_tag": message.level_tag,
+                        "level": message.level_tag,
                         "tags": message.tags,
                         "message": message.message,
                     },

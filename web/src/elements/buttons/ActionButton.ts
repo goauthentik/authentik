@@ -2,6 +2,7 @@ import { customElement, property } from "lit-element";
 import { ERROR_CLASS, SUCCESS_CLASS } from "../../constants";
 import { SpinnerButton } from "./SpinnerButton";
 import { showMessage } from "../messages/MessageContainer";
+import { MessageLevel } from "../messages/Message";
 
 @customElement("ak-action-button")
 export class ActionButton extends SpinnerButton {
@@ -26,13 +27,13 @@ export class ActionButton extends SpinnerButton {
         .catch((e: Error | Response) => {
             if (e instanceof Error) {
                 showMessage({
-                    level_tag: "error",
+                    level: MessageLevel.error,
                     message: e.toString()
                 });
             } else {
                 e.text().then(t => {
                     showMessage({
-                        level_tag: "error",
+                        level: MessageLevel.error,
                         message: t
                     });
                 });

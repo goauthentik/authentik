@@ -14,6 +14,7 @@ import "../../../elements/forms/FormElement";
 import { showMessage } from "../../../elements/messages/MessageContainer";
 import "../../../elements/EmptyState";
 import "../../FormStatic";
+import { MessageLevel } from "../../../elements/messages/Message";
 
 export interface AuthenticatorTOTPChallenge extends WithUserInfoChallenge {
     config_url: string;
@@ -60,7 +61,7 @@ export class AuthenticatorTOTPStage extends BaseStage {
                             if (!this.challenge?.config_url) return;
                             navigator.clipboard.writeText(this.challenge?.config_url).then(() => {
                                 showMessage({
-                                    level_tag: "success",
+                                    level: MessageLevel.success,
                                     message: gettext("Successfully copied TOTP Config.")
                                 });
                             });
