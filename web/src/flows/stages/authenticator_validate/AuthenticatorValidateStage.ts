@@ -11,6 +11,7 @@ import AKGlobal from "../../../authentik.css";
 import { BaseStage, StageHost } from "../base";
 import "./AuthenticatorValidateStageWebAuthn";
 import "./AuthenticatorValidateStageCode";
+import { PasswordManagerPrefill } from "../identification/IdentificationStage";
 
 export enum DeviceClasses {
     STATIC = "static",
@@ -83,6 +84,17 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
                         <small>${gettext("Use a security key to prove your identity.")}</small>
                     </div>`;
             case DeviceClasses.TOTP:
+                // TOTP is a bit special, assuming that TOTP is allowed from the backend,
+                // and we have a pre-filled value from the password manager,
+                // directly set the the TOTP device Challenge as active.
+                if (PasswordManagerPrefill.totp) {
+                    console.debug("authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge");
+                    this.selectedDeviceChallenge = deviceChallenge;
+                    // Delay the update as a re-render isn't triggered from here
+                    setTimeout(() => {
+                        this.requestUpdate();
+                    }, 100);
+                }
                 return html`<i class="fas fa-clock"></i>
                     <div class="right">
                         <p>${gettext("Traditional authenticator")}</p>
@@ -141,9 +153,9 @@ export class AuthenticatorValidateStage extends BaseStage implements StageHost {
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state
-    ?loading="${true}"
-    header=${gettext("Loading")}>
-</ak-empty-state>`;
+                ?loading="${true}"
+                header=${gettext("Loading")}>
+            </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.device_challenges.length === 1) {
