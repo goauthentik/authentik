@@ -59,8 +59,11 @@ export class Form<T> extends LitElement {
                 return ex.json();
             }
             return ex;
-        }).then((errorMessage: ErrorResponse) => {
+        }).then((errorMessage: ErrorResponse | Error) => {
             if (!errorMessage) return errorMessage;
+            if (errorMessage instanceof Error) {
+                throw errorMessage;
+            }
             const elements: PaperInputElement[] = ironForm._getSubmittableElements();
             elements.forEach((element) => {
                 const elementName = element.name;
