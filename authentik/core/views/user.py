@@ -1,22 +1,17 @@
 """authentik core user views"""
-from typing import Any
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import (
     PermissionRequiredMixin as DjangoPermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http.response import HttpResponse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.views.generic import UpdateView
-from django.views.generic.base import TemplateView
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import get_objects_for_user
 
 from authentik.core.forms.token import UserTokenForm
 from authentik.core.models import Token, TokenIntents
-from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.views import CreateAssignPermView
 
 
