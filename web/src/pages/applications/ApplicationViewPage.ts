@@ -19,10 +19,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends LitElement {
-    @property()
-    set args(value: { [key: string]: string }) {
-        this.applicationSlug = value.slug;
-    }
 
     @property()
     set applicationSlug(value: string) {
