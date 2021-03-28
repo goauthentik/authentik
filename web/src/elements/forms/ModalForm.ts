@@ -1,5 +1,5 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { customElement, html, TemplateResult } from "lit-element";
 import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
 
@@ -12,7 +12,7 @@ export class ModalForm extends ModalButton {
             if (!formPromise) {
                 return;
             }
-            formPromise.then((a) => {
+            formPromise.then(() => {
                 this.open = false;
             }).catch((e) => {
                 console.log(e);
