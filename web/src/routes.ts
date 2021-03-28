@@ -44,11 +44,11 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp("^/core/applications$"), html`<ak-application-list></ak-application-list>`),
     new Route(new RegExp(`^/core/applications/(?<slug>${SLUG_REGEX})$`)).then((args) => {
-        return html`<ak-application-view .args=${args}></ak-application-view>`;
+        return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
     new Route(new RegExp("^/core/sources$"), html`<ak-source-list></ak-source-list>`),
     new Route(new RegExp(`^/core/sources/(?<slug>${SLUG_REGEX})$`)).then((args) => {
-        return html`<ak-source-view .args=${args}></ak-source-view>`;
+        return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
     }),
     new Route(new RegExp("^/core/property-mappings$"), html`<ak-property-mapping-list></ak-property-mapping-list>`),
     new Route(new RegExp("^/core/tokens$"), html`<ak-token-list></ak-token-list>`),
@@ -67,12 +67,12 @@ export const ROUTES: Route[] = [
     }),
     new Route(new RegExp("^/events/log$"), html`<ak-event-list></ak-event-list>`),
     new Route(new RegExp(`^/events/log/(?<id>${UUID_REGEX})$`)).then((args) => {
-        return html`<ak-event-info-page .args=${args}></ak-event-info-page>`;
+        return html`<ak-event-info-page .eventID=${args.id}></ak-event-info-page>`;
     }),
     new Route(new RegExp("^/events/transports$"), html`<ak-event-transport-list></ak-event-transport-list>`),
     new Route(new RegExp("^/events/rules$"), html`<ak-event-rule-list></ak-event-rule-list>`),
     new Route(new RegExp("^/outpost/outposts$"), html`<ak-outpost-list></ak-outpost-list>`),
     new Route(new RegExp("^/outpost/service-connections$"), html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`),
-    new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificatekeypair-list></ak-crypto-certificatekeypair-list>`),
+    new Route(new RegExp("^/crypto/certificates$"), html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`),
     new Route(new RegExp("^/user$"), html`<ak-user-settings></ak-user-settings>`),
 ];

@@ -12,10 +12,6 @@ import "./SAMLSourceViewPage";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends LitElement {
-    @property()
-    set args(value: { [key: string]: string }) {
-        this.sourceSlug = value.slug;
-    }
 
     @property({ type: String })
     set sourceSlug(slug: string) {

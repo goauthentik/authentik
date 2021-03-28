@@ -13,7 +13,7 @@ import { PAGE_SIZE } from "../../constants";
 import { AdminURLManager } from "../../api/legacy";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
-@customElement("ak-crypto-certificatekeypair-list")
+@customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     expandable = true;
 

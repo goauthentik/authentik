@@ -11,10 +11,6 @@ import "./EventInfo";
 
 @customElement("ak-event-info-page")
 export class EventInfoPage extends LitElement {
-    @property()
-    set args(value: { [key: string]: string }) {
-        this.eventID = value.id;
-    }
 
     @property()
     set eventID(value: string) {
