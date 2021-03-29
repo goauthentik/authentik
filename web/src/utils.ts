@@ -53,6 +53,6 @@ export function loading<T>(v: T, actual: TemplateResult): TemplateResult {
 }
 
 export function camelToSnake(key: string): string {
-    var result = key.replace(/([A-Z])/g, " $1");
-    return result.split(' ').join('_').toLowerCase();
+    const result = key.replace(/([A-Z])/g, " $1");
+    return result.split(" ").join("_").toLowerCase();
 }

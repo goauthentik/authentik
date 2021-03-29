@@ -30,9 +30,24 @@ export class HorizontalFormElement extends LitElement {
     @property({ type: Boolean })
     invalid = false;
 
+    @property()
+    name = "";
+
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach(input => {
             input.focus();
+        });
+        this.querySelectorAll("*").forEach((input) => {
+            switch (input.tagName.toLowerCase()) {
+                case "input":
+                case "textarea":
+                case "select":
+                case "ak-codemirror":
+                    (input as HTMLInputElement).name = this.name;
+                    break;
+                default:
+                    break;
+            }
         });
     }
 

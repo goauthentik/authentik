@@ -1,4 +1,4 @@
-import { CertificateKeyPair, CoreApi, CryptoApi, Group } from "authentik-api";
+import { CertificateKeyPair, CryptoApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";
@@ -38,16 +38,24 @@ export class CertificateKeyPairForm extends Form<CertificateKeyPair> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${gettext("Name")} ?required=${true}>
-                <input type="text" name="name" value="${ifDefined(this.keyPair?.name)}" class="pf-c-form-control" required="">
+            <ak-form-element-horizontal
+                label=${gettext("Name")}
+                name="name"
+                ?required=${true}>
+                <input type="text" value="${ifDefined(this.keyPair?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             ${this.keyPair ? html`<ak-divider>${gettext("Only change the fields below if you want to overwrite their values.")}</ak-divider>` : html``}
-            <ak-form-element-horizontal label=${gettext("Certificate")} ?required=${true}>
-                <textarea class="pf-c-form-control" type="text" name="certificateData">${ifDefined(this.keyPair?.certificateData)}</textarea>
+            <ak-form-element-horizontal
+                label=${gettext("Certificate")}
+                name="certificateData"
+                ?required=${true}>
+                <textarea class="pf-c-form-control" required>${ifDefined(this.keyPair?.certificateData)}</textarea>
                 <p class="pf-c-form__helper-text">${gettext("PEM-encoded Certificate data.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Private Key")}>
-                <textarea class="pf-c-form-control" type="text" name="keyData">${ifDefined(this.keyPair?.keyData)}</textarea>
+            <ak-form-element-horizontal
+                name="keyData"
+                label=${gettext("Private Key")}>
+                <textarea class="pf-c-form-control" >${ifDefined(this.keyPair?.keyData)}</textarea>
                 <p class="pf-c-form__helper-text">${gettext("Optional Private Key. If this is set, you can use this keypair for encryption.")}</p>
             </ak-form-element-horizontal>
         </form>`;

@@ -1,6 +1,7 @@
 import { CertificateGeneration, CryptoApi } from "authentik-api";
+import { CertificateKeyPair } from "authentik-api/src";
 import { gettext } from "django";
-import { customElement, property } from "lit-element";
+import { customElement } from "lit-element";
 import { html, TemplateResult } from "lit-html";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { Form } from "../../elements/forms/Form";
@@ -13,7 +14,7 @@ export class CertificateKeyPairForm extends Form<CertificateGeneration> {
         return gettext("Successfully generated certificate-key pair.");
     }
 
-    send = (data: CertificateGeneration): Promise<CertificateGeneration> => {
+    send = (data: CertificateGeneration): Promise<CertificateKeyPair> => {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerate({
             data: data
         });
@@ -21,15 +22,23 @@ export class CertificateKeyPairForm extends Form<CertificateGeneration> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${gettext("Common Name")} ?required=${true}>
-                <input type="text" name="commonName" class="pf-c-form-control" required="">
+            <ak-form-element-horizontal
+                label=${gettext("Common Name")}
+                name="commonName"
+                ?required=${true}>
+                <input type="text" class="pf-c-form-control" required="">
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Subject-alt name")}>
-                <input class="pf-c-form-control" type="text" name="subjectAltName">
+            <ak-form-element-horizontal
+                label=${gettext("Subject-alt name")}
+                name="subjectAltName">
+                <input class="pf-c-form-control" type="text">
                 <p class="pf-c-form__helper-text">${gettext("Optional, comma-separated SubjectAlt Names.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Validity days")} ?required=${true}>
-                <input class="pf-c-form-control" type="number" name="validityDays" value="365">
+            <ak-form-element-horizontal
+                label=${gettext("Validity days")}
+                name="validityDays"
+                ?required=${true}>
+                <input class="pf-c-form-control" type="number" value="365">
             </ak-form-element-horizontal>
         </form>`;
     }

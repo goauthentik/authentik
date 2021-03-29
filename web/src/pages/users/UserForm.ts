@@ -38,28 +38,40 @@ export class UserForm extends Form<User> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${gettext("Username")} ?required=${true}>
-                <input type="text" name="username" value="${ifDefined(this.user?.username)}" class="pf-c-form-control" required="">
+            <ak-form-element-horizontal
+                label=${gettext("Username")}
+                ?required=${true}
+                name="username">
+                <input type="text" value="${ifDefined(this.user?.username)}" class="pf-c-form-control" required="">
                 <p class="pf-c-form__helper-text">${gettext("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Name")} ?required=${true}>
-                <input type="text" name="name" value="${ifDefined(this.user?.name)}" class="pf-c-form-control" required="">
+            <ak-form-element-horizontal
+                label=${gettext("Name")}
+                ?required=${true}
+                name="name">
+                <input type="text" value="${ifDefined(this.user?.name)}" class="pf-c-form-control" required="">
                 <p class="pf-c-form__helper-text">${gettext("User's display name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Email")} ?required=${true}>
-                <input type="email" name="email" autocomplete="off" value="${ifDefined(this.user?.email)}" class="pf-c-form-control" required="">
+            <ak-form-element-horizontal
+                label=${gettext("Email")}
+                ?required=${true}
+                name="email">
+                <input type="email" autocomplete="off" value="${ifDefined(this.user?.email)}" class="pf-c-form-control" required="">
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                name="isActive">
                 <div class="pf-c-check">
-                    <input type="checkbox" name="is_active" class="pf-c-check__input" ?checked=${this.user?.isActive || false}>
+                    <input type="checkbox" class="pf-c-check__input" ?checked=${this.user?.isActive || false}>
                     <label class="pf-c-check__label">
                         ${gettext("Is active")}
                     </label>
                 </div>
                 <p class="pf-c-form__helper-text">${gettext("Designates whether this user should be treated as active. Unselect this instead of deleting accounts.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${gettext("Attributes")}>
-                <ak-codemirror mode="yaml" name="attributes" value="${YAML.stringify(this.user?.attributes)}">
+            <ak-form-element-horizontal
+                label=${gettext("Attributes")}
+                name="attributes">
+                <ak-codemirror mode="yaml" value="${YAML.stringify(this.user?.attributes)}">
                 </ak-codemirror>
             </ak-form-element-horizontal>
         </form>`;
