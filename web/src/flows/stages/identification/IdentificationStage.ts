@@ -186,7 +186,7 @@ export class IdentificationStage extends BaseStage {
                             autofocus=""
                             autocomplete="username"
                             class="pf-c-form-control"
-                            required="">
+                            required>
                     </ak-form-element>
 
                     <div class="pf-c-form__group pf-m-action">

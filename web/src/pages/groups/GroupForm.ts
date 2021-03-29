@@ -43,7 +43,7 @@ export class GroupForm extends Form<Group> {
                 label=${gettext("Name")}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.group?.name)}" class="pf-c-form-control" required="">
+                <input type="text" value="${ifDefined(this.group?.name)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="isSuperuser">
                 <div class="pf-c-check">

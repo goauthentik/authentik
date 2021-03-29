@@ -42,21 +42,21 @@ export class UserForm extends Form<User> {
                 label=${gettext("Username")}
                 ?required=${true}
                 name="username">
-                <input type="text" value="${ifDefined(this.user?.username)}" class="pf-c-form-control" required="">
+                <input type="text" value="${ifDefined(this.user?.username)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${gettext("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Name")}
                 ?required=${true}
                 name="name">
-                <input type="text" value="${ifDefined(this.user?.name)}" class="pf-c-form-control" required="">
+                <input type="text" value="${ifDefined(this.user?.name)}" class="pf-c-form-control" required>
                 <p class="pf-c-form__helper-text">${gettext("User's display name.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Email")}
                 ?required=${true}
                 name="email">
-                <input type="email" autocomplete="off" value="${ifDefined(this.user?.email)}" class="pf-c-form-control" required="">
+                <input type="email" autocomplete="off" value="${ifDefined(this.user?.email)}" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="isActive">

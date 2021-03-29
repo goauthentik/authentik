@@ -26,7 +26,7 @@ export class CertificateKeyPairForm extends Form<CertificateGeneration> {
                 label=${gettext("Common Name")}
                 name="commonName"
                 ?required=${true}>
-                <input type="text" class="pf-c-form-control" required="">
+                <input type="text" class="pf-c-form-control" required>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${gettext("Subject-alt name")}
