@@ -4,10 +4,6 @@ export class AdminURLManager {
         return `/administration/applications/${rest}`;
     }
 
-    static cryptoCertificates(rest: string): string {
-        return `/administration/crypto/certificates/${rest}`;
-    }
-
     static policies(rest: string): string {
         return `/administration/policies/${rest}`;
     }

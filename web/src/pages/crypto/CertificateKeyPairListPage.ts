@@ -6,12 +6,13 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 import { CryptoApi, CertificateKeyPair } from "authentik-api";
 
-import "../../elements/buttons/ModalButton";
+import "../../elements/forms/ModalForm";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
+import "./CertificateKeyPairForm";
+import "./CertificateGenerateForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
-import { AdminURLManager } from "../../api/legacy";
 import { DEFAULT_CONFIG } from "../../api/Config";
 
 @customElement("ak-crypto-certificate-list")
@@ -62,12 +63,19 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             html`${gettext(item.privateKeyAvailable ? "Yes" : "No")}`,
             html`${item.certExpiry?.toLocaleString()}`,
             html`
-            <ak-modal-button href="${AdminURLManager.cryptoCertificates(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Certificate-Key Pair")}
+                </span>
+                <ak-crypto-certificate-form slot="form" .keyPair=${item}>
+                </ak-crypto-certificate-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Certificate-Key Pair")}
@@ -113,18 +121,32 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.cryptoCertificates("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
-        <ak-modal-button href=${AdminURLManager.cryptoCertificates("generate/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            </span>
+            <span slot="header">
+                ${gettext("Create Certificate-Key Pair")}
+            </span>
+            <ak-crypto-certificate-form slot="form">
+            </ak-crypto-certificate-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Generate")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Generate Certificate-Key Pair")}
+            </span>
+            <ak-crypto-certificate-generate-form slot="form">
+            </ak-crypto-certificate-generate-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${gettext("Generate")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

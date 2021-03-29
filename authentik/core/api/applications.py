@@ -109,7 +109,7 @@ class ApplicationViewSet(ModelViewSet):
         return self.get_paginated_response(serializer.data)
 
     @permission_required(
-        "authentik_core.view_application", "authentik_events.view_event"
+        "authentik_core.view_application", ["authentik_events.view_event"]
     )
     @swagger_auto_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True)
