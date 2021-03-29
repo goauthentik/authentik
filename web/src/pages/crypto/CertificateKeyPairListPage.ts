@@ -1,7 +1,8 @@
 import { gettext } from "django";
-import { customElement, html, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, property, TemplateResult } from "lit-element";
 import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CryptoApi, CertificateKeyPair } from "authentik-api";
 
@@ -32,6 +33,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     @property()
     order = "name";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     apiEndpoint(page: number): Promise<AKResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
