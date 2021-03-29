@@ -34,7 +34,7 @@
         "webcomponent-qr-code": "^1.0.5"
     },
     "devDependencies": {
-        "@rollup/plugin-typescript": "^8.2.0",
+        "@rollup/plugin-typescript": "^8.2.1",
         "@typescript-eslint/eslint-plugin": "^4.19.0",
         "@typescript-eslint/parser": "^4.19.0",
         "eslint": "^7.22.0",
