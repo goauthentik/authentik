@@ -1330,6 +1330,41 @@ paths:
         type: string
         format: slug
         pattern: ^[-a-zA-Z0-9_]+$
+  /core/applications/{slug}/set_icon/:
+    post:
+      operationId: core_applications_set_icon
+      description: Set application icon
+      parameters:
+        - name: file
+          in: formData
+          required: true
+          type: file
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Application'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      consumes:
+        - multipart/form-data
+      tags:
+        - core
+    parameters:
+      - name: slug
+        in: path
+        description: Internal application name, used in URLs.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
   /core/groups/:
     get:
       operationId: core_groups_list

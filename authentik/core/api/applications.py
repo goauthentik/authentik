@@ -1,9 +1,12 @@
 """Application API Views"""
 from django.core.cache import cache
 from django.db.models import QuerySet
-from drf_yasg.utils import swagger_auto_schema
+from django.http.response import HttpResponseBadRequest
+from drf_yasg import openapi
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -106,6 +109,35 @@ class ApplicationViewSet(ModelViewSet):
                 )
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
+
+    @permission_required("authentik_core.change_application")
+    @swagger_auto_schema(
+        request_body=no_body,
+        manual_parameters=[
+            openapi.Parameter(
+                name="file",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_FILE,
+                required=True,
+            )
+        ],
+    )
+    @action(detail=True, methods=["POST"], parser_classes=(MultiPartParser,))
+    # pylint: disable=unused-argument
+    def set_icon(self, request: Request, slug: str):
+        """Set application icon"""
+        app: Application = self.get_object()
+        icon = request.FILES.get("file", None)
+        if not icon:
+            return HttpResponseBadRequest()
+        app.meta_icon = icon
+        app.save()
+        return Response(
+            get_events_per_1h(
+                action=EventAction.AUTHORIZE_APPLICATION,
+                context__authorized_application__pk=app.pk.hex,
+            )
+        )
 
     @permission_required(
         "authentik_core.view_application", ["authentik_events.view_event"]
