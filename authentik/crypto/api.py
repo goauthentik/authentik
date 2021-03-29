@@ -3,14 +3,22 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
 from django.db.models import Model
+from django.utils.translation import gettext_lazy as _
 from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, DateTimeField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    DateTimeField,
+    IntegerField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer, Serializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.decorators import permission_required
+from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 
@@ -83,11 +91,50 @@ class CertificateDataSerializer(Serializer):
         raise NotImplementedError
 
 
+class CertificateGenerationSerializer(Serializer):
+    """Certificate generation parameters"""
+
+    common_name = CharField()
+    subject_alt_name = CharField(
+        required=False, allow_blank=True, label=_("Subject-alt name")
+    )
+    validity_days = IntegerField(initial=365)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
 class CertificateKeyPairViewSet(ModelViewSet):
     """CertificateKeyPair Viewset"""
 
     queryset = CertificateKeyPair.objects.all()
     serializer_class = CertificateKeyPairSerializer
+
+    @permission_required(None, "authentik_crypto.add_certificatekeypair")
+    @swagger_auto_schema(
+        request_body=CertificateGenerationSerializer(),
+        responses={200: CertificateKeyPairSerializer},
+    )
+    @action(detail=False, methods=["POST"])
+    def generate(self, request: Request) -> Response:
+        """Generate a new, self-signed certificate-key pair"""
+        data = CertificateGenerationSerializer(data=request.data)
+        if not data.is_valid():
+            return Response(data.errors, status=400)
+        builder = CertificateBuilder()
+        builder.common_name = data.validated_data["common_name"]
+        builder.build(
+            subject_alt_names=data.validated_data.get("subject_alt_name", "").split(
+                ","
+            ),
+            validity_days=int(data.validated_data["validity_days"]),
+        )
+        instance = builder.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
     @swagger_auto_schema(responses={200: CertificateDataSerializer(many=False)})
     @action(detail=True)

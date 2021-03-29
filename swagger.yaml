@@ -1826,6 +1826,24 @@ paths:
       tags:
         - crypto
     parameters: []
+  /crypto/certificatekeypairs/generate/:
+    post:
+      operationId: crypto_certificatekeypairs_generate
+      description: Generate a new, self-signed certificate-key pair
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CertificateGeneration'
+      responses:
+        '200':
+          description: CertificateKeyPair Serializer
+          schema:
+            $ref: '#/definitions/CertificateKeyPair'
+      tags:
+        - crypto
+    parameters: []
   /crypto/certificatekeypairs/{kp_uuid}/:
     get:
       operationId: crypto_certificatekeypairs_read
@@ -11191,6 +11209,23 @@ definitions:
         title: Private key available
         type: boolean
         readOnly: true
+  CertificateGeneration:
+    description: Certificate generation parameters
+    required:
+      - common_name
+      - validity_days
+    type: object
+    properties:
+      common_name:
+        title: Common name
+        type: string
+        minLength: 1
+      subject_alt_name:
+        title: Subject-alt name
+        type: string
+      validity_days:
+        title: Validity days
+        type: integer
   CertificateData:
     description: Get CertificateKeyPair's data
     type: object
