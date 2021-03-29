@@ -136,6 +136,11 @@ export class ModalButton extends LitElement {
         if (!this.href) {
             this.updateHandlers();
             this.open = true;
+            this.querySelectorAll("*").forEach(child => {
+                if ("requestUpdate" in child) {
+                    (child as LitElement).requestUpdate();
+                }
+            });
         } else {
             const request = new Request(this.href);
             fetch(request, {

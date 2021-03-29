@@ -8,12 +8,6 @@ export class HorizontalFormElement extends LitElement {
 
     static get styles(): CSSResult[] {
         return [PFForm, PFFormControl, css`
-            slot {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-around;
-            }
             .pf-c-form__group {
                 display: grid;
                 grid-template-columns: var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth) var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
@@ -51,8 +45,8 @@ export class HorizontalFormElement extends LitElement {
                 </label>
             </div>
             <div class="pf-c-form__group-control">
+                <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    <slot></slot>
                     ${this.invalid ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">${this.errorMessage}</p>` : html``}
                 </div>
             </div>

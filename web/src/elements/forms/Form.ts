@@ -100,6 +100,10 @@ export class Form<T> extends LitElement {
     }
 
     render(): TemplateResult {
+        const rect = this.getBoundingClientRect();
+        if (rect.x + rect.y + rect.width + rect.height === 0) {
+            return html``;
+        }
         return html`<iron-form
             @iron-form-presubmit=${(ev: Event) => { this.submit(ev); }}>
             ${this.renderForm()}
