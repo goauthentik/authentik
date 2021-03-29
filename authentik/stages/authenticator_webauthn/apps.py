@@ -8,4 +8,3 @@ class AuthentikStageAuthenticatorWebAuthnConfig(AppConfig):
     name = "authentik.stages.authenticator_webauthn"
     label = "authentik_stages_authenticator_webauthn"
     verbose_name = "authentik Stages.Authenticator.WebAuthn"
-    mountpoint = "-/user/authenticator/webauthn/"
