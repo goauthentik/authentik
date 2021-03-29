@@ -7,7 +7,6 @@ from authentik.admin.views import (
     events_notifications_rules,
     events_notifications_transports,
     flows,
-    groups,
     outposts,
     outposts_service_connections,
     policies,
@@ -160,13 +159,6 @@ urlpatterns = [
         "users/<int:pk>/reset/",
         users.UserPasswordResetView.as_view(),
         name="user-password-reset",
-    ),
-    # Groups
-    path("groups/create/", groups.GroupCreateView.as_view(), name="group-create"),
-    path(
-        "groups/<uuid:pk>/update/",
-        groups.GroupUpdateView.as_view(),
-        name="group-update",
     ),
     # Certificate-Key Pairs
     path(
