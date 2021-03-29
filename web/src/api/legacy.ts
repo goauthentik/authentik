@@ -24,10 +24,6 @@ export class AdminURLManager {
         return `/administration/outpost_service_connections/${rest}`;
     }
 
-    static flows(rest: string): string {
-        return `/administration/flows/${rest}`;
-    }
-
     static stages(rest: string): string {
         return `/administration/stages/${rest}`;
     }

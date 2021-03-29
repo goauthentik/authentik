@@ -6,11 +6,13 @@ import { TablePage } from "../../elements/table/TablePage";
 import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
 import "../../elements/forms/DeleteForm";
+import "../../elements/forms/ModalForm";
+import "./FlowForm";
+import "./FlowImportForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { Flow, FlowsApi } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
@@ -60,48 +62,76 @@ export class FlowListPage extends TablePage<Flow> {
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
             html`
-            <ak-modal-button href="${AdminURLManager.flows(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Flow")}
+                </span>
+                <ak-flow-form slot="form" .flow=${item}>
+                </ak-flow-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Flow")}
                 .delete=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDelete({
-                        slug: item.slug || ""
+                        slug: item.slug
                     });
                 }}>
                 <button slot="trigger" class="pf-c-button pf-m-danger">
                     ${gettext("Delete")}
                 </button>
             </ak-forms-delete>
-            <a class="pf-c-button pf-m-secondary ak-root-link" href="${AdminURLManager.flows(`${item.pk}/execute/?next=/%23${window.location.href}`)}">
+            <button
+                class="pf-c-button pf-m-secondary ak-root-link"
+                @click=${() => {
+                    new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
+                        slug: item.slug
+                    }).then(link => {
+                        window.location.assign(`${link.link}?next=/%23${window.location.href}`);
+                    });
+                }}>
                 ${gettext("Execute")}
-            </a>
+            </button>
             <a class="pf-c-button pf-m-secondary ak-root-link" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
                 ${gettext("Export")}
-            </a>
-            `,
+            </a>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.flows("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
-        <ak-modal-button href=${AdminURLManager.flows("import/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            </span>
+            <span slot="header">
+                ${gettext("Create Flow")}
+            </span>
+            <ak-flow-form slot="form">
+            </ak-flow-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Import")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Import Flow")}
+            </span>
+            <ak-flow-import-form slot="form">
+            </ak-flow-import-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Import")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }
