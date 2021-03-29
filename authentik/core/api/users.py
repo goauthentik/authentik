@@ -131,7 +131,7 @@ class UserViewSet(ModelViewSet):
         serializer.is_valid()
         return Response(serializer.data)
 
-    @permission_required("authentik_core.view_user", "authentik_events.view_event")
+    @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=False)
     def metrics(self, request: Request) -> Response:

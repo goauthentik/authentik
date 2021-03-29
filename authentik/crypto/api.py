@@ -113,7 +113,7 @@ class CertificateKeyPairViewSet(ModelViewSet):
     queryset = CertificateKeyPair.objects.all()
     serializer_class = CertificateKeyPairSerializer
 
-    @permission_required(None, "authentik_crypto.add_certificatekeypair")
+    @permission_required(None, ["authentik_crypto.add_certificatekeypair"])
     @swagger_auto_schema(
         request_body=CertificateGenerationSerializer(),
         responses={200: CertificateKeyPairSerializer},
