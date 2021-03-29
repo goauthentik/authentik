@@ -149,3 +149,8 @@ class Policy(SerializerModel, CreatedUpdatedModel):
 
         verbose_name = _("Policy")
         verbose_name_plural = _("Policies")
+
+        permissions = [
+            ("view_policy_cache", "View Policy's cache metrics"),
+            ("clear_policy_cache", "Clear Policy's cache metrics"),
+        ]

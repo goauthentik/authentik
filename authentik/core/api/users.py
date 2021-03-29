@@ -1,5 +1,7 @@
 """User API Views"""
 from django.db.models.base import Model
+from django.urls import reverse_lazy
+from django.utils.http import urlencode
 from drf_yasg2.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
@@ -10,11 +12,12 @@ from rest_framework.serializers import BooleanField, ModelSerializer, Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
+from authentik.api.decorators import permission_required
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
 )
-from authentik.core.models import User
+from authentik.core.models import Token, TokenIntents, User
 from authentik.events.models import EventAction
 
 
@@ -46,6 +49,18 @@ class SessionUserSerializer(Serializer):
 
     user = UserSerializer()
     original = UserSerializer(required=False)
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+
+class UserRecoverySerializer(Serializer):
+    """Recovery link for a user to reset their password"""
+
+    link = CharField()
 
     def create(self, validated_data: dict) -> Model:
         raise NotImplementedError
@@ -116,6 +131,7 @@ class UserViewSet(ModelViewSet):
         serializer.is_valid()
         return Response(serializer.data)
 
+    @permission_required("authentik_core.view_user", "authentik_events.view_event")
     @swagger_auto_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=False)
     def metrics(self, request: Request) -> Response:
@@ -123,3 +139,23 @@ class UserViewSet(ModelViewSet):
         serializer = UserMetricsSerializer(True)
         serializer.context["request"] = request
         return Response(serializer.data)
+
+    @permission_required("authentik_core.reset_user_password")
+    @swagger_auto_schema(
+        responses={"200": UserRecoverySerializer(many=False)},
+    )
+    @action(detail=True)
+    # pylint: disable=invalid-name, unused-argument
+    def recovery(self, request: Request, pk: int) -> Response:
+        """Create a temporary link that a user can use to recover their accounts"""
+        user: User = self.get_object()
+        token, __ = Token.objects.get_or_create(
+            identifier=f"{user.uid}-password-reset",
+            user=user,
+            intent=TokenIntents.INTENT_RECOVERY,
+        )
+        querystring = urlencode({"token": token.key})
+        link = request.build_absolute_uri(
+            reverse_lazy("authentik_flows:default-recovery") + f"?{querystring}"
+        )
+        return Response({"link": link})
