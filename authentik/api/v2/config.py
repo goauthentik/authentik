@@ -11,7 +11,7 @@ from rest_framework.viewsets import ViewSet
 from authentik.lib.config import CONFIG
 
 
-class LinkSerializer(Serializer):
+class FooterLinkSerializer(Serializer):
     """Links returned in Config API"""
 
     href = CharField(read_only=True)
@@ -29,7 +29,7 @@ class ConfigSerializer(Serializer):
 
     branding_logo = CharField(read_only=True)
     branding_title = CharField(read_only=True)
-    ui_footer_links = ListField(child=LinkSerializer(), read_only=True)
+    ui_footer_links = ListField(child=FooterLinkSerializer(), read_only=True)
 
     error_reporting_enabled = BooleanField(read_only=True)
     error_reporting_environment = CharField(read_only=True)

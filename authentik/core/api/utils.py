@@ -49,3 +49,15 @@ class CacheSerializer(Serializer):
 
     def update(self, instance: Model, validated_data: dict) -> Model:
         raise NotImplementedError
+
+
+class LinkSerializer(Serializer):
+    """Returns a single link"""
+
+    link = CharField()
+
+    def create(self, validated_data: dict) -> Model:
+        raise NotImplementedError
+
+    def update(self, instance: Model, validated_data: dict) -> Model:
+        raise NotImplementedError

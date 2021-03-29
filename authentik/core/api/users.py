@@ -13,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer, get_events_per_1h
 from authentik.api.decorators import permission_required
+from authentik.core.api.utils import LinkSerializer
 from authentik.core.middleware import (
     SESSION_IMPERSONATE_ORIGINAL_USER,
     SESSION_IMPERSONATE_USER,
@@ -49,18 +50,6 @@ class SessionUserSerializer(Serializer):
 
     user = UserSerializer()
     original = UserSerializer(required=False)
-
-    def create(self, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-    def update(self, instance: Model, validated_data: dict) -> Model:
-        raise NotImplementedError
-
-
-class UserRecoverySerializer(Serializer):
-    """Recovery link for a user to reset their password"""
-
-    link = CharField()
 
     def create(self, validated_data: dict) -> Model:
         raise NotImplementedError
@@ -142,7 +131,7 @@ class UserViewSet(ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @swagger_auto_schema(
-        responses={"200": UserRecoverySerializer(many=False)},
+        responses={"200": LinkSerializer(many=False)},
     )
     @action(detail=True)
     # pylint: disable=invalid-name, unused-argument

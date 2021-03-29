@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from django.core.cache import cache
 from django.db.models import Model
 from django.http.response import HttpResponseBadRequest, JsonResponse
+from django.urls import reverse
+from django.utils.translation import gettext as _
 from drf_yasg import openapi
 from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
@@ -21,11 +23,16 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
-from authentik.core.api.utils import CacheSerializer
+from authentik.core.api.utils import CacheSerializer, LinkSerializer
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
-from authentik.flows.planner import cache_key
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.transfer.common import DataclassEncoder
 from authentik.flows.transfer.exporter import FlowExporter
+from authentik.flows.transfer.importer import FlowImporter
+from authentik.flows.views import SESSION_KEY_PLAN
+from authentik.lib.utils.urls import redirect_with_qs
+from authentik.lib.views import bad_request_message
 
 LOGGER = get_logger()
 
@@ -57,7 +64,7 @@ class FlowSerializer(ModelSerializer):
 
 
 class FlowDiagramSerializer(Serializer):
-    """response of the flow's /diagram/ action"""
+    """response of the flow's diagram action"""
 
     diagram = CharField(read_only=True)
 
@@ -89,14 +96,14 @@ class FlowViewSet(ModelViewSet):
     search_fields = ["name", "slug", "designation", "title"]
     filterset_fields = ["flow_uuid", "name", "slug", "designation"]
 
-    @permission_required("authentik_flows.view_flow_cache")
+    @permission_required(None, ["authentik_flows.view_flow_cache"])
     @swagger_auto_schema(responses={200: CacheSerializer(many=False)})
     @action(detail=False)
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
         return Response(data={"count": len(cache.keys("flow_*"))})
 
-    @permission_required("authentik_flows.clear_flow_cache")
+    @permission_required(None, ["authentik_flows.clear_flow_cache"])
     @swagger_auto_schema(
         request_body=no_body,
         responses={204: "Successfully cleared cache", 400: "Bad request"},
@@ -109,7 +116,61 @@ class FlowViewSet(ModelViewSet):
         LOGGER.debug("Cleared flow cache", keys=len(keys))
         return Response(status=204)
 
-    @permission_required("authentik_flows.export_flow")
+    @permission_required(
+        None,
+        [
+            "authentik_flows.add_flow",
+            "authentik_flows.change_flow",
+            "authentik_flows.add_flowstagebinding",
+            "authentik_flows.change_flowstagebinding",
+            "authentik_flows.add_stage",
+            "authentik_flows.change_stage",
+            "authentik_policies.add_policy",
+            "authentik_policies.change_policy",
+            "authentik_policies.add_policybinding",
+            "authentik_policies.change_policybinding",
+            "authentik_stages_prompt.add_prompt",
+            "authentik_stages_prompt.change_prompt",
+        ],
+    )
+    @swagger_auto_schema(
+        request_body=no_body,
+        manual_parameters=[
+            openapi.Parameter(
+                name="file",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_FILE,
+                required=True,
+            )
+        ],
+        responses={204: "Successfully imported flow", 400: "Bad request"},
+    )
+    @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
+    def import_flow(self, request: Request) -> Response:
+        """Import flow from .akflow file"""
+        file = request.FILES.get("file", None)
+        if not file:
+            return HttpResponseBadRequest()
+        importer = FlowImporter(file.read().decode())
+        valid = importer.validate()
+        if not valid:
+            return HttpResponseBadRequest()
+        successful = importer.apply()
+        if not successful:
+            return Response(status=204)
+        return HttpResponseBadRequest()
+
+    @permission_required(
+        "authentik_flows.export_flow",
+        [
+            "authentik_flows.view_flow",
+            "authentik_flows.view_flowstagebinding",
+            "authentik_flows.view_stage",
+            "authentik_policies.view_policy",
+            "authentik_policies.view_policybinding",
+            "authentik_stages_prompt.view_prompt",
+        ],
+    )
     @swagger_auto_schema(
         responses={
             "200": openapi.Response(
@@ -220,3 +281,32 @@ class FlowViewSet(ModelViewSet):
         app.background = icon
         app.save()
         return Response({})
+
+    @swagger_auto_schema(
+        responses={200: LinkSerializer(many=False)},
+    )
+    @action(detail=True)
+    # pylint: disable=unused-argument
+    def execute(self, request: Request, slug: str):
+        """Execute flow for current user"""
+        flow: Flow = self.get_object()
+        planner = FlowPlanner(flow)
+        planner.use_cache = False
+        try:
+            plan = planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: request.user})
+            self.request.session[SESSION_KEY_PLAN] = plan
+        except FlowNonApplicableException as exc:
+            return bad_request_message(
+                request,
+                _(
+                    "Flow not applicable to current user/request: %(messages)s"
+                    % {"messages": str(exc)}
+                ),
+            )
+        return Response(
+            {
+                "link": request._request.build_absolute_uri(
+                    reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+                )
+            }
+        )

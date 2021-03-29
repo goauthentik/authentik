@@ -2267,7 +2267,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/UserRecovery'
+            $ref: '#/definitions/Link'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -3898,6 +3898,29 @@ paths:
       tags:
         - flows
     parameters: []
+  /flows/instances/import_flow/:
+    post:
+      operationId: flows_instances_import_flow
+      description: Import flow from .akflow file
+      parameters:
+        - name: file
+          in: formData
+          required: true
+          type: file
+      responses:
+        '204':
+          description: Successfully imported flow
+        '400':
+          description: Bad request
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+      consumes:
+        - multipart/form-data
+      tags:
+        - flows
+    parameters: []
   /flows/instances/{slug}/:
     get:
       operationId: flows_instances_read
@@ -4014,6 +4037,35 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/FlowDiagram'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - flows
+    parameters:
+      - name: slug
+        in: path
+        description: Visible in the URL.
+        required: true
+        type: string
+        format: slug
+        pattern: ^[-a-zA-Z0-9_]+$
+  /flows/instances/{slug}/execute/:
+    get:
+      operationId: flows_instances_execute
+      description: Execute flow for current user
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Link'
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:
@@ -14908,7 +14960,7 @@ definitions:
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
-  UserRecovery:
+  Link:
     required:
       - link
     type: object
@@ -17035,7 +17087,7 @@ definitions:
         title: Metadata
         type: string
         readOnly: true
-  Link:
+  FooterLink:
     type: object
     properties:
       href:
@@ -17064,7 +17116,7 @@ definitions:
       ui_footer_links:
         type: array
         items:
-          $ref: '#/definitions/Link'
+          $ref: '#/definitions/FooterLink'
         readOnly: true
       error_reporting_enabled:
         title: Error reporting enabled

@@ -2,7 +2,6 @@
 from django.urls import path
 
 from authentik.admin.views import (
-    flows,
     outposts,
     outposts_service_connections,
     policies,
@@ -98,27 +97,6 @@ urlpatterns = [
         "stages/invitations/create/",
         stages_invitations.InvitationCreateView.as_view(),
         name="stage-invitation-create",
-    ),
-    # Flows
-    path(
-        "flows/create/",
-        flows.FlowCreateView.as_view(),
-        name="flow-create",
-    ),
-    path(
-        "flows/import/",
-        flows.FlowImportView.as_view(),
-        name="flow-import",
-    ),
-    path(
-        "flows/<uuid:pk>/update/",
-        flows.FlowUpdateView.as_view(),
-        name="flow-update",
-    ),
-    path(
-        "flows/<uuid:pk>/execute/",
-        flows.FlowDebugExecuteView.as_view(),
-        name="flow-execute",
     ),
     # Property Mappings
     path(

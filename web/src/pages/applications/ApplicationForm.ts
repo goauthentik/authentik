@@ -26,7 +26,7 @@ export class ApplicationForm extends Form<Application> {
         }
     }
 
-    send = (data: Application): Promise<Application> => {
+    send = (data: Application): Promise<Application | void> => {
         let writeOp: Promise<Application>;
         if (this.application) {
             writeOp = new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
