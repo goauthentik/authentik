@@ -1,6 +1,6 @@
 """core Configs API"""
 from django.db.models import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.fields import BooleanField, CharField, ListField
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request

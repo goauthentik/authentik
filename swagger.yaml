@@ -27,7 +27,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Login Metrics per 1h
+          description: ''
           schema:
             $ref: '#/definitions/LoginMetrics'
         '403':
@@ -44,9 +44,8 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Serialize TaskInfo and TaskResult
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/Task'
@@ -108,7 +107,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Get running and latest version.
+          description: ''
           schema:
             $ref: '#/definitions/Version'
         '403':
@@ -180,7 +179,6 @@ paths:
               results:
                 type: array
                 items:
-                  description: ''
                   type: object
                   properties: {}
         '403':
@@ -1308,9 +1306,8 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Coordinates for diagrams
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/Coordinate'
@@ -1766,7 +1763,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Show token's current key
+          description: ''
           schema:
             $ref: '#/definitions/TokenView'
         '403':
@@ -2063,9 +2060,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Response for the /user/me endpoint, returns the currently active
-            user (as `user` property) and, if this user is being impersonated, the
-            original user in the `original` property.
+          description: ''
           schema:
             $ref: '#/definitions/SessionUser'
         '403':
@@ -2117,7 +2112,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: User Metrics
+          description: ''
           schema:
             $ref: '#/definitions/UserMetrics'
         '403':
@@ -2237,7 +2232,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Recovery link for a user to reset their password
+          description: ''
           schema:
             $ref: '#/definitions/UserRecovery'
         '403':
@@ -2363,7 +2358,7 @@ paths:
             $ref: '#/definitions/CertificateGeneration'
       responses:
         '200':
-          description: CertificateKeyPair Serializer
+          description: ''
           schema:
             $ref: '#/definitions/CertificateKeyPair'
         '400':
@@ -2488,7 +2483,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Get CertificateKeyPair's data
+          description: ''
           schema:
             $ref: '#/definitions/CertificateData'
         '403':
@@ -2516,7 +2511,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Get CertificateKeyPair's data
+          description: ''
           schema:
             $ref: '#/definitions/CertificateData'
         '403':
@@ -2709,9 +2704,8 @@ paths:
           default: 15
       responses:
         '200':
-          description: Response object of Event's top_per_user
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/EventTopPerUser'
@@ -3358,7 +3352,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Notification test serializer
+          description: ''
           schema:
             $ref: '#/definitions/NotificationTransportTest'
         '403':
@@ -3629,8 +3623,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Challenge that gets sent to the client based on which stage
-            is currently active
+          description: ''
           schema:
             $ref: '#/definitions/Challenge'
         '403':
@@ -3661,8 +3654,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Challenge that gets sent to the client based on which stage
-            is currently active
+          description: ''
           schema:
             $ref: '#/definitions/Challenge'
         '400':
@@ -3863,7 +3855,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Generic cache stats for an object
+          description: ''
           schema:
             $ref: '#/definitions/Cache'
         '403':
@@ -3986,7 +3978,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: response of the flow's /diagram/ action
+          description: ''
           schema:
             $ref: '#/definitions/FlowDiagram'
         '403':
@@ -4497,9 +4489,8 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Outpost health status
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/OutpostHealth'
@@ -4849,9 +4840,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -4973,7 +4963,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Serializer for Service connection state
+          description: ''
           schema:
             $ref: '#/definitions/ServiceConnectionState'
         '403':
@@ -5524,7 +5514,7 @@ paths:
           type: integer
       responses:
         '200':
-          description: Generic cache stats for an object
+          description: ''
           schema:
             $ref: '#/definitions/Cache'
         '403':
@@ -5571,9 +5561,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -7740,9 +7729,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -8524,9 +8512,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -8844,7 +8831,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: OAuth2 Provider Metadata serializer
+          description: ''
           schema:
             $ref: '#/definitions/OAuth2ProviderSetupURLs'
         '403':
@@ -9265,7 +9252,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: SAML Provider Metadata serializer
+          description: ''
           schema:
             $ref: '#/definitions/SAMLMetadata'
         '403':
@@ -9292,7 +9279,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Serialize authentik Config into DRF Object
+          description: ''
           schema:
             $ref: '#/definitions/Config'
         '403':
@@ -9399,9 +9386,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -9439,9 +9425,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Serializer for User settings for stages and sources
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/UserSetting'
@@ -9705,7 +9690,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: LDAP Sync status
+          description: ''
           schema:
             $ref: '#/definitions/LDAPSourceSyncStatus'
         '403':
@@ -10334,7 +10319,7 @@ paths:
       parameters: []
       responses:
         '200':
-          description: SAML Provider Metadata serializer
+          description: ''
           schema:
             $ref: '#/definitions/SAMLMetadata'
         '403':
@@ -10463,9 +10448,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Types of an object that can be created
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/TypeCreate'
@@ -10508,9 +10492,8 @@ paths:
           type: integer
       responses:
         '200':
-          description: Serializer for User settings for stages and sources
+          description: ''
           schema:
-            description: ''
             type: array
             items:
               $ref: '#/definitions/UserSetting'
@@ -14406,7 +14389,6 @@ definitions:
             description: Error code
             type: string
   Coordinate:
-    description: Coordinates for diagrams
     type: object
     properties:
       x_cord:
@@ -14418,23 +14400,21 @@ definitions:
         type: integer
         readOnly: true
   LoginMetrics:
-    description: Login Metrics per 1h
     type: object
     properties:
       logins_per_1h:
-        description: ''
+        description: Get successful logins per hour for the last 24 hours
         type: array
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
       logins_failed_per_1h:
-        description: ''
+        description: Get failed logins per hour for the last 24 hours
         type: array
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
   Task:
-    description: Serialize TaskInfo and TaskResult
     required:
       - task_name
       - task_description
@@ -14463,12 +14443,11 @@ definitions:
           - WARNING
           - ERROR
       messages:
-        description: ''
         type: array
         items:
           type: string
+          x-nullable: true
   Version:
-    description: Get running and latest version.
     type: object
     properties:
       version_current:
@@ -14488,7 +14467,6 @@ definitions:
         type: boolean
         readOnly: true
   StaticDevice:
-    description: Serializer for static authenticator devices
     required:
       - name
     type: object
@@ -14500,12 +14478,8 @@ definitions:
         maxLength: 64
         minLength: 1
       token_set:
-        description: ''
         type: array
         items:
-          description: 'A single token belonging to a :class:`StaticDevice`. .. attribute::
-            device *ForeignKey*: A foreign key to :class:`StaticDevice`. .. attribute::
-            token *CharField*: A random string up to 16 characters.'
           required:
             - token
           type: object
@@ -14520,13 +14494,6 @@ definitions:
               maxLength: 16
               minLength: 1
             device:
-              description: "A static :class:`~django_otp.models.Device` simply consists\
-                \ of random tokens shared by the database and the user. These are\
-                \ frequently used as emergency tokens in case a user's normal device\
-                \ is lost or unavailable. They can be consumed in any order; each\
-                \ token will be removed from the database as soon as it is used. This\
-                \ model has no fields of its own, but serves as a container for :class:`StaticToken`\
-                \ objects. .. attribute:: token_set The RelatedManager for our tokens."
               required:
                 - name
                 - user
@@ -14570,7 +14537,6 @@ definitions:
         type: integer
         readOnly: true
   TOTPDevice:
-    description: Serializer for totp authenticator devices
     required:
       - name
     type: object
@@ -14586,7 +14552,6 @@ definitions:
         type: integer
         readOnly: true
   WebAuthnDevice:
-    description: Serializer for WebAuthn authenticator devices
     required:
       - name
     type: object
@@ -14606,8 +14571,6 @@ definitions:
         format: date-time
         readOnly: true
   Provider:
-    title: Provider
-    description: Provider Serializer
     required:
       - name
       - application
@@ -14657,7 +14620,6 @@ definitions:
         type: string
         readOnly: true
   Application:
-    description: Application Serializer
     required:
       - name
       - slug
@@ -14703,15 +14665,7 @@ definitions:
       meta_publisher:
         title: Meta publisher
         type: string
-      policies:
-        type: array
-        items:
-          type: string
-          format: uuid
-        readOnly: true
-        uniqueItems: true
   Group:
-    description: Group Serializer
     required:
       - name
       - parent
@@ -14736,6 +14690,7 @@ definitions:
         title: Parent
         type: string
         format: uuid
+        x-nullable: true
       users:
         type: array
         items:
@@ -14745,8 +14700,6 @@ definitions:
         title: Attributes
         type: object
   User:
-    title: User
-    description: User Serializer
     required:
       - username
       - name
@@ -14797,7 +14750,6 @@ definitions:
         title: Attributes
         type: object
   Token:
-    description: Token Serializer
     required:
       - identifier
       - user
@@ -14835,7 +14787,6 @@ definitions:
         title: Expiring
         type: boolean
   TokenView:
-    description: Show token's current key
     type: object
     properties:
       key:
@@ -14844,7 +14795,6 @@ definitions:
         readOnly: true
         minLength: 1
   UserConsent:
-    description: UserConsent Serializer
     required:
       - user
       - application
@@ -14863,9 +14813,6 @@ definitions:
       application:
         $ref: '#/definitions/Application'
   SessionUser:
-    description: Response for the /user/me endpoint, returns the currently active
-      user (as `user` property) and, if this user is being impersonated, the original
-      user in the `original` property.
     required:
       - user
     type: object
@@ -14875,29 +14822,27 @@ definitions:
       original:
         $ref: '#/definitions/User'
   UserMetrics:
-    description: User Metrics
     type: object
     properties:
       logins_per_1h:
-        description: ''
+        description: Get successful logins per hour for the last 24 hours
         type: array
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
       logins_failed_per_1h:
-        description: ''
+        description: Get failed logins per hour for the last 24 hours
         type: array
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
       authorizations_per_1h:
-        description: ''
+        description: Get failed logins per hour for the last 24 hours
         type: array
         items:
           $ref: '#/definitions/Coordinate'
         readOnly: true
   UserRecovery:
-    description: Recovery link for a user to reset their password
     required:
       - link
     type: object
@@ -14907,7 +14852,6 @@ definitions:
         type: string
         minLength: 1
   CertificateKeyPair:
-    description: CertificateKeyPair Serializer
     required:
       - name
       - certificate_data
@@ -14950,7 +14894,6 @@ definitions:
         type: boolean
         readOnly: true
   CertificateGeneration:
-    description: Certificate generation parameters
     required:
       - common_name
       - validity_days
@@ -14967,7 +14910,6 @@ definitions:
         title: Validity days
         type: integer
   CertificateData:
-    description: Get CertificateKeyPair's data
     type: object
     properties:
       data:
@@ -14976,7 +14918,6 @@ definitions:
         readOnly: true
         minLength: 1
   Event:
-    description: Event Serializer
     required:
       - action
       - app
@@ -15016,7 +14957,6 @@ definitions:
         type: string
         format: date-time
   EventTopPerUser:
-    description: Response object of Event's top_per_user
     required:
       - application
       - counted_events
@@ -15028,6 +14968,7 @@ definitions:
         type: object
         additionalProperties:
           type: string
+          x-nullable: true
       counted_events:
         title: Counted events
         type: integer
@@ -15035,7 +14976,6 @@ definitions:
         title: Unique users
         type: integer
   Notification:
-    description: Notification Serializer
     type: object
     properties:
       pk:
@@ -15062,7 +15002,6 @@ definitions:
         title: Seen
         type: boolean
   NotificationRule:
-    description: NotificationRule Serializer
     required:
       - name
     type: object
@@ -15077,10 +15016,8 @@ definitions:
         type: string
         minLength: 1
       transports:
-        description: ''
         type: array
         items:
-          description: Action which is executed when a Rule matches
           required:
             - name
             - mode
@@ -15121,7 +15058,6 @@ definitions:
           - warning
           - alert
       group:
-        description: Custom Group model which supports a basic hierarchy
         required:
           - name
         type: object
@@ -15144,7 +15080,6 @@ definitions:
             title: Attributes
             type: object
           parent:
-            description: Custom Group model which supports a basic hierarchy
             required:
               - name
               - parent
@@ -15171,10 +15106,10 @@ definitions:
                 title: Parent
                 type: string
                 format: uuid
+                x-nullable: true
             readOnly: true
         readOnly: true
   NotificationTransport:
-    description: NotificationTransport Serializer
     required:
       - name
       - mode
@@ -15209,19 +15144,16 @@ definitions:
           into a chat channel.
         type: boolean
   NotificationTransportTest:
-    description: Notification test serializer
     required:
       - messages
     type: object
     properties:
       messages:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
   Flow:
-    description: Flow Serializer
     required:
       - name
       - slug
@@ -15293,8 +15225,6 @@ definitions:
         type: string
         readOnly: true
   Stage:
-    title: Stage obj
-    description: Stage Serializer
     required:
       - name
     type: object
@@ -15321,12 +15251,10 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
   FlowStageBinding:
-    description: FlowStageBinding Serializer
     required:
       - target
       - stage
@@ -15374,7 +15302,6 @@ definitions:
         readOnly: true
         uniqueItems: true
   ErrorDetail:
-    description: Serializer for rest_framework's error messages
     required:
       - string
       - code
@@ -15389,8 +15316,6 @@ definitions:
         type: string
         minLength: 1
   Challenge:
-    description: Challenge that gets sent to the client based on which stage is currently
-      active
     required:
       - type
     type: object
@@ -15418,16 +15343,13 @@ definitions:
         title: Response errors
         type: object
         additionalProperties:
-          description: ''
           type: array
           items:
             $ref: '#/definitions/ErrorDetail'
   ChallengeResponse:
-    description: Base class for all challenge responses
     type: object
     properties: {}
   Cache:
-    description: Generic cache stats for an object
     type: object
     properties:
       count:
@@ -15435,7 +15357,6 @@ definitions:
         type: integer
         readOnly: true
   FlowDiagram:
-    description: response of the flow's /diagram/ action
     type: object
     properties:
       diagram:
@@ -15444,8 +15365,6 @@ definitions:
         readOnly: true
         minLength: 1
   OAuth2Provider:
-    title: Provider
-    description: OAuth2Provider Serializer
     required:
       - name
       - application
@@ -15560,7 +15479,6 @@ definitions:
           - global
           - per_provider
   ExpiringBaseGrantModel:
-    description: Serializer for BaseGrantModel and ExpiringBaseGrant
     required:
       - provider
       - user
@@ -15584,13 +15502,11 @@ definitions:
         type: string
         format: date-time
       scope:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
   Outpost:
-    description: Outpost Serializer
     required:
       - name
       - providers
@@ -15612,7 +15528,6 @@ definitions:
           type: integer
         uniqueItems: true
       providers_obj:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Provider'
@@ -15632,7 +15547,6 @@ definitions:
         title: config
         type: object
   OutpostHealth:
-    description: Outpost health status
     type: object
     properties:
       last_seen:
@@ -15655,8 +15569,7 @@ definitions:
         type: boolean
         readOnly: true
   OpenIDConnectConfiguration:
-    title: Oidc configuration
-    description: rest_framework Serializer for OIDC Configuration
+    description: Embed OpenID Connect provider information
     required:
       - issuer
       - authorization_endpoint
@@ -15700,31 +15613,26 @@ definitions:
         type: string
         minLength: 1
       response_types_supported:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
       id_token_signing_alg_values_supported:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
       subject_types_supported:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
       token_endpoint_auth_methods_supported:
-        description: ''
         type: array
         items:
           type: string
           minLength: 1
   ProxyOutpostConfig:
-    description: ProxyProvider Serializer
     required:
       - name
       - internal_host
@@ -15792,7 +15700,6 @@ definitions:
           Header. If not set, the user's Email address is used.
         type: string
   ServiceConnection:
-    description: ServiceConnection Serializer
     required:
       - name
     type: object
@@ -15824,7 +15731,6 @@ definitions:
         type: string
         readOnly: true
   TypeCreate:
-    description: Types of an object that can be created
     required:
       - name
       - description
@@ -15844,7 +15750,6 @@ definitions:
         type: string
         minLength: 1
   ServiceConnectionState:
-    description: Serializer for Service connection state
     type: object
     properties:
       healthy:
@@ -15857,7 +15762,6 @@ definitions:
         readOnly: true
         minLength: 1
   DockerServiceConnection:
-    description: DockerServiceConnection Serializer
     required:
       - name
       - url
@@ -15911,7 +15815,6 @@ definitions:
         format: uuid
         x-nullable: true
   KubernetesServiceConnection:
-    description: KubernetesServiceConnection Serializer
     required:
       - name
     type: object
@@ -15948,7 +15851,6 @@ definitions:
           the currently selected context.
         type: object
   Policy:
-    description: Policy Serializer
     type: object
     properties:
       pk:
@@ -15982,7 +15884,6 @@ definitions:
         type: integer
         readOnly: true
   PolicyBinding:
-    description: PolicyBinding Serializer
     required:
       - target
       - order
@@ -15994,8 +15895,6 @@ definitions:
         format: uuid
         readOnly: true
       policy:
-        description: Policies which specify if a user is authorized to use an Application.
-          Can be overridden by other types to add other fields, more logic, etc.
         type: object
         properties:
           policy_uuid:
@@ -16026,7 +15925,6 @@ definitions:
       group:
         $ref: '#/definitions/Group'
       user:
-        description: Custom User model to allow easier adding of user-based settings
         required:
           - password
           - username
@@ -16096,20 +15994,8 @@ definitions:
             title: Attributes
             type: object
           groups:
-            description: ''
             type: array
             items:
-              description: Groups are a generic way of categorizing users to apply
-                permissions, or some other label, to those users. A user can belong
-                to any number of groups. A user in a group automatically has all the
-                permissions granted to that group. For example, if the group 'Site
-                editors' has the permission can_edit_home_page, any user in that group
-                will have that permission. Beyond permissions, groups are a convenient
-                way to categorize users to apply some label, or extended functionality,
-                to them. For example, you could create a group 'Special users', and
-                you could write code that would do special things to those users --
-                such as giving them access to a members-only portion of your site,
-                or sending them members-only email messages.
               required:
                 - name
               type: object
@@ -16130,25 +16016,8 @@ definitions:
                   uniqueItems: true
             readOnly: true
           user_permissions:
-            description: ''
             type: array
             items:
-              description: "The permissions system provides a way to assign permissions\
-                \ to specific users and groups of users. The permission system is\
-                \ used by the Django admin site, but may also be useful in your own\
-                \ code. The Django admin site uses permissions as follows: - The \"\
-                add\" permission limits the user's ability to view the \"add\" form\
-                \ and add an object. - The \"change\" permission limits a user's ability\
-                \ to view the change list, view the \"change\" form and change an\
-                \ object. - The \"delete\" permission limits the ability to delete\
-                \ an object. - The \"view\" permission limits the ability to view\
-                \ an object. Permissions are set globally per type of object, not\
-                \ per specific object instance. It is possible to say \"Mary may change\
-                \ news stories,\" but it's not currently possible to say \"Mary may\
-                \ change news stories, but only the ones she created herself\" or\
-                \ \"Mary may only change news stories that have a certain status or\
-                \ publication date.\" The permissions listed above are automatically\
-                \ created for each model."
               required:
                 - name
                 - codename
@@ -16174,11 +16043,8 @@ definitions:
                   type: integer
             readOnly: true
           sources:
-            description: ''
             type: array
             items:
-              description: Base Authentication source, i.e. an OAuth Provider, SAML
-                Remote or LDAP Server
               required:
                 - name
                 - slug
@@ -16232,10 +16098,8 @@ definitions:
                   uniqueItems: true
             readOnly: true
           ak_groups:
-            description: ''
             type: array
             items:
-              description: Custom Group model which supports a basic hierarchy
               required:
                 - name
                 - parent
@@ -16262,6 +16126,7 @@ definitions:
                   title: Parent
                   type: string
                   format: uuid
+                  x-nullable: true
             readOnly: true
         readOnly: true
       target:
@@ -16283,7 +16148,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   DummyPolicy:
-    description: Dummy Policy Serializer
     type: object
     properties:
       pk:
@@ -16330,7 +16194,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   EventMatcherPolicy:
-    description: Event Matcher Policy Serializer
     type: object
     properties:
       pk:
@@ -16445,7 +16308,6 @@ definitions:
           - authentik.managed
           - authentik.core
   ExpressionPolicy:
-    description: Group Membership Policy Serializer
     required:
       - expression
     type: object
@@ -16485,7 +16347,6 @@ definitions:
         type: string
         minLength: 1
   HaveIBeenPwendPolicy:
-    description: Have I Been Pwned Policy Serializer
     type: object
     properties:
       pk:
@@ -16529,7 +16390,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   PasswordPolicy:
-    description: Password Policy Serializer
     required:
       - error_message
     type: object
@@ -16598,7 +16458,6 @@ definitions:
         type: string
         minLength: 1
   PasswordExpiryPolicy:
-    description: Password Expiry Policy Serializer
     required:
       - days
     type: object
@@ -16642,7 +16501,6 @@ definitions:
         title: Deny only
         type: boolean
   ReputationPolicy:
-    description: Reputation Policy Serializer
     type: object
     properties:
       pk:
@@ -16687,7 +16545,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   IPReputation:
-    description: IPReputation Serializer
     required:
       - ip
     type: object
@@ -16711,7 +16568,6 @@ definitions:
         format: date-time
         readOnly: true
   UserReputation:
-    description: UserReputation Serializer
     required:
       - user
     type: object
@@ -16734,7 +16590,6 @@ definitions:
         format: date-time
         readOnly: true
   PropertyMapping:
-    description: PropertyMapping Serializer
     required:
       - name
       - expression
@@ -16766,7 +16621,6 @@ definitions:
         type: string
         readOnly: true
   LDAPPropertyMapping:
-    description: LDAP PropertyMapping Serializer
     required:
       - name
       - expression
@@ -16799,7 +16653,6 @@ definitions:
         type: string
         readOnly: true
   SAMLPropertyMapping:
-    description: SAMLPropertyMapping Serializer
     required:
       - name
       - saml_name
@@ -16836,7 +16689,6 @@ definitions:
         type: string
         readOnly: true
   ScopeMapping:
-    description: ScopeMapping Serializer
     required:
       - name
       - scope_name
@@ -16875,7 +16727,6 @@ definitions:
         type: string
         readOnly: true
   OAuth2ProviderSetupURLs:
-    description: OAuth2 Provider Metadata serializer
     type: object
     properties:
       issuer:
@@ -16903,7 +16754,6 @@ definitions:
         type: string
         readOnly: true
   ProxyProvider:
-    description: ProxyProvider Serializer
     required:
       - name
       - application
@@ -16992,7 +16842,6 @@ definitions:
           Header. If not set, the user's Email address is used.
         type: string
   SAMLProvider:
-    description: SAMLProvider Serializer
     required:
       - name
       - application
@@ -17114,7 +16963,6 @@ definitions:
         format: uuid
         x-nullable: true
   SAMLMetadata:
-    description: SAML Provider Metadata serializer
     type: object
     properties:
       metadata:
@@ -17122,7 +16970,6 @@ definitions:
         type: string
         readOnly: true
   Link:
-    description: Links returned in Config API
     type: object
     properties:
       href:
@@ -17136,7 +16983,6 @@ definitions:
         readOnly: true
         minLength: 1
   Config:
-    description: Serialize authentik Config into DRF Object
     type: object
     properties:
       branding_logo:
@@ -17150,7 +16996,6 @@ definitions:
         readOnly: true
         minLength: 1
       ui_footer_links:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Link'
@@ -17169,7 +17014,6 @@ definitions:
         type: boolean
         readOnly: true
   Source:
-    description: Source Serializer
     required:
       - name
       - slug
@@ -17221,7 +17065,6 @@ definitions:
         type: string
         readOnly: true
   UserSetting:
-    description: Serializer for User settings for stages and sources
     required:
       - object_uid
       - component
@@ -17241,7 +17084,6 @@ definitions:
         type: string
         minLength: 1
   LDAPSource:
-    description: LDAP Source Serializer
     required:
       - name
       - slug
@@ -17374,7 +17216,6 @@ definitions:
           format: uuid
         uniqueItems: true
   LDAPSourceSyncStatus:
-    description: LDAP Sync status
     type: object
     properties:
       last_sync:
@@ -17383,7 +17224,6 @@ definitions:
         format: date-time
         readOnly: true
   OAuthSource:
-    description: OAuth Source Serializer
     required:
       - name
       - slug
@@ -17482,7 +17322,6 @@ definitions:
         type: string
         readOnly: true
   UserOAuthSourceConnection:
-    description: OAuth Source Serializer
     required:
       - user
       - source
@@ -17505,7 +17344,6 @@ definitions:
         maxLength: 255
         minLength: 1
   SAMLSource:
-    description: SAMLSource Serializer
     required:
       - name
       - slug
@@ -17636,7 +17474,6 @@ definitions:
         type: string
         minLength: 1
   AuthenticatorStaticStage:
-    description: AuthenticatorStaticStage Serializer
     required:
       - name
     type: object
@@ -17663,7 +17500,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17680,7 +17516,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   AuthenticatorTOTPStage:
-    description: AuthenticatorTOTPStage Serializer
     required:
       - name
       - digits
@@ -17708,7 +17543,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17726,7 +17560,6 @@ definitions:
           - 6
           - 8
   AuthenticatorValidateStage:
-    description: AuthenticatorValidateStage Serializer
     required:
       - name
     type: object
@@ -17753,7 +17586,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17765,7 +17597,7 @@ definitions:
           - deny
           - configure
       device_classes:
-        description: ''
+        description: Device classes which can be used to authenticate
         type: array
         items:
           title: Device classes
@@ -17780,7 +17612,6 @@ definitions:
         format: uuid
         x-nullable: true
   AuthenticateWebAuthnStage:
-    description: AuthenticateWebAuthnStage Serializer
     required:
       - name
     type: object
@@ -17807,7 +17638,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17819,7 +17649,6 @@ definitions:
         format: uuid
         x-nullable: true
   CaptchaStage:
-    description: CaptchaStage Serializer
     required:
       - name
       - public_key
@@ -17848,7 +17677,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17863,7 +17691,6 @@ definitions:
         type: string
         minLength: 1
   ConsentStage:
-    description: ConsentStage Serializer
     required:
       - name
     type: object
@@ -17890,7 +17717,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -17907,7 +17733,6 @@ definitions:
         type: string
         minLength: 1
   DenyStage:
-    description: DenyStage Serializer
     required:
       - name
     type: object
@@ -17934,12 +17759,10 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
   DummyStage:
-    description: DummyStage Serializer
     required:
       - name
     type: object
@@ -17966,12 +17789,10 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
   EmailStage:
-    description: EmailStage Serializer
     required:
       - name
     type: object
@@ -17998,7 +17819,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -18056,7 +17876,6 @@ definitions:
           - email/password_reset.html
           - email/account_confirmation.html
   IdentificationStage:
-    description: IdentificationStage Serializer
     required:
       - name
       - user_fields
@@ -18084,12 +17903,12 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
       user_fields:
-        description: ''
+        description: Fields of the user object to match against. (Hold shift to select
+          multiple options)
         type: array
         items:
           title: User fields
@@ -18122,7 +17941,6 @@ definitions:
         format: uuid
         x-nullable: true
   Invitation:
-    description: Invitation Serializer
     type: object
     properties:
       pk:
@@ -18140,7 +17958,6 @@ definitions:
         description: Optional fixed data to enforce on user enrollment.
         type: object
       created_by:
-        description: Custom User model to allow easier adding of user-based settings
         required:
           - password
           - username
@@ -18210,20 +18027,8 @@ definitions:
             title: Attributes
             type: object
           groups:
-            description: ''
             type: array
             items:
-              description: Groups are a generic way of categorizing users to apply
-                permissions, or some other label, to those users. A user can belong
-                to any number of groups. A user in a group automatically has all the
-                permissions granted to that group. For example, if the group 'Site
-                editors' has the permission can_edit_home_page, any user in that group
-                will have that permission. Beyond permissions, groups are a convenient
-                way to categorize users to apply some label, or extended functionality,
-                to them. For example, you could create a group 'Special users', and
-                you could write code that would do special things to those users --
-                such as giving them access to a members-only portion of your site,
-                or sending them members-only email messages.
               required:
                 - name
               type: object
@@ -18244,25 +18049,8 @@ definitions:
                   uniqueItems: true
             readOnly: true
           user_permissions:
-            description: ''
             type: array
             items:
-              description: "The permissions system provides a way to assign permissions\
-                \ to specific users and groups of users. The permission system is\
-                \ used by the Django admin site, but may also be useful in your own\
-                \ code. The Django admin site uses permissions as follows: - The \"\
-                add\" permission limits the user's ability to view the \"add\" form\
-                \ and add an object. - The \"change\" permission limits a user's ability\
-                \ to view the change list, view the \"change\" form and change an\
-                \ object. - The \"delete\" permission limits the ability to delete\
-                \ an object. - The \"view\" permission limits the ability to view\
-                \ an object. Permissions are set globally per type of object, not\
-                \ per specific object instance. It is possible to say \"Mary may change\
-                \ news stories,\" but it's not currently possible to say \"Mary may\
-                \ change news stories, but only the ones she created herself\" or\
-                \ \"Mary may only change news stories that have a certain status or\
-                \ publication date.\" The permissions listed above are automatically\
-                \ created for each model."
               required:
                 - name
                 - codename
@@ -18288,11 +18076,8 @@ definitions:
                   type: integer
             readOnly: true
           sources:
-            description: ''
             type: array
             items:
-              description: Base Authentication source, i.e. an OAuth Provider, SAML
-                Remote or LDAP Server
               required:
                 - name
                 - slug
@@ -18346,10 +18131,8 @@ definitions:
                   uniqueItems: true
             readOnly: true
           ak_groups:
-            description: ''
             type: array
             items:
-              description: Custom Group model which supports a basic hierarchy
               required:
                 - name
                 - parent
@@ -18376,10 +18159,10 @@ definitions:
                   title: Parent
                   type: string
                   format: uuid
+                  x-nullable: true
             readOnly: true
         readOnly: true
   InvitationStage:
-    description: InvitationStage Serializer
     required:
       - name
     type: object
@@ -18406,7 +18189,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -18417,7 +18199,6 @@ definitions:
           no invitation is given.
         type: boolean
   PasswordStage:
-    description: PasswordStage Serializer
     required:
       - name
       - backends
@@ -18445,12 +18226,11 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
       backends:
-        description: ''
+        description: Selection of backends to test the password against.
         type: array
         items:
           title: Backends
@@ -18471,7 +18251,6 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
   Prompt:
-    description: Prompt Serializer
     required:
       - field_key
       - label
@@ -18522,12 +18301,10 @@ definitions:
         maximum: 2147483647
         minimum: -2147483648
       promptstage_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Stage'
   PromptStage:
-    description: PromptStage Serializer
     required:
       - name
       - fields
@@ -18555,7 +18332,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -18572,7 +18348,6 @@ definitions:
           format: uuid
         uniqueItems: true
   UserDeleteStage:
-    description: UserDeleteStage Serializer
     required:
       - name
     type: object
@@ -18599,12 +18374,10 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
   UserLoginStage:
-    description: UserLoginStage Serializer
     required:
       - name
     type: object
@@ -18631,7 +18404,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
@@ -18642,7 +18414,6 @@ definitions:
         type: string
         minLength: 1
   UserLogoutStage:
-    description: UserLogoutStage Serializer
     required:
       - name
     type: object
@@ -18669,12 +18440,10 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'
   UserWriteStage:
-    description: UserWriteStage Serializer
     required:
       - name
     type: object
@@ -18701,7 +18470,6 @@ definitions:
         type: string
         readOnly: true
       flow_set:
-        description: ''
         type: array
         items:
           $ref: '#/definitions/Flow'

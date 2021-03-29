@@ -1,7 +1,7 @@
 """Error Response schema, from https://github.com/axnsan12/drf-yasg/issues/224"""
-from drf_yasg2 import openapi
-from drf_yasg2.inspectors.view import SwaggerAutoSchema
-from drf_yasg2.utils import force_real_str, is_list_view
+from drf_yasg import openapi
+from drf_yasg.inspectors.view import SwaggerAutoSchema
+from drf_yasg.utils import force_real_str, is_list_view
 from rest_framework import exceptions, status
 from rest_framework.settings import api_settings
 

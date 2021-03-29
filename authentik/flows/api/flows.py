@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from django.core.cache import cache
 from django.db.models import Model
 from django.http.response import JsonResponse
-from drf_yasg2 import openapi
-from drf_yasg2.utils import no_body, swagger_auto_schema
+from drf_yasg import openapi
+from drf_yasg.utils import no_body, swagger_auto_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.request import Request

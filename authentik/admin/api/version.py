@@ -3,7 +3,7 @@ from os import environ
 
 from django.core.cache import cache
 from django.db.models import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
 from rest_framework.mixins import ListModelMixin

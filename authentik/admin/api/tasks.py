@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.db.models import Model
 from django.http.response import Http404
 from django.utils.translation import gettext_lazy as _
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
 from rest_framework.permissions import IsAdminUser

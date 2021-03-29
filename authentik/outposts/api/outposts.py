@@ -1,6 +1,6 @@
 """Outpost API Views"""
 from django.db.models import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.request import Request

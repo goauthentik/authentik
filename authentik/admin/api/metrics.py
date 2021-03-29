@@ -7,7 +7,7 @@ from django.db.models import Count, ExpressionWrapper, F, Model
 from django.db.models.fields import DurationField
 from django.db.models.functions import ExtractHour
 from django.utils.timezone import now
-from drf_yasg2.utils import swagger_auto_schema, swagger_serializer_method
+from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request

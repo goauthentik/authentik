@@ -1,6 +1,6 @@
 """OAuth2Provider API Views"""
 from django.urls import reverse
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
 from rest_framework.generics import get_object_or_404

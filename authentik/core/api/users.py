@@ -2,7 +2,7 @@
 from django.db.models.base import Model
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
-from drf_yasg2.utils import swagger_auto_schema, swagger_serializer_method
+from drf_yasg.utils import swagger_auto_schema, swagger_serializer_method
 from guardian.utils import get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, SerializerMethodField

@@ -1,8 +1,8 @@
 """Swagger Pagination Schema class"""
 from typing import OrderedDict
 
-from drf_yasg2 import openapi
-from drf_yasg2.inspectors import PaginatorInspector
+from drf_yasg import openapi
+from drf_yasg.inspectors import PaginatorInspector
 
 
 class PaginationInspector(PaginatorInspector):

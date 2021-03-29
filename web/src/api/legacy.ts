@@ -56,10 +56,6 @@ export class AdminURLManager {
         return `/administration/tokens/${rest}`;
     }
 
-    static eventRules(rest: string): string {
-        return `/administration/events/rules/${rest}`;
-    }
-
 }
 
 export class UserURLManager {

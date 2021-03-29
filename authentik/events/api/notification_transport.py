@@ -1,6 +1,6 @@
 """NotificationTransport API Views"""
 from django.http.response import Http404
-from drf_yasg2.utils import no_body, swagger_auto_schema
+from drf_yasg.utils import no_body, swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request

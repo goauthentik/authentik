@@ -4,7 +4,7 @@ from time import time
 
 from django.core.cache import cache
 from django.db.models.base import Model
-from drf_yasg2.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.fields import DateTimeField
 from rest_framework.request import Request
