@@ -14467,15 +14467,12 @@ definitions:
       - detail
     type: object
     properties:
-      errors:
-        type: object
-        properties:
-          detail:
-            description: Error details
-            type: string
-          code:
-            description: Error code
-            type: string
+      detail:
+        description: Error details
+        type: string
+      code:
+        description: Error code
+        type: string
   ValidationError:
     title: Validation Error
     type: object
@@ -14497,15 +14494,12 @@ definitions:
       - detail
     type: object
     properties:
-      errors:
-        type: object
-        properties:
-          detail:
-            description: Error details
-            type: string
-          code:
-            description: Error code
-            type: string
+      detail:
+        description: Error details
+        type: string
+      code:
+        description: Error code
+        type: string
   Coordinate:
     type: object
     properties:

@@ -15,17 +15,12 @@ class ErrorResponseAutoSchema(SwaggerAutoSchema):
             "Generic API Error",
             type=openapi.TYPE_OBJECT,
             properties={
-                "errors": openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        "detail": openapi.Schema(
-                            type=openapi.TYPE_STRING, description="Error details"
-                        ),
-                        "code": openapi.Schema(
-                            type=openapi.TYPE_STRING, description="Error code"
-                        ),
-                    },
-                )
+                "detail": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Error details"
+                ),
+                "code": openapi.Schema(
+                    type=openapi.TYPE_STRING, description="Error code"
+                ),
             },
             required=["detail"],
         )
