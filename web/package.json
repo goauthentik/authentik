@@ -13,6 +13,7 @@
         "@fortawesome/fontawesome-free": "^5.15.3",
         "@patternfly/patternfly": "^4.90.5",
         "@polymer/iron-form": "^3.0.1",
+        "@polymer/paper-input": "^3.2.1",
         "@sentry/browser": "^6.2.3",
         "@sentry/tracing": "^6.2.3",
         "@types/chart.js": "^2.9.31",
