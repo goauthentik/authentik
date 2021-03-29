@@ -18,7 +18,6 @@ from authentik.admin.views import (
     stages_bindings,
     stages_invitations,
     stages_prompts,
-    users,
 )
 from authentik.providers.saml.views.metadata import MetadataImportView
 
@@ -151,14 +150,6 @@ urlpatterns = [
         "property-mappings/<uuid:pk>/test/",
         property_mappings.PropertyMappingTestView.as_view(),
         name="property-mapping-test",
-    ),
-    # Users
-    path("users/create/", users.UserCreateView.as_view(), name="user-create"),
-    path("users/<int:pk>/update/", users.UserUpdateView.as_view(), name="user-update"),
-    path(
-        "users/<int:pk>/reset/",
-        users.UserPasswordResetView.as_view(),
-        name="user-password-reset",
     ),
     # Certificate-Key Pairs
     path(

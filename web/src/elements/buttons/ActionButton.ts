@@ -23,8 +23,7 @@ export class ActionButton extends SpinnerButton {
         this.setLoading();
         this.apiRequest().then(() => {
             this.setDone(SUCCESS_CLASS);
-        })
-        .catch((e: Error | Response) => {
+        }).catch((e: Error | Response) => {
             if (e instanceof Error) {
                 showMessage({
                     level: MessageLevel.error,

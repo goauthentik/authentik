@@ -18,9 +18,9 @@ export class GroupForm extends Form<Group> {
 
     getSuccessMessage(): string {
         if (this.group) {
-            return gettext("Successfully updated group");
+            return gettext("Successfully updated group.");
         } else {
-            return gettext("Successfully created group");
+            return gettext("Successfully created group.");
         }
     }
 

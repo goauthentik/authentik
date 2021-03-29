@@ -68,10 +68,6 @@ export class AdminURLManager {
         return `/administration/events/transports/${rest}`;
     }
 
-    static users(rest: string): string {
-        return `/administration/users/${rest}`;
-    }
-
 }
 
 export class UserURLManager {

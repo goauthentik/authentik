@@ -66,7 +66,7 @@ export class GroupListPage extends TablePage<Group> {
                 </span>
                 <ak-group-form slot="form" .group=${item}>
                 </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">
+                <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${gettext("Edit")}
                 </button>
             </ak-forms-modal>

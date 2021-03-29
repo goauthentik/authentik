@@ -1,11 +1,8 @@
 """authentik admin util views"""
 from typing import Any
 
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
-from django.urls import reverse_lazy
-from django.views.generic import DeleteView, UpdateView
+from django.views.generic import UpdateView
 
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.views import CreateAssignPermView
