@@ -4,14 +4,15 @@ import { AKResponse } from "../../api/Client";
 import { TablePage } from "../../elements/table/TablePage";
 
 import "../../elements/policies/BoundPoliciesList";
-import "../../elements/buttons/ModalButton";
 import "../../elements/buttons/SpinnerButton";
+import "../../elements/forms/ModalForm";
 import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { EventsApi, NotificationRule } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
 import { AdminURLManager } from "../../api/legacy";
 import "../../elements/forms/DeleteForm";
+import "./RuleForm";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
@@ -57,12 +58,19 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.severity}`,
             html`${item.group?.name || gettext("None (rule disabled)")}`,
             html`
-            <ak-modal-button href="${AdminURLManager.eventRules(`${item.pk}/update/`)}">
-                <ak-spinner-button slot="trigger" class="pf-m-secondary">
+            <ak-forms-modal>
+                <span slot="submit">
+                    ${gettext("Update")}
+                </span>
+                <span slot="header">
+                    ${gettext("Update Notification Rule")}
+                </span>
+                <ak-event-rule-form slot="form" .rule=${item}>
+                </ak-event-rule-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${gettext("Edit")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>
+                </button>
+            </ak-forms-modal>
             <ak-forms-delete
                 .obj=${item}
                 objectLabel=${gettext("Notification rule")}
@@ -80,12 +88,19 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderToolbar(): TemplateResult {
         return html`
-        <ak-modal-button href=${AdminURLManager.eventRules("create/")}>
-            <ak-spinner-button slot="trigger" class="pf-m-primary">
+        <ak-forms-modal>
+            <span slot="submit">
                 ${gettext("Create")}
-            </ak-spinner-button>
-            <div slot="modal"></div>
-        </ak-modal-button>
+            </span>
+            <span slot="header">
+                ${gettext("Create Notification Rule")}
+            </span>
+            <ak-event-rule-form slot="form">
+            </ak-event-rule-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>
         ${super.renderToolbar()}
         `;
     }

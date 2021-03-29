@@ -15,15 +15,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     ).when((): Promise<boolean> => {
         return me().then(u => u.user.isSuperuser||false);
     }),
-    new SidebarItem("Events").children(
-        new SidebarItem("Logs", "/events/log").activeWhen(
-            `^/events/log/(?<id>${UUID_REGEX})$`
-        ),
-        new SidebarItem("Notification Rules", "/events/rules"),
-        new SidebarItem("Notification Transports", "/events/transports"),
-    ).when((): Promise<boolean> => {
-        return me().then(u => u.user.isSuperuser||false);
-    }),
     new SidebarItem("Resources").children(
         new SidebarItem("Applications", "/core/applications").activeWhen(
             `^/core/applications/(?<slug>${SLUG_REGEX})$`
@@ -38,6 +29,15 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
         new SidebarItem("Outpost Service Connections", "/outpost/service-connections"),
     ).when((): Promise<boolean> => {
         return me().then(u => u.user.isSuperuser||false);
+    }),
+    new SidebarItem("Events").children(
+        new SidebarItem("Logs", "/events/log").activeWhen(
+            `^/events/log/(?<id>${UUID_REGEX})$`
+        ),
+        new SidebarItem("Notification Rules", "/events/rules"),
+        new SidebarItem("Notification Transports", "/events/transports"),
+    ).when((): Promise<boolean> => {
+        return me().then(u => u.user.isSuperuser || false);
     }),
     new SidebarItem("Customisation").children(
         new SidebarItem("Policies", "/policy/policies"),
