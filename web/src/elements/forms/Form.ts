@@ -41,6 +41,10 @@ export class Form<T> extends LitElement {
         `];
     }
 
+    getSuccessMessage(): string {
+        return this.successMessage;
+    }
+
     serializeForm(form: IronFormElement): T {
         const elements = form._getSubmittableElements();
         const json: { [key: string]: unknown } = {};
@@ -69,7 +73,7 @@ export class Form<T> extends LitElement {
         return this.send(data).then((r) => {
             showMessage({
                 level: MessageLevel.success,
-                message: this.successMessage
+                message: this.getSuccessMessage()
             });
             return r;
         }).catch((ex: Response) => {

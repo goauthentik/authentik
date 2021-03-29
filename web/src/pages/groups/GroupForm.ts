@@ -16,7 +16,13 @@ export class GroupForm extends Form<Group> {
     @property({attribute: false})
     group?: Group;
 
-    successMessage = gettext("Successfully updated group");
+    getSuccessMessage(): string {
+        if (this.group) {
+            return gettext("Successfully updated group");
+        } else {
+            return gettext("Successfully created group");
+        }
+    }
 
     send = (data: Group): Promise<Group> => {
         if (this.group) {
