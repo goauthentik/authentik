@@ -10,7 +10,6 @@ import { TableColumn } from "../../elements/table/Table";
 import { PAGE_SIZE } from "../../constants";
 import { EventsApi, NotificationRule } from "authentik-api";
 import { DEFAULT_CONFIG } from "../../api/Config";
-import { AdminURLManager } from "../../api/legacy";
 import "../../elements/forms/DeleteForm";
 import "./RuleForm";
 

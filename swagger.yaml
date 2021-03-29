@@ -1340,10 +1340,8 @@ paths:
           required: true
           type: file
       responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/Application'
+        '200':
+          description: Success
         '403':
           description: Authentication credentials were invalid, absent or insufficient.
           schema:

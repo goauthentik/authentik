@@ -54,8 +54,15 @@ export class ModalButton extends LitElement {
         super();
         window.addEventListener("keyup", (e) => {
             if (e.code === "Escape") {
+                this.resetForms();
                 this.open = false;
             }
+        });
+    }
+
+    resetForms(): void {
+        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach(form => {
+            form.reset();
         });
     }
 

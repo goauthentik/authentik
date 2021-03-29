@@ -1,13 +1,20 @@
 import { gettext } from "django";
-import { customElement, html, LitElement, property, TemplateResult } from "lit-element";
+import { CSSResult, customElement, html, LitElement, property, TemplateResult } from "lit-element";
 import { Provider } from "authentik-api";
-import { AdminURLManager } from "../../api/legacy";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import "../../elements/buttons/ModalButton";
 import "../../elements/Spinner";
+import "../../elements/forms/ModalForm";
+import "../../pages/applications/ApplicationForm";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends LitElement {
+
+    static get styles(): CSSResult[] {
+        return [PFBase, PFButton];
+    }
 
     @property({attribute: false})
     provider?: Provider;
@@ -18,12 +25,19 @@ export class RelatedApplicationButton extends LitElement {
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
-        return html`<ak-modal-button href=${AdminURLManager.applications(`create/?provider=${this.provider ? this.provider.pk : ""}`)}>
-                <ak-spinner-button slot="trigger" class="pf-m-primary">
-                    ${gettext("Create")}
-                </ak-spinner-button>
-                <div slot="modal"></div>
-            </ak-modal-button>`;
+        return html`<ak-forms-modal>
+            <span slot="submit">
+                ${gettext("Create")}
+            </span>
+            <span slot="header">
+                ${gettext("Create Application")}
+            </span>
+            <ak-application-form slot="form" .provider=${this.provider?.pk}>
+            </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${gettext("Create")}
+            </button>
+        </ak-forms-modal>`;
     }
 
 }

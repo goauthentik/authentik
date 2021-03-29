@@ -1,9 +1,5 @@
 export class AdminURLManager {
 
-    static applications(rest: string): string {
-        return `/administration/applications/${rest}`;
-    }
-
     static policies(rest: string): string {
         return `/administration/policies/${rest}`;
     }

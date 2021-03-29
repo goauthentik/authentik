@@ -2,7 +2,6 @@
 from django.urls import path
 
 from authentik.admin.views import (
-    applications,
     flows,
     outposts,
     outposts_service_connections,
@@ -19,17 +18,6 @@ from authentik.admin.views import (
 from authentik.providers.saml.views.metadata import MetadataImportView
 
 urlpatterns = [
-    # Applications
-    path(
-        "applications/create/",
-        applications.ApplicationCreateView.as_view(),
-        name="application-create",
-    ),
-    path(
-        "applications/<uuid:pk>/update/",
-        applications.ApplicationUpdateView.as_view(),
-        name="application-update",
-    ),
     # Sources
     path("sources/create/", sources.SourceCreateView.as_view(), name="source-create"),
     path(

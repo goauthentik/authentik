@@ -15,6 +15,7 @@ export class ModalForm extends ModalButton {
             }
             formPromise.then(() => {
                 this.open = false;
+                form.reset();
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,

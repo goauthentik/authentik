@@ -121,6 +121,7 @@ class ApplicationViewSet(ModelViewSet):
                 required=True,
             )
         ],
+        responses={200: "Success"},
     )
     @action(detail=True, methods=["POST"], parser_classes=(MultiPartParser,))
     # pylint: disable=unused-argument
@@ -132,12 +133,7 @@ class ApplicationViewSet(ModelViewSet):
             return HttpResponseBadRequest()
         app.meta_icon = icon
         app.save()
-        return Response(
-            get_events_per_1h(
-                action=EventAction.AUTHORIZE_APPLICATION,
-                context__authorized_application__pk=app.pk.hex,
-            )
-        )
+        return Response({})
 
     @permission_required(
         "authentik_core.view_application", ["authentik_events.view_event"]

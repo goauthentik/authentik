@@ -43,6 +43,40 @@ export class Form<T> extends LitElement {
         return this.successMessage;
     }
 
+    /**
+     * Reset the inner iron-form
+     */
+    reset(): void {
+        const ironForm = this.shadowRoot?.querySelector("iron-form");
+        if (!ironForm) {
+            return;
+        }
+        ironForm.reset();
+    }
+
+    /**
+     * If this form contains a file input, and the input as been filled, this function returns
+     * said file.
+     * @returns File object or undefined
+     */
+    getFormFile(): File | undefined {
+        const ironForm = this.shadowRoot?.querySelector("iron-form");
+        if (!ironForm) {
+            return;
+        }
+        const elements = ironForm._getSubmittableElements();
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i] as HTMLInputElement;
+            if (element.tagName.toLowerCase() === "input" && element.type === "file") {
+                if ((element.files || []).length < 1) {
+                    continue;
+                }
+                // We already checked the length
+                return (element.files || [])[0];
+            }
+        }
+    }
+
     serializeForm(form: IronFormElement): T {
         const elements = form._getSubmittableElements();
         const json: { [key: string]: unknown } = {};
