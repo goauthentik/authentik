@@ -15203,6 +15203,11 @@ definitions:
       webhook_url:
         title: Webhook url
         type: string
+      send_once:
+        title: Send once
+        description: Only send notification once, for example when sending a webhook
+          into a chat channel.
+        type: boolean
   NotificationTransportTest:
     description: Notification test serializer
     required:
