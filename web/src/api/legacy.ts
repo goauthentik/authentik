@@ -72,9 +72,6 @@ export class AdminURLManager {
         return `/administration/users/${rest}`;
     }
 
-    static groups(rest: string): string {
-        return `/administration/groups/${rest}`;
-    }
 }
 
 export class UserURLManager {
