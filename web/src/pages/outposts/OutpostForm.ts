@@ -1,4 +1,4 @@
-import { CoreApi, Outpost, OutpostsApi, ProvidersApi } from "authentik-api";
+import { Outpost, OutpostsApi, ProvidersApi } from "authentik-api";
 import { gettext } from "django";
 import { customElement, property } from "lit-element";
 import { html, TemplateResult } from "lit-html";

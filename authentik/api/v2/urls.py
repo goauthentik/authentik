@@ -33,7 +33,8 @@ from authentik.outposts.api.outpost_service_connections import (
     ServiceConnectionViewSet,
 )
 from authentik.outposts.api.outposts import OutpostViewSet
-from authentik.policies.api import PolicyBindingViewSet, PolicyViewSet
+from authentik.policies.api.bindings import PolicyBindingViewSet
+from authentik.policies.api.policies import PolicyViewSet
 from authentik.policies.dummy.api import DummyPolicyViewSet
 from authentik.policies.event_matcher.api import EventMatcherPolicyViewSet
 from authentik.policies.expiry.api import PasswordExpiryPolicyViewSet

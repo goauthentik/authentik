@@ -5779,6 +5779,43 @@ paths:
         required: true
         type: string
         format: uuid
+  /policies/all/{policy_uuid}/test/:
+    post:
+      operationId: policies_all_test
+      description: Test policy
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PolicyTest'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/PolicyTestResult'
+        '400':
+          description: Invalid input.
+          schema:
+            $ref: '#/definitions/ValidationError'
+        '403':
+          description: Authentication credentials were invalid, absent or insufficient.
+          schema:
+            $ref: '#/definitions/GenericError'
+        '404':
+          description: Object does not exist or caller has insufficient permissions
+            to access it.
+          schema:
+            $ref: '#/definitions/APIException'
+      tags:
+        - policies
+    parameters:
+      - name: policy_uuid
+        in: path
+        description: A UUID string identifying this Policy.
+        required: true
+        type: string
+        format: uuid
   /policies/bindings/:
     get:
       operationId: policies_bindings_list
@@ -16043,6 +16080,31 @@ definitions:
       bound_to:
         title: Bound to
         type: integer
+        readOnly: true
+  PolicyTest:
+    required:
+      - user
+    type: object
+    properties:
+      user:
+        title: User
+        type: integer
+      context:
+        title: Context
+        type: object
+  PolicyTestResult:
+    required:
+      - passing
+    type: object
+    properties:
+      passing:
+        title: Passing
+        type: boolean
+      messages:
+        type: array
+        items:
+          type: string
+          minLength: 1
         readOnly: true
   PolicyBinding:
     required:

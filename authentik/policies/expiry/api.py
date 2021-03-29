@@ -1,7 +1,7 @@
 """Password Expiry Policy API Views"""
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.policies.api import PolicySerializer
+from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.expiry.models import PasswordExpiryPolicy
 
 
