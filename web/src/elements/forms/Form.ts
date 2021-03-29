@@ -11,14 +11,12 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import { MessageLevel } from "../messages/Message";
 import { IronFormElement } from "@polymer/iron-form/iron-form";
-
-interface ErrorResponse {
-    [key: string]: string[];
-}
+import { camelToSnake } from "../../utils";
+import { ValidationError } from "authentik-api/src";
 
 export class APIError extends Error {
 
-    constructor(public response: ErrorResponse) {
+    constructor(public response: ValidationError) {
         super();
     }
 
@@ -31,7 +29,7 @@ export class Form<T> extends LitElement {
     successMessage = "";
 
     @property()
-    send!: (data: T) => Promise<T>;
+    send!: (data: T) => Promise<unknown>;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal, css`
@@ -62,7 +60,7 @@ export class Form<T> extends LitElement {
         return json as unknown as T;
     }
 
-    submit(ev: Event): Promise<T> | undefined {
+    submit(ev: Event): Promise<unknown> | undefined {
         ev.preventDefault();
         const ironForm = this.shadowRoot?.querySelector("iron-form");
         if (!ironForm) {
@@ -78,7 +76,7 @@ export class Form<T> extends LitElement {
             return r;
         }).catch((ex: Response) => {
             if (ex.status > 399 && ex.status < 500) {
-                return ex.json().then((errorMessage: ErrorResponse) => {
+                return ex.json().then((errorMessage: ValidationError) => {
                     if (!errorMessage) return errorMessage;
                     if (errorMessage instanceof Error) {
                         throw errorMessage;
@@ -87,8 +85,8 @@ export class Form<T> extends LitElement {
                     elements.forEach((element) => {
                         const elementName = element.name;
                         if (!elementName) return;
-                        if (elementName in errorMessage) {
-                            element.errorMessage = errorMessage[elementName].join(", ");
+                        if (camelToSnake(elementName) in errorMessage) {
+                            element.errorMessage = errorMessage[camelToSnake(elementName)].join(", ");
                             element.invalid = true;
                         }
                     });
