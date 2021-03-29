@@ -1,5 +1,6 @@
 import { gettext } from "django";
 import { customElement, html, TemplateResult } from "lit-element";
+import { EVENT_REFRESH } from "../../constants";
 import { ModalButton } from "../buttons/ModalButton";
 import { Form } from "./Form";
 
@@ -14,6 +15,12 @@ export class ModalForm extends ModalButton {
             }
             formPromise.then(() => {
                 this.open = false;
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    })
+                );
             }).catch((e) => {
                 console.log(e);
             });
