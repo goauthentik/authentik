@@ -88,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
                 </button>
             </ak-forms-delete>
             <button
-                class="pf-c-button pf-m-secondary ak-root-link"
+                class="pf-c-button pf-m-secondary"
                 @click=${() => {
                     new FlowsApi(DEFAULT_CONFIG).flowsInstancesExecute({
                         slug: item.slug
@@ -98,7 +98,7 @@ export class FlowListPage extends TablePage<Flow> {
                 }}>
                 ${gettext("Execute")}
             </button>
-            <a class="pf-c-button pf-m-secondary ak-root-link" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
+            <a class="pf-c-button pf-m-secondary" href="${`${DEFAULT_CONFIG.basePath}/flows/instances/${item.slug}/export/`}">
                 ${gettext("Export")}
             </a>`,
         ];
