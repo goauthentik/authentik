@@ -189,7 +189,7 @@ router.register("policies/dummy", DummyPolicyViewSet)
 
 info = openapi.Info(
     title="authentik API",
-    default_version="v2",
+    default_version="v2beta",
     contact=openapi.Contact(email="hello@beryju.org"),
     license=openapi.License(
         name="GNU GPLv3", url="https://github.com/BeryJu/authentik/blob/master/LICENSE"
